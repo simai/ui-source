@@ -56,6 +56,15 @@
       "label": {
         "type": "string",
         "default": ""
+      },
+      "preview": {
+        "type": "string",
+        "default": "silhouette",
+        "enum": [
+          "silhouette",
+          "line"
+        ],
+        "description": "How a pointer drag shows where the item lands: silhouette lifts the item out of the list and opens an outline of its size at the place it would take, the list making room; line draws a thin line there and leaves the list as it is. Keyboard moves, external targets and lists that wrap into a grid always use the line."
       }
     },
     "additionalProperties": false
@@ -252,7 +261,7 @@
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",
-        "sha256": "befdbb366c65bbc711a6d4284ce2920ea1eb991803332994a959d0cc30930014"
+        "sha256": "a80edece8f2aaf938eef61a3a20299c24d99381bfd2df396994920b424226a79"
       },
       {
         "path": "src/smart/sortable/rule.js",
@@ -260,11 +269,11 @@
       },
       {
         "path": "src/smart/sortable/docs.md",
-        "sha256": "3035c72e3da8a2606a476a26f270db92d1031d9ffea597909dd5fea6232b8e1f"
+        "sha256": "b2e9b2ee06491e641cab42632c820d2c28454e7b12c545c3c826454372217c47"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "fd84f60f084bce9112f5de47ac77e8147138975e9a29edec0217fd81b01d8463"
+        "sha256": "b5905a6805cf9ea7dd4ce77ebc59b0abf73f469fc63334dbe2bf760f70fcb72e"
       }
     ],
     "generated_runtime": []

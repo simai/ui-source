@@ -1,0 +1,303 @@
+{
+  "schema": "simai.framework.public-variables.v1",
+  "summary": "The CSS variables each component offers for customisation. A public variable has a single dash after the block (--sf-badge-color); the Framework never sets one, and reads it wherever a resting look is defined -- the base rule, sizes, appearances, schemes, statuses -- but not where a state is drawn (hover, focus, pressed, disabled, loading, an error), so states still show over a customised look. Set one on the component or on any ancestor. Every other --sf-<block>--* variable is internal: it may be renamed or removed in any release. A public variable is renamed or removed only through the change journal, as an attribute is.",
+  "components": [
+    {
+      "component": "badge",
+      "selector": ".sf-badge",
+      "variables": [
+        {
+          "name": "--sf-badge-background-color",
+          "role": "background",
+          "summary": "The badge's fill.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-badge-color",
+          "role": "color",
+          "summary": "The text and icon colour.",
+          "default": "var(--sf-on-surface-inverse)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-badge-border-color",
+          "role": "border-color",
+          "summary": "The border colour; seen with a border width.",
+          "default": "transparent",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-badge-border-width",
+          "role": "border-width",
+          "summary": "The border width on every side.",
+          "default": "0",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-badge-radius",
+          "role": "radius",
+          "summary": "The corner radius.",
+          "default": "var(--sf-radius-circle)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-badge-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space before and after the text.",
+          "default": "var(--sf-ui-1/3--text-space-x)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-badge-padding-block",
+          "role": "padding-block",
+          "summary": "Space above and below the text.",
+          "default": "var(--sf-ui-1/3--space-y-tightness-low)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-badge-gap",
+          "role": "gap",
+          "summary": "Space between the icon and the text.",
+          "default": "var(--sf-space-1/4)",
+          "since": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "component": "button",
+      "selector": ".sf-button",
+      "variables": [
+        {
+          "name": "--sf-button-background-color",
+          "role": "background",
+          "summary": "The resting fill; hover, pressed and disabled keep their own.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme"
+          ]
+        },
+        {
+          "name": "--sf-button-color",
+          "role": "color",
+          "summary": "The label colour at rest.",
+          "default": "var(--sf-on-primary)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme"
+          ]
+        },
+        {
+          "name": "--sf-button-border-color",
+          "role": "border-color",
+          "summary": "The border colour at rest; seen with a border width.",
+          "default": "transparent",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "scheme"
+          ]
+        },
+        {
+          "name": "--sf-button-border-width",
+          "role": "border-width",
+          "summary": "The border width on every side (outline appearance: var(--sf-px)).",
+          "default": "0",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-button-radius",
+          "role": "radius",
+          "summary": "The corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-button-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space before and after the content.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-button-padding-block",
+          "role": "padding-block",
+          "summary": "Space above and below the content.",
+          "default": "var(--sf-ui-1--space-y-tightness-default)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size",
+            "spacing"
+          ]
+        }
+      ]
+    },
+    {
+      "component": "input",
+      "selector": ".sf-input",
+      "variables": [
+        {
+          "name": "--sf-input-background-color",
+          "role": "background",
+          "summary": "The field's fill at rest; focus, error and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-input-border-color",
+          "role": "border-color",
+          "summary": "The field's border at rest.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-input-color",
+          "role": "color",
+          "summary": "The typed text.",
+          "default": "inherit",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-input-radius",
+          "role": "radius",
+          "summary": "The field's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-input-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space inside the field before and after its content.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-input-padding-block",
+          "role": "padding-block",
+          "summary": "Space inside the field above and below its content.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-13",
+          "varies_with": [
+            "size"
+          ]
+        }
+      ]
+    },
+    {
+      "component": "alert",
+      "selector": ".sf-alert",
+      "variables": [
+        {
+          "name": "--sf-alert-background-color",
+          "role": "background",
+          "summary": "The alert's fill.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-alert-border-color",
+          "role": "border-color",
+          "summary": "The border colour.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-alert-color",
+          "role": "color",
+          "summary": "The text colour.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-13",
+          "varies_with": [
+            "appearance",
+            "status"
+          ]
+        },
+        {
+          "name": "--sf-alert-border-width",
+          "role": "border-width",
+          "summary": "The border width on every side.",
+          "default": "var(--sf-px)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-alert-radius",
+          "role": "radius",
+          "summary": "The corner radius.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-alert-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space before and after the content.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-alert-padding-block",
+          "role": "padding-block",
+          "summary": "Space above and below the content.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-alert-gap",
+          "role": "gap",
+          "summary": "Space between the icon, the text and the buttons.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-13"
+        }
+      ]
+    }
+  ]
+}

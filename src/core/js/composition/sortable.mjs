@@ -112,6 +112,52 @@ function showIndicator(rect) {
   Object.assign(line.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
 }
 
+// The silhouette: while a pointer drags, the place the item would take opens in
+// the list as an empty outline of its size, and the list moves to make room --
+// a line two pixels thick said where, but not how the list would look, and the
+// owner could not tell where a row would land before letting go (2026-10-13).
+// The item itself leaves the flow while it is dragged; its copy follows the
+// pointer. Keyboard moves, external targets, lists that wrap into a grid and a
+// list written preview="line" keep the line.
+function silhouetteFor(list) {
+  return list.getAttribute('preview') !== 'line';
+}
+
+function placeholder(session) {
+  if (session.placeholder) return session.placeholder;
+  const box = session.sourceBox;
+  const element = globalThis.document.createElement('div');
+  element.className = 'sf-sortable-placeholder';
+  element.setAttribute('aria-hidden', 'true');
+  Object.assign(element.style, { inlineSize: `${box.width}px`, blockSize: `${box.height}px` });
+  session.placeholder = element;
+  return element;
+}
+
+// Where the outline goes, and the final index it stands for: counted among the
+// items still in the flow -- not the dragged one -- so it is the index the item
+// will have once it is moved.
+function placeSilhouette(session, list, x, y) {
+  const horizontal = list.getAttribute('orientation') === 'horizontal';
+  const visible = items(list).filter((item) => item !== session.source);
+  const boxes = visible.map((item) => {
+    const box = item.getBoundingClientRect();
+    return horizontal ? { start: box.left, end: box.right } : { start: box.top, end: box.bottom };
+  });
+  const index = sortableIndexAt(boxes, horizontal ? x : y);
+  const element = placeholder(session);
+  const before = visible[index];
+  if (before) {
+    if (element.nextElementSibling !== before) before.before(element);
+  } else if (visible.length) {
+    const last = visible[visible.length - 1];
+    if (last.nextElementSibling !== element) last.after(element);
+  } else if (element.parentElement !== list) {
+    list.append(element);
+  }
+  return index;
+}
+
 /** Index where an item would land in a list for a pointer position. */
 export function sortableIndexAt(boxes, coordinate, exclude = -1) {
   let index = 0;
@@ -206,6 +252,8 @@ function finish(list, reason) {
   ended.cleanup?.abort();
   if (ended.scrollFrame) globalThis.cancelAnimationFrame(ended.scrollFrame);
   ended.source?.removeAttribute('data-sf-sortable-dragging');
+  ended.source?.removeAttribute('data-sf-sortable-lifted');
+  ended.placeholder?.remove();
   ended.ghost?.remove();
   showIndicator(null);
   for (const target of externalTargets) target.leave?.();
@@ -286,7 +334,9 @@ export function defineSortable(registry = globalThis.customElements) {
       const id = item.getAttribute('data-sf-sortable-item');
       if (!id || !this.group || shared.session) return false;
       const all = items(this);
+      const sourceBox = item.getBoundingClientRect();
       shared.session = {
+        sourceBox,
         item: id, from: this.getAttribute('id') || this.group, group: this.group, mode: this.mode, input,
         source: item, fromList: this, sourceIndex: all.indexOf(item), list: this.mode === 'copy' ? null : this,
         index: all.indexOf(item), external: null, cleanup: new AbortController(),
@@ -317,6 +367,13 @@ export function defineSortable(registry = globalThis.customElements) {
           started = true;
           item.setPointerCapture?.(pointer);
           shared.session.ghost = this.ghost(item, moveEvent);
+          // The item leaves the flow only once its copy is on screen; a copy
+          // library (mode copy) keeps its item where it is.
+          if (silhouetteFor(this) && this.mode !== 'copy' && !isWrapped(items(this))) {
+            shared.session.silhouette = true;
+            item.setAttribute('data-sf-sortable-lifted', '');
+            this.retarget(moveEvent.clientX, moveEvent.clientY);
+          }
         }
         moveEvent.preventDefault();
         this.track(moveEvent.clientX, moveEvent.clientY);
@@ -372,6 +429,14 @@ export function defineSortable(registry = globalThis.customElements) {
         }
       }
       shared.session.external = null;
+      if (list && accepts(list, shared.session.group)
+          && shared.session.silhouette && silhouetteFor(list) && !isWrapped(items(list))) {
+        shared.session.list = list;
+        shared.session.index = placeSilhouette(shared.session, list, x, y);
+        showIndicator(null);
+        return;
+      }
+      shared.session.placeholder?.remove();
       if (list && accepts(list, shared.session.group)) {
         const resolved = listTarget(list, x, y);
         shared.session.list = list;

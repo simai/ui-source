@@ -209,9 +209,9 @@
   --sf-radio-button-box--border-color: var(--sf-primary-hover);
 }
 
-.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled)):hover {
-  --sf-radio-button--background-color: var(--sf-surface-container-hover);
-}
+/* Hover shows on the ring alone, as on the checkbox: a fill behind the ring
+   and its label marked the text, which no control here does (owner,
+   2026-10-13). */
 
 .sf-radio-button:has(input:checked):not(:has(input:disabled)) .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-primary);

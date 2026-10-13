@@ -47,6 +47,21 @@
         display: none;
     }
 
+    /* The silhouette (preview="silhouette", the default): the dragged item
+       leaves the flow and an outline of its size opens where it would land. */
+    [data-sf-sortable-item][data-sf-sortable-lifted] {
+        display: none !important;
+    }
+
+    .sf-sortable-placeholder {
+        box-sizing: border-box;
+        flex: none;
+        border: var(--sf-px) dashed var(--sf-outline-primary, var(--sf-primary, Highlight));
+        border-radius: var(--sf-radius--ui, 4px);
+        background-color: var(--sf-primary-transparent-select, transparent);
+        pointer-events: none;
+    }
+
     .sf-sortable-live {
         position: absolute;
         inline-size: 1px;

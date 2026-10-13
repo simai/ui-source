@@ -3,6 +3,7 @@ import './rule';
 import './mask';
 import './composition/index.mjs';
 import './position.js';
+import './notify.js';
 import {
   createPreloaderContent,
   DEFAULT_PRELOADER,
