@@ -25,6 +25,7 @@
         "smart.badges",
         "smart.buttons",
         "smart.context-menu",
+        "smart.dropdown",
         "smart.icon-buttons",
         "smart.icons",
         "smart.inputs",
@@ -53,6 +54,7 @@
         "smart.modal",
         "smart.pagination",
         "smart.range-slider",
+        "smart.sortable",
         "smart.spinner",
         "smart.tabs",
         "smart.tags"
