@@ -24,7 +24,24 @@ function sha256(value) {
     return crypto.createHash("sha256").update(value).digest("hex");
 }
 
-test("simplicity pre-audit binds exact multi-repo changed surfaces", {skip: !evidenceAvailable}, () => {
+// The audit binds commits of the private history (simai/ui-source-history):
+// the public repository starts from a snapshot and holds none of them, so its
+// CI has nothing to compare. Where the history is present -- a clone that
+// fetched it -- the binding is checked as before.
+function hasCommit(root, ref) {
+    try {
+        execFileSync("git", ["-C", root, "cat-file", "-e", `${ref}^{commit}`], { stdio: "ignore" });
+        return true;
+    } catch {
+        return false;
+    }
+}
+const historyAvailable = evidenceAvailable && payload.changed_surface_inventory.repositories.every((repository) => {
+    const root = repoRoots.get(repository.repo_ref);
+    return root && hasCommit(root, repository.baseline_ref) && hasCommit(root, repository.target_ref);
+});
+
+test("simplicity pre-audit binds exact multi-repo changed surfaces", {skip: !evidenceAvailable || !historyAvailable}, () => {
     assert.equal(payload.status, "PENDING_EXTERNAL_TESTER_REVIEW");
     assert.equal(payload.verdict, "PENDING_EXTERNAL_TESTER_REVIEW");
     assert.equal(payload.external_tester_boundary.status, "PENDING_EXTERNAL_REVIEW");

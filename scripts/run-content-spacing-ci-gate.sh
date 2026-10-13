@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-readonly UI_DOC_REVISION="354364aedd3f5294206e79948372893b93fc085e"
+# ui-doc's main holds the examples of the newest pinned release, which is what
+# the source suite is measured against; a pinned commit went stale with every
+# release and kept the gate red (owner's documentation session, 2026-10-13).
+# UI_DOC_REF names another branch or commit for a run that needs one.
+readonly UI_DOC_REF="${UI_DOC_REF:-main}"
 readonly UI_DOC_REPOSITORY="${UI_DOC_REPOSITORY:-https://github.com/simai/ui-doc.git}"
 
 gate_root="$(mktemp -d "${TMPDIR:-/tmp}/sf5-content-spacing-ci.XXXXXX")"
@@ -12,13 +16,13 @@ trap cleanup EXIT
 
 ui_doc_root="$gate_root/ui-doc"
 git clone --quiet --no-checkout "$UI_DOC_REPOSITORY" "$ui_doc_root"
-git -C "$ui_doc_root" checkout --quiet --detach "$UI_DOC_REVISION"
+if git -C "$ui_doc_root" rev-parse --verify --quiet "origin/$UI_DOC_REF" >/dev/null; then
+    git -C "$ui_doc_root" checkout --quiet --detach "origin/$UI_DOC_REF"
+else
+    git -C "$ui_doc_root" checkout --quiet --detach "$UI_DOC_REF"
+fi
 
 actual_revision="$(git -C "$ui_doc_root" rev-parse HEAD)"
-if [[ "$actual_revision" != "$UI_DOC_REVISION" ]]; then
-    printf '%s\n' "CONTENT_SPACING_UI_DOC_REVISION_MISMATCH expected=$UI_DOC_REVISION actual=$actual_revision" >&2
-    exit 2
-fi
 if [[ -n "$(git -C "$ui_doc_root" status --short --untracked-files=all)" ]]; then
     printf '%s\n' "CONTENT_SPACING_UI_DOC_CHECKOUT_DIRTY revision=$actual_revision" >&2
     exit 2

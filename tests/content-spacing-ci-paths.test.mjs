@@ -4,7 +4,8 @@ import path from "node:path";
 import test from "node:test";
 import { repositoryPath } from "../scripts/adaptive-sizing-contract-lib.mjs";
 
-const uiDocRevision = "354364aedd3f5294206e79948372893b93fc085e";
+// The gate reads ui-doc's main, which holds the examples of the newest pinned
+// release; UI_DOC_REF may name another branch or commit.
 // The Docara revision the pinned ui-doc actually locks. It moves with the ui-doc
 // pin above, because the two describe one accepted state: this Framework against
 // that documentation built by that Docara.
@@ -35,7 +36,7 @@ test("ordinary Framework test entrypoint cannot bypass the exact public-doc gate
         repositoryPath("scripts/run-content-spacing-ci-gate.sh"),
         "utf8",
     );
-    assert.match(gate, new RegExp(uiDocRevision, "u"));
+    assert.match(gate, /readonly UI_DOC_REF="\$\{UI_DOC_REF:-main\}"/u);
     assert.match(gate, /git clone --quiet --no-checkout/u);
     assert.match(gate, /checkout --quiet --detach/u);
     assert.match(gate, /UI_DOC_ROOT="\$ui_doc_root" npm run test:unit/u);
