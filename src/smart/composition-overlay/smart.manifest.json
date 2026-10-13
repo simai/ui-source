@@ -440,7 +440,7 @@
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "b5905a6805cf9ea7dd4ce77ebc59b0abf73f469fc63334dbe2bf760f70fcb72e"
+        "sha256": "555d9a9ab03cad267772646edbea695c8b47cdace3f968268199417658ceb363"
       },
       {
         "path": "src/core/js/composition/canonical.mjs",

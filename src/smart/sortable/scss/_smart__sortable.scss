@@ -53,6 +53,23 @@
         display: none !important;
     }
 
+    /* The column mode (SF.Sortable.attach): the place a column will take,
+       outlined the width of the column and the height of the table; the
+       column being moved is dimmed in every row. */
+    .sf-sortable-column-outline {
+        position: fixed;
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        box-sizing: border-box;
+        border: var(--sf-px) dashed var(--sf-outline-primary, var(--sf-primary, Highlight));
+        border-radius: var(--sf-radius--ui, 4px);
+        background-color: var(--sf-primary-transparent-select, transparent);
+        pointer-events: none;
+    }
+
+    [data-sf-sortable-column-source] {
+        opacity: .4;
+    }
+
     .sf-sortable-placeholder {
         box-sizing: border-box;
         flex: none;

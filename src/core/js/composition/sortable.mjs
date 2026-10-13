@@ -612,4 +612,169 @@ export function defineSortable(registry = globalThis.customElements) {
   return SfSortable;
 }
 
-export default { activeSortableSession, defineSortable, registerSortableDropTarget, sortableIndexAt };
+/**
+ * sf-sortable's pointer behaviour on any container, without the element: a
+ * table's head row cannot hold a custom element around its cells, and its
+ * columns move with every cell under them (owner, 2026-10-13). The container
+ * keeps its markup; the controller listens on it.
+ *
+ * options:
+ *   items        selector of the movable children (required)
+ *   canStart     (event, item) => boolean -- a press that may begin a drag
+ *   groupOf      (item) => string -- an item moves among items of its group
+ *   preview      'column' (default) | 'line'
+ *   extent       the element a column spans (a table); default the container
+ *   cellsOf      (item) => elements to mark as the moving column (its cells)
+ *   label        the list's name for the announcement
+ *   onIntent     ({item, from, index, group}) -- index among the group's items
+ *                without the dragged one, the place it is to take
+ * Returns detach().
+ *
+ * Keyboard reordering stays where a list is: a table's column settings are an
+ * sf-sortable list with every key path. A click that ends a drag is swallowed,
+ * so a heading that sorts on click does not sort on a drop.
+ */
+export function attachSortable(container, options = {}) {
+  if (!(container instanceof globalThis.Element) || typeof options.items !== 'string') {
+    throw new TypeError('attachSortable needs a container and an items selector');
+  }
+  const doc = globalThis.document;
+  const preview = options.preview === 'line' ? 'line' : 'column';
+  const groupOf = typeof options.groupOf === 'function' ? options.groupOf : () => '';
+  const canStart = typeof options.canStart === 'function' ? options.canStart : () => true;
+  const cellsOf = typeof options.cellsOf === 'function' ? options.cellsOf : (item) => [item];
+  const extentOf = () => options.extent?.isConnected ? options.extent : container;
+  const live = doc.createElement('div');
+  live.className = 'sf-sortable-live';
+  live.setAttribute('aria-live', 'polite');
+  doc.body.append(live);
+  const abort = new AbortController();
+  let session = null;
+
+  const members = (group) => [...container.querySelectorAll(options.items)].filter((item) => groupOf(item) === group);
+  const outline = () => {
+    if (session.outline) return session.outline;
+    const box = doc.createElement('div');
+    box.className = preview === 'column' ? 'sf-sortable-column-outline' : 'sf-sortable-indicator';
+    box.setAttribute('aria-hidden', 'true');
+    doc.body.append(box);
+    session.outline = box;
+    return box;
+  };
+
+  const place = (x) => {
+    const peers = members(session.group).filter((item) => item !== session.item);
+    const boxes = peers.map((item) => item.getBoundingClientRect());
+    let index = boxes.length;
+    for (let at = 0; at < boxes.length; at += 1) {
+      if (x < boxes[at].left + boxes[at].width / 2) { index = at; break; }
+    }
+    session.index = index;
+    const extent = extentOf().getBoundingClientRect();
+    const width = session.width;
+    const before = boxes[index];
+    const after = boxes[index - 1];
+    let left;
+    if (preview === 'column') {
+      // The outline stands where the column will be. Moving towards the start
+      // it takes the place of the column it goes before (that one moves on);
+      // moving towards the end it ends where the column it goes after ends.
+      if (index > session.originalIndex && after) left = after.right - width;
+      else left = before ? before.left : (after ? after.right - width : extent.left);
+    } else {
+      left = (before ? before.left : after ? after.right : extent.left) - 1;
+    }
+    Object.assign(outline().style, {
+      left: `${left}px`, top: `${extent.top}px`,
+      width: preview === 'column' ? `${width}px` : '2px', height: `${extent.height}px`,
+    });
+  };
+
+  const autoScroll = (x) => {
+    for (let node = container.parentElement; node; node = node.parentElement) {
+      const style = globalThis.getComputedStyle(node);
+      if (!/(auto|scroll)/u.test(style.overflowX) || node.scrollWidth <= node.clientWidth) continue;
+      const box = node.getBoundingClientRect();
+      if (x < box.left + EDGE) node.scrollBy({left: -Math.ceil((box.left + EDGE - x) / 4), behavior: 'instant'});
+      else if (x > box.right - EDGE) node.scrollBy({left: Math.ceil((x - box.right + EDGE) / 4), behavior: 'instant'});
+      return;
+    }
+  };
+
+  const end = (dropped) => {
+    const ended = session;
+    session = null;
+    if (!ended) return;
+    ended.pending.abort();
+    ended.ghost?.remove();
+    ended.outline?.remove();
+    for (const cell of ended.cells) cell.removeAttribute('data-sf-sortable-column-source');
+    doc.documentElement.removeAttribute('data-sf-sortable-active');
+    if (!ended.started) return;
+    // The click a drop ends with is not a click on the heading. It comes in the
+    // same task as the pointerup, so the guard is gone by the next one and a
+    // later click is a click again.
+    const swallow = (event) => { event.preventDefault(); event.stopImmediatePropagation(); };
+    container.addEventListener('click', swallow, {capture: true, once: true});
+    globalThis.setTimeout(() => container.removeEventListener('click', swallow, {capture: true}), 0);
+    if (!dropped) {
+      live.textContent = messages().cancelled;
+      return;
+    }
+    if (ended.index === undefined || ended.index === ended.originalIndex) return;
+    const id = ended.item.getAttribute('data-sf-sortable-item') || ended.item.dataset.key || '';
+    live.textContent = format(messages().dropped, {item: itemLabel(ended.item), index: ended.index + 1, list: options.label || ''});
+    options.onIntent?.({item: id, from: ended.group, index: ended.index, group: ended.group});
+  };
+
+  container.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || session || shared.session) return;
+    const item = event.target.closest?.(options.items);
+    if (!item || !container.contains(item) || !canStart(event, item)) return;
+    const group = groupOf(item);
+    const peers = members(group);
+    if (peers.length < 2) return;
+    const start = {x: event.clientX, y: event.clientY};
+    const pending = new AbortController();
+    const box = item.getBoundingClientRect();
+    session = {item, group, pending, started: false, cells: [], width: box.width, originalIndex: peers.indexOf(item)};
+    const move = (moveEvent) => {
+      if (moveEvent.pointerId !== event.pointerId || !session) return;
+      if (!session.started) {
+        if (Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) < DRAG_THRESHOLD) return;
+        session.started = true;
+        doc.documentElement.setAttribute('data-sf-sortable-active', '');
+        const ghost = item.cloneNode(true);
+        ghost.removeAttribute('id');
+        for (const element of ghost.querySelectorAll('[id]')) element.removeAttribute('id');
+        ghost.classList.add('sf-sortable-ghost');
+        ghost.setAttribute('aria-hidden', 'true');
+        ghost.inert = true;
+        Object.assign(ghost.style, {width: `${box.width}px`, height: `${box.height}px`, left: `${box.left}px`, top: `${box.top}px`});
+        doc.body.append(ghost);
+        session.ghost = ghost;
+        session.offset = {x: start.x - box.left, y: start.y - box.top};
+        session.cells = cellsOf(item).filter(Boolean);
+        for (const cell of session.cells) cell.setAttribute('data-sf-sortable-column-source', '');
+      }
+      moveEvent.preventDefault();
+      Object.assign(session.ghost.style, {left: `${moveEvent.clientX - session.offset.x}px`, top: `${moveEvent.clientY - session.offset.y}px`});
+      autoScroll(moveEvent.clientX);
+      place(moveEvent.clientX);
+    };
+    globalThis.addEventListener('pointermove', move, {signal: pending.signal, passive: false});
+    globalThis.addEventListener('pointerup', (upEvent) => { if (upEvent.pointerId === event.pointerId) end(true); }, {signal: pending.signal});
+    globalThis.addEventListener('pointercancel', () => end(false), {signal: pending.signal});
+    globalThis.addEventListener('keydown', (keyEvent) => {
+      if (keyEvent.key === 'Escape' && session?.started) { keyEvent.preventDefault(); keyEvent.stopPropagation(); end(false); }
+    }, {signal: pending.signal, capture: true});
+  }, {signal: abort.signal});
+
+  return () => {
+    end(false);
+    abort.abort();
+    live.remove();
+  };
+}
+
+export default { activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };
