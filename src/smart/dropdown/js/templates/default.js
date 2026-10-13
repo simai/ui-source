@@ -104,6 +104,14 @@ function renderTag(context, option) {
   `;
 }
 
+// A grid cell is as tall as a field of the dropdown's size: a size-1/2 icon
+// picker drew size-1 cells around its size-1/2 search (owner, 2026-10-14).
+const CELL = {
+  "1/2": "var(--sf-ui-1\\/2--control-height)",
+  "1": "var(--sf-ui-1--control-height)",
+  "2": "var(--sf-ui-2--control-height)",
+};
+
 export function renderDropdownTemplate(context) {
   const rootClasses = [
     "sf-dropdown",
@@ -247,6 +255,7 @@ export function renderDropdownTemplate(context) {
         class=${`sf-list flex flex-col${
           context.component?.hasSlotContent?.('trigger') ? " sf-list--free-width" : ""
         }`}
+        style=${`--sf-list--cell: ${CELL[context.size] || CELL["1"]}`}
         ?hidden=${!context.open}
       >
         ${context.search

@@ -70,9 +70,11 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
      variable. */
   min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-e8));
   max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-g2)), var(--sf-context-menu-available-inline-size, 100vw));
-  --sf-icon--font-size: var(--sf-icon-size-2);
-  --sf-icon--width: var(--sf-icon-size-2);
-  --sf-icon--height: var(--sf-icon-size-2);
+  font-size: var(--sf-context-menu--text-size);
+  line-height: var(--sf-context-menu--line);
+  --sf-icon--font-size: var(--sf-context-menu--line);
+  --sf-icon--width: var(--sf-context-menu--line);
+  --sf-icon--height: var(--sf-context-menu--line);
 }
 
 /* The content scrolls when the window is shorter than the menu; its rows keep
@@ -82,17 +84,18 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   flex-shrink: 0;
 }
 
-/* A row is as tall as a size-1/2 field -- a line and a6 above and below --
-   and its content starts where that field's does. A caption makes it taller
-   by its own line, never by padding. */
+/* A row is as tall as a field of the menu's size -- its line and the field's
+   block padding above and below, 32px at 1/2 and 40px at 1 -- and its content
+   starts where that field's does. A caption makes it taller by its own line,
+   never by padding. */
 .sf-context-menu-item {
   display: flex;
   align-items: center;
   gap: var(--sf-space-1\/2);
   inline-size: 100%;
-  min-block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
   padding-block: var(--sf-a2);
-  padding-inline: var(--sf-context-menu--item-inset-start-1\/2) var(--sf-context-menu--item-inset-end-1\/2);
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   border: 0;
   border-radius: var(--sf-radius--ui);
   background: none;
@@ -130,7 +133,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 .sf-context-menu-item-check {
   display: flex;
   flex: none;
-  inline-size: var(--sf-icon-size-2);
+  inline-size: var(--sf-context-menu--line);
 }
 
 /* A picture in the lead: a site's logo or a person, the icon's size, with
@@ -139,8 +142,8 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--sf-icon-size-2);
-  block-size: var(--sf-icon-size-2);
+  inline-size: var(--sf-context-menu--line);
+  block-size: var(--sf-context-menu--line);
   border-radius: var(--sf-radius--ui);
   background-color: var(--sf-secondary-container);
   color: var(--sf-on-secondary-container);
@@ -222,7 +225,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   display: flex;
   align-items: center;
   gap: var(--sf-space-1\/2);
-  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a6) var(--sf-context-menu--item-inset-start-1\/2);
+  padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
 }
 
 .sf-context-menu-header-avatar {
@@ -266,7 +269,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 /* A few options side by side, one segment each, in a hairline frame. */
 .sf-context-menu-choice {
   display: flex;
-  margin-inline: var(--sf-context-menu--item-inset-start-1\/2) var(--sf-context-menu--item-inset-end-1\/2);
+  margin-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   margin-block: var(--sf-a2);
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--ui);
@@ -292,22 +295,23 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 
 .sf-context-menu-note {
   margin: 0;
-  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a6) var(--sf-context-menu--item-inset-start-1\/2);
+  padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/3);
   line-height: var(--sf-text-height-1\/3);
   white-space: normal;
 }
 
-/* The search field is a size-1/2 field: its text starts on the rows' axis. */
+/* The search field is a field of the menu's size: its text starts on the
+   rows' axis. */
 .sf-context-menu-search {
   padding-block-end: var(--sf-a4);
 }
 
 .sf-context-menu-search-input {
   inline-size: 100%;
-  min-block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
-  padding-inline: var(--sf-ui-1\/2--space-x);
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-inline: var(--sf-context-menu--field-space-x);
   border: var(--sf-px) solid var(--sf-outline);
   border-radius: var(--sf-radius--ui);
   background-color: transparent;
@@ -320,11 +324,53 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 }
 
 .sf-context-menu-heading {
-  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a2) var(--sf-context-menu--item-inset-start-1\/2);
+  padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-a2) var(--sf-context-menu--inset-start);
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/3);
   line-height: var(--sf-text-height-1\/3);
   font-weight: var(--sf-font-weight-medium);
+}
+
+/* The parts a window built in the menu shares with every other: a block on
+   top (a search, a title), the body, and a footer of actions -- Reset and
+   Apply, Save. Every window that drops down had its own paddings and its own
+   strip of buttons (owner, 2026-10-14); these are the one set. The footer
+   stays at the bottom while the body scrolls. Its buttons share the width. */
+.sf-context-menu-top,
+.sf-context-menu-footer {
+  display: flex;
+  flex: none;
+  gap: var(--sf-space-1\/3);
+  padding: var(--sf-context-menu--block-space) var(--sf-context-menu--inset-end) var(--sf-context-menu--block-space) var(--sf-context-menu--inset-start);
+}
+
+.sf-context-menu-top {
+  flex-direction: column;
+  padding-block-start: var(--sf-a4);
+}
+
+.sf-context-menu-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sf-px);
+  min-block-size: 0;
+  overflow: auto;
+}
+
+.sf-context-menu-footer {
+  position: sticky;
+  inset-block-end: calc(-1 * var(--sf-context-menu-content--padding-bottom, 0px));
+  margin-block-start: var(--sf-a4);
+  margin-block-end: calc(-1 * var(--sf-context-menu-content--padding-bottom, 0px));
+  padding-block-end: calc(var(--sf-context-menu--block-space) + var(--sf-context-menu-content--padding-bottom, 0px));
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  background-color: var(--sf-context-menu-content--background-color);
+}
+
+.sf-context-menu-footer > * {
+  flex: 1 1 0;
+  min-inline-size: 0;
 }
 
 /* An item is one line. A menu opened from a control near the inline edge was

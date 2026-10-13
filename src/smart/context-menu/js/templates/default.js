@@ -199,6 +199,13 @@ function renderContent(context) {
     return context.text || nothing;
 }
 
+// The footer of actions: what is slotted as "footer" stands under the rows,
+// at the bottom while they scroll, its buttons sharing the width.
+function renderFooter(context) {
+    if (!context.component?.hasSlotContent?.("footer")) return nothing;
+    return html`<div class="sf-context-menu-footer">${context.component.getSlotContent("footer")}</div>`;
+}
+
 // No tail (owner, 2026-10-12): it never read as one piece with the panel. The
 // position attribute is kept for its class and draws nothing.
 function renderTooltip() {
@@ -210,6 +217,7 @@ export function renderContextMenuTemplate(context) {
         "sf-context-menu",
         context.position ? `sf-context-menu--position-${context.position}` : "",
         context.entries && context.entries.length ? "sf-context-menu--entries" : "",
+        context.size === "1" ? "sf-context-menu--size-1" : "",
         "flex",
         context.rootClass,
     );
@@ -231,7 +239,7 @@ export function renderContextMenuTemplate(context) {
         >
             <div class="relative">
                 ${renderTooltip(context)}
-                <div class=${contentClasses}>${renderContent(context)}</div>
+                <div class=${contentClasses}>${renderContent(context)}${renderFooter(context)}</div>
             </div>
         </div>
     `;

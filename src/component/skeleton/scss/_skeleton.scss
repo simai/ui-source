@@ -6,15 +6,28 @@
   --sf-skeleton-duration: calc(var(--sf-duration-slow) * 3);
   display: flex;
   flex-direction: column;
-  gap: var(--sf-b0);
+  gap: 0;
 }
 
+/* A bar stands for a line of text, so it takes a line's room: the text's
+   line height, with the bar -- as tall as the letters, the text size -- in
+   the middle of it: at size 1, a bar two thirds of its line. A bar as
+   tall as the letters and nothing around it made a loading row thinner than
+   the row it stood for, and the page jumped when the data came (owner,
+   2026-10-14). Lines follow one another with no gap, as lines of text do. */
 .sf-skeleton-text {
   position: relative;
   overflow: hidden;
   background: var(--sf-skeleton-base);
   border-radius: var(--sf-radius--ui);
   block-size: var(--sf-skeleton-text--height);
+  flex: none;
+}
+
+/* Only a line of text has a line's room; a circle, a block or a bar given its
+   own height is as tall as it says. */
+.sf-skeleton-text:not(.sf-skeleton-circle, .sf-skeleton-square, .sf-skeleton-rounded, .sf-skeleton-icon, [style*="block-size"]) {
+  margin-block: calc((var(--sf-skeleton-text--line, var(--sf-skeleton-text--height)) - var(--sf-skeleton-text--height)) / 2);
 }
 
 .sf-skeleton--animation-pulse .sf-skeleton-text {
@@ -42,42 +55,52 @@
 
 .sf-skeleton-text--size-1 {
   --sf-skeleton-text--height: var(--sf-text-size-1);
+  --sf-skeleton-text--line: var(--sf-text-height-1);
 }
 
 .sf-skeleton-text--size-2 {
   --sf-skeleton-text--height: var(--sf-text-size-2);
+  --sf-skeleton-text--line: var(--sf-text-height-2);
 }
 
 .sf-skeleton-text--size-3 {
   --sf-skeleton-text--height: var(--sf-text-size-3);
+  --sf-skeleton-text--line: var(--sf-text-height-3);
 }
 
 .sf-skeleton-text--size-4 {
   --sf-skeleton-text--height: var(--sf-text-size-4);
+  --sf-skeleton-text--line: var(--sf-text-height-4);
 }
 
 .sf-skeleton-text--size-5 {
   --sf-skeleton-text--height: var(--sf-text-size-5);
+  --sf-skeleton-text--line: var(--sf-text-height-5);
 }
 
 .sf-skeleton-text--size-6 {
   --sf-skeleton-text--height: var(--sf-text-size-6);
+  --sf-skeleton-text--line: var(--sf-text-height-6);
 }
 
 .sf-skeleton-text--size-7 {
   --sf-skeleton-text--height: var(--sf-text-size-7);
+  --sf-skeleton-text--line: var(--sf-text-height-7);
 }
 
 .sf-skeleton-text--size-1\/2 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/2);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/2);
 }
 
 .sf-skeleton-text--size-1\/3 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/3);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/3);
 }
 
 .sf-skeleton-text--size-1\/4 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/4);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
 .sf-skeleton-text--size-1\/5 {

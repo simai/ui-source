@@ -11,7 +11,12 @@ an empty state or an error replaces the skeleton.
 
 - `.sf-skeleton` groups related shapes and owns their spacing and animation.
 - `.sf-skeleton-text` is one reserved shape.
-- `sf-skeleton-text--size-*` follows the Framework typography scale.
+- `sf-skeleton-text--size-*` follows the Framework typography scale. A text
+  bar is as tall as the text size and takes the room of one line of that size:
+  at size 1, a 16px bar in the middle of a 24px line. Lines follow each other
+  with no gap, as lines of text do, so a loading block is as tall as the text
+  it stands for. A host can set `--sf-skeleton-text--height` (the bar) and
+  `--sf-skeleton-text--line` (its line) separately.
 - `sf-skeleton-icon` makes inline and block size equal for avatar and icon
   placeholders.
 - `sf-skeleton-circle`, `sf-skeleton-square` and `sf-skeleton-rounded` select

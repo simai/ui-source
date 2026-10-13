@@ -150,7 +150,7 @@
        width of the control it hangs from, and a chooser narrow enough to hold a
        glyph made six columns of eleven pixels each. */
     min-inline-size: calc(
-      var(--sf-list-container--columns, 6) * var(--sf-ui-1--control-height, 2.25rem)
+      var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height))
     );
   }
 
@@ -159,7 +159,7 @@
      six columns two glyphs wide. */
   .sf-list:has(.sf-list-container--grid) {
     min-inline-size: calc(
-      var(--sf-list-container--columns, 6) * var(--sf-ui-1--control-height, 2.25rem)
+      var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height))
       + var(--sf-space-1)
     );
   }
@@ -197,5 +197,22 @@
 @layer sf.components {
   .sf-list--free-width {
     inline-size: var(--sf-dropdown--list-width, 18rem);
+  }
+
+  /* A grid is as wide as its columns: a picker of size-1/2 icons stood in an
+     18rem panel with a third of it empty (owner, 2026-10-14). */
+  .sf-list--free-width:has(.sf-list-container--grid) {
+    inline-size: var(--sf-dropdown--list-width, min-content);
+  }
+
+  /* Its columns are as wide as a cell, so the search field above them -- which
+     takes the panel's width and asks for none -- cannot stretch them. */
+  .sf-list--free-width:has(.sf-list-container--grid) > .sf-input {
+    inline-size: 0;
+    min-inline-size: 100%;
+  }
+
+  .sf-list--free-width .sf-list-container--grid {
+    grid-template-columns: repeat(var(--sf-list-container--columns, 6), var(--sf-list--cell, var(--sf-ui-1--control-height)));
   }
 }

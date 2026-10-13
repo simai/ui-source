@@ -290,7 +290,11 @@ class SfContextMenu extends SfBaseElement {
     return this.querySelector(":scope > .sf-context-menu");
   }
 
-  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0} = {}) {
+  // width: "content" (the default) lets the menu be as wide as its longest
+  // line; "trigger" makes it exactly as wide as the control that opened it --
+  // a site switcher, a profile button (owner, 2026-10-14) -- a long line ending
+  // in an ellipsis; a CSS length fixes it. The attribute gives the default.
+  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, width = this.width} = {}) {
     if (!(anchor instanceof Element)) throw new TypeError("A menu opens for an element");
     if (this._owned) this.close({restoreFocus: false});
     await this.whenRendered();
@@ -324,7 +328,18 @@ class SfContextMenu extends SfBaseElement {
     } else {
       surface.style.zIndex = "var(--sf-z-index-9)";
     }
-    this._owned.position = position().anchor(anchor, surface, {side, align, alignmentOffset, flip: true, shift: true, fitHeight: true});
+    const content = this.querySelector(".sf-context-menu-content");
+    const sized = width && width !== "content";
+    if (sized && content) {
+      const length = width === "trigger" ? `${anchor.getBoundingClientRect().width}px` : width;
+      content.style.setProperty("--sf-context-menu--min-inline-size", length);
+      content.style.setProperty("--sf-context-menu--max-inline-size", length);
+      content.style.setProperty("inline-size", length);
+      this._owned.sizedContent = content;
+    }
+    this._owned.position = position().anchor(anchor, surface, {
+      side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
+    });
     document.addEventListener("pointerdown", this._onOutsidePress, true);
     this.dispatchEvent(new CustomEvent("sf-context-menu-open", {bubbles: true, composed: true}));
     if (focus !== "none") {
@@ -351,6 +366,9 @@ class SfContextMenu extends SfBaseElement {
     }
     clearTimeout(this._hoverTimer);
     owned.position?.stop();
+    for (const name of ["--sf-context-menu--min-inline-size", "--sf-context-menu--max-inline-size", "inline-size"]) {
+      owned.sizedContent?.style.removeProperty(name);
+    }
     document.removeEventListener("pointerdown", this._onOutsidePress, true);
     const surface = this.surface();
     if (surface) {
@@ -387,6 +405,8 @@ class SfContextMenu extends SfBaseElement {
     const child = document.createElement("sf-context-menu");
     child.setAttribute("aria-label", entry.text ?? "");
     child.setAttribute("popup", "");
+    // A submenu is the size of the menu it opens from.
+    if (this.size === "1") child.setAttribute("size", "1");
     child.entries = entry.submenu;
     if (entry.search) child.search = entry.search;
     // Selections in the submenu are the parent's to announce: a host listens
@@ -515,6 +535,11 @@ class SfContextMenu extends SfBaseElement {
       role: { default: "menu" },
       contentClass: { default: "" },
       rootClass: { default: "" },
+      // The menu's size: "1/2" (32px rows, the default) or "1" (40px rows).
+      size: { default: "1/2" },
+      // How wide the menu opens: "content" (its longest line, the default),
+      // "trigger" (exactly the control that opened it) or a CSS length.
+      width: { default: "content" },
     };
   }
 
@@ -542,6 +567,14 @@ class SfContextMenu extends SfBaseElement {
     return this.getAttribute("role") || "menu";
   }
 
+  get size() {
+    return this.getAttribute("size") === "1" ? "1" : "1/2";
+  }
+
+  get width() {
+    return this.getAttribute("width") || "content";
+  }
+
   get contentClass() {
     return this.getAttribute("content-class") || "";
   }
@@ -555,6 +588,7 @@ class SfContextMenu extends SfBaseElement {
       search: this.search,
       query: this.query,
       position: this.position,
+      size: this.size,
       component: this,
       rootClass: this.getRootClass(),
     });

@@ -132,6 +132,20 @@
         "type": "object",
         "default": null,
         "description": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
+      },
+      "size": {
+        "type": "string",
+        "enum": [
+          "1/2",
+          "1"
+        ],
+        "default": "1/2",
+        "description": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size."
+      },
+      "width": {
+        "type": "string",
+        "default": "content",
+        "description": "How wide openFor() opens the menu: content (its longest line, between --sf-context-menu--min-inline-size and --sf-context-menu--max-inline-size), trigger (exactly the control that opened it; a long line ends in an ellipsis) or a CSS length. openFor(anchor, {width}) overrides it."
       }
     },
     "additionalProperties": false
@@ -475,19 +489,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
-        "sha256": "e7f41db4188af765bf8ef40cac9353497d19d715d9d1dad74362c9ced2399c04"
+        "sha256": "cb3cf76ca65110ccf6109e00362e37f1e96ede747b198e8ba4629e655e28953e"
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",
-        "sha256": "b8cbc0ce3b6ff0755cf6fb30306bdcf79f8c1adb264bbfe9046f714028d31ef8"
+        "sha256": "62ede1b1152c31b6dc1a3a6052c7c0956cb89630d64553dd5bc362c86d4a226d"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "fbf5bbb54e7ee02a89f5837d749e931efffe2b02f95385e898ca770e6fff2ecc"
+        "sha256": "6aa055c4fb664b35dc199021da412b2eb7b6cffdf947834ff9ee4009d01f40a5"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "0f79acc2e27a6f0cc924b9197f8662b0e2df16516d2d86ad9cafb6c8f3368058"
+        "sha256": "6863bb9ab9d56ce051ae8ea26b72ec58185fab1848d110c13ceadee83fc817ad"
       }
     ],
     "generated_runtime": [
