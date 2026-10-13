@@ -1,0 +1,52 @@
+@layer sf.components {
+  // Legacy low-level tabs. Visual styling belongs to utilities; this component
+  // owns only state, keyboard focus and the active/inactive representations.
+  .sf-tab > nav > ul {
+    display: flex;
+    gap: var(--sf-tab--gap, 0);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sf-tab > nav > ul > li {
+    min-inline-size: 0;
+    cursor: pointer;
+  }
+
+  .sf-tab > nav > ul > li[aria-disabled="true"],
+  .sf-tab > nav > ul > li.disabled {
+    cursor: default;
+  }
+
+  .sf-tab > nav > ul > li > .sf-tab-active {
+    display: none;
+  }
+
+  .sf-tab > nav > ul > li > .sf-tab-inactive,
+  .sf-tab > nav > ul > li.active > .sf-tab-active {
+    display: block;
+    border-radius: var(--sf-tab--radius, var(--sf-radius--ui));
+  }
+
+  .sf-tab > nav > ul > li.active > .sf-tab-inactive,
+  .sf-tab > .sf-tab-content > section:not(.active) {
+    display: none;
+  }
+
+  .sf-tab > .sf-tab-content {
+    position: relative;
+    min-inline-size: 0;
+  }
+
+  .sf-tab > nav > ul > li:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  @media (forced-colors: active) {
+    .sf-tab > nav > ul > li:focus-visible {
+      outline-color: CanvasText;
+    }
+  }
+}

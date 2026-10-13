@@ -1,0 +1,28 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__transform_skew' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Transform Skew
+        @each $transform-skew-name, $transform-skew-value in $transform-skew-array {
+            .#{$infix}skew-x-#{$transform-skew-name} {
+                transform: skewX(#{$transform-skew-value}deg);
+            }
+
+            .#{$infix}skew-y-#{$transform-skew-name} {
+                transform: skewY(#{$transform-skew-value}deg);
+            }
+        }
+    }
+// }
+}

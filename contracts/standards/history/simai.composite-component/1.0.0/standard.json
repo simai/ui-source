@@ -1,0 +1,152 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.composite-component",
+  "version": "1.0.0",
+  "title": "SIMAI Composite Component",
+  "appliesTo": [
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "slot-order-complete",
+      "level": "must",
+      "text": "A composite declares its slots and the order they render in, and the declared order covers exactly the declared slots. An incomplete, duplicated or unknown entry is a render error, never a guess.",
+      "verification": "manual",
+      "guidance": "Framework: the Composition Recipe grammar names the slots of a node; a renderer that has to invent an order is reporting a broken document."
+    },
+    {
+      "id": "nesting-bounded",
+      "level": "must",
+      "text": "Composition depth is bounded and a component that already appears with the same view in the current stack is refused as a cycle.",
+      "verification": "manual",
+      "guidance": "Evidence: Larena SmartManager caps depth at 6 and detects cycles; an unbounded composite renders until the page dies."
+    },
+    {
+      "id": "deterministic-placement-id",
+      "level": "must",
+      "text": "Every placement receives an identifier derived from the instance and its position in the composition, never from rendered data, a content hash or a random value.",
+      "verification": "manual",
+      "guidance": "The same document must produce the same ids on the server and in the browser, otherwise adoption and focus restoration cannot be verified."
+    },
+    {
+      "id": "instance-isolation",
+      "level": "must",
+      "text": "Two instances of the same composite on one page share no DOM identifier, no storage key and no in-memory registry entry.",
+      "verification": "manual",
+      "guidance": "Evidence: sf-admin-menu derives its browser storage key from the component name, so two menus on one page overwrite each other's settings."
+    },
+    {
+      "id": "presentation-declared",
+      "level": "must",
+      "text": "Views, presets and modifiers are declared in the component manifest and are the only way to resolve presentation; a template may not branch on an undeclared flag.",
+      "verification": "manual",
+      "guidance": "Framework: the smart component manifest declares templates and presentation; an undeclared branch cannot be reviewed, documented or projected."
+    },
+    {
+      "id": "asset-contract-exact",
+      "level": "must",
+      "text": "The assets a composite declares are exactly the assets its render needs: nothing missing, nothing extra.",
+      "verification": "manual",
+      "guidance": "Framework: the Loader rule of a component lists every Smart dependency it renders, and the owner gate fails on a divergence."
+    },
+    {
+      "id": "accessible-name-and-keys",
+      "level": "must",
+      "text": "A composite exposes an accessible name, and where it is a landmark or a widget it declares the keyboard keys it supports and keeps focus visible.",
+      "verification": "manual",
+      "guidance": "Framework: every Smart manifest declares role, accessible_name, keyboard and focus."
+    },
+    {
+      "id": "hydration-claim-truthful",
+      "level": "must",
+      "text": "The declared hydration strategy matches real behaviour: a component that replaces the server markup on upgrade may not claim adoption.",
+      "verification": "manual",
+      "guidance": "Evidence: sf-admin-menu is rendered as adopt but discards its light DOM when it upgrades."
+    },
+    {
+      "id": "render-deterministic",
+      "level": "must",
+      "text": "The same document, inputs and locale produce the same markup; a render never depends on the current time, a random value or the order in which unrelated components upgraded.",
+      "verification": "manual",
+      "guidance": "Framework: product builds are byte-identical across waves, and the same rule makes a composite's markup reviewable and diffable."
+    },
+    {
+      "id": "owns-its-subtree",
+      "level": "must",
+      "text": "A composite changes only its own subtree and the surfaces it creates itself; anything it renders outside that subtree, such as an overlay in a portal, is removed when the instance is removed.",
+      "verification": "manual",
+      "guidance": "Framework: Smart Table and Drawer render their overlays into a portal container and dispose it with the instance."
+    },
+    {
+      "id": "direction-and-theme-neutral",
+      "level": "must",
+      "text": "One markup serves both text directions and every theme: sides are expressed logically and colours come from tokens, with no direction-specific or theme-specific duplicate of the same content.",
+      "verification": "manual",
+      "guidance": "Framework: acceptance runs every surface in LTR and RTL and in the light and dark themes on the same markup."
+    },
+    {
+      "id": "no-script-equivalent",
+      "level": "should",
+      "text": "Without client scripting a composite still presents a semantic equivalent of its content, or states plainly that the capability is unavailable.",
+      "verification": "manual"
+    },
+    {
+      "id": "handlers-scoped-to-host",
+      "level": "should",
+      "text": "Event handlers bind to the owning host element and act on the instance that emitted the event, never on the first match in the document.",
+      "verification": "manual",
+      "guidance": "Framework: a nested modal or drawer bubbles its lifecycle events through its ancestors, so a host handler checks the emitting instance."
+    },
+    {
+      "id": "escaped-structural-props",
+      "level": "should",
+      "text": "Structural props are escaped on render and a structural view document never carries markup.",
+      "verification": "manual"
+    },
+    {
+      "id": "style-contained",
+      "level": "should",
+      "text": "A composite styles its own subtree; it adds no global selector, no page-level reset and no style that reaches a sibling composite.",
+      "verification": "manual"
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.composition-recipe",
+      "version": "1.0.1",
+      "path": "../../../../src/core/contracts/composition-recipe-v1/contract.lock.json",
+      "sha256": "73fbc4f16b5a1b9e23d517c9975db6dc51f18846c074b0dece1b326374b1f871",
+      "description": "Framework layout grammar: document, node types and slots. The lock pins the accepted contract bytes."
+    },
+    {
+      "id": "simai.framework.smart-component-manifest",
+      "version": "2.0.0",
+      "path": "../../../schema/smart-component-manifest.v2.schema.json",
+      "sha256": "cb764fd2f37581362725be43cd7bd7a894766a0ab6f3fe15c33f78dd2088817e",
+      "description": "Framework leaf contract: inputs, methods, events, accessibility, presentation and provenance of one Smart component."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "scope_note": "Frontend only: no data ownership and no host interaction. Interaction with a host backend is the sibling standard simai.dynamic-composite-component.",
+      "validated_against": [
+        "larena minimal cms records list",
+        "sf-admin-menu",
+        "larena in-place page editor",
+        "simai framework smart table"
+      ],
+      "origin": "Drafted by simai/larena (larena-specs 5c458cf0) and authored for publication by the Framework owner."
+    }
+  }
+}

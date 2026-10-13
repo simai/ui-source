@@ -1,0 +1,29 @@
+{
+  "id": "a-site-out-of-reach-is-refused",
+  "intent": "site.switch",
+  "capability": "site-switch",
+  "summary": "A site this person cannot reach is refused, not switched to.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "site.switch",
+    "payload": {
+      "site": "no-such-site"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

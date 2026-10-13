@@ -1,0 +1,14 @@
+{
+  ".sf-icon-button": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-icon-button .sf-icon": [
+    "display/flex (.flex)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.breadcrumbs",
+  "title": "Breadcrumbs reference",
+  "summary": "Deterministic reference fixture for sf-breadcrumbs.",
+  "locale": "ru",
+  "props": {
+    "aria-label": "Навигация"
+  },
+  "children": [
+    {
+      "element": "a",
+      "props": {
+        "href": "#"
+      },
+      "text": "Главная",
+      "children": []
+    },
+    {
+      "element": "a",
+      "props": {
+        "href": "#"
+      },
+      "text": "Компоненты",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

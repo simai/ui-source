@@ -1,0 +1,34 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.dataview-port",
+  "version": "1.1.0",
+  "transport": "neutral",
+  "summary": "The original 18 host cases are byte-identical to 1.0.0; one additive shared saved-view case checks its separate permission.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "query-echoes-applied",
+    "query-rejects-unknown-filter",
+    "query-stale-sequence-dropped",
+    "query-unavailable-is-honest",
+    "records-carry-permissions",
+    "record-mutate-conflict",
+    "record-mutate-refused",
+    "bulk-selected-all-or-nothing",
+    "bulk-under-filter-count-confirmed",
+    "settings-personal-compare-and-set",
+    "settings-shared-needs-permission",
+    "settings-shared-only-field",
+    "view-open-carries-everything",
+    "view-save-conflict",
+    "view-switch-reports-dropped",
+    "capability-absent-is-explained",
+    "create-intent-names-kind",
+    "data-states-declared",
+    "view-save-shared-needs-permission"
+  ]
+}

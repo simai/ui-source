@@ -1,0 +1,28 @@
+<div class="sf-avatar sf-avatar-profile">
+    <%
+        sub_size = "sf-avatar-check--4";
+        const parentProps= data.cParams.props;
+        if(parentProps && parentProps && parentProps.property.profile_size){
+            size = parentProps.property.profile_size;
+
+            switch(size) {
+                case "small":
+                    sub_size = "sf-avatar-check--3"
+                    break;
+                case "big":
+                    sub_size = "sf-avatar-check--5"
+                    break;
+            }
+    }
+    %>
+    <img src="<%=data.imageUrl %>">
+    <span class="sf-avatar-check <%= sub_size %>">
+        <smart
+            name="icons"
+            sf-code="icons"
+            property = '{"styles": "light"}'
+            data='{"icon": "check"}'
+            >
+        </smart>
+    </span>
+</div>

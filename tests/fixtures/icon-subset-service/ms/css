@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('/ui-source/src/component/icons/fonts/MaterialSymbols-Outlined.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+}
+
+.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape) {
+  --sf-icon--font-family: 'Material Symbols Outlined';
+  font-family: 'Material Symbols Outlined';
+  font-feature-settings: 'liga';
+  font-variation-settings:
+    'FILL' var(--sf-icon--fill, 0),
+    'wght' var(--sf-icon--weight, 400),
+    'GRAD' var(--sf-icon--grade, 0),
+    'opsz' var(--sf-icon--optical-size, 24);
+}

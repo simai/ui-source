@@ -1,0 +1,153 @@
+@layer sf.components {
+.sf-button,
+.sf-icon-button {
+  transition-duration: var(--sf-duration-fast);
+  transition-property: background-color, border-color, box-shadow, color;
+  transition-timing-function: var(--sf-animation);
+}
+
+.sf-button {
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* A loading button is also a disabled one -- native disabled is what stops a
+     second click -- so every emphasis wears the same disabled look while it
+     works. The stripes therefore carry no colour of their own: one step of the
+     neutral alpha ramp over transparent, which sits on the grey disabled fill,
+     on a transparent link or outline, and in either theme without shouting
+     over the label. */
+  --sf-button-loading-stripe: var(--sf-alpha-8);
+
+  &.loading {
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background-image: repeating-linear-gradient(
+                      135deg,
+                      var(--sf-button-loading-stripe) 0,
+                      var(--sf-button-loading-stripe) var(--sf-space-1\/2),
+                      transparent var(--sf-space-1\/2),
+                      transparent var(--sf-space-1)
+      );
+      animation: sf-button-stripes-slide calc(var(--sf-duration-slow) * 2) linear infinite;
+      will-change: transform;
+      pointer-events: none;
+    }
+  }
+}
+
+/* The stripes repeat every --sf-space-1 across their own axis, at 135deg. Along
+   the x axis that period is longer by the square root of two, so one loop has
+   to travel exactly that far; travelling --sf-space-1 made the pattern jump
+   back at the end of every cycle. */
+@keyframes sf-button-stripes-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(var(--sf-space-1) * 1.41421356)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-button,
+  .sf-icon-button {
+    transition-duration: 0s;
+  }
+
+  .sf-button.loading::after {
+    animation: none;
+  }
+}
+}
+@layer sf.override {
+
+  /* An outline segment and its link siblings form one closed control. The
+     link variant previously kept only a translucent join, leaving its outer
+     top, bottom and end edges transparent. Draw the group perimeter once and
+     let the selected outline segment own both of its joins. */
+  .sf-button.sf-button--link[class*="segment-"] {
+    /* The same perimeter the group draws, in the same role: on --sf-outline
+       the link segments of a group were a heavier line than its outline
+       segments, inside one control. */
+    border-color: var(--sf-outline);
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+  }
+
+  .sf-button.sf-button--link.segment-start,
+  .sf-button.sf-button--link.segment-middle {
+    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-inline-end-width: 0;
+  }
+
+  .sf-button.sf-button--link.segment-end {
+    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+
+  sf-button:has(.sf-button--outline[class*="segment-"])
+  + sf-icon-button
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-button.sf-button--outline[class*="segment-"]
+  + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+
+
+  sf-button:has(.sf-button--outline[class*="segment-"])
+  + sf-button
+  .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-button.sf-button--outline[class*="segment-"]
+  + .sf-button[class*="segment-"]:not(.sf-button--outline) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+
+  sf-button:has(+ sf-icon-button .sf-icon-button--outline[class*="segment-"])
+  .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-button[class*="segment-"]:not(.sf-button--outline)
+  :has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+
+  sf-button:has(+ sf-button .sf-button--outline[class*="segment-"])
+  .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-button[class*="segment-"]:not(.sf-button--outline):has(+ .sf-button.sf-button--outline[class*="segment-"]) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+  /* Keep this after the compatibility rules above: the selected segment's
+     end border is the only line at this join. */
+  sf-button:has(.sf-button--outline[class*="segment-"])
+  + sf-button
+  .sf-button.sf-button--link[class*="segment-"],
+  .sf-button.sf-button--outline[class*="segment-"]
+  + .sf-button.sf-button--link[class*="segment-"] {
+    --sf-button--border-inline-start-width: 0;
+    border-inline-start-width: 0;
+  }
+
+  sf-button:has(+ sf-button .sf-button--outline[class*="segment-"])
+  .sf-button.sf-button--link[class*="segment-"],
+  .sf-button.sf-button--link[class*="segment-"]:has(+ .sf-button.sf-button--outline[class*="segment-"]) {
+    --sf-button--border-inline-end-width: 0;
+    border-inline-end-width: 0;
+  }
+}

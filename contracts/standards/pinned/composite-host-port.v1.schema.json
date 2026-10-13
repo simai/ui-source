@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composite-host-port.v1.schema.json",
+  "title": "Simai Composite Host Port v1",
+  "x-simai-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "port",
+    "version",
+    "component",
+    "element",
+    "capabilities",
+    "data",
+    "intents",
+    "settings",
+    "conformance"
+  ],
+  "properties": {
+    "schema": {"const": "simai.composite.host-port.v1"},
+    "port": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "component": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"},
+    "element": {"type": "string", "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"},
+    "summary": {"type": "string", "minLength": 1},
+    "capabilities": {
+      "type": "object",
+      "description": "Optional parts of the port. The host announces which it provides for an instance; the component offers only those.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary"],
+        "properties": {
+          "summary": {"type": "string", "minLength": 1},
+          "intents": {"$ref": "#/$defs/nameList"},
+          "data": {"$ref": "#/$defs/nameList"}
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "description": "What a host answers with. Every entry is a closed schema; a key the port does not declare is not part of the contract.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary", "schema"],
+        "properties": {
+          "summary": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"},
+          "schema": {"type": "object"}
+        }
+      }
+    },
+    "intents": {
+      "type": "object",
+      "description": "What the component asks for. The host decides, validates and answers.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["summary", "event", "payload", "carries_revision", "answers"],
+        "properties": {
+          "summary": {"type": "string", "minLength": 1},
+          "event": {"type": "string", "minLength": 1},
+          "payload": {"type": "object"},
+          "carries_revision": {"type": "boolean"},
+          "answers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["applied", "conflict", "refused", "unavailable"]}
+          },
+          "capability": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layers", "reset", "target"],
+      "properties": {
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["package", "shared", "personal"]},
+          "description": "Resolution order, from the weakest to the strongest layer."
+        },
+        "shared_only_fields": {"$ref": "#/$defs/nameList"},
+        "reset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["semantics"],
+          "properties": {
+            "semantics": {"const": "compare-and-set"},
+            "summary": {"type": "string", "minLength": 1}
+          }
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kinds", "carries_revision"],
+          "properties": {
+            "kinds": {"$ref": "#/$defs/nameList"},
+            "carries_revision": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kit", "cases"],
+      "properties": {
+        "kit": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "cases": {"type": "integer", "minimum": 1}
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["previous_major", "recheck"],
+      "properties": {
+        "previous_major": {"type": ["string", "null"]},
+        "supported_until": {"type": ["string", "null"]},
+        "recheck": {"$ref": "#/$defs/nameList"}
+      }
+    }
+  },
+  "$defs": {
+    "nameList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

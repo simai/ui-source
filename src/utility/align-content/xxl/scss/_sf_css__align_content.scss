@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+
+// SIMAI Framework
+// https://simai.io
+
+// FLEX ALIGN CONTENT
+@use "vars/sf_var__breakpoint" as bp;
+@use 'mix/mix__breakpoint' as bpMixin;
+@use '../../default/scss/sf_var__align_content' as ac;
+
+@layer sf.utilities {
+    @include bpMixin.breakpoint-media(xxl) {
+        $infix: bpMixin.breakpoint-infix(xxl, bp.$breakpoint-array);
+        // Flex Align Content Utilities
+        @each $flex-align-content-name, $flex-align-content-value in ac.$flex-align-content-array {
+            .#{$infix}content-cross-#{$flex-align-content-name} {
+                align-content: #{$flex-align-content-value};
+            }
+        }
+    }
+}

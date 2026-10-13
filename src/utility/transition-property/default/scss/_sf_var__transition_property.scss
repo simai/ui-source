@@ -1,0 +1,24 @@
+// SIMAI Framework
+// https://simai.io
+
+// TRANSITION
+
+// Transition Property
+$transition-property-array: (
+    '-none': none,
+    '-all': all,
+    '': 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+    '-colors': 'color, background-color, border-color, text-decoration-color, fill, stroke',
+    '-opacity': opacity,
+    '-shadow': box-shadow,
+    '-transform': transform,
+    '-width': width,
+    '-height': height,
+    '-size': 'width, height',
+    '-max-width': max-width,
+    '-max-height': max-height,
+    '-max-size': 'max-width, max-height',
+    '-flex': 'flex, flex-basis',
+    '-flex-basis': flex-basis,
+    '-layout': 'flex-grow, flex-shrink, flex-basis, width, min-width, max-width'
+);

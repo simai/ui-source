@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SF5 Textarea owner lab</title>
+    <link rel="stylesheet" href="/ui/distr/core/css/core.css">
+    <link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8897/utility/utility/resize/default/css/default.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8897/component-final/component/textarea/css/textarea.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8897/smart-final/smart/textarea/css/textarea.css">
+  </head>
+  <body class="p-4">
+    <main class="grid gap-4">
+      <h1>Многострочные поля</h1>
+      <form id="ordinary-form" class="grid grid-col-1 md:grid-col-2 gap-3">
+        <label class="sf-textarea sf-textarea--size-1 sf-textarea--bordered flex flex-col">
+          <span class="sf-textarea-label flex"><span class="sf-textarea-text">Комментарий</span></span>
+          <textarea id="ordinary" class="transition" name="comment" rows="4">Первая строка
+Вторая строка</textarea>
+          <span class="sf-textarea-hint-text-wrap">Сохраните важные детали</span>
+        </label>
+        <label class="sf-textarea sf-textarea--size-1 sf-textarea--bordered flex flex-col">
+          <span class="sf-textarea-label flex"><span class="sf-textarea-text">Только чтение</span></span>
+          <textarea id="readonly" class="transition" rows="4" readonly>Текст можно скопировать</textarea>
+        </label>
+        <label class="sf-textarea sf-textarea--size-1 sf-textarea--bordered flex flex-col">
+          <span class="sf-textarea-label flex"><span class="sf-textarea-text">Фиксированная область</span></span>
+          <textarea id="fixed" class="transition resize-none" rows="3"></textarea>
+        </label>
+        <label class="sf-textarea sf-textarea--size-1 sf-textarea--filled flex flex-col">
+          <span class="sf-textarea-label flex"><span class="sf-textarea-text">Недоступно</span></span>
+          <textarea id="disabled" class="transition" rows="4" disabled>Нельзя изменить</textarea>
+        </label>
+        <button class="sf-button sf-button--size-1 sf-button--primary" type="reset">Сбросить</button>
+      </form>
+
+      <form id="smart-form" class="grid grid-col-1 md:grid-col-2 gap-3">
+        <sf-textarea id="smart" label="Описание" name="description" value="Начальная строка&#10;Продолжение" rows="4" autocomplete="on" inputmode="text" minlength="10" maxlength="500" spellcheck="true" wrap="soft" required></sf-textarea>
+        <sf-textarea id="smart-invalid" label="Ошибка" invalid error-message="Добавьте подробности" rows="3"></sf-textarea>
+        <button class="sf-button sf-button--size-1 sf-button--secondary" type="reset">Сбросить Smart</button>
+      </form>
+      <button id="factory" class="sf-button sf-button--size-1 sf-button--neutral" type="button">Создать через API</button>
+      <div id="factory-output"></div>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      if (params.get('theme') === 'dark') document.documentElement.classList.replace('theme-light', 'theme-dark');
+      if (params.get('dir') === 'rtl') document.documentElement.dir = 'rtl';
+      document.querySelector('#factory').addEventListener('click', () => {
+        const Textarea = new Map(window.SF_PENDING_COMPONENTS || []).get('Textarea');
+        const instance = new Textarea({ param: { size: 'unknown', type: 'unknown', label: 'Заметка', autocomplete: 'on', inputMode: 'text', minLength: 5, maxLength: 200, spellcheck: true, wrap: 'hard' } });
+        document.querySelector('#factory-output').replaceChildren(instance.render());
+      });
+    </script>
+    <script src="/ui/distr/core/js/smart-base.js"></script>
+    <script src="http://127.0.0.1:8897/component-final/component/textarea/js/textarea.js"></script>
+    <script src="http://127.0.0.1:8897/smart-final/smart/textarea/js/textarea.js"></script>
+  </body>
+</html>

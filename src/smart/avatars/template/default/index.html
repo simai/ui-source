@@ -1,0 +1,49 @@
+<div class="sf-avatar sf-avatar-round">
+    <button class="sf-avatar--image" style="background-image: url(<%=data.imageUrl%>);">
+        <%
+            sub_size = "";
+            const parentProps= data.cParams.props;
+            if(parentProps && parentProps.property && parentProps.property.round_size){
+                size = parentProps.property.round_size;
+                switch(size) {
+                    case "tiny":
+                        sub_size = "--1/4"
+                        break;
+                    case "extra_small":
+                        sub_size = "--1/3"
+                        break;
+                    case "small":
+                        sub_size = "--1/2"
+                        break;
+                    case "big":
+                        sub_size = "--2"
+                        break;
+                    case "extra_big":
+                        sub_size = "--3"
+                        break;
+                }
+
+                if(data.active)
+                    sub_size = "sf-avatar-cir" + sub_size;
+                if(data.check)
+                    sub_size = "sf-avatar-check" + sub_size;
+
+            }
+        %>
+        <% if (data.active) { %>
+            <span class="sf-avatar-cir sf-avatar-cir-green <%= sub_size %>">
+            </span>
+        <% } %>
+        <% if (data.check) { %>
+            <span class="sf-avatar-check <%= sub_size %>">
+                <smart
+                    name="icons"
+                    sf-code="icons"
+                    property = '{"weight": "light"}'
+                    data='{"icon": "check"}'
+                    >
+                </smart>
+            </span>
+        <% } %>
+    </button>
+ </div>

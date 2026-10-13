@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__order' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRID-FLEX ORDER
+
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        // Flex Order
+        @each $order-level, $order-value in $flex-order-array {
+            .#{$infix}order-#{$order-level}{
+                order: #{$order-value};
+            }		
+        }
+    }
+// }
+}

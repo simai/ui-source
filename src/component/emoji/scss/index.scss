@@ -1,0 +1,11 @@
+
+            /*
+            * Main SCSS file for including styles for component.
+            *
+            * Imports:
+            * - Base styles (_css_emoji.scss)
+            * - Custom overrides (_css_emoji_custom.scss)
+            *
+            */
+@use "css_emoji";
+@use "css_emoji_custom";

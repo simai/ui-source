@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru" class="theme-light"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SF5 — значения и поиск выпадающего выбора</title>
+<link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/dropdown/css/dropdown.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/inputs/css/inputs.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/icons/css/icons.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/tags/css/tags.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/close/css/close.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/buttons/css/buttons.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/checkbox/css/checkbox.css">
+<link rel="stylesheet" href="../../source/output/action-focus-browser/component/avatars/css/avatars.css">
+</head><body class="p-4"><main class="grid gap-4">
+<h1>Выбор города</h1>
+<button type="button" id="before" class="text-on-surface">До выбора</button>
+<form id="base-form" class="grid gap-4"></form>
+<form id="smart-form" class="grid gap-4">
+<sf-dropdown id="smart" name="smart-city" label="Город" search-placeholder="Поиск города">
+  <sf-list-item value="kazan" text="Казань"></sf-list-item>
+  <sf-list-item value="moscow" text="Москва"></sf-list-item>
+  <sf-list-item value="ufa" text="Уфа" disabled></sf-list-item>
+</sf-dropdown>
+<sf-dropdown id="smart-tag" name="smart-cities" mode="tag" label="Города" search-placeholder="Поиск города">
+  <sf-list-item value="kazan" text="Казань" selected></sf-list-item>
+  <sf-list-item value="moscow" text="Москва"></sf-list-item>
+  <sf-list-item value="ufa" text="Уфа" disabled></sf-list-item>
+</sf-dropdown>
+</form>
+<button type="button" id="outside">Вне выбора</button>
+</main>
+<script>
+  const parameters=new URLSearchParams(location.search);
+  document.documentElement.dir=parameters.has('rtl')?'rtl':'ltr';
+  const options=[['kazan','Казань'],['moscow','Москва'],['ufa','Уфа']];
+  for(const [id,items] of [['base',options],['one',options.slice(0,1)]]){
+    const root=document.createElement('div');root.id=id;
+    root.className='sf-dropdown sf-dropdown--size-1 sf-dropdown--outlined sf-dropdown--text flex flex-col';
+    root.innerHTML=`<span class="sf-dropdown-label"><span class="sf-dropdown-text">Город</span></span>
+      <div class="sf-dropdown-field cursor-pointer items-cross-center transition flex relative">
+        <input class="sf-dropdown-hidden-input" type="hidden" name="${id}-city">
+        <input type="text" aria-label="Город" placeholder="Выберите город">
+        <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--size-1 absolute" aria-label="Открыть список"><i class="sf-icon" aria-hidden="true">keyboard_arrow_down</i></button>
+      </div>
+      <div class="sf-list flex flex-col">
+        <label class="sf-input sf-input--size-1 sf-input--filled flex flex-col"><span class="sf-input-field transition flex"><input type="text" aria-label="Поиск города"></span></label>
+        <div class="sf-list-container-wrap"><div class="sf-list-container flex flex-col">
+          ${items.map(([value,label])=>`<div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer ${value==='ufa'?'disabled':''}" role="option" tabindex="0" data-value="${value}"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">${label}</div></div></div>`).join('')}
+        </div></div>
+      </div>`;
+    document.getElementById('base-form').append(root);
+    if(parameters.has('nosearch'))root.querySelector('.sf-list .sf-input').remove();
+  }
+  if(parameters.has('nosearch'))document.querySelectorAll('sf-dropdown').forEach(e=>e.setAttribute('search','false'));
+  if(parameters.has('geometry')){
+    const labels=['Казань — доставка в удалённые районы города','МоскваБезПробеловОченьДлинноеНазваниеРайонаДляПроверкиПереноса','Уфа — временно недоступна'];
+    document.querySelectorAll('sf-dropdown').forEach(root=>root.querySelectorAll('sf-list-item').forEach((e,i)=>e.setAttribute('text',labels[i])));
+    document.querySelectorAll('.sf-dropdown').forEach(root=>root.querySelectorAll('.sf-list-item-container').forEach((e,i)=>e.textContent=labels[i]));
+  }
+  if(parameters.has('checkbox')||parameters.get('option-type')==='checkbox'){
+    document.querySelectorAll('sf-list-item').forEach(e=>e.setAttribute('type','checkbox'));
+    document.querySelectorAll('.sf-list-item').forEach(e=>{
+      e.classList.replace('sf-list-item--text','sf-list-item--checkbox');
+      const checkbox=document.createElement('label');checkbox.className='sf-checkbox sf-checkbox--size-1 flex';
+      checkbox.innerHTML='<span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span>';
+      checkbox.querySelector('input').disabled=e.classList.contains('disabled');e.querySelector('.sf-list-item-wrap').prepend(checkbox);
+    });
+  }
+  const optionType=parameters.get('option-type');
+  if(['icon','avatar','color'].includes(optionType)){
+    document.querySelectorAll('sf-list-item').forEach(e=>{
+      e.setAttribute('type',optionType);e.setAttribute('icon','location_on');
+      e.setAttribute('color-class','bg-primary');
+      e.setAttribute('avatar-title',`Отдел — ${e.getAttribute('text')}`);
+    });
+    document.querySelectorAll('.sf-list-item').forEach(e=>{
+      e.classList.replace('sf-list-item--text',`sf-list-item--${optionType}`);
+      const wrap=e.querySelector('.sf-list-item-wrap'),text=e.querySelector('.sf-list-item-container');
+      wrap.classList.add('items-center','gap-2');
+      if(optionType==='icon'){
+        const icon=document.createElement('i');icon.className='sf-icon';icon.textContent='location_on';wrap.prepend(icon);
+      }else{
+        const label=text.textContent;text.remove();
+        if(optionType==='avatar')wrap.innerHTML=`<div class="sf-avatar-label-group sf-avatar-label-group--size-1 flex items-cross-center"><span class="sf-avatar sf-avatar--size-1/2 bg-primary"></span><div class="sf-avatar-label-group-container flex flex-col"><div class="sf-avatar-label-group-title">Отдел — ${label}</div></div></div>`;
+        else wrap.innerHTML=`<div class="sf-tag sf-tag--color sf-tag--size-1 flex items-center flex-1"><span class="sf-tag-color-icon bg-primary"></span><span class="sf-tag-container">${label}</span></div>`;
+        const checkbox=document.createElement('label');checkbox.className='sf-checkbox sf-checkbox--size-1 flex';
+        checkbox.innerHTML='<span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span>';
+        checkbox.querySelector('input').disabled=e.classList.contains('disabled');wrap.append(checkbox);
+      }
+    });
+  }
+  if(parameters.has('reset')){
+    const tag=document.getElementById('base').cloneNode(true);tag.id='base-tag';
+    tag.classList.replace('sf-dropdown--text','sf-dropdown--tag');
+    tag.querySelector('input[type="hidden"]').name='base-cities';
+    tag.querySelector('.sf-dropdown-field input:not([type="hidden"])').remove();
+    const tags=document.createElement('div');tags.className='sf-dropdown-tag-container flex flex-wrap flex-1';
+    tag.querySelector('.sf-dropdown-field').prepend(tags);document.getElementById('base-form').append(tag);
+    document.querySelectorAll('sf-list-item[selected]').forEach(e=>e.removeAttribute('selected'));
+    for(const id of ['base','base-tag','smart','smart-tag']){
+      const root=document.getElementById(id),multiple=id.endsWith('tag');
+      if(parameters.has('preset'))root.setAttribute('value',multiple?'kazan,moscow':'kazan');
+      if(parameters.has('markup')){
+        if(id.startsWith('smart'))root.querySelector('sf-list-item[value="kazan"]').setAttribute('selected','');
+        else root.querySelector('.sf-list-item[data-value="kazan"]').classList.add('selected');
+      }
+      if(parameters.has('unnamed')){
+        root.removeAttribute('name');root.querySelector('input[type="hidden"]')?.remove();
+      }
+    }
+    const other=document.createElement('form');other.id='other-form';document.querySelector('main').append(other);
+    const reset=document.createElement('button');reset.id='reset-demo';reset.type='reset';reset.setAttribute('form','base-form');
+    reset.className='sf-button sf-button--primary sf-button--default sf-button--size-1';
+    reset.innerHTML='<span class="sf-button-text-container">Вернуть исходные значения</span>';document.querySelector('main').append(reset);
+  }
+  if(parameters.has('size')){
+    const size=parameters.get('size');
+    document.querySelectorAll('.sf-dropdown,.sf-list-item,.sf-input').forEach(e=>{
+      e.className=e.className.replace(/--size-1(?=\s|$)/g,`--size-${size}`);
+    });
+    document.querySelectorAll('sf-dropdown,sf-list-item').forEach(e=>e.setAttribute('size',size));
+  }
+  if(parameters.has('multiple-text')){
+    document.getElementById('base').setAttribute('data-multiple','true');
+    document.getElementById('smart').setAttribute('multiple','');
+    for(const id of ['base','base-tag','smart','smart-tag'])document.getElementById(id).setAttribute('value','moscow,kazan');
+  }
+  if(parameters.get('appearance')==='filled'){
+    document.querySelectorAll('.sf-dropdown').forEach(e=>e.classList.replace('sf-dropdown--outlined','sf-dropdown--filled'));
+    document.querySelectorAll('sf-dropdown').forEach(e=>e.setAttribute('type','filled'));
+  }
+  if(parameters.has('portal')){
+    document.querySelectorAll('sf-dropdown').forEach(e=>e.setAttribute('portal',''));
+    document.querySelectorAll('.sf-dropdown').forEach(e=>e.dataset.portal='true');
+  }
+</script>
+<script src="../../source/output/action-focus-browser/component/dropdown/js/dropdown.js"></script>
+<script src="../../source/output/action-focus-browser/component/checkbox/js/checkbox.js"></script>
+<script src="../../source/output/action-focus-browser/smart/dropdown/js/dropdown.js"></script>
+<script>
+  // Isolated fixture without Loader: reveal icons only after its local font loads.
+  document.fonts.load('24px "Material Symbols Outlined"').then(faces=>{
+    if(!faces.length)return;
+    const reveal=()=>document.querySelectorAll('.sf-icon:not(.sf-icon-loaded)').forEach(icon=>icon.classList.add('sf-icon-loaded'));
+    reveal();new MutationObserver(reveal).observe(document.body,{childList:true,subtree:true});
+  });
+</script>
+</body></html>

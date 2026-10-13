@@ -1,0 +1,19 @@
+@use '../../default/scss/sf_var__color_base' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BASE COLOR
+
+$infix: active\:;
+
+// @include layer-priority(utility,active) {
+
+    @each $modifier-name, $var-name in $color-base-hover-active-array {
+        .#{$infix}color-#{$modifier-name}:active {
+            color: var(--sf-#{$var-name})
+        }
+    }
+
+// }
+}

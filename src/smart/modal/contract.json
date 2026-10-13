@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "simai.framework.smart.modal",
+  "public_name": "Simai Framework Modal",
+  "technical_tag": "sf-modal",
+  "layer": "smart-component",
+  "source": {
+    "entry": "src/smart/modal/index.js",
+    "default_template": "src/smart/modal/js/templates/default.js",
+    "rule": "src/smart/modal/rule.js"
+  },
+  "parameters": {
+    "identity": [
+      "modal-id",
+      "id",
+      "title",
+      "aria-label",
+      "text"
+    ],
+    "lifecycle": [
+      "open",
+      "autoload",
+      "unclose",
+      "hide",
+      "minimized"
+    ],
+    "dismissal": [
+      "overlay",
+      "show-close",
+      "close-on-esc",
+      "close-on-overlay",
+      "preserve-scroll-gap"
+    ],
+    "layout": [
+      "position",
+      "display",
+      "fullscreen",
+      "width",
+      "height",
+      "surface-padding"
+    ],
+    "content": [
+      "template",
+      "mode",
+      "src",
+      "preload",
+      "show-header",
+      "show-footer"
+    ],
+    "theme": [
+      "blur",
+      "blur-type",
+      "root-class",
+      "overlay-class",
+      "close-class",
+      "surface-class",
+      "panel-class",
+      "header-class",
+      "body-class",
+      "content-class",
+      "footer-class"
+    ]
+  },
+  "states": {
+    "lifecycle": [
+      "closed",
+      "opening",
+      "open",
+      "closing"
+    ],
+    "visibility": [
+      "visible",
+      "minimized"
+    ],
+    "content": [
+      "idle",
+      "loading",
+      "success",
+      "error"
+    ],
+    "display": [
+      "modal",
+      "inline"
+    ],
+    "mode": [
+      "inline",
+      "ajax",
+      "iframe"
+    ],
+    "position": [
+      "center",
+      "inline-start",
+      "inline-end",
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ]
+  },
+  "events": {
+    "ready": [
+      "modal:ready",
+      "modal:update"
+    ],
+    "open": [
+      "modal:before-open",
+      "modal:after-open"
+    ],
+    "close": [
+      "modal:before-close",
+      "modal:after-close"
+    ],
+    "minimize": [
+      "modal:before-hide",
+      "modal:after-hide",
+      "modal:before-show",
+      "modal:after-show"
+    ],
+    "content": [
+      "modal:before-content-upload",
+      "modal:after-content-upload"
+    ],
+    "cancelable": [
+      "modal:before-open",
+      "modal:before-close",
+      "modal:before-hide",
+      "modal:before-show"
+    ]
+  },
+  "event_semantics": {
+    "panel_animation": "open() defaults to animated panel; open({animate:false}) and open(false) disable the panel transition for that accepted opening and replace the previous choice; default template consumes context.animate; inline has no panel animation; overlay remains independently styled; reduced-motion CSS wins",
+    "interrupted_close": "open during closing cancels the pending close; no modal:after-close for the interrupted transition; original focus-return target is preserved until completed close",
+    "content_completion": "modal:after-content-upload fires for success and error after remote state leaves loading; aborted requests do not emit completion",
+    "bubbling": "modal:* events bubble and are composed like the base modal component and sf-drawer; detail.modal names the emitting modal; on* helpers and SF.create handlers receive only their own modal's events; ancestor addEventListener listeners also hear nested modals and must check detail.modal (migration smart.modal 1.0.0 -> 1.1.0)"
+  },
+  "scroll_lock": {
+    "ownership": "first visible ordinary or Smart Modal holds the shared lease until the last visible layer leaves; existing html/body overflow-hidden classes are preserved",
+    "compensation": "add measured scrollbar width to computed padding-inline-end; preserve original inline declaration and priority; skip padding writes when preserve-scroll-gap is false or scrollbar gap is zero",
+    "restoration": "restore only an unchanged declaration written by the lease; preserve author padding changes; use the original document nodes"
+  },
+  "templates": {
+    "default": "default",
+    "slots": [
+      "header",
+      "content",
+      "footer"
+    ],
+    "remote_modes": [
+      "ajax",
+      "iframe"
+    ],
+    "custom_template_hook": "template"
+  },
+  "dependencies": {
+    "runtime": [
+      "lit",
+      "lit/directives/unsafe-html.js",
+      "SfBaseElement"
+    ],
+    "simai_framework": [
+      "sf-button",
+      "sf-icon-button",
+      "sf-close",
+      "theme semantic tokens"
+    ],
+    "external_runtime": [],
+    "side_effects": [
+      "document.body portal",
+      "page scroll lock",
+      "fetch for ajax mode",
+      "focus management"
+    ]
+  },
+  "accessibility": {
+    "roles": {
+      "modal": "dialog",
+      "inline": "region"
+    },
+    "accessible_name": "aria-label wins; otherwise the title is linked through aria-labelledby",
+    "keyboard": [
+      "Escape closes the top dismissible modal",
+      "Tab and Shift+Tab stay inside the top modal"
+    ],
+    "focus": [
+      "focus moves to the panel on open",
+      "Tab from the panel enters the first available control; Shift+Tab enters the last",
+      "hidden, disabled, inert and negative-tabindex controls are not tab boundaries",
+      "a panel without available controls retains focus on itself",
+      "focus returns to the previously active element after close"
+    ],
+    "stack": "ordinary and Smart Modal share document ordering and scroll-lock lifetime; only the top modal handles keyboard dismissal and focus trapping; removing a background modal does not steal focus",
+    "inline_focus": "display=inline does not capture focus on open or restore a previous focus on close; Escape does not dismiss the inline region",
+    "native_radio": "group by nonempty name, form owner and tree; use checked eligible input as Tab boundary; otherwise first for forward panel entry and last for reverse; preserve native arrow keys and checked/tabindex; read selection live",
+    "closing_content": "accepted close immediately freezes panel descendants while named visible panel holds focus and Tab; background close does not steal focus; cancelled close unchanged; reopen/final close/teardown release only owned temporary inert attributes and observer; author inert regions preserved",
+    "embedded_document": "top visible layer owns zero-size guards outside panel; relay trusted native Tab into either iframe end without reading child DOM; frame exit wraps to parent control or semantic dialog panel before next native entry; guards follow stack/projection and are removed on final close; child key events remain child-owned",
+    "unavailable_opener": "verify actual focus return; otherwise focus remaining visible modal, remembered available semantic ancestor, page main or body; temporary fallback tabindex is cleaned up without overwriting author changes",
+    "minimized": "open instance remains registered but has no active document layer; content is inert and aria-hidden; minimizing top restores remaining dialog or opener, background minimization keeps focus; restoring raises and focuses the dialog; inline ignores minimization",
+    "required_checks": [
+      "accessible name",
+      "visible focus",
+      "focus trap",
+      "focus restore",
+      "keyboard close",
+      "200% zoom",
+      "mobile viewport"
+    ]
+  },
+  "theme": {
+    "motion": "overlay and animated panels use --sf-duration-normal and --sf-animation; center offset uses --sf-space-1/2; prefers-reduced-motion disables transitions; close completion waits for the longest computed opacity/transform duration plus delay across panel and overlay after projection; reopen cancels pending completion",
+    "header_layout": "default title or header slot wraps in normal flow alongside non-shrinking close/minimize actions; targets use compact UI height and inherited UI radius; ordering follows document direction",
+    "minimize_glyph": "decorative currentColor line inherits base IconButton icon-variant semantic foreground; no font dependency",
+    "semantic_surfaces": [
+      "surface",
+      "on-surface",
+      "surface-container",
+      "outline-variant",
+      "error"
+    ],
+    "overlay": [
+      "standard dim overlay",
+      "semantic blur overlay"
+    ],
+    "class_extension_points": [
+      "root-class",
+      "overlay-class",
+      "close-class",
+      "surface-class",
+      "panel-class",
+      "header-class",
+      "body-class",
+      "content-class",
+      "footer-class"
+    ],
+    "invariants": [
+      "large surfaces use --sf-radius--surface while compact actions retain --sf-radius--ui",
+      "no vendor theme dependency",
+      "light and dark theme preserve readable content and visible focus",
+      "logical inline positioning remains RTL-safe"
+    ]
+  },
+  "frontend_call": {
+    "declarative": "<sf-modal id=\"profile-modal\" title=\"Profile\" aria-label=\"Profile details\"></sf-modal>",
+    "instance": "document.querySelector('#profile-modal').open()",
+    "factory": "SF.create('modal', { modalId: 'profile-modal', title: 'Profile' })",
+    "triggers": [
+      "data-sf-modal-open",
+      "data-sf-modal-show",
+      "data-sf-modal-hide",
+      "data-sf-modal-close"
+    ]
+  },
+  "backend_call": {
+    "adapter": "Larena UI Smart facade",
+    "component_key": "ui.modal",
+    "example": "Smart::render('ui.modal', ['modal-id' => 'profile-modal', 'title' => 'Profile', 'aria-label' => 'Profile details'], $assetActivation, $slots)",
+    "boundary": "the backend emits the custom-element artifact and asset activation; browser lifecycle and side effects remain frontend-owned"
+  },
+  "compatibility": {
+    "generated_repository": "simai/ui-smart",
+    "manual_generated_write_allowed": false,
+    "moving_refs_allowed": false,
+    "breaking_change_policy": "additive parameters and events only unless a separately accepted migration contract exists"
+  }
+}

@@ -1,0 +1,15 @@
+@use '../../default/scss/sf_var__border_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BORDER - BORDER COLOR
+
+$infix:hover\:;
+
+@each $border-color-name, $border-color-value in $border-color-array {
+    .#{$infix}border-#{$border-color-name}:hover {
+        border-color: var(--sf-#{$border-color-value});
+    }
+}
+}

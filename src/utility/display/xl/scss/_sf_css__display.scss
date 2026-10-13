@@ -1,0 +1,21 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__display' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DISPLAY
+// @include layer-priority(utility,xl) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+
+        // Display
+        @each $display-name, $display-value in $display-array {
+            .#{$infix}#{$display-name} {
+                display:#{$display-value};
+            }
+        }
+    }
+// }
+}

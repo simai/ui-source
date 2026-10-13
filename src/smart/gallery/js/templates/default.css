@@ -1,0 +1,64 @@
+/* Gallery owns composition, Slider owns slides and Modal owns scrolling.
+   Source content receives defaults through the cascade, never inline writes. */
+@layer sf.components {
+  /* The rendered root is the grid/flex item (the custom host is display:contents).
+     Do not feed Swiper's measured slide width back into an automatic minimum. */
+  .sf-gallery {
+    min-width: 0;
+  }
+
+  .sf-gallery-lightbox-content {
+    --sf-slider-slide--height: auto;
+    --sf-slider-slide--min-height: 0;
+    --sf-slider-slide-img--width: auto;
+    --sf-slider-slide-img--height: auto;
+    --sf-slider-slide-img--object-fit: contain;
+    min-height: 0;
+  }
+
+  .sf-gallery-lightbox-panel {
+    display: flex;
+    max-height: 100%;
+  }
+
+  .sf-gallery-lightbox-panel > [data-sf-modal-surface],
+  .sf-gallery-lightbox-panel [data-sf-modal-body],
+  .sf-gallery-lightbox-panel [data-sf-modal-body-viewport],
+  .sf-gallery-lightbox-panel [data-sf-modal-body-scroll] {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .sf-gallery-lightbox-panel [data-sf-modal-body-viewport] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :where([data-sf-gallery-slider='lightbox']) :where(figure, picture) {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  :where([data-sf-gallery-slider='lightbox']) img {
+    display: block;
+    min-height: 0;
+    max-height: var(--sf-gallery-media--max-height, calc(100dvh - var(--sf-space-6) * 2));
+    max-width: 100%;
+  }
+
+  :where([data-sf-gallery-slider='lightbox']) figcaption {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+}
+
+/* Swiper's unlayered height:100% must not clip long authored captions.
+   This only targets the runtime wrapper, not author content or inline view. */
+.sf-gallery-lightbox-content .sf-slider-main > .swiper-wrapper {
+  height: auto;
+}

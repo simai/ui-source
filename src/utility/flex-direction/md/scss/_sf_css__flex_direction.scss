@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__flex_direction' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEX-DIRECTION
+
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+
+        // Flex Direction Utilities
+        @each $flex-direction-name, $flex-direction-value in $flex-direction-array {
+            .#{$infix}flex-#{$flex-direction-name} {
+                flex-direction: #{$flex-direction-value};
+            }
+        }
+    }
+// }
+}

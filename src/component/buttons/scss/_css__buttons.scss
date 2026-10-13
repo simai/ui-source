@@ -1,0 +1,858 @@
+/* A button's border is inside its control height: the padding gives each side's
+   border back. The side widths are registered as lengths, so a unitless 0
+   written by a group, a tab row or a host still subtracts; unregistered, it
+   would invalidate the padding. Measured before: outline, surface and every
+   segmented button stood 2px taller than its size. */
+@property --sf-button--border-top-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --sf-button--border-bottom-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --sf-button--border-inline-start-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --sf-button--border-inline-end-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-button {
+    --sf-button--radius: var(--sf-radius--ui);
+    border-end-end-radius: var(--sf-button--border-bottom-right-radius, var(--sf-button--radius));
+    border-end-start-radius: var(--sf-button--border-bottom-left-radius, var(--sf-button--radius));
+    border-start-end-radius: var(--sf-button--border-top-right-radius, var(--sf-button--radius));
+    border-start-start-radius: var(--sf-button--border-top-left-radius, var(--sf-button--radius));
+    padding-inline-start: calc(var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width));
+    padding-top: calc(var(--sf-button--padding-top) - var(--sf-button--border-top-width));
+    padding-inline-end: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
+    padding-bottom: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
+    background-color: var(--sf-button--background-color);
+    border-color: var(--sf-button--border-color, transparent);
+    border-width: var(--sf-button--border-width, 0);
+    border-top-width: var(--sf-button--border-top-width, 0);
+    border-inline-end-width: var(--sf-button--border-inline-end-width, 0);
+    border-bottom-width: var(--sf-button--border-bottom-width, 0);
+    border-inline-start-width: var(--sf-button--border-inline-start-width, 0);
+    border-style: var(--sf-button--border-style, solid);
+    /* Two layers, composed rather than replaced: the focus line the ring puts
+       inside the button, and whatever elevation the button already carries.
+       Written as one shorthand, a focus rule would wipe the elevation. */
+    box-shadow: var(--sf-button--focus-inset, 0 0 #0000), var(--sf-button--box-shadow, 0 0 #0000);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-button .sf-button-text-container {
+    /* A control label wraps between words and never inside one. Prose in a
+       table breaks mid-word by design, and a button sitting in a cell used to
+       inherit that: "edit" came out on three lines and set the row height. */
+    word-break: normal;
+    --sf-button-text-container--background-color: transparent;
+    background-color: var(--sf-button-text-container--background-color);
+    color: var(--sf-button-text-container--color);
+    font-family: var(--sf-button-text-container--font-family);
+    font-size: var(--sf-button-text-container--font-size);
+    font-weight: var(--sf-button-text-container--font-weight);
+    line-height: var(--sf-button-text-container--line-height);
+    padding-inline-end: var(--sf-button-text-container--padding-inline-end);
+    padding-inline-start: var(--sf-button-text-container--padding-inline-start);
+  }
+
+  .sf-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--background-color: var(--sf-primary);
+  }
+  .sf-button.sf-button--default.sf-button--secondary {
+    --sf-button--background-color: var(--sf-secondary);
+  }
+
+  .sf-button.sf-button--size-1 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-primary);
+  }
+  .sf-button.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-secondary);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-on-primary);
+  }
+  .sf-button.sf-button--default.sf-button--secondary .sf-icon {
+    --sf-icon--color: var(--sf-on-secondary);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface {
+    --sf-button--background-color: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface-inverse);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-inverse);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary {
+    --sf-button--background-color: var(--sf-secondary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button--background-color: var(--sf-primary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-secondary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-primary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary .sf-icon {
+    --sf-icon--color: var(--sf-on-secondary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-on-primary-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface {
+    --sf-button--background-color: var(--sf-surface-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline.sf-button--on-surface .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline.sf-button--on-surface {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-outline);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-primary);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface, .sf-button.sf-button--loading.sf-button--default.sf-button--primary, .sf-button.sf-button--loading.sf-button--default.sf-button--secondary {
+    --sf-button--background-color: transparent;
+  }
+
+  .sf-button.sf-button--size-2 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-button.sf-button--size-3 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-3--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  }
+
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+  }
+
+  .sf-button.sf-button--size-1\/2 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-button.sf-button--size-1\/3 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  }
+
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-button--size-1 {
+    --sf-button--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-button--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-button--padding-inline-start: var(--sf-ui-1--space-x);
+    --sf-button--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-button.sf-button--size-1 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+
+  .sf-button--size-1:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-top: var(--sf-ui-1--space-y-tightness-low);
+    --sf-button--padding-bottom: var(--sf-ui-1--space-y-tightness-low);
+  }
+
+  .sf-button--size-1:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-top: var(--sf-ui-1--space-y-tightness-high);
+    --sf-button--padding-bottom: var(--sf-ui-1--space-y-tightness-high);
+  }
+
+  .sf-button--size-1:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-top: var(--sf-ui-1--space-y-tightness-highest);
+    --sf-button--padding-bottom: var(--sf-ui-1--space-y-tightness-highest);
+  }
+
+  .sf-button--size-2 {
+    --sf-button--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+    --sf-button--padding-inline-end: var(--sf-ui-2--space-x);
+    --sf-button--padding-inline-start: var(--sf-ui-2--space-x);
+    --sf-button--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  }
+
+  .sf-button.sf-button--size-2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+
+  .sf-button--size-2:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-top: var(--sf-ui-2--space-y-tightness-low);
+    --sf-button--padding-bottom: var(--sf-ui-2--space-y-tightness-low);
+  }
+
+  .sf-button--size-2:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-top: var(--sf-ui-2--space-y-tightness-high);
+    --sf-button--padding-bottom: var(--sf-ui-2--space-y-tightness-high);
+  }
+
+  .sf-button--size-2:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-top: var(--sf-ui-2--space-y-tightness-highest);
+    --sf-button--padding-bottom: var(--sf-ui-2--space-y-tightness-highest);
+  }
+
+  .sf-button--size-3 {
+    --sf-button--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
+    --sf-button--padding-inline-end: var(--sf-ui-3--space-x);
+    --sf-button--padding-inline-start: var(--sf-ui-3--space-x);
+    --sf-button--padding-top: var(--sf-ui-3--space-y-tightness-default);
+  }
+
+  .sf-button.sf-button--size-3 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+  }
+
+  .sf-button--size-3:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-top: var(--sf-ui-3--space-y-tightness-low);
+    --sf-button--padding-bottom: var(--sf-ui-3--space-y-tightness-low);
+  }
+
+  .sf-button--size-3:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-top: var(--sf-ui-3--space-y-tightness-high);
+    --sf-button--padding-bottom: var(--sf-ui-3--space-y-tightness-high);
+  }
+
+  .sf-button--size-3:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-top: var(--sf-ui-3--space-y-tightness-highest);
+    --sf-button--padding-bottom: var(--sf-ui-3--space-y-tightness-highest);
+  }
+
+  .sf-button--size-1\/2 {
+    --sf-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-button--padding-inline-end: var(--sf-ui-1\/2--space-x);
+    --sf-button--padding-inline-start: var(--sf-ui-1\/2--space-x);
+    --sf-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-button.sf-button--size-1\/2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+
+  .sf-button--size-1\/2:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-low);
+    --sf-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-low);
+  }
+
+  .sf-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-high);
+    --sf-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-high);
+  }
+
+  .sf-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-highest);
+    --sf-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-highest);
+  }
+
+  .sf-button--size-1\/3 {
+    --sf-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-button--padding-inline-end: var(--sf-ui-1\/3--space-x);
+    --sf-button--padding-inline-start: var(--sf-ui-1\/3--space-x);
+    --sf-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+
+  .sf-button.sf-button--size-1\/3 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+
+  .sf-button--size-1\/3:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-low);
+    --sf-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-low);
+  }
+
+  .sf-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-high);
+    --sf-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-high);
+  }
+
+  .sf-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-highest);
+    --sf-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-highest);
+  }
+
+  .sf-button--outline {
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-style: solid;
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-width: var(--sf-px);
+  }
+
+  .sf-button.radius-default {
+    border-radius: var(--sf-radius-default);
+  }
+
+  .sf-button.radius-square {
+    border-radius: var(--sf-radius-square);
+  }
+
+  .sf-button.radius-rounded {
+    border-radius: var(--sf-radius-rounded);
+  }
+
+  .sf-button.segment-start {
+    --sf-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+
+  .sf-button.segment-middle {
+    --sf-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+
+  .sf-button.segment-end {
+    --sf-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    border-inline-start-color: var(--sf-white--alfa-24, transparent);
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+  .sf-button:not(.sf-button--outline).segment-end {
+    border-inline-start-color: var(--sf-white--alfa-24, transparent);
+  }
+
+  .sf-button:not(.sf-button--outline).segment-start {
+    border-inline-end-color: var(--sf-white--alfa-24, transparent);
+  }
+
+  .sf-button:not(.sf-button--outline).segment-middle {
+    border-inline-end-color: var(--sf-white--alfa-24, transparent);
+    border-inline-start-color: var(--sf-white--alfa-24, transparent);
+  }
+
+  /* Surface, built on the neutral alpha ramp. It does not carry a colour of its
+     own: it carries a degree of contrast against whatever is behind it, which is
+     why the same declaration is right in a light and in a dark theme. It keeps a
+     faint fill and a border one step stronger.
+
+     Ghost used to be the transparent member of this pair. At rest it was
+     identical to link and differed only by a hover tint of 8% instead of 16%,
+     too little for anyone to choose between them, so `--ghost` now reads as
+     `--link` and stays only as a compatibility name. */
+  .sf-button.sf-button--surface {
+    --sf-button--background-color: transparent;
+  }
+
+  .sf-button.sf-button--surface {
+    --sf-button--background-color: var(--sf-alpha-4);
+    --sf-button--border-color: var(--sf-alpha-8);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+    --sf-button--border-style: solid;
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-width: var(--sf-px);
+  }
+
+  .sf-button.sf-button--size-1.sf-button--surface .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--size-2.sf-button--surface .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--size-3.sf-button--surface .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--size-1\/2.sf-button--surface .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--size-1\/3.sf-button--surface .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--surface.sf-button--on-surface .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--surface.sf-button--on-surface .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-button.sf-button--surface.sf-button--primary .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-primary);
+  }
+
+  .sf-button.sf-button--surface.sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+}
+
+@layer sf.states {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary:disabled, .sf-button.sf-button--default.sf-button--on-surface:disabled, .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled, .sf-button.sf-button--tonal.sf-button--on-surface:disabled, .sf-button.sf-button--default.sf-button--secondary:disabled {
+    --sf-button--background-color: var(--sf-disable);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--outline.sf-button--primary:disabled .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:disabled .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:disabled .sf-button-text-container, .sf-button.sf-button--default.sf-button--secondary:disabled .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-disable);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:disabled {
+    --sf-button--border-color: var(--sf-outline-disable);
+  }
+
+  .sf-button.sf-button--outline.sf-button--on-surface:disabled {
+    --sf-button--border-color: var(--sf-outline-variant);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-hover);
+  }
+  .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-secondary-hover);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-on-surface-hover);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-secondary-container-hover);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-primary-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-primary-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-hover);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-active);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--on-surface:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-on-surface-active);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--secondary:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-secondary-container-active);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-surface-container-active);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-primary-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active .sf-icon {
+    --sf-icon--color: var(--sf-primary-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-active);
+  }
+
+  /* The ring is an outline: it shares no property with the elevation shadow,
+     so a focused raised button keeps its shadow, and the offset is a token
+     rather than a faked spread. */
+  .sf-button:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+    /* A filled button gets a second, inner line in its own ink. The ring colour
+       is chosen to read against the surface, and on a filled control the fill
+       can sit one step away from it on the same ramp: in the dark theme the
+       ring measured 1.31:1 against the primary fill, so the ring alone read as
+       part of the button. The ink is the label's colour, which contrasts with
+       that fill by construction; where a button has no fill worth separating
+       from, the token stays transparent and nothing is drawn. */
+    --sf-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-button--focus-ink, transparent);
+  }
+
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--focus-ink: var(--sf-on-primary);
+  }
+  .sf-button.sf-button--default.sf-button--secondary {
+    --sf-button--focus-ink: var(--sf-on-secondary);
+  }
+
+  .sf-button.sf-button--default.sf-button--on-surface {
+    --sf-button--focus-ink: var(--sf-on-surface-inverse, var(--sf-surface-0));
+  }
+
+  @media (forced-colors: active) {
+    .sf-button:not(:disabled):not(.disabled):focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+    }
+  }
+
+  .sf-button.sf-button.sf-button:disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+
+  /* The states of the two ramp appearances: the fill rises one step on hover and
+     another when pressed, and surface raises its border alongside. */
+  .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-alpha-8);
+  }
+
+  .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
+    --sf-button--border-color: var(--sf-alpha-12);
+  }
+
+  .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
+    --sf-button--background-color: var(--sf-alpha-12);
+  }
+
+  .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
+    --sf-button--border-color: var(--sf-alpha-16);
+  }
+
+  .sf-button.sf-button--surface:disabled,
+  .sf-button.sf-button--surface.disabled {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-alpha-4);
+  }
+
+  .sf-button.sf-button--surface:disabled .sf-button-text-container,
+  .sf-button.sf-button--surface.disabled .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-disable);
+  }
+
+  .sf-button.sf-button--surface:disabled .sf-icon,
+  .sf-button.sf-button--surface.disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+}
+
+/* The destructive scheme. Every role it paints with is the error family's twin
+   of the primary one -- fill, text, hover, active, disabled and the focus ink --
+   so a destructive control behaves exactly like a primary one and only its
+   colour says what it does. Added because the Framework had error roles and no
+   way for a control to use them: a product that wanted a red delete had to
+   reach past the component and set its colour by hand, and the next one would
+   have done it again. The outline's border stays the neutral control outline,
+   as it does for every other scheme. */
+
+@layer sf.components {
+  .sf-button.sf-button--default.sf-button--error {
+    --sf-button--background-color: var(--sf-error);
+  }
+
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-button.sf-button--default.sf-button--error .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-error);
+  }
+
+  .sf-button.sf-button--default.sf-button--error .sf-icon {
+    --sf-icon--color: var(--sf-on-error);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error {
+    --sf-button--background-color: var(--sf-error-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-error-container);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error .sf-icon {
+    --sf-icon--color: var(--sf-on-error-container);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-outline);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-error);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error .sf-icon,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-icon {
+    --sf-icon--color: var(--sf-error);
+  }
+
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error,
+  .sf-button.sf-button--loading.sf-button--default.sf-button--error {
+    --sf-button--background-color: transparent;
+  }
+
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+  }
+
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--error .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--error .sf-button-text-container {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+  }
+
+}
+
+@layer sf.states {
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):focus-visible,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+
+  .sf-button.sf-button--default.sf-button--error:disabled {
+    --sf-button--background-color: var(--sf-disable);
+  }
+
+  .sf-button.sf-button--default.sf-button--error:disabled .sf-button-text-container,
+  .sf-button.sf-button--outline.sf-button--error:disabled .sf-button-text-container,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:disabled .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-disable);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:disabled {
+    --sf-button--border-color: var(--sf-outline-disable);
+  }
+
+  .sf-button.sf-button--default.sf-button--error:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-hover);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-container-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):hover,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-container-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):hover .sf-button-text-container,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):hover .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-error-hover);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):hover .sf-icon,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-error-hover);
+  }
+
+  .sf-button.sf-button--default.sf-button--error:not(:disabled):not(.disabled):active,
+  .sf-button.sf-button--default.sf-button--error:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-active);
+  }
+
+  .sf-button.sf-button--tonal.sf-button--error:not(:disabled):not(.disabled):active,
+  .sf-button.sf-button--tonal.sf-button--error:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-container-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):active,
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled).active,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):active,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-container-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):active .sf-button-text-container,
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled).active .sf-button-text-container,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):active .sf-button-text-container,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled).active .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-error-active);
+  }
+
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled):active .sf-icon,
+  .sf-button.sf-button--outline.sf-button--error:not(:disabled):not(.disabled).active .sf-icon,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled):active .sf-icon,
+  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--error:not(:disabled):not(.disabled).active .sf-icon {
+    --sf-icon--color: var(--sf-error-active);
+  }
+
+  .sf-button.sf-button--default.sf-button--error {
+    --sf-button--focus-ink: var(--sf-on-error);
+  }
+
+}

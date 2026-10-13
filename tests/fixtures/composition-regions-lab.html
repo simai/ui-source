@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — composition regions</title>
+  <style>
+    html, body { margin: 0; max-inline-size: 100%; }
+    body { padding: 0 var(--sf-space-2, .5rem); background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); }
+    .sf-composition-region { outline: 1px dashed var(--sf-outline-variant, GrayText); padding: var(--sf-space-2, .5rem); }
+  </style>
+</head>
+<body>
+  <a id="before" href="#start">До раскладки</a>
+  <div id="host"></div>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const assetBase = params.get('assets');
+    const sourceBase = params.get('source');
+    if (!assetBase || !sourceBase) throw new Error('composition_regions_lab_paths_required');
+    if (params.get('dir') === 'rtl') document.documentElement.dir = 'rtl';
+    if (params.get('theme') === 'dark') document.documentElement.className = 'theme-dark';
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${assetBase}/core/css/core.css`;
+    const loaded = new Promise((resolve, reject) => { link.onload = resolve; link.onerror = reject; });
+    document.head.append(link);
+    await loaded;
+    const composition = await import(`${assetBase}/core/js/composition/index.mjs`);
+    const model = await fetch(`${sourceBase}/tests/fixtures/composition/regions-lab.json`).then((response) => response.json());
+    const rendered = await composition.render(model);
+    if (rendered.diagnostics.length) throw new Error(JSON.stringify(rendered.diagnostics));
+    document.getElementById('host').innerHTML = rendered.html;
+    window.labRegions = await composition.describeRegions((await composition.normalize(model)).document);
+    document.documentElement.dataset.ready = 'true';
+  </script>
+</body>
+</html>

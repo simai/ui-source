@@ -1,0 +1,61 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__font_variant_numeric' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+
+// @include layer-priority(utility,default) {
+    // $font-variant-numeric-all: '';
+    // $fontVariantVar: '';
+    $infix: breakpoint-infix(xs, $breakpoint-array);
+
+    // @each $font-variant-numeric-name, $font-variant-numeric-value in $font-variant-numeric-array {
+    //     $font-variant-numeric-all: '#{$font-variant-numeric-all}.#{$infix}num-#{$font-variant-numeric-name},';
+    // }
+
+    // @each $font-variant-numeric-name, $font-variant-numeric-value in $font-variant-numeric-array {
+    //     $fontVariantVar: '#{$fontVariantVar}var(--sf-text-num-#{$font-variant-numeric-name}) ';
+    // }
+
+    :root {
+        @include breakpoint-media(xs) {
+
+            $infix: breakpoint-infix(xs, $breakpoint-array);
+    
+            // Font Variant Numeric
+            @each $font-variant-numeric-name, $font-variant-numeric-value in $font-variant-numeric-array {
+                // .#{$infix}num-#{$font-variant-numeric-name} {
+                    --sf-text-num-#{$font-variant-numeric-name}:#{$font-variant-numeric-value};
+                // }
+            }
+        }
+    }
+
+    @include breakpoint-media(xs) {
+
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Font Variant Numeric
+        @each $font-variant-numeric-name, $font-variant-numeric-value in $font-variant-numeric-array {
+            .#{$infix}num-#{$font-variant-numeric-name} {
+                font-variant-numeric:var(--sf-text-num-#{$font-variant-numeric-name})
+                // :#{$font-variant-numeric-value};
+            }
+        }
+    }
+
+    // #{$font-variant-numeric-all} {
+        // --sf-text--num-ordinal: var(--sf-empty);
+        // --sf-text--num-zero: var(--sf-empty);
+        // --sf-text--num-figure: var(--sf-empty);
+        // --sf-text--num-spacing: var(--sf-empty);
+        // --sf-text--num-fraction: var(--sf-empty);
+        // font-variant-numeric: #{$fontVariantVar};
+        // var(--sf-text--num-ordinal) var(--sf-text--num-slashed-zero) var(--sf-text--num-figure) var(--sf-text--num-spacing) var(--sf-text--num-fraction);
+    // }
+// }
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.inline-editor",
+  "title": "inline-editor reference",
+  "summary": "Deterministic reference fixture for sf-inline-editor.",
+  "locale": "ru",
+  "props": {},
+  "children": [
+    {
+      "element": "p",
+      "props": {},
+      "text": "Текст абзаца для правки на месте",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

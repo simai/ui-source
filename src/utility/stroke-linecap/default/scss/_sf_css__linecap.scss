@@ -1,0 +1,17 @@
+@use 'sf_var__linecap' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SVG - FILL RULE
+
+$infix:'';
+
+// @include layer-priority(utility,default) {
+    @each $name, $value in $stroke-linecap-array {
+        .#{$infix}linecap-#{$name} {
+            stroke-linecap: #{$value};
+        }   
+    }
+// }
+}

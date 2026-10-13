@@ -1,0 +1,46 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__filter_grayscale' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FILTER
+
+$filter-all: '';
+$infix: breakpoint-infix(xs, $breakpoint-array);
+$event: hover;
+
+// Grayscale
+@each $grayscale-name, $grayscale-value in $filter-grayscale-array {
+    $filter-all: '#{$filter-all}.#{$infix}#{$event}\\:grayscale#{$grayscale-name}:#{$event},';
+}
+
+$infix: xs;
+
+// @include layer-priority(utility,$event) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        #{$filter-all} {
+            --sf-blur: ;
+            --sf-brightness: ;
+            --sf-contrast: ;
+            --sf-grayscale: ;
+            --sf-hue-rotate: ;
+            --sf-invert: ;
+            --sf-saturate: ;
+            --sf-sepia: ;
+            --sf-drop-shadow: ;
+            filter: var(--sf-blur) var(--sf-brightness) var(--sf-contrast) var(--sf-grayscale) var(--sf-hue-rotate) var(--sf-invert) var(--sf-saturate) var(--sf-sepia) var(--sf-drop-shadow);
+        }
+
+        // Grayscale
+        @each $grayscale-name, $grayscale-value in $filter-grayscale-array {
+            .#{$infix}#{$event}\:grayscale#{$grayscale-name}:#{$event} {
+                --sf-grayscale: #{"grayscale("}#{$grayscale-value}#{")"};
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Preview presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/file-preview-browser/component/file-preview.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4 max-w-xl">
+    <h1>Предпросмотр файла</h1>
+    <div class="sf-file-preview">
+      <span class="sf-file-preview-holder"><i class="sf-icon" aria-hidden="true">description</i></span>
+      <span class="sf-file-preview-main">
+        <span class="sf-file-preview-name">Техническое задание с очень длинным именем для проверки переноса.pdf</span>
+        <span class="sf-file-preview-size">2,4 МБ</span>
+      </span>
+      <span class="sf-file-preview-actions">
+        <button type="button" class="sf-icon-button neutral" aria-label="Скачать файл"><i class="sf-icon" aria-hidden="true">download</i></button>
+        <button type="button" class="sf-icon-button neutral" aria-label="Удалить файл"><i class="sf-icon" aria-hidden="true">delete</i></button>
+      </span>
+    </div>
+    <div class="sf-file-preview sf-file-preview--surface">
+      <span class="sf-file-preview-holder"><i class="sf-icon" aria-hidden="true">table</i></span>
+      <span class="sf-file-preview-main"><span class="sf-file-preview-name">Отчёт.xlsx</span><span class="sf-file-preview-size">740 КБ</span></span>
+      <span class="sf-file-preview-actions"><button type="button" class="sf-icon-button neutral" aria-label="Скачать файл"><i class="sf-icon" aria-hidden="true">download</i></button></span>
+    </div>
+    <div class="sf-file-preview">
+      <span class="sf-file-preview-holder"><img class="sf-file-preview-thumbnail" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%236b7280'/%3E%3Ccircle cx='5' cy='5' r='3' fill='%23d1d5db'/%3E%3C/svg%3E"></span>
+      <span class="sf-file-preview-main"><span class="sf-file-preview-name">Обложка проекта.jpg</span><span class="sf-file-preview-size">860 КБ</span></span>
+      <span class="sf-file-preview-actions"><button type="button" class="sf-icon-button neutral" aria-label="Удалить файл"><i class="sf-icon" aria-hidden="true">delete</i></button></span>
+    </div>
+    <div class="sf-file-preview disabled" aria-disabled="true">
+      <span class="sf-file-preview-holder"><i class="sf-icon" aria-hidden="true">archive</i></span>
+      <span class="sf-file-preview-main"><span class="sf-file-preview-name">Архив.zip</span><span class="sf-file-preview-size">12 МБ</span></span>
+      <span class="sf-file-preview-actions"><button type="button" class="sf-icon-button neutral" aria-label="Скачать файл" disabled><i class="sf-icon" aria-hidden="true">download</i></button></span>
+    </div>
+    <section class="grid gap-1" aria-labelledby="smart-title">
+      <h2 id="smart-title">Smart projection</h2>
+      <sf-file-preview
+        file-name="Смета проекта.pdf"
+        file-size="1,8 МБ"
+        icon="description"
+        href="#"
+        surface
+        download-label="Скачать файл"
+        remove-label="Удалить файл"
+      ></sf-file-preview>
+      <output id="smart-event" aria-live="polite"></output>
+    </section>
+  </main>
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/smart-file-preview-browser/smart/file-preview/js/file-preview.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    document.fonts.ready.then(() => {
+      const faces = [...document.fonts].filter(face => face.family.includes('Material Symbols'));
+      if (faces.length) document.querySelectorAll('.sf-icon').forEach(icon => icon.classList.add('sf-icon-loaded'));
+    });
+    document.querySelector('sf-file-preview').addEventListener('sf-file-preview:download', event => {
+      event.preventDefault();
+      document.querySelector('#smart-event').value = 'download';
+    });
+    document.querySelector('sf-file-preview').addEventListener('sf-file-preview:remove', () => {
+      document.querySelector('#smart-event').value = 'remove';
+    });
+  </script>
+</body>
+</html>

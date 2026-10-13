@@ -1,0 +1,333 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-dropdown {
+  background-color: var(--sf-dropdown--background-color, transparent);
+  gap: var(--sf-dropdown--gap, var(--sf-space-1\/4));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) gap/var(--sf-dropdown-field--gap) */
+.sf-dropdown .sf-dropdown-field {
+  --sf-dropdown-field--border: var(--sf-px) solid;
+  background-color: var(--sf-dropdown-field--background-color);
+  border: var(--sf-dropdown-field--border);
+  border-color: var(--sf-dropdown-field--border-color, transparent);
+  border-end-end-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  border-end-start-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  border-start-end-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  border-start-start-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  box-shadow: var(--sf-dropdown-field--box-shadow);
+  gap: var(--sf-dropdown-field--gap);
+  padding-bottom: var(--sf-dropdown-field--padding-bottom);
+  padding-inline-end: var(--sf-dropdown-field--padding-inline-end);
+  padding-inline-start: var(--sf-dropdown-field--padding-inline-start);
+  padding-top: var(--sf-dropdown-field--padding-top);
+}
+
+.sf-dropdown .sf-icon-button {
+  --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
+  --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
+  --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
+  --sf-icon-button--padding-top: var(--sf-space-1\/4);
+  padding-bottom: var(--sf-icon-button--padding-bottom);
+  padding-inline-end: var(--sf-icon-button--padding-inline-end);
+  padding-inline-start: var(--sf-icon-button--padding-inline-start);
+  padding-top: var(--sf-icon-button--padding-top);
+}
+
+.sf-dropdown input {
+  background-color: var(--sf-dropdown-input--background-color);
+  color: var(--sf-dropdown-input--color);
+  font-family: var(--sf-dropdown-input--font-family);
+  font-size: var(--sf-dropdown-input--font-size);
+  font-weight: var(--sf-dropdown-input--font-weight);
+  line-height: var(--sf-dropdown-input--line-height);
+  padding-inline-end: var(--sf-dropdown-input--padding-inline-end);
+  padding-inline-start: var(--sf-dropdown-input--padding-inline-start);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-dropdown-label--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-dropdown .sf-dropdown-label {
+  --sf-dropdown-label--background-color: transparent;
+  --sf-dropdown-label--gap: var(--sf-space-1\/4);
+  background-color: var(--sf-dropdown-label--background-color);
+  gap: var(--sf-dropdown-label--gap);
+}
+
+.sf-dropdown .sf-dropdown-required {
+  --sf-dropdown-required--color: var(--sf-error);
+  --sf-dropdown-required--font-family: var(--sf-text--family);
+  --sf-dropdown-required--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-dropdown-required--color);
+  font-family: var(--sf-dropdown-required--font-family);
+  font-size: var(--sf-dropdown-required--font-size);
+  font-weight: var(--sf-dropdown-required--font-weight);
+  line-height: var(--sf-dropdown-required--line-height);
+}
+
+.sf-dropdown .sf-dropdown-text {
+  // Подпись поля — обычный текст, и роль у неё та же, что у подписи ввода.
+  // Прежняя --sf-on-surface-muted давала 3.18:1 в светлой теме и 2.92:1 в
+  // тёмной при требуемых WCAG 1.4.3 четырёх с половиной.
+  --sf-dropdown-text--color: var(--sf-on-surface-variant);
+  --sf-dropdown-text--font-family: var(--sf-text--family);
+  --sf-dropdown-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-dropdown-text--color);
+  font-family: var(--sf-dropdown-text--font-family);
+  font-size: var(--sf-dropdown-text--font-size);
+  font-weight: var(--sf-dropdown-text--font-weight);
+  line-height: var(--sf-dropdown-text--line-height);
+}
+
+.sf-dropdown .sf-dropdown-placeholder {
+  color: var(--sf-dropdown-placeholder--color);
+  font-family: var(--sf-dropdown-placeholder--font-family);
+  font-size: var(--sf-dropdown-placeholder--font-size);
+  line-height: var(--sf-dropdown-placeholder--line-height);
+}
+
+/* utility-hint: gap/var(--sf-dropdown-tag-container--gap) */
+.sf-dropdown .sf-dropdown-tag-container {
+  background-color: var(--sf-dropdown-tag-container--background-color);
+  gap: var(--sf-dropdown-tag-container--gap);
+}
+
+.sf-dropdown .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  width: var(--sf-icon--width, var(--sf-icon-size-3));
+}
+
+.sf-dropdown .sf-list {
+  box-shadow: var(--sf-list--box-shadow);
+}
+
+.sf-dropdown .sf-tag {
+  background-color: var(--sf-tag--background-color);
+  padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+  padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+}
+
+.sf-dropdown .sf-tag-alt {
+  background-color: var(--sf-tag-alt--background-color);
+  padding-inline-end: var(--sf-tag-alt--padding-inline-end);
+  padding-inline-start: var(--sf-tag-alt--padding-inline-start);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-surface-0);
+  --sf-dropdown-field--border-color: var(--sf-outline);
+}
+
+/* utility-hint: display/flex (.flex) */
+.sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+  --sf-dropdown-input--padding-inline-end: var(--sf-text-size-4);
+  --sf-dropdown-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+}
+
+.sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+  --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+}
+
+.sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text input {
+  --sf-dropdown-input--font-size: var(--sf-text-size-1);
+  --sf-dropdown-input--line-height: var(--sf-text-height-1);
+}
+
+.sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text input {
+  --sf-dropdown-input--font-family: var(--sf-text--family);
+  --sf-dropdown-input--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text input {
+  --sf-dropdown-input--color: var(--sf-on-surface);
+}
+
+.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-required {
+  --sf-dropdown-required--font-size: var(--sf-text-size-1\/2);
+  --sf-dropdown-required--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-text {
+  --sf-dropdown-text--font-size: var(--sf-text-size-1\/2);
+  --sf-dropdown-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
+  --sf-dropdown-field--border-color: var(--sf-outline-disable);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+  --sf-icon--color: transparent;
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field {
+  --sf-dropdown-field--border-color: var(--sf-primary-hover);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-surface-container);
+  --sf-dropdown-field--border-color: var(--sf-transparent-for-focus);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {
+  --sf-tag--background-color: var(--sf-primary-container);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--color: var(--sf-on-disable);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input {
+  --sf-dropdown-input--color: var(--sf-on-disable);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-disable);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-transparent-for-focus);
+  --sf-dropdown-field--border-color: var(--sf-outline);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+  --sf-dropdown-field--border-color: var(--sf-outline);
+}
+
+.sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-surface-container-hover);
+}
+
+/* utility-hint: display/flex (.flex) */
+.sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+  --sf-dropdown-input--padding-inline-end: var(--sf-text-size-5);
+  --sf-dropdown-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+}
+
+.sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+  --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+}
+
+.sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text input {
+  --sf-dropdown-input--font-size: var(--sf-text-size-2);
+  --sf-dropdown-input--line-height: var(--sf-text-height-2);
+}
+
+.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-required {
+  --sf-dropdown-required--font-size: var(--sf-text-size-1);
+  --sf-dropdown-required--line-height: var(--sf-text-height-1);
+}
+
+.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-text {
+  --sf-dropdown-text--font-size: var(--sf-text-size-1);
+  --sf-dropdown-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {
+  --sf-tag--background-color: var(--sf-disable);
+}
+
+.sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field {
+  min-block-size: var(--sf-ui-1\/2--control-height);
+  --sf-dropdown-field--gap: var(--sf-space-1\/4);
+  --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  --sf-dropdown-field--padding-inline-end: var(--sf-ui-1\/2--space-x);
+  --sf-dropdown-field--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  --sf-dropdown-field--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+}
+
+/* utility-hint: display/flex (.flex) */
+.sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+  --sf-dropdown-input--padding-inline-end: var(--sf-text-size-3);
+  --sf-dropdown-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+  --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text input {
+  --sf-dropdown-input--font-size: var(--sf-text-size-1\/2);
+  --sf-dropdown-input--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-required {
+  --sf-dropdown-required--font-size: var(--sf-text-size-1\/3);
+  --sf-dropdown-required--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-text {
+  --sf-dropdown-text--font-size: var(--sf-text-size-1\/3);
+  --sf-dropdown-text--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field {
+  min-block-size: var(--sf-ui-1--control-height);
+  --sf-dropdown-field--gap: var(--sf-space-1\/4);
+  --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  --sf-dropdown-field--padding-inline-end: var(--sf-ui-1--space-x);
+  --sf-dropdown-field--padding-inline-start: var(--sf-ui-1--space-x);
+  --sf-dropdown-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+}
+
+.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field {
+  min-block-size: var(--sf-ui-2--control-height);
+  --sf-dropdown-field--gap: var(--sf-space-1\/3);
+  --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+  --sf-dropdown-field--padding-inline-end: var(--sf-ui-2--space-x);
+  --sf-dropdown-field--padding-inline-start: var(--sf-ui-2--space-x);
+  --sf-dropdown-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+}
+
+/* The field fills the control, so its ring turns inwards. */
+.sf-dropdown:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+.sf-dropdown.open .sf-dropdown-field {
+  --sf-dropdown-field--background-color: var(--sf-surface-0);
+  --sf-dropdown-field--border-color: var(--sf-primary-active);
+}
+
+.sf-dropdown.sf-dropdown--text .sf-dropdown-field input::placeholder {
+  --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-dropdown.sf-dropdown--tag .sf-dropdown-tag-container {
+  --sf-dropdown-tag-container--gap: var(--sf-space-1\/3);
+}
+}
+
+/* A filled field reads as a field only by its fill, so while someone is typing
+   in it -- the list open or focus anywhere inside, by pointer or keyboard -- it becomes the
+   ordinary field: the surface of a bordered field and a visible boundary. The
+   fill comes back when focus leaves. Error, disabled and read-only fields keep
+   their own look. */
+@layer sf.components {
+  /* Doubled classes: it has to outrank the hover rule, which also matches while
+     the pointer that opened the list is still over the field. */
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error):not(:has(> .sf-dropdown-field > :disabled)):is(.open, :focus-within) .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+}

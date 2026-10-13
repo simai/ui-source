@@ -1,0 +1,16 @@
+// SIMAI Framework
+// https://simai.io
+
+// Scroll Backdrop Color
+
+$scroll-backdrop-color-array: (
+    'transparent': 'transparent',
+    'current': 'current',
+    'surface': 'surface-transparent-overlay',
+    'primary': 'primary-transparent-overlay',
+    'secondary': 'secondary-transparent-overlay',
+    'tertiary': 'tertiary-transparent-overlay',
+    'error': 'error-transparent-overlay',
+    'warning': 'warning-transparent-overlay',
+    'success': 'success-transparent-overlay',
+);

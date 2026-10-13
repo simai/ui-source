@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__text_measure' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+$mobile: xxl;
+
+// @include layer-priority(utility,$mobile) {
+    @include breakpoint-media($mobile) {
+        $infix: breakpoint-infix($mobile, $breakpoint-array);
+
+        // Text measure utilities
+        @each $measure-name, $measure-value in $text-measure-array {
+            .#{$infix}measure#{$measure-name} {
+                max-width: var(--sf-text--measure#{$measure-name});
+            }
+        }
+    }
+// }
+}

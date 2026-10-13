@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — anchored surfaces</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    for (const href of [`${assets}/core/css/core.css`, `${assets}/core/css/utility.full.css`]) document.write(`<link rel="stylesheet" href="${href}">`);
+    window.sfPath = assets;
+    window.sfSmartPath = view.get('smart');
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, smart: {base: true}, theme: false};
+  </script>
+  <style>
+    body { margin: 0; background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); min-block-size: 200vb; }
+    #stage { position: fixed; inset-inline: 0; padding: 0 var(--sf-space-1, 1rem); display: flex; gap: 1rem; align-items: flex-start; }
+    #country { inline-size: 16rem; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <label id="country" class="sf-country-code sf-country-code--size-1 flex flex-col" data-locale="ru" data-show-code="true" data-iso2="RU">
+      <span class="sf-country-code-label flex"><span class="sf-country-code-text">Телефон</span></span>
+      <span class="sf-country-code-field transition flex items-center"><span class="sf-country-code-left flex items-center"><span class="sf-country-code-flag-icon flex"></span><i class="sf-icon" aria-hidden="true">expand_more</i></span><input type="tel" value="+7 903 123-45-67"></span>
+    </label>
+    <span id="tip" class="sf-tooltip-anchor">
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1" data-tooltip><span class="sf-button-text-container">Подсказка</span></button>
+      <div class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1 sf-tooltip--arrow-bottom-center"><div class="sf-tooltip-content"><div class="sf-tooltip-wrap flex flex-col"><span class="sf-tooltip-text">Сохранит изменения без публикации</span></div><span class="sf-tooltip-tail" aria-hidden="true"></span></div></div>
+    </span>
+    <span id="stip" class="sf-tooltip-anchor">
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1" data-tooltip><span class="sf-button-text-container">Smart</span></button>
+      <sf-tooltip arrow="bottom-center" type="dark" text="Подсказка из Smart-компонента"></sf-tooltip>
+    </span>
+    <nav id="nav" aria-label="Разделы">
+      <ul class="sf-menu sf-menu--horizontal">
+        <li class="sf-menu-item"><a class="sf-menu-element" href="#about">О компании</a></li>
+        <li class="sf-menu-item" id="catalog">Каталог
+          <ul class="sf-menu">
+            <li class="sf-menu-item"><a class="sf-menu-element" href="#solutions">Решения</a></li>
+            <li class="sf-menu-item" id="products">Продукты
+              <ul class="sf-menu">
+                <li class="sf-menu-item"><a class="sf-menu-element" href="#framework">SIMAI Framework</a></li>
+                <li class="sf-menu-item"><a class="sf-menu-element" href="#docara">Docara</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      await customElements.whenDefined('sf-tooltip');
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

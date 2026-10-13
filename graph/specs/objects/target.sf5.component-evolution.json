@@ -1,0 +1,53 @@
+{
+  "id": "target.sf5.component-evolution",
+  "kind": "knowledge",
+  "subtype": "target_outcome",
+  "tz_role": "system",
+  "title": "Verified compatible SF5 Components and Smart projections",
+  "lifecycle": "accepted",
+  "semantic_digest": "sha256:190f642b9af5582845672cc90748008ecc0a415d97ee5bb89265f966564a2f75",
+  "source_refs": ["contract.sf5.component-evolution", "decision.sf5.component-evolution-accepted"],
+  "provider_execution_contract": {
+    "decision_refs": ["decision.sf5.component-evolution-accepted"],
+    "goal_binding": {
+      "goal_id": "goal.sf5.component-evolution",
+      "done_when_ids": ["done.sf5.corpus-reviewed", "done.sf5.defects-resolved", "done.sf5.integration-verified"]
+    },
+    "requirement_bindings": [
+      {"requirement_id": "requirement.sf5.component-scenarios", "acceptance_ids": ["acceptance.sf5.source-corpus"], "done_when_ids": ["done.sf5.corpus-reviewed"]},
+      {"requirement_id": "requirement.sf5.tokens-and-states", "acceptance_ids": ["acceptance.sf5.component-regressions"], "done_when_ids": ["done.sf5.defects-resolved"]},
+      {"requirement_id": "requirement.sf5.smart-projection", "acceptance_ids": ["acceptance.sf5.smart-dependencies"], "done_when_ids": ["done.sf5.corpus-reviewed", "done.sf5.defects-resolved"]},
+      {"requirement_id": "requirement.sf5.live-examples-and-contracts", "acceptance_ids": ["acceptance.sf5.build-static-browser"], "done_when_ids": ["done.sf5.integration-verified"]}
+    ],
+    "constraint_ids": ["constraint.sf5.compatibility", "constraint.sf5.source-ownership", "constraint.sf5.preserve-dirty"],
+    "non_goal_ids": ["non-goal.sf5.new-components", "non-goal.sf5.new-dependencies", "non-goal.sf5.global-federation"],
+    "deferred_boundary_ids": ["boundary.sf5.breaking-changes", "boundary.sf5.publication"],
+    "allowed_change_scope": [
+      {"repository_id": "project.ui-source.3dcd25947162", "owner_id": "sf5", "package_id": "simai/ui-source", "file_patterns": ["src/component/**", "src/smart/**", "src/core/**", "tests/**", "contracts/**", "docs/**", "graph/specs/**"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "simai/ui", "owner_id": "sf5", "package_id": "simai/ui", "file_patterns": ["distr/**", "contracts/**"], "actions": ["create", "modify", "test"]},
+      {"repository_id": "simai/ui-smart", "owner_id": "sf5", "package_id": "simai/ui-smart", "file_patterns": ["smart/**", "contracts/**"], "actions": ["create", "modify", "test"]},
+      {"repository_id": "project.ui-doc", "owner_id": "ui-doc", "package_id": "simai/ui-doc", "file_patterns": ["content/**", "examples/**", "documentation.lock.json", "simai-framework.lock.json"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "docara.unified", "owner_id": "docara", "package_id": "simai/docara", "file_patterns": ["src/**", "tests/**", "docs/**"], "actions": ["modify", "test", "document"]}
+    ],
+    "architecture_contract": {
+      "contract_ref": "contract.sf5.component-evolution",
+      "acceptance_ref": "decision.sf5.component-evolution-accepted",
+      "architecture_owner_id": "human.rim-zabarov",
+      "lifecycle": "accepted",
+      "owner_ids": ["sf5", "ui-doc", "docara"],
+      "component_ids": ["sf5.core", "sf5.components", "sf5.smart-components"],
+      "package_ids": ["simai/ui-source", "simai/ui-builder", "simai/ui", "simai/ui-smart", "simai/ui-doc", "simai/docara"],
+      "capability_ids": ["sf5.component-design-evolution"],
+      "ownership_boundaries": [
+        {"subject_ref": "simai/ui-source", "data_owner": "sf5", "access_owner": "sf5", "lifecycle_owner": "sf5", "interface_owner": "sf5", "runtime_owner": "sf5"},
+        {"subject_ref": "simai/ui-doc", "data_owner": "ui-doc", "access_owner": "ui-doc", "lifecycle_owner": "ui-doc", "interface_owner": "ui-doc", "runtime_owner": "docara"},
+        {"subject_ref": "simai/docara", "data_owner": "docara", "access_owner": "docara", "lifecycle_owner": "docara", "interface_owner": "docara", "runtime_owner": "docara"}
+      ],
+      "required_relations": ["sf5.smart-components->sf5.components"],
+      "allowed_relations": ["sf5.components->sf5.core"],
+      "forbidden_relations": [],
+      "required_dependencies": ["simai/ui-doc->simai/docara", "simai/docara->simai/ui", "simai/ui-smart->simai/ui"],
+      "forbidden_dependencies": []
+    }
+  }
+}

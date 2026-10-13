@@ -1,0 +1,79 @@
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-datepicker {
+    --sf-datepicker--inline-size: calc(var(--sf-ui-1--control-height) * 7 + var(--sf-space-1));
+    /* The whole calendar floats on step 3, not only its top band: on the plain
+       surface its body was the page's colour in the dark theme. */
+    background-color: var(--sf-datepicker--background-color, var(--sf-elevation-3--surface));
+    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+    border-end-end-radius: var(--sf-datepicker--border-bottom-right-radius, var(--sf-radius--surface));
+    border-end-start-radius: var(--sf-datepicker--border-bottom-left-radius, var(--sf-radius--surface));
+    border-start-end-radius: var(--sf-datepicker--border-top-right-radius, var(--sf-radius--surface));
+    border-start-start-radius: var(--sf-datepicker--border-top-left-radius, var(--sf-radius--surface));
+    box-shadow: var(--sf-datepicker--box-shadow, var(--sf-elevation-3--shadow));
+    inline-size: min(var(--sf-datepicker--inline-size), calc(100vi - var(--sf-space-2)));
+    padding-bottom: var(--sf-datepicker--padding-bottom, var(--sf-space-1\/3));
+    padding-inline-end: var(--sf-datepicker--padding-right, var(--sf-space-1\/3));
+    padding-inline-start: var(--sf-datepicker--padding-left, var(--sf-space-1\/3));
+    padding-top: var(--sf-datepicker--padding-top, var(--sf-space-1\/3));
+  }
+  .sf-datepicker .sf-datepicker-main {
+    --sf-datepicker-main--background-color: var(--sf-transparent);
+    background-color: var(--sf-datepicker-main--background-color);
+  }
+
+  .sf-datepicker .sf-datepicker-row {
+    --sf-datepicker-row--background-color: var(--sf-transparent);
+    background-color: var(--sf-datepicker-row--background-color);
+  }
+
+  .sf-datepicker .sf-datepicker-top {
+    --sf-datepicker-top--background-color: var(--sf-elevation-3--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+    --sf-datepicker-top--padding-bottom: var(--sf-space-1);
+    --sf-datepicker-top--padding-inline-end: var(--sf-space-1\/3);
+    --sf-datepicker-top--padding-inline-start: var(--sf-space-1\/3);
+    --sf-datepicker-top--padding-top: var(--sf-space-1);
+    background-color: var(--sf-datepicker-top--background-color);
+    padding-bottom: var(--sf-datepicker-top--padding-bottom);
+    padding-inline-end: var(--sf-datepicker-top--padding-inline-end);
+    padding-inline-start: var(--sf-datepicker-top--padding-inline-start);
+    padding-top: var(--sf-datepicker-top--padding-top);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .sf-datepicker .sf-datepicker-period {
+    min-inline-size: 0;
+  }
+
+  .sf-datepicker .sf-datepicker-weekday {
+    color: var(--sf-datepicker-weekday--color, var(--sf-on-surface-variant));
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/2);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1\/2);
+    padding-block: var(--sf-space-1\/4);
+    text-align: center;
+  }
+
+ .sf-datepicker .sf-datepicker-context {
+   /* Opaque, to cover the days under it, in the panel's own colour. */
+   --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-elevation-3--surface));
+   background: var(--sf-datepicker-context--background-color);
+   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+   z-index: var(--sf-z-index-2);
+ }
+
+
+
+
+}
+
+@layer sf.overrides {
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-error);
+  }
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-error);
+  }
+}

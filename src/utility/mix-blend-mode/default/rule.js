@@ -1,0 +1,1 @@
+SF.RuleLoader['mix-blend-mode/default'] = new RegExp("^(?:mix-blend-(?:color(?:-(?:burn|dodge))?|d(?:arken|ifference)|exclusion|h(?:ard-light|ue)|l(?:ighten|uminosity)|multiply|normal|overlay|plus-(?:darker|lighter)|s(?:aturation|creen|oft-light)))(?![\\s\\S])");

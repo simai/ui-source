@@ -1,0 +1,19 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.range-slider",
+  "title": "Range Slider reference",
+  "summary": "Deterministic reference fixture for sf-range-slider.",
+  "locale": "ru",
+  "props": {
+    "min": "0",
+    "max": "100",
+    "value": "20,80",
+    "multiple": true,
+    "prefix": "от ",
+    "suffix": " %",
+    "label": "both"
+  },
+  "children": [],
+  "state": "default"
+}

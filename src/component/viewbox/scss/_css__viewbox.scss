@@ -1,0 +1,82 @@
+@use 'var__viewbox' as *;
+// SIMAI Framework
+// https://simai.io
+
+// VIEWBOX
+
+.fit{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    inset-inline-start: 0
+}
+
+.view, 
+.sf-viewbox-wrap {
+overflow: hidden;
+position: relative;
+cursor: default;
+
+.sf-viewbox, 
+.mask,
+.content,
+.decor{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    inset-inline-start: 0
+}
+
+.sf-viewbox-video {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    background-size: cover;
+    transition: var(--sf-duration-slow) opacity;
+}
+
+/* The background video fades on the slow step, the longest the scale offers.
+   A second -- what it used to take -- was twice that and belonged to nothing.
+   Long or short, the fade still has to stop when asked. */
+@media (prefers-reduced-motion: reduce) {
+    .sf-viewbox-video {
+        transition-duration: 0s;
+    }
+}
+
+@media(min-aspect-ratio:16/9) {
+    .sf-viewbox-video{
+        width: 100%;
+        height: auto;
+    }
+}
+img, video {
+    display: block;
+    position: relative
+}
+
+.sf-viewbox-hover {
+    opacity: 0;
+}
+
+&:hover > .sf-viewbox-hover {
+    opacity: 1;
+}
+}
+
+
+// Aspect ratio size    
+@each $ratio-name, $ration-value in $viewbox-ratio-array {
+.sf-viewbox-#{$ratio-name}{
+    padding-top: #{$ration-value};
+}
+}

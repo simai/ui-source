@@ -1,0 +1,33 @@
+{
+  "id": "settings-personal-compare-and-set",
+  "intent": "settings.save_personal",
+  "capability": null,
+  "summary": "Personal column settings are written against the layer revision.",
+  "given": {
+    "column_settings": {
+      "layers": {
+        "personal": {
+          "revision": "s2"
+        }
+      }
+    }
+  },
+  "when": {
+    "intent": "settings.save_personal",
+    "payload": {
+      "columnSettings": {
+        "name": {
+          "visible": false
+        }
+      },
+      "base_revision": "s1"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "A save is never a blind replace; a reset is the same write with the package layer as its value."
+  }
+}

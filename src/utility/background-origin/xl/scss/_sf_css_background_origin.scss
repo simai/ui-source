@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var_background_origin' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND
+
+$infix: xl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $bg-origin-name, $bg-origin-value in $bg-origin-array {
+            .#{$infix}bg-origin-#{$bg-origin-name} {
+                background-origin: #{$bg-origin-value};
+            }
+        }
+    }
+// }
+}

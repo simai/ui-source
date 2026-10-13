@@ -1,0 +1,74 @@
+@layer sf.components {
+.sf-context-menu {
+  --sf-context-menu-viewport-space: var(--sf-space-1\/2);
+  // Keyboard menu navigation must reveal its focused item immediately.
+  scroll-behavior: auto;
+  // A menu has no tail (owner, 2026-10-12): the tail never read as one piece
+  // with the panel. The variables stay at zero for hosts that still add them
+  // into their own placement arithmetic.
+  --sf-context-menu-tail-size: 0px;
+  --sf-context-menu-tail-half: 0px;
+  --sf-context-menu-tail-corner-offset: 0px;
+}
+
+.sf-context-menu > .relative {
+  display: flex;
+  min-inline-size: 0;
+  min-block-size: 0;
+  max-inline-size: var(--sf-context-menu-available-inline-size, none);
+  max-block-size: var(--sf-context-menu-available-block-size, none);
+}
+}
+
+@layer sf.states {
+/* A menu's items start their content where a field of their size starts its
+   content, the axis every list in a panel shares (a dropdown's options sit on
+   it to line up with their field): the item gives back the panel's inset and
+   adds the field border. Measured before: the content sat 3px right of a
+   dropdown list's.
+   The insets are published on the panel, so anything else a window puts in it
+   (a search field, a block of buttons) reads the same axis instead of copying
+   the arithmetic: item-inset is the content edge, label-inset where a label
+   after a picture or text in a text-only row starts. */
+/* An item is a row that starts at the axis, whatever its markup says: a button
+   written without the flex class is a block, and a block button centres its
+   text, so a short item's label sat further right than a long one's. A Smart
+   menu renders its items inside sf-button hosts, so both shapes are named. */
+.sf-context-menu .sf-context-menu-content > .sf-button,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: start;
+}
+
+.sf-context-menu .sf-context-menu-content {
+  --sf-context-menu--item-inset-start-1\/2: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
+  --sf-context-menu--item-inset-end-1\/2: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  --sf-context-menu--label-inset-1\/2: calc(var(--sf-context-menu--item-inset-start-1\/2) + var(--sf-ui-1\/2--text-space-x));
+  --sf-context-menu--item-inset-start-1: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
+  --sf-context-menu--item-inset-end-1: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  --sf-context-menu--label-inset-1: calc(var(--sf-context-menu--item-inset-start-1) + var(--sf-ui-1--text-space-x));
+  --sf-context-menu--item-inset-start-2: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-start, 0px));
+  --sf-context-menu--item-inset-end-2: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-context-menu-content--padding-inline-end, 0px));
+  --sf-context-menu--label-inset-2: calc(var(--sf-context-menu--item-inset-start-2) + var(--sf-ui-2--text-space-x));
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button--size-1\/2,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button--size-1\/2 {
+  --sf-button--padding-inline-start: var(--sf-context-menu--item-inset-start-1\/2);
+  --sf-button--padding-inline-end: var(--sf-context-menu--item-inset-end-1\/2);
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button--size-1,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button--size-1 {
+  --sf-button--padding-inline-start: var(--sf-context-menu--item-inset-start-1);
+  --sf-button--padding-inline-end: var(--sf-context-menu--item-inset-end-1);
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button--size-2,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button--size-2 {
+  --sf-button--padding-inline-start: var(--sf-context-menu--item-inset-start-2);
+  --sf-button--padding-inline-end: var(--sf-context-menu--item-inset-end-2);
+}
+}

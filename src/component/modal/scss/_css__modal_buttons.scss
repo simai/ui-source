@@ -1,0 +1,59 @@
+@layer sf.components {
+  .sf-modal-header-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sf-modal-header-action {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    min-block-size: var(--sf-ui-1\/3--control-height);
+    min-inline-size: var(--sf-ui-1\/3--control-height);
+  }
+
+  .sf-modal-close-button {
+    --sf-modal-close-right: var(--sf-space-1\/3);
+    --sf-modal-close-top: var(--sf-space-1\/3);
+    right: var(--sf-modal-close-right);
+    top: var(--sf-modal-close-top);
+    left: var(--sf-modal-close-left);
+    bottom: var(--sf-modal-close-bottom);
+  }
+
+  .sf-modal-close-button--inline-end {
+    left: auto;
+    right: auto;
+    inset-inline-end: var(
+      --sf-modal-close-inline-end,
+      var(--sf-modal-close-right)
+    );
+  }
+
+  .sf-modal-hide-button {
+    --sf-modal-hide-right: var(--sf-space-2);
+    --sf-modal-hide-top: var(--sf-space-1\/3);
+    right: var(--sf-modal-hide-right);
+    top: var(--sf-modal-hide-top);
+    left: var(--sf-modal-hide-left);
+    bottom: var(--sf-modal-hide-bottom);
+  }
+
+  .sf-modal-hide-button--inline-end {
+    left: auto;
+    right: auto;
+    inset-inline-end: var(
+      --sf-modal-hide-inline-end,
+      var(--sf-modal-hide-right)
+    );
+  }
+
+  .sf-modal-hide-icon {
+    background-color: currentColor;
+    display: block;
+    height: var(--sf-border-width-2, 2px);
+    width: var(--sf-space-1);
+  }
+}

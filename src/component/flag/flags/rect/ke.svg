@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="68 548 28 20" fill="none" role="img">
+<g id="Country=KE">
+<rect id="Mask_240" x="68" y="548" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask110_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="68" y="548" width="28" height="20">
+<rect id="Mask_241" x="68" y="548" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask110_8205_11341)">
+<path id="Rectangle 2_166" fill-rule="evenodd" clip-rule="evenodd" d="M68 553.333H96V548H68V553.333Z" fill="#333333"/>
+<path id="Rectangle 2_167" fill-rule="evenodd" clip-rule="evenodd" d="M68 568H96V562.667H68V568Z" fill="#6DA544"/>
+<path id="Rectangle 2_168" fill-rule="evenodd" clip-rule="evenodd" d="M68 562.667H96V553.333H68V562.667Z" fill="#F0F0F0"/>
+<path id="Rectangle 2 Copy 4_8" fill-rule="evenodd" clip-rule="evenodd" d="M68 561.333H96V554.667H68V561.333Z" fill="#D80027"/>
+<g id="Oval 225">
+<path id="Mask_242" fill-rule="evenodd" clip-rule="evenodd" d="M82.0003 564.667C83.3337 564.667 85.3337 562.05 85.3337 558C85.3337 553.95 83.3337 551.333 82.0003 551.333C80.667 551.333 78.667 553.95 78.667 558C78.667 562.05 80.667 564.667 82.0003 564.667Z" fill="#A2001D"/>
+<mask id="mask111_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="78" y="551" width="8" height="14">
+<path id="Mask_243" fill-rule="evenodd" clip-rule="evenodd" d="M82.0003 564.667C83.3337 564.667 85.3337 562.05 85.3337 558C85.3337 553.95 83.3337 551.333 82.0003 551.333C80.667 551.333 78.667 553.95 78.667 558C78.667 562.05 80.667 564.667 82.0003 564.667Z" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask111_8205_11341)">
+<path id="Mask Copy_25" fill-rule="evenodd" clip-rule="evenodd" d="M76.6673 565.334C78.5083 565.334 80.0007 562.05 80.0007 558C80.0007 553.95 78.5083 550.667 76.6673 550.667C74.8264 550.667 73.334 553.95 73.334 558C73.334 562.05 74.8264 565.334 76.6673 565.334Z" fill="#333333"/>
+<path id="Mask Copy 2" fill-rule="evenodd" clip-rule="evenodd" d="M87.3333 565.334C89.1743 565.334 90.6667 562.05 90.6667 558C90.6667 553.95 89.1743 550.667 87.3333 550.667C85.4924 550.667 84 553.95 84 558C84 562.05 85.4924 565.334 87.3333 565.334Z" fill="#333333"/>
+<g id="Oval 228" filter="url(#filter14_d_8205_11341)">
+<path d="M82.001 560C82.369 560.001 82.667 561.195 82.667 562.667C82.667 564.139 82.369 565.333 82.001 565.334C81.6328 565.334 81.334 564.14 81.334 562.667C81.334 561.194 81.6328 560 82.001 560ZM82.001 556C82.369 556.001 82.6669 556.896 82.667 558C82.667 559.104 82.369 559.999 82.001 560C81.6328 560 81.334 559.105 81.334 558C81.334 556.896 81.6328 556 82.001 556ZM82.001 550.667C82.369 550.668 82.667 551.862 82.667 553.334C82.6669 554.806 82.369 555.999 82.001 556C81.6328 556 81.334 554.807 81.334 553.334C81.334 551.861 81.6328 550.667 82.001 550.667Z" fill="url(#paint17_linear_8205_11341)"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs><filter id="filter14_d_8205_11341" x="81.334" y="550.667" width="1.33301" height="15.667" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8205_11341"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8205_11341" result="shape"/>
+</filter><linearGradient id="paint17_linear_8205_11341" x1="81.334" y1="550.667" x2="81.334" y2="565.334" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F0F0F0"/>
+</linearGradient></defs>
+</svg>

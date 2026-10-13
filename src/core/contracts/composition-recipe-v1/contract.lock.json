@@ -1,0 +1,54 @@
+{
+  "schema": "simai.composition.recipe-contract-lock.v1",
+  "version": "1.0.1",
+  "architecture": "accepted",
+  "implementation": "candidate",
+  "sourceBaseRevision": "f78cf8399c89d8091c2784d41f493cdb26620151",
+  "contractDigest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd",
+  "normativeFiles": {
+    "README.md": "sha256:148b5fa148644cf4f814c511db664c40efc858226a2d8cbd7bf501c4e5ee7e0d",
+    "common.schema.json": "sha256:09945cc8485e7b1a5f8ee8add6938da720ffc6c434c6e86c13fe6f98a95b2fe4",
+    "dependencies.schema.json": "sha256:a2f3f371ace795f22bf4fb293e0005dcecbbc6c340cb669ba8e274c6e0b745e8",
+    "fixtures/canonicalization.json": "sha256:ab6e3aef30bbceef84bdd1314b301d20fe1196b32d6d83f59feb32e376b44239",
+    "fixtures/limit-boundaries.json": "sha256:c507d0f534868fea42c735e9f741aa228699a487652d4212feba9a4d40a04eb2",
+    "fixtures/schema-negative.json": "sha256:66d4611c4ed4699ff86d1ec3de26cfcc6e52307766b8c7844113dff838737401",
+    "inputs.schema.json": "sha256:e83e5c8ece50c4641b58256b852a3fecc33a786919279d85de5c7689d32d2af1",
+    "limits.json": "sha256:2a8b3d66ed8f4b183f721ffe257f472cfeb835c6e9829d374a3a420122025e10",
+    "manifest.schema.json": "sha256:e897974dcdb1e2428f0f808a7fa9ad7a8eef6d79128d24016a5e21fc372b730c",
+    "recipe.schema.json": "sha256:63d2f7d506be22b3f4a6060306a4d3d08e562d3720d82f13c41e69bc6ce3ffb3"
+  },
+  "fixtures": {
+    "fixtures/header-switch.json": "sha256:a5a3105d42e3403d5d4a99d86155b4a2d5609e54abc7c9638e56c2bb1f7e26eb"
+  },
+  "checks": {
+    "checks/canonical.php": "sha256:aa92760f31c012e70f2e8b405786840d9cf0ed64a28f751c4412467eb574979a",
+    "checks/current-runtime.mjs": "sha256:b53c9af3ed69e31f00969a68e4f7781c1b28f34cde6c358ecd704690bc55f1ab",
+    "checks/schemas.py": "sha256:14eef5961d8e7cfeca4162b793727fb66d8b78f9d2aa68bc72673c346aca2f91"
+  },
+  "candidate": {
+    "branch": "codex/composition-recipe-v1",
+    "runtime": "src/core/js/composition/recipe.mjs",
+    "api": [
+      "SF.Composition.parseRecipeJson",
+      "SF.Composition.resolveRecipe",
+      "SF.Composition.Recipe"
+    ],
+    "files": {
+      "src/core/js/composition/canonical.mjs": "sha256:aa6b44b2b81fc71040a32c6d8521201b7b8f23881ba2844c5a749b2e6ba3587c",
+      "src/core/js/composition/index.mjs": "sha256:ab7c520156e25a600caa9a1f168202f04d6c6689cefa666f6983b1ff5ec06cde",
+      "src/core/js/composition/recipe.mjs": "sha256:26663eecdbeed1e1950e7170b6bc00aa502a98bcd637c9bc388d146737bddfb6",
+      "tests/composition-recipe.contract.test.mjs": "sha256:8cd0e9f441d167dc865295c57bfa9afd3b8738419378b2d8fb4f96436da10a57"
+    },
+    "rendererDigest": "sha256:4b13c277eceabbf50d27a97c0c6813fbbb4d37967b296aa0393134a49e18cb49"
+  },
+  "baseline": {
+    "registryDigest": "sha256:34784472b97fd1adf254248d80ef3500d5815107459d0b11cb4d7a99783e3c5b",
+    "rendererDigest": "sha256:b658c13171be6f0089170bcc4b2e6ce586c4c7b3b1693b3588ce68ef947687de",
+    "files": {
+      "src/core/js/composition/index.mjs": "sha256:7ef095ba699e042319e37105d764aeb371132fc9f6eb96de8eb801a08fa28ee3",
+      "src/core/js/composition/builtins.mjs": "sha256:999b7b49f6e5aec5418be1119b8cd634ead6f317154bc771971bbda3fd82355b",
+      "src/core/contracts/composition-document.v1.schema.json": "sha256:a3eb3e2d2dc6505a9848174da60e0afab812b38b809e45a1fb583d2b6c2e6d80",
+      "src/core/contracts/composition-type-manifest.v1.schema.json": "sha256:31c69a8f36f6a1285531588d1ca00883ebe503b04361718afb300d1b05a114d6"
+    }
+  }
+}

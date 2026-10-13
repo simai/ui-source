@@ -1,0 +1,3444 @@
+{
+  "capability": "layout.regions",
+  "cases": [
+    {
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:e1ce3b80d4a363c64b5a624f95383f3a8901876d9fbdf3f77039e836355c813c",
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><header class=\"sf-composition-region\" data-sf-composition-id=\"r-header\" data-sf-region=\"header\" data-sf-region-placement=\"block\" data-sf-region-sticky=\"\"><p data-sf-composition-id=\"t-header\">Шапка</p></header><main class=\"sf-composition-region\" data-sf-composition-id=\"r-main\" data-sf-region=\"main\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"t-main\">Основное</p></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-aside\" data-sf-region=\"aside\" data-sf-region-placement=\"end\" aria-label=\"Боковая\"><p data-sf-composition-id=\"t-aside\">Сбоку</p></aside><footer class=\"sf-composition-region\" data-sf-composition-id=\"r-footer\" data-sf-region=\"footer\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-footer\">Подвал</p></footer></div></div>",
+      "id": "positive.four-regions",
+      "regions": [
+        {
+          "digest": "sha256:c2506a9069917a856a40401c1b23c1af52482c9758d42e63a4038ed66a69f8a8",
+          "landmark": "banner",
+          "layout": "shell",
+          "name": "header",
+          "node": "r-header",
+          "placement": "block"
+        },
+        {
+          "digest": "sha256:c60d997fedf4c6862be75903b911a5945ff63c7595c2b8a0c35b49ecb0bc86c7",
+          "landmark": "main",
+          "layout": "shell",
+          "name": "main",
+          "node": "r-main",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:7274d77dec48ba6ee2a8fc8b5fcb1df21058c332923cad0fe06ba16b1b3883a6",
+          "landmark": "complementary",
+          "layout": "shell",
+          "name": "aside",
+          "node": "r-aside",
+          "placement": "end"
+        },
+        {
+          "digest": "sha256:f7e1f3bdecb69c387b5839d5f6bb2b74a615a34ff1a4a5f013fe375edd5bff97",
+          "landmark": "contentinfo",
+          "layout": "shell",
+          "name": "footer",
+          "node": "r-footer",
+          "placement": "block"
+        }
+      ]
+    },
+    {
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"tool\",\"slots\":{\"regions\":[{\"id\":\"r-toolbar\",\"props\":{\"landmark\":\"none\",\"name\":\"toolbar\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Панель\"}]},\"id\":\"t-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-list\",\"props\":{\"label\":\"Записи\",\"landmark\":\"region\",\"name\":\"records\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Список\"}]},\"id\":\"t-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Подробности\",\"landmark\":\"region\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Карточка\"}]},\"id\":\"t-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:0dbaceec67a7ff2b4b96cb826838b90c5c36c3421ccec8e8f73dce3e2e042d63",
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "tool",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-toolbar",
+                "props": {
+                  "landmark": "none",
+                  "name": "toolbar"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Панель"
+                          }
+                        ]
+                      },
+                      "id": "t-1",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-list",
+                "props": {
+                  "label": "Записи",
+                  "landmark": "region",
+                  "name": "records",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Список"
+                          }
+                        ]
+                      },
+                      "id": "t-2",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-detail",
+                "props": {
+                  "label": "Подробности",
+                  "landmark": "region",
+                  "name": "detail",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Карточка"
+                          }
+                        ]
+                      },
+                      "id": "t-3",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"tool\"><div class=\"sf-composition-regions-grid\"><div class=\"sf-composition-region\" data-sf-composition-id=\"r-toolbar\" data-sf-region=\"toolbar\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-1\">Панель</p></div><section class=\"sf-composition-region\" data-sf-composition-id=\"r-list\" data-sf-region=\"records\" data-sf-region-placement=\"center\" aria-label=\"Записи\"><p data-sf-composition-id=\"t-2\">Список</p></section><section class=\"sf-composition-region\" data-sf-composition-id=\"r-detail\" data-sf-region=\"detail\" data-sf-region-placement=\"end\" aria-label=\"Подробности\"><p data-sf-composition-id=\"t-3\">Карточка</p></section></div></div>",
+      "id": "positive.author-chosen-names",
+      "regions": [
+        {
+          "digest": "sha256:3a78805a431d5fda00500709a3771b5e160db8a4de648a54ec428b4ac688e3e1",
+          "landmark": "none",
+          "layout": "tool",
+          "name": "toolbar",
+          "node": "r-toolbar",
+          "placement": "block"
+        },
+        {
+          "digest": "sha256:62dd9410a83e002e21a969d84d1d256dc6135b5b1c7bdafe5f6694f14ad6158e",
+          "landmark": "region",
+          "layout": "tool",
+          "name": "records",
+          "node": "r-list",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:28aba3b30abc89b752aa9f8398cf67f890baaa368517625ba60ea55320686cb7",
+          "landmark": "region",
+          "layout": "tool",
+          "name": "detail",
+          "node": "r-detail",
+          "placement": "end"
+        }
+      ]
+    },
+    {
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"single\",\"slots\":{\"regions\":[{\"id\":\"r-only\",\"props\":{\"landmark\":\"main\",\"name\":\"content\"},\"slots\":{\"default\":[]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:b347eb9ffc01f300c0086f1bd8ef083c56560091aca295a02a620e1292e527f6",
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "single",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-only",
+                "props": {
+                  "landmark": "main",
+                  "name": "content"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"single\"><div class=\"sf-composition-regions-grid\"><main class=\"sf-composition-region\" data-sf-composition-id=\"r-only\" data-sf-region=\"content\" data-sf-region-placement=\"block\"></main></div></div>",
+      "id": "positive.only-main-region",
+      "regions": [
+        {
+          "digest": "sha256:1d6a5e2a54e90832d1f3b1f8d751e50b7248c69c1a76d405330606ad799bcd95",
+          "landmark": "main",
+          "layout": "single",
+          "name": "content",
+          "node": "r-only",
+          "placement": "block"
+        }
+      ]
+    },
+    {
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"},{\"id\":\"inner\",\"slots\":{\"regions\":[{\"id\":\"i-a\",\"props\":{\"label\":\"Первичное\",\"landmark\":\"region\",\"name\":\"primary\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"А\"}]},\"id\":\"i-t1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"i-b\",\"props\":{\"label\":\"Вторичное\",\"landmark\":\"complementary\",\"name\":\"secondary\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Б\"}]},\"id\":\"i-t2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:de7e5454ffb1da96b006656e0b86afcd36e18a89045ab8066bf7a2ad495c627d",
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    },
+                    {
+                      "id": "inner",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "i-a",
+                            "props": {
+                              "label": "Первичное",
+                              "landmark": "region",
+                              "name": "primary",
+                              "placement": "center"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "type": "text",
+                                        "value": "А"
+                                      }
+                                    ]
+                                  },
+                                  "id": "i-t1",
+                                  "type": "content.paragraph"
+                                }
+                              ]
+                            },
+                            "type": "layout.region"
+                          },
+                          {
+                            "id": "i-b",
+                            "props": {
+                              "label": "Вторичное",
+                              "landmark": "complementary",
+                              "name": "secondary",
+                              "placement": "end"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "type": "text",
+                                        "value": "Б"
+                                      }
+                                    ]
+                                  },
+                                  "id": "i-t2",
+                                  "type": "content.paragraph"
+                                }
+                              ]
+                            },
+                            "type": "layout.region"
+                          }
+                        ]
+                      },
+                      "type": "layout.regions"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><header class=\"sf-composition-region\" data-sf-composition-id=\"r-header\" data-sf-region=\"header\" data-sf-region-placement=\"block\" data-sf-region-sticky=\"\"><p data-sf-composition-id=\"t-header\">Шапка</p></header><main class=\"sf-composition-region\" data-sf-composition-id=\"r-main\" data-sf-region=\"main\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"t-main\">Основное</p><div class=\"sf-composition-regions\" data-sf-composition-id=\"inner\"><div class=\"sf-composition-regions-grid\"><section class=\"sf-composition-region\" data-sf-composition-id=\"i-a\" data-sf-region=\"primary\" data-sf-region-placement=\"center\" aria-label=\"Первичное\"><p data-sf-composition-id=\"i-t1\">А</p></section><aside class=\"sf-composition-region\" data-sf-composition-id=\"i-b\" data-sf-region=\"secondary\" data-sf-region-placement=\"end\" aria-label=\"Вторичное\"><p data-sf-composition-id=\"i-t2\">Б</p></aside></div></div></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-aside\" data-sf-region=\"aside\" data-sf-region-placement=\"end\" aria-label=\"Боковая\"><p data-sf-composition-id=\"t-aside\">Сбоку</p></aside><footer class=\"sf-composition-region\" data-sf-composition-id=\"r-footer\" data-sf-region=\"footer\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-footer\">Подвал</p></footer></div></div>",
+      "id": "positive.nested-layout-inside-main",
+      "regions": [
+        {
+          "digest": "sha256:c2506a9069917a856a40401c1b23c1af52482c9758d42e63a4038ed66a69f8a8",
+          "landmark": "banner",
+          "layout": "shell",
+          "name": "header",
+          "node": "r-header",
+          "placement": "block"
+        },
+        {
+          "digest": "sha256:e5efd694090bacd51a548a2e72d993e0e308dfe4b5e913beb5010ba173bd93a0",
+          "landmark": "main",
+          "layout": "shell",
+          "name": "main",
+          "node": "r-main",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:c176b1b1fc5f9762c7c5a479746215e325c5c297253af728519273d90db1e035",
+          "landmark": "region",
+          "layout": "inner",
+          "name": "primary",
+          "node": "i-a",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:f6391b0c01768e03d51e56827a82a4fa7c7b29c0366f037d0156bba5867c117b",
+          "landmark": "complementary",
+          "layout": "inner",
+          "name": "secondary",
+          "node": "i-b",
+          "placement": "end"
+        },
+        {
+          "digest": "sha256:7274d77dec48ba6ee2a8fc8b5fcb1df21058c332923cad0fe06ba16b1b3883a6",
+          "landmark": "complementary",
+          "layout": "shell",
+          "name": "aside",
+          "node": "r-aside",
+          "placement": "end"
+        },
+        {
+          "digest": "sha256:f7e1f3bdecb69c387b5839d5f6bb2b74a615a34ff1a4a5f013fe375edd5bff97",
+          "landmark": "contentinfo",
+          "layout": "shell",
+          "name": "footer",
+          "node": "r-footer",
+          "placement": "block"
+        }
+      ]
+    },
+    {
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"band\",\"slots\":{\"regions\":[{\"id\":\"b-start\",\"props\":{\"label\":\"Навигация\",\"landmark\":\"navigation\",\"name\":\"start\",\"placement\":\"start\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"1\"}]},\"id\":\"b-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-center\",\"props\":{\"landmark\":\"main\",\"name\":\"center\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"2\"}]},\"id\":\"b-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-end\",\"props\":{\"label\":\"Дополнительно\",\"landmark\":\"complementary\",\"name\":\"end\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"3\"}]},\"id\":\"b-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:234eb4d38b463bf0df17c9026d152fbe73fdf1219bd06fe604ecebbdda1e249d",
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "band",
+          "slots": {
+            "regions": [
+              {
+                "id": "b-start",
+                "props": {
+                  "label": "Навигация",
+                  "landmark": "navigation",
+                  "name": "start",
+                  "placement": "start"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      "id": "b-1",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "b-center",
+                "props": {
+                  "landmark": "main",
+                  "name": "center",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "2"
+                          }
+                        ]
+                      },
+                      "id": "b-2",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "b-end",
+                "props": {
+                  "label": "Дополнительно",
+                  "landmark": "complementary",
+                  "name": "end",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "3"
+                          }
+                        ]
+                      },
+                      "id": "b-3",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"band\"><div class=\"sf-composition-regions-grid\"><nav class=\"sf-composition-region\" data-sf-composition-id=\"b-start\" data-sf-region=\"start\" data-sf-region-placement=\"start\" aria-label=\"Навигация\"><p data-sf-composition-id=\"b-1\">1</p></nav><main class=\"sf-composition-region\" data-sf-composition-id=\"b-center\" data-sf-region=\"center\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"b-2\">2</p></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"b-end\" data-sf-region=\"end\" data-sf-region-placement=\"end\" aria-label=\"Дополнительно\"><p data-sf-composition-id=\"b-3\">3</p></aside></div></div>",
+      "id": "positive.start-center-end-band",
+      "regions": [
+        {
+          "digest": "sha256:799a7473c4693e662b2ff0aab315012090838341542259deb96d28695c803d3e",
+          "landmark": "navigation",
+          "layout": "band",
+          "name": "start",
+          "node": "b-start",
+          "placement": "start"
+        },
+        {
+          "digest": "sha256:dc1833ccc9ec662d675fd8115ed105a28bff0b65661b052a288d2cf0ec2cdc79",
+          "landmark": "main",
+          "layout": "band",
+          "name": "center",
+          "node": "b-center",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:6b9d3c6769834d9dd60e5516d32f7593d8ef533d2ce89936aa40f7ac6bafec0b",
+          "landmark": "complementary",
+          "layout": "band",
+          "name": "end",
+          "node": "b-end",
+          "placement": "end"
+        }
+      ]
+    },
+    {
+      "diagnostics": [
+        "slot_unknown"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "header": [
+              {
+                "data": {
+                  "content": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                },
+                "id": "x",
+                "type": "content.paragraph"
+              }
+            ],
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-slot"
+    },
+    {
+      "diagnostics": [
+        "slot_child_type_forbidden"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "data": {
+                  "content": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                },
+                "id": "x",
+                "type": "content.paragraph"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.non-region-child"
+    },
+    {
+      "diagnostics": [
+        "region_parent_invalid"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "page",
+          "slots": {
+            "default": [
+              {
+                "id": "r",
+                "props": {
+                  "landmark": "none",
+                  "name": "lost"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.section"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.region-outside-layout"
+    },
+    {
+      "diagnostics": [
+        "region_name_duplicate"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "main",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.duplicate-name"
+    },
+    {
+      "diagnostics": [
+        "schema_pattern"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "Header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.invalid-name"
+    },
+    {
+      "diagnostics": [
+        "schema_enum"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "hero",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-landmark"
+    },
+    {
+      "diagnostics": [
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "color": "red",
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-prop"
+    },
+    {
+      "diagnostics": [
+        "executable_or_secret_field_forbidden",
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "class": "hero",
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.executable-prop"
+    },
+    {
+      "diagnostics": [
+        "region_landmark_duplicate"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "landmark": "main",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.second-main"
+    },
+    {
+      "diagnostics": [
+        "region_label_required",
+        "region_landmark_context"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    },
+                    {
+                      "id": "inner",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "i-banner",
+                            "props": {
+                              "landmark": "banner",
+                              "name": "inner-header"
+                            },
+                            "slots": {
+                              "default": []
+                            },
+                            "type": "layout.region"
+                          }
+                        ]
+                      },
+                      "type": "layout.regions"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.banner-inside-landmark"
+    },
+    {
+      "diagnostics": [
+        "region_landmark_context"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "page",
+          "slots": {
+            "default": [
+              {
+                "id": "inner",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "i-main",
+                      "props": {
+                        "landmark": "main",
+                        "name": "main"
+                      },
+                      "slots": {
+                        "default": []
+                      },
+                      "type": "layout.region"
+                    }
+                  ]
+                },
+                "type": "layout.regions"
+              }
+            ]
+          },
+          "type": "layout.page"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.main-inside-page"
+    },
+    {
+      "diagnostics": [
+        "region_label_required"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "landmark": "region",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.region-landmark-without-label"
+    },
+    {
+      "diagnostics": [
+        "region_label_required"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "pair",
+          "slots": {
+            "regions": [
+              {
+                "id": "p-a",
+                "props": {
+                  "landmark": "region",
+                  "name": "a"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "p-b",
+                "props": {
+                  "landmark": "region",
+                  "name": "b"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.two-unlabeled-region-landmarks"
+    },
+    {
+      "diagnostics": [
+        "region_label_forbidden"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "none",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.none-landmark-with-label"
+    },
+    {
+      "diagnostics": [
+        "region_label_duplicate"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside-2",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside-two",
+                  "placement": "block"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.repeated-landmark-same-label"
+    },
+    {
+      "diagnostics": [
+        "region_order_invalid"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "start"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.visual-order"
+    },
+    {
+      "diagnostics": [
+        "region_cardinality"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.cardinality-min"
+    },
+    {
+      "diagnostics": [
+        "region_cardinality"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "max_items": 0,
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.cardinality-max"
+    },
+    {
+      "diagnostics": [
+        "region_bounds_invalid"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "max_items": 1,
+                  "min_items": 3,
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.bounds-inverted"
+    },
+    {
+      "diagnostics": [
+        "region_child_category_forbidden"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "accepts": [
+                    "smart"
+                  ],
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.category-not-accepted"
+    },
+    {
+      "diagnostics": [
+        "slot_cardinality"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "many",
+          "slots": {
+            "regions": [
+              {
+                "id": "m-0",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-0"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-1",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-1"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-2",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-2"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-3",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-3"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-4",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-4"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-5",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-5"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-6",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-6"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-7",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-7"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-8",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-8"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-9",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-9"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-10",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-10"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-11",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-11"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "m-12",
+                "props": {
+                  "landmark": "none",
+                  "name": "area-12"
+                },
+                "slots": {
+                  "default": []
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.too-many-regions"
+    },
+    {
+      "diagnostics": [
+        "slot_cardinality"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "empty",
+          "slots": {
+            "regions": []
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.empty-layout"
+    },
+    {
+      "diagnostics": [
+        "region_nesting_limit"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "n-1",
+          "slots": {
+            "regions": [
+              {
+                "id": "n-1-r",
+                "props": {
+                  "landmark": "none",
+                  "name": "deep"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "id": "n-2",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "n-2-r",
+                            "props": {
+                              "landmark": "none",
+                              "name": "deep"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "n-3",
+                                  "slots": {
+                                    "regions": [
+                                      {
+                                        "id": "n-3-r",
+                                        "props": {
+                                          "landmark": "none",
+                                          "name": "deep"
+                                        },
+                                        "slots": {
+                                          "default": [
+                                            {
+                                              "id": "n-4",
+                                              "slots": {
+                                                "regions": [
+                                                  {
+                                                    "id": "n-4-r",
+                                                    "props": {
+                                                      "landmark": "none",
+                                                      "name": "deep"
+                                                    },
+                                                    "slots": {
+                                                      "default": [
+                                                        {
+                                                          "id": "n-5",
+                                                          "slots": {
+                                                            "regions": [
+                                                              {
+                                                                "id": "n-5-r",
+                                                                "props": {
+                                                                  "landmark": "none",
+                                                                  "name": "deep"
+                                                                },
+                                                                "slots": {
+                                                                  "default": []
+                                                                },
+                                                                "type": "layout.region"
+                                                              }
+                                                            ]
+                                                          },
+                                                          "type": "layout.regions"
+                                                        }
+                                                      ]
+                                                    },
+                                                    "type": "layout.region"
+                                                  }
+                                                ]
+                                              },
+                                              "type": "layout.regions"
+                                            }
+                                          ]
+                                        },
+                                        "type": "layout.region"
+                                      }
+                                    ]
+                                  },
+                                  "type": "layout.regions"
+                                }
+                              ]
+                            },
+                            "type": "layout.region"
+                          }
+                        ]
+                      },
+                      "type": "layout.regions"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.nesting-limit"
+    },
+    {
+      "diagnostics": [
+        "type_unknown"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    },
+                    {
+                      "id": "x",
+                      "type": "product.widget"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-type-in-region"
+    },
+    {
+      "diagnostics": [
+        "type_profile_unsupported"
+      ],
+      "document": {
+        "id": "regions-case",
+        "profile": "structured-content",
+        "root": {
+          "id": "shell",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-header",
+                "props": {
+                  "landmark": "banner",
+                  "name": "header",
+                  "sticky": true
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Шапка"
+                          }
+                        ]
+                      },
+                      "id": "t-header",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-main",
+                "props": {
+                  "landmark": "main",
+                  "min_items": 1,
+                  "name": "main",
+                  "placement": "center"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Основное"
+                          }
+                        ]
+                      },
+                      "id": "t-main",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-aside",
+                "props": {
+                  "label": "Боковая",
+                  "landmark": "complementary",
+                  "name": "aside",
+                  "placement": "end"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Сбоку"
+                          }
+                        ]
+                      },
+                      "id": "t-aside",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              },
+              {
+                "id": "r-footer",
+                "props": {
+                  "landmark": "contentinfo",
+                  "name": "footer"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Подвал"
+                          }
+                        ]
+                      },
+                      "id": "t-footer",
+                      "type": "content.paragraph"
+                    }
+                  ]
+                },
+                "type": "layout.region"
+              }
+            ]
+          },
+          "type": "layout.regions"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.structured-content-profile"
+    }
+  ],
+  "schema": "simai.composition.capability-fixtures.v1"
+}

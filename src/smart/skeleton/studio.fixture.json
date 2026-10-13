@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.skeleton",
+  "title": "Skeleton reference",
+  "summary": "Deterministic reference fixture for sf-skeleton.",
+  "locale": "ru",
+  "props": {
+    "count": 3,
+    "height": "b4",
+    "variant": "text"
+  },
+  "children": [],
+  "state": "default"
+}

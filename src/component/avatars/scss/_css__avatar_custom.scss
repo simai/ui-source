@@ -1,0 +1,43 @@
+@layer sf.components {
+.sf-avatar-card.sf-avatar-card--square img,
+.sf-avatar-card.sf-avatar-card-square img {
+  aspect-ratio: 1 / 1;
+}
+.sf-avatar-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.sf-avatar-card.sf-avatar-card--portrait img,
+.sf-avatar-card.sf-avatar-card-portrait img {
+  aspect-ratio: 9 / 16;
+}
+
+.disabled .sf-avatar,
+.disabled .sf-avatar:hover,
+.disabled .sf-avatar:focus,
+.disabled .sf-avatar:active {
+  --sf-avatar--border-color: transparent;
+}
+
+.sf-add-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sf-add-button .sf-tooltip {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-end: calc(100% + var(--sf-space-1));
+  transform: translateX(-50%);
+  z-index: var(--sf-z-index-9);
+  display: none;
+  pointer-events: none;
+}
+
+.sf-add-button:hover .sf-tooltip,
+.sf-add-button:focus-within .sf-tooltip {
+  display: block;
+}
+}

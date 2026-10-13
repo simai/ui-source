@@ -1,0 +1,83 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__transform_translate' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+@include breakpoint-media($infix) {
+  $infix: breakpoint-infix($infix, $breakpoint-array);
+
+  // Transform Translate
+  @each $transform-translate-name,
+    $transform-translate-value in $transform-translate-array
+  {
+    .#{$infix}translate-x-#{$transform-translate-name} {
+      --sf-translate-x: var(--sf-#{$transform-translate-value});
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .#{$infix}translate-y-#{$transform-translate-name} {
+      --sf-translate-y: var(--sf-#{$transform-translate-value});
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .-#{$infix}translate-x-#{$transform-translate-name} {
+      --sf-translate-x: calc(0rem - var(--sf-#{$transform-translate-value}));
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .-#{$infix}translate-y-#{$transform-translate-name} {
+      --sf-translate-y: calc(0rem - var(--sf-#{$transform-translate-value}));
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+  }
+
+  // Helpers for half-size shifts
+  .#{$infix}translate-x-half {
+    --sf-translate-x: 50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .#{$infix}translate-y-half {
+    --sf-translate-y: 50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}translate-x-half {
+    --sf-translate-x: -50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}translate-y-half {
+    --sf-translate-y: -50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  // Helpers for full-size shifts
+  .#{$infix}translate-x-full {
+    --sf-translate-x: 100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .#{$infix}translate-y-full {
+    --sf-translate-y: 100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}translate-x-full {
+    --sf-translate-x: -100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}translate-y-full {
+    --sf-translate-y: -100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+}
+// }
+}

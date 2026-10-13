@@ -1,0 +1,17 @@
+{
+  "schema": "simai.composition.document.v1",
+  "id": "columns-example",
+  "profile": "ui-layout",
+  "root": {
+    "id": "columns",
+    "type": "layout.columns",
+    "props": {"columns": 2},
+    "presentation": {"modifiers": ["responsive"]},
+    "slots": {
+      "columns": [
+        {"id": "left", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Слева"}]}},
+        {"id": "right", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Справа"}]}}
+      ]
+    }
+  }
+}

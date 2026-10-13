@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 596 28 20" fill="none" role="img">
+<g id="Country=LC">
+<rect id="Mask_272" x="260" y="596" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask126_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="596" width="28" height="20">
+<rect id="Mask_273" x="260" y="596" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask126_8205_11341)">
+<rect id="Mask Copy_29" x="260" y="596" width="28" height="20" fill="#2394E0"/>
+<g id="Rectangle 320" filter="url(#filter17_d_8205_11341)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M274 598.667L280 613.333H268L274 598.667Z" fill="#F0F0F0"/>
+</g>
+<path id="Rectangle 320_2" fill-rule="evenodd" clip-rule="evenodd" d="M274 601.333L278.666 613.333H269.333L274 601.333Z" fill="#333333"/>
+<path id="Rectangle 320_3" fill-rule="evenodd" clip-rule="evenodd" d="M274 605.333L280 613.333H268L274 605.333Z" fill="#FFDA44"/>
+</g>
+</g>
+<defs><filter id="filter17_d_8205_11341" x="268" y="598.667" width="12" height="15.6665" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8205_11341"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8205_11341" result="shape"/>
+</filter></defs>
+</svg>

@@ -1,0 +1,18 @@
+// SIMAI Framework
+// https://simai.io
+
+// OPACITY
+
+$opacity-array: (
+    1: var(--sf-opacity-10, 0.1),
+    2: var(--sf-opacity-20, 0.2),
+    3: var(--sf-opacity-30, 0.3),
+    4: var(--sf-opacity-40, 0.4),
+    5: var(--sf-opacity-50, 0.5),
+    6: var(--sf-opacity-60, 0.6),
+    7: var(--sf-opacity-70, 0.7),
+    8: var(--sf-opacity-80, 0.8),
+    9: var(--sf-opacity-90, 0.9),
+    full: 1,
+    0: 0,
+);

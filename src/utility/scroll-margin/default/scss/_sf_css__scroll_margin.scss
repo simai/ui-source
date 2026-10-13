@@ -1,0 +1,61 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__scroll_margin' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL MARGIN
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Margin and padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size in $space-size-array {
+            
+            // MARGIN SETTINGS
+            // for all sides
+            .#{$infix}scroll-m-#{$size} {
+                scroll-margin: var(--sf-space-#{$size});
+            }
+
+            // for top sides
+            .#{$infix}scroll-mt-#{$size} {
+                scroll-margin-top: var(--sf-space-#{$size});
+            }
+
+            // for inline end
+            .#{$infix}scroll-m-inline-end-#{$size} {
+                scroll-margin-inline-end: var(--sf-space-#{$size});
+            }
+
+            // for bottom sides
+            .#{$infix}scroll-mb-#{$size} {
+                scroll-margin-bottom: var(--sf-space-#{$size});
+            }
+
+            // for inline start
+            .#{$infix}scroll-m-inline-start-#{$size} {
+                scroll-margin-inline-start: var(--sf-space-#{$size});
+            }
+
+            // for horizontal sides
+            .#{$infix}scroll-m-inline-#{$size} {
+                scroll-margin-inline-end: var(--sf-space-#{$size});
+                scroll-margin-inline-start: var(--sf-space-#{$size});
+            }
+
+            // for top sides
+            .#{$infix}scroll-my-#{$size} {
+                scroll-margin-top: var(--sf-space-#{$size});
+                scroll-margin-bottom: var(--sf-space-#{$size});
+            }
+        }	
+    }
+// }
+}

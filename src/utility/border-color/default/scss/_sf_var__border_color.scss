@@ -1,0 +1,40 @@
+// SIMAI Framework
+// https://simai.io
+
+// BORDER - BORDER COLOR
+
+$border-color-array: (
+    'transparent': 'transparent',
+    'current': 'current',
+    'outline': 'outline',
+    'outline-variant': 'outline-variant',
+    'surface': 'surface-1',
+    'surface-0': 'surface-0',
+    'surface-1': 'surface-1',
+    'surface-container': 'surface-container',
+    'surface-overlay': 'surface-overlay',
+    'surface-transparent-overlay': 'surface-transparent-overlay',
+    'surface-inverse': 'surface-inverse',
+    'on-surface': 'on-surface',
+    'on-surface-variant': 'on-surface-variant',
+    'primary': 'outline-primary',
+    'primary-container': 'primary-container',
+    'primary-transparent-overlay': 'primary-transparent-overlay',
+    'secondary': 'outline-secondary',
+    'secondary-container': 'secondary-container',
+    'secondary-transparent-overlay': 'secondary-transparent-overlay',
+    'tertiary': 'outline-tertiary',
+    'tertiary-container': 'tertiary-container',
+    'tertiary-transparent-overlay': 'tertiary-transparent-overlay',
+    'error': 'outline-error',
+    'error-container': 'error-container',
+    'error-transparent-overlay': 'error-transparent-overlay',
+    'warning': 'outline-warning',
+    'warning-container': 'warning-container',
+    'warning-transparent-overlay': 'warning-transparent-overlay',
+    'success': 'outline-success',
+    'success-container': 'success-container',
+    'success-transparent-overlay': 'success-transparent-overlay',
+    'info': 'outline-info',
+    'info-container': 'info-container',
+);

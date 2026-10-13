@@ -1,0 +1,50 @@
+@use 'sass:map';
+@use 'sass:list';
+@use '../../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../../core/scss/vars/sf_var__space' as space;
+@use '../../../query-container/default/scss/sf_profile' as profile;
+@use '../../../display/default/scss/sf_var__display' as display;
+@use '../../../flex-direction/default/scss/sf_var__flex_direction' as direction;
+@use '../../../flex-wrap/default/scss/sf_var__flex_wrap' as wrap;
+@use '../../../grid-template-columns/default/scss/sf_var__grid_template_columns' as columns;
+@use '../../../justify-content/default/scss/sf_var__justify_content' as justify;
+@use '../../../align-items/default/scss/sf_var__align_items' as items;
+
+@mixin family($condition, $family, $prefix, $property, $values) {
+  @each $role in map.get(profile.$query-families, $family) {
+    $key: $role;
+    // Numeric grid map keys are numbers; profile roles are portable strings.
+    @if $family == 'grid-template-columns' {
+      @for $number from 1 through 12 { @if '#{$number}' == $role { $key: $number; } }
+    }
+    @if not map.has-key($values, $key) { @error 'Unknown #{$family} role: #{$role}'; }
+    .#{$condition}#{$prefix}#{$role} { #{$property}: #{map.get($values, $key)}; }
+  }
+}
+
+@layer sf.utilities {
+  // One finite layout module keeps breakpoint and gap-axis precedence stable,
+  // independent of network completion order. No state×viewport cross product.
+  @each $breakpoint in profile.$query-breakpoints {
+    @each $name in list.join(('',), profile.$query-names) {
+      $condition: 'cq-#{$breakpoint}\\:';
+      @if $name != '' { $condition: 'cq-#{$breakpoint}\\/#{$name}\\:'; }
+      @container #{$name} (min-width: #{map.get(bp.$breakpoint-array, $breakpoint)}) {
+        @include family($condition, 'display', '', display, display.$display-array);
+        @include family($condition, 'flex-direction', 'flex-', flex-direction, direction.$flex-direction-array);
+        @include family($condition, 'flex-wrap', 'flex-', flex-wrap, wrap.$flex-wrap-array);
+        @include family($condition, 'grid-template-columns', 'grid-col-', grid-template-columns, columns.$grid-template-columns-array);
+        @include family($condition, 'justify-content', 'justify-', justify-content, justify.$flex-justify-content-array);
+        @include family($condition, 'align-items', 'items-cross-', align-items, items.$flex-align-items-array);
+        @each $role in map.get(profile.$query-families, 'gap') {
+          @if not map.has-key(map.get(space.$space-size-device-array, mobile), $role) { @error 'Unknown gap role: #{$role}'; }
+          .#{$condition}gap-#{$role} { gap: var(--sf-space-#{$role}); }
+        }
+        @each $role in map.get(profile.$query-families, 'gap') {
+          .#{$condition}row-gap-#{$role} { row-gap: var(--sf-space-#{$role}); }
+          .#{$condition}col-gap-#{$role} { column-gap: var(--sf-space-#{$role}); }
+        }
+      }
+    }
+  }
+}

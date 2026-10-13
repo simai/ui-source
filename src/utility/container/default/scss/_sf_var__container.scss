@@ -1,0 +1,21 @@
+// SIMAI Framework
+// https://simai.io
+
+// CONTAINER
+
+// $container-array: (
+// 	1: 	960px,
+// 	2:	1080px,
+// 	3:	1200px,
+// 	4:	1320px,
+// 	5:	1560px,
+// 	6:	1680px,
+// );
+
+$container-array: (
+	'sm': '2',
+	'md': '3',
+	'lg': '4',
+	'xl': '5',
+	'xxl': '6'
+);

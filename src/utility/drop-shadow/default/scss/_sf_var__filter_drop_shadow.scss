@@ -1,0 +1,35 @@
+// SIMAI Framework
+// https://simai.io
+
+// SHADOW
+
+// $shadow-array: (
+//     1: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+//     2: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+//     3: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+//     4: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+//     5: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+//     6: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+//     inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+//     0: '0 0 #0000',
+// );
+
+// // Filter Drop Shadow
+// $filter-drop-shadow-array:(
+//     1 : 'drop-shadow(var(--sf-0) var(--sf-px) var(--sf-px) rgb(var(--sf-drop-shadow-color) / 0.05))',
+//     2 : 'drop-shadow(var(--sf-0) var(--sf-px) var(--sf-a2) rgb(var(--sf-drop-shadow-color) / 0.1)) drop-shadow(var(--sf-0) var(--sf-px) var(--sf-px) rgb(var(--sf-drop-shadow-color) / 0.06))',
+//     3 : 'drop-shadow(var(--sf-0) var(--sf-a4) var(--sf-a3) rgb(var(--sf-drop-shadow-color) / 0.07)) drop-shadow(var(--sf-0) var(--sf-a2) var(--sf-a2) rgb(var(--sf-drop-shadow-color) / 0.06))',
+//     4 : 'drop-shadow(var(--sf-0) var(--sf-b0) var(--sf-a8) rgb(var(--sf-drop-shadow-color) / 0.04)) drop-shadow(var(--sf-0) var(--sf-a4) var(--sf-a3) rgb(var(--sf-drop-shadow-color) / 0.1))',
+//     5 : 'drop-shadow(var(--sf-0) var(--sf-c0) var(--sf-b3) rgb(var(--sf-drop-shadow-color) / 0.03)) drop-shadow(var(--sf-0) var(--sf-a8) var(--sf-a5) rgb(var(--sf-drop-shadow-color) / 0.08))',
+//     6 : 'drop-shadow(var(--sf-0) var(--sf-c2) var(--sf-c2) rgb(var(--sf-drop-shadow-color) / 0.15))',
+//     0 : 'drop-shadow(var(--sf-0) var(--sf-0) #0000)',
+// );
+
+$drop-shadow-array: (
+  0: 0,
+  1: 1,
+  2: 2,
+  3: 4,
+  4: 8,
+  5: 16
+);

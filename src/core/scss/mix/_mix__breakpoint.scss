@@ -1,0 +1,156 @@
+// SIMAI Framework
+// https://simai.io
+
+// BREAKPOINTS FUNCTIONS & MIXINS
+// Bootstrap-based helpers adapted for Sass module system.
+
+@use "sass:list";
+@use "sass:math";
+@use "sass:map";
+@use "vars/sf_var__breakpoint" as bp;
+@use "vars/sf_var__size" as size;
+
+/// Name of the next breakpoint, or null for the last breakpoint.
+///
+/// @example scss
+///   breakpoint-next(sm) // md
+@function breakpoint-next(
+  $name,
+  $breakpoints: bp.$breakpoint-array,
+  $breakpoint-names: map.keys($breakpoints)
+) {
+  @if not list.index($breakpoint-names, $name) {
+    @error "Breakpoint `#{$name}` not found in breakpoint names: #{$breakpoint-names}.";
+  }
+
+  $n: list.index($breakpoint-names, $name);
+
+  @return if(
+                  $n < list.length($breakpoint-names),
+                  list.nth($breakpoint-names, $n + 1),
+                  null
+  );
+}
+
+/// Minimum breakpoint width.
+/// Returns null for the smallest breakpoint.
+@function breakpoint-min($name, $breakpoints: bp.$breakpoint-array) {
+  @if not map.has-key($breakpoints, $name) {
+    @error "Breakpoint `#{$name}` not found in breakpoint map.";
+  }
+
+  $min: map.get($breakpoints, $name);
+
+  @return if($min != 0, $min, null);
+}
+
+/// Maximum breakpoint width.
+/// Returns null for the largest breakpoint.
+@function breakpoint-max($name, $breakpoints: bp.$breakpoint-array) {
+  $next: breakpoint-next($name, $breakpoints);
+
+  // One pixel under the next threshold, in the threshold's own unit: the
+  // thresholds are rem, and rem minus px is no length Sass can make.
+  @if not $next { @return null; }
+  $min: breakpoint-min($next, $breakpoints);
+  @return if(math.unit($min) == 'rem', $min - math.div(size.$size-pixel, 16px) * 1rem, $min - size.$size-pixel);
+}
+
+/// Returns a blank string for the smallest breakpoint,
+/// otherwise returns escaped breakpoint prefix, e.g. `sm\:`.
+///
+/// Useful for responsive utilities:
+/// `.#{breakpoint-infix(sm)}border` -> `.sm\:border`
+@function breakpoint-infix($name, $breakpoints: bp.$breakpoint-array) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "#{$name}\\:");
+}
+
+/// Media of at least the minimum breakpoint width.
+/// No media query for the smallest breakpoint.
+
+@mixin media-breakpoint-up($name, $breakpoints: bp.$breakpoint-array) {
+  $min: breakpoint-min($name, $breakpoints);
+
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+/// Media of at most the maximum breakpoint width.
+/// No media query for the largest breakpoint.
+@mixin media-breakpoint-down($name, $breakpoints: bp.$breakpoint-array) {
+  $max: breakpoint-max($name, $breakpoints);
+
+  @if $max {
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+/// Media that spans multiple breakpoint widths.
+@mixin media-breakpoint-between(
+  $lower,
+  $upper,
+  $breakpoints: bp.$breakpoint-array
+) {
+  @include media-breakpoint-up($lower, $breakpoints) {
+    @include media-breakpoint-down($upper, $breakpoints) {
+      @content;
+    }
+  }
+}
+
+/// Media between the breakpoint's minimum and maximum widths.
+@mixin media-breakpoint-only($name, $breakpoints: bp.$breakpoint-array) {
+  @include media-breakpoint-between($name, $name, $breakpoints) {
+    @content;
+  }
+}
+
+/// SIMAI short alias for media-breakpoint-up().
+@mixin breakpoint-media($name, $breakpoints: bp.$breakpoint-array) {
+  @include media-breakpoint-up($name, $breakpoints) {
+    @content;
+  }
+}
+
+/// Device media helper based on `$breakpoint-device-array`.
+@mixin breakpoint-device-media(
+  $name,
+  $breakpoints: bp.$breakpoint-device-array
+) {
+  @if not map.has-key($breakpoints, $name) {
+    @error "Device breakpoint `#{$name}` not found in device breakpoint map.";
+  }
+
+  $min: map.get($breakpoints, $name);
+
+  @if $min != 0 {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+/// Wraps content in a cascade layer.
+/// Supports nested layer names: `sf`, `base` -> `@layer sf.base`.
+@mixin layer-priority($primary, $secondary: null) {
+  @if $secondary {
+    @layer #{$primary}.#{$secondary} {
+      @content;
+    }
+  } @else {
+    @layer #{$primary} {
+      @content;
+    }
+  }
+}

@@ -1,0 +1,367 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-switch {
+  background-color: var(--sf-switch--background-color, transparent);
+  gap: var(--sf-switch--gap);
+}
+
+.sf-switch .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-switch-container-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-switch .sf-switch-container-wrap {
+  --sf-switch-container-wrap--background-color: transparent;
+  --sf-switch-container-wrap--gap: var(--sf-space-0);
+  background-color: var(--sf-switch-container-wrap--background-color);
+  gap: var(--sf-switch-container-wrap--gap);
+}
+
+.sf-switch .sf-switch-description {
+  --sf-switch-description--color: var(--sf-on-surface-variant);
+  --sf-switch-description--font-family: var(--sf-text--family);
+  --sf-switch-description--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-switch-description--color);
+  font-family: var(--sf-switch-description--font-family);
+  font-size: var(--sf-switch-description--font-size);
+  font-weight: var(--sf-switch-description--font-weight);
+  line-height: var(--sf-switch-description--line-height);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-switch-top--gap) */
+.sf-switch .sf-switch-top {
+  --sf-switch-top--background-color: transparent;
+  background-color: var(--sf-switch-top--background-color);
+  gap: var(--sf-switch-top--gap);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-switch-container--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-switch .sf-switch-container {
+  --sf-switch-container--background-color: transparent;
+  --sf-switch-container--gap: var(--sf-a0);
+  background-color: var(--sf-switch-container--background-color);
+  color: var(--sf-switch-container--color);
+  font-family: var(--sf-switch-container--font-family);
+  font-size: var(--sf-switch-container--font-size);
+  font-weight: var(--sf-switch-container--font-weight);
+  gap: var(--sf-switch-container--gap);
+  line-height: var(--sf-switch-container--line-height);
+  --sf-switch-container--color: var(--sf-on-surface);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) align-items/center (.items-center) */
+.sf-switch .sf-switch-toggler {
+  --sf-switch-toggler--background-color: var(--sf-surface-0);
+  --sf-switch-toggler--border: var(--sf-px) solid;
+  --sf-switch-toggler--border-color: var(--sf-outline);
+  --sf-switch-toggler--border-end-end-radius: var(--sf-radius-circle);
+  --sf-switch-toggler--border-end-start-radius: var(--sf-radius-circle);
+  --sf-switch-toggler--border-start-end-radius: var(--sf-radius-circle);
+  --sf-switch-toggler--border-start-start-radius: var(--sf-radius-circle);
+  --sf-switch-toggler--border-style: solid;
+  --sf-switch-toggler--border-width: var(--sf-px);
+  background-color: var(--sf-switch-toggler--background-color);
+  border: var(--sf-switch-toggler--border);
+  border-color: var(--sf-switch-toggler--border-color, transparent);
+  border-end-end-radius: var(--sf-switch-toggler--border-end-end-radius);
+  border-end-start-radius: var(--sf-switch-toggler--border-end-start-radius);
+  border-start-end-radius: var(--sf-switch-toggler--border-start-end-radius);
+  border-start-start-radius: var(--sf-switch-toggler--border-start-start-radius);
+  border-style: var(--sf-switch-toggler--border-style, solid);
+  border-width: var(--sf-switch-toggler--border-width);
+  box-shadow: var(--sf-switch-toggler--box-shadow);
+  height: var(--sf-switch-toggler--height);
+  padding-bottom: var(--sf-switch-toggler--padding-bottom);
+  padding-inline-end: var(--sf-switch-toggler--padding-inline-end);
+  padding-inline-start: var(--sf-switch-toggler--padding-inline-start);
+  padding-top: var(--sf-switch-toggler--padding-top);
+  width: var(--sf-switch-toggler--width);
+}
+
+.sf-switch .sf-switch-inner {
+  --sf-switch-inner--background-color: var(--sf-on-surface-variant);
+  --sf-switch-inner--border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-switch-inner--background-color);
+  border-radius: var(--sf-switch-inner--border-radius);
+  height: var(--sf-switch-inner--height);
+  width: var(--sf-switch-inner--width);
+}
+
+.sf-switch.sf-switch--size-1\/2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-switch.sf-switch--size-1 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-switch.sf-switch--size-2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-switch.sf-switch--size-1\/2 .sf-switch-container {
+  --sf-switch-container--font-size: var(--sf-text-size-1\/2);
+  --sf-switch-container--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-switch.sf-switch--size-1 .sf-switch-container {
+  --sf-switch-container--font-size: var(--sf-text-size-1);
+  --sf-switch-container--line-height: var(--sf-text-height-1);
+}
+
+.sf-switch.sf-switch--size-2 .sf-switch-container {
+  --sf-switch-container--font-size: var(--sf-text-size-2);
+  --sf-switch-container--line-height: var(--sf-text-height-2);
+}
+
+
+.sf-switch.sf-switch--size-1\/2 .sf-switch-top {
+  --sf-switch-top--gap: var(--sf-space-1\/4);
+}
+
+.sf-switch.sf-switch--size-1 .sf-switch-top {
+  --sf-switch-top--gap: var(--sf-space-1\/4);
+}
+
+.sf-switch.sf-switch--size-2 .sf-switch-top {
+  --sf-switch-top--gap: var(--sf-space-1\/3);
+}
+
+.sf-switch.disabled .sf-switch-container {
+  --sf-switch-container--color: var(--sf-on-disable);
+}
+
+.sf-switch.sf-switch--size-1\/2 .sf-switch-description {
+  --sf-switch-description--font-size: var(--sf-text-size-1\/3);
+  --sf-switch-description--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-switch.sf-switch--size-1 .sf-switch-description {
+  --sf-switch-description--font-size: var(--sf-text-size-1\/2);
+  --sf-switch-description--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-switch.sf-switch--size-2 .sf-switch-description {
+  --sf-switch-description--font-size: var(--sf-text-size-1);
+  --sf-switch-description--line-height: var(--sf-text-height-1);
+}
+
+.sf-switch.active:not(:has(input:disabled)) .sf-switch-inner {
+  --sf-switch-inner--background-color: var(--sf-on-primary);
+}
+
+.sf-switch.active:not(:has(input:disabled)) .sf-switch-toggler {
+  --sf-switch-toggler--background-color: var(--sf-primary);
+}
+
+/* The track stands as tall as the line of its size, which is the rule the
+   checkbox box already follows, so the mobile and the desktop ladder both come
+   out of the typography contract instead of being listed twice. Its length is
+   twice that height, tied to the same value rather than to a separate token:
+   listed apart, the two drift between the modes and the pill changes shape.
+   The short variant is one and a half instead of two. */
+.sf-switch {
+  /* One clock for the whole gesture: the thumb travels and the fill changes
+     over the same span, so the two halves read as one movement. A project that
+     wants it quicker or slower moves this, not four transitions. */
+  --sf-switch--duration: var(--sf-duration-normal);
+  --sf-switch--ratio: 2;
+  --sf-switch--seat: var(--sf-a2);
+}
+
+.sf-switch.sf-switch--short {
+  --sf-switch--ratio: 1.5;
+}
+
+.sf-switch.sf-switch--size-1\/2 {
+  --sf-switch--track-height: var(--sf-text-height-1\/2);
+}
+
+.sf-switch.sf-switch--size-1 {
+  --sf-switch--track-height: var(--sf-text-height-1);
+}
+
+.sf-switch.sf-switch--size-2 {
+  --sf-switch--track-height: var(--sf-text-height-2);
+}
+
+/* The seat is measured from the outer edge and the border is part of it.
+   Measured from the inside instead, the same two pixels read as two when the
+   border matches the fill and as three when it does not, so the gap looked
+   uneven between the on and the off state. */
+.sf-switch .sf-switch-toggler {
+  --sf-switch-toggler--height: var(--sf-switch--track-height);
+  --sf-switch-toggler--padding-bottom: calc(var(--sf-switch--seat) - var(--sf-switch-toggler--border-width));
+  --sf-switch-toggler--padding-inline-end: calc(var(--sf-switch--seat) - var(--sf-switch-toggler--border-width));
+  --sf-switch-toggler--padding-inline-start: calc(var(--sf-switch--seat) - var(--sf-switch-toggler--border-width));
+  --sf-switch-toggler--padding-top: calc(var(--sf-switch--seat) - var(--sf-switch-toggler--border-width));
+  --sf-switch-toggler--width: calc(var(--sf-switch--track-height) * var(--sf-switch--ratio));
+  justify-content: flex-start;
+}
+
+.sf-switch .sf-switch-inner {
+  --sf-switch-inner--height: calc(var(--sf-switch--track-height) - 2 * var(--sf-switch--seat));
+  --sf-switch-inner--width: calc(var(--sf-switch--track-height) - 2 * var(--sf-switch--seat));
+}
+
+/* The thumb travels. It used to change the track's alignment instead, and no
+   browser animates that, so the thumb jumped while the fill faded under it —
+   the two halves of one gesture, one instant and one gradual. Now both take the
+   same time and the same curve, and the travel is exactly one track height
+   because the thumb fills the track's inner box. */
+.sf-switch .sf-switch-inner {
+  --sf-switch-inner--travel: 0px;
+  transform: translateX(calc(var(--sf-switch-inner--travel) * var(--sf-switch-inner--direction, 1)));
+  transition: transform var(--sf-switch--duration) var(--sf-animation),
+              background-color var(--sf-switch--duration) var(--sf-animation);
+}
+
+.sf-switch.active .sf-switch-inner {
+  --sf-switch-inner--travel: calc(var(--sf-switch--track-height) * (var(--sf-switch--ratio) - 1));
+}
+
+[dir="rtl"] .sf-switch .sf-switch-inner {
+  --sf-switch-inner--direction: -1;
+}
+
+.sf-switch .sf-switch-toggler {
+  transition: background-color var(--sf-switch--duration) var(--sf-animation),
+              border-color var(--sf-switch--duration) var(--sf-animation);
+}
+
+/* A glyph rides inside the thumb. With two of them the component shows one per
+   state and crosses them over on the same clock as the fill, so the picture
+   changes when the thumb arrives rather than somewhere along the way. Both are
+   decorative: the label still names the setting. */
+.sf-switch .sf-switch-inner {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.sf-switch .sf-switch-inner .sf-icon {
+  /* The glyph takes the track's colour, so it reads on the thumb in both
+     states: dark on the pale thumb when the switch is on, pale on the grey
+     thumb when it is off. */
+  --sf-icon--color: var(--sf-switch-toggler--background-color);
+  --sf-icon--font-size: calc(var(--sf-switch-inner--height) - var(--sf-a4));
+  --sf-icon--height: calc(var(--sf-switch-inner--height) - var(--sf-a4));
+  --sf-icon--width: calc(var(--sf-switch-inner--height) - var(--sf-a4));
+  grid-area: 1 / 1;
+  transition: opacity var(--sf-switch--duration) var(--sf-animation);
+}
+
+.sf-switch .sf-switch-inner .sf-switch-icon--on {
+  opacity: 0;
+}
+
+.sf-switch.active .sf-switch-inner .sf-switch-icon--on {
+  opacity: 1;
+}
+
+.sf-switch.active .sf-switch-inner .sf-switch-icon--off:not(:only-child) {
+  opacity: 0;
+}
+
+/* The mark is the picture before a label: the label follows it at the size's
+   text step, as an option label follows its picture in a list. */
+.sf-switch--size-1\/2 {
+  --sf-switch--gap: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-switch--size-1 {
+  --sf-switch--gap: var(--sf-ui-1--text-space-x);
+}
+
+.sf-switch--size-2 {
+  --sf-switch--gap: var(--sf-ui-2--text-space-x);
+}
+
+.sf-switch.disabled .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-switch.disabled .sf-switch-description {
+  --sf-switch-description--color: var(--sf-on-disable);
+}
+
+.sf-switch.disabled .sf-switch-inner {
+  --sf-switch-inner--background-color: var(--sf-on-disable);
+}
+
+/* utility-hint: justify-content/flex-start (.justify-start) */
+.sf-switch.disabled .sf-switch-toggler {
+  --sf-switch-toggler--border-color: var(--sf-outline-disable);
+}
+
+.sf-switch:has(input:not(:disabled):not(.disabled):focus-visible) .sf-switch-toggler {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+/* The global :focus-visible rule paints the ring on whatever holds the focus.
+   Here the focus lives on the bare control while the ring belongs to the part
+   the person sees, so the control gives its own ring up: one component, one
+   ring. */
+.sf-switch input:focus-visible {
+  outline: none;
+}
+
+.sf-switch:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-switch-toggler {
+  --sf-switch-toggler--border-color: var(--sf-primary-hover);
+}
+
+.sf-switch:not(:disabled):not(.disabled):active .sf-switch-inner {
+  --sf-switch-inner--background-color: var(--sf-on-primary);
+}
+
+/* utility-hint: justify-content/flex-end (.justify-end) */
+.sf-switch:not(:disabled):not(.disabled):active .sf-switch-toggler {
+  --sf-switch-toggler--background-color: var(--sf-primary);
+}
+}
+
+@layer sf.states {
+  @media (forced-colors: active) {
+    .sf-switch .sf-switch-toggler {
+      forced-color-adjust: none;
+      background-color: Canvas;
+      border-color: ButtonText;
+    }
+    .sf-switch .sf-switch-inner { background-color: ButtonText; }
+    .sf-switch:has(input:checked) .sf-switch-toggler {
+      background-color: Highlight;
+      border-color: Highlight;
+    }
+    .sf-switch:has(input:checked) .sf-switch-inner { background-color: HighlightText; }
+    .sf-switch:has(input:disabled) .sf-switch-toggler {
+      background-color: Canvas;
+      border-color: GrayText;
+    }
+    .sf-switch:has(input:disabled) .sf-switch-inner { background-color: GrayText; }
+    .sf-switch:has(input:not(:disabled):not(.disabled):focus-visible) .sf-switch-toggler {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      --sf-switch-toggler--box-shadow: none;
+    }
+  }
+}
+
+@layer sf.states {
+  @media (prefers-reduced-motion: reduce) {
+    .sf-switch .sf-switch-inner,
+    .sf-switch .sf-switch-toggler,
+    .sf-switch .sf-switch-inner .sf-icon {
+      transition-duration: 0s;
+    }
+  }
+}

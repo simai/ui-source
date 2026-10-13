@@ -1,0 +1,33 @@
+
+// SIMAI Framework
+// https://simai.io
+
+// TRANSITION PRESET
+
+// Default Global Variables
+//    --sf-empty — use for set empty value in concatenate styles
+//    --sf-alfa — use for set opacity color
+@use 'vars/sf_var__animation' as animationVars;
+@layer sf.base {
+  :root {
+    --sf-transition--property: all;
+    --sf-transition--duration: 300ms;
+    --sf-transition--timing-function: ease-in;
+    --sf-transition--delay: 0ms;
+
+    @each $duration-var-name, $duration-var-value in animationVars.$duration-var-array {
+      --sf-duration-#{$duration-var-name}: #{$duration-var-value}S;
+    }
+
+
+    --sf-animation: cubic-bezier(.25, .8, .25, 1);
+
+    // Direction-aware curves. --sf-animation stays the default for state
+    // feedback on the spot: hover, checked, pressed. A layer that arrives or
+    // leaves reads the curve of its direction, because the same deceleration
+    // in both directions makes closing feel slower than it is.
+    --sf-ease-enter: cubic-bezier(.19, 1, .22, 1); // ease-out-expo
+    --sf-ease-exit: cubic-bezier(.65, 0, .4, 1);   // ease-in, little inertia
+    --sf-ease-move: cubic-bezier(.65, 0, .35, 1);  // ease-in-out-cubic
+  }
+}

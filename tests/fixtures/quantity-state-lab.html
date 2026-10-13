@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — числовые состояния</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/quantity-owner-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/quantity-owner-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/quantity-owner-browser/component/quantity/css/quantity.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Числовые состояния</h1>
+  <form id="quantities" class="grid gap-3">
+    <div id="cases" class="grid gap-3"></div>
+    <button type="button" id="editable">Разрешить редактирование</button>
+    <label><input id="prevent-reset" type="checkbox">Отменять сброс</label>
+    <button type="reset">Сбросить значения</button>
+    <output id="events">0</output>
+  </form>
+  <form id="factory" class="grid gap-3">
+    <button id="create" type="button">Создать счётчик</button>
+    <div id="created"></div>
+    <button type="reset">Сбросить созданный счётчик</button>
+  </form>
+</main>
+<template id="quantity-template">
+  <div class="sf-quantity sf-quantity--size-1 flex flex-col">
+    <span class="sf-quantity-label flex"><span class="sf-quantity-text"></span></span>
+    <span class="sf-quantity-wrap flex content-main-center items-cross-center transition">
+      <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex"><i class="sf-icon" aria-hidden="true">remove</i></button>
+      <input type="text" inputmode="numeric" min="0" max="10000" step="1">
+      <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex"><i class="sf-icon" aria-hidden="true">add</i></button>
+    </span>
+  </div>
+</template>
+<script src="../../node_modules/imask/dist/imask.min.js"></script>
+<script>
+// Isolated adapter for the real installed IMask, matching Core's create/destroy surface.
+window.SF = {Mask: {create: async (el, options) => IMask(el, options), destroy: instance => instance?.destroy()}};
+for (const [id, title, value, options] of [
+  ['plain', 'Обычное значение', '2', {}],
+  ['readonly', 'Только чтение', '4', {readOnly: true}],
+  ['grouped', 'Группировка', '1234.5', {locale: 'en-US', precision: '2'}],
+  ['scientific', 'Малый шаг', '0.002', {step: '1e-3'}],
+  ['masked', 'Маска', '2', {mask: 'true', locale: 'en-US'}],
+]) {
+  const root = document.querySelector('#quantity-template').content.firstElementChild.cloneNode(true);
+  root.id = id;
+  root.querySelector('.sf-quantity-text').textContent = title;
+  const input = root.querySelector('input');
+  input.name = id; input.defaultValue = value;
+  input.dataset.grouping = 'true';
+  for (const [key, value] of Object.entries(options)) {
+    if (key === 'readOnly' || key === 'step') input[key] = value;
+    else input.dataset[key] = value;
+  }
+  const buttons = root.querySelectorAll('button');
+  buttons[0].setAttribute('aria-label', `Уменьшить: ${title}`);
+  buttons[1].setAttribute('aria-label', `Увеличить: ${title}`);
+  document.getElementById('cases').append(root);
+}
+let changes = 0;
+document.getElementById('quantities').addEventListener('change', () => { document.getElementById('events').value = String(++changes); });
+document.getElementById('quantities').addEventListener('reset', e => { if (document.getElementById('prevent-reset').checked) e.preventDefault(); });
+document.getElementById('editable').addEventListener('click', () => { document.querySelector('#readonly input').readOnly = false; });
+document.getElementById('create').addEventListener('click', e => {
+  const Constructor = new Map(window.SF_PENDING_COMPONENTS).get('Quantity');
+  const instance = new Constructor({param: {label: 'Созданное значение', value: '4', name: 'factory-value'}});
+  document.getElementById('created').append(instance.render()); e.currentTarget.disabled = true;
+});
+</script>
+<script src="../../source/output/quantity-owner-browser/component/quantity/js/quantity.js"></script>
+<script>
+document.fonts.load('24px "Material Symbols Outlined"').then(faces => {
+  if (faces.length) document.querySelectorAll('.sf-icon').forEach(e => e.classList.add('sf-icon-loaded'));
+});
+</script>
+</body></html>

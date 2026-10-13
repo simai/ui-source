@@ -1,0 +1,25 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-avatar-group {
+  gap: var(--sf-space-1\/3);
+}
+
+.sf-avatar-group.sf-avatar-group--size-xs .sf-avatar-group-avatars > * + * {
+  margin-inline-start: calc(var(--sf-space-1\/4) * -1);
+}
+
+.sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+  border: var(--sf-px) solid;
+  border-color: var(--sf-white, transparent);
+  border-style: solid;
+  border-width: var(--sf-px);
+}
+
+.sf-avatar-group.sf-avatar-group--size-sm .sf-avatar-group-avatars > * + * {
+  margin-inline-start: calc(var(--sf-space-1\/3) * -1);
+}
+
+.sf-avatar-group.sf-avatar-group--size-md .sf-avatar-group-avatars > * + * {
+  margin-inline-start: calc(var(--sf-space-1\/2) * -1);
+}
+}

@@ -1,0 +1,73 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__radius' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BORDER RADIUS
+
+$infix: xl;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $radius-level, $radius-value in $border-radius-array {
+            
+            // All sides
+            .#{$infix}radius-#{$radius-level} {
+                border-radius: var(--sf-radius-#{$radius-value});
+            }
+
+        }
+
+        @each $radius-level, $radius-value in $border-radius-array {
+
+            // Top inline-start and inline-end sides
+            .#{$infix}radius-top-#{$radius-level} {
+                border-start-start-radius: var(--sf-radius-#{$radius-value});
+                border-start-end-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Bottom inline-start and inline-end sides
+            .#{$infix}radius-bottom-#{$radius-level} {
+                border-end-start-radius: var(--sf-radius-#{$radius-value});
+                border-end-end-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Inline-start top and bottom sides
+            .#{$infix}radius-inline-start-#{$radius-level} {
+                border-start-start-radius: var(--sf-radius-#{$radius-value});
+                border-end-start-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Inline-end top and bottom sides
+            .#{$infix}radius-inline-end-#{$radius-level} {
+                border-start-end-radius: var(--sf-radius-#{$radius-value});
+                border-end-end-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Top inline-start side
+            .#{$infix}radius-top-inline-start-#{$radius-level} {
+                border-start-start-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Top inline-end side
+            .#{$infix}radius-top-inline-end-#{$radius-level} {
+                border-start-end-radius: var(--sf-radius-#{$radius-value});
+            }	
+
+            // Bottom inline-start side
+            .#{$infix}radius-bottom-inline-start-#{$radius-level} {
+                border-end-start-radius: var(--sf-radius-#{$radius-value});
+            }
+
+            // Bottom inline-end side
+            .#{$infix}radius-bottom-inline-end-#{$radius-level} {
+                border-end-end-radius: var(--sf-radius-#{$radius-value});
+            }		
+        }
+    }
+// }
+}

@@ -1,0 +1,53 @@
+﻿// SIMAI Framework
+// https://simai.io
+
+// SCROLLBAR
+
+// Set scrollbar settings
+// @include layer-priority(base,default) {
+/* width */
+@layer sf.base {
+  html {
+    scrollbar-gutter: auto;
+  }
+
+  * {
+    // --sf-scroll-bg-track: var(--sf-surface-overlay); - Р·Р°РјРµРЅРёР» РЅР° container С‚.Рє. РїСЂРё СЂР°Р·РЅС‹С… bg-primary,secondary Рё С‚Рґ СЃРєСЂРѕР»Р»Р±Р°СЂ РІРѕРѕР±С‰Рµ РЅРµ РІРёРґРµРЅ
+    --sf-scroll-bg-track: var(--sf-transparent);
+    --sf-scroll-bg-thumb: var(--sf-surface-1);
+    --sf-scroll-bg-width: var(--sf-b4);
+    --sf-scroll-thumb-size: var(--sf-a6);
+    --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);
+    --sf-scroll-thumb-inset: var(--sf-a4);
+    --sf-scroll-radius: var(--sf-d6);
+    scroll-behavior: smooth;
+  }
+
+  ::-webkit-scrollbar {
+    width: var(--sf-scroll-bg-width);
+    height: var(--sf-scroll-bg-width);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    min-height: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
+    min-width: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
+    border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
+    background-clip: padding-box;
+    border-radius: var(--sf-scroll-radius);
+    background-color: var(--sf-scroll-bg-thumb);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background-color: var(--sf-transparent);
+  }
+
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--sf-scroll-bg-track);
+    border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
+    background-clip: padding-box;
+    border-radius: var(--sf-scroll-radius);
+  }
+}
+
+

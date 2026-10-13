@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__scroll_slider_radius' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL DECORATION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Scroll Width
+        @each $scroll-slider-radius-name, $scroll-slider-radius-value in $scroll-slider-radius-array {
+            .#{$infix}scroll-radius-#{$scroll-slider-radius-name},
+            .#{$infix}scroll-thumb-radius-#{$scroll-slider-radius-name} {
+                --sf-scroll-radius: var(--sf-#{$scroll-slider-radius-value});
+            }
+        }
+    }
+// }
+}

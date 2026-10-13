@@ -1,0 +1,1 @@
+SF.RuleLoader['outline-color/focus-visible'] = new RegExp("^(?:focus-visible:outline-(?:current|error|outline(?:-variant)?|primary|s(?:econdary|uccess)|t(?:ertiary|ransparent)|warning))(?![\\s\\S])");

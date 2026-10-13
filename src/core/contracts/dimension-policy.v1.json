@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "owner": "sf5-core",
+  "description": "Reviewed boundaries for direct CSS length syntax. Static product geometry remains token-only; this file does not create design-token exceptions.",
+  "rules": [
+    {
+      "id": "non-executable-comments",
+      "category": "comment-review",
+      "filePattern": ".*",
+      "contextPattern": ".*",
+      "status": "accepted-non-executable",
+      "reason": "The lexical occurrence is inside a source comment and cannot affect emitted CSS or runtime style."
+    },
+    {
+      "id": "owned-system-definitions",
+      "category": "definition-review",
+      "filePattern": "^(?:core/scss/vars/_sf_var__size\\.scss|core/scss/vars/_sf_var__breakpoint\\.scss|core/figma_variables/figma_icon_sizes\\.scss|core/figma_variables/figma_border_radius\\.scss|utility/letter-spacing/default/scss/_sf_var__letter_spacing\\.scss)$",
+      "contextPattern": ".*",
+      "status": "accepted-system-definition",
+      "reason": "This is an owned primitive, semantic token, breakpoint, or relative typography definition; consumers must reference it rather than repeat its value."
+    },
+    {
+      "id": "third-party-sources",
+      "category": "vendor-review",
+      "filePattern": "^(?:component/swiper/|plugin/)",
+      "contextPattern": ".*",
+      "status": "accepted-vendor-owned",
+      "reason": "Vendored source is inventoried but is changed only through an owned adapter or an upstream update."
+    },
+    {
+      "id": "legacy-component-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^component/(?:country-code/js/_country_code|dropdown/js/_dropdown|modal/js/_modal|scrollbar/js/_scrollbar)\\.js$",
+      "contextPattern": "(?:totalHeight|Math\\.round|scrollbarWidth|thumbSize|maxThumbOffset)",
+      "status": "accepted-runtime-geometry",
+      "reason": "CSSOM and DOM measurements are expressed in CSS pixels by the browser and must retain their exact measured value."
+    },
+    {
+      "id": "legacy-sf-system-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",
+      "contextPattern": "panel\\.clientHeight",
+      "status": "accepted-runtime-geometry",
+      "reason": "The panel offset is derived from its current rendered height."
+    },
+    {
+      "id": "legacy-accessibility-font-setting",
+      "category": "runtime-review",
+      "filePattern": "^component/sf-system/js/04-blocks/_special\\.js$",
+      "contextPattern": "cookies\\.specialkegl",
+      "status": "accepted-compatibility-boundary",
+      "reason": "The established accessibility preference stores an explicit CSS-pixel font size; changing its unit would change saved user settings."
+    },
+    {
+      "id": "numeric-spinner-api",
+      "category": "runtime-review",
+      "filePattern": "^component/spinner/js/_spinner\\.js$",
+      "contextPattern": "config\\.(?:width|height|strokeWidth)",
+      "status": "accepted-compatibility-boundary",
+      "reason": "Numeric legacy spinner options are documented CSS-pixel inputs; token or CSS-length strings remain the preferred declarative path."
+    },
+    {
+      "id": "numeric-preloader-motion-api",
+      "category": "runtime-review",
+      "filePattern": "^core/js/preloader\\.js$",
+      "contextPattern": "distance",
+      "status": "accepted-compatibility-boundary",
+      "reason": "The numeric animation-distance API is retained for SF5 compatibility and is serialized only at the Web Animations boundary."
+    },
+    {
+      "id": "smart-overlay-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^smart/(?:datepicker|drawer|dropdown|modal)/index\\.js$",
+      "contextPattern": "(?:\\$\\{(?:[xy]|left|top)\\}|Math\\.(?:max|round)|box\\.|size\\.|offset[XY]|startRect|scrollbarWidth|\\$\\{gap\\})",
+      "status": "accepted-runtime-geometry",
+      "reason": "Overlay, drag, and scroll-lock coordinates are derived from the current viewport or rendered boxes."
+    },
+    {
+      "id": "smart-drag-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^smart/helpers/draggable\\.js$",
+      "contextPattern": "(?:startRect|\\$\\{left\\}|\\$\\{top\\})",
+      "status": "accepted-runtime-geometry",
+      "reason": "Drag placeholders and transforms preserve the exact DOMRect and pointer position."
+    }
+  ]
+}

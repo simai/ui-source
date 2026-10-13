@@ -1,0 +1,16 @@
+@layer sf.components {
+html {
+    &.special {
+        &.special-interval-15 {
+            * {
+                line-height: 1.5!important;
+            }
+        }
+        &.special-interval-20 {
+            * {
+                line-height: 2!important;
+            }
+        }
+    }
+}
+}

@@ -1,0 +1,54 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-steps {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  background-color: var(--sf-steps--background-color, transparent);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) gap/var(--sf-steps-container--gap) */
+.sf-steps .sf-steps-container {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  --sf-steps-container--background-color: transparent;
+  background-color: var(--sf-steps-container--background-color);
+  gap: var(--sf-steps-container--gap);
+}
+
+.sf-steps .sf-steps-container > .sf-icon {
+  flex-shrink: 0;
+  /* A glyph is non-text graphics, and WCAG 1.4.11 asks 3:1 of it.
+     --sf-on-surface-muted is 3.18:1 light and 2.92:1 dark, so it sat on the
+     line in one theme and under it in the other. --sf-on-surface-variant is
+     the Framework's own paler-than-text role, 6.47 and 5.95. */
+  --sf-icon--color: var(--sf-on-surface-variant);
+  color: var(--sf-icon--color);
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+}
+
+.sf-steps:dir(rtl) .sf-steps-separator--directional {
+  transform: rotate(180deg);
+}
+
+.sf-steps.sf-steps--size-1 .sf-steps-container > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-3);
+  --sf-icon--height: var(--sf-text-size-3);
+  --sf-icon--width: var(--sf-text-size-3);
+}
+
+.sf-steps.sf-steps--size-1 .sf-steps-container {
+  --sf-steps-container--gap: var(--sf-space-1\/4);
+}
+
+.sf-steps.sf-steps--size-1\/2 .sf-steps-container > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-2);
+  --sf-icon--height: var(--sf-text-size-2);
+  --sf-icon--width: var(--sf-text-size-2);
+}
+
+.sf-steps.sf-steps--size-1\/2 .sf-steps-container {
+  --sf-steps-container--gap: var(--sf-space-1\/3);
+}
+}

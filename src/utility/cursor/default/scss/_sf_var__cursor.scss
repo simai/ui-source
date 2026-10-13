@@ -1,0 +1,42 @@
+// SIMAI Framework
+// https://simai.io
+
+// COURSOR CSS
+
+$cursor-array: (
+    auto: auto,
+    default: default,
+    pointer: pointer,
+    wait: wait,
+    text: text,
+    move: move,
+    help: help,
+    grab: grab, // was 'grap'
+    grabbing: grabbing,
+    not-allowed: not-allowed,
+    no-drop: no-drop,
+    context-menu: context-menu,
+    progress: progress,
+    crosshair: crosshair,
+    cell: cell,
+    alias: alias,
+    copy: copy,
+    zoom-in: zoom-in,
+    zoom-out: zoom-out,
+    all-scroll: all-scroll,
+    w-resize: w-resize,
+    e-resize: e-resize,
+    n-resize: n-resize,
+    s-resize: s-resize,
+    ew-resize: ew-resize,
+    ns-resize: ns-resize,
+    ne-resize: ne-resize,
+    nw-resize: nw-resize,
+    se-resize: se-resize,
+    sw-resize: sw-resize,
+    nesw-resize: nesw-resize,
+    nwse-resize: nwse-resize,
+    col-resize: col-resize,
+    row-resize: row-resize,
+    vertical-text: vertical-text
+);

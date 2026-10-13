@@ -1,0 +1,78 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__margin' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// MARGIN
+
+// @include layer-priority(utility,lg) {
+    @include breakpoint-media(lg) {
+        $infix: breakpoint-infix(lg, $breakpoint-array);
+        
+        // Margin and padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size in $space-size-array {
+            
+            // MARGIN SETTINGS
+            // for all sides
+            .#{$infix}m-#{$size} {
+                margin: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-#{$size} {
+                margin: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for top sides
+            .#{$infix}m-top-#{$size} {
+                margin-top: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-top-#{$size} {
+                margin-top: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for inline end
+            .#{$infix}m-inline-end-#{$size} {
+                margin-inline-end: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-inline-end-#{$size} {
+                margin-inline-end: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for bottom sides
+            .#{$infix}m-bottom-#{$size} {
+                margin-bottom: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-bottom-#{$size} {
+                margin-bottom: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for inline start
+            .#{$infix}m-inline-start-#{$size} {
+                margin-inline-start: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-inline-start-#{$size} {
+                margin-inline-start: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for inline axis (both sides)
+            .#{$infix}m-inline-#{$size} {
+                margin-inline: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-inline-#{$size} {
+                margin-inline: calc(0rem - var(--sf-space-#{$size}));
+            }
+
+            // for block axis (both sides)
+            .#{$infix}m-block-#{$size} {
+                margin-block: var(--sf-space-#{$size});
+            }
+            .-#{$infix}m-block-#{$size} {
+                margin-block: calc(0rem - var(--sf-space-#{$size}));
+            }
+        }	
+    }
+// }
+}

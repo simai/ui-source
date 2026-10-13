@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="212 980 28 20" fill="none" role="img">
+<g id="Country=TW">
+<rect id="Mask_447" x="212" y="980" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask209_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="212" y="980" width="28" height="20">
+<rect id="Mask_448" x="212" y="980" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask209_8205_11341)">
+<path id="Rectangle 2_285" fill-rule="evenodd" clip-rule="evenodd" d="M210.667 1001.33H241.334V978.667H210.667V1001.33Z" fill="#D80027"/>
+<path id="Rectangle 2_286" fill-rule="evenodd" clip-rule="evenodd" d="M210.667 990.667H226.667V978.667H210.667V990.667Z" fill="#0052B4"/>
+<path id="Star 27_4" fill-rule="evenodd" clip-rule="evenodd" d="M219.333 987L218.058 988.413L218.155 986.512L216.254 986.609L217.667 985.333L216.254 984.058L218.155 984.155L218.058 982.254L219.333 983.667L220.609 982.254L220.512 984.155L222.413 984.058L221 985.333L222.413 986.609L220.512 986.512L220.609 988.413L219.333 987Z" fill="#F0F0F0"/>
+</g>
+</g>
+</svg>

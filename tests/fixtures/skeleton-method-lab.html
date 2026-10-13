@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Skeleton method lab</title>
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/component/skeleton/css/skeleton.css">
+</head>
+<body class="p-4">
+  <main class="flex flex-col gap-5 max-w-g2">
+    <h1>Skeleton</h1>
+
+    <section id="loading-region" class="flex flex-col gap-2" aria-busy="true" aria-labelledby="loading-title">
+      <h2 id="loading-title">Профиль загружается</h2>
+      <span class="sr-only">Загружается профиль</span>
+      <div class="flex gap-2 items-start">
+        <div id="avatar" class="sf-skeleton sf-skeleton--animation-wave flex" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-7 sf-skeleton-icon sf-skeleton-circle"></div>
+        </div>
+        <div id="lines" class="sf-skeleton sf-skeleton--animation-wave flex flex-1" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-1 w-full"></div>
+          <div class="sf-skeleton-text sf-skeleton-text--size-1 w-3/4"></div>
+          <div class="sf-skeleton-text sf-skeleton-text--size-1 w-1/2"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-2">
+      <h2>Формы</h2>
+      <div id="shapes" class="grid grid-cols-2 gap-2">
+        <div class="sf-skeleton sf-skeleton--animation-pulse flex" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-4 sf-skeleton-icon sf-skeleton-circle"></div>
+        </div>
+        <div class="sf-skeleton sf-skeleton--animation-pulse flex" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-4 sf-skeleton-icon sf-skeleton-square"></div>
+        </div>
+        <div class="sf-skeleton sf-skeleton--animation-pulse flex" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-2"></div>
+        </div>
+        <div class="sf-skeleton sf-skeleton--animation-pulse flex" aria-hidden="true">
+          <div class="sf-skeleton-text sf-skeleton-text--size-2 sf-skeleton-rounded"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="motion" class="grid grid-cols-3 gap-2">
+      <div class="sf-skeleton sf-skeleton--animation-pulse flex" aria-hidden="true">
+        <div class="sf-skeleton-text sf-skeleton-text--size-1"></div>
+      </div>
+      <div class="sf-skeleton sf-skeleton--animation-wave flex" aria-hidden="true">
+        <div class="sf-skeleton-text sf-skeleton-text--size-1"></div>
+      </div>
+      <div class="sf-skeleton sf-skeleton--animation-none flex" aria-hidden="true">
+        <div class="sf-skeleton-text sf-skeleton-text--size-1"></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Полупрозрачные поверхности — лаборатория</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<script>window.sfPath = '/ui/distr/';</script>
+<style>
+    body { margin: 0; font-family: var(--sf-text--family); background: var(--sf-surface-1); color: var(--sf-on-surface); }
+    .lab-bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 16px; align-items: baseline;
+        padding: 12px 20px; background: var(--sf-surface-0); border-bottom: 1px solid var(--sf-outline-variant); }
+    .lab-themes { display: grid; grid-template-columns: 1fr 1fr; }
+    .lab-theme { padding: 20px; background: var(--sf-surface-0); color: var(--sf-on-surface); min-block-size: 100vh; }
+    .lab-theme + .lab-theme { border-inline-start: 1px solid var(--sf-outline-variant); }
+    h2 { font-size: 18px; margin: 0 0 4px; }
+    h3 { font-size: 14px; margin: 26px 0 8px; color: var(--sf-on-surface-variant); font-weight: 600; }
+    p.note { color: var(--sf-on-surface-variant); font-size: 13px; margin: 0 0 14px; }
+    .row { display: flex; align-items: stretch; gap: 10px; margin-block-end: 8px; }
+    .plate { inline-size: 74px; block-size: 44px; border-radius: 6px; flex: none; position: relative; }
+    .plate span { position: absolute; inset-block-end: -15px; inset-inline-start: 0; white-space: nowrap;
+        font: 400 10px/1 ui-monospace, monospace; color: var(--sf-on-surface-variant); }
+    .row { margin-block-end: 24px; }
+    .legend { display: flex; gap: 10px; margin-block-end: 10px; font: 600 11px/1 ui-monospace, monospace;
+        color: var(--sf-on-surface-variant); }
+    .legend span { inline-size: 92px; }
+    .what { font: 400 12px/1.45 ui-monospace, monospace; color: var(--sf-on-surface-variant); align-self: center; }
+    .what b { color: var(--sf-on-surface); font-weight: 600; }
+    .what i { font-style: normal; color: var(--sf-error); }
+</style>
+</head>
+<body>
+<div class="lab-bar"><strong>Полупрозрачные поверхности</strong>
+    <span class="note" style="margin:0">Три плашки в ряд: как сейчас и два способа свести всё к одной базе —
+    «ровные» (одни ступени в обеих темах) и «по светлоте» (ступени подобраны под нынешний вид).</span></div>
+<div class="lab-themes" id="lab"></div>
+
+<script type="module">
+    const GROUPS = [
+        {title: 'Слой состояния и вуаль — нейтральный тон темы',
+            roles: ['--sf-surface-transparent-hover', '--sf-surface-transparent-select',
+                '--sf-surface-transparent-overlay']},
+        {title: 'Плашка — тот же тон, ступени одинаковы в обеих темах',
+            roles: ['--sf-surface-container', '--sf-surface-container-hover', '--sf-surface-container-active']},
+        {title: 'Вуаль сцены — единственная на чистой базе',
+            roles: ['--sf-surface-overlay']},
+        {title: 'Непрозрачные ступени, для сравнения',
+            roles: ['--sf-surface-0', '--sf-surface-1', '--sf-surface-2', '--sf-surface-3']},
+    ];
+    // What a consumer asks for, counted in the Framework's own source.
+    const USES = {
+        '--sf-surface-transparent-hover': 3, '--sf-surface-transparent-select': 2,
+        // Asked for by name through the utilities rather than through var():
+        // the backdrop of every modal and the bed of a scrollbar.
+        '--sf-surface-transparent-overlay': 9,
+        '--sf-surface-container': 46, '--sf-surface-container-hover': 26,
+        '--sf-surface-container-active': 12, '--sf-surface-overlay': 2,
+    };
+
+    const parse = (value) => {
+        const numbers = String(value).match(/[\d.]+/g)?.map(Number) ?? [];
+        return {rgb: numbers.slice(0, 3), alpha: numbers.length > 3 ? numbers[3] : 1};
+    };
+    const base = (value) => {
+        const {rgb, alpha} = parse(value);
+        if (alpha === 1) return 'непрозрачный';
+        const hex = rgb.map((c) => Math.round(c).toString(16).padStart(2, '0')).join('');
+        const named = {'76777c': 'neutral-50', 'e3e2e7': 'neutral-90', '909095': 'neutral-60',
+            '000000': 'чёрный', 'ffffff': 'белый'};
+        return `${named[hex] ?? '#' + hex} · ${Math.round(alpha * 100)}%`;
+    };
+
+    for (const theme of ['theme-light', 'theme-dark']) {
+        const section = document.createElement('section');
+        section.className = `lab-theme ${theme}`;
+        section.dataset.theme = theme;
+        section.innerHTML = `<h2>${theme === 'theme-light' ? 'Светлая' : 'Тёмная'}</h2>`
+            + GROUPS.map((group) => `<h3>${group.title}</h3>` + group.roles.map((role) => `
+                <div class="row">
+                    <div class="plate" style="background: var(${role})" data-role="${role}"><span>сейчас</span></div>
+                    <div class="plate" data-proposal="even" data-role="${role}"><span>ровные</span></div>
+                    <div class="plate" data-proposal="matched" data-role="${role}"><span>по светлоте</span></div>
+                    <div class="plate" data-proposal="tone" data-role="${role}"><span>нейтральный тон</span></div>
+                    <span class="what" data-for="${role}"></span>
+                </div>`).join('')).join('');
+        document.getElementById('lab').append(section);
+    }
+
+    // What the two proposals would paint. Both put every translucent surface on
+    // one base -- ink on a light surface, light on a dark one, which is what
+    // --sf-alpha-base already is -- and differ only in which steps they take.
+    //
+    //   «ровные»      the same steps in both themes, 4/8/12 for a state layer
+    //                 and 12/16/20 for a plate. One rule to remember, and the
+    //                 light theme comes out darker than it is today.
+    //   «по светлоте» steps chosen so each role lands where it lands now: a
+    //                 pure base is stronger than neutral-50, so the light theme
+    //                 needs about half the step. Nothing visibly moves, and the
+    //                 rule is a table rather than a sentence.
+    const PROPOSALS = {
+        even: {
+            '--sf-surface-transparent-hover': [4, 4], '--sf-surface-transparent-select': [8, 8],
+            '--sf-surface-transparent-active': [12, 12], '--sf-surface-transparent-overlay': [24, 24],
+            '--sf-surface-container': [12, 12], '--sf-surface-container-hover': [16, 16],
+            '--sf-surface-container-active': [20, 20], '--sf-surface-overlay': [8, 8],
+        },
+        matched: {
+            '--sf-surface-transparent-hover': [4, 4], '--sf-surface-transparent-select': [4, 8],
+            '--sf-surface-transparent-active': [8, 12], '--sf-surface-transparent-overlay': [12, 24],
+            '--sf-surface-container': [8, 12], '--sf-surface-container-hover': [8, 16],
+            '--sf-surface-container-active': [12, 20], '--sf-surface-overlay': [8, 8],
+        },
+        // The third way, and the one the first two argue for. The base is not
+        // black and white but the neutral tone the theme already uses for a
+        // state layer -- neutral-50 light, neutral-90 dark. A pure base is about
+        // twice as strong as that tone, which is why «ровные» darkens the light
+        // theme and «по светлоте» has to halve its steps until two roles collide.
+        // On this base the steps can be the same in both themes, which was the
+        // point of asking, and the light theme does not move at all.
+        tone: {
+            '--sf-surface-transparent-hover': [4, 4], '--sf-surface-transparent-select': [8, 8],
+            '--sf-surface-transparent-active': [12, 12], '--sf-surface-transparent-overlay': [24, 24],
+            '--sf-surface-container': [12, 12], '--sf-surface-container-hover': [16, 16],
+            '--sf-surface-container-active': [20, 20], '--sf-surface-overlay': [8, 8],
+        },
+    };
+
+    // The composited result, so a proposal can be judged by where it lands
+    // rather than by the step it names: a pure base is stronger than neutral-50,
+    // so the same number is not the same colour.
+    const surfaceOf = (node) => {
+        const probe = document.createElement('div');
+        node.append(probe);
+        probe.style.background = 'var(--sf-surface-0)';
+        const value = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return parse(value).rgb;
+    };
+    const composite = (colour, behind) => {
+        const {rgb, alpha} = parse(colour);
+        if (!rgb.length) return null;
+        return rgb.map((part, index) => Math.round(part * alpha + behind[index] * (1 - alpha)));
+    };
+    const channel = (value) => {
+        const part = value / 255;
+        return part <= 0.03928 ? part / 12.92 : ((part + 0.055) / 1.055) ** 2.4;
+    };
+    const lightness = (rgb) => Math.round((0.2126 * channel(rgb[0]) + 0.7152 * channel(rgb[1])
+        + 0.0722 * channel(rgb[2])) * 1000) / 10;
+
+    await new Promise((done) => setTimeout(done, 200));
+    for (const node of document.querySelectorAll('[data-proposal]')) {
+        const theme = node.closest('.lab-theme').dataset.theme ?? node.closest('.lab-theme').className;
+        const dark = theme.includes('dark');
+        const step = PROPOSALS[node.dataset.proposal][node.dataset.role]?.[dark ? 1 : 0];
+        if (step === undefined) { node.style.background = 'var(' + node.dataset.role + ')'; continue; }
+        const tone = node.dataset.proposal === 'tone'
+            ? (dark ? '227, 226, 231' : '118, 119, 124')
+            : (dark ? '255, 255, 255' : '0, 0, 0');
+        node.style.background = `rgba(${tone}, ${step / 100})`;
+        const behind = surfaceOf(node);
+        const now = lightness(composite(getComputedStyle(node.parentElement.querySelector('.plate')).backgroundColor, behind));
+        const next = lightness(composite(getComputedStyle(node).backgroundColor, behind));
+        const drift = Math.round((next - now) * 10) / 10;
+        const named = {even: 'ровные', matched: 'по светлоте', tone: 'нейтр. тон'};
+        node.querySelector('span').textContent =
+            `${named[node.dataset.proposal]} ${step} · ${drift > 0 ? '+' : ''}${drift}`;
+    }
+
+    const seen = new Map();
+    // Only the first plate of each row -- the one that is drawn today. The
+    // proposal plates beside it are the same role again, and counting them read
+    // as every role colliding with itself.
+    for (const node of document.querySelectorAll('.plate:not([data-proposal])')) {
+        const role = node.dataset.role;
+        const colour = getComputedStyle(node).backgroundColor;
+        const section = node.closest('.lab-theme');
+        const key = `${section.className}|${colour}`;
+        const twin = seen.get(key);
+        seen.set(key, role);
+        const uses = USES[role];
+        const said = node.parentElement.querySelector('.what');
+        said.innerHTML = `<b>${role.replace('--sf-', '')}</b> — ${base(colour)}`
+            + (uses === undefined ? '' : ` · ${uses === 0 ? '<i>не используется</i>' : uses + ' мест'}`)
+            + (twin ? ` · <i>тот же цвет, что ${twin.replace('--sf-', '')}</i>` : '');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__grid_row_end' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID ROW END
+// @include layer-priority(utility,xl) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+
+        // Grid Row end Utilities
+        @each $grid-row-end-name, $grid-row-end-value in $grid-row-end-array {
+            // Колонки называются col-*, строки назывались grid-row-*. Короткое
+            // имя — основное, длинное остаётся ради совместимости.
+            .#{$infix}row-end-#{$grid-row-end-name},
+            .#{$infix}grid-row-end-#{$grid-row-end-name} {
+                grid-row-end: #{$grid-row-end-value};
+            }
+        }
+    }
+// }
+}

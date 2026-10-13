@@ -1,0 +1,1846 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.admin-navigation-port",
+  "version": "1.0.0",
+  "component": "smart.admin-menu",
+  "element": "sf-admin-menu",
+  "summary": "The host seam for the admin menu: the menu that replaced the admin's top bar. The host owns the sites, the tree, the profiles and their layouts with revisions, the favourites, the person and their preferences, search and notifications; the component draws them in two columns, a rail and a phone view, and tells the host what a person asked for. It keeps nothing of its own.",
+  "capabilities": {
+    "site-switch": {
+      "summary": "More than one site. Without it the site is shown and nothing is offered to choose: a person with one site has nothing to switch to, and a control that leads nowhere is not drawn.",
+      "intents": [
+        "site.switch",
+        "sites.search"
+      ],
+      "data": [
+        "sites_page"
+      ]
+    },
+    "search": {
+      "summary": "The ⌘K palette. Without it neither the search row nor the shortcut is drawn.",
+      "intents": [
+        "search.query",
+        "search.choose"
+      ],
+      "data": [
+        "search_results"
+      ]
+    },
+    "favourites": {
+      "summary": "Starring rows. Without it there is no star and no favourites block.",
+      "intents": [
+        "favourite.toggle"
+      ]
+    },
+    "menu-profiles": {
+      "summary": "Choosing, keeping and editing menu profiles. Without it the menu is drawn as the host gives it, and neither the pencil nor «Профиль меню» is drawn. What may be changed in which profile arrives in `rights` with the menu, not as a capability.",
+      "intents": [
+        "view.profile",
+        "view.create",
+        "view.rename",
+        "view.delete",
+        "view.save",
+        "view.reset"
+      ]
+    },
+    "preferences": {
+      "summary": "Theme, language and a collapsed menu kept as the person's own settings. Without it the profile menu offers neither theme nor language, and a collapsed menu opens again on the next page.",
+      "intents": [
+        "preference.theme",
+        "preference.language",
+        "preference.compact"
+      ]
+    },
+    "notifications": {
+      "summary": "A notification centre. Without it there is no notifications row -- the menu does not draw one that would open an empty column.",
+      "intents": [
+        "notifications.load",
+        "notifications.read"
+      ],
+      "data": [
+        "notifications_page"
+      ]
+    },
+    "sign-out": {
+      "summary": "Signing out from the menu. Without it the profile menu ends with the links.",
+      "intents": [
+        "session.sign-out"
+      ]
+    }
+  },
+  "data": {
+    "navigation": {
+      "summary": "The menu as the host sees it now, for one site and one profile. The component draws it and never writes to it.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "revision",
+          "echo",
+          "site",
+          "items",
+          "favourites",
+          "profiles",
+          "rights",
+          "person"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "revision": {
+            "type": "string",
+            "description": "The revision of the current profile's layout. A save is a write against it."
+          },
+          "echo": {
+            "type": "object",
+            "required": [
+              "site",
+              "profile"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "site": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "profile": {
+                "type": "string"
+              },
+              "sequence": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "The sequence of the request this answers. A late answer is dropped by it."
+              }
+            },
+            "description": "What the host actually answered for. The menu draws the site and profile named here, not the one it last asked for."
+          },
+          "site": {
+            "type": "object",
+            "required": [
+              "current",
+              "count"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "current": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "required": [
+                  "key",
+                  "label"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "mark": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "One or two letters drawn as the site mark when the host has no picture."
+                  }
+                }
+              },
+              "count": {
+                "type": "integer",
+                "description": "How many sites this person can reach. With one there is nothing to choose and no switcher is drawn."
+              },
+              "manage_href": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "current": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key of the row the page belongs to."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "kind",
+                "level"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "Permanent. Layouts, favourites and the current row all refer to it."
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "root",
+                    "section",
+                    "page",
+                    "divider",
+                    "heading",
+                    "link"
+                  ],
+                  "description": "root: a first-column entry opening the second column. section: a row whose children unfold in place. page: a row that opens a page. divider and heading separate rows. link: an external address, drawn with ↗."
+                },
+                "level": {
+                  "type": "string",
+                  "enum": [
+                    "site",
+                    "install"
+                  ],
+                  "description": "site: belongs to the current site and changes with it. install: shared by every site, and drawn apart so the two cannot be mistaken for each other."
+                },
+                "label": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "A Material Symbols name."
+                },
+                "href": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "attention": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "tone",
+                    "label"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "tone": {
+                      "type": "string",
+                      "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "error"
+                      ]
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "What needs attention, in the host's words: «4 новых», «доступно 1.4». Never a total."
+                    }
+                  },
+                  "description": "Something waiting for a person. The menu shows nothing else on the right of a row: there are no «how many in all» counters in the menu, they belong in the page header."
+                },
+                "badge": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "A count of unread or waiting things. Not a total."
+                },
+                "shortcut": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "A key hint drawn on the right: «⌘K»."
+                },
+                "own": {
+                  "type": "boolean",
+                  "description": "A row a person or an administrator added, rather than one a package gave. Only these can be removed."
+                },
+                "hidden": {
+                  "type": "boolean",
+                  "description": "Hidden in the current profile. Sent so the edit mode can show it struck through and bring it back."
+                },
+                "package_label": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The name the package gave the row, so a renamed row can be returned to it."
+                },
+                "action": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "key",
+                    "label"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "icon": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "href": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "description": "The section's own action, drawn in the foot of the second column: «+ Создать хранилище»."
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "kind",
+                      "level"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "description": "Permanent. Layouts, favourites and the current row all refer to it."
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "root",
+                          "section",
+                          "page",
+                          "divider",
+                          "heading",
+                          "link"
+                        ],
+                        "description": "root: a first-column entry opening the second column. section: a row whose children unfold in place. page: a row that opens a page. divider and heading separate rows. link: an external address, drawn with ↗."
+                      },
+                      "level": {
+                        "type": "string",
+                        "enum": [
+                          "site",
+                          "install"
+                        ],
+                        "description": "site: belongs to the current site and changes with it. install: shared by every site, and drawn apart so the two cannot be mistaken for each other."
+                      },
+                      "label": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "icon": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "A Material Symbols name."
+                      },
+                      "href": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "attention": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "tone",
+                          "label"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "tone": {
+                            "type": "string",
+                            "enum": [
+                              "info",
+                              "success",
+                              "warning",
+                              "error"
+                            ]
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "What needs attention, in the host's words: «4 новых», «доступно 1.4». Never a total."
+                          }
+                        },
+                        "description": "Something waiting for a person. The menu shows nothing else on the right of a row: there are no «how many in all» counters in the menu, they belong in the page header."
+                      },
+                      "badge": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "description": "A count of unread or waiting things. Not a total."
+                      },
+                      "shortcut": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "A key hint drawn on the right: «⌘K»."
+                      },
+                      "own": {
+                        "type": "boolean",
+                        "description": "A row a person or an administrator added, rather than one a package gave. Only these can be removed."
+                      },
+                      "hidden": {
+                        "type": "boolean",
+                        "description": "Hidden in the current profile. Sent so the edit mode can show it struck through and bring it back."
+                      },
+                      "package_label": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "The name the package gave the row, so a renamed row can be returned to it."
+                      },
+                      "action": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "key",
+                          "label"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "key": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "icon": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "href": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "description": "The section's own action, drawn in the foot of the second column: «+ Создать хранилище»."
+                      },
+                      "children": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "kind",
+                            "level"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "key": {
+                              "type": "string",
+                              "description": "Permanent. Layouts, favourites and the current row all refer to it."
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "root",
+                                "section",
+                                "page",
+                                "divider",
+                                "heading",
+                                "link"
+                              ],
+                              "description": "root: a first-column entry opening the second column. section: a row whose children unfold in place. page: a row that opens a page. divider and heading separate rows. link: an external address, drawn with ↗."
+                            },
+                            "level": {
+                              "type": "string",
+                              "enum": [
+                                "site",
+                                "install"
+                              ],
+                              "description": "site: belongs to the current site and changes with it. install: shared by every site, and drawn apart so the two cannot be mistaken for each other."
+                            },
+                            "label": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "icon": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "A Material Symbols name."
+                            },
+                            "href": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "attention": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "required": [
+                                "tone",
+                                "label"
+                              ],
+                              "additionalProperties": false,
+                              "properties": {
+                                "tone": {
+                                  "type": "string",
+                                  "enum": [
+                                    "info",
+                                    "success",
+                                    "warning",
+                                    "error"
+                                  ]
+                                },
+                                "label": {
+                                  "type": "string",
+                                  "description": "What needs attention, in the host's words: «4 новых», «доступно 1.4». Never a total."
+                                }
+                              },
+                              "description": "Something waiting for a person. The menu shows nothing else on the right of a row: there are no «how many in all» counters in the menu, they belong in the page header."
+                            },
+                            "badge": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "description": "A count of unread or waiting things. Not a total."
+                            },
+                            "shortcut": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "A key hint drawn on the right: «⌘K»."
+                            },
+                            "own": {
+                              "type": "boolean",
+                              "description": "A row a person or an administrator added, rather than one a package gave. Only these can be removed."
+                            },
+                            "hidden": {
+                              "type": "boolean",
+                              "description": "Hidden in the current profile. Sent so the edit mode can show it struck through and bring it back."
+                            },
+                            "package_label": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "The name the package gave the row, so a renamed row can be returned to it."
+                            },
+                            "action": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "required": [
+                                "key",
+                                "label"
+                              ],
+                              "additionalProperties": false,
+                              "properties": {
+                                "key": {
+                                  "type": "string"
+                                },
+                                "label": {
+                                  "type": "string"
+                                },
+                                "icon": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "href": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "description": "The section's own action, drawn in the foot of the second column: «+ Создать хранилище»."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "The tree: roots, their rows, and rows that unfold in place. Never deeper: the menu has two columns and the page is the third."
+          },
+          "favourites": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "label",
+                "href",
+                "level"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "The host makes it. For a menu row it is the row key; for a page that is no row -- a record, a list opened with a search, a settings page -- it is whatever the host chooses."
+                },
+                "label": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "href": {
+                  "type": "string"
+                },
+                "level": {
+                  "type": "string",
+                  "enum": [
+                    "site",
+                    "install"
+                  ]
+                }
+              },
+              "description": "A starred place. Not only menu rows: the ☆ is in the head of any page (Larena, 2026-10-11)."
+            },
+            "description": "Starred places, in the order the host keeps them. Site ones are per site; install ones are the same on every site."
+          },
+          "profiles": {
+            "type": "object",
+            "required": [
+              "current",
+              "list"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "current": {
+                "type": "string"
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "label",
+                    "kind",
+                    "renamable",
+                    "removable"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "shared",
+                        "personal"
+                      ],
+                      "description": "shared: kept for everyone on the site by an administrator. personal: this person's own."
+                    },
+                    "renamable": {
+                      "type": "boolean"
+                    },
+                    "removable": {
+                      "type": "boolean",
+                      "description": "False for the last shared profile: a site with none has nothing to show a person who has made none of their own."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "rights": {
+            "type": "object",
+            "required": [
+              "edit_personal",
+              "edit_shared",
+              "create_shared"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "edit_personal": {
+                "type": "boolean"
+              },
+              "edit_shared": {
+                "type": "boolean"
+              },
+              "create_shared": {
+                "type": "boolean"
+              }
+            },
+            "description": "What this person may change in the menu, per profile kind. The component offers only these and never infers a right from a role."
+          },
+          "person": {
+            "type": "object",
+            "required": [
+              "name",
+              "theme",
+              "language",
+              "compact",
+              "languages"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "role": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The role on the current site, in the host's words."
+              },
+              "avatar": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "A picture address; without it the initials are drawn."
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "label",
+                    "href"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "icon": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "href": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "Profile, sign-in security, sessions, shortcuts, help -- in the order the host wants them."
+              },
+              "theme": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark",
+                  "system"
+                ]
+              },
+              "language": {
+                "type": "string"
+              },
+              "compact": {
+                "type": "boolean",
+                "description": "Whether this person keeps the menu collapsed to its rail. Kept by the host so it stays collapsed from page to page."
+              },
+              "languages": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "native",
+                    "english"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "BCP 47, as `lang` takes it."
+                    },
+                    "native": {
+                      "type": "string",
+                      "description": "The language's own name for itself: «Deutsch»."
+                    },
+                    "english": {
+                      "type": "string",
+                      "description": "Its English name, drawn as the caption: «German»."
+                    }
+                  }
+                },
+                "description": "Every language the admin is offered in. The list is the host's; there will be many."
+              }
+            }
+          },
+          "notifications": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "unread"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "unread": {
+                "type": "integer"
+              }
+            },
+            "description": "Present only when the host has notifications. Absent means no row is drawn."
+          }
+        }
+      }
+    },
+    "sites_page": {
+      "summary": "One page of sites for the switcher, echoing the query it answers.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "echo",
+          "items"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "echo": {
+            "type": "object",
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "cursor": {
+                "type": [
+                  "string",
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "label"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "mark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "One or two letters drawn as the site mark when the host has no picture."
+                }
+              }
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "Opaque. Absent or null: the last page."
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "search_results": {
+      "summary": "What the palette shows, grouped by the host, echoing what and where it searched.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "echo",
+          "groups"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "echo": {
+            "type": "object",
+            "required": [
+              "query",
+              "scope"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string",
+                "description": "Where the host searched, in words: «в simai.ru». Drawn in the field so nobody wonders."
+              },
+              "sequence": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "label",
+                "items"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "«Недавние», «Перейти», «Записи», «Действия» -- the host names and orders them."
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "kind",
+                      "label"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "page",
+                          "record",
+                          "action"
+                        ]
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "caption": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "Where it is: the root or the collection, drawn after the label."
+                      },
+                      "icon": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "href": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "Null for an action the host runs when it is chosen."
+                      }
+                    }
+                  }
+                },
+                "more": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "label",
+                    "href"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "href": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "Where the rest of the group is: «Все результаты» -- a storage list searched by the query, when every match sits in one storage (Larena, 2026-10-11)."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "notifications_page": {
+      "summary": "One page of notifications, grouped by time by the host.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "groups",
+          "unread"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "label",
+                "items"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "title",
+                      "when",
+                      "unread"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "body": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "when": {
+                        "type": "string",
+                        "description": "When, in the host's words and time zone: «10:42», «вчера»."
+                      },
+                      "unread": {
+                        "type": "boolean"
+                      },
+                      "icon": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "href": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Grouped by the host -- «Сегодня», «Раньше» -- because only the host knows the person's day."
+          },
+          "unread": {
+            "type": "integer"
+          },
+          "settings_href": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "navigation.load": {
+      "summary": "Read the whole menu for a site: the tree, the current profile's layout applied, favourites, profiles, rights, the person and whether there are notifications. The answer echoes the site and profile it was given for.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "site"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "connected",
+              "host-connected",
+              "requested",
+              "refresh-after-conflict"
+            ]
+          },
+          "site": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sequence": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "item.open": {
+      "summary": "A person chose a row. What opening it means is the host's: it may navigate, open a panel, or refuse.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "href": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "site.switch": {
+      "summary": "Change the site the admin works in. Everything at the site level changes with it; install rows do not.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "site"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "site": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "site-switch"
+    },
+    "sites.search": {
+      "summary": "One page of sites this person can reach, matching what they typed. Asked of the host, never filtered in the component, because there may be hundreds.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "site-switch"
+    },
+    "search.query": {
+      "summary": "What the ⌘K palette shows for what was typed, grouped and ordered by the host. Empty text asks for what the host shows before anything is typed («Недавние»).",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "search"
+    },
+    "search.choose": {
+      "summary": "A person chose a result. A page or record is opened; an action is the host's to run.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "group",
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "search"
+    },
+    "favourite.toggle": {
+      "summary": "Star or unstar a place: a menu row by its key alone, or a page that is no row with what to show for it. The host makes the key of a page; site places are starred per site, install ones on every site at once.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key",
+          "on"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "on": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "favourites"
+    },
+    "view.profile": {
+      "summary": "Choose which profile the menu is drawn through. The choice is the person's own setting.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "profile"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "view.create": {
+      "summary": "Make a profile, starting from another one's layout. A shared one may be refused by right.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "label",
+          "shared",
+          "from"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "shared": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "view.rename": {
+      "summary": "Change a profile's label. Its key and layout stay.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "profile",
+          "label"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "view.delete": {
+      "summary": "Remove a profile. The last shared one stays.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "profile"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "view.save": {
+      "summary": "Save a profile's whole layout against the revision it was drawn from. Applied at once; there is no draft.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "profile",
+          "revision",
+          "layout"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "layout": {
+            "type": "object",
+            "required": [
+              "schema_version",
+              "items",
+              "own"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "schema_version": {
+                "type": "integer",
+                "enum": [
+                  1
+                ]
+              },
+              "items": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "parent",
+                    "order",
+                    "hidden"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "parent": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "The key of the row it now sits under; null for a root."
+                    },
+                    "order": {
+                      "type": "integer"
+                    },
+                    "hidden": {
+                      "type": "boolean"
+                    },
+                    "label": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "A renamed row. Null returns it to the package's name."
+                    },
+                    "icon": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                "description": "Keyed by row key. A row the layout does not name stays where its package put it."
+              },
+              "own": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "kind",
+                    "parent",
+                    "order"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "section",
+                        "divider",
+                        "heading",
+                        "link"
+                      ]
+                    },
+                    "parent": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "order": {
+                      "type": "integer"
+                    },
+                    "label": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "icon": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "href": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "One profile's arrangement, whole. Saved as one revision."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "view.reset": {
+      "summary": "Return a profile to what the packages give. A write against its revision, never a deletion.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "profile",
+          "revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "menu-profiles"
+    },
+    "preference.theme": {
+      "summary": "The person chose light, dark or as the system has it. The component applies it at once; the host keeps it.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "theme"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "theme": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "system"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "preferences"
+    },
+    "preference.language": {
+      "summary": "The person chose a language. Framework components switch at once; the host says whether its own page has to reload for its own text.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "language"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "language": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "preferences"
+    },
+    "preference.compact": {
+      "summary": "The person collapsed the menu to its rail or expanded it. The component does it at once; the host keeps it for the next page.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "compact"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "compact": {
+            "type": "boolean"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "preferences"
+    },
+    "notifications.load": {
+      "summary": "One page of notifications for the second column.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "notifications"
+    },
+    "notifications.read": {
+      "summary": "Mark notifications read: the ones named, or all of them.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "all"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "all": {
+            "type": "boolean"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "notifications"
+    },
+    "session.sign-out": {
+      "summary": "Sign out. Drawn apart, in the colour of a dangerous act.",
+      "event": "sf-admin-menu-intent",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "sign-out"
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a profile is a write against its revision, never a deletion. view.reset carries it."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "shared"
+      ],
+      "carries_revision": true
+    },
+    "fields": {
+      "summary": "Per row, a profile's layout carries where the row sits, its order, whether it is hidden, and a label or icon a person gave it; and the rows a person added. Rows are only rearranged in the edit mode: a drag outside it is not an edit (owner, 2026-10-11).",
+      "writable_in": "1.0.0"
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "92f061ace4e81396c6cb890940743ff64bfb7e994c1ee5cc0bfd587980e276bb",
+    "cases": 37
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "the menu arrives whole -- tree, favourites, profiles, rights and the person -- in one answer",
+      "the answer echoes the site and profile it was given for, and a late answer is dropped by its sequence",
+      "every row says whether it belongs to the site or to the install, and install rows do not change with the site",
+      "the menu carries no totals; a row shows only what needs attention",
+      "sites and search results are asked of the host a page at a time, never filtered in the component",
+      "a layout is saved whole against a revision; a stale save is a conflict carrying the stored layout",
+      "the last shared profile cannot be removed",
+      "favourites are places, not only rows: each carries its label, icon, address and level",
+      "rights travel with the menu and the component never infers one from a role",
+      "a language change says whether the host's page must reload",
+      "a collapsed menu is the person's setting and the host keeps it",
+      "an optional part the host does not offer is unavailable, and nothing that would lead to it is drawn"
+    ]
+  }
+}

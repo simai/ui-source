@@ -1,0 +1,169 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.dynamic-composite-component",
+  "version": "1.0.0",
+  "title": "SIMAI Dynamic Composite Component",
+  "appliesTo": [
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "structure-and-data-separated",
+      "level": "must",
+      "text": "Structural props and request-bound data travel in separate channels; data is accepted only through the properties the component declares as request-bound.",
+      "verification": "manual"
+    },
+    {
+      "id": "request-data-not-persisted",
+      "level": "must",
+      "text": "Request-bound data is never persisted as a definition, recipe or shared snapshot.",
+      "verification": "manual"
+    },
+    {
+      "id": "intent-not-patch",
+      "level": "must",
+      "text": "The component raises an intent; the host decides and validates. The component never sends a patch of the stored document.",
+      "verification": "manual"
+    },
+    {
+      "id": "intent-payload-exact",
+      "level": "must",
+      "text": "An intent payload is validated against an exact set of keys; unknown or missing keys are refused.",
+      "verification": "manual"
+    },
+    {
+      "id": "intent-carries-no-transport",
+      "level": "must",
+      "text": "An intent names what the person asked for and the records it concerns; it never carries an endpoint, a query, a token or any other transport detail. The host chooses the request.",
+      "verification": "manual",
+      "guidance": "Framework: sf-table-retry and the action intents carry an opaque action id and record ids only, so a page cannot be steered into calling an attacker's address."
+    },
+    {
+      "id": "identity-by-reference",
+      "level": "must",
+      "text": "Identifiers from the client are references only; the host re-reads the stored bytes and revisions itself.",
+      "verification": "manual"
+    },
+    {
+      "id": "mutation-carries-revision",
+      "level": "must",
+      "text": "Every mutation carries the revision the client last saw; a mutation without it is refused.",
+      "verification": "manual"
+    },
+    {
+      "id": "server-compares-revision",
+      "level": "must",
+      "text": "The host compares the revision under a lock and answers a conflict with the current revision; it never overwrites silently.",
+      "verification": "manual"
+    },
+    {
+      "id": "conflict-keeps-draft",
+      "level": "must",
+      "text": "On a conflict the component keeps the person's unsaved input and offers a refresh instead of discarding it.",
+      "verification": "manual"
+    },
+    {
+      "id": "batch-all-or-nothing",
+      "level": "must",
+      "text": "A batch mutation is refused as a whole when any item's revision is stale.",
+      "verification": "manual"
+    },
+    {
+      "id": "sequenced-responses",
+      "level": "must",
+      "text": "Each instance numbers its queries and drops a response that is older than the newest one it issued.",
+      "verification": "manual"
+    },
+    {
+      "id": "dispose-releases",
+      "level": "must",
+      "text": "Disposing an instance cancels its subscriptions and in-flight requests and never affects another instance.",
+      "verification": "manual"
+    },
+    {
+      "id": "settings-layers",
+      "level": "must",
+      "text": "Settings resolve deterministically as package defaults, then shared (system or team), then personal; fields that only the shared layer may set are declared.",
+      "verification": "manual"
+    },
+    {
+      "id": "reset-is-a-write",
+      "level": "must",
+      "text": "Resetting a setting is a compare-and-set write that advances the revision, not a deletion.",
+      "verification": "manual"
+    },
+    {
+      "id": "shared-and-personal-separated",
+      "level": "must",
+      "text": "Shared and personal settings use separate endpoints with separate permissions, and the subject is taken from the session, never from the request body.",
+      "verification": "manual"
+    },
+    {
+      "id": "endpoints-are-relative",
+      "level": "must",
+      "text": "Endpoint properties are relative paths without scheme, host or query, and accepting a path never grants access.",
+      "verification": "manual"
+    },
+    {
+      "id": "honest-unavailable",
+      "level": "should",
+      "text": "Without its host endpoint a component reports plainly that the capability is not connected; a pending operation is never reported as completed.",
+      "verification": "manual"
+    },
+    {
+      "id": "shared-state-in-link",
+      "level": "should",
+      "text": "State that another person should see when the link is opened lives in the address; personal conveniences may stay in browser storage.",
+      "verification": "manual"
+    },
+    {
+      "id": "data-states-declared",
+      "level": "should",
+      "text": "A component declares its data states (at least loading, populated, empty and error) and shows the state it is in; it never renders invented data while a request is pending.",
+      "verification": "manual",
+      "guidance": "Framework: the data view declares data-state and reports aria-busy while loading."
+    }
+  ],
+  "extends": [
+    {
+      "id": "simai.composite-component",
+      "version": "1.0.0",
+      "path": "../../simai.composite-component/1.0.0/standard.json",
+      "sha256": "6c5870bf5e160e41dcb64afe31736fd3c410eed48e9a5ac1032d0969cdbad1a3",
+      "description": "Frontend composition, presentation, accessibility and no-JS behaviour. This standard adds the host relationship."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.smart-component-manifest",
+      "version": "2.0.0",
+      "path": "../../../schema/smart-component-manifest.v2.schema.json",
+      "sha256": "cb764fd2f37581362725be43cd7bd7a894766a0ab6f3fe15c33f78dd2088817e",
+      "description": "Already declares persistence, ownership, security, readiness, events and state machines; this standard adds identity, lifecycle, ordering, settings layers and conflict behaviour."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.composite-component 1.0.0",
+      "scope_note": "A composite that asks a host for data, settings or mutations. Field roles, view types and query models belong to a profile above this standard.",
+      "validated_against": [
+        "larena minimal cms records list",
+        "sf-admin-menu",
+        "larena in-place page editor",
+        "simai framework smart table"
+      ],
+      "origin": "Drafted by simai/larena (larena-specs 5c458cf0) and authored for publication by the Framework owner."
+    }
+  }
+}

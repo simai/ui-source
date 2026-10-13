@@ -1,0 +1,33 @@
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ELEVATION
+//
+// Height is two things at once: the shadow under the element and the surface it
+// stands on. Asked for separately, one of them gets forgotten — and the one
+// that gets forgotten is the surface, because in the light theme the shadow
+// alone looks right. In the dark theme it does not: the shadow is black, the
+// background is nearly black, and the panel lies flat. One class sets both, so
+// there is nothing left to forget.
+//
+// `shadow-*` stays for the rare case where only a shadow is wanted.
+
+// Приглушённый текст переопределяется прямо здесь, а не отдельным классом.
+// Компонент внутри панели продолжает писать var(--sf-on-surface-variant) и
+// получает значение, подобранное под поверхность, на которой он оказался.
+// Менять в компонентах нечего: пользовательское свойство наследуется.
+
+@each $level in (1, 2, 3, 4, 5) {
+    .elevation-#{$level} {
+        background-color: var(--sf-elevation-#{$level}--surface);
+        box-shadow: var(--sf-elevation-#{$level}--shadow);
+        --sf-on-surface-variant: var(--sf-on-elevation-#{$level}--variant);
+    }
+}
+
+.elevation-0 {
+    background-color: var(--sf-surface-0);
+    box-shadow: none;
+}
+}

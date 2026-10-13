@@ -1,0 +1,14 @@
+// SIMAI Framework
+// https://simai.io
+
+// INTERACTIVITY
+@use 'sf_var__accent_color' as colors;
+
+@layer sf.utilities {
+$infix: '';
+    @each $accent-color-name, $accent-color-value in colors.$accent-color-array {
+        .#{$infix}accent-#{$accent-color-name} {
+            accent-color:var(--sf-#{$accent-color-value});
+        }
+    }
+}

@@ -1,0 +1,88 @@
+@use 'var__breadcrumbs' as *;
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-breadcrumbs-item {
+    min-inline-size: min-content;
+    background-color: var(--sf-breadcrumbs-item--background-color);
+    box-shadow: var(--sf-breadcrumbs-item--box-shadow);
+    --sf-breadcrumbs-item--background-color: transparent;
+    --sf-breadcrumbs-item--box-shadow: none;
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--separator {
+    flex: 0 0 auto;
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-breadcrumbs-item-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    --sf-breadcrumbs-item-container--background-color: transparent;
+    --sf-breadcrumbs-item-container--color: var(--sf-on-surface-variant);
+    --sf-breadcrumbs-item-container--font-family: var(--sf-text--family);
+    --sf-breadcrumbs-item-container--font-size: var(--sf-text-size-1\/2);
+    --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-regular);
+    --sf-breadcrumbs-item-container--gap: var(--sf-space-1\/4);
+    --sf-breadcrumbs-item-container--line-height: var(--sf-text-height-1\/2);
+    background-color: var(--sf-breadcrumbs-item-container--background-color);
+    color: var(--sf-breadcrumbs-item-container--color);
+    font-family: var(--sf-breadcrumbs-item-container--font-family);
+    font-size: var(--sf-breadcrumbs-item-container--font-size);
+    font-weight: var(--sf-breadcrumbs-item-container--font-weight);
+    gap: var(--sf-breadcrumbs-item-container--gap);
+    line-height: var(--sf-breadcrumbs-item-container--line-height);
+  }
+
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
+    flex-shrink: 0;
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon--font-size);
+    height: var(--sf-icon--height);
+    width: var(--sf-icon--width);
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--link .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-primary);
+  }
+
+  .sf-breadcrumbs-item[aria-current="page"] .sf-breadcrumbs-item-container,
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container[aria-current="page"] {
+    --sf-breadcrumbs-item-container--color: var(--sf-on-surface);
+    --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-medium);
+  }
+}
+
+@layer sf.states {
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):hover > .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):hover > .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-primary-hover);
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):hover .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-primary-hover);
+  }
+
+  .sf-breadcrumbs-item:not(:disabled):not(.disabled):active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item:not(:disabled):not(.disabled):active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > sf-icon > .sf-icon, .sf-breadcrumbs-item.active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item.active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-primary-active);
+  }
+
+  .sf-breadcrumbs-item:not(:disabled):not(.disabled):active.sf-breadcrumbs-item--link .sf-breadcrumbs-item-container, .sf-breadcrumbs-item.active.sf-breadcrumbs-item--link .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-primary-active);
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+    --sf-breadcrumbs-item--background-color: var(--sf-transparent-for-focus);
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  @media (forced-colors: active) {
+    .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      --sf-breadcrumbs-item--box-shadow: none;
+    }
+  }
+}

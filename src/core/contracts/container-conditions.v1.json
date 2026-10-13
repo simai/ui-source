@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "breakpoints": ["sm", "md", "lg", "xl"],
+  "names": ["sidebar"],
+  "families": {
+    "display": ["block", "inline-block", "flex", "inline-flex", "grid", "hidden"],
+    "flex-direction": ["row", "col", "row-reverse", "col-reverse"],
+    "flex-wrap": ["wrap", "wrap-reverse", "nowrap"],
+    "gap": ["0", "1/4", "1/3", "1/2", "1", "2", "3", "4", "5", "6", "7", "8"],
+    "grid-template-columns": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "none", "subgrid"],
+    "justify-content": ["start", "end", "center", "between", "around", "evenly"],
+    "align-items": ["start", "end", "center", "baseline", "stretch"]
+  }
+}

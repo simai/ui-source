@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.switch",
+  "title": "Switch reference",
+  "summary": "Deterministic reference fixture for sf-switch.",
+  "locale": "ru",
+  "props": {
+    "label": "Включено",
+    "checked": true
+  },
+  "children": [],
+  "state": "default"
+}

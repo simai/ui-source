@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__mix_blend_mode' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// MIX-BLEND-MODE
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $mix-blend-mode-name, $mix-blend-mode-value in $mix-blend-mode-array {
+            .#{$infix}mix-blend-#{$mix-blend-mode-name} {
+                mix-blend-mode: #{$mix-blend-mode-value};
+            }
+        }
+    }
+// }
+}

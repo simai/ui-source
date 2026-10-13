@@ -1,0 +1,16 @@
+// SIMAI Framework
+// https://simai.io
+
+// VIEWBOX
+
+$viewbox-ratio-array: (
+	1x1: 100%,
+	1x2: 200%,
+	2x1: 50%,
+	2x3: 150%,
+	3x1: 33.33%,
+	3x2: 66.66%,
+	3x4: 133.33%,	
+	4x1: 25%,	
+	4x3: 75%,	
+) !default;

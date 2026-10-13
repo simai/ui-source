@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__outline_offset' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OUTLINE
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Outline Offset
+        @each $outline-offset-name, $outline-offset-value in $outline-offset-array {
+            .#{$infix}outline-offset-#{$outline-offset-name} {
+                outline-offset:var(--sf-#{$outline-offset-value});
+            }
+        }
+    }
+// }
+}

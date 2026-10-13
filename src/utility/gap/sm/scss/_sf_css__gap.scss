@@ -1,0 +1,45 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../padding/default/scss/sf_var__padding' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRID GAP
+
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        // Gap Size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        //@each $size in map-get($space-size-device-array, desktop) {
+        @each $size in $space-size-array {  
+            // Gap all sides
+            .#{$infix}gap-#{$size},
+            .#{$infix}g-#{$size} {
+                gap: var(--sf-space-#{$size});
+            }
+
+        }
+
+        // Explicit axes refine the shorthand regardless of spacing-token order.
+        @each $size in $space-size-array {
+            // Gap for X
+            .#{$infix}col-gap-#{$size},
+            .#{$infix}gap-x-#{$size},
+            .#{$infix}g-x-#{$size} {
+                column-gap: var(--sf-space-#{$size});
+            }     
+
+            // Gap for Y
+            .#{$infix}row-gap-#{$size},
+            .#{$infix}gap-y-#{$size},
+            .#{$infix}g-y-#{$size} {
+                row-gap: var(--sf-space-#{$size});
+            }   
+        }	
+    }
+// }
+}

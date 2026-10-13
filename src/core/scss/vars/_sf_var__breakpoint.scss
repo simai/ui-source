@@ -1,0 +1,30 @@
+// SIMAI Framework
+// https://simai.io
+
+// BREAKPOUNTS VARIABLES
+
+// Breakpoint array
+// The thresholds are steps of the size ladder, in rem, and --sf-breakpoint-*
+// name the same steps (_sf_css__breakpoint.scss). They were 520/720/1140/1320px
+// while the variables said 704/768/1152/1536px; only lg agreed (owner,
+// 2026-10-13). tests/breakpoint-ladder.contract.test.mjs holds the two together.
+@use "sass:map";
+$breakpoint-array: (
+	xs: 0,
+	sm: 32rem,  // g6, 512px
+	md: 44rem,  // h1, 704px
+	lg: 60rem,  // h5, 960px
+	xl: 72rem,  // h8, 1152px
+	xxl: 80rem, // i0, 1280px
+);
+
+// Destop breakpoint begin
+// This need for separate mobile and desktop breakpoints
+$breakpoint-desktop: map.get($breakpoint-array, lg);
+
+// Device breakpoint array
+// For variable which change value for mobile and desktop devices
+$breakpoint-device-array: (
+	mobile: 0,
+	desktop: $breakpoint-desktop
+);

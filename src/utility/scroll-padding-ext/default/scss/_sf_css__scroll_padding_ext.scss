@@ -1,0 +1,66 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL PADDING
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+
+                // MARGIN SETTINGS
+                // for all sides
+                .#{$infix}scroll-p-#{$size-range-name}#{$size-name} {
+                    scroll-padding: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}scroll-p-#{$size-range-name}#{$size-name} {
+                    scroll-padding: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for top sides
+                .#{$infix}scroll-pt-#{$size-range-name}#{$size-name} {
+                    scroll-padding-top: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}scroll-pt-#{$size-range-name}#{$size-name} {
+                    scroll-padding-top: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for inline end
+                .#{$infix}scroll-p-inline-end-#{$size-range-name}#{$size-name} {
+                    scroll-padding-inline-end: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}scroll-p-inline-end-#{$size-range-name}#{$size-name} {
+                    scroll-padding-inline-end: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for bottom sides
+                .#{$infix}scroll-pb-#{$size-range-name}#{$size-name} {
+                    scroll-padding-bottom: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}scroll-pb-#{$size-range-name}#{$size-name} {
+                    scroll-padding-bottom: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for inline start
+                .#{$infix}scroll-p-inline-start-#{$size-range-name}#{$size-name} {
+                    scroll-padding-inline-start: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}scroll-p-inline-start-#{$size-range-name}#{$size-name} {
+                    scroll-padding-inline-start: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+            }
+        }
+    }
+// }
+}

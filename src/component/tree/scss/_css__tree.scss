@@ -1,0 +1,126 @@
+@layer sf.components {
+  .sf-tree {
+    padding-inline-start: var(--sf-tree--padding-inline-start, var(--sf-space-1));
+    padding-inline-end: var(--sf-tree--padding-inline-end, var(--sf-space-1));
+    padding-top: var(--sf-tree--padding-top, var(--sf-space-1));
+    padding-bottom: var(--sf-tree--padding-bottom, var(--sf-space-1));
+    gap: var(--sf-tree--gap, var(--sf-space-1\/3));
+  }
+
+  .sf-tree .sf-tree-item {
+    gap: var(--sf-tree-item--gap, var(--sf-space-1\/3));
+    border-radius: var(--sf-radius--ui);
+    color: var(--sf-on-surface);
+    outline: none;
+  }
+
+  .sf-tree .sf-tree-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-tree-item--gap, var(--sf-space-1\/3));
+  }
+
+  .sf-tree > .sf-tree-item .sf-tree-group {
+    padding-inline-start: var(--sf-tree-item--nested-padding-inline-start, var(--sf-space-3));
+  }
+
+  .sf-tree .sf-tree-item-container {
+    gap: var(--sf-tree-item--container-gap, var(--sf-space-1\/2));
+    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-b6));
+    padding-block: var(--sf-tree-item--padding-block, var(--sf-space-1\/3));
+    padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
+    border-radius: inherit;
+  }
+
+  /* Inside a tree a name takes its row's colour, a disabled row's muted one
+     included. sf-tree-item's own rule (.sf-tree-item .sf-tree-item-name,
+     primary) had the same weight, so which colour a name got depended on which
+     stylesheet loaded last, and the disabled dimming never reached the name. */
+  .sf-tree .sf-tree-item .sf-tree-item-name,
+  .sf-tree .sf-tree-item-name {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .sf-tree .sf-tree-item:not([aria-disabled='true']) > .sf-tree-item-container {
+    cursor: pointer;
+  }
+
+  .sf-tree .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
+    background: var(--sf-surface-container-hover);
+  }
+
+  .sf-tree .sf-tree-item.active > .sf-tree-item-container,
+  .sf-tree .sf-tree-item[aria-selected='true'] > .sf-tree-item-container {
+    background: var(--sf-surface-container-active);
+  }
+
+  // A row is flush against the rows above and below it, so the ring turns
+  // inwards. It is an outline like everywhere else: a shadow shares its
+  // property with elevation and is dropped entirely in forced colours.
+  .sf-tree .sf-tree-item:focus-visible > .sf-tree-item-container {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  @media (forced-colors: active) {
+    .sf-tree .sf-tree-item:focus-visible > .sf-tree-item-container {
+      outline: var(--sf-focus--width) solid Highlight;
+      outline-offset: calc(var(--sf-focus--width) * -1);
+    }
+  }
+
+  .sf-tree .sf-tree-item[aria-disabled='true'] {
+    color: var(--sf-on-surface-muted);
+    cursor: not-allowed;
+  }
+
+  .sf-tree .sf-tree-chevron {
+    flex: 0 0 var(--sf-icon-size-3);
+  }
+
+  /* A leaf keeps the chevron's column so names line up with the branches beside
+     them. Where nothing in the tree can be opened there are no branches to line
+     up with, and the column is an indent nobody chose: a list of destinations
+     then starts a chevron's width in from its own edge. */
+  .sf-tree .sf-tree-toggle-spacer {
+    display: inline-block;
+    flex: 0 0 var(--sf-icon-size-3);
+    block-size: var(--sf-icon-size-3);
+    inline-size: var(--sf-icon-size-3);
+  }
+
+  .sf-tree[data-sf-tree-flat='true'] .sf-tree-toggle-spacer {
+    display: none;
+  }
+
+  .sf-tree .sf-tree-chevron .sf-icon,
+  .sf-tree .sf-tree-chevron.sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    pointer-events: none;
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+}
+
+@layer sf.states {
+  .sf-tree-item:not(.open) > .sf-tree-group,
+  .sf-tree-item:not(.open) > .sf-tree-item {
+    display: none;
+  }
+}
+
+@layer sf.overrides {
+  .sf-tree .sf-tree-item .sf-icon-button {
+    --sf-icon-button--padding-bottom: 0;
+    --sf-icon-button--padding-inline-end: 0;
+    --sf-icon-button--padding-inline-start: 0;
+    --sf-icon-button--padding-top: 0;
+  }
+
+  .sf-tree .sf-tree-item .sf-icon-button:hover {
+    --sf-icon-button--background-color: var(--sf-transparent, transparent);
+  }
+}

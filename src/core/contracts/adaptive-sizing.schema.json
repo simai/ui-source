@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/vertical-sizing-contract-v1.json",
+  "title": "Simai Framework vertical adaptive sizing contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "modes",
+    "primitives",
+    "typography",
+    "spacing",
+    "controls",
+    "invariants",
+    "projections",
+    "scope"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractId",
+        "version",
+        "unit",
+        "nominalRootPx",
+        "rootPolicy",
+        "defaultTypographyOwner"
+      ],
+      "properties": {
+        "contractId": { "const": "simai.vertical-sizing" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "unit": { "const": "rem" },
+        "nominalRootPx": { "const": 16 },
+        "rootPolicy": { "const": "preserve-user-agent-default" },
+        "defaultTypographyOwner": { "const": "body-or-application-shell" }
+      }
+    },
+    "modes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mobile", "desktop"],
+      "properties": {
+        "mobile": { "$ref": "#/$defs/mode" },
+        "desktop": { "$ref": "#/$defs/mode" }
+      }
+    },
+    "primitives": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-i]$" },
+      "minProperties": 9,
+      "maxProperties": 9,
+      "additionalProperties": { "$ref": "#/$defs/range" }
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sizes",
+        "lineHeights",
+        "titleLineHeights",
+        "roles",
+        "flowSpacing",
+        "pairedRoles",
+        "unpairedSizeRoles"
+      ],
+      "properties": {
+        "sizes": { "$ref": "#/$defs/aliasMap" },
+        "lineHeights": { "$ref": "#/$defs/aliasMap" },
+        "titleLineHeights": { "$ref": "#/$defs/aliasMap" },
+        "roles": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "body", "heading", "display"],
+          "properties": {
+            "label": { "$ref": "#/$defs/roleMap" },
+            "body": { "$ref": "#/$defs/roleMap" },
+            "heading": { "$ref": "#/$defs/roleMap" },
+            "display": { "$ref": "#/$defs/roleMap" }
+          }
+        },
+        "flowSpacing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["content", "textBottom", "headingTop", "headingBottom"],
+          "properties": {
+            "content": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "related", "block", "section"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1 },
+                "related": { "type": "string", "minLength": 1 },
+                "block": { "type": "string", "minLength": 1 },
+                "section": { "type": "string", "minLength": 1 }
+              }
+            },
+            "textBottom": { "type": "string", "minLength": 1 },
+            "headingTop": { "type": "string", "minLength": 1 },
+            "headingBottom": { "type": "string", "minLength": 1 }
+          }
+        },
+        "pairedRoles": { "$ref": "#/$defs/roleList" },
+        "unpairedSizeRoles": { "$ref": "#/$defs/roleList" }
+      }
+    },
+    "spacing": { "$ref": "#/$defs/aliasMap" },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sizeRoles", "tightness"],
+      "properties": {
+        "sizeRoles": { "type": "object", "minProperties": 5 },
+        "tightness": { "type": "object", "minProperties": 4 }
+      }
+    },
+    "invariants": { "type": "object" },
+    "projections": { "type": "object" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["included", "excluded"],
+      "properties": {
+        "included": { "$ref": "#/$defs/roleList" },
+        "excluded": { "$ref": "#/$defs/roleList" }
+      }
+    }
+  },
+  "$defs": {
+    "mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minWidthPx"],
+      "properties": {
+        "minWidthPx": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startPx", "stepPx", "count"],
+      "properties": {
+        "startPx": { "type": "integer", "minimum": 0 },
+        "stepPx": { "type": "integer", "minimum": 1 },
+        "count": { "const": 10 }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mobile", "desktop"],
+      "properties": {
+        "mobile": { "type": "string", "pattern": "^(zero|[a-i][0-9])$" },
+        "desktop": { "type": "string", "pattern": "^(zero|[a-i][0-9])$" }
+      }
+    },
+    "aliasMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/alias" }
+    },
+    "roleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["size", "height"],
+      "properties": {
+        "size": { "type": "string", "minLength": 1 },
+        "height": { "type": "string", "minLength": 1 }
+      }
+    },
+    "roleMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/roleBinding" }
+    },
+    "roleList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  }
+}

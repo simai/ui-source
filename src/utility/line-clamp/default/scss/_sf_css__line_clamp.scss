@@ -1,0 +1,34 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__line_clamp' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// LINE CLAMP
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Line Clamp
+        @each $clamp-name, $clamp-value in $line-clamp-array {
+            .#{$infix}line-clamp-#{$clamp-name} {
+                display: -webkit-box;
+                overflow: hidden;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: #{$clamp-value};
+            }
+        }
+
+        .#{$infix}line-clamp-none {
+            display: block;
+            overflow: visible;
+            -webkit-box-orient: horizontal;
+            -webkit-line-clamp: unset;
+        }
+    }
+// }
+}

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="116 356 28 20" fill="none" role="img">
+<g id="Country=FJ">
+<rect id="Mask_150" x="116" y="356" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask69_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="116" y="356" width="28" height="20">
+<rect id="Mask_151" x="116" y="356" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask69_8205_11341)">
+<rect id="Mask Copy_19" x="116" y="356" width="28" height="20" fill="#2394E0"/>
+<rect id="Rectangle 1115_2" x="116" y="356" width="12" height="9.33333" fill="url(#paint11_linear_8205_11341)"/>
+<g id="Rectangle 1105_3">
+<path id="Mask_152" fill-rule="evenodd" clip-rule="evenodd" d="M133.333 366C133.333 364 133.333 361.333 133.333 361.333H140C140 361.333 140 364 140 366C140 369.333 136.666 370.667 136.666 370.667C136.666 370.667 133.333 369.333 133.333 366Z" fill="#F0F0F0"/>
+<mask id="mask70_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="133" y="361" width="7" height="10">
+<path id="Mask_153" fill-rule="evenodd" clip-rule="evenodd" d="M133.333 366C133.333 364 133.333 361.333 133.333 361.333H140C140 361.333 140 364 140 366C140 369.333 136.666 370.667 136.666 370.667C136.666 370.667 133.333 369.333 133.333 366Z" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask70_8205_11341)">
+<path id="Oval 177" d="M134.667 363.333C135.035 363.334 135.333 363.632 135.333 364C135.333 364.368 135.035 364.666 134.667 364.667C134.299 364.667 134 364.369 134 364C134 363.632 134.299 363.333 134.667 363.333ZM138.667 363.333C139.035 363.334 139.333 363.632 139.333 364C139.333 364.368 139.035 364.666 138.667 364.667C138.299 364.667 138 364.369 138 364C138 363.632 138.299 363.333 138.667 363.333Z" fill="#496E2D"/>
+<path id="Rectangle 1106_3" fill-rule="evenodd" clip-rule="evenodd" d="M133.333 361.333H140V362.667H137.333V365.333H140V366.667H137.333V370.667H136V366.667H133.333V365.333H136V362.667H133.333V361.333Z" fill="#D80027"/>
+</g>
+</g>
+<path id="Rectangle 36_7" d="M128.333 356.495C128.333 356.71 128.229 356.913 128.054 357.038L123.667 360.171V361.18L127.765 364.692C128.155 365.027 127.918 365.667 127.404 365.667C127.289 365.667 127.176 365.631 127.082 365.563L122.559 362.333H121.429L116.177 365.616L115.667 365.935V364.495L115.807 364.396L120.333 361.162V360.152L115.783 356.253L115.099 355.667H116.773L116.86 355.729L121.439 359H122.571L127.823 355.718L128.333 355.398V356.495Z" fill="#A2001D" stroke="white" stroke-width="0.666667"/>
+<path id="Rectangle 2_109" fill-rule="evenodd" clip-rule="evenodd" d="M116 359.333V362H120.667V365.333C120.667 365.702 120.965 366 121.333 366H122.667C123.035 366 123.333 365.702 123.333 365.333V362H128C128.368 362 128.667 361.702 128.667 361.333V360C128.667 359.632 128.368 359.333 128 359.333H123.333V356H120.667V359.333H116Z" fill="url(#paint12_linear_8205_11341)"/>
+<path id="Rectangle 36_8" fill-rule="evenodd" clip-rule="evenodd" d="M116 360H121.333V359.333V356H122.667V359.333V360H128V361.333H122.667V362V365.333H121.333V362V361.333H116V360Z" fill="#A2001D"/>
+</g>
+</g>
+<defs><linearGradient id="paint11_linear_8205_11341" x1="116" y1="356" x2="116" y2="365.333" gradientUnits="userSpaceOnUse">
+<stop stop-color="#042C90"/>
+<stop offset="1" stop-color="#00247E"/>
+</linearGradient><linearGradient id="paint12_linear_8205_11341" x1="116" y1="356" x2="116" y2="366" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F0F0F0"/>
+</linearGradient></defs>
+</svg>

@@ -1,0 +1,32 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.property-view-port",
+  "version": "1.4.0",
+  "transport": "neutral",
+  "summary": "Seventeen cases: the sixteen of 1.3.0 byte-identical, and one for opening a reference, which is the host's decision and not the component's.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "load-applied-carries-the-object",
+    "load-refused-is-explained",
+    "load-unavailable-is-honest",
+    "load-late-answer-is-dropped",
+    "rare-fields-arrive-declared",
+    "group-save-applied-is-one-revision",
+    "group-save-stale-revision-is-a-conflict",
+    "group-save-field-errors-are-refused",
+    "options-page-carries-a-cursor",
+    "options-search-reaches-the-host",
+    "options-without-the-capability",
+    "options-refused-is-explained",
+    "the-address-is-the-hosts",
+    "upload-answers-with-the-stored-file",
+    "upload-refused-is-explained",
+    "removing-a-file-is-a-save",
+    "opening-a-reference-is-the-hosts-decision"
+  ]
+}

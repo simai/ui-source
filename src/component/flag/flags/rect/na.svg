@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="212 740 28 20" fill="none" role="img">
+<g id="Country=NA">
+<rect id="Mask_330" x="212" y="740" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask153_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="212" y="740" width="28" height="20">
+<rect id="Mask_331" x="212" y="740" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask153_8205_11341)">
+<path id="Rectangle 2_223" fill-rule="evenodd" clip-rule="evenodd" d="M212 753.333L240 740H212V753.333Z" fill="#0052B4"/>
+<path id="Star 31" fill-rule="evenodd" clip-rule="evenodd" d="M216.667 746L215.646 747.13L215.724 745.609L214.203 745.687L215.333 744.667L214.203 743.646L215.724 743.724L215.646 742.203L216.667 743.333L217.687 742.203L217.609 743.724L219.13 743.646L218 744.667L219.13 745.687L217.609 745.609L217.687 747.13L216.667 746Z" fill="#FFDA44"/>
+<path id="Rectangle 2_224" fill-rule="evenodd" clip-rule="evenodd" d="M212 760H240V746.667L212 760Z" fill="#6DA544"/>
+<path id="Rectangle 2_225" fill-rule="evenodd" clip-rule="evenodd" d="M215.082 762.667L242.171 745.74L236.917 737.333L209.829 754.26L215.082 762.667Z" fill="#F0F0F0"/>
+<path id="Rectangle 2_226" fill-rule="evenodd" clip-rule="evenodd" d="M211.371 763.072L244.162 742.582L240.629 736.928L207.838 757.418L211.371 763.072Z" fill="#D80027"/>
+</g>
+</g>
+</svg>

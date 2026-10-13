@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SF5 Accordion — методическая проверка</title>
+    <link rel="stylesheet" href="/ui/distr/core/css/core.css">
+    <link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+    <link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+    <link rel="stylesheet" href="/ui-builder/distr/component/accordion/css/accordion.css">
+  </head>
+  <body class="theme-light p-4">
+    <main class="grid gap-4">
+      <section class="grid gap-2" aria-labelledby="independent-title">
+        <h1 id="independent-title">Независимые разделы</h1>
+        <p>Каждый раздел открывается и закрывается независимо.</p>
+
+        <article class="sf-accordion">
+          <h2 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+              <span class="sf-accordion-title">Что входит в поставку?</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h2>
+          <div class="sf-accordion-content" role="region">
+            Стили, поведение и публичный контракт компонента.
+            <a href="#details">Посмотреть подробности</a>
+          </div>
+        </article>
+
+        <article class="sf-accordion">
+          <h2 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="false">
+              <span class="sf-accordion-title">Можно открыть несколько разделов?</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h2>
+          <div class="sf-accordion-content hidden" role="region">
+            Да. Это поведение используется по умолчанию.
+          </div>
+        </article>
+      </section>
+
+      <section class="grid gap-2" aria-labelledby="surface-title">
+        <h2 id="surface-title">Варианты поверхности</h2>
+        <p>Поведение одинаковое, меняется только способ отделения компонента от окружения.</p>
+
+        <article class="sf-accordion">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+              <span class="sf-accordion-title">Заполненная поверхность</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content" role="region">
+            Для самостоятельных карточек и заметных смысловых блоков.
+          </div>
+        </article>
+
+        <article class="sf-accordion sf-accordion--outline">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+              <span class="sf-accordion-title">Контурная поверхность</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content" role="region">
+            Для интерфейсов, где поверхность уже задана окружающим контейнером.
+          </div>
+        </article>
+
+        <div class="grid gap-0" aria-label="Встроенный список разделов">
+          <article class="sf-accordion sf-accordion--flush">
+            <h3 class="sf-accordion-heading">
+              <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+                <span class="sf-accordion-title">Встроенная поверхность</span>
+                <i class="sf-icon" aria-hidden="true">chevron_right</i>
+              </button>
+            </h3>
+            <div class="sf-accordion-content" role="region">
+              Для плотных списков и меню внутри уже оформленного контейнера.
+            </div>
+          </article>
+
+          <article class="sf-accordion sf-accordion--flush">
+            <h3 class="sf-accordion-heading">
+              <button class="sf-accordion-trigger" type="button" aria-expanded="false">
+                <span class="sf-accordion-title">Ещё один встроенный раздел</span>
+                <i class="sf-icon" aria-hidden="true">chevron_right</i>
+              </button>
+            </h3>
+            <div class="sf-accordion-content hidden" role="region">
+              Соседние элементы разделяются постоянной семантической границей.
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="sf-accordion-group grid gap-2" data-mode="single" aria-labelledby="single-title">
+        <h2 id="single-title">Один открытый раздел</h2>
+        <p>Открытие следующего раздела закрывает предыдущий.</p>
+
+        <article class="sf-accordion">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+              <span class="sf-accordion-title">Первый шаг</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content" role="region">
+            Подключите основу Framework.
+          </div>
+        </article>
+
+        <article class="sf-accordion">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="false">
+              <span class="sf-accordion-title">Второй шаг</span>
+              <i class="sf-icon" aria-hidden="true">chevron_right</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content hidden" role="region">
+            Добавьте нужные компоненты.
+          </div>
+        </article>
+      </section>
+
+      <section class="grid gap-2" aria-labelledby="indicator-title">
+        <h2 id="indicator-title">Плюс и минус</h2>
+        <p>Дополнительный вариант для интерфейсов, где важнее показать добавление и скрытие содержимого, чем направление раскрытия.</p>
+
+        <article class="sf-accordion sf-accordion--plus-minus">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+              <span class="sf-accordion-title">Что входит в расширенную гарантию?</span>
+              <i class="sf-icon" aria-hidden="true">remove</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content" role="region">
+            Обслуживание, диагностика и замена неисправных деталей.
+          </div>
+        </article>
+
+        <article class="sf-accordion sf-accordion--plus-minus">
+          <h3 class="sf-accordion-heading">
+            <button class="sf-accordion-trigger" type="button" aria-expanded="false">
+              <span class="sf-accordion-title">Как обратиться за обслуживанием?</span>
+              <i class="sf-icon" aria-hidden="true">add</i>
+            </button>
+          </h3>
+          <div class="sf-accordion-content hidden" role="region">
+            Оставьте заявку в личном кабинете.
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('theme') === 'dark') {
+        document.body.className = 'theme-dark p-4';
+      }
+      if (params.get('dir') === 'rtl') {
+        document.documentElement.dir = 'rtl';
+      }
+      if (params.get('font') === 'large') {
+        document.documentElement.style.fontSize = '125%';
+      }
+      if (params.get('check') === 'long') {
+        document.querySelectorAll('.sf-accordion-title')[1].textContent =
+          'Можно ли открыть несколько разделов с очень длинным заголовком, который переносится на несколько строк?';
+      }
+      document.fonts.load('24px "Material Symbols Outlined"').then(() => {
+        document.querySelectorAll('.sf-icon').forEach((icon) => {
+          icon.classList.add('sf-icon-loaded');
+        });
+      });
+    </script>
+    <script src="/ui-builder/distr/component/accordion/js/accordion.js"></script>
+  </body>
+</html>

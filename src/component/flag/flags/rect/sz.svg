@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 932 28 20" fill="none" role="img">
+<g id="Country=SZ">
+<rect id="Mask_419" x="260" y="932" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask195_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="932" width="28" height="20">
+<rect id="Mask_420" x="260" y="932" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask195_8205_11341)">
+<path id="Rectangle 2_271" fill-rule="evenodd" clip-rule="evenodd" d="M260 936H288V932H260V936Z" fill="#0052B4"/>
+<path id="Rectangle 2_272" fill-rule="evenodd" clip-rule="evenodd" d="M260 952H288V948H260V952Z" fill="#0052B4"/>
+<path id="Rectangle 2_273" fill-rule="evenodd" clip-rule="evenodd" d="M260 948H288V936H260V948Z" fill="#FFDA44"/>
+<path id="Rectangle 2 Copy 4_12" fill-rule="evenodd" clip-rule="evenodd" d="M260 946.667H288V937.333H260V946.667Z" fill="#D80027"/>
+<g id="Oval 190">
+<path id="Mask_421" fill-rule="evenodd" clip-rule="evenodd" d="M274 945.333C277.314 945.333 280 942 280 942C280 942 277.314 938.667 274 938.667C270.686 938.667 268 942 268 942C268 942 270.686 945.333 274 945.333Z" fill="#F0F0F0"/>
+<mask id="mask196_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="268" y="938" width="12" height="8">
+<path id="Mask_422" fill-rule="evenodd" clip-rule="evenodd" d="M274 945.333C277.314 945.333 280 942 280 942C280 942 277.314 938.667 274 938.667C270.686 938.667 268 942 268 942C268 942 270.686 945.333 274 945.333Z" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask196_8205_11341)">
+<path id="Rectangle 1180" fill-rule="evenodd" clip-rule="evenodd" d="M274.667 938.667H268V945.333H273.334L274.667 938.667Z" fill="#333333"/>
+<path id="Oval 191" fill-rule="evenodd" clip-rule="evenodd" d="M275.334 942.666C275.702 942.666 276 942.368 276 942C276 941.631 275.702 941.333 275.334 941.333C274.965 941.333 274.667 941.631 274.667 942C274.667 942.368 274.965 942.666 275.334 942.666Z" fill="#786145"/>
+<path id="Oval 191_2" fill-rule="evenodd" clip-rule="evenodd" d="M272.667 942.666C273.035 942.666 273.333 942.368 273.333 942C273.333 941.631 273.035 941.333 272.667 941.333C272.298 941.333 272 941.631 272 942C272 942.368 272.298 942.666 272.667 942.666Z" fill="#F9F9F9"/>
+</g>
+</g>
+</g>
+</g>
+</svg>

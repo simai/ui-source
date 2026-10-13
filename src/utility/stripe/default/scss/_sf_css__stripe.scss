@@ -1,0 +1,60 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// STRIPES
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // STRIPES TYPE
+        
+        // Vertical stripes
+        .#{$infix}stripe-1 {
+            background-image: repeating-linear-gradient(
+                90deg,
+                var(--sf-stripe--color) 0 var(--sf-px),
+                transparent var(--sf-px) var(--sf-stripe--size)
+            );
+        }
+
+        // Horizontal stripes
+        .#{$infix}stripe-2 { 
+            background-image: repeating-linear-gradient(
+                0deg,
+                var(--sf-stripe--color) 0 var(--sf-px),
+                transparent var(--sf-px) var(--sf-stripe--size)
+            );
+        }
+
+        // Vertical and horizontal stripes
+        .#{$infix}stripe-3 { 
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    var(--sf-stripe--color) 0 var(--sf-px),
+                    transparent var(--sf-px) var(--sf-stripe--size)
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    var(--sf-stripe--color) 0 var(--sf-px),
+                    transparent var(--sf-px) var(--sf-stripe--size)
+                );
+        }
+
+        // 135 degree stripes
+        .#{$infix}stripe-4 { 
+            background-image: repeating-linear-gradient(
+                135deg,
+                var(--sf-stripe--color) 0 var(--sf-px),
+                transparent var(--sf-px) var(--sf-stripe--size)
+            );
+        }
+    }
+// }
+}

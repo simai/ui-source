@@ -1,0 +1,175 @@
+@use 'var__slider' as *;
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+.sf-slider {
+  --sf-slider--duration: var(--sf-duration-normal);
+  --sf-slider--space-between: var(--sf-space-1);
+  --sf-slider-thumbnails--space-between: var(--sf-space-1\/2);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-slider--gap, var(--sf-space-1));
+  min-width: 0;
+  position: relative;
+  width: 100%;
+}
+
+.sf-slider .sf-slider-main.swiper,
+.sf-slider .swiper {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.sf-slider .sf-slider-thumbnails.swiper {
+  margin-inline: auto;
+  max-width: 100%;
+  width: fit-content;
+  /* The strip is as wide as its thumbnails. The base .swiper rule contains its
+     inline size, and a fit-content box under inline-size containment is zero
+     wide: every thumbnail drew 0px and could not be pressed. */
+  contain: none;
+}
+
+.sf-slider .swiper-wrapper {
+  box-sizing: border-box;
+  display: flex;
+}
+
+.sf-slider .sf-slider-thumbnails .swiper-wrapper {
+  align-items: center;
+  justify-content: center;
+}
+
+.sf-slider .swiper-slide {
+  display: block;
+  flex-shrink: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.sf-slider .sf-slider-slide {
+  width: var(--sf-slider-slide--width, 100%);
+  height: var(--sf-slider-slide--height, 100%);
+  display: block;
+  min-height: var(--sf-slider-slide--min-height, var(--sf-f2));
+}
+
+.sf-slider .sf-slider-slide img {
+  width: var(--sf-slider-slide-img--width, 100%);
+  height: var(--sf-slider-slide-img--height, 100%);
+  object-fit: var(--sf-slider-slide-img--object-fit, cover);
+}
+
+.sf-slider .sf-slider-thumbnail {
+  block-size: var(--sf-slider-thumbnail--block-size, var(--sf-d2));
+  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-radius-square));
+  display: block;
+  inline-size: var(--sf-slider-thumbnail--inline-size, var(--sf-d2));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sf-slider .sf-slider-thumbnail > img,
+.sf-slider .sf-slider-thumbnail img {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.sf-slider .sf-slider-controls {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.sf-slider .sf-slider-controls .sf-slider-arrows {
+  inset-block-start: 50%;
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.sf-slider .sf-slider-controls .sf-slider-arrows .sf-icon-button {
+  inset-block-start: 50%;
+  pointer-events: auto;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.sf-slider .sf-slider-controls .sf-slider-button-prev {
+  inset-inline-start: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+}
+
+.sf-slider .sf-slider-controls .sf-slider-button-next {
+  inset-inline-end: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+}
+
+.sf-slider .sf-slider-controls .sf-slider-dots,
+.sf-slider .sf-slider-controls .sf-slider-pagination {
+  inset-block-end: var(--sf-slider-dots-offset-block, var(--sf-space-1));
+  inset-inline-start: 50%;
+  pointer-events: auto;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.sf-slider .sf-slider-dots.swiper-pagination-lock,
+.sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-lock {
+  display: none;
+}
+
+// Content/card slides keep controls outside the content; media keeps the overlay.
+.sf-slider--content .sf-slider-slide {
+  height: var(--sf-slider-slide--height, auto);
+  min-height: var(--sf-slider-slide--min-height, 0);
+}
+
+.sf-slider--content .sf-slider-controls {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-slider--gap, var(--sf-space-1));
+}
+
+.sf-slider--content .sf-slider-controls .sf-slider-arrows {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1);
+}
+
+.sf-slider--content .sf-slider-controls .sf-slider-arrows,
+.sf-slider--content .sf-slider-controls .sf-slider-arrows .sf-icon-button,
+.sf-slider--content .sf-slider-controls .sf-slider-dots,
+.sf-slider--content .sf-slider-controls .sf-slider-pagination {
+  position: static;
+  transform: none;
+}
+
+.sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.sf-slider .sf-slider-thumbnails .swiper-slide {
+  cursor: pointer;
+  flex: 0 0 auto;
+  /* The slider writes each slide's flex-basis inline (100% / slides per view);
+     a thumbnail is its own size. */
+  flex-basis: auto !important;
+  opacity: var(--sf-slider-thumbnails-slide--opacity, 0.72);
+  width: var(--sf-slider-thumbnail--inline-size, var(--sf-d2)) !important;
+}
+
+.sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {
+  opacity: var(--sf-slider-thumbnails-slide-active--opacity, 1);
+}
+}

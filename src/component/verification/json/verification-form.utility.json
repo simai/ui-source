@@ -1,0 +1,19 @@
+{
+  ".sf-verification-form": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/3)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-verification-form .sf-verification-form-wrap": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-b0)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ]
+}

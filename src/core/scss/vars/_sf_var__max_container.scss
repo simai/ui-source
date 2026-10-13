@@ -1,0 +1,18 @@
+// SIMAI Framework
+// https://simai.io
+
+// MAIN
+// Border Variable
+
+$container-max-array:(
+	desktop: (
+		'1': 'h5',
+		'2': 'h6',
+		'3': 'h8',
+		'4': 'i0',
+		'5': 'i1',
+		'6': 'i2',
+		'7': 'i3',
+		'8': 'i4',
+	)
+) !default;	

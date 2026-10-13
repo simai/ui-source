@@ -1,0 +1,61 @@
+<!doctype html>
+<html class="theme-light" lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Placeholder method lab</title>
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/component/featured-icon/css/featured-icon.css">
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/component/link/css/link.css">
+  <link rel="stylesheet" href="../../source/output/placeholder-browser/component/placeholder/css/placeholder.css">
+</head>
+<body>
+  <main class="grid gap-3 p-3">
+    <section id="column" class="sf-placeholder sf-placeholder--column" aria-labelledby="column-title">
+      <span class="sf-placeholder__visual sf-featured-icon sf-featured-icon--size-2 sf-featured-icon--soft sf-featured-icon--circle sf-featured-icon--neutral" aria-hidden="true">
+        <i class="sf-icon">inventory_2</i>
+      </span>
+      <div class="sf-placeholder__content">
+        <div class="sf-placeholder__header">
+          <div id="column-title" class="sf-placeholder__title">Пока ничего нет</div>
+          <div class="sf-placeholder__description">Созданные элементы появятся в этом разделе.</div>
+        </div>
+        <div class="sf-placeholder__actions">
+          <button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button">
+            <span class="sf-button-text-container">Создать элемент</span>
+          </button>
+          <a class="sf-link" href="#help">Как это работает</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="row" class="sf-placeholder sf-placeholder--row" aria-labelledby="row-title">
+      <span class="sf-placeholder__visual sf-featured-icon sf-featured-icon--size-2 sf-featured-icon--soft sf-featured-icon--circle sf-featured-icon--primary" aria-hidden="true">
+        <i class="sf-icon">search_off</i>
+      </span>
+      <div class="sf-placeholder__content">
+        <div class="sf-placeholder__header">
+          <div id="row-title" class="sf-placeholder__title">Ничего не найдено по заданным условиям поиска</div>
+          <div class="sf-placeholder__description">Измените запрос или сбросьте фильтры, чтобы увидеть доступные материалы.</div>
+        </div>
+        <div class="sf-placeholder__actions">
+          <button class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button">
+            <span class="sf-button-text-container">Сбросить фильтры</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="legacy" class="sf-placeholder sf-placeholder--column" aria-labelledby="legacy-title">
+      <div class="sf-placeholder-right">
+        <div class="sf-placeholder-top">
+          <div id="legacy-title" class="sf-placeholder-top-text">Список пуст</div>
+          <div class="sf-placeholder-top-text">Добавьте первую запись.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,363 @@
+{
+  "schema_version": 2,
+  "id": "smart.toggle",
+  "version": "1.0.0",
+  "title": "Toggle",
+  "summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
+  "kind": "smart",
+  "reuse_mode": "both",
+  "lifecycle": "deprecated",
+  "tags": [
+    "toggle"
+  ],
+  "capabilities": [
+    "render",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-toggle",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.toggle"
+    ],
+    "public_parts": [
+      "native-input",
+      "track",
+      "thumb",
+      "label"
+    ]
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "Toggle size token.",
+        "enum": [
+          "1",
+          "2"
+        ]
+      },
+      "kind": {
+        "type": "string",
+        "default": "simple",
+        "enum": [
+          "simple",
+          "icon",
+          "short"
+        ],
+        "description": "What the toggle carries: nothing, an icon, or a short label."
+      },
+      "label": {
+        "type": "string",
+        "default": ""
+      },
+      "icon": {
+        "type": "string",
+        "default": ""
+      },
+      "checked": {
+        "type": "boolean",
+        "default": false
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false
+      },
+      "name": {
+        "type": "string",
+        "default": ""
+      },
+      "value": {
+        "type": "string",
+        "default": ""
+      },
+      "type": {
+        "type": "string",
+        "default": "simple",
+        "description": "Legacy name for kind, still honoured. See contracts/public-api-axes.json.",
+        "enum": [
+          "simple",
+          "icon",
+          "short"
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "state_owner": {
+      "const": "native_input"
+    },
+    "application": {
+      "const": "compact_immediate_binary_setting"
+    },
+    "reset": {
+      "const": "native_form_reset"
+    },
+    "toggle_states": {
+      "type": "string",
+      "enum": [
+        "unchecked",
+        "checked",
+        "disabled"
+      ]
+    }
+  },
+  "methods": {
+    "getInputElement": {
+      "summary": "Returns the inner native input (.sf-toggle input[type=\"checkbox\"]), or null before render.",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object",
+          "null"
+        ]
+      }
+    },
+    "setChecked": {
+      "summary": "Sets the checked property and state of the inner input; does not dispatch change.",
+      "arguments": [
+        {
+          "name": "nextValue",
+          "type": "boolean",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setDisabled": {
+      "summary": "Sets or clears disabled on the host and the inner input.",
+      "arguments": [
+        {
+          "name": "nextValue",
+          "type": "boolean",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setState": {
+      "summary": "Applies checked and disabled, plus type, size, icon and label as host attributes, to the inner input and reflects them to host attributes; before render it falls back to the base setState.",
+      "arguments": [
+        {
+          "name": "nextState",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "onChange": {
+      "summary": "Adds a listener for the native change event that bubbles from the inner input.",
+      "arguments": [
+        {
+          "name": "handler",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "options",
+          "type": "object|boolean",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "onFocus": {
+      "summary": "Adds a focusin listener on the host.",
+      "arguments": [
+        {
+          "name": "handler",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "options",
+          "type": "object|boolean",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "onBlur": {
+      "summary": "Adds a focusout listener on the host.",
+      "arguments": [
+        {
+          "name": "handler",
+          "type": "function",
+          "required": true
+        },
+        {
+          "name": "options",
+          "type": "object|boolean",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    }
+  },
+  "events": {
+    "change": {
+      "summary": "The pressed state changed; the native event bubbles from the inner checkbox, which is its target. The name to bind.",
+      "payload": {
+        "type": "object"
+      },
+      "canonical": true
+    }
+  },
+  "state": {
+    "machines": {},
+    "visual_states": [
+      "default",
+      "selected",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "fixture",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "host route invention"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "switch",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab",
+      "Space"
+    ],
+    "focus": "Keep visible focus on the active control."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ]
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": "smart.switch",
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_artifacts": [
+      {
+        "path": "src/smart/toggle/index.js",
+        "sha256": "8d8f3da88b687d4f1bee35a3d879028fd5e59a1ebeb5aec0ff7dea5745d45084"
+      }
+    ],
+    "generated_runtime": [
+      {
+        "repository": "simai/ui-smart",
+        "revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c",
+        "path": "smart/toggle/js/toggle.js",
+        "sha256": "8e42287c409623e16de22e46407abd638504938d94b3cbefb5ef02e8f023d49d"
+      }
+    ]
+  },
+  "ai_guidance": {
+    "use_when": "Do not use sf-toggle for new work; use sf-switch, which draws the same control (sf-switch--short and sf-switch--icon give Toggle's two looks). Keep sf-toggle only in markup already written until it is moved.",
+    "do_not": [
+      "Do not use sf-toggle for new work; use sf-switch",
+      "Do not use Toggle for multiple-choice selection or a deferred form option",
+      "Do not use an unexplained icon as the only accessible name",
+      "Do not copy generated ui-smart code",
+      "Do not move host data or access decisions into the component"
+    ],
+    "required_reads": [
+      "inputs",
+      "methods",
+      "events",
+      "ownership",
+      "provenance"
+    ],
+    "minimal_example": "<sf-toggle></sf-toggle>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

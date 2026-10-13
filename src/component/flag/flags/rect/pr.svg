@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 836 28 20" fill="none" role="img">
+<g id="Country=PR">
+<rect x="260" y="836" width="28" height="20" fill="#F0F0F0"/>
+<path id="Combined Shape_11" d="M260 852H288V856H260V852ZM288 848H260V844H288V848ZM288 840H260V836H288V840Z" fill="#D80027"/>
+<path id="Rectangle 83_10" fill-rule="evenodd" clip-rule="evenodd" d="M260 836L273.333 846L260 856V836Z" fill="#0052B4"/>
+<g id="Star 27_3" filter="url(#filter18_d_8205_11341)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M264.666 847.274L262.707 848.697L263.455 846.394L261.496 844.97L263.917 844.969L264.666 842.667L265.415 844.969L267.837 844.97L265.878 846.394L266.626 848.697L264.666 847.274Z" fill="url(#paint20_linear_8205_11341)"/>
+</g>
+</g>
+<defs><filter id="filter18_d_8205_11341" x="261.496" y="842.667" width="6.34082" height="7.03027" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8205_11341"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8205_11341" result="shape"/>
+</filter><linearGradient id="paint20_linear_8205_11341" x1="261.333" y1="842.667" x2="261.333" y2="849.333" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F0F0F0"/>
+</linearGradient></defs>
+</svg>

@@ -1,0 +1,220 @@
+@layer sf.components {
+.sf-tooltip {
+  --sf-tooltip-tail-size: var(--sf-b2);
+  --sf-tooltip-tail-half: calc(var(--sf-tooltip-tail-size) / 2);
+  --sf-tooltip-tail-corner-offset: var(--sf-b6);
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.sf-tooltip .sf-tooltip-content,
+.sf-tooltip .sf-tooltip-wrap {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.sf-tooltip .sf-tooltip-text,
+.sf-tooltip .sf-tooltip-supporting-text {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+
+.sf-tooltip-anchor {
+  display: inline-flex;
+  max-inline-size: 100%;
+  position: relative;
+}
+
+.sf-tooltip-anchor > .sf-tooltip,
+.sf-tooltip-anchor > sf-tooltip {
+  inline-size: max-content;
+  max-inline-size: min(
+    var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+    calc(100vw - var(--sf-space-2))
+  );
+  position: absolute;
+  z-index: var(--sf-z-index-9);
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-bottom-center,
+  sf-tooltip[arrow='bottom-center']
+) {
+  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-top-center,
+  sf-tooltip[arrow='top-center']
+) {
+  inset-block-start: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-inline-end,
+  sf-tooltip[arrow='inline-end']
+) {
+  inset-block-start: 50%;
+  inset-inline-end: calc(100% + var(--sf-tooltip-tail-half));
+  translate: 0 -50%;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-inline-start,
+  sf-tooltip[arrow='inline-start']
+) {
+  inset-block-start: 50%;
+  inset-inline-start: calc(100% + var(--sf-tooltip-tail-half));
+  translate: 0 -50%;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-bottom-inline-start,
+  sf-tooltip[arrow='bottom-inline-start']
+) {
+  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-start: 0;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-bottom-inline-end,
+  sf-tooltip[arrow='bottom-inline-end']
+) {
+  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-end: 0;
+}
+
+.sf-tooltip-anchor > :is(
+  .sf-tooltip--arrow-none,
+  sf-tooltip:not([arrow]),
+  sf-tooltip[arrow='none']
+) {
+  inset-block-start: calc(100% + var(--sf-space-1\/4));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+}
+
+.sf-tooltip-anchor > .sf-tooltip--arrow-bottom-left {
+  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  left: 0;
+}
+
+.sf-tooltip-anchor > .sf-tooltip--arrow-bottom-right {
+  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  right: 0;
+}
+
+.sf-tooltip-anchor > .sf-tooltip--arrow-left {
+  inset-block-start: 50%;
+  left: calc(100% + var(--sf-tooltip-tail-half));
+  translate: 0 -50%;
+}
+
+.sf-tooltip-anchor > .sf-tooltip--arrow-right {
+  inset-block-start: 50%;
+  right: calc(100% + var(--sf-tooltip-tail-half));
+  translate: 0 -50%;
+}
+
+.sf-tooltip[class*='sf-tooltip--arrow-'] .sf-tooltip-content {
+  position: relative;
+}
+
+.sf-tooltip[class*='sf-tooltip--arrow-'] .sf-tooltip-tail {
+  position: absolute;
+  width: var(--sf-tooltip-tail-size);
+  height: var(--sf-tooltip-tail-size);
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.sf-tooltip--arrow-none .sf-tooltip-tail {
+  display: none;
+}
+
+.sf-tooltip--arrow-top-center .sf-tooltip-tail {
+  inset-inline-start: calc(50% - var(--sf-tooltip-tail-half));
+  inset-block-start: calc(-1 * var(--sf-tooltip-tail-half));
+  transform: rotate(45deg);
+}
+
+.sf-tooltip--arrow-bottom-center .sf-tooltip-tail {
+  inset-inline-start: calc(50% - var(--sf-tooltip-tail-half));
+  inset-block-end: calc(-1 * var(--sf-tooltip-tail-half));
+  transform: rotate(45deg);
+}
+
+.sf-tooltip--arrow-inline-start .sf-tooltip-tail {
+  inset-inline-start: calc(-1 * var(--sf-tooltip-tail-half));
+  inset-block-start: calc(50% - var(--sf-tooltip-tail-half));
+  transform: rotate(45deg);
+}
+
+.sf-tooltip--arrow-inline-end .sf-tooltip-tail {
+  inset-inline-end: calc(-1 * var(--sf-tooltip-tail-half));
+  inset-block-start: calc(50% - var(--sf-tooltip-tail-half));
+  transform: rotate(45deg);
+}
+
+.sf-tooltip--arrow-left .sf-tooltip-tail {
+  inset-block-start: calc(50% - var(--sf-tooltip-tail-half));
+  inset-inline-start: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-right .sf-tooltip-tail {
+  inset-block-start: calc(50% - var(--sf-tooltip-tail-half));
+  inset-inline-end: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-bottom-inline-start .sf-tooltip-tail {
+  inset-inline-start: var(--sf-tooltip-tail-corner-offset);
+  inset-block-end: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-bottom-inline-end .sf-tooltip-tail {
+  inset-inline-end: var(--sf-tooltip-tail-corner-offset);
+  inset-block-end: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-top-inline-start .sf-tooltip-tail {
+  inset-inline-start: var(--sf-tooltip-tail-corner-offset);
+  inset-block-start: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-top-inline-end .sf-tooltip-tail {
+  inset-inline-end: var(--sf-tooltip-tail-corner-offset);
+  inset-block-start: calc(-1 * var(--sf-tooltip-tail-half));
+}
+
+.sf-tooltip--arrow-top-left .sf-tooltip-tail {
+  top: calc(-1 * var(--sf-tooltip-tail-half));
+  left: var(--sf-tooltip-tail-corner-offset);
+}
+
+.sf-tooltip--arrow-top-right .sf-tooltip-tail {
+  top: calc(-1 * var(--sf-tooltip-tail-half));
+  right: var(--sf-tooltip-tail-corner-offset);
+}
+
+.sf-tooltip--arrow-bottom-left .sf-tooltip-tail {
+  bottom: calc(-1 * var(--sf-tooltip-tail-half));
+  left: var(--sf-tooltip-tail-corner-offset);
+}
+
+.sf-tooltip--arrow-bottom-right .sf-tooltip-tail {
+  bottom: calc(-1 * var(--sf-tooltip-tail-half));
+  right: var(--sf-tooltip-tail-corner-offset);
+}
+
+@media (forced-colors: active) {
+  .sf-tooltip .sf-tooltip-content {
+    border: var(--sf-px) solid CanvasText;
+  }
+}
+}

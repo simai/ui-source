@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/change-journal.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework change journal",
+  "description": "The chronology of public changes that need a consumer to change anything: every rename, retired value, removed name and behaviour change, with what to write instead and how to detect and rewrite it. Records are appended, never deleted; a removed record is a tombstone.",
+  "type": "object",
+  "required": [
+    "schema",
+    "policy",
+    "records"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "simai.change-journal.v1"
+    },
+    "policy": {
+      "type": "string"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "recorded_on",
+        "stage",
+        "kind",
+        "summary",
+        "items",
+        "deprecated_on",
+        "remove_after",
+        "rewrite"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{2,80}$"
+        },
+        "recorded_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "stage": {
+          "enum": [
+            "compat",
+            "removed"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "attribute",
+            "value",
+            "event",
+            "class",
+            "token",
+            "utility",
+            "option",
+            "property",
+            "component",
+            "behaviour"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 20
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "from"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "component": {
+                "type": "string"
+              },
+              "attribute": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "match": {
+                "type": "string",
+                "description": "A regular expression that finds the old form where the name alone is too common to search for."
+              }
+            }
+          }
+        },
+        "deprecated_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "remove_after": {
+          "type": "string",
+          "format": "date"
+        },
+        "extended_to": {
+          "type": "string",
+          "format": "date"
+        },
+        "extension_reason": {
+          "type": "string"
+        },
+        "removed_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "removed_in_pair": {
+          "type": "string"
+        },
+        "rewrite": {
+          "enum": [
+            "rename-attribute",
+            "rename-value",
+            "rename-event",
+            "rename-class",
+            "rename-token",
+            "rename-utility",
+            "rename-option",
+            "rename-property",
+            "replace-component",
+            "manual",
+            "none"
+          ]
+        },
+        "examples": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "before": {
+              "type": "string"
+            },
+            "after": {
+              "type": "string"
+            }
+          }
+        },
+        "manual": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../text-color/default/scss/sf_var__color_base' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// PLACEHOLDER
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Placeholder Color
+        @each $color-name, $color-value in $color-base-array {
+            .#{$infix}placeholder-#{$color-name}::placeholder {
+                color: var(--sf-#{$color-value});
+            }
+        }
+    }
+// }
+}

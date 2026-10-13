@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Button Group — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/button-group-browser/component/button-group/css/button-group.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Группа кнопок</h1>
+
+    <div id="actions" class="sf-button-group" role="group" aria-label="Действия с документом">
+      <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Предпросмотр</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Сохранить</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Закрыть</span></button>
+    </div>
+
+    <div id="legacy-vertical" class="sf-button-group" role="group" aria-label="Действия с файлом" aria-orientation="vertical">
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Открыть</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Переименовать</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Переместить</span></button>
+    </div>
+
+    <div id="toolbar" class="sf-button-group" role="toolbar" aria-label="Форматирование" data-orientation="horizontal">
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Жирный</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Курсив</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Ссылка</span></button>
+    </div>
+
+    <div id="dynamic" class="sf-button-group" role="group" aria-label="Динамические действия">
+      <button type="button" class="sf-button sf-button--outline sf-button--secondary sf-button--size-1"><span class="sf-button-text-container">Первое</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--secondary sf-button--size-1"><span class="sf-button-text-container">Второе</span></button>
+    </div>
+
+    <sf-button-group id="smart" aria-label="Режим отображения" value="cards" items='[{"value":"list","label":"Список"},{"value":"cards","label":"Карточки"},{"value":"table","label":"Таблица","disabled":true}]'></sf-button-group>
+    <sf-button-group id="smart-vertical" aria-label="Размер" orientation="vertical" value="medium" items='[{"value":"small","label":"Маленький"},{"value":"medium","label":"Средний"},{"value":"large","label":"Большой"}]'></sf-button-group>
+  </main>
+
+  <script src="../../source/output/button-group-browser/component/button-group/js/button-group.js"></script>
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/button-group-browser/smart/buttons/js/buttons.js"></script>
+  <script src="../../source/output/button-group-browser/smart/button-group/js/button-group.js"></script>
+</body>
+</html>

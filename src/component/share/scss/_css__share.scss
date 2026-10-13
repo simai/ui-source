@@ -1,0 +1,39 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// SHARE
+
+.sf-share {
+
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+	cursor: pointer;
+	
+	.sf-share-btn{
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+		align-items: center;
+		
+		.div {
+			position: relative;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		
+		&:hover {
+			opacity: 0.95;
+		}
+		
+		.sf-share-icon {
+			text-align: center;
+			i
+			{
+				min-width: 1.5em;
+			}
+		}
+	}	
+}
+}

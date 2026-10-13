@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__justify_self' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// FLEX JUSTIFY SELF
+// @include layer-priority(utility,lg) {
+    @include breakpoint-media(lg) {
+        $infix: breakpoint-infix(lg, $breakpoint-array);
+
+        // Flex Justify Self Utilities
+        @each $flex-justify-self-name, $flex-justify-self-value in $flex-justify-self-array {
+            .#{$infix}self-main-#{$flex-justify-self-name} {
+                justify-self: #{$flex-justify-self-value};
+            }
+        }
+    }
+// }
+}

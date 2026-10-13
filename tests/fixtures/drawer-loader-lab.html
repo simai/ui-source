@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Drawer — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/action-focus-browser';
+    window.sfSmartPath = '../../source/output/action-focus-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: true, subsetHost: '/ui-source/tests/fixtures/icon-subset-service'},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-2 max-w-5" id="page-main">
+    <h1>Проверка Drawer</h1>
+    <div class="flex flex-wrap gap-1">
+      <button class="sf-button sf-button--primary" id="open-modal" type="button"
+        data-drawer="open" aria-controls="settings-drawer">Открыть параметры</button>
+      <button class="sf-button sf-button--secondary" id="open-modeless" type="button"
+        data-drawer="open" aria-controls="help-drawer">Открыть справку</button>
+    </div>
+    <button class="sf-button sf-button--link" id="page-action" type="button">Действие страницы</button>
+  </main>
+
+  <sf-drawer id="settings-drawer" title="Параметры проекта" placement="inline-end" size="medium">
+    <div class="grid gap-1">
+      <p>Настройки принадлежат приложению.</p>
+      <button class="sf-button sf-button--primary" id="save-settings" type="button">Сохранить</button>
+      <button class="sf-button sf-button--link" id="live-action" type="button">Живой обработчик</button>
+    </div>
+  </sf-drawer>
+
+  <sf-drawer id="help-drawer" title="Справка" placement="inline-end" size="small" modal="false">
+    <p>Страница остаётся доступной.</p>
+    <button class="sf-button sf-button--secondary" id="help-action" type="button">Подробнее</button>
+  </sf-drawer>
+
+  <script>
+    window.drawerLab = {liveClicks: 0};
+    document.getElementById('live-action').addEventListener('click', () => window.drawerLab.liveClicks += 1);
+  </script>
+  <script src="../../source/output/action-focus-browser/core/js/core.js"></script>
+</body>
+</html>

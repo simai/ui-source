@@ -1,0 +1,65 @@
+{
+  ".sf-input": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/4)",
+    "justify-content/flex-start (.justify-start)"
+  ],
+  ".sf-input .sf-input-field": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-input .sf-input-label": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-input .sf-input-field input": [
+    "flex/1 (.flex-1)"
+  ],
+  ".sf-input .sf-input-field .sf-icon": [
+    "display/flex (.flex)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-input .sf-input-text-container": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-input .sf-input-group": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/center (.justify-center)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-input .sf-input-text-container-alt": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-input .sf-icon-alt": [
+    "display/flex (.flex)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-input .sf-input-hint-text-wrap": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-b0)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ]
+}

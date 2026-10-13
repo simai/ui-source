@@ -1,0 +1,12 @@
+// SIMAI Framework
+// https://simai.io
+
+// INTERACTIVITY
+
+// Resize
+$resize-array:(
+    '-none' : none,
+    '-y' : vertical,
+    '-x' : horizontal,
+    '' : both,
+);

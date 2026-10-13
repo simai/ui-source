@@ -1,0 +1,34 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var_background_size_ext' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND SIZE EXT
+
+$infix: xl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Token-based sizes: bg-size-a4, bg-size-b0, ...
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+                .#{$infix}bg-size-#{$size-range-name}#{$size-name} {
+                    background-size: var(--sf-#{$size-range-name}#{$size-name});
+                }
+            }
+        }
+
+        // Percent-based sizes: bg-size-0 ... bg-size-100
+        @for $k from $bg-size-ext-percent-min through $bg-size-ext-percent-max {
+            .#{$infix}bg-size-#{$k} {
+                background-size: $k * 1%;
+            }
+        }
+    }
+// }
+}

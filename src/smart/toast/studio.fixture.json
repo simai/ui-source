@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.toast",
+  "title": "Toast reference",
+  "summary": "Deterministic reference fixture for sf-toast.",
+  "locale": "ru",
+  "props": {
+    "title": "Операция выполнена",
+    "supporting-text": "Изменения сохранены без ошибок.",
+    "action-text": "Посмотреть",
+    "type": "success",
+    "closable": true
+  },
+  "children": [],
+  "state": "default"
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="164 20 28 20" fill="none" role="img">
+<g id="Country=AD">
+<rect id="Mask_8" x="164" y="20" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask3_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="164" y="20" width="28" height="20">
+<rect id="Mask_9" x="164" y="20" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask3_8205_11341)">
+<rect id="Mask Copy" x="164" y="20" width="28" height="20" fill="#0052B4"/>
+<rect id="Mask_10" x="177.333" y="20" width="14.6667" height="20" fill="#D80027"/>
+<path id="Rectangle 2_5" fill-rule="evenodd" clip-rule="evenodd" d="M173.333 40H182.666V20H173.333V40Z" fill="#FFDA44"/>
+<path id="Rectangle 139 Copy" fill-rule="evenodd" clip-rule="evenodd" d="M176.667 28.6668H178V29.3335H176.667V28.6668Z" fill="#A1E367"/>
+<path id="Rectangle 137" d="M176.725 28.333H179.275C179.47 28.333 179.624 28.5 179.607 28.6943L179.437 30.75C179.393 31.2682 178.959 31.667 178.439 31.667H177.561C177.041 31.667 176.607 31.2682 176.563 30.75L176.393 28.6943C176.376 28.5 176.53 28.333 176.725 28.333Z" stroke="#D32E28" stroke-width="0.666667"/>
+<path id="Rectangle 139" fill-rule="evenodd" clip-rule="evenodd" d="M176.667 29.3333H179.334V30H178.667H177.334H176.667V29.3333Z" fill="#A2001D"/>
+</g>
+</g>
+</svg>

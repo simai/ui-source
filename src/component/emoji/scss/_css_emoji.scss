@@ -1,0 +1,46 @@
+@layer sf.components {
+.sf-emoji {
+  --sf-emoji--font-size: var(--sf-text-size-1);
+  --sf-emoji--line-height: var(--sf-text-height-1);
+  --sf-emoji--font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', emoji, sans-serif;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  block-size: var(--sf-emoji--line-height);
+  inline-size: var(--sf-emoji--line-height);
+  font-family: var(--sf-emoji--font-family);
+  font-size: var(--sf-emoji--font-size);
+  font-style: normal;
+  font-weight: normal;
+  line-height: var(--sf-emoji--line-height);
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.sf-emoji--size-1\/3 {
+  --sf-emoji--font-size: var(--sf-text-size-1\/3);
+  --sf-emoji--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-emoji--size-1\/2 {
+  --sf-emoji--font-size: var(--sf-text-size-1\/2);
+  --sf-emoji--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-emoji--size-1 {
+  --sf-emoji--font-size: var(--sf-text-size-1);
+  --sf-emoji--line-height: var(--sf-text-height-1);
+}
+
+.sf-emoji--size-2 {
+  --sf-emoji--font-size: var(--sf-text-size-2);
+  --sf-emoji--line-height: var(--sf-text-height-2);
+}
+
+.sf-emoji--size-3 {
+  --sf-emoji--font-size: var(--sf-text-size-3);
+  --sf-emoji--line-height: var(--sf-text-height-3);
+}
+}

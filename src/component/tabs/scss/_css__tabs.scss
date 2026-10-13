@@ -1,0 +1,345 @@
+@layer sf.components {
+  .sf-tabs {
+    background-color: var(--sf-tabs--background-color, transparent);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-tabs > .sf-tabs-top-container,
+  .sf-tabs > .sf-tabs-main-container,
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex-shrink: 0;
+  }
+
+  .sf-tabs:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top {
+    overflow-x: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-tabs > .sf-tabs-top-container > .sf-tabs-top {
+      scroll-behavior: auto;
+    }
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button-text-container {
+    min-inline-size: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon {
+    flex-shrink: 0;
+  }
+
+  .sf-tabs.sf-tabs--vertical {
+    column-gap: var(--sf-tabs--gap, var(--sf-space-2));
+  }
+
+  .sf-tabs-top {
+    margin: var(--sf-tabs-top--margin, 0);
+    border-width: var(--sf-tabs-top--border-width, 0);
+    border-style: var(--sf-tabs-top--border-style, solid);
+    border-color: var(--sf-tabs-top--border-color, transparent);
+    gap: var(--sf-tabs-top--gap, var(--sf-space-1));
+  }
+
+  .sf-tabs-main-container {
+    padding-inline-end: var(--sf-tabs-main-container--padding-inline-end, 0);
+    padding-inline-start: var(--sf-tabs-main-container--padding-inline-start, 0);
+    padding-top: var(--sf-tabs-main-container--padding-top, var(--sf-space-1));
+    padding-bottom: var(--sf-tabs-main-container--padding-bottom, var(--sf-space-1));
+  }
+
+  .sf-tabs-top-container {
+    border-width: var(--sf-tabs-top-container--border-width, 0 0 var(--sf-tabs--border-width, var(--sf-px)) 0);
+    border-style: var(--sf-tabs-top-container--border-style, solid);
+    border-color: var(--sf-tabs-top-container--border-color, var(--sf-outline-variant));
+    padding-inline-end: var(--sf-tabs-top-container--padding-inline-end, 0);
+    padding-inline-start: var(--sf-tabs-top-container--padding-inline-start, 0);
+    padding-top: var(--sf-tabs-top-container--padding-top, 0);
+    padding-bottom: var(--sf-tabs-top-container--padding-bottom, 0);
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--margin: 0 0 calc(var(--sf-tabs--border-width, var(--sf-px)) * -1) 0;
+  }
+
+  .sf-tabs--pills > .sf-tabs-top-container,
+  .sf-tabs--full > .sf-tabs-top-container,
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container {
+    --sf-tabs-top-container--border-color: transparent;
+    --sf-tabs-top-container--border-width: 0;
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: 0;
+    flex: 1;
+  }
+}
+
+@layer sf.overrides {
+  .sf-tabs-top .sf-button,
+  .sf-tabs-top .sf-icon-button {
+    // A focus ring painted inside a control must contrast with that control,
+    // not with the surrounding page. Reset locally to avoid inherited skin ink.
+    --sf-tabs--focus-ink: var(--sf-on-surface);
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-button--border-top-left-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-top-left-radius: var(--sf-radius--ui);
+  }
+
+  .sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-button--border-bottom-right-radius: var(--sf-radius-rounded);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-rounded);
+    --sf-button--border-top-right-radius: var(--sf-radius-rounded);
+    --sf-button--border-top-left-radius: var(--sf-radius-rounded);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-rounded);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-rounded);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius-rounded);
+    --sf-icon-button--border-top-left-radius: var(--sf-radius-rounded);
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-button--border-top-width: 0;
+    --sf-button--border-inline-start-width: 0;
+    --sf-button--border-bottom-width: calc(var(--sf-tabs--border-width, var(--sf-px)) * 2);
+    --sf-button--border-inline-end-width: 0;
+    --sf-icon-button--border-top-width: 0;
+    --sf-icon-button--border-inline-start-width: 0;
+    --sf-icon-button--border-bottom-width: calc(var(--sf-tabs--border-width, var(--sf-px)) * 2);
+    --sf-icon-button--border-inline-end-width: 0;
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    flex: 1 0 0;
+    min-inline-size: max-content;
+    --sf-button--border-top-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-button--border-inline-start-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-button--border-bottom-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-button--border-inline-end-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-icon-button--border-inline-start-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-icon-button--border-bottom-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-icon-button--border-inline-end-width: var(--sf-tabs--border-width, var(--sf-px));
+    --sf-icon-button--border-color: var(--sf-primary-active);
+    --sf-button--border-color: var(--sf-primary-active);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :is(.sf-button, .sf-icon-button) + :is(.sf-button, .sf-icon-button) {
+    --sf-button--border-inline-start-width: 0;
+    --sf-icon-button--border-inline-start-width: 0;
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-button:first-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :first-child .sf-button:first-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-icon-button:first-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :first-child .sf-icon-button:first-child {
+    --sf-button--border-top-left-radius: var(--sf-radius--ui);
+    --sf-button--border-bottom-left-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-top-left-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius--ui);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-button:last-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :last-child .sf-button:last-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-icon-button:last-child,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :last-child .sf-icon-button:last-child {
+    --sf-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-button--border-bottom-right-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius--ui);
+  }
+
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-button--border-bottom-right-radius: var(--sf-radius--ui);
+    --sf-button--border-bottom-left-radius: var(--sf-radius--ui);
+    --sf-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-button--border-top-left-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius--ui);
+    --sf-icon-button--border-top-left-radius: var(--sf-radius--ui);
+  }
+}
+
+@layer sf.states {
+  .sf-tabs-top :is(.sf-button--default.sf-button--primary, .sf-icon-button--default.sf-icon-button--primary) {
+    --sf-tabs--focus-ink: var(--sf-on-primary);
+  }
+
+  .sf-tabs-top :is(.sf-button--default.sf-button--on-surface, .sf-icon-button--default.sf-icon-button--on-surface) {
+    --sf-tabs--focus-ink: var(--sf-on-surface-inverse);
+  }
+
+  .sf-tabs-top :is(.sf-button--tonal.sf-button--secondary, .sf-icon-button--tonal.sf-icon-button--secondary) {
+    --sf-tabs--focus-ink: var(--sf-on-secondary-container);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+    --sf-tabs--focus-ink: var(--sf-on-primary);
+    --sf-button--background-color: var(--sf-primary-active);
+    --sf-icon-button--background-color: var(--sf-primary-active);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-primary);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-primary);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-outline);
+    --sf-icon-button--background-color: transparent;
+    --sf-icon-button--border-color: var(--sf-outline);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) {
+    --sf-button--background-color: var(--sf-transparent);
+    --sf-icon-button--background-color: var(--sf-transparent);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-active);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface-active);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) {
+    --sf-icon-button--border-color: var(--sf-primary-active);
+    --sf-button--border-color: var(--sf-primary-active);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
+    --sf-tabs--focus-ink: var(--sf-on-primary);
+    --sf-icon-button--border-color: var(--sf-primary-hover);
+    --sf-button--border-color: var(--sf-primary-hover);
+    --sf-icon-button--background-color: var(--sf-primary-hover);
+    --sf-button--background-color: var(--sf-primary-hover);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-button-text-container,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-primary);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-icon,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover .sf-icon,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-icon,
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-on-primary);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-outline-variant);
+    --sf-icon-button--background-color: transparent;
+    --sf-icon-button--border-color: var(--sf-outline-variant);
+  }
+
+  // A tab sits flush against its neighbours, so the ring turns inwards, and a
+  // selected tab is filled with its own colour, so the ring is drawn in the ink
+  // that reads on that fill rather than in the shared focus colour. The
+  // mechanism stays the shared one: the ink is passed through the ring's own
+  // token instead of a shadow, which elevation shares and forced colours drop.
+  .sf-tabs-top :is(.sf-button, .sf-icon-button):not(:disabled):not(.disabled):focus-visible {
+    --sf-focus--color: var(--sf-tabs--focus-color, var(--sf-tabs--focus-ink));
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(:disabled):not(.disabled):focus-visible {
+    --sf-tabs--focus-ink: var(--sf-on-surface);
+  }
+
+  @media (forced-colors: active) {
+    .sf-tabs-top :is(.sf-button, .sf-icon-button):not(:disabled):not(.disabled):focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: calc(var(--sf-focus--width) * -1);
+    }
+  }
+}
+
+@layer sf.components {
+  /* A tab is a control of its size: its indicator is a border inside that
+     height, and the padding gives the border back, so an underlined or full
+     tab row is as tall as a plain one (it was taller by its indicator). */
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    padding-block-end: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    padding-block-start: calc(var(--sf-button--padding-top) - var(--sf-button--border-top-width));
+    padding-block-end: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    padding-block-start: calc(var(--sf-icon-button--padding-top) - var(--sf-icon-button--border-top-width));
+    padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
+  }
+}

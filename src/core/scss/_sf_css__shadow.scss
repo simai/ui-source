@@ -1,0 +1,29 @@
+// SIMAI Framework
+// https://simai.io
+
+// Shadow
+@layer sf.base {
+    :root {
+        --sf-shadow--level-ratio: 1;
+
+        --sf-shadow--alfa-fill: 24%;
+        --sf-shadow--alfa-outline: 12%;
+        --sf-shadow--alfa-shade: 8%;
+
+        --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-fill));
+        --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-outline));
+        --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-shadow--color, var(--sf-black, #000)) var(--sf-shadow--alfa-shade));
+        --sf-shadow--color-shade: var(--sf-shadow--color-shading);
+    }
+
+    [class*="shadow"] {
+        box-shadow: 0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(-1 * var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-fill),
+        0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a3) * var(--sf-shadow--level-ratio)) 0 var(--sf-shadow--color-outline),
+        0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a4) * var(--sf-shadow--level-ratio)) calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-shading);
+    }
+
+    [class*="drop-shadow"] {
+        box-shadow: none;
+        filter: drop-shadow(0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-fill)) drop-shadow(0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio)) calc(var(--sf-a3) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-outline)) drop-shadow(0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio)) calc(var(--sf-a4) * var(--sf-shadow--level-ratio)) var(--sf-shadow--color-shading));
+    }
+}

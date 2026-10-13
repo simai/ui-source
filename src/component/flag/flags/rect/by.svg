@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="116 164 28 20" fill="none" role="img">
+<g id="Country=BY">
+<rect id="Mask_59" x="116" y="164" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask26_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="116" y="164" width="28" height="20">
+<rect id="Mask_60" x="116" y="164" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask26_8205_11341)">
+<path id="Rectangle 2_37" fill-rule="evenodd" clip-rule="evenodd" d="M116 177.333H144V164H116V177.333Z" fill="#D80027"/>
+<path id="Rectangle 2_38" fill-rule="evenodd" clip-rule="evenodd" d="M116 184H144V177.333H116V184Z" fill="#6DA544"/>
+<path id="Rectangle 1512" d="M120 167L119.333 168L120 169V171L119.333 172L120 173V175L119.333 176L120 177V179L119.333 180L120 181V184H116V164H120V167Z" fill="#F0F0F0"/>
+<path id="Rectangle 1513" d="M116.667 180L115.333 182L114 180L115.333 178L116.667 180ZM116.667 176L115.333 178L114 176L115.333 174L116.667 176ZM116.667 172L115.333 174L114 172L115.333 170L116.667 172ZM116.667 168L115.333 170L114 168L115.333 166L116.667 168Z" fill="#D80027"/>
+<path id="Rectangle 1513_2" d="M119.334 182L118 184L116.667 182L118 180L119.334 182ZM119.334 178L118 180L116.667 178L118 176L119.334 178ZM119.334 174L118 176L116.667 174L118 172L119.334 174ZM119.334 170L118 172L116.667 170L118 168L119.334 170ZM119.334 166L118 168L116.667 166L118 164L119.334 166Z" fill="#D80027"/>
+</g>
+</g>
+</svg>

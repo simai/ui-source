@@ -1,0 +1,423 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
+.sf-country-code {
+  background-color: var(--sf-country-code--background-color, transparent);
+  gap: var(--sf-country-code--gap, var(--sf-space-1\/4));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-country-code-label--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-country-code .sf-country-code-label {
+  --sf-country-code-label--background-color: transparent;
+  --sf-country-code-label--gap: var(--sf-space-1\/4);
+  background-color: var(--sf-country-code-label--background-color);
+  gap: var(--sf-country-code-label--gap);
+}
+
+.sf-country-code .sf-country-code-text {
+  --sf-country-code-text--color: var(--sf-on-surface-variant);
+  --sf-country-code-text--font-family: var(--sf-text--family);
+  --sf-country-code-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-country-code-text--color);
+  font-family: var(--sf-country-code-text--font-family);
+  font-size: var(--sf-country-code-text--font-size);
+  font-weight: var(--sf-country-code-text--font-weight);
+  line-height: var(--sf-country-code-text--line-height);
+}
+
+.sf-country-code .sf-country-code-required {
+  --sf-country-code-required--color: var(--sf-error);
+  --sf-country-code-required--font-family: var(--sf-text--family);
+  --sf-country-code-required--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-country-code-required--color);
+  font-family: var(--sf-country-code-required--font-family);
+  font-size: var(--sf-country-code-required--font-size);
+  font-weight: var(--sf-country-code-required--font-weight);
+  line-height: var(--sf-country-code-required--line-height);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-country-code .sf-country-code-field {
+  --sf-country-code-field--background-color: var(--sf-surface-0);
+  --sf-country-code-field--border: var(--sf-px) solid;
+  --sf-country-code-field--border-color: var(--sf-outline);
+  --sf-country-code-field--border-end-end-radius: var(--sf-ui-radius-default);
+  --sf-country-code-field--border-end-start-radius: var(--sf-ui-radius-default);
+  --sf-country-code-field--border-start-end-radius: var(--sf-ui-radius-default);
+  --sf-country-code-field--border-start-start-radius: var(--sf-ui-radius-default);
+  background-color: var(--sf-country-code-field--background-color);
+  border: var(--sf-country-code-field--border);
+  border-color: var(--sf-country-code-field--border-color, transparent);
+  border-end-end-radius: var(--sf-country-code-field--border-end-end-radius);
+  border-end-start-radius: var(--sf-country-code-field--border-end-start-radius);
+  border-start-end-radius: var(--sf-country-code-field--border-start-end-radius);
+  border-start-start-radius: var(--sf-country-code-field--border-start-start-radius);
+  box-shadow: var(--sf-country-code-field--box-shadow);
+  padding-bottom: var(--sf-country-code-field--padding-bottom);
+  padding-inline-end: var(--sf-country-code-field--padding-inline-end);
+  padding-inline-start: var(--sf-country-code-field--padding-inline-start);
+  padding-top: var(--sf-country-code-field--padding-top);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-country-code .sf-country-code-left {
+  --sf-country-code-left--background-color: transparent;
+  background-color: var(--sf-country-code-left--background-color);
+}
+
+/* The slot holds a picture, and the picture fills it in the shape the rest of
+   the set gives a flag: the rectangle a dropdown flag takes (three quarters of
+   the line high, 1.4 times as wide), the radius role and the hairline that
+   keeps a white flag off a white field. */
+.sf-country-code .sf-country-code-flag-icon img,
+.sf-country-code .sf-country-code-flag img {
+  display: block;
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+  border-radius: var(--sf-radius--ui);
+  outline: var(--sf-px) solid var(--sf-outline-variant);
+  outline-offset: calc(var(--sf-px) * -1);
+}
+
+.sf-country-code .sf-country-code-flag-icon {
+  --sf-country-code-flag-icon--background-color: transparent;
+  background-color: var(--sf-country-code-flag-icon--background-color);
+  font-size: var(--sf-country-code-flag-icon--font-size);
+  height: var(--sf-country-code-flag-icon--height);
+  opacity: var(--sf-country-code-flag-icon--opacity);
+  width: var(--sf-country-code-flag-icon--width);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
+.sf-country-code .sf-country-code-field input {
+  --sf-country-code-input--background-color: transparent;
+  background-color: var(--sf-country-code-input--background-color);
+  color: var(--sf-country-code-input--color);
+  font-family: var(--sf-country-code-input--font-family);
+  font-size: var(--sf-country-code-input--font-size);
+  font-weight: var(--sf-country-code-input--font-weight);
+  line-height: var(--sf-country-code-input--line-height);
+  padding-inline-end: var(--sf-country-code-input--padding-inline-end);
+  padding-inline-start: var(--sf-country-code-input--padding-inline-start);
+}
+
+.sf-country-code .sf-country-code-field input::placeholder {
+  --sf-country-code-placeholder--color: var(--sf-on-surface-variant);
+  --sf-country-code-placeholder--font-family: var(--sf-text--family);
+  color: var(--sf-country-code-placeholder--color);
+  font-family: var(--sf-country-code-placeholder--font-family);
+  font-size: var(--sf-country-code-placeholder--font-size);
+  line-height: var(--sf-country-code-placeholder--line-height);
+  opacity: 1;
+}
+
+.sf-country-code .sf-country-code-hint {
+  --sf-country-code-hint--color: var(--sf-on-surface-variant);
+  --sf-country-code-hint--font-family: var(--sf-text--family);
+  --sf-country-code-hint--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-country-code-hint--color);
+  font-family: var(--sf-country-code-hint--font-family);
+  font-size: var(--sf-country-code-hint--font-size);
+  font-weight: var(--sf-country-code-hint--font-weight);
+  line-height: var(--sf-country-code-hint--line-height);
+}
+
+.sf-country-code .sf-country-code-list {
+  background-color: var(--sf-country-code-list--background-color);
+  box-shadow: var(--sf-country-code-list--box-shadow);
+  padding-bottom: var(--sf-country-code-list--padding-bottom);
+  padding-inline-end: var(--sf-country-code-list--padding-inline-end);
+  padding-inline-start: var(--sf-country-code-list--padding-inline-start);
+  padding-top: var(--sf-country-code-list--padding-top);
+}
+
+.sf-country-code .sf-country-code-items {
+  background-color: var(--sf-country-code-items--background-color);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-country-code-item--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-country-code .sf-country-code-item {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  border-radius: var(--sf-radius--ui);
+  --sf-country-code-item--background-color: transparent;
+  --sf-country-code-item--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-country-code-item--background-color);
+  color: var(--sf-country-code-item--color);
+  font-family: var(--sf-country-code-item--font-family);
+  font-size: var(--sf-country-code-item--font-size);
+  font-weight: var(--sf-country-code-item--font-weight);
+  gap: var(--sf-country-code-item--gap);
+  line-height: var(--sf-country-code-item--line-height);
+  padding-bottom: var(--sf-country-code-item--padding-bottom);
+  padding-inline-end: var(--sf-country-code-item--padding-inline-end);
+  padding-inline-start: var(--sf-country-code-item--padding-inline-start);
+  padding-top: var(--sf-country-code-item--padding-top);
+  --sf-country-code-item--color: var(--sf-on-surface);
+}
+
+.sf-country-code .sf-country-code-flag {
+  flex-shrink: 0;
+  --sf-country-code-flag--background-color: transparent;
+  background-color: var(--sf-country-code-flag--background-color);
+  font-size: var(--sf-country-code-flag--font-size);
+  height: var(--sf-country-code-flag--height);
+  width: var(--sf-country-code-flag--width);
+}
+
+.sf-country-code .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-text {
+  --sf-country-code-text--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-required {
+  --sf-country-code-required--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-required--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-field {
+  --sf-country-code-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  --sf-country-code-field--padding-inline-end: var(--sf-ui-1--space-x);
+  --sf-country-code-field--padding-inline-start: var(--sf-ui-1--space-x);
+  --sf-country-code-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+}
+
+.sf-country-code:not(:has(input:disabled)) .sf-country-code-field {
+  --sf-country-code-field--border-color: var(--sf-outline);
+}
+
+/* The flag and its chevron sit on the field's line less its two borders, the
+   way a text field's input line does, so a phone field is as tall as the
+   field beside it (it was 2px taller at every size). */
+.sf-country-code.sf-country-code--size-1 .sf-country-code-flag-icon {
+  --sf-country-code-flag-icon--font-size: var(--sf-text-size-6);
+  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-1) * 3 / 4);
+  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-1) * 3 / 4 * 1.4);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-country-code.sf-country-code--size-1 input {
+  --sf-country-code-input--font-size: var(--sf-text-size-1);
+  --sf-country-code-input--line-height: var(--sf-text-height-1);
+  --sf-country-code-input--padding-inline-end: var(--sf-ui-1--text-space-x);
+  --sf-country-code-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+}
+
+.sf-country-code.sf-country-code--size-1 input, .sf-country-code.sf-country-code--size-2 input, .sf-country-code.sf-country-code--size-1\/2 input {
+  --sf-country-code-input--font-family: var(--sf-text--family);
+  --sf-country-code-input--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-country-code input {
+  --sf-country-code-input--color: var(--sf-on-surface);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-hint {
+  --sf-country-code-hint--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-hint--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code:has(input:disabled) input {
+  --sf-country-code-input--color: var(--sf-on-disable);
+}
+
+.sf-country-code--size-1 .sf-country-code-item, .sf-country-code--size-1\/2 .sf-country-code-item {
+  --sf-country-code-item--padding-bottom: var(--sf-ui-1\/2--space-y);
+  --sf-country-code-item--padding-inline-end: var(--sf-ui-1\/2--space-y);
+  --sf-country-code-item--padding-inline-start: var(--sf-ui-1\/2--space-y);
+  --sf-country-code-item--padding-top: var(--sf-ui-1\/2--space-y);
+}
+
+.sf-country-code--size-1 .sf-country-code-flag, .sf-country-code--size-1\/2 .sf-country-code-flag {
+  --sf-country-code-flag--font-size: var(--sf-text-size-3);
+  --sf-country-code-flag--height: var(--sf-text-height-1\/3);
+  --sf-country-code-flag--width: var(--sf-text-size-3);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-item {
+  --sf-country-code-item--font-size: var(--sf-text-size-1);
+  --sf-country-code-item--line-height: var(--sf-text-height-1);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-item, .sf-country-code.sf-country-code--size-2 .sf-country-code-item, .sf-country-code.sf-country-code--size-1\/2 .sf-country-code-item {
+  --sf-country-code-item--font-family: var(--sf-text--family);
+  --sf-country-code-item--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-text {
+  --sf-country-code-text--font-size: var(--sf-text-size-1);
+  --sf-country-code-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-required {
+  --sf-country-code-required--font-size: var(--sf-text-size-1);
+  --sf-country-code-required--line-height: var(--sf-text-height-1);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-field {
+  --sf-country-code-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+  --sf-country-code-field--padding-inline-end: var(--sf-ui-2--space-x);
+  --sf-country-code-field--padding-inline-start: var(--sf-ui-2--space-x);
+  --sf-country-code-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-flag-icon {
+  --sf-country-code-flag-icon--font-size: var(--sf-text-size-8);
+  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-2) * 3 / 4);
+  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-2) * 3 / 4 * 1.4);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-4);
+  --sf-icon--height: var(--sf-text-size-4);
+  --sf-icon--width: var(--sf-text-size-4);
+}
+
+.sf-country-code.sf-country-code--size-2 input {
+  --sf-country-code-input--font-size: var(--sf-text-size-2);
+  --sf-country-code-input--line-height: var(--sf-text-height-2);
+  --sf-country-code-input--padding-inline-end: var(--sf-ui-2--text-space-x);
+  --sf-country-code-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-hint {
+  --sf-country-code-hint--font-size: var(--sf-text-size-1);
+  --sf-country-code-hint--line-height: var(--sf-text-height-1);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-item {
+  --sf-country-code-item--padding-bottom: var(--sf-ui-1--space-y);
+  --sf-country-code-item--padding-inline-end: var(--sf-ui-1--space-y);
+  --sf-country-code-item--padding-inline-start: var(--sf-ui-1--space-y);
+  --sf-country-code-item--padding-top: var(--sf-ui-1--space-y);
+  --sf-country-code-item--font-size: var(--sf-text-size-2);
+  --sf-country-code-item--line-height: var(--sf-text-height-2);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-flag {
+  --sf-country-code-flag--font-size: var(--sf-text-size-5);
+  --sf-country-code-flag--height: var(--sf-text-height-1\/2);
+  --sf-country-code-flag--width: var(--sf-text-size-5);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-text {
+  --sf-country-code-text--font-size: var(--sf-text-size-1\/3);
+  --sf-country-code-text--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-required {
+  --sf-country-code-required--font-size: var(--sf-text-size-1\/3);
+  --sf-country-code-required--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-field {
+  --sf-country-code-field--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  --sf-country-code-field--padding-inline-end: var(--sf-ui-1\/2--space-x);
+  --sf-country-code-field--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  --sf-country-code-field--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-flag-icon {
+  --sf-country-code-flag-icon--font-size: var(--sf-text-size-5);
+  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-1\/2) * 3 / 4);
+  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-1\/2) * 3 / 4 * 1.4);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-2);
+  --sf-icon--height: var(--sf-text-size-2);
+  --sf-icon--width: var(--sf-text-size-2);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 input {
+  --sf-country-code-input--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-input--line-height: var(--sf-text-height-1\/2);
+  --sf-country-code-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+  --sf-country-code-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-hint {
+  --sf-country-code-hint--font-size: var(--sf-text-size-1\/3);
+  --sf-country-code-hint--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-item {
+  --sf-country-code-item--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-item--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code--size-1 .sf-country-code-field input::placeholder {
+  --sf-country-code-placeholder--font-size: var(--sf-text-size-1);
+  --sf-country-code-placeholder--line-height: var(--sf-text-height-1);
+}
+
+.sf-country-code--size-2 .sf-country-code-field input::placeholder {
+  --sf-country-code-placeholder--font-size: var(--sf-text-size-2);
+  --sf-country-code-placeholder--line-height: var(--sf-text-height-2);
+}
+
+.sf-country-code--size-1\/2 .sf-country-code-field input::placeholder {
+  --sf-country-code-placeholder--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-placeholder--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code:has(input:disabled) .sf-country-code-field {
+  --sf-country-code-field--border-color: var(--sf-outline-disable);
+}
+
+.sf-country-code:has(input:disabled) .sf-country-code-flag-icon {
+  --sf-country-code-flag-icon--opacity: var(--sf-opacity-60);
+}
+
+.sf-country-code:has(input:disabled) .sf-icon {
+  /* The disabled role for what is drawn on a surface, not the one for a
+     boundary. The two carry the same value today, so this changed nothing a
+     person sees -- and a theme that retunes one of them separately would have
+     found a glyph taking the colour of a border. */
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-country-code:has(input:disabled) .sf-country-code-field input::placeholder {
+  --sf-country-code-placeholder--color: var(--sf-on-disable);
+}
+
+.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-country-code-field {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+/* The global :focus-visible rule paints the ring on whatever holds the focus.
+   Here the focus lives on the bare control while the ring belongs to the part
+   the person sees, so the control gives its own ring up: one component, one
+   ring. */
+.sf-country-code .sf-country-code-field input:focus-visible {
+  outline: none;
+}
+
+.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-country-code-field {
+  --sf-country-code-field--border-color: var(--sf-primary-hover);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-country-code.open .sf-country-code-list {
+  /* Поднят: поверхность берёт ступень своей высоты, иначе в тёмной теме
+     подъём не виден — там чёрная тень ничего не даёт. */
+  --sf-country-code-list--background-color: var(--sf-elevation-3--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  --sf-country-code-list--box-shadow: var(--sf-elevation-3--shadow);
+  --sf-country-code-list--padding-bottom: var(--sf-space-1\/3);
+  --sf-country-code-list--padding-inline-end: var(--sf-space-1\/3);
+  --sf-country-code-list--padding-inline-start: var(--sf-space-1\/3);
+  --sf-country-code-list--padding-top: var(--sf-space-1\/3);
+}
+}

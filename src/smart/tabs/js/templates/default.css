@@ -1,0 +1,36 @@
+@layer sf.components {
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > sf-button,
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > sf-icon-button,
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] > sf-button,
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] > sf-icon-button {
+    display: contents;
+  }
+
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] {
+    display: flex;
+  }
+}
+
+@layer sf.overrides {
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top sf-button > .sf-button,
+  sf-tabs > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top sf-icon-button > .sf-icon-button {
+    min-width: var(--sf-tabs-smart-action--min-width, 0);
+  }
+
+  sf-tabs > .sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top sf-button > .sf-button,
+  sf-tabs > .sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top sf-icon-button > .sf-icon-button {
+    flex: 1 0 0;
+    min-inline-size: max-content;
+  }
+
+  sf-tabs > .sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > [role="tab"] {
+    flex: 1;
+  }
+
+  sf-tabs > .sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :is(sf-button, sf-icon-button):not(:first-child) > :is(.sf-button, .sf-icon-button),
+  sf-tabs > .sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > [role="tab"]:not(:first-child) :is(.sf-button, .sf-icon-button) {
+    --sf-button--border-inline-start-width: 0;
+    --sf-icon-button--border-inline-start-width: 0;
+    border-inline-start-width: 0;
+  }
+}

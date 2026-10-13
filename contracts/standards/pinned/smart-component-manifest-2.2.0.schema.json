@@ -1,0 +1,859 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+  "title": "SIMAI Smart Component Manifest v2",
+  "x-simai-version": "2.2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "title",
+    "summary",
+    "kind",
+    "reuse_mode",
+    "lifecycle",
+    "tags",
+    "capabilities",
+    "custom_element",
+    "composition",
+    "inputs",
+    "methods",
+    "events",
+    "state",
+    "persistence",
+    "ownership",
+    "security",
+    "accessibility",
+    "presentation",
+    "adapter",
+    "artifacts",
+    "readiness",
+    "compatibility",
+    "provenance",
+    "ai_guidance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^(smart|component|utility|template)\\.[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "primitive",
+        "component",
+        "smart",
+        "composite",
+        "template"
+      ]
+    },
+    "reuse_mode": {
+      "enum": [
+        "whole",
+        "parts",
+        "both"
+      ]
+    },
+    "lifecycle": {
+      "enum": [
+        "experimental",
+        "released",
+        "deprecated",
+        "retired"
+      ]
+    },
+    "tags": {
+      "$ref": "#/$defs/stringList"
+    },
+    "capabilities": {
+      "$ref": "#/$defs/stringList"
+    },
+    "custom_element": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"
+    },
+    "templates": {
+      "$ref": "#/$defs/stringList"
+    },
+    "exported_parts": {
+      "$ref": "#/$defs/stringList"
+    },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uses",
+        "public_parts"
+      ],
+      "properties": {
+        "uses": {
+          "$ref": "#/$defs/stringList"
+        },
+        "public_parts": {
+          "$ref": "#/$defs/stringList"
+        },
+        "declarative": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "standard",
+            "type",
+            "mode",
+            "profiles",
+            "props",
+            "slots",
+            "renderer",
+            "assets"
+          ],
+          "properties": {
+            "standard": {
+              "const": "simai.composition.document.v1"
+            },
+            "type": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+            },
+            "mode": {
+              "enum": [
+                "leaf",
+                "composite"
+              ]
+            },
+            "profiles": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "ui-layout",
+                  "structured-content"
+                ]
+              }
+            },
+            "props": {
+              "$ref": "#/$defs/stringList"
+            },
+            "presentation": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "views",
+                "presets",
+                "modifiers"
+              ],
+              "properties": {
+                "views": {
+                  "$ref": "#/$defs/stringList"
+                },
+                "presets": {
+                  "$ref": "#/$defs/stringList"
+                },
+                "modifiers": {
+                  "$ref": "#/$defs/stringList"
+                }
+              }
+            },
+            "slots": {
+              "type": "object"
+            },
+            "renderer": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "name"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "custom-element"
+                },
+                "name": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"
+                }
+              }
+            },
+            "assets": {
+              "$ref": "#/$defs/stringList"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "contract"
+                ],
+                "properties": {
+                  "contract": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "events": {
+              "$ref": "#/$defs/stringList"
+            },
+            "persistence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "settings_key_prop": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "revision_prop": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "host_port": {
+              "type": "object",
+              "description": "The declared seam with a product host, versioned apart from the component.",
+              "additionalProperties": false,
+              "required": [
+                "port",
+                "version",
+                "path",
+                "sha256"
+              ],
+              "properties": {
+                "port": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+                },
+                "version": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "supported_versions": {
+                  "$ref": "#/$defs/stringList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "inputs": {
+      "$ref": "#/$defs/objectSchema"
+    },
+    "item_contract": {
+      "$ref": "#/$defs/jsonSchema"
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/jsonSchema"
+      }
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/method"
+      }
+    },
+    "events": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "machines",
+        "visual_states"
+      ],
+      "properties": {
+        "machines": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/stringList"
+          }
+        },
+        "visual_states": {
+          "$ref": "#/$defs/stateList"
+        }
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "source_of_truth",
+        "network_owner"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "local-demo",
+            "external-host",
+            "hybrid"
+          ]
+        },
+        "source_of_truth": {
+          "enum": [
+            "component",
+            "browser-demo",
+            "host"
+          ]
+        },
+        "network_owner": {
+          "enum": [
+            "none",
+            "host"
+          ]
+        },
+        "revision_field": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "data",
+        "effects",
+        "forbidden_client_responsibilities"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data": {
+          "enum": [
+            "component",
+            "fixture",
+            "host"
+          ]
+        },
+        "effects": {
+          "enum": [
+            "component",
+            "host",
+            "none"
+          ]
+        },
+        "forbidden_client_responsibilities": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    },
+    "backend": {
+      "type": "object"
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permissions_owner",
+        "untrusted_inputs",
+        "network_policy"
+      ],
+      "properties": {
+        "permissions_owner": {
+          "enum": [
+            "none",
+            "host"
+          ]
+        },
+        "untrusted_inputs": {
+          "$ref": "#/$defs/stringList"
+        },
+        "network_policy": {
+          "enum": [
+            "deny",
+            "host-only"
+          ]
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "accessible_name",
+        "keyboard",
+        "focus"
+      ],
+      "properties": {
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "accessible_name": {
+          "enum": [
+            "required",
+            "recommended",
+            "internal"
+          ]
+        },
+        "keyboard": {
+          "$ref": "#/$defs/stringList"
+        },
+        "focus": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "themes",
+        "locales",
+        "responsive"
+      ],
+      "properties": {
+        "themes": {
+          "$ref": "#/$defs/stringList"
+        },
+        "locales": {
+          "$ref": "#/$defs/stringList"
+        },
+        "responsive": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "protocol",
+        "module"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "generic",
+            "owner"
+          ]
+        },
+        "protocol": {
+          "const": "simai.smart-studio-adapter.v1"
+        },
+        "module": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixtures",
+        "scenarios"
+      ],
+      "properties": {
+        "fixtures": {
+          "$ref": "#/$defs/pathList"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/pathList"
+        }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "required_checks"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "inventoried",
+            "described",
+            "runnable",
+            "composable",
+            "exportable",
+            "accepted",
+            "host-required"
+          ]
+        },
+        "required_checks": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_schema",
+        "runtime_pair",
+        "aliases",
+        "deprecations",
+        "replacement",
+        "migrations"
+      ],
+      "properties": {
+        "contract_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "version"
+          ],
+          "properties": {
+            "id": {
+              "const": "https://simai.io/contracts/smart-component-manifest.v2.schema.json"
+            },
+            "version": {
+              "const": 2
+            }
+          }
+        },
+        "runtime_pair": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ui_revision",
+            "ui_smart_revision"
+          ],
+          "properties": {
+            "ui_revision": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "ui_smart_revision": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          }
+        },
+        "aliases": {
+          "$ref": "#/$defs/stringList"
+        },
+        "deprecations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/deprecation"
+          }
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "migrations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/migration"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_repository",
+        "source_revision",
+        "source_artifacts",
+        "generated_runtime"
+      ],
+      "properties": {
+        "source_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "generated_runtime": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/runtimeArtifact"
+          }
+        }
+      }
+    },
+    "ai_guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "use_when",
+        "do_not",
+        "required_reads",
+        "minimal_example",
+        "owner_commands"
+      ],
+      "properties": {
+        "use_when": {
+          "type": "string",
+          "minLength": 1
+        },
+        "do_not": {
+          "$ref": "#/$defs/stringList"
+        },
+        "required_reads": {
+          "$ref": "#/$defs/stringList"
+        },
+        "minimal_example": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_commands": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "stateList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "default",
+          "loading",
+          "empty",
+          "error",
+          "disabled",
+          "saving",
+          "success",
+          "conflict",
+          "open",
+          "closed",
+          "selected",
+          "active"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "pathList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+\\.json$"
+      },
+      "uniqueItems": true
+    },
+    "jsonSchema": {
+      "type": "object"
+    },
+    "objectSchema": {
+      "type": "object",
+      "required": [
+        "type",
+        "properties",
+        "additionalProperties"
+      ],
+      "properties": {
+        "type": {
+          "const": "object"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "additionalProperties": {
+          "const": false
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "arguments",
+        "returns"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "returns": {
+          "$ref": "#/$defs/jsonSchema"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "payload"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payload": {
+          "$ref": "#/$defs/jsonSchema"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "runtimeArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "deprecation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "since",
+        "replacement"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "since": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from",
+        "to",
+        "changes"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "changes": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    }
+  }
+}

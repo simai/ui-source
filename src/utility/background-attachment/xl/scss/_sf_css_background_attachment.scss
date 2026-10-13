@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND
+
+$infix: xl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Background Attachment
+        // Utilities for controlling how a background image behaves when scrolling.
+        .#{$infix}bg-fixed  {background-attachment: fixed;}
+        .#{$infix}bg-local	{background-attachment: local;}
+        .#{$infix}bg-scroll	{background-attachment: scroll;}
+    }
+// }
+}

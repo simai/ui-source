@@ -1,0 +1,13 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// OVERCARD
+
+.sf-overcard {
+	&:hover .sf-overcard-secondary {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+}

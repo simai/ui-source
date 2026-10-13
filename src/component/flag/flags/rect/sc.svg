@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="164 932 28 20" fill="none" role="img">
+<g id="Country=SC">
+<rect x="164" y="932" width="28" height="20" fill="#F0F0F0"/>
+<path id="Combined Shape_14" d="M192 938.667L164 952L192 945.333V952H164V932H192V938.667Z" fill="url(#paint23_linear_8205_11341)"/>
+<path id="Rectangle 253_7" fill-rule="evenodd" clip-rule="evenodd" d="M164 932H173.333L164 952V932Z" fill="#0052B4"/>
+<path id="Rectangle 253_8" fill-rule="evenodd" clip-rule="evenodd" d="M182.667 932H192V938.667L164 952L182.667 932Z" fill="#D80027"/>
+<path id="Rectangle 253_9" fill-rule="evenodd" clip-rule="evenodd" d="M192 952V945.333L164 952H192Z" fill="#6DA544"/>
+<path id="Rectangle 253_10" fill-rule="evenodd" clip-rule="evenodd" d="M173.333 932H182.667L164 952L173.333 932Z" fill="#FFDA44"/>
+</g>
+<defs><linearGradient id="paint23_linear_8205_11341" x1="164" y1="932" x2="164" y2="952" gradientUnits="userSpaceOnUse">
+<stop stop-color="#1DBE4F"/>
+<stop offset="1" stop-color="#159B3F"/>
+</linearGradient></defs>
+</svg>

@@ -1,0 +1,295 @@
+/* The status words are the shared vocabulary: info, success, warning, error. The
+   component renders the canonical class, and `danger`, the word this component
+   used before, is matched beside it so existing markup and project CSS keep
+   working. See contracts/public-api-axes.json. */
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a0) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-badge {
+  border-end-end-radius: var(--sf-radius-circle);
+  border-end-start-radius: var(--sf-radius-circle);
+  border-start-end-radius: var(--sf-radius-circle);
+  border-start-start-radius: var(--sf-radius-circle);
+  font-family: var(--sf-text--family);
+  font-weight: var(--sf-font-weight-medium);
+  box-sizing: border-box;
+  gap: var(--sf-badge--gap, var(--sf-space-1\/4));
+  padding-block: var(--sf-badge--padding-block);
+  padding-inline-start: var(--sf-badge--padding-inline-start);
+  padding-inline-end: var(--sf-badge--padding-inline-end);
+  min-block-size: var(--sf-badge--min-size);
+  min-inline-size: var(--sf-badge--min-size);
+  max-inline-size: 100%;
+  background-color: var(--sf-badge--background-color);
+  color: var(--sf-badge--color);
+  font-size: var(--sf-badge--font-size);
+  line-height: var(--sf-badge--line-height);
+  border-top-width: var(--sf-badge--border-top-width, 0);
+  border-bottom-width: var(--sf-badge--border-bottom-width, 0);
+  border-inline-start-width: var(--sf-badge--border-inline-start-width, 0);
+  border-inline-end-width: var(--sf-badge--border-inline-end-width, 0);
+  border-color: var(--sf-badge--border-color, transparent);
+  border-style: var(--sf-badge--border-style, solid);
+  vertical-align: middle;
+  --sf-badge--background-color: var(--sf-on-surface-variant);
+  --sf-badge--color: var(--sf-on-surface-inverse);
+  --sf-badge--font-size: var(--sf-text-size-1\/3);
+  --sf-badge--line-height: var(--sf-text-height-1\/3);
+  --sf-badge--padding-block: var(--sf-ui-1\/3--space-y-tightness-low);
+  --sf-badge--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--min-size: calc(var(--sf-badge--line-height) + 2 * var(--sf-badge--padding-block));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-badge .sf-badge-icon-container {
+  background-color: transparent;
+  flex: 0 0 auto;
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-badge .sf-badge-text-container {
+  background-color: transparent;
+  min-inline-size: 0;
+}
+
+.sf-badge .sf-badge-text {
+  color: var(--sf-badge-text--color);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-badge-text--font-size);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-badge-text--line-height);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-badge .sf-icon {
+  color: var(--sf-icon--color);
+  font-size: var(--sf-icon--font-size);
+  height: var(--sf-icon--height);
+  width: var(--sf-icon--width);
+}
+
+.sf-badge.sf-badge--main.sf-badge--neutral {
+  --sf-badge--background-color: var(--sf-on-surface-variant);
+  --sf-badge--color: var(--sf-on-surface-inverse);
+}
+
+.sf-badge.sf-badge--tonal .sf-icon, .sf-badge.sf-badge--main .sf-icon, .sf-badge.sf-badge--outline .sf-icon {
+  --sf-icon--color: var(--sf-badge--color);
+}
+
+.sf-badge.sf-badge--tonal .sf-badge-text, .sf-badge.sf-badge--main .sf-badge-text, .sf-badge.sf-badge--outline .sf-badge-text {
+  --sf-badge-text--color: var(--sf-badge--color);
+}
+
+.sf-badge.sf-badge--main.sf-badge--primary {
+  --sf-badge--background-color: var(--sf-primary);
+  --sf-badge--color: var(--sf-on-primary);
+}
+
+.sf-badge.sf-badge--main.sf-badge--secondary {
+  --sf-badge--background-color: var(--sf-secondary);
+  --sf-badge--color: var(--sf-on-secondary);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--neutral {
+  --sf-badge--background-color: var(--sf-surface-container);
+  --sf-badge--color: var(--sf-on-surface);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--primary {
+  --sf-badge--background-color: var(--sf-primary-container);
+  --sf-badge--color: var(--sf-on-primary-container);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--secondary {
+  --sf-badge--background-color: var(--sf-secondary-container);
+  --sf-badge--color: var(--sf-on-secondary-container);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--neutral {
+  --sf-badge--border-color: var(--sf-outline-variant);
+  --sf-badge--color: var(--sf-on-surface);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--primary {
+  --sf-badge--border-color: var(--sf-outline-primary);
+  --sf-badge--color: var(--sf-primary);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--secondary {
+  --sf-badge--border-color: var(--sf-outline-secondary);
+  --sf-badge--color: var(--sf-secondary);
+}
+
+.sf-badge.sf-badge--main.sf-badge--tertiary {
+  --sf-badge--background-color: var(--sf-tertiary);
+  --sf-badge--color: var(--sf-on-tertiary);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--tertiary {
+  --sf-badge--background-color: var(--sf-tertiary-container);
+  --sf-badge--color: var(--sf-on-tertiary-container);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--tertiary {
+  --sf-badge--border-color: var(--sf-outline-tertiary);
+  --sf-badge--color: var(--sf-tertiary);
+}
+
+.sf-badge.sf-badge--main.sf-badge--on-surface {
+  --sf-badge--background-color: var(--sf-on-surface);
+  --sf-badge--color: var(--sf-on-surface-inverse);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--on-surface {
+  --sf-badge--border-color: var(--sf-outline);
+  --sf-badge--color: var(--sf-on-surface);
+}
+
+.sf-badge.sf-badge--main.sf-badge--info {
+  --sf-badge--background-color: var(--sf-info);
+  --sf-badge--color: var(--sf-on-info);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--info {
+  --sf-badge--background-color: var(--sf-info-container);
+  --sf-badge--color: var(--sf-on-info-container);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--info {
+  --sf-badge--border-color: var(--sf-outline-info);
+  --sf-badge--color: var(--sf-info);
+}
+
+.sf-badge.sf-badge--main.sf-badge--success {
+  --sf-badge--background-color: var(--sf-success);
+  --sf-badge--color: var(--sf-on-success);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--success {
+  --sf-badge--background-color: var(--sf-success-container);
+  --sf-badge--color: var(--sf-on-success-container);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--success {
+  --sf-badge--border-color: var(--sf-outline-success);
+  --sf-badge--color: var(--sf-success);
+}
+
+.sf-badge.sf-badge--main.sf-badge--warning {
+  --sf-badge--background-color: var(--sf-warning);
+  --sf-badge--color: var(--sf-on-warning);
+}
+
+.sf-badge.sf-badge--tonal.sf-badge--warning {
+  --sf-badge--background-color: var(--sf-warning-container);
+  --sf-badge--color: var(--sf-on-warning-container);
+}
+
+.sf-badge.sf-badge--outline.sf-badge--warning {
+  --sf-badge--border-color: var(--sf-outline-warning);
+  --sf-badge--color: var(--sf-warning);
+}
+
+.sf-badge.sf-badge--main:is(.sf-badge--error, .sf-badge--danger) {
+  --sf-badge--background-color: var(--sf-error);
+  --sf-badge--color: var(--sf-on-error);
+}
+
+.sf-badge.sf-badge--tonal:is(.sf-badge--error, .sf-badge--danger) {
+  --sf-badge--background-color: var(--sf-error-container);
+  --sf-badge--color: var(--sf-on-error-container);
+}
+
+.sf-badge.sf-badge--outline:is(.sf-badge--error, .sf-badge--danger) {
+  --sf-badge--border-color: var(--sf-outline-error);
+  --sf-badge--color: var(--sf-error);
+}
+
+.sf-badge--size-1 {
+  --sf-badge--font-size: var(--sf-text-size-1);
+  --sf-badge--line-height: var(--sf-text-height-1);
+  --sf-badge--padding-block: var(--sf-ui-1--space-y-tightness-low);
+  --sf-badge--padding-inline-end: var(--sf-ui-1--text-space-x);
+  --sf-badge--padding-inline-start: var(--sf-ui-1--text-space-x);
+}
+
+.sf-badge.sf-badge--size-1 .sf-icon {
+  --sf-icon--font-size: var(--sf-badge--font-size);
+  --sf-icon--height: var(--sf-text-size-1);
+  --sf-icon--width: var(--sf-text-size-1);
+}
+
+.sf-badge--size-1 .sf-badge-text, .sf-badge--size-1\/3 .sf-badge-text, .sf-badge--size-1\/2 .sf-badge-text {
+  --sf-badge-text--font-size: var(--sf-badge--font-size);
+  --sf-badge-text--line-height: var(--sf-badge--line-height);
+}
+
+.sf-badge--size-1\/3 {
+  --sf-badge--font-size: var(--sf-text-size-1\/3);
+  --sf-badge--line-height: var(--sf-text-height-1\/3);
+  --sf-badge--padding-block: var(--sf-ui-1\/3--space-y-tightness-low);
+  --sf-badge--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+}
+
+.sf-badge.sf-badge--size-1\/3 .sf-icon {
+  --sf-icon--font-size: var(--sf-badge--font-size);
+  --sf-icon--height: var(--sf-text-size-1\/3);
+  --sf-icon--width: var(--sf-text-size-1\/3);
+}
+
+.sf-badge--size-1\/2 {
+  --sf-badge--font-size: var(--sf-text-size-1\/2);
+  --sf-badge--line-height: var(--sf-text-height-1\/2);
+  --sf-badge--padding-block: var(--sf-ui-1\/2--space-y-tightness-low);
+  --sf-badge--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+  --sf-badge--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-badge.sf-badge--size-1\/2 .sf-icon {
+  --sf-icon--font-size: var(--sf-badge--font-size);
+  --sf-icon--height: var(--sf-text-size-1\/2);
+  --sf-icon--width: var(--sf-text-size-1\/2);
+}
+
+.sf-badge--outline {
+  --sf-badge--background-color: transparent;
+  --sf-badge--border-bottom-width: var(--sf-px);
+  --sf-badge--border-inline-end-width: var(--sf-px);
+  --sf-badge--border-inline-start-width: var(--sf-px);
+  --sf-badge--border-top-width: var(--sf-px);
+  --sf-badge--border-style: solid;
+}
+}
+
+@layer sf.components {
+/* On a text line a badge is the line high, its label one text step down and
+   no block padding of its own, so a table row or a row of fields keeps its
+   control height (a size 1/2 badge stood taller than a size 1/2 row's line). */
+.sf-badge.sf-badge--line-1\/2 {
+  --sf-badge--font-size: var(--sf-text-size-1\/3);
+  --sf-badge--line-height: var(--sf-text-height-1\/2);
+  --sf-badge--padding-block: calc(var(--sf-px) * 0);
+  --sf-badge--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-badge--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-badge.sf-badge--line-1 {
+  --sf-badge--font-size: var(--sf-text-size-1\/2);
+  --sf-badge--line-height: var(--sf-text-height-1);
+  --sf-badge--padding-block: calc(var(--sf-px) * 0);
+  --sf-badge--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-badge--padding-inline-end: var(--sf-ui-1--text-space-x);
+}
+
+.sf-badge.sf-badge--line-2 {
+  --sf-badge--font-size: var(--sf-text-size-1);
+  --sf-badge--line-height: var(--sf-text-height-2);
+  --sf-badge--padding-block: calc(var(--sf-px) * 0);
+  --sf-badge--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-badge--padding-inline-end: var(--sf-ui-2--text-space-x);
+}
+}

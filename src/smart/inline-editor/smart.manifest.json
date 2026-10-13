@@ -1,0 +1,300 @@
+{
+  "schema_version": 2,
+  "id": "smart.inline-editor",
+  "version": "1.0.0",
+  "title": "Inline editor",
+  "summary": "In-place editor for content.heading and content.paragraph text: strong, em, code and safe links, own history, safe paste; reports normalized content, never HTML.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "composition",
+    "editor",
+    "inline",
+    "text"
+  ],
+  "capabilities": [
+    "interaction",
+    "keyboard",
+    "theme"
+  ],
+  "custom_element": "sf-inline-editor",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "start": {
+      "type": "object",
+      "description": "SF.Composition.startInlineEdit(element, {content, nodeId, label, marks, links, messages}) or element.edit(target, options) returns {element, commit(), cancel(), value()}. Before the component is loaded startInlineEdit throws inline_editor_not_loaded. Also exposed as SF.InlineEditor {INLINE_EVENTS, readInlineDom, renderInlineDom, startInlineEdit, textOffset}.",
+      "properties": {
+        "marks": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "strong",
+              "em",
+              "code"
+            ]
+          }
+        },
+        "links": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "description": "http, https, mailto, tel, relative and fragment links only; protocol-relative and backslash addresses are refused, as in Document validation."
+    }
+  },
+  "methods": {
+    "edit": {
+      "summary": "Starts editing a rendered heading or paragraph; returns {element, commit, cancel, value}.",
+      "arguments": [
+        {
+          "name": "element",
+          "type": "Element"
+        },
+        {
+          "name": "options",
+          "type": "object"
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {
+    "sf-inline-edit-input": {
+      "summary": "Live normalized content after a change. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "node_id",
+          "content"
+        ],
+        "properties": {
+          "node_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "sf-inline-edit-commit": {
+      "summary": "Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "node_id",
+          "content"
+        ],
+        "properties": {
+          "node_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "sf-inline-edit-cancel": {
+      "summary": "Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "edit": [
+        "idle",
+        "editing",
+        "committed",
+        "cancelled"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "active"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "host route invention",
+      "saving or reordering host data"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": null,
+    "accessible_name": "internal",
+    "keyboard": [
+      "Mod+B",
+      "Mod+I",
+      "Mod+E",
+      "Mod+K",
+      "Mod+Z",
+      "Mod+Shift+Z",
+      "Mod+Y",
+      "Enter",
+      "Escape"
+    ],
+    "focus": "The sf-inline-editor carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar has aria-pressed states and aria-keyshortcuts. Enter commits, Escape cancels, focus leaving commits; IME composition is never interrupted."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl",
+      "reduced-motion"
+    ]
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_artifacts": [
+      {
+        "path": "src/smart/inline-editor/index.js",
+        "sha256": "1c72a35b36ecea8a70cdc97879042fd7bffc5da5bc080eeb2a8b2e1845e37246"
+      },
+      {
+        "path": "src/smart/inline-editor/scss/_smart__inline-editor.scss",
+        "sha256": "7b68cc2115dc43757de62b217216304c9e3bdc8d84a86e8a80c6441bd7b46076"
+      },
+      {
+        "path": "src/smart/inline-editor/rule.js",
+        "sha256": "bbdbebe550848cc0e208a9dd0dfe1eb2add719d4dfcc15857f8b86d5a3b77795"
+      },
+      {
+        "path": "src/smart/inline-editor/docs.md",
+        "sha256": "bd938225d4d3fa8fdf3b1543f34d483c24a0894443a85ae84b601d0c20459966"
+      },
+      {
+        "path": "src/core/js/composition/inline-editor.mjs",
+        "sha256": "d7e9a6afcdc1dc121efe52283bdb6b5b4ae48943c29fa77a1f5920b7692982de"
+      },
+      {
+        "path": "src/core/js/composition/inline-model.mjs",
+        "sha256": "2d584862b57ce8e1586da111399313920dd2f0e72b5a1a19b5ba3bede6269077"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use the inline editor for text of content.heading and content.paragraph on an editor page. Save the committed content through the host Property contract, validate the Document and re-render.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not save HTML; events carry the content model",
+      "Do not offer lists; the content model has none",
+      "Do not call startInlineEdit before sf-inline-editor is defined"
+    ],
+    "required_reads": [
+      "contracts",
+      "methods",
+      "events",
+      "ownership",
+      "provenance"
+    ],
+    "minimal_example": "<sf-inline-editor></sf-inline-editor><script>await customElements.whenDefined('sf-inline-editor'); SF.Composition.startInlineEdit(paragraph, {content, nodeId: 'p1', label: 'Paragraph'});</script>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-fab {
+  border-width: 0;
+  border-end-end-radius: var(--sf-fab--border-bottom-right-radius, var(--sf-radius-circle));
+  border-end-start-radius: var(--sf-fab--border-bottom-left-radius, var(--sf-radius-circle));
+  border-start-end-radius: var(--sf-fab--border-top-right-radius, var(--sf-radius-circle));
+  border-start-start-radius: var(--sf-fab--border-top-left-radius, var(--sf-radius-circle));
+  padding-inline-start: var(--sf-fab--padding-inline-start);
+  padding-top: var(--sf-fab--padding-top);
+  padding-inline-end: var(--sf-fab--padding-inline-end);
+  padding-bottom: var(--sf-fab--padding-bottom);
+  background-color: var(--sf-fab--background-color);
+  box-shadow: var(--sf-fab--focus-inset, 0 0 #0000), var(--sf-fab--box-shadow, 0 0 #0000);
+}
+
+.sf-fab .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  width: var(--sf-icon--width, var(--sf-icon-size-3));
+}
+
+.sf-fab.sf-fab--default.sf-fab--primary {
+  --sf-fab--background-color: var(--sf-primary);
+}
+
+.sf-fab.sf-fab--default.sf-fab--primary .sf-icon {
+  --sf-icon--color: var(--sf-on-primary);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--secondary {
+  --sf-fab--background-color: var(--sf-secondary-container);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--secondary .sf-icon {
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--on-surface {
+  --sf-fab--background-color: var(--sf-surface-container);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--on-surface .sf-icon {
+  --sf-icon--color: var(--sf-on-surface);
+}
+
+.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled):hover {
+  --sf-fab--background-color: var(--sf-primary-hover);
+}
+
+.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled):active,
+.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled).active {
+  --sf-fab--background-color: var(--sf-primary-active);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled):hover {
+  --sf-fab--background-color: var(--sf-secondary-container-hover);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):hover {
+  --sf-fab--background-color: var(--sf-surface-container-hover);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal.sf-fab--secondary:not(:disabled):not(.disabled).active {
+  --sf-fab--background-color: var(--sf-secondary-container-active);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled).active {
+  --sf-fab--background-color: var(--sf-surface-container-active);
+}
+
+.sf-fab.sf-fab--default.sf-fab--on-surface {
+  --sf-fab--background-color: var(--sf-on-surface);
+}
+
+.sf-fab.sf-fab--default.sf-fab--on-surface .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-inverse);
+}
+
+.sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled):hover {
+  --sf-fab--background-color: var(--sf-on-surface-hover);
+}
+
+.sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled).active {
+  --sf-fab--background-color: var(--sf-on-surface-active);
+}
+
+.sf-fab--size-1 {
+  --sf-fab--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-fab--padding-inline-end: var(--sf-ui-1--space-y-tightness-default);
+  --sf-fab--padding-inline-start: var(--sf-ui-1--space-y-tightness-default);
+  --sf-fab--padding-top: var(--sf-ui-1--space-y-tightness-default);
+}
+
+.sf-fab.sf-fab--size-1 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-fab--size-2 {
+  --sf-fab--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-fab--padding-inline-end: var(--sf-ui-2--space-y-tightness-default);
+  --sf-fab--padding-inline-start: var(--sf-ui-2--space-y-tightness-default);
+  --sf-fab--padding-top: var(--sf-ui-2--space-y-tightness-default);
+}
+
+.sf-fab.sf-fab--size-2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-fab--size-3 {
+  --sf-fab--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
+  --sf-fab--padding-inline-end: var(--sf-ui-3--space-y-tightness-default);
+  --sf-fab--padding-inline-start: var(--sf-ui-3--space-y-tightness-default);
+  --sf-fab--padding-top: var(--sf-ui-3--space-y-tightness-default);
+}
+
+.sf-fab.sf-fab--size-3 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-3);
+  --sf-icon--height: var(--sf-text-height-3);
+  --sf-icon--width: var(--sf-text-height-3);
+}
+
+.sf-fab.sf-fab.sf-fab:disabled {
+  --sf-fab--background-color: var(--sf-disable);
+}
+
+.sf-fab.sf-fab.sf-fab:disabled .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+/* A floating action button lives on its own elevation, which is exactly why its
+   ring must not be a shadow. */
+.sf-fab:not(:disabled):not(.disabled):focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+    /* The same second line the button draws: on a filled control the ring
+     colour can sit next to the fill on one ramp and disappear into it, so the
+     control's own ink separates them. Transparent where there is no fill to
+     separate from. */
+  --sf-fab--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-fab--focus-ink, transparent);
+}
+
+.sf-fab.sf-fab--default.sf-fab--primary {
+  --sf-fab--focus-ink: var(--sf-on-primary);
+}
+
+@media (forced-colors: active) {
+  .sf-fab:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline-offset: calc(var(--sf-focus-outline-width) * -1);
+    --sf-fab--box-shadow: none;
+  }
+}
+}

@@ -1,0 +1,226 @@
+@layer sf.components {
+  .sf-reference-link {
+    /* The card sits on whatever surface holds it; hover and press add the
+       container overlay. --sf-surface is not a token, so this was transparent
+       already -- now it says so. */
+    --sf-reference-link--background-color: transparent;
+    --sf-reference-link--border-color: var(--sf-outline-variant);
+    --sf-reference-link--gap: var(--sf-space-1);
+    --sf-reference-link--padding-block: var(--sf-space-1);
+    --sf-reference-link--padding-inline: var(--sf-space-1);
+
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-reference-link--gap);
+    inline-size: 100%;
+    min-inline-size: var(--sf-0);
+    max-inline-size: 100%;
+    padding-block: var(--sf-reference-link--padding-block);
+    padding-inline: var(--sf-reference-link--padding-inline);
+    color: var(--sf-on-surface);
+    background-color: var(--sf-reference-link--background-color);
+    border: var(--sf-px) solid var(--sf-reference-link--border-color);
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-reference-link :where(.sf-reference-link__main, .sf-reference-link-left) {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-reference-link--main-gap, var(--sf-space-1\/3));
+    min-inline-size: var(--sf-0);
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-reference-link--font-size, var(--sf-text-size-1));
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+  }
+
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    min-inline-size: var(--sf-0);
+    color: var(--sf-link);
+    font: inherit;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: var(--sf-a3);
+  }
+
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a)::after {
+    position: absolute;
+    inset: var(--sf-0);
+    content: '';
+  }
+
+  .sf-reference-link :where(.sf-reference-link__icon, .sf-reference-link-left > .sf-icon) {
+    flex: none;
+    block-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    inline-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    color: var(--sf-primary);
+    font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    /* The icon component sizes itself from these, so the line is passed on. */
+    --sf-icon--font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    --sf-icon--height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    --sf-icon--width: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+  }
+
+  .sf-reference-link :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    min-inline-size: var(--sf-0);
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-reference-link--font-size, var(--sf-text-size-1));
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    overflow-wrap: anywhere;
+    text-align: end;
+  }
+}
+
+@layer sf.components {
+  /* Plain: a reference that stands inside a box of its own already -- a
+     record's field, a table cell -- where the card's frame, fill and padding
+     draw a second box around the value and read as a control the value is not.
+     What is left is the link, on the line, taking the width of its own text. */
+  .sf-reference-link.sf-reference-link--plain {
+    --sf-reference-link--background-color: transparent;
+    --sf-reference-link--padding-block: var(--sf-0);
+    --sf-reference-link--padding-inline: var(--sf-0);
+
+    inline-size: auto;
+    border: 0;
+  }
+}
+
+@layer sf.states {
+  /* The hover and press fills belong to the card. A plain reference has no card
+     to fill, and filling the line behind the words was the grey patch the owner
+     saw behind a field's value. */
+  .sf-reference-link.sf-reference-link--plain:has(:where(.sf-reference-link__link, .sf-reference-link-left > a):is(:hover, :active)) {
+    --sf-reference-link--background-color: transparent;
+    --sf-reference-link--border-color: transparent;
+  }
+
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover) {
+    --sf-reference-link--background-color: var(--sf-surface-container-hover);
+    --sf-reference-link--border-color: var(--sf-outline-primary);
+  }
+
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active) {
+    --sf-reference-link--background-color: var(--sf-surface-container-active);
+  }
+
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):focus {
+    outline: none;
+  }
+
+  .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a):focus-visible) {
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-focus--offset);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
+  }
+
+  .sf-reference-link:is(.disabled, [aria-disabled='true']) {
+    --sf-reference-link--border-color: var(--sf-outline-disable);
+
+    color: var(--sf-on-disable);
+  }
+
+  .sf-reference-link:is(.disabled, [aria-disabled='true'])
+    :where(.sf-reference-link__main, .sf-reference-link-left, .sf-reference-link__meta, .sf-reference-link-text, .sf-icon) {
+    color: var(--sf-on-disable);
+  }
+
+  @media (width < 32rem) { // below sm
+    /* The card stacks on a narrow screen; a sized reference is a control in a
+       row or a cell and keeps its one line at the row's height. */
+    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) :where(.sf-reference-link__meta, .sf-reference-link-text) {
+      padding-inline-start: calc(var(--sf-text-height-1) + var(--sf-space-1\/3));
+      text-align: start;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a):focus-visible) {
+      outline-color: Highlight;
+    }
+  }
+}
+
+@layer sf.components {
+  /* A sized reference is a control of its size, so it sits in a row of fields
+     or in a table cell at the row's height: the text, the icon on the line, the
+     icon-to-label step and the block padding giving up the border. Without a
+     size it keeps its card spacing. */
+  .sf-reference-link.sf-reference-link--size-1\/2 {
+    --sf-reference-link--padding-block: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+    --sf-reference-link--padding-inline: var(--sf-ui-1\/2--space-x);
+    --sf-reference-link--gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-1\/2);
+    --sf-reference-link--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-reference-link.sf-reference-link--size-1 {
+    --sf-reference-link--padding-block: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+    --sf-reference-link--padding-inline: var(--sf-ui-1--space-x);
+    --sf-reference-link--gap: var(--sf-ui-1--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-1--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-1);
+    --sf-reference-link--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-reference-link.sf-reference-link--size-2 {
+    --sf-reference-link--padding-block: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+    --sf-reference-link--padding-inline: var(--sf-ui-2--space-x);
+    --sf-reference-link--gap: var(--sf-ui-2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-2--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-2);
+    --sf-reference-link--line-height: var(--sf-text-height-2);
+  }
+}
+
+@layer sf.components {
+  /* On a text line, in a table cell or beside other text, a reference is a
+     link: no card border or padding, the icon on the line and the label in the
+     line's text, so the row keeps its control height. */
+  .sf-reference-link.sf-reference-link--line-1\/2 {
+    --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
+    --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
+    --sf-reference-link--gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-1\/2);
+    --sf-reference-link--line-height: var(--sf-text-height-1\/2);
+    border-width: 0;
+    block-size: var(--sf-text-height-1\/2);
+  }
+
+  .sf-reference-link.sf-reference-link--line-1 {
+    --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
+    --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
+    --sf-reference-link--gap: var(--sf-ui-1--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-1--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-1);
+    --sf-reference-link--line-height: var(--sf-text-height-1);
+    border-width: 0;
+    block-size: var(--sf-text-height-1);
+  }
+
+  .sf-reference-link.sf-reference-link--line-2 {
+    --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
+    --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
+    --sf-reference-link--gap: var(--sf-ui-2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-ui-2--text-space-x);
+    --sf-reference-link--font-size: var(--sf-text-size-2);
+    --sf-reference-link--line-height: var(--sf-text-height-2);
+    border-width: 0;
+    block-size: var(--sf-text-height-2);
+  }
+}

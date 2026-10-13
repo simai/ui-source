@@ -1,0 +1,28 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.property-view-port",
+  "version": "1.2.0",
+  "transport": "neutral",
+  "summary": "Thirteen cases: the twelve of 1.1.0 byte-identical, and one for the address a window carries, which the host owns and the component never constructs.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "load-applied-carries-the-object",
+    "load-refused-is-explained",
+    "load-unavailable-is-honest",
+    "load-late-answer-is-dropped",
+    "rare-fields-arrive-declared",
+    "group-save-applied-is-one-revision",
+    "group-save-stale-revision-is-a-conflict",
+    "group-save-field-errors-are-refused",
+    "options-page-carries-a-cursor",
+    "options-search-reaches-the-host",
+    "options-without-the-capability",
+    "options-refused-is-explained",
+    "the-address-is-the-hosts"
+  ]
+}

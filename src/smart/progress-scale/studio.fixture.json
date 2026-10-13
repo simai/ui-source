@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.progress-scale",
+  "title": "Progress Scale reference",
+  "summary": "Deterministic reference fixture for sf-progress-scale.",
+  "locale": "ru",
+  "props": {
+    "value": "65",
+    "show-text": true
+  },
+  "children": [],
+  "state": "default"
+}

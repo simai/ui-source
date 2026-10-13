@@ -1,0 +1,14 @@
+{
+  ".sf-fab": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-fab .sf-icon": [
+    "display/flex (.flex)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ]
+}

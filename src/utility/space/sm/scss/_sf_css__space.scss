@@ -1,0 +1,40 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__space' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SPACE
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+        
+        // Margin and padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size in $space-size-array {
+
+            // SPACE BETWEEN
+
+            // Horizontal Space Between            
+            .#{$infix}space-x-#{$size} > * + * {
+                --sf-space--reverse-x: 0;
+                margin-inline-end: calc(var(--sf-space-#{$size}) * var(--sf-space--reverse-x));
+                margin-inline-start: calc(var(--sf-space-#{$size}) * calc(1 - var(--sf-space--reverse-x)));
+            }
+
+            // Vertical Space Between   
+            .#{$infix}space-y-#{$size} > * + * {
+                --sf-space--reverse-y: 0;
+                margin-top: calc(var(--sf-space-#{$size}) * calc(1 - var(--sf-space--reverse-y)));
+                margin-bottom: calc(var(--sf-space-#{$size}) * var(--sf-space--reverse-y));   
+            } 
+        }	
+
+        // Space Between Reverse
+        .#{$infix}space-x-reverse > * + * { --sf-space--reverse-x: 1; }
+        .#{$infix}space-y-reverse > * + * { --sf-space--reverse-y: 1; }
+    }
+// }
+}

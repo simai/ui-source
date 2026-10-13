@@ -1,0 +1,2437 @@
+{
+  "generatedAt": "2026-03-05T11:52:50.322Z",
+  "source": ["google-libphonenumber", "i18n-iso-countries"],
+  "total": 243,
+  "items": [
+    {
+      "iso2": "AU",
+      "dialCode": "+61",
+      "nameRu": "Австралия",
+      "nameEn": "Australia",
+      "flagEmoji": "🇦🇺",
+      "maskPattern": "+00 0 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AT",
+      "dialCode": "+43",
+      "nameRu": "Австрия",
+      "nameEn": "Austria",
+      "flagEmoji": "🇦🇹",
+      "maskPattern": "+00 0 000000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AZ",
+      "dialCode": "+994",
+      "nameRu": "Азербайджан",
+      "nameEn": "Azerbaijan",
+      "flagEmoji": "🇦🇿",
+      "maskPattern": "+000 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AX",
+      "dialCode": "+358",
+      "nameRu": "Аландские острова",
+      "nameEn": "Åland Islands",
+      "flagEmoji": "🇦🇽",
+      "maskPattern": "+000 00 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AL",
+      "dialCode": "+355",
+      "nameRu": "Албания",
+      "nameEn": "Albania",
+      "flagEmoji": "🇦🇱",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "DZ",
+      "dialCode": "+213",
+      "nameRu": "Алжир",
+      "nameEn": "Algeria",
+      "flagEmoji": "🇩🇿",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AS",
+      "dialCode": "+1",
+      "nameRu": "Американское Самоа",
+      "nameEn": "American Samoa",
+      "flagEmoji": "🇦🇸",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "AI",
+      "dialCode": "+1",
+      "nameRu": "Ангилья",
+      "nameEn": "Anguilla",
+      "flagEmoji": "🇦🇮",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "AO",
+      "dialCode": "+244",
+      "nameRu": "Ангола",
+      "nameEn": "Angola",
+      "flagEmoji": "🇦🇴",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AD",
+      "dialCode": "+376",
+      "nameRu": "Андорра",
+      "nameEn": "Andorra",
+      "flagEmoji": "🇦🇩",
+      "maskPattern": "+000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AG",
+      "dialCode": "+1",
+      "nameRu": "Антигуа и Барбуда",
+      "nameEn": "Antigua and Barbuda",
+      "flagEmoji": "🇦🇬",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "AR",
+      "dialCode": "+54",
+      "nameRu": "Аргентина",
+      "nameEn": "Argentina",
+      "flagEmoji": "🇦🇷",
+      "maskPattern": "+00 00 0000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "AM",
+      "dialCode": "+374",
+      "nameRu": "Армения",
+      "nameEn": "Armenia",
+      "flagEmoji": "🇦🇲",
+      "maskPattern": "+000 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AW",
+      "dialCode": "+297",
+      "nameRu": "Аруба",
+      "nameEn": "Aruba",
+      "flagEmoji": "🇦🇼",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AF",
+      "dialCode": "+93",
+      "nameRu": "Афганистан",
+      "nameEn": "Afghanistan",
+      "flagEmoji": "🇦🇫",
+      "maskPattern": "+00 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BS",
+      "dialCode": "+1",
+      "nameRu": "Багамы",
+      "nameEn": "Bahamas",
+      "flagEmoji": "🇧🇸",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BD",
+      "dialCode": "+880",
+      "nameRu": "Бангладеш",
+      "nameEn": "Bangladesh",
+      "flagEmoji": "🇧🇩",
+      "maskPattern": "+000 0-0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BB",
+      "dialCode": "+1",
+      "nameRu": "Барбадос",
+      "nameEn": "Barbados",
+      "flagEmoji": "🇧🇧",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BH",
+      "dialCode": "+973",
+      "nameRu": "Бахрейн",
+      "nameEn": "Bahrain",
+      "flagEmoji": "🇧🇭",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BY",
+      "dialCode": "+375",
+      "nameRu": "Беларусь",
+      "nameEn": "Belarus",
+      "flagEmoji": "🇧🇾",
+      "maskPattern": "+000 000 00-00-00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BZ",
+      "dialCode": "+501",
+      "nameRu": "Белиз",
+      "nameEn": "Belize",
+      "flagEmoji": "🇧🇿",
+      "maskPattern": "+000 000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BE",
+      "dialCode": "+32",
+      "nameRu": "Бельгия",
+      "nameEn": "Belgium",
+      "flagEmoji": "🇧🇪",
+      "maskPattern": "+00 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BJ",
+      "dialCode": "+229",
+      "nameRu": "Бенин",
+      "nameEn": "Benin",
+      "flagEmoji": "🇧🇯",
+      "maskPattern": "+000 00 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BM",
+      "dialCode": "+1",
+      "nameRu": "Бермуды",
+      "nameEn": "Bermuda",
+      "flagEmoji": "🇧🇲",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BG",
+      "dialCode": "+359",
+      "nameRu": "Болгария",
+      "nameEn": "Bulgaria",
+      "flagEmoji": "🇧🇬",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BO",
+      "dialCode": "+591",
+      "nameRu": "Боливия",
+      "nameEn": "Bolivia",
+      "flagEmoji": "🇧🇴",
+      "maskPattern": "+000 0 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BQ",
+      "dialCode": "+599",
+      "nameRu": "Бонэйр, Синт-Эстатиус и Саба",
+      "nameEn": "Bonaire, Sint Eustatius and Saba",
+      "flagEmoji": "🇧🇶",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BA",
+      "dialCode": "+387",
+      "nameRu": "Босния и Герцеговина",
+      "nameEn": "Bosnia and Herzegovina",
+      "flagEmoji": "🇧🇦",
+      "maskPattern": "+000 00 000-000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "BW",
+      "dialCode": "+267",
+      "nameRu": "Ботсвана",
+      "nameEn": "Botswana",
+      "flagEmoji": "🇧🇼",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BR",
+      "dialCode": "+55",
+      "nameRu": "Бразилия",
+      "nameEn": "Brazil",
+      "flagEmoji": "🇧🇷",
+      "maskPattern": "+00 00 0000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "IO",
+      "dialCode": "+246",
+      "nameRu": "Британская территория в Индийском океане",
+      "nameEn": "British Indian Ocean Territory",
+      "flagEmoji": "🇮🇴",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BN",
+      "dialCode": "+673",
+      "nameRu": "Бруней",
+      "nameEn": "Brunei Darussalam",
+      "flagEmoji": "🇧🇳",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BF",
+      "dialCode": "+226",
+      "nameRu": "Буркина-Фасо",
+      "nameEn": "Burkina Faso",
+      "flagEmoji": "🇧🇫",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BI",
+      "dialCode": "+257",
+      "nameRu": "Бурунди",
+      "nameEn": "Burundi",
+      "flagEmoji": "🇧🇮",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BT",
+      "dialCode": "+975",
+      "nameRu": "Бутан",
+      "nameEn": "Bhutan",
+      "flagEmoji": "🇧🇹",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "VU",
+      "dialCode": "+678",
+      "nameRu": "Вануату",
+      "nameEn": "Vanuatu",
+      "flagEmoji": "🇻🇺",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "VA",
+      "dialCode": "+39",
+      "nameRu": "Ватикан",
+      "nameEn": "Holy See (Vatican City State)",
+      "flagEmoji": "🇻🇦",
+      "maskPattern": "+00 00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GB",
+      "dialCode": "+44",
+      "nameRu": "Великобритания",
+      "nameEn": "United Kingdom",
+      "flagEmoji": "🇬🇧",
+      "maskPattern": "+00 000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "HU",
+      "dialCode": "+36",
+      "nameRu": "Венгрия",
+      "nameEn": "Hungary",
+      "flagEmoji": "🇭🇺",
+      "maskPattern": "+00 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "VE",
+      "dialCode": "+58",
+      "nameRu": "Венесуэла",
+      "nameEn": "Venezuela",
+      "flagEmoji": "🇻🇪",
+      "maskPattern": "+00 000-0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "VG",
+      "dialCode": "+1",
+      "nameRu": "Виргинские Острова (Великобритания)",
+      "nameEn": "Virgin Islands, British",
+      "flagEmoji": "🇻🇬",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "VI",
+      "dialCode": "+1",
+      "nameRu": "Виргинские Острова (США)",
+      "nameEn": "Virgin Islands, U.S.",
+      "flagEmoji": "🇻🇮",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "TL",
+      "dialCode": "+670",
+      "nameRu": "Восточный Тимор",
+      "nameEn": "Timor-Leste",
+      "flagEmoji": "🇹🇱",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "VN",
+      "dialCode": "+84",
+      "nameRu": "Вьетнам",
+      "nameEn": "Vietnam",
+      "flagEmoji": "🇻🇳",
+      "maskPattern": "+00 000 0000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GA",
+      "dialCode": "+241",
+      "nameRu": "Габон",
+      "nameEn": "Gabon",
+      "flagEmoji": "🇬🇦",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "HT",
+      "dialCode": "+509",
+      "nameRu": "Гаити",
+      "nameEn": "Haiti",
+      "flagEmoji": "🇭🇹",
+      "maskPattern": "+000 00 00 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GY",
+      "dialCode": "+592",
+      "nameRu": "Гайана",
+      "nameEn": "Guyana",
+      "flagEmoji": "🇬🇾",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GM",
+      "dialCode": "+220",
+      "nameRu": "Гамбия",
+      "nameEn": "Republic of The Gambia",
+      "flagEmoji": "🇬🇲",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GH",
+      "dialCode": "+233",
+      "nameRu": "Гана",
+      "nameEn": "Ghana",
+      "flagEmoji": "🇬🇭",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GP",
+      "dialCode": "+590",
+      "nameRu": "Гваделупа",
+      "nameEn": "Guadeloupe",
+      "flagEmoji": "🇬🇵",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GT",
+      "dialCode": "+502",
+      "nameRu": "Гватемала",
+      "nameEn": "Guatemala",
+      "flagEmoji": "🇬🇹",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GF",
+      "dialCode": "+594",
+      "nameRu": "Гвиана",
+      "nameEn": "French Guiana",
+      "flagEmoji": "🇬🇫",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GN",
+      "dialCode": "+224",
+      "nameRu": "Гвинея",
+      "nameEn": "Guinea",
+      "flagEmoji": "🇬🇳",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GW",
+      "dialCode": "+245",
+      "nameRu": "Гвинея-Бисау",
+      "nameEn": "Guinea-Bissau",
+      "flagEmoji": "🇬🇼",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "DE",
+      "dialCode": "+49",
+      "nameRu": "Германия",
+      "nameEn": "Germany",
+      "flagEmoji": "🇩🇪",
+      "maskPattern": "+00 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GG",
+      "dialCode": "+44",
+      "nameRu": "Гернси",
+      "nameEn": "Guernsey",
+      "flagEmoji": "🇬🇬",
+      "maskPattern": "+00 0000 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GI",
+      "dialCode": "+350",
+      "nameRu": "Гибралтар",
+      "nameEn": "Gibraltar",
+      "flagEmoji": "🇬🇮",
+      "maskPattern": "+000 000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "HN",
+      "dialCode": "+504",
+      "nameRu": "Гондурас",
+      "nameEn": "Honduras",
+      "flagEmoji": "🇭🇳",
+      "maskPattern": "+000 0000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "HK",
+      "dialCode": "+852",
+      "nameRu": "Гонконг",
+      "nameEn": "Hong Kong",
+      "flagEmoji": "🇭🇰",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PS",
+      "dialCode": "+970",
+      "nameRu": "Государство Палестина",
+      "nameEn": "State of Palestine",
+      "flagEmoji": "🇵🇸",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GD",
+      "dialCode": "+1",
+      "nameRu": "Гренада",
+      "nameEn": "Grenada",
+      "flagEmoji": "🇬🇩",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "GL",
+      "dialCode": "+299",
+      "nameRu": "Гренландия",
+      "nameEn": "Greenland",
+      "flagEmoji": "🇬🇱",
+      "maskPattern": "+000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GR",
+      "dialCode": "+30",
+      "nameRu": "Греция",
+      "nameEn": "Greece",
+      "flagEmoji": "🇬🇷",
+      "maskPattern": "+00 00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GE",
+      "dialCode": "+995",
+      "nameRu": "Грузия",
+      "nameEn": "Georgia",
+      "flagEmoji": "🇬🇪",
+      "maskPattern": "+000 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "GU",
+      "dialCode": "+1",
+      "nameRu": "Гуам",
+      "nameEn": "Guam",
+      "flagEmoji": "🇬🇺",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "DK",
+      "dialCode": "+45",
+      "nameRu": "Дания",
+      "nameEn": "Denmark",
+      "flagEmoji": "🇩🇰",
+      "maskPattern": "+00 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CD",
+      "dialCode": "+243",
+      "nameRu": "Демократическая Республика Конго",
+      "nameEn": "Democratic Republic of the Congo",
+      "flagEmoji": "🇨🇩",
+      "maskPattern": "+000 00 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "JE",
+      "dialCode": "+44",
+      "nameRu": "Джерси",
+      "nameEn": "Jersey",
+      "flagEmoji": "🇯🇪",
+      "maskPattern": "+00 0000 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "DJ",
+      "dialCode": "+253",
+      "nameRu": "Джибути",
+      "nameEn": "Djibouti",
+      "flagEmoji": "🇩🇯",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "DM",
+      "dialCode": "+1",
+      "nameRu": "Доминика",
+      "nameEn": "Dominica",
+      "flagEmoji": "🇩🇲",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "DO",
+      "dialCode": "+1",
+      "nameRu": "Доминиканская Республика",
+      "nameEn": "Dominican Republic",
+      "flagEmoji": "🇩🇴",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "EG",
+      "dialCode": "+20",
+      "nameRu": "Египет",
+      "nameEn": "Egypt",
+      "flagEmoji": "🇪🇬",
+      "maskPattern": "+00 0 00000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ZM",
+      "dialCode": "+260",
+      "nameRu": "Замбия",
+      "nameEn": "Zambia",
+      "flagEmoji": "🇿🇲",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ZW",
+      "dialCode": "+263",
+      "nameRu": "Зимбабве",
+      "nameEn": "Zimbabwe",
+      "flagEmoji": "🇿🇼",
+      "maskPattern": "+000 00 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IL",
+      "dialCode": "+972",
+      "nameRu": "Израиль",
+      "nameEn": "Israel",
+      "flagEmoji": "🇮🇱",
+      "maskPattern": "+000 0-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "IN",
+      "dialCode": "+91",
+      "nameRu": "Индия",
+      "nameEn": "India",
+      "flagEmoji": "🇮🇳",
+      "maskPattern": "+00 00000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ID",
+      "dialCode": "+62",
+      "nameRu": "Индонезия",
+      "nameEn": "Indonesia",
+      "flagEmoji": "🇮🇩",
+      "maskPattern": "+00 00 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "JO",
+      "dialCode": "+962",
+      "nameRu": "Иордания",
+      "nameEn": "Jordan",
+      "flagEmoji": "🇯🇴",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IQ",
+      "dialCode": "+964",
+      "nameRu": "Ирак",
+      "nameEn": "Iraq",
+      "flagEmoji": "🇮🇶",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IR",
+      "dialCode": "+98",
+      "nameRu": "Иран",
+      "nameEn": "Islamic Republic of Iran",
+      "flagEmoji": "🇮🇷",
+      "maskPattern": "+00 00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IE",
+      "dialCode": "+353",
+      "nameRu": "Ирландия",
+      "nameEn": "Ireland",
+      "flagEmoji": "🇮🇪",
+      "maskPattern": "+000 00 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IS",
+      "dialCode": "+354",
+      "nameRu": "Исландия",
+      "nameEn": "Iceland",
+      "flagEmoji": "🇮🇸",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ES",
+      "dialCode": "+34",
+      "nameRu": "Испания",
+      "nameEn": "Spain",
+      "flagEmoji": "🇪🇸",
+      "maskPattern": "+00 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IT",
+      "dialCode": "+39",
+      "nameRu": "Италия",
+      "nameEn": "Italy",
+      "flagEmoji": "🇮🇹",
+      "maskPattern": "+00 00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "YE",
+      "dialCode": "+967",
+      "nameRu": "Йемен",
+      "nameEn": "Yemen",
+      "flagEmoji": "🇾🇪",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CV",
+      "dialCode": "+238",
+      "nameRu": "Кабо-Верде",
+      "nameEn": "Cape Verde",
+      "flagEmoji": "🇨🇻",
+      "maskPattern": "+000 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KZ",
+      "dialCode": "+7",
+      "nameRu": "Казахстан",
+      "nameEn": "Kazakhstan",
+      "flagEmoji": "🇰🇿",
+      "maskPattern": "+0 00000 0 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KH",
+      "dialCode": "+855",
+      "nameRu": "Камбоджа",
+      "nameEn": "Cambodia",
+      "flagEmoji": "🇰🇭",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CM",
+      "dialCode": "+237",
+      "nameRu": "Камерун",
+      "nameEn": "Cameroon",
+      "flagEmoji": "🇨🇲",
+      "maskPattern": "+000 0 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CA",
+      "dialCode": "+1",
+      "nameRu": "Канада",
+      "nameEn": "Canada",
+      "flagEmoji": "🇨🇦",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "QA",
+      "dialCode": "+974",
+      "nameRu": "Катар",
+      "nameEn": "Qatar",
+      "flagEmoji": "🇶🇦",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KE",
+      "dialCode": "+254",
+      "nameRu": "Кения",
+      "nameEn": "Kenya",
+      "flagEmoji": "🇰🇪",
+      "maskPattern": "+000 00 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CY",
+      "dialCode": "+357",
+      "nameRu": "Кипр",
+      "nameEn": "Cyprus",
+      "flagEmoji": "🇨🇾",
+      "maskPattern": "+000 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KG",
+      "dialCode": "+996",
+      "nameRu": "Киргизия",
+      "nameEn": "Kyrgyzstan",
+      "flagEmoji": "🇰🇬",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KI",
+      "dialCode": "+686",
+      "nameRu": "Кирибати",
+      "nameEn": "Kiribati",
+      "flagEmoji": "🇰🇮",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KP",
+      "dialCode": "+850",
+      "nameRu": "КНДР (Корейская Народно-Демократическая Республика)",
+      "nameEn": "North Korea",
+      "flagEmoji": "🇰🇵",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CN",
+      "dialCode": "+86",
+      "nameRu": "КНР (Китайская Народная Республика)",
+      "nameEn": "People's Republic of China",
+      "flagEmoji": "🇨🇳",
+      "maskPattern": "+00 00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CC",
+      "dialCode": "+61",
+      "nameRu": "Кокосовые острова",
+      "nameEn": "Cocos (Keeling) Islands",
+      "flagEmoji": "🇨🇨",
+      "maskPattern": "+00 0 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CO",
+      "dialCode": "+57",
+      "nameRu": "Колумбия",
+      "nameEn": "Colombia",
+      "flagEmoji": "🇨🇴",
+      "maskPattern": "+00 000 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KM",
+      "dialCode": "+269",
+      "nameRu": "Коморы",
+      "nameEn": "Comoros",
+      "flagEmoji": "🇰🇲",
+      "maskPattern": "+000 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "XK",
+      "dialCode": "+383",
+      "nameRu": "Косово",
+      "nameEn": "Kosovo",
+      "flagEmoji": "🇽🇰",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CR",
+      "dialCode": "+506",
+      "nameRu": "Коста-Рика",
+      "nameEn": "Costa Rica",
+      "flagEmoji": "🇨🇷",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CI",
+      "dialCode": "+225",
+      "nameRu": "Кот-д’Ивуар",
+      "nameEn": "Cote d'Ivoire",
+      "flagEmoji": "🇨🇮",
+      "maskPattern": "+000 00 00 0 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CU",
+      "dialCode": "+53",
+      "nameRu": "Куба",
+      "nameEn": "Cuba",
+      "flagEmoji": "🇨🇺",
+      "maskPattern": "+00 0 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KW",
+      "dialCode": "+965",
+      "nameRu": "Кувейт",
+      "nameEn": "Kuwait",
+      "flagEmoji": "🇰🇼",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CW",
+      "dialCode": "+599",
+      "nameRu": "Кюрасао",
+      "nameEn": "Curaçao",
+      "flagEmoji": "🇨🇼",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LA",
+      "dialCode": "+856",
+      "nameRu": "Лаос",
+      "nameEn": "Lao People's Democratic Republic",
+      "flagEmoji": "🇱🇦",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LV",
+      "dialCode": "+371",
+      "nameRu": "Латвия",
+      "nameEn": "Latvia",
+      "flagEmoji": "🇱🇻",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LS",
+      "dialCode": "+266",
+      "nameRu": "Лесото",
+      "nameEn": "Lesotho",
+      "flagEmoji": "🇱🇸",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LR",
+      "dialCode": "+231",
+      "nameRu": "Либерия",
+      "nameEn": "Liberia",
+      "flagEmoji": "🇱🇷",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LB",
+      "dialCode": "+961",
+      "nameRu": "Ливан",
+      "nameEn": "Lebanon",
+      "flagEmoji": "🇱🇧",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LY",
+      "dialCode": "+218",
+      "nameRu": "Ливия",
+      "nameEn": "Libya",
+      "flagEmoji": "🇱🇾",
+      "maskPattern": "+000 00-0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "LT",
+      "dialCode": "+370",
+      "nameRu": "Литва",
+      "nameEn": "Lithuania",
+      "flagEmoji": "🇱🇹",
+      "maskPattern": "+000 000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LI",
+      "dialCode": "+423",
+      "nameRu": "Лихтенштейн",
+      "nameEn": "Liechtenstein",
+      "flagEmoji": "🇱🇮",
+      "maskPattern": "+000 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LU",
+      "dialCode": "+352",
+      "nameRu": "Люксембург",
+      "nameEn": "Luxembourg",
+      "flagEmoji": "🇱🇺",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MU",
+      "dialCode": "+230",
+      "nameRu": "Маврикий",
+      "nameEn": "Mauritius",
+      "flagEmoji": "🇲🇺",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MR",
+      "dialCode": "+222",
+      "nameRu": "Мавритания",
+      "nameEn": "Mauritania",
+      "flagEmoji": "🇲🇷",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MG",
+      "dialCode": "+261",
+      "nameRu": "Мадагаскар",
+      "nameEn": "Madagascar",
+      "flagEmoji": "🇲🇬",
+      "maskPattern": "+000 00 00 000 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "YT",
+      "dialCode": "+262",
+      "nameRu": "Майотта",
+      "nameEn": "Mayotte",
+      "flagEmoji": "🇾🇹",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MO",
+      "dialCode": "+853",
+      "nameRu": "Макао",
+      "nameEn": "Macao",
+      "flagEmoji": "🇲🇴",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MW",
+      "dialCode": "+265",
+      "nameRu": "Малави",
+      "nameEn": "Malawi",
+      "flagEmoji": "🇲🇼",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MY",
+      "dialCode": "+60",
+      "nameRu": "Малайзия",
+      "nameEn": "Malaysia",
+      "flagEmoji": "🇲🇾",
+      "maskPattern": "+00 0-0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "ML",
+      "dialCode": "+223",
+      "nameRu": "Мали",
+      "nameEn": "Mali",
+      "flagEmoji": "🇲🇱",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MV",
+      "dialCode": "+960",
+      "nameRu": "Мальдивы",
+      "nameEn": "Maldives",
+      "flagEmoji": "🇲🇻",
+      "maskPattern": "+000 000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "MT",
+      "dialCode": "+356",
+      "nameRu": "Мальта",
+      "nameEn": "Malta",
+      "flagEmoji": "🇲🇹",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MA",
+      "dialCode": "+212",
+      "nameRu": "Марокко",
+      "nameEn": "Morocco",
+      "flagEmoji": "🇲🇦",
+      "maskPattern": "+000 0 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MQ",
+      "dialCode": "+596",
+      "nameRu": "Мартиника",
+      "nameEn": "Martinique",
+      "flagEmoji": "🇲🇶",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MH",
+      "dialCode": "+692",
+      "nameRu": "Маршалловы Острова",
+      "nameEn": "Marshall Islands",
+      "flagEmoji": "🇲🇭",
+      "maskPattern": "+000 000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "MX",
+      "dialCode": "+52",
+      "nameRu": "Мексика",
+      "nameEn": "Mexico",
+      "flagEmoji": "🇲🇽",
+      "maskPattern": "+00 000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FM",
+      "dialCode": "+691",
+      "nameRu": "Микронезия",
+      "nameEn": "Micronesia, Federated States of",
+      "flagEmoji": "🇫🇲",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MZ",
+      "dialCode": "+258",
+      "nameRu": "Мозамбик",
+      "nameEn": "Mozambique",
+      "flagEmoji": "🇲🇿",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MD",
+      "dialCode": "+373",
+      "nameRu": "Молдавия",
+      "nameEn": "Moldova, Republic of",
+      "flagEmoji": "🇲🇩",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MC",
+      "dialCode": "+377",
+      "nameRu": "Монако",
+      "nameEn": "Monaco",
+      "flagEmoji": "🇲🇨",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MN",
+      "dialCode": "+976",
+      "nameRu": "Монголия",
+      "nameEn": "Mongolia",
+      "flagEmoji": "🇲🇳",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MS",
+      "dialCode": "+1",
+      "nameRu": "Монтсеррат",
+      "nameEn": "Montserrat",
+      "flagEmoji": "🇲🇸",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "MM",
+      "dialCode": "+95",
+      "nameRu": "Мьянма",
+      "nameEn": "Myanmar",
+      "flagEmoji": "🇲🇲",
+      "maskPattern": "+00 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NA",
+      "dialCode": "+264",
+      "nameRu": "Намибия",
+      "nameEn": "Namibia",
+      "flagEmoji": "🇳🇦",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NR",
+      "dialCode": "+674",
+      "nameRu": "Науру",
+      "nameEn": "Nauru",
+      "flagEmoji": "🇳🇷",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NP",
+      "dialCode": "+977",
+      "nameRu": "Непал",
+      "nameEn": "Nepal",
+      "flagEmoji": "🇳🇵",
+      "maskPattern": "+000 0-0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "NE",
+      "dialCode": "+227",
+      "nameRu": "Нигер",
+      "nameEn": "Niger",
+      "flagEmoji": "🇳🇪",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NG",
+      "dialCode": "+234",
+      "nameRu": "Нигерия",
+      "nameEn": "Nigeria",
+      "flagEmoji": "🇳🇬",
+      "maskPattern": "+000 0000 00 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NL",
+      "dialCode": "+31",
+      "nameRu": "Нидерланды",
+      "nameEn": "Netherlands",
+      "flagEmoji": "🇳🇱",
+      "maskPattern": "+00 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NI",
+      "dialCode": "+505",
+      "nameRu": "Никарагуа",
+      "nameEn": "Nicaragua",
+      "flagEmoji": "🇳🇮",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NU",
+      "dialCode": "+683",
+      "nameRu": "Ниуэ",
+      "nameEn": "Niue",
+      "flagEmoji": "🇳🇺",
+      "maskPattern": "+000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NZ",
+      "dialCode": "+64",
+      "nameRu": "Новая Зеландия",
+      "nameEn": "New Zealand",
+      "flagEmoji": "🇳🇿",
+      "maskPattern": "+00 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NC",
+      "dialCode": "+687",
+      "nameRu": "Новая Каледония",
+      "nameEn": "New Caledonia",
+      "flagEmoji": "🇳🇨",
+      "maskPattern": "+000 00.00.00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NO",
+      "dialCode": "+47",
+      "nameRu": "Норвегия",
+      "nameEn": "Norway",
+      "flagEmoji": "🇳🇴",
+      "maskPattern": "+00 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "AE",
+      "dialCode": "+971",
+      "nameRu": "ОАЭ",
+      "nameEn": "United Arab Emirates",
+      "flagEmoji": "🇦🇪",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "OM",
+      "dialCode": "+968",
+      "nameRu": "Оман",
+      "nameEn": "Oman",
+      "flagEmoji": "🇴🇲",
+      "maskPattern": "+000 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "IM",
+      "dialCode": "+44",
+      "nameRu": "Остров Мэн",
+      "nameEn": "Isle of Man",
+      "flagEmoji": "🇮🇲",
+      "maskPattern": "+00 0000 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "NF",
+      "dialCode": "+672",
+      "nameRu": "Остров Норфолк",
+      "nameEn": "Norfolk Island",
+      "flagEmoji": "🇳🇫",
+      "maskPattern": "+000 00 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CX",
+      "dialCode": "+61",
+      "nameRu": "Остров Рождества",
+      "nameEn": "Christmas Island",
+      "flagEmoji": "🇨🇽",
+      "maskPattern": "+00 0 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KY",
+      "dialCode": "+1",
+      "nameRu": "Острова Кайман",
+      "nameEn": "Cayman Islands",
+      "flagEmoji": "🇰🇾",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "CK",
+      "dialCode": "+682",
+      "nameRu": "Острова Кука",
+      "nameEn": "Cook Islands",
+      "flagEmoji": "🇨🇰",
+      "maskPattern": "+000 00 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SH",
+      "dialCode": "+290",
+      "nameRu": "Острова Святой Елены, Вознесения и Тристан-да-Кунья",
+      "nameEn": "Saint Helena",
+      "flagEmoji": "🇸🇭",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PK",
+      "dialCode": "+92",
+      "nameRu": "Пакистан",
+      "nameEn": "Pakistan",
+      "flagEmoji": "🇵🇰",
+      "maskPattern": "+00 00 00000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PW",
+      "dialCode": "+680",
+      "nameRu": "Палау",
+      "nameEn": "Palau",
+      "flagEmoji": "🇵🇼",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PA",
+      "dialCode": "+507",
+      "nameRu": "Панама",
+      "nameEn": "Panama",
+      "flagEmoji": "🇵🇦",
+      "maskPattern": "+000 000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "PG",
+      "dialCode": "+675",
+      "nameRu": "Папуа — Новая Гвинея",
+      "nameEn": "Papua New Guinea",
+      "flagEmoji": "🇵🇬",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PY",
+      "dialCode": "+595",
+      "nameRu": "Парагвай",
+      "nameEn": "Paraguay",
+      "flagEmoji": "🇵🇾",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PE",
+      "dialCode": "+51",
+      "nameRu": "Перу",
+      "nameEn": "Peru",
+      "flagEmoji": "🇵🇪",
+      "maskPattern": "+00 0 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PL",
+      "dialCode": "+48",
+      "nameRu": "Польша",
+      "nameEn": "Poland",
+      "flagEmoji": "🇵🇱",
+      "maskPattern": "+00 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PT",
+      "dialCode": "+351",
+      "nameRu": "Португалия",
+      "nameEn": "Portugal",
+      "flagEmoji": "🇵🇹",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PR",
+      "dialCode": "+1",
+      "nameRu": "Пуэрто-Рико",
+      "nameEn": "Puerto Rico",
+      "flagEmoji": "🇵🇷",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "CG",
+      "dialCode": "+242",
+      "nameRu": "Республика Конго",
+      "nameEn": "Republic of the Congo",
+      "flagEmoji": "🇨🇬",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "KR",
+      "dialCode": "+82",
+      "nameRu": "Республика Корея",
+      "nameEn": "South Korea",
+      "flagEmoji": "🇰🇷",
+      "maskPattern": "+00 0-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "RE",
+      "dialCode": "+262",
+      "nameRu": "Реюньон",
+      "nameEn": "Reunion",
+      "flagEmoji": "🇷🇪",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "RU",
+      "dialCode": "+7",
+      "nameRu": "Российская Федерация",
+      "nameEn": "Russian Federation",
+      "flagEmoji": "🇷🇺",
+      "maskPattern": "+0 000 000-00-00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "RW",
+      "dialCode": "+250",
+      "nameRu": "Руанда",
+      "nameEn": "Rwanda",
+      "flagEmoji": "🇷🇼",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "RO",
+      "dialCode": "+40",
+      "nameRu": "Румыния",
+      "nameEn": "Romania",
+      "flagEmoji": "🇷🇴",
+      "maskPattern": "+00 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "EH",
+      "dialCode": "+212",
+      "nameRu": "САДР",
+      "nameEn": "Western Sahara",
+      "flagEmoji": "🇪🇭",
+      "maskPattern": "+000 0 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SV",
+      "dialCode": "+503",
+      "nameRu": "Сальвадор",
+      "nameEn": "El Salvador",
+      "flagEmoji": "🇸🇻",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "WS",
+      "dialCode": "+685",
+      "nameRu": "Самоа",
+      "nameEn": "Samoa",
+      "flagEmoji": "🇼🇸",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SM",
+      "dialCode": "+378",
+      "nameRu": "Сан-Марино",
+      "nameEn": "San Marino",
+      "flagEmoji": "🇸🇲",
+      "maskPattern": "+000 0000 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ST",
+      "dialCode": "+239",
+      "nameRu": "Сан-Томе и Принсипи",
+      "nameEn": "Sao Tome and Principe",
+      "flagEmoji": "🇸🇹",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SA",
+      "dialCode": "+966",
+      "nameRu": "Саудовская Аравия",
+      "nameEn": "Saudi Arabia",
+      "flagEmoji": "🇸🇦",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MK",
+      "dialCode": "+389",
+      "nameRu": "Северная Македония",
+      "nameEn": "The Republic of North Macedonia",
+      "flagEmoji": "🇲🇰",
+      "maskPattern": "+000 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MP",
+      "dialCode": "+1",
+      "nameRu": "Северные Марианские Острова",
+      "nameEn": "Northern Mariana Islands",
+      "flagEmoji": "🇲🇵",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "SC",
+      "dialCode": "+248",
+      "nameRu": "Сейшельские Острова",
+      "nameEn": "Seychelles",
+      "flagEmoji": "🇸🇨",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "BL",
+      "dialCode": "+590",
+      "nameRu": "Сен-Бартелеми",
+      "nameEn": "Saint Barthélemy",
+      "flagEmoji": "🇧🇱",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "MF",
+      "dialCode": "+590",
+      "nameRu": "Сен-Мартен",
+      "nameEn": "Saint Martin (French part)",
+      "flagEmoji": "🇲🇫",
+      "maskPattern": "+000 000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PM",
+      "dialCode": "+508",
+      "nameRu": "Сен-Пьер и Микелон",
+      "nameEn": "Saint Pierre and Miquelon",
+      "flagEmoji": "🇵🇲",
+      "maskPattern": "+000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SN",
+      "dialCode": "+221",
+      "nameRu": "Сенегал",
+      "nameEn": "Senegal",
+      "flagEmoji": "🇸🇳",
+      "maskPattern": "+000 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "VC",
+      "dialCode": "+1",
+      "nameRu": "Сент-Винсент и Гренадины",
+      "nameEn": "Saint Vincent and the Grenadines",
+      "flagEmoji": "🇻🇨",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "KN",
+      "dialCode": "+1",
+      "nameRu": "Сент-Китс и Невис",
+      "nameEn": "Saint Kitts and Nevis",
+      "flagEmoji": "🇰🇳",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "LC",
+      "dialCode": "+1",
+      "nameRu": "Сент-Люсия",
+      "nameEn": "Saint Lucia",
+      "flagEmoji": "🇱🇨",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "RS",
+      "dialCode": "+381",
+      "nameRu": "Сербия",
+      "nameEn": "Serbia",
+      "flagEmoji": "🇷🇸",
+      "maskPattern": "+000 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SG",
+      "dialCode": "+65",
+      "nameRu": "Сингапур",
+      "nameEn": "Singapore",
+      "flagEmoji": "🇸🇬",
+      "maskPattern": "+00 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SX",
+      "dialCode": "+1",
+      "nameRu": "Синт-Мартен",
+      "nameEn": "Sint Maarten (Dutch part)",
+      "flagEmoji": "🇸🇽",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "SY",
+      "dialCode": "+963",
+      "nameRu": "Сирия",
+      "nameEn": "Syrian Arab Republic",
+      "flagEmoji": "🇸🇾",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SK",
+      "dialCode": "+421",
+      "nameRu": "Словакия",
+      "nameEn": "Slovakia",
+      "flagEmoji": "🇸🇰",
+      "maskPattern": "+000 0/000 000 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SI",
+      "dialCode": "+386",
+      "nameRu": "Словения",
+      "nameEn": "Slovenia",
+      "flagEmoji": "🇸🇮",
+      "maskPattern": "+000 0 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SB",
+      "dialCode": "+677",
+      "nameRu": "Соломоновы Острова",
+      "nameEn": "Solomon Islands",
+      "flagEmoji": "🇸🇧",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SO",
+      "dialCode": "+252",
+      "nameRu": "Сомали",
+      "nameEn": "Somalia",
+      "flagEmoji": "🇸🇴",
+      "maskPattern": "+000 0 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SD",
+      "dialCode": "+249",
+      "nameRu": "Судан",
+      "nameEn": "Sudan",
+      "flagEmoji": "🇸🇩",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SR",
+      "dialCode": "+597",
+      "nameRu": "Суринам",
+      "nameEn": "Suriname",
+      "flagEmoji": "🇸🇷",
+      "maskPattern": "+000 000-000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "US",
+      "dialCode": "+1",
+      "nameRu": "США",
+      "nameEn": "United States of America",
+      "flagEmoji": "🇺🇸",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "SL",
+      "dialCode": "+232",
+      "nameRu": "Сьерра-Леоне",
+      "nameEn": "Sierra Leone",
+      "flagEmoji": "🇸🇱",
+      "maskPattern": "+000 00 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TJ",
+      "dialCode": "+992",
+      "nameRu": "Таджикистан",
+      "nameEn": "Tajikistan",
+      "flagEmoji": "🇹🇯",
+      "maskPattern": "+000 000 00 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TH",
+      "dialCode": "+66",
+      "nameRu": "Таиланд",
+      "nameEn": "Thailand",
+      "flagEmoji": "🇹🇭",
+      "maskPattern": "+00 0 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TW",
+      "dialCode": "+886",
+      "nameRu": "Тайвань",
+      "nameEn": "Taiwan, Province of China",
+      "flagEmoji": "🇹🇼",
+      "maskPattern": "+000 0 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TZ",
+      "dialCode": "+255",
+      "nameRu": "Танзания",
+      "nameEn": "United Republic of Tanzania",
+      "flagEmoji": "🇹🇿",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TC",
+      "dialCode": "+1",
+      "nameRu": "Теркс и Кайкос",
+      "nameEn": "Turks and Caicos Islands",
+      "flagEmoji": "🇹🇨",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "TG",
+      "dialCode": "+228",
+      "nameRu": "Того",
+      "nameEn": "Togo",
+      "flagEmoji": "🇹🇬",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TK",
+      "dialCode": "+690",
+      "nameRu": "Токелау",
+      "nameEn": "Tokelau",
+      "flagEmoji": "🇹🇰",
+      "maskPattern": "+000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TO",
+      "dialCode": "+676",
+      "nameRu": "Тонга",
+      "nameEn": "Tonga",
+      "flagEmoji": "🇹🇴",
+      "maskPattern": "+000 00-000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "TT",
+      "dialCode": "+1",
+      "nameRu": "Тринидад и Тобаго",
+      "nameEn": "Trinidad and Tobago",
+      "flagEmoji": "🇹🇹",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "TV",
+      "dialCode": "+688",
+      "nameRu": "Тувалу",
+      "nameEn": "Tuvalu",
+      "flagEmoji": "🇹🇻",
+      "maskPattern": "+000 00 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TN",
+      "dialCode": "+216",
+      "nameRu": "Тунис",
+      "nameEn": "Tunisia",
+      "flagEmoji": "🇹🇳",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TM",
+      "dialCode": "+993",
+      "nameRu": "Туркмения",
+      "nameEn": "Turkmenistan",
+      "flagEmoji": "🇹🇲",
+      "maskPattern": "+000 00 00-00-00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "TR",
+      "dialCode": "+90",
+      "nameRu": "Турция",
+      "nameEn": "Türkiye",
+      "flagEmoji": "🇹🇷",
+      "maskPattern": "+00 000 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "UG",
+      "dialCode": "+256",
+      "nameRu": "Уганда",
+      "nameEn": "Uganda",
+      "flagEmoji": "🇺🇬",
+      "maskPattern": "+000 00 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "UZ",
+      "dialCode": "+998",
+      "nameRu": "Узбекистан",
+      "nameEn": "Uzbekistan",
+      "flagEmoji": "🇺🇿",
+      "maskPattern": "+000 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "UA",
+      "dialCode": "+380",
+      "nameRu": "Украина",
+      "nameEn": "Ukraine",
+      "flagEmoji": "🇺🇦",
+      "maskPattern": "+000 0000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "WF",
+      "dialCode": "+681",
+      "nameRu": "Уоллис и Футуна",
+      "nameEn": "Wallis and Futuna",
+      "flagEmoji": "🇼🇫",
+      "maskPattern": "+000 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "UY",
+      "dialCode": "+598",
+      "nameRu": "Уругвай",
+      "nameEn": "Uruguay",
+      "flagEmoji": "🇺🇾",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FO",
+      "dialCode": "+298",
+      "nameRu": "Фареры",
+      "nameEn": "Faroe Islands",
+      "flagEmoji": "🇫🇴",
+      "maskPattern": "+000 000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FJ",
+      "dialCode": "+679",
+      "nameRu": "Фиджи",
+      "nameEn": "Fiji",
+      "flagEmoji": "🇫🇯",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PH",
+      "dialCode": "+63",
+      "nameRu": "Филиппины",
+      "nameEn": "Philippines",
+      "flagEmoji": "🇵🇭",
+      "maskPattern": "+00 0 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FI",
+      "dialCode": "+358",
+      "nameRu": "Финляндия",
+      "nameEn": "Finland",
+      "flagEmoji": "🇫🇮",
+      "maskPattern": "+000 00 0000000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FK",
+      "dialCode": "+500",
+      "nameRu": "Фолклендские острова",
+      "nameEn": "Falkland Islands (Malvinas)",
+      "flagEmoji": "🇫🇰",
+      "maskPattern": "+000 00000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "FR",
+      "dialCode": "+33",
+      "nameRu": "Франция",
+      "nameEn": "France",
+      "flagEmoji": "🇫🇷",
+      "maskPattern": "+00 0 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "PF",
+      "dialCode": "+689",
+      "nameRu": "Французская Полинезия",
+      "nameEn": "French Polynesia",
+      "flagEmoji": "🇵🇫",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "HR",
+      "dialCode": "+385",
+      "nameRu": "Хорватия",
+      "nameEn": "Croatia",
+      "flagEmoji": "🇭🇷",
+      "maskPattern": "+000 0 0000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CF",
+      "dialCode": "+236",
+      "nameRu": "ЦАР",
+      "nameEn": "Central African Republic",
+      "flagEmoji": "🇨🇫",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "TD",
+      "dialCode": "+235",
+      "nameRu": "Чад",
+      "nameEn": "Chad",
+      "flagEmoji": "🇹🇩",
+      "maskPattern": "+000 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ME",
+      "dialCode": "+382",
+      "nameRu": "Черногория",
+      "nameEn": "Montenegro",
+      "flagEmoji": "🇲🇪",
+      "maskPattern": "+000 00 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CZ",
+      "dialCode": "+420",
+      "nameRu": "Чехия",
+      "nameEn": "Czech Republic",
+      "flagEmoji": "🇨🇿",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CL",
+      "dialCode": "+56",
+      "nameRu": "Чили",
+      "nameEn": "Chile",
+      "flagEmoji": "🇨🇱",
+      "maskPattern": "+00 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "CH",
+      "dialCode": "+41",
+      "nameRu": "Швейцария",
+      "nameEn": "Switzerland",
+      "flagEmoji": "🇨🇭",
+      "maskPattern": "+00 00 000 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SE",
+      "dialCode": "+46",
+      "nameRu": "Швеция",
+      "nameEn": "Sweden",
+      "flagEmoji": "🇸🇪",
+      "maskPattern": "+00 0 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SJ",
+      "dialCode": "+47",
+      "nameRu": "Шпицберген и Ян-Майен",
+      "nameEn": "Svalbard and Jan Mayen",
+      "flagEmoji": "🇸🇯",
+      "maskPattern": "+00 00 00 00 00",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "LK",
+      "dialCode": "+94",
+      "nameRu": "Шри-Ланка",
+      "nameEn": "Sri Lanka",
+      "flagEmoji": "🇱🇰",
+      "maskPattern": "+00 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "EC",
+      "dialCode": "+593",
+      "nameRu": "Эквадор",
+      "nameEn": "Ecuador",
+      "flagEmoji": "🇪🇨",
+      "maskPattern": "+000 0-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "GQ",
+      "dialCode": "+240",
+      "nameRu": "Экваториальная Гвинея",
+      "nameEn": "Equatorial Guinea",
+      "flagEmoji": "🇬🇶",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ER",
+      "dialCode": "+291",
+      "nameRu": "Эритрея",
+      "nameEn": "Eritrea",
+      "flagEmoji": "🇪🇷",
+      "maskPattern": "+000 0 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SZ",
+      "dialCode": "+268",
+      "nameRu": "Эсватини",
+      "nameEn": "Eswatini",
+      "flagEmoji": "🇸🇿",
+      "maskPattern": "+000 0000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "EE",
+      "dialCode": "+372",
+      "nameRu": "Эстония",
+      "nameEn": "Estonia",
+      "flagEmoji": "🇪🇪",
+      "maskPattern": "+000 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ET",
+      "dialCode": "+251",
+      "nameRu": "Эфиопия",
+      "nameEn": "Ethiopia",
+      "flagEmoji": "🇪🇹",
+      "maskPattern": "+000 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "ZA",
+      "dialCode": "+27",
+      "nameRu": "ЮАР",
+      "nameEn": "South Africa",
+      "flagEmoji": "🇿🇦",
+      "maskPattern": "+00 00 000 0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "SS",
+      "dialCode": "+211",
+      "nameRu": "Южный Судан",
+      "nameEn": "South Sudan",
+      "flagEmoji": "🇸🇸",
+      "maskPattern": "+000 000 000 000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": false
+    },
+    {
+      "iso2": "JM",
+      "dialCode": "+1",
+      "nameRu": "Ямайка",
+      "nameEn": "Jamaica",
+      "flagEmoji": "🇯🇲",
+      "maskPattern": "+0 000-000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    },
+    {
+      "iso2": "JP",
+      "dialCode": "+81",
+      "nameRu": "Япония",
+      "nameEn": "Japan",
+      "flagEmoji": "🇯🇵",
+      "maskPattern": "+00 0-0000-0000",
+      "maskHasParentheses": false,
+      "maskHasHyphen": true
+    }
+  ]
+}

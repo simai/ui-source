@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Divider method lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/content-divider-browser/component/buttons.css">
+  <link rel="stylesheet" href="../../source/output/content-divider-browser/component/contentDivider.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <section class="grid gap-3" aria-labelledby="horizontal-title">
+      <h1 id="horizontal-title">Горизонтальные границы</h1>
+      <p>Обычная тематическая граница сохраняет нативную семантику.</p>
+      <hr class="sf-divider sf-divider-horizontal">
+      <div class="sf-divider sf-divider-horizontal" role="separator" aria-label="или">
+        <span class="sf-divider-content" aria-hidden="true">или</span>
+      </div>
+      <div class="sf-divider sf-divider-horizontal">
+        <h2 class="sf-divider-content sf-divider-content--bold">Самостоятельный заголовок</h2>
+      </div>
+      <div class="sf-divider sf-divider-horizontal">
+        <span class="sf-divider-content sf-divider-content--small">Дополнительно</span>
+      </div>
+      <div class="sf-divider sf-divider-horizontal">
+        <span class="sf-divider-content sf-divider-content-border">Фильтры</span>
+      </div>
+      <div class="sf-divider sf-divider-borders">
+        <span class="sf-divider-content">Параметры раздела</span>
+      </div>
+    </section>
+
+    <section class="grid gap-3" aria-labelledby="actions-title">
+      <h2 id="actions-title">Действия</h2>
+      <div class="sf-divider sf-divider-horizontal">
+        <span class="sf-divider-buttons">
+          <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1">
+            <span class="sf-button-text-container">Назад</span>
+          </button>
+          <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1">
+            <span class="sf-button-text-container">Далее</span>
+          </button>
+        </span>
+      </div>
+    </section>
+
+    <section class="flex items-cross-stretch gap-2" aria-label="Вертикальная граница">
+      <span>Основное</span>
+      <span class="sf-divider sf-divider-vertical" role="separator" aria-orientation="vertical"></span>
+      <span>Дополнительное</span>
+    </section>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

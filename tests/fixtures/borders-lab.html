@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Границы — лаборатория</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/inputs/css/inputs.css">
+<link rel="stylesheet" href="/ui/distr/component/textarea/css/textarea.css">
+<link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css">
+<link rel="stylesheet" href="/ui/distr/component/checkbox/css/checkbox.css">
+<link rel="stylesheet" href="/ui/distr/component/radio/css/radio.css">
+<link rel="stylesheet" href="/ui/distr/component/switch/css/switch.css">
+<link rel="stylesheet" href="/ui/distr/component/buttons/css/buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/button-group/css/button-group.css">
+<link rel="stylesheet" href="/ui/distr/component/country-code/css/country-code.css">
+<link rel="stylesheet" href="/ui/distr/component/quantity/css/quantity.css">
+<link rel="stylesheet" href="/ui/distr/component/file-upload/css/file-upload.css">
+<link rel="stylesheet" href="/ui/distr/component/tags/css/tags.css">
+<link rel="stylesheet" href="/ui/distr/component/badges/css/badges.css">
+<link rel="stylesheet" href="/ui/distr/component/alerts/css/alerts.css">
+<link rel="stylesheet" href="/ui/distr/component/tabs/css/tabs.css">
+<link rel="stylesheet" href="/ui/distr/component/accordion/css/accordion.css">
+<script>window.sfPath = '/ui/distr/';</script>
+<style>
+    /* Nothing here styles a Framework part: the page is a frame around them, so
+       anything that looks wrong below is the Framework's and not the page's. */
+    body { margin: 0; font-family: var(--sf-text--family); background: var(--sf-surface-1); color: var(--sf-on-surface); }
+    .lab-bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 16px; align-items: center;
+        padding: 12px 20px; background: var(--sf-surface-0); border-bottom: 1px solid var(--sf-outline-variant); }
+    .lab-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: start; }
+    .lab-theme { padding: 20px; background: var(--sf-surface-0); color: var(--sf-on-surface); min-block-size: 100vh; }
+    .lab-theme + .lab-theme { border-inline-start: 1px solid var(--sf-outline-variant); }
+    .lab-title { font: var(--sf-title-medium--font, 600 18px/24px system-ui); margin: 0 0 4px; }
+    .lab-note { color: var(--sf-on-surface-variant); font-size: 13px; margin: 0 0 16px; }
+    .lab-group { margin-block-end: 28px; }
+    .lab-group h3 { font-size: 14px; margin: 0 0 10px; color: var(--sf-on-surface-variant); font-weight: 600; }
+    .lab-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+    .lab-cell { display: flex; flex-direction: column; gap: 6px; min-inline-size: 180px; }
+    .lab-measure { font: 400 11px/14px ui-monospace, monospace; color: var(--sf-on-surface-variant); }
+    .lab-measure b { color: var(--sf-on-surface); font-weight: 600; }
+    .lab-swatch { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+    .lab-line { inline-size: 120px; block-size: 0; border-top-width: 2px; border-top-style: solid; }
+    .lab-hr { inline-size: 180px; block-size: 0; }
+    /* The group is a row of segments; the cell around it stacks, so it is told
+       not to. */
+    .lab-cell sf-button-group { display: flex; }
+    .lab-area { padding: 14px; border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius--surface, 8px); }
+    .lab-area + .lab-area { margin-block-start: 10px; }
+    table.lab-table { border-collapse: collapse; }
+    table.lab-table th, table.lab-table td { padding: 6px 10px; border: 1px solid var(--sf-outline-variant); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="lab-bar">
+    <strong>Границы</strong>
+    <span class="lab-note" style="margin:0">Светлая и тёмная рядом. Контраст меряется к поверхности под элементом.</span>
+    <span class="lab-measure" id="lab-roles"></span>
+</div>
+<div class="lab-themes" id="lab"></div>
+
+<script type="module">
+    const parse = (value) => {
+        const numbers = String(value).match(/[\d.]+%?/g)?.map((part) => part.endsWith('%')
+            ? parseFloat(part) / 100
+            : parseFloat(part)) ?? [];
+        const scaled = String(value).startsWith('color(') ? numbers.slice(0, 3).map((n) => n * 255) : numbers.slice(0, 3);
+        return { rgb: scaled, alpha: numbers.length > 3 ? numbers[3] : 1 };
+    };
+    const channel = (value) => {
+        const part = value / 255;
+        return part <= 0.03928 ? part / 12.92 : ((part + 0.055) / 1.055) ** 2.4;
+    };
+    const luminance = (rgb) => 0.2126 * channel(rgb[0]) + 0.7152 * channel(rgb[1]) + 0.0722 * channel(rgb[2]);
+    // A boundary is drawn over whatever is behind it, so a translucent line is
+    // composited before it is measured -- its own colour says nothing.
+    const ratio = (colour, behind) => {
+        const { rgb, alpha } = parse(colour);
+        if (!rgb.length) return null;
+        const over = rgb.map((part, index) => part * alpha + behind[index] * (1 - alpha));
+        const [high, low] = [luminance(over), luminance(behind)].sort((a, b) => b - a);
+        return Math.round(((high + 0.05) / (low + 0.05)) * 100) / 100;
+    };
+    const surfaceOf = (element) => {
+        let node = element;
+        while (node && node !== document.documentElement) {
+            const colour = getComputedStyle(node).backgroundColor;
+            const { rgb, alpha } = parse(colour);
+            if (rgb.length && alpha === 1) return rgb;
+            node = node.parentElement;
+        }
+        return [255, 255, 255];
+    };
+
+    const controls = (theme) => `
+        <div class="lab-group">
+            <h3>Контролы в покое — роль --sf-outline</h3>
+            <div class="lab-row">
+                <div class="lab-cell"><sf-input size="1" label="Поле" placeholder="Текст"></sf-input><span class="lab-measure" data-measure=".sf-input-field"></span></div>
+                <div class="lab-cell"><sf-textarea size="1" label="Текст" rows="2"></sf-textarea><span class="lab-measure" data-measure="textarea"></span></div>
+                <div class="lab-cell"><sf-dropdown size="1" label="Список" placeholder="Выбрать"><sf-list-item text="Один" value="1"></sf-list-item></sf-dropdown><span class="lab-measure" data-measure=".sf-dropdown-field"></span></div>
+                <div class="lab-cell"><sf-country-code size="1" label="Телефон"></sf-country-code><span class="lab-measure" data-measure=".sf-country-code-field"></span></div>
+            </div>
+            <div class="lab-row" style="margin-block-start:14px">
+                <div class="lab-cell"><sf-checkbox size="1" label="Флажок"></sf-checkbox><span class="lab-measure" data-measure=".sf-checkbox-box"></span></div>
+                <div class="lab-cell"><sf-radio size="1" name="r-${theme}" label="Радио"></sf-radio><span class="lab-measure" data-measure=".sf-radio-button-box"></span></div>
+                <div class="lab-cell"><sf-switch size="1" label="Переключатель"></sf-switch><span class="lab-measure" data-measure=".sf-switch-toggler"></span></div>
+                            </div>
+            <div class="lab-row" style="margin-block-start:14px">
+                <div class="lab-cell"><sf-button size="1" appearance="outline" text="Кнопка"></sf-button><span class="lab-measure" data-measure=".sf-button"></span></div>
+                <div class="lab-cell"><sf-icon-button size="1" appearance="outline" icon="add"></sf-icon-button><span class="lab-measure" data-measure=".sf-icon-button"></span></div>
+                <div class="lab-cell"><sf-button-group size="1"><sf-button size="1" appearance="outline" segment="start" text="Моё" selected></sf-button><sf-button size="1" appearance="outline" segment="end" text="Для всех"></sf-button></sf-button-group><span class="lab-measure" data-measure=".sf-button"></span></div>
+            </div>
+        </div>
+
+        <div class="lab-group">
+            <h3>Состояния одного поля — цвет вместо более тёмного серого</h3>
+            <div class="lab-row">
+                <div class="lab-cell"><sf-input size="1" label="Покой" value="текст"></sf-input><span class="lab-measure" data-measure=".sf-input-field"></span></div>
+                <div class="lab-cell"><sf-input size="1" label="Ошибка" value="текст" error></sf-input><span class="lab-measure" data-measure=".sf-input-field"></span></div>
+                <div class="lab-cell"><sf-input size="1" label="Отключено" value="текст" disabled></sf-input><span class="lab-measure" data-measure=".sf-input-field"></span></div>
+            </div>
+            <p class="lab-note" style="margin-block-start:8px">Наведите курсор и поставьте фокус на «Покой»: линия становится основного цвета, затем цвета фокуса.</p>
+        </div>
+
+        <div class="lab-group">
+            <h3>Края областей — роль --sf-outline-variant</h3>
+            <div class="lab-area">Карточка<span class="lab-measure" data-measure="self" style="display:block;margin-block-start:6px"></span></div>
+            <div class="lab-area">
+                <table class="lab-table">
+                    <tr><th>Колонка</th><th>Колонка</th></tr>
+                    <tr><td>Строка</td><td>Строка</td></tr>
+                </table>
+                <span class="lab-measure" data-measure="td" style="display:block;margin-block-start:6px"></span>
+            </div>
+        </div>
+
+        <div class="lab-group">
+            <h3>Линия на поверхности</h3>
+            <div class="lab-row">
+                <div class="lab-cell">
+                    <div class="lab-hr" style="border-top: 1px solid var(--sf-outline)"></div>
+                    <span class="lab-measure" data-measure="self"></span>
+                </div>
+                <div class="lab-cell">
+                    <div class="lab-hr" style="border-top: 1px solid var(--sf-outline-variant)"></div>
+                    <span class="lab-measure" data-measure="self"></span>
+                </div>
+            </div>
+            <p class="lab-note" style="margin-block-start:8px">Слева роль границы, справа край области. Вторая не держит 3:1 и не должна: по ней ничего не ищут.</p>
+        </div>
+    `;
+
+    for (const theme of ['theme-light', 'theme-dark']) {
+        document.getElementById('lab').insertAdjacentHTML('beforeend',
+            `<section class="lab-theme ${theme}" data-theme="${theme}">
+                <h2 class="lab-title">${theme === 'theme-light' ? 'Светлая' : 'Тёмная'}</h2>
+                <p class="lab-note">Контраст линии к поверхности под ней. Порог WCAG 1.4.11 для границы, по которой элемент находят, — 3:1.</p>
+                <div class="lab-group">
+                    <h3>Роли</h3>
+                    <div class="lab-swatch"><span class="lab-line" style="border-top-color: var(--sf-outline)"></span><span class="lab-measure" data-role="--sf-outline"></span></div>
+                    <div class="lab-swatch"><span class="lab-line" style="border-top-color: var(--sf-outline-variant)"></span><span class="lab-measure" data-role="--sf-outline-variant"></span></div>
+                    <div class="lab-swatch"><span class="lab-line" style="border-top-color: var(--sf-outline-disable)"></span><span class="lab-measure" data-role="--sf-outline-disable"></span></div>
+                    <div class="lab-swatch"><span class="lab-line" style="border-top-color: ${theme === 'theme-light' ? '#76777c' : '#909095'}"></span><span class="lab-measure" data-was="${theme === 'theme-light' ? '#76777c' : '#909095'}"></span></div>
+                </div>
+                ${controls(theme)}
+            </section>`);
+    }
+
+    const modules = ['list-item', 'inputs', 'textarea', 'dropdown', 'country-code', 'checkbox', 'radio',
+        'switch', 'buttons', 'icon-buttons', 'button-group', 'tags', 'badges', 'icons'];
+    await Promise.all(modules.map((name) => import(`/smart/${name}/js/${name}.js`).catch(() => null)));
+    await new Promise((done) => setTimeout(done, 900));
+
+    for (const node of document.querySelectorAll('[data-role]')) {
+        const role = node.dataset.role;
+        const probe = document.createElement('span');
+        node.parentElement.append(probe);
+        probe.style.color = `var(${role})`;
+        const colour = getComputedStyle(probe).color;
+        probe.remove();
+        node.innerHTML = `${role} — <b>${ratio(colour, surfaceOf(node))}:1</b> · ${colour}`;
+    }
+
+    // The solid primitive this role used to be, for comparison: until 8 October
+    // --sf-outline was neutral-50 and neutral-60 at full opacity.
+    for (const node of document.querySelectorAll('[data-was]')) {
+        const colour = node.dataset.was;
+        const probe = document.createElement('span');
+        node.parentElement.append(probe);
+        probe.style.color = colour;
+        const resolved = getComputedStyle(probe).color;
+        probe.remove();
+        node.innerHTML = `до 8 октября — <b>${ratio(resolved, surfaceOf(node))}:1</b> · ${colour}`;
+    }
+
+    for (const node of document.querySelectorAll('[data-measure]')) {
+        const where = node.dataset.measure;
+        const scope = node.closest('.lab-cell') ?? node.parentElement;
+        const target = where === 'self' ? scope : scope.querySelector(where);
+        if (!target) { node.textContent = `${where}: не нарисовано`; continue; }
+        const style = getComputedStyle(target);
+        const width = parseFloat(style.borderTopWidth);
+        const colour = style.borderTopColor;
+        node.innerHTML = width > 0
+            ? `<b>${ratio(colour, surfaceOf(target.parentElement))}:1</b> · ${colour}`
+            : `без границы · фон ${style.backgroundColor}`;
+    }
+
+    document.getElementById('lab-roles').textContent = 'замерено по отрисованному';
+</script>
+</body>
+</html>

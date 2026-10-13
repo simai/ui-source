@@ -1,0 +1,33 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__divider_style' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Divider Style
+        @each $divider-style-name, $divider-style-value in $divider-style-array {
+            @if $divider-style-name != hidden {
+                .#{$infix}divider-#{$divider-style-name} >:not([hidden])~:not([hidden]),
+                .#{$infix}divide-#{$divider-style-name} >:not([hidden])~:not([hidden]) {
+                    border-style:#{$divider-style-value};
+                }
+            }
+        }
+
+        // Keep hidden as a distinct utility after minification.
+        .#{$infix}divider-hidden >:not([hidden])~:not([hidden]),
+        .#{$infix}divide-hidden >:not([hidden])~:not([hidden]) {
+            border-style:hidden !important;
+        }
+    }
+// }
+}

@@ -1,0 +1,26 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__filter_opacity' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FILTER
+
+$infix: xs;
+$event: hover;
+
+// @include layer-priority(utility,hover) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Opacity
+        @each $opacity-name, $opacity-value in $filter-opacity-array {
+            .#{$infix}#{$event}\:filter-opacity-#{$opacity-name}:#{$event} {
+                $value: 'opacity(#{$opacity-value})';
+                filter: #{$value};
+            }
+        }
+    }
+// }
+}

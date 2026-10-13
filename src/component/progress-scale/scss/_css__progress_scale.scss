@@ -1,0 +1,120 @@
+@layer sf.components {
+.sf-progress-scale {
+  --sf-progress-scale-fill-color: var(--sf-primary);
+  background-color: var(--sf-progress-scale--background-color, transparent);
+  color: var(--sf-progress-scale--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-progress-scale--font-family, var(--sf-text--family));
+  font-weight: var(--sf-progress-scale--font-weight, var(--sf-font-weight-regular));
+  font-size: var(--sf-progress-scale--font-size);
+  gap: var(--sf-progress-scale--gap);
+  line-height: var(--sf-progress-scale--line-height);
+  width: 100%;
+}
+
+.sf-progress-scale.sf-progress-scale--info { --sf-progress-scale-fill-color: var(--sf-info); }
+.sf-progress-scale.sf-progress-scale--success { --sf-progress-scale-fill-color: var(--sf-success); }
+.sf-progress-scale.sf-progress-scale--warning { --sf-progress-scale-fill-color: var(--sf-warning); }
+.sf-progress-scale.sf-progress-scale--error { --sf-progress-scale-fill-color: var(--sf-error); }
+
+.sf-progress-scale .sf-progress-scale-container {
+  background-color: transparent;
+  border-radius: var(--sf-radius--ui);
+  gap: var(--sf-a1);
+  height: var(--sf-progress-scale-container--height);
+  width: 100%;
+}
+
+.sf-progress-scale .sf-progress-scale-block { background-color: var(--sf-surface-container); }
+
+.sf-progress-scale--10 .sf-progress-scale-block:nth-child(-n + 1),
+.sf-progress-scale--20 .sf-progress-scale-block:nth-child(-n + 2),
+.sf-progress-scale--30 .sf-progress-scale-block:nth-child(-n + 3),
+.sf-progress-scale--40 .sf-progress-scale-block:nth-child(-n + 4),
+.sf-progress-scale--50 .sf-progress-scale-block:nth-child(-n + 5),
+.sf-progress-scale--60 .sf-progress-scale-block:nth-child(-n + 6),
+.sf-progress-scale--70 .sf-progress-scale-block:nth-child(-n + 7),
+.sf-progress-scale--80 .sf-progress-scale-block:nth-child(-n + 8),
+.sf-progress-scale--90 .sf-progress-scale-block:nth-child(-n + 9),
+.sf-progress-scale--100 .sf-progress-scale-block:nth-child(-n + 10) {
+  background-color: var(--sf-progress-scale-fill-color);
+}
+
+.sf-progress-scale--size-1\/3 .sf-progress-scale-container { --sf-progress-scale-container--height: var(--sf-text-size-1\/7); }
+.sf-progress-scale--size-1\/2 .sf-progress-scale-container { --sf-progress-scale-container--height: var(--sf-text-size-1\/6); }
+.sf-progress-scale--size-1 .sf-progress-scale-container { --sf-progress-scale-container--height: var(--sf-text-size-1\/5); }
+.sf-progress-scale--size-2 .sf-progress-scale-container { --sf-progress-scale-container--height: var(--sf-text-size-1\/4); }
+.sf-progress-scale--size-3 .sf-progress-scale-container { --sf-progress-scale-container--height: var(--sf-text-size-1\/3); }
+
+.sf-progress-scale--size-1\/3 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1\/4);
+  --sf-progress-scale--gap: var(--sf-space-1\/4);
+  --sf-progress-scale--line-height: var(--sf-text-height-1\/4);
+}
+.sf-progress-scale--size-1\/2 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1\/3);
+  --sf-progress-scale--gap: var(--sf-space-1\/4);
+  --sf-progress-scale--line-height: var(--sf-text-height-1\/3);
+}
+.sf-progress-scale--size-1 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1\/2);
+  --sf-progress-scale--gap: var(--sf-space-1\/4);
+  --sf-progress-scale--line-height: var(--sf-text-height-1\/2);
+}
+.sf-progress-scale--size-2 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1);
+  --sf-progress-scale--gap: var(--sf-space-1\/3);
+  --sf-progress-scale--line-height: var(--sf-text-height-1);
+}
+.sf-progress-scale--size-3 {
+  --sf-progress-scale--font-size: var(--sf-text-size-2);
+  --sf-progress-scale--gap: var(--sf-space-1\/2);
+  --sf-progress-scale--line-height: var(--sf-text-height-2);
+}
+}
+
+@layer sf.components {
+/* On a text line the track and its value share the line: the track keeps its
+   size's thickness and fills the row, the value follows at the text step. */
+.sf-progress-scale.sf-progress-scale--line-1\/2 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1\/3);
+  --sf-progress-scale--line-height: var(--sf-text-height-1\/2);
+  --sf-progress-scale--gap: var(--sf-ui-1\/2--text-space-x);
+  block-size: var(--sf-text-height-1\/2);
+}
+
+.sf-progress-scale.sf-progress-scale--line-1\/2 .sf-progress-scale-container {
+  --sf-progress-scale-container--height: var(--sf-text-size-1\/6);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-progress-scale.sf-progress-scale--line-1 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1\/2);
+  --sf-progress-scale--line-height: var(--sf-text-height-1);
+  --sf-progress-scale--gap: var(--sf-ui-1--text-space-x);
+  block-size: var(--sf-text-height-1);
+}
+
+.sf-progress-scale.sf-progress-scale--line-1 .sf-progress-scale-container {
+  --sf-progress-scale-container--height: var(--sf-text-size-1\/5);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-progress-scale.sf-progress-scale--line-2 {
+  --sf-progress-scale--font-size: var(--sf-text-size-1);
+  --sf-progress-scale--line-height: var(--sf-text-height-2);
+  --sf-progress-scale--gap: var(--sf-ui-2--text-space-x);
+  block-size: var(--sf-text-height-2);
+}
+
+.sf-progress-scale.sf-progress-scale--line-2 .sf-progress-scale-container {
+  --sf-progress-scale-container--height: var(--sf-text-size-1\/4);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-progress-scale[class*="sf-progress-scale--line-"] .sf-progress-scale-text {
+  flex: none;
+}
+}

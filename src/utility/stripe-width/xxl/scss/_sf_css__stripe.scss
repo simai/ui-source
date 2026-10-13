@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__stripe' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// STRIPES
+
+$infix: xxl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // STRIPE SIZE
+        // Size size from 1 to 9. Use SIMAI Framework Size System
+        @each $size-name, $size-value in $stripe-size-array {
+            .#{$infix}stripe-size-#{$size-name} {
+                --sf-stripe--size: var(--sf-#{$size-value});
+            }
+        }
+    }
+// }
+}

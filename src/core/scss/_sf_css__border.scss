@@ -1,0 +1,122 @@
+// SIMAI Framework
+// https://simai.io
+
+// BORDER CSS
+
+// ------------------------------------------------
+// Замена на переменные из figma - самые актуальные
+// ------------------------------------------------
+
+@use '../figma_variables/figma_radius.scss';
+@use '../figma_variables/figma_border_radius.scss';
+@use '../figma_variables/figma_focus.scss';
+@use 'mix/mix__breakpoint' as bpMixin;
+@use "vars/sf_var__breakpoint" as bp;
+@layer sf.base {
+:root {
+
+
+	// Border Variables
+	--sf-border--width: 0;
+	--sf-border--style: solid;
+	--sf-border--color: var(--sf-transparent);
+
+	// Default Border Property
+	border: var(--sf-border--width) var(--sf-border--style) var(--sf-border--color);
+	border-color: var(--sf-outline-variant);
+	// Два радиуса по умолчанию, названные по тому, к чему их прикладывают:
+	// мелкий контрол и крупный блок. Прежнее имя --sf-radius-default о своей
+	// области ничего не говорило и читалось как «по умолчанию вообще».
+	// Роль стоит на ступени шкалы, а не на примитиве: если шкалу перенастроят,
+	// роль поедет за ней. Прежние ступени, 1/3 и default, давали два и четыре
+	// пикселя — на плитке рядом с прямым углом эту разницу не видно.
+	--sf-radius--ui: var(--sf-radius-1\/2);
+	--sf-radius--surface: var(--sf-radius-1);
+	--sf-focus--color: var(--sf-focus);
+	// The ring stands one pixel off the element instead of flush against it.
+	// Flush, a ring in the focus colour disappears into a control filled with the
+	// same colour — a switch on its blue track measured 1.0:1 that way. The gap
+	// shows whatever lies behind the control, which is the surface, so the ring
+	// always has something to read against without a second painted layer.
+	// Ring and gap are in pixels, like every hairline: they mark an edge and
+	// stay 2px and 1px whatever the root font size (owner, 2026-10-10).
+	--sf-focus--offset: var(--sf-px);
+	--sf-focus--style: solid;
+	// One width, two names. The ring reads `--sf-focus--width`; the Figma export
+	// declares `--sf-focus-outline-width` and the forced-colours fallbacks still
+	// name it, so the ring derives from the export instead of repeating its value.
+	--sf-focus--width: var(--sf-focus-outline-width);
+	--sf-ui-focus-inset: inset 0 0 0 var(--sf-focus-outline-width) var(--sf-focus);
+	// ------------------------------------------------
+	// Замена на переменные из figma - самые актуальные
+	// ------------------------------------------------
+
+
+}
+
+:focus-visible {
+	// These four read the tokens declared above. Written with a single dash
+	// they resolved to nothing, so the base ring was the browser default.
+	// The rule is keyboard-only: on a mouse click the browser shows no ring,
+	// and neither do we.
+	outline-color: var(--sf-focus--color);
+	outline-offset: var(--sf-focus--offset);
+	outline-style: var(--sf-focus--style);
+	outline-width: var(--sf-focus--width);
+}
+
+.border {
+	border: var(--sf-px) var(--sf-outline-variant) solid;
+}
+
+
+/* One meaning for the name: the border-style utility's, border-style: none.
+   Core drew a transparent 1px border under the same class, so which one a page
+   got depended on whether the utility sheet had loaded yet. */
+.border-none {
+	border-style: none;
+}
+
+.divider > :not([hidden]) ~ :not([hidden]) {
+	border: var(--sf-px) var(--sf-outline-variant) solid;
+}
+
+.divider-none > :not([hidden]) ~ :not([hidden]) {
+	border-width: var(--sf-0);
+}
+
+.outline {
+	outline: var(--sf-px) var(--sf-outline-variant) solid;
+}
+
+.outline-none {
+	outline-width: var(--sf-0);
+}
+
+	@each $key, $value in (
+					sm: sm,
+					md: md,
+					lg: lg,
+					xl: xl
+	) {
+		@include bpMixin.breakpoint-media($key) {
+			$infix: bpMixin.breakpoint-infix($key, bp.$breakpoint-array);
+
+			.#{$infix}border {
+				border: var(--sf-px) var(--sf-outline-variant) solid;
+			}
+
+			.#{$infix}border-none {
+				border-style: none;
+			}
+		}
+	}
+
+.hover\:border:hover {
+	border: var(--sf-px) var(--sf-outline-variant) solid;
+}
+
+.hover\:border-none:hover {
+	border-style: none;
+}
+}

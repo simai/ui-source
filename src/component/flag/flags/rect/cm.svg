@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="116 260 28 20" fill="none" role="img">
+<g id="Country=CM">
+<rect id="Mask_98" x="116" y="260" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask44_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="116" y="260" width="28" height="20">
+<rect id="Mask_99" x="116" y="260" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask44_8205_11341)">
+<rect id="Mask_100" x="129.333" y="260" width="14.6667" height="20" fill="url(#paint8_linear_8205_11341)"/>
+<path id="Rectangle 2_57" fill-rule="evenodd" clip-rule="evenodd" d="M116 280H125.333V260H116V280Z" fill="#496E2D"/>
+<path id="Rectangle 2 Copy_4" fill-rule="evenodd" clip-rule="evenodd" d="M125.333 280H134.666V260H125.333V280Z" fill="#D80027"/>
+<path id="Rectangle 2 Copy 2" fill-rule="evenodd" clip-rule="evenodd" d="M134.667 280H144V260H134.667V280Z" fill="#FFDA44"/>
+<path id="Star 8_5" fill-rule="evenodd" clip-rule="evenodd" d="M130 271.3L128.041 272.697L128.764 270.402L126.83 268.97L129.236 268.948L130 266.667L130.764 268.948L133.171 268.97L131.237 270.402L131.96 272.697L130 271.3Z" fill="#FF9811"/>
+</g>
+</g>
+<defs><linearGradient id="paint8_linear_8205_11341" x1="129.333" y1="260" x2="129.333" y2="280" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFDC44"/>
+<stop offset="1" stop-color="#FDD216"/>
+</linearGradient></defs>
+</svg>

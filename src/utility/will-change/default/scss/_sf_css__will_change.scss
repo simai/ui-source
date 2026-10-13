@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__will_change' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// INTERACTIVITY
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+	@include breakpoint-media($infix) {
+		$infix: breakpoint-infix($infix, $breakpoint-array);
+
+		// Will Change
+		@each $will-change-name, $will-change-value in $will-change-array {
+			.#{$infix}will-change-#{$will-change-name} {
+				will-change: #{$will-change-value};
+			}
+		}
+	}
+// }
+}

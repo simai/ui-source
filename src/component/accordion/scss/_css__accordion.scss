@@ -1,0 +1,172 @@
+@use 'var__accordion' as *;
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-accordion {
+  --sf-accordion--radius: var(--sf-radius--surface);
+  --sf-accordion--border-width: var(--sf-px);
+  --sf-accordion--border-color: var(--sf-outline-variant);
+  --sf-accordion--background-color: var(--sf-surface-container);
+  --sf-accordion--trigger-padding-block: var(--sf-space-2);
+  --sf-accordion--trigger-padding-inline: var(--sf-space-3);
+  --sf-accordion--content-padding: var(--sf-space-3);
+
+  border-end-end-radius: var(--sf-accordion--radius);
+  border-end-start-radius: var(--sf-accordion--radius);
+  border-start-end-radius: var(--sf-accordion--radius);
+  border-start-start-radius: var(--sf-accordion--radius);
+  overflow: hidden;
+  overflow: clip;
+  background-color: var(--sf-accordion--background-color);
+}
+
+.sf-accordion.sf-accordion--outline {
+  border: var(--sf-accordion--border-width) solid
+    var(--sf-accordion--border-color);
+  background-color: transparent;
+}
+
+.sf-accordion.sf-accordion--flush {
+  --sf-accordion--radius: var(--sf-radius-square);
+
+  border-block-end: var(--sf-accordion--border-width) solid
+    var(--sf-accordion--border-color);
+  background-color: transparent;
+}
+
+.sf-accordion-heading {
+  margin: 0;
+  font: inherit;
+}
+
+.sf-accordion-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1);
+  width: 100%;
+  margin: 0;
+  padding: var(--sf-accordion--trigger-padding-block)
+    var(--sf-accordion--trigger-padding-inline);
+  border: 0;
+  box-sizing: border-box;
+  appearance: none;
+  color: var(--sf-accordion-title--color, var(--sf-on-surface));
+  background-color: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-accordion-trigger::after {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: var(--sf-accordion--border-width);
+  background-color: transparent;
+  content: '';
+  pointer-events: none;
+}
+
+.sf-accordion-trigger[aria-expanded='true']::after {
+  background-color: var(
+    --sf-accordion-divider--color,
+    var(--sf-outline-variant)
+  );
+}
+
+.sf-accordion-trigger:hover {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-accordion-trigger:active {
+  background-color: var(--sf-surface-container-active);
+}
+
+.sf-accordion-trigger:focus-visible {
+  z-index: 1;
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+.sf-accordion .sf-accordion-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: inherit;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text--size);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-text--height);
+}
+
+.sf-accordion .sf-icon {
+  flex: 0 0 auto;
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-text-height-1);
+  height: var(--sf-text-height-1);
+  width: var(--sf-text-height-1);
+  transform: rotate(0deg);
+  transform-origin: center;
+  transition: transform var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-accordion-trigger[aria-expanded='true'] .sf-icon,
+.sf-accordion--legacy[aria-expanded='true'] > .sf-icon {
+  transform: rotate(90deg);
+}
+
+[dir='rtl'] .sf-accordion-trigger[aria-expanded='false'] .sf-icon,
+[dir='rtl'] .sf-accordion--legacy[aria-expanded='false'] > .sf-icon {
+  transform: rotate(180deg);
+}
+
+.sf-accordion.sf-accordion--plus-minus .sf-accordion-trigger .sf-icon,
+[dir='rtl']
+  .sf-accordion.sf-accordion--plus-minus
+  .sf-accordion-trigger
+  .sf-icon {
+  transform: none;
+}
+
+.sf-accordion .sf-accordion-content {
+  padding: var(--sf-accordion--content-padding);
+  color: var(--sf-accordion-content--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text--size);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-text--height);
+}
+
+@media (forced-colors: active) {
+  .sf-accordion-trigger:focus-visible {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline-offset: calc(var(--sf-focus-outline-width) * -1);
+    box-shadow: none;
+  }
+}
+
+/* Compatibility path for the released pre-trigger markup. */
+.sf-accordion.sf-accordion--legacy {
+  gap: var(--sf-space-1\/3);
+  padding: var(--sf-space-3);
+  cursor: pointer;
+}
+
+.sf-accordion.sf-accordion--legacy:hover {
+  --sf-accordion--background-color: var(--sf-surface-container-hover);
+}
+
+.sf-accordion.sf-accordion--legacy:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-accordion.sf-accordion--legacy .sf-accordion-content {
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-accordion-trigger,
+  .sf-accordion .sf-icon {
+    transition: none;
+  }
+}

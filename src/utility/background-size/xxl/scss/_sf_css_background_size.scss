@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var_background_size' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND
+
+$infix: xxl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $bg-size-name, $bg-size-value in $bg-size-array {
+            .#{$infix}bg-#{$bg-size-name} {
+                background-size: #{$bg-size-value};
+            }
+        }
+    }
+// }
+}

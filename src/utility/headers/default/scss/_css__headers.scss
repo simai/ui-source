@@ -1,0 +1,31 @@
+@use '../../../../core/scss/sf_ext__common' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOGRAPHY
+
+// @include layer-priority(utility,default) {
+	// This legacy loader entrypoint delegates to the same semantic role tokens
+	// as Core. It must never remap headings to body-text line heights.
+	h1 {font-size: var(--sf-heading-1--size); line-height: var(--sf-heading-1--height);}
+	h2 {font-size: var(--sf-heading-2--size); line-height: var(--sf-heading-2--height);}
+	h3 {font-size: var(--sf-heading-3--size); line-height: var(--sf-heading-3--height);}
+	h4 {font-size: var(--sf-heading-4--size); line-height: var(--sf-heading-4--height);}
+	h5 {font-size: var(--sf-heading-5--size); line-height: var(--sf-heading-5--height);}
+	h6 {font-size: var(--sf-heading-6--size); line-height: var(--sf-heading-6--height);}
+
+	// heading settings
+	// h1, h2, h3, h4, h5, h6 {
+	// 	margin-block-start: var(--sf-text-size-5);
+	// 	font-weight: var(--sf-heading--font-weight);
+	// 	font-family: var(--sf-heading--font-family);
+	// 	font-style: var(--sf-heading--font-style);
+	// }
+
+	// Content settings
+	// h1, h2, h3, h4, h5, h6 {
+	// 	margin-block-end:var(--sf-text--margin-end-default);
+	// }
+// }
+}

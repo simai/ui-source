@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__object' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OBJECT
+
+$infix: sm;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Object Fit
+        // Utilities for controlling how a replaced element's content should be resized.
+        @each $object-fit-name, $object-fit-value in $object-fit-array {
+            .#{$infix}object-#{$object-fit-name} {
+                object-fit: #{$object-fit-value};
+            } 
+        }
+    }
+// }
+}

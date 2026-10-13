@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation composition lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/buttons/css/buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/tabs/css/tabs.css">
+<link rel="stylesheet" href="/ui/distr/component/pagination/css/pagination.css">
+<style>body { margin: 0; padding: 16px; font-family: var(--sf-text--family); background: var(--sf-surface-0); color: var(--sf-on-surface); } section { margin-bottom: 32px; }</style>
+</head>
+<body>
+<main id="lab"></main>
+<script>
+const button = (label, selected) => `<button type="button" class="sf-button${selected ? ' selected' : ''} sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">${label}</span></button>`;
+const iconButton = (icon, selected) => `<button type="button" aria-label="${icon}" class="sf-icon-button sf-icon-button--default sf-icon-button--primary sf-icon-button--icon sf-icon-button--size-1${selected ? ' selected' : ''}"><i class="sf-icon" aria-hidden="true">${icon}</i></button>`;
+const tabs = (variant, items) => `<section data-lab="tabs ${variant || 'plain'}"><div class="sf-tabs${variant ? ' sf-tabs--' + variant : ''} flex flex-col"><div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" aria-label="Tabs">${items}</nav></div><div class="sf-tabs-main-container"><section class="sf-tabs-main-tab selected">Panel</section></div></div></section>`;
+const arrow = (icon, label) => `<li class="sf-pagination-item"><button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-pagination-direction" aria-label="${label}"><i class="sf-icon" aria-hidden="true">${icon}</i></button></li>`;
+const pages = [1, 2, 3].map((n) => `<li class="sf-pagination-item"><button type="button" class="sf-page-number sf-page-number--square${n === 1 ? ' selected' : ''}" aria-label="Page ${n}">${n}</button></li>`).join('');
+document.getElementById('lab').innerHTML = [
+  tabs('', button('Overview', true) + button('Team') + button('History')),
+  tabs('underline', button('All', true) + button('Drafts')),
+  tabs('pills', button('Day', true) + button('Week')),
+  tabs('full', button('One', true) + button('Two') + button('Three')),
+  tabs('', iconButton('home', true) + iconButton('history')),
+  `<section data-lab="pagination"><nav class="sf-pagination flex flex-col" aria-label="Pages"><div class="sf-pagination-main flex items-cross-center"><ol class="sf-pagination-list flex items-cross-center list-none m-0 p-0">${arrow('keyboard_arrow_left', 'Previous')}${pages}${arrow('keyboard_arrow_right', 'Next')}</ol></div></nav></section>`,
+].join('');
+document.fonts.load('24px "Material Symbols Outlined"', 'home').then(() => document.querySelectorAll('.sf-icon').forEach((i) => i.classList.add('sf-icon-loaded')));
+</script>
+</body>
+</html>

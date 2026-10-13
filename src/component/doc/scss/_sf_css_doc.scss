@@ -1,0 +1,121 @@
+@layer sf.components {
+  code,
+  .sf-doc-code,
+  .t-source {
+    font-family: var(--sf-mono);
+  }
+
+  .sf-doc-lead,
+  .t-lead {
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-large--size);
+    line-height: var(--sf-text-large--height);
+  }
+
+  * + :is(.sf-doc-example, .example) {
+    margin-block-start: var(--sf-text--space-bottom);
+  }
+
+  .sf-doc-pair {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-doc-example,
+  .example {
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--sf-space-3);
+    overflow-wrap: anywhere;
+    background-color: var(--sf-surface-container);
+    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius--surface);
+    color: var(--sf-on-surface);
+  }
+
+  :is(.sf-doc-example, .sf-playground, .example) + :is(.sf-doc-source, .source) {
+    border-start-end-radius: var(--sf-radius-square);
+    border-start-start-radius: var(--sf-radius-square);
+  }
+
+  :is(.sf-doc-example, .sf-playground, .example):has(+ :is(.sf-doc-source, .source)) {
+    border-end-end-radius: var(--sf-radius-square);
+    border-end-start-radius: var(--sf-radius-square);
+  }
+
+  .sf-doc-source,
+  .source {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-block-end: var(--sf-text--space-bottom);
+    overflow: auto;
+    background-color: var(--sf-surface-inverse);
+    border-radius: var(--sf-radius--surface);
+    color: var(--sf-on-surface-inverse);
+    tab-size: 2;
+  }
+
+  // The core gives <code> the main text colour outright, which is right on a
+  // surface and wrong here: the source block is an inverse surface, and code
+  // in it stayed dark on dark, 1.3:1. Inside the block it takes the block's
+  // colour.
+  :is(.sf-doc-source, .source) code {
+    color: inherit;
+  }
+
+  .sf-doc-stripes,
+  .bg-stripes {
+    --sf-doc-pattern-color: var(--sf-surface-1);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--sf-doc-pattern-color) 0 25%,
+      var(--sf-transparent) 25% 50%
+    );
+    background-size: var(--sf-space-2) var(--sf-space-2);
+  }
+
+  .bg-stripes-white {
+    --sf-doc-pattern-color: var(--sf-surface-0);
+  }
+
+  .bg-stripes-blue {
+    --sf-doc-pattern-color: var(--sf-info-container);
+  }
+
+  .sf-doc-checkerboard,
+  .bg-checkered {
+    background-color: var(--sf-surface-0);
+    background-image: conic-gradient(
+      var(--sf-surface-1) 25%,
+      var(--sf-transparent) 0 50%,
+      var(--sf-surface-1) 0 75%,
+      var(--sf-transparent) 0
+    );
+    background-size: var(--sf-space-2) var(--sf-space-2);
+  }
+
+  .hljs-emphasis {
+    font-style: italic;
+  }
+
+  .hljs-strong {
+    font-weight: bold;
+  }
+
+  @media (forced-colors: active) {
+    .sf-doc-example,
+    .example,
+    .sf-doc-source,
+    .source {
+      border-color: CanvasText;
+    }
+
+    .sf-doc-stripes,
+    .bg-stripes,
+    .sf-doc-checkerboard,
+    .bg-checkered {
+      background: Canvas;
+      border: var(--sf-px) solid CanvasText;
+    }
+  }
+}

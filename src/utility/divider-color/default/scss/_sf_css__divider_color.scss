@@ -1,0 +1,30 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__divider_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Divider Color
+        @each $divider-color-name, $divider-color-value in $divider-color-array {
+            .#{$infix}divider-#{$divider-color-name} > :not([hidden]) ~ :not([hidden]),
+            .#{$infix}divide-#{$divider-color-name} > :not([hidden]) ~ :not([hidden]) {
+                border-color: color-mix(
+                    in srgb,
+                    transparent,
+                    var(--sf-#{$divider-color-value})
+                    calc(var(--sf-divider--alfa, 1) * 100%)
+                );
+            }
+        }
+    }
+// }
+}

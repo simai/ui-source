@@ -1,0 +1,147 @@
+@layer sf.components {
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
+.sf-skeleton {
+  --sf-skeleton-base: var(--sf-ui-skeleton);
+  --sf-skeleton-highlight: var(--sf-surface-container-active);
+  --sf-skeleton-duration: calc(var(--sf-duration-slow) * 3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-b0);
+}
+
+.sf-skeleton-text {
+  position: relative;
+  overflow: hidden;
+  background: var(--sf-skeleton-base);
+  border-radius: var(--sf-radius--ui);
+  block-size: var(--sf-skeleton-text--height);
+}
+
+.sf-skeleton--animation-pulse .sf-skeleton-text {
+  animation: sf-skeleton-pulse var(--sf-skeleton-duration) var(--sf-animation) infinite;
+}
+
+.sf-skeleton--animation-wave .sf-skeleton-text::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    var(--sf-transparent),
+    var(--sf-skeleton-highlight),
+    var(--sf-transparent)
+  );
+  animation: sf-skeleton-wave var(--sf-skeleton-duration) var(--sf-animation) infinite;
+}
+
+.sf-skeleton--animation-none .sf-skeleton-text,
+.sf-skeleton--animation-none .sf-skeleton-text::after {
+  animation: none;
+}
+
+.sf-skeleton-text--size-1 {
+  --sf-skeleton-text--height: var(--sf-text-size-1);
+}
+
+.sf-skeleton-text--size-2 {
+  --sf-skeleton-text--height: var(--sf-text-size-2);
+}
+
+.sf-skeleton-text--size-3 {
+  --sf-skeleton-text--height: var(--sf-text-size-3);
+}
+
+.sf-skeleton-text--size-4 {
+  --sf-skeleton-text--height: var(--sf-text-size-4);
+}
+
+.sf-skeleton-text--size-5 {
+  --sf-skeleton-text--height: var(--sf-text-size-5);
+}
+
+.sf-skeleton-text--size-6 {
+  --sf-skeleton-text--height: var(--sf-text-size-6);
+}
+
+.sf-skeleton-text--size-7 {
+  --sf-skeleton-text--height: var(--sf-text-size-7);
+}
+
+.sf-skeleton-text--size-1\/2 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/2);
+}
+
+.sf-skeleton-text--size-1\/3 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/3);
+}
+
+.sf-skeleton-text--size-1\/4 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/4);
+}
+
+.sf-skeleton-text--size-1\/5 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/5);
+}
+
+.sf-skeleton-text--size-1\/6 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/6);
+}
+
+.sf-skeleton-text--size-1\/7 {
+  --sf-skeleton-text--height: var(--sf-text-size-1\/7);
+}
+
+.sf-skeleton-icon {
+  inline-size: var(--sf-skeleton-text--height);
+}
+
+.sf-skeleton-circle {
+  border-radius: var(--sf-radius-circle);
+}
+
+.sf-skeleton-square {
+  border-radius: 0;
+}
+
+.sf-skeleton-rounded {
+  border-radius: var(--sf-radius--ui);
+}
+
+.sf-skeleton--animation-wave .sf-skeleton-text {
+  overflow: hidden;
+}
+
+@keyframes sf-skeleton-pulse {
+  50% {
+    opacity: var(--sf-opacity-60);
+  }
+}
+
+@keyframes sf-skeleton-wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-skeleton--animation-pulse .sf-skeleton-text,
+  .sf-skeleton--animation-wave .sf-skeleton-text::after {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-skeleton-text {
+    background: CanvasText;
+    opacity: var(--sf-opacity-30);
+  }
+
+  .sf-skeleton--animation-wave .sf-skeleton-text::after {
+    display: none;
+  }
+}
+}

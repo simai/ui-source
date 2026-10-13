@@ -1,0 +1,22 @@
+@use 'sf_var__gradient' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT
+
+$infix: '';
+
+// @include layer-priority(utility,default) {
+
+    @for $i from 1 through 3 {
+
+        // Ring Color
+        @each $gradient-color-name, $gradient-color-value in $gradient-color-array {
+            .#{$infix}gr#{$i}-#{$gradient-color-name} {
+                --sf-gradient--color-#{$i}: var(--sf-#{$gradient-color-value});
+            }
+        }
+    }
+// }
+}

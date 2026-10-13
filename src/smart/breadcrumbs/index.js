@@ -1,0 +1,544 @@
+import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
+import { renderBreadcrumbsTemplate } from './js/templates/default';
+import {pageText} from "../../core/js/page-language";
+// Every word this component says, in the languages it ships with. A product
+// adds any other through SF.language.register("sf-breadcrumbs", code, words).
+const BREADCRUMBS_TEXT = {
+  en: {
+    ariaLabel: 'Breadcrumb',
+    expandLabel: 'Show hidden breadcrumbs',
+  },
+  ru: {
+    ariaLabel: 'Хлебные крошки',
+    expandLabel: 'Показать скрытые крошки',
+  },
+};
+
+
+function parseItemFlags(flagsPart = '') {
+  const flags = String(flagsPart || '')
+    .split(',')
+    .map((flag) => flag.trim())
+    .filter(Boolean);
+  const item = {};
+
+  flags.forEach((flag) => {
+    const [rawKey, ...rawValue] = flag.split('=');
+    const key = String(rawKey || '').trim().toLowerCase();
+    const value = rawValue.join('=').trim();
+
+    if (!key) return;
+
+    if (['current', 'active', 'disabled', 'ellipsis'].includes(key)) {
+      item[key] = value ? !['0', 'false', 'no'].includes(value.toLowerCase()) : true;
+      return;
+    }
+
+    item[key] = value;
+  });
+
+  return item;
+}
+
+function normalizeItem(item = {}, index = 0, total = 0, options = {}) {
+  if (typeof item === 'string') {
+    return normalizeItem({ label: item }, index, total, options);
+  }
+
+  const { defaultCurrent = true } = options;
+  const label = item.label || item.text || item.title || '';
+  const current = Boolean(
+    item.current || item.active || (defaultCurrent && index === total - 1),
+  );
+  const ellipsis = Boolean(item.ellipsis || label === '...' || label === '…');
+  const hiddenItemsSource =
+    item.hiddenItems || item.hiddenitems || item['hidden-items'] || item.items;
+  const hiddenItems = hiddenItemsSource
+    ? parseItems(hiddenItemsSource, { defaultCurrent: false })
+    : [];
+
+  return {
+    label: ellipsis ? '…' : label,
+    href: item.href || item.url || '',
+    icon: item.icon || '',
+    current,
+    active: Boolean(item.active || current),
+    disabled: Boolean(item.disabled),
+    ellipsis,
+    target: item.target || '',
+    rel: item.rel || '',
+    itemClass: item.itemClass || item['item-class'] || '',
+    containerClass: item.containerClass || item['container-class'] || '',
+    ariaLabel: item.ariaLabel || item['aria-label'] || '',
+    value: item.value || '',
+    hiddenItems,
+    index,
+  };
+}
+
+function parseItems(items = '', options = {}) {
+  if (Array.isArray(items)) {
+    return items.map((item, index) =>
+      normalizeItem(item, index, items.length, options),
+    );
+  }
+
+  const raw = String(items || '').trim();
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.map((item, index) =>
+        normalizeItem(item, index, parsed.length, options),
+      );
+    }
+  } catch {
+    // Plain string format is handled below.
+  }
+
+  const entries = raw
+    .split('|')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return entries.map((entry, index) => {
+    const [labelPart, ...flagParts] = entry.split('::');
+    const flags = parseItemFlags(flagParts.join(','));
+
+    return normalizeItem(
+      {
+        label: labelPart.trim(),
+        ...flags,
+      },
+      index,
+      entries.length,
+      options,
+    );
+  });
+}
+
+class SfBreadcrumbs extends SfBaseElement {
+  static itemTemplateSlot = '__items';
+
+  static get props() {
+    return {
+      templateName: { attribute: 'template', default: 'default' },
+      items: {
+        default: [],
+        parser(value) {
+          return parseItems(value);
+        },
+      },
+      separatorIcon: { default: 'chevron_right' },
+      homeIcon: { default: 'home' },
+      homeLabel: { default: '' },
+      rootClass: { default: '' },
+      itemClass: { default: '' },
+      linkClass: { default: '' },
+      currentClass: { default: '' },
+      separatorClass: { default: '' },
+      containerClass: { default: '' },
+      ariaLabel: { default: '' },
+      expandLabel: { default: '' },
+      expandOnEllipsis: { default: true, type: Boolean },
+      maxItems: { default: 4, type: Number },
+    };
+  }
+
+  constructor() {
+    super();
+    this._itemObserver = null;
+    this._readyCaptureHandler = null;
+    this._ellipsisExpanded = false;
+    this._preserveEllipsisExpanded = false;
+  }
+
+  connectedCallback() {
+    if (this._isMounted) {
+      return;
+    }
+
+    this.observeItemChildren();
+    this.applyHostDisplayStyle();
+
+    if (this.hasAttribute('items') || this.captureInitialItems()) {
+      this.mountComponent();
+      return;
+    }
+
+    this.scheduleReadyCapture();
+  }
+
+  disconnectedCallback() {
+    this.disconnectItemObserver();
+    this.cancelReadyCapture();
+    super.disconnectedCallback();
+  }
+
+  get items() {
+    return this.getProp('items');
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (
+      name === 'items' &&
+      oldValue !== newValue &&
+      !this._preserveEllipsisExpanded
+    ) {
+      this._ellipsisExpanded = false;
+    }
+
+    if (
+      name === 'items' &&
+      oldValue !== newValue &&
+      this.isConnected &&
+      !this._isMounted
+    ) {
+      this.mountComponent();
+    }
+  }
+
+  mountComponent() {
+    if (!this.isConnected || this._isMounted) {
+      return;
+    }
+    super.connectedCallback();
+  }
+
+  observeItemChildren() {
+    if (this._itemObserver) {
+      return;
+    }
+
+    this._itemObserver = new MutationObserver(() => {
+      if (!this.captureInitialItems()) {
+        return;
+      }
+
+      this.cancelReadyCapture();
+
+      if (!this._isMounted) {
+        this.mountComponent();
+        return;
+      }
+
+      if (this._isMounted) {
+        this.requestComponentUpdate('items');
+      }
+    });
+
+    this._itemObserver.observe(this, { childList: true });
+  }
+
+  scheduleReadyCapture() {
+    if (document.readyState !== 'loading' || this._readyCaptureHandler) {
+      return;
+    }
+
+    this._readyCaptureHandler = () => {
+      this._readyCaptureHandler = null;
+
+      if (!this.captureInitialItems()) {
+        return;
+      }
+
+      this.mountComponent();
+    };
+
+    document.addEventListener('DOMContentLoaded', this._readyCaptureHandler, {
+      once: true,
+    });
+  }
+
+  cancelReadyCapture() {
+    if (!this._readyCaptureHandler) {
+      return;
+    }
+
+    document.removeEventListener('DOMContentLoaded', this._readyCaptureHandler);
+    this._readyCaptureHandler = null;
+  }
+
+  disconnectItemObserver() {
+    this._itemObserver?.disconnect?.();
+    this._itemObserver = null;
+  }
+
+  isItemNode(node) {
+    if (!node || node.nodeType !== Node.ELEMENT_NODE) {
+      return false;
+    }
+
+    const tagName = node?.tagName?.toLowerCase?.();
+
+    return (
+      tagName === 'item' ||
+      tagName === 'sf-breadcrumbs-item' ||
+      node?.hasAttribute?.('data-sf-breadcrumb-item')
+    );
+  }
+
+  captureInitialItems() {
+    return (
+      this.captureChildTemplates(
+        this.constructor.itemTemplateSlot,
+        (node) => this.isItemNode(node),
+      ).length > 0
+    );
+  }
+
+  getCapturedItems() {
+    const itemNodes =
+      this._slotTemplates.get(this.constructor.itemTemplateSlot) || [];
+
+    return itemNodes.map((node) => {
+      const label =
+        node.getAttribute('label') ||
+        node.getAttribute('text') ||
+        node.getAttribute('title') ||
+        node.textContent?.trim() ||
+        '';
+
+      return {
+        label,
+        href: node.getAttribute('href') || node.getAttribute('url') || '',
+        icon: node.getAttribute('icon') || '',
+        current: node.hasAttribute('current') || undefined,
+        active: node.hasAttribute('active') || undefined,
+        disabled: node.hasAttribute('disabled'),
+        ellipsis: node.hasAttribute('ellipsis') || label === '...',
+        target: node.getAttribute('target') || '',
+        rel: node.getAttribute('rel') || '',
+        itemClass: node.getAttribute('item-class') || '',
+        containerClass: node.getAttribute('container-class') || '',
+        ariaLabel: node.getAttribute('aria-label') || '',
+        value: node.getAttribute('value') || '',
+        hiddenItems: parseItems(
+          node.getAttribute('hidden-items') || node.getAttribute('items') || '',
+          { defaultCurrent: false },
+        ),
+      };
+    });
+  }
+
+  get sourceItems() {
+    const items = this.items;
+
+    if (items.length) {
+      return items.map((item, index) => normalizeItem(item, index, items.length));
+    }
+
+    const capturedItems = this.getCapturedItems();
+
+    if (capturedItems.length) {
+      return capturedItems.map((item, index) =>
+        normalizeItem(item, index, capturedItems.length),
+      );
+    }
+    return [];
+  }
+
+  get normalizedItems() {
+    const items = this.sourceItems;
+    return this.getDisplayItems(items);
+  }
+
+  getDisplayItems(items = []) {
+    const maxItems = this.getNumberAttr('maxItems', 4);
+    const expandLabel = this.getAttribute('expand-label') || pageText(BREADCRUMBS_TEXT, 'expandLabel', this);
+
+    if (
+      this._ellipsisExpanded ||
+      maxItems < 3 ||
+      items.length <= maxItems
+    ) {
+      return this.reindexItems(items);
+    }
+
+    const visibleSlots = maxItems - 1;
+    const leadingCount = Math.floor(visibleSlots / 2);
+    const trailingCount = visibleSlots - leadingCount;
+    const startItems = items.slice(0, leadingCount);
+    const endItems = items.slice(items.length - trailingCount);
+    const hiddenItems = items.slice(leadingCount, items.length - trailingCount);
+
+    if (!hiddenItems.length) {
+      return this.reindexItems(items);
+    }
+
+    return this.reindexItems([
+      ...startItems,
+      normalizeItem(
+        {
+          label: '…',
+          ellipsis: true,
+          hiddenItems,
+          ariaLabel: expandLabel,
+        },
+        leadingCount,
+        items.length,
+        { defaultCurrent: false },
+      ),
+      ...endItems,
+    ]);
+  }
+
+  reindexItems(items = []) {
+    return items.map((item, index) => ({
+      ...item,
+      index,
+      current: Boolean(item.current && index === items.length - 1),
+      active: Boolean(item.active || (item.current && index === items.length - 1)),
+    }));
+  }
+
+  templateContext() {
+    const props = this.getPropsContext();
+    const items = this.normalizedItems.map((item, index) => {
+      if (index !== 0 || item.label || !props.homeLabel) {
+        return item;
+      }
+
+      return {
+        ...item,
+        label: props.homeLabel,
+        icon: item.icon || props.homeIcon,
+      };
+    });
+
+    return this.createTemplateContext({
+      ...props,
+      ariaLabel: this.getAttribute("aria-label") || pageText(BREADCRUMBS_TEXT, "ariaLabel", this),
+      expandLabel: this.getAttribute("expand-label") || pageText(BREADCRUMBS_TEXT, "expandLabel", this),
+      component: this,
+      items,
+      rootClass: this.getRootClass(),
+    });
+  }
+
+  template() {
+    return renderBreadcrumbsTemplate(this.templateContext());
+  }
+
+  get state() {
+    const props = this.getPropsContext();
+
+    return {
+      ...props,
+      items: this.normalizedItems,
+      rootClass: this.getRootClass(),
+    };
+  }
+
+  setState(nextState = {}) {
+    Object.entries(nextState || {}).forEach(([key, value]) => {
+      const attr = toAttributeName(key);
+      if (!attr) return;
+
+      if (value === false || value === null || typeof value === 'undefined') {
+        this.removeAttribute(attr);
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        this.setAttribute(attr, JSON.stringify(value));
+        return;
+      }
+
+      this.setAttribute(attr, value === true ? '' : String(value));
+    });
+
+    return this;
+  }
+
+  onItemClick(handler, options) {
+    if (typeof handler === 'function') {
+      this.addEventListener(
+        'sf-breadcrumb-click',
+        (event) => {
+          handler(event.detail?.item, event.detail, event);
+        },
+        options,
+      );
+    }
+
+    return this;
+  }
+
+  expandEllipsis(item) {
+    if (!item?.ellipsis) {
+      return false;
+    }
+
+    if (!item.hiddenItems?.length) {
+      this._ellipsisExpanded = true;
+      this.requestComponentUpdate('ellipsis');
+      return true;
+    }
+
+    const items = this.normalizedItems;
+    const nextItems = items.flatMap((currentItem) => {
+      if (currentItem.index !== item.index) {
+        return [currentItem];
+      }
+
+      return item.hiddenItems;
+    });
+
+    this._ellipsisExpanded = true;
+    this._preserveEllipsisExpanded = true;
+
+    try {
+      this.setState({
+        items: nextItems.map((nextItem, index) => ({
+          ...nextItem,
+          index,
+          active: false,
+          current: Boolean(nextItem.current && index === nextItems.length - 1),
+        })),
+      });
+    } finally {
+      this._preserveEllipsisExpanded = false;
+    }
+
+    return true;
+  }
+
+  handleItemClick = (event, item) => {
+    if (item.disabled || item.current) {
+      event.preventDefault();
+    }
+
+    const clickEvent = new CustomEvent('sf-breadcrumb-click', {
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+      detail: {
+        component: this,
+        tagName: this.componentTagName,
+        template: this.componentTemplateName,
+        item,
+        index: item.index,
+        items: this.normalizedItems,
+        originalEvent: event,
+      },
+    });
+
+    this.dispatchEvent(clickEvent);
+
+    if (
+      item.ellipsis &&
+      this.getBooleanAttr('expandOnEllipsis', true) &&
+      !clickEvent.defaultPrevented
+    ) {
+      this.expandEllipsis(item);
+    }
+  };
+}
+
+SfBreadcrumbs.define('sf-breadcrumbs');

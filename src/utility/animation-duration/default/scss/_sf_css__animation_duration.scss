@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__animation_duration' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ANIMATION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Animation Duration
+        @each $animation-duration-name, $animation-duration-value in $animation-duration-array {
+            .#{$infix}animation-duration-#{$animation-duration-name} {
+                animation-duration: var(--sf-duration-#{$animation-duration-value});
+            }
+        }
+    }
+// }
+}

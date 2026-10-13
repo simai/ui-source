@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__font_style' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Font style
+        @each $font-style-name, $font-style-value in $font-style-array {
+            .#{$infix}#{$font-style-name} {
+                font-style: #{$font-style-value};
+            }
+        }
+    }
+// }
+}

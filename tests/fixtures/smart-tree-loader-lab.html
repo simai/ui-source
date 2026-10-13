@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Tree — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/smart-tree-browser/component/tree/css/tree.css">
+  <script>
+    window.sfPath = '../../source/output/smart-tree-browser';
+    window.sfSmartPath = '../../source/output/smart-tree-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: true},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Smart Tree</h1>
+
+    <sf-tree id="tree" aria-label="Разделы документации" selection="single">
+      <sf-tree-item label="Основы" value="foundation" open open-label="Раскрыть Основы" close-label="Свернуть Основы">
+        <sf-tree-item label="Цвет" value="color" type="file"></sf-tree-item>
+        <sf-tree-item label="Типографика" value="typography" open-label="Раскрыть Типографику" close-label="Свернуть Типографику">
+          <sf-tree-item label="Шрифт" value="font" type="file"></sf-tree-item>
+          <sf-tree-item label="Высота строки" value="line-height" type="file"></sf-tree-item>
+        </sf-tree-item>
+      </sf-tree-item>
+      <sf-tree-item label="Компоненты" value="components" type="file"></sf-tree-item>
+      <sf-tree-item label="Закрытый раздел" value="disabled" type="file" disabled></sf-tree-item>
+    </sf-tree>
+
+    <output id="events" aria-live="polite"></output>
+    <button id="add-node" class="sf-button sf-button--default sf-button--primary sf-button--size-2" type="button">
+      <span class="sf-button-text-container">Добавить раздел</span>
+    </button>
+  </main>
+
+  <script>
+    const tree = document.getElementById('tree');
+    tree.addEventListener('sf-tree-selection-change', event => {
+      document.getElementById('events').textContent = `${event.detail.value}:${event.detail.selected}`;
+    });
+    document.getElementById('add-node').addEventListener('click', () => {
+      const item = document.createElement('sf-tree-item');
+      item.setAttribute('label', 'Динамический раздел');
+      item.setAttribute('value', 'dynamic');
+      item.setAttribute('type', 'file');
+      tree.append(item);
+    });
+  </script>
+  <script src="../../source/output/smart-tree-browser/core/js/core.js"></script>
+</body>
+</html>

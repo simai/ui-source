@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/smart-component-manifest.v1.schema.json",
+  "title": "SIMAI Smart Component Manifest v1",
+  "type": "object",
+  "required": [
+    "schema_version", "id", "version", "title", "summary", "kind",
+    "reuse_mode", "lifecycle", "tags", "capabilities", "custom_element",
+    "composition", "inputs", "item_contract", "methods", "events", "contracts", "state", "persistence",
+    "ownership", "backend", "security", "accessibility", "presentation",
+    "scenarios", "compatibility", "provenance", "ai_guidance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "pattern": "^(smart|component|utility|template)\\.[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)*$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["primitive", "component", "smart", "composite", "template"]},
+    "reuse_mode": {"enum": ["whole", "parts", "both"]},
+    "lifecycle": {"enum": ["experimental", "released", "deprecated", "retired"]},
+    "tags": {"$ref": "#/$defs/stringList"},
+    "capabilities": {"$ref": "#/$defs/stringList"},
+    "custom_element": {"type": "string", "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"},
+    "templates": {"$ref": "#/$defs/stringList"},
+    "exported_parts": {"$ref": "#/$defs/stringList"},
+    "composition": {
+      "type": "object",
+      "required": ["uses", "public_parts"],
+      "additionalProperties": false,
+      "properties": {
+        "uses": {"$ref": "#/$defs/stringList"},
+        "public_parts": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "inputs": {"$ref": "#/$defs/jsonSchema"},
+    "item_contract": {"type": "object", "additionalProperties": true},
+    "methods": {"type": "object", "additionalProperties": {"$ref": "#/$defs/method"}},
+    "events": {"type": "object", "additionalProperties": {"$ref": "#/$defs/event"}},
+    "contracts": {"type": "object", "additionalProperties": {"type": "object"}},
+    "state": {"type": "object", "required": ["machine", "visual_states"], "additionalProperties": true},
+    "persistence": {"type": "object", "required": ["modes", "source_of_truth"], "additionalProperties": true},
+    "ownership": {"type": "object", "required": ["data", "side_effects", "forbidden_client_responsibilities"], "additionalProperties": true},
+    "backend": {"type": "object", "required": ["adapters", "integration_examples"], "additionalProperties": true},
+    "security": {"type": "object", "required": ["permissions", "untrusted_input"], "additionalProperties": true},
+    "accessibility": {"type": "object", "additionalProperties": true},
+    "presentation": {"type": "object", "required": ["themes", "locales", "responsive"], "additionalProperties": true},
+    "scenarios": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/scenario"}},
+    "compatibility": {
+      "type": "object",
+      "required": ["contract_schema", "runtime_pair", "aliases", "deprecations", "replacement", "migrations"],
+      "additionalProperties": false,
+      "properties": {
+        "contract_schema": {
+          "type": "object",
+          "required": ["id", "version"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {"const": "https://simai.io/contracts/smart-component-manifest.v1.schema.json"},
+            "version": {"const": 1}
+          }
+        },
+        "runtime_pair": {
+          "type": "object",
+          "required": ["ui_revision", "ui_smart_revision"],
+          "additionalProperties": false,
+          "properties": {
+            "ui_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "ui_smart_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          }
+        },
+        "aliases": {"$ref": "#/$defs/stringList"},
+        "deprecations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "since", "replacement"],
+            "additionalProperties": false,
+            "properties": {
+              "path": {"type": "string", "minLength": 1},
+              "since": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+              "replacement": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "replacement": {"type": ["string", "null"]},
+        "migrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "changes"],
+            "additionalProperties": false,
+            "properties": {
+              "from": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+              "to": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+              "changes": {"$ref": "#/$defs/stringList"}
+            }
+          }
+        }
+      }
+    },
+    "provenance": {"type": "object", "required": ["source_repository", "source_revision", "source_artifacts", "generated_runtime"], "additionalProperties": true},
+    "ai_guidance": {"type": "object", "required": ["use_when", "do_not", "required_reads", "minimal_example"], "additionalProperties": true}
+  },
+  "$defs": {
+    "stringList": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "jsonSchema": {"type": "object", "required": ["type", "properties"], "additionalProperties": true},
+    "method": {"type": "object", "required": ["summary", "arguments", "returns"], "additionalProperties": true},
+    "event": {"type": "object", "required": ["summary", "payload"], "additionalProperties": true, "properties": {"canonical": {"type": "boolean", "description": "The name to bind for this kind of event; a value control's committed change is `change`."}, "alias_of": {"type": "string", "description": "A legacy name still emitted with the canonical event's detail; bind the named event instead."}}},
+    "scenario": {"type": "object", "required": ["id", "fixture", "viewport", "assertions"], "additionalProperties": true}
+  }
+}

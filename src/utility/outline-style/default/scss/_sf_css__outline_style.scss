@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__outline_style' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OUTLINE
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Outline Style
+        @each $outline-style-name, $outline-style-value in $outline-style-array {
+            .#{$infix}outline-#{$outline-style-name} {
+                outline-style:#{$outline-style-value};
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel composition lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/buttons/css/buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/context-menu/css/context-menu.css">
+<link rel="stylesheet" href="/ui/distr/component/menu/css/menu.css">
+<link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css">
+<style>
+body{margin:0;padding:24px 24px 60vh;background:var(--sf-surface-0);color:var(--sf-on-surface);font-family:var(--sf-text--family)}
+h2{font-size:20px;margin:32px 0 12px}
+.row{display:grid;grid-template-columns:56px repeat(3, 280px);gap:24px;align-items:start;margin-bottom:24px}
+.row>b{font-size:13px}
+.lab-static .sf-list{position:static!important;display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;max-height:none!important}
+</style>
+<script>window.sfPath='/ui/distr/';</script>
+</head>
+<body>
+<main id="lab"></main>
+<script>
+const S=['1/2','1','2'];
+const items=[['edit','Rename'],['content_copy','Duplicate everything'],['delete','Delete']];
+const ctx=(s,icon)=>`<div class="sf-context-menu sf-context-menu--position-top-inline-start flex" data-lab="context ${icon?'icon':'text'} ${s}"><div class="relative"><div class="sf-context-menu-tooltip" aria-hidden="true"></div><div class="sf-context-menu-content flex flex-col flex-1">${items.map(([i,t])=>`<button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-${s} justify-start">${icon?`<i class="sf-icon" aria-hidden="true">${i}</i>`:''}<span class="sf-button-text-container">${t}</span></button>`).join('')}</div></div></div>`;
+const list=(s,icon)=>`<div class="sf-dropdown sf-dropdown--size-${s} sf-dropdown--outlined sf-dropdown--text lab-static flex flex-col" data-lab="list ${icon?'icon':'text'} ${s}"><div class="sf-list flex flex-col"><div class="sf-list-container-wrap"><div class="sf-list-container flex flex-col">${items.map(([i,t],k)=>`<div class="sf-list-item sf-list-item--${icon?'icon':'text'} sf-list-item--size-${s} cursor-pointer" role="option" tabindex="-1" data-value="${k}"><div class="sf-list-item-wrap">${icon?`<i class="sf-icon" aria-hidden="true">${i}</i>`:''}<div class="sf-list-item-container">${t}</div></div></div>`).join('')}</div></div></div></div>`;
+const menu=()=>`<nav data-lab="menu text 1"><ul class="sf-menu">${items.map(([i,t])=>`<li class="sf-menu-item"><a class="sf-menu-element" href="#${i}">${t}</a></li>`).join('')}</ul></nav>`;
+const rows=[];
+for (const [name,fn] of [['Context',s=>ctx(s,false)],['Context, icon',s=>ctx(s,true)],['List',s=>list(s,false)],['List, icon',s=>list(s,true)]]) rows.push(`<div class="row"><b>${name}</b>${S.map(fn).join('')}</div>`);
+rows.push(`<div class="row"><b>Menu</b>${menu()}</div>`);
+document.getElementById('lab').innerHTML=rows.join('');
+document.fonts.load('24px "Material Symbols Outlined"','home').then(()=>{const m=()=>document.querySelectorAll('.sf-icon:not(.sf-icon-loaded)').forEach(i=>i.classList.add('sf-icon-loaded'));m();new MutationObserver(m).observe(document.body,{subtree:true,childList:true});});
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+@use 'sf_var__scroll_backdrop_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL
+
+$infix: '';
+
+// Scroll Backdrop Color
+// @include layer-priority(utility,default) {
+    @each $scroll-backdrop-color-name, $scroll-backdrop-color-value in $scroll-backdrop-color-array {
+        .#{$infix}scroll-bg-#{$scroll-backdrop-color-name} {
+            --sf-scroll-bg-track: var(--sf-#{$scroll-backdrop-color-value});
+        }
+    }
+// }
+}

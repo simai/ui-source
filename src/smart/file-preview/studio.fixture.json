@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.file-preview",
+  "title": "File Preview reference",
+  "summary": "Deterministic reference fixture for sf-file-preview.",
+  "locale": "ru",
+  "props": {
+    "file-name": "Техническое задание.pdf",
+    "file-size": "2,4 МБ",
+    "icon": "description",
+    "href": "#",
+    "download-label": "Скачать файл",
+    "remove-label": "Удалить файл"
+  },
+  "children": [],
+  "state": "default"
+}

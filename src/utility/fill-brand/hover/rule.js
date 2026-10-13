@@ -1,0 +1,1 @@
+SF.RuleLoader['fill-brand/hover'] = new RegExp("^(?:hover:fill-(?:behance|fb|kuaishou|linkedin|msteams|ok|pinterest|q(?:q|uora|zone)|reddit|s(?:inaweibo|napchat|oundcloud)|t(?:elegram|iktok|umblr|witter)|v(?:i(?:ber|meo)|k)|w(?:echat|hatsapp)|youtube))(?![\\s\\S])");

@@ -1,0 +1,18 @@
+{
+  ".sf-download-file": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-e5)",
+    "justify-content/space-between (.justify-between)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-download-file .sf-download-file-wrap": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-download-file-wrap--gap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ]
+}

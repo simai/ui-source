@@ -1,0 +1,25 @@
+{
+  "id": "create-under-a-parent",
+  "intent": "view.create_record",
+  "capability": null,
+  "summary": "In a tree, creating carries the node to create under.",
+  "given": {
+    "create_items": [
+      {
+        "key": "page",
+        "label": "Page"
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.create_record",
+    "payload": {
+      "item": "page",
+      "parent": "about"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "The host opens its own form with the parent chosen; null or absent creates a root."
+  }
+}

@@ -1,0 +1,147 @@
+{
+  ".sf-country-code": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/4)",
+    "justify-content/flex-start (.justify-start)"
+  ],
+  ".sf-country-code .sf-country-code-label": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/4)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code .sf-country-code-field": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-country-code .sf-country-code-left": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-country-code .sf-country-code-field input": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)"
+  ],
+  ".sf-country-code .sf-country-code-items": [
+    "gap/var(--sf-country-code-items--gap)"
+  ],
+  ".sf-country-code .sf-country-code-item": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/3)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-country-code .sf-country-code-flag": [
+    "display/flex (.flex)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-country-code.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-2.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-2.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-3.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-3.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1\\/3.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1\\/3.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1\\/2.open .sf-country-code-list": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-country-code.sf-country-code--size-1\\/2.open .sf-country-code-items": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ]
+}

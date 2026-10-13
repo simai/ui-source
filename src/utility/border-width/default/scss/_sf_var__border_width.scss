@@ -1,0 +1,21 @@
+// SIMAI Framework
+// https://simai.io
+
+// BORDER
+
+// Border size use SIMAI Framework size system
+$border-width-array: (
+	1: a1,
+	2: a2,
+	3: a3,
+	4: a4,
+	5: a5,
+	6: a6,
+	7: a7,
+	8: a8,
+	9: a9,
+	10: b0,
+	0: 0, // the null mast be last element in the array  
+);
+
+$border-side-array: (top,inline-end,bottom,inline-start,x,y);

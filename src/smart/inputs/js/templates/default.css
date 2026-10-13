@@ -1,0 +1,37 @@
+@layer sf.components {
+    .sf-input.sf-input--bordered > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--filled > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+        --sf-icon--color: var(--sf-on-surface-variant);
+    }
+
+    .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+        --sf-icon--font-size: var(--sf-text-height-1);
+        --sf-icon--height: var(--sf-text-height-1);
+        --sf-icon--width: var(--sf-text-height-1);
+    }
+
+    .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+        --sf-icon--font-size: var(--sf-text-height-2);
+        --sf-icon--height: var(--sf-text-height-2);
+        --sf-icon--width: var(--sf-text-height-2);
+    }
+
+    .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+        --sf-icon--font-size: var(--sf-text-height-1\/2);
+        --sf-icon--height: var(--sf-text-height-1\/2);
+        --sf-icon--width: var(--sf-text-height-1\/2);
+    }
+
+    .sf-input.error > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+        --sf-icon--color: var(--sf-error);
+    }
+}
+
+@layer sf.states {
+    .sf-input:has(input:enabled:not(:disabled):not(.disabled):hover) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled):active) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled):focus-visible) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+        --sf-icon--color: var(--sf-on-surface-variant);
+    }
+
+    .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+        --sf-icon--color: var(--sf-on-disable);
+    }
+}

@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__isolation' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ISOLATION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Utilities for controlling whether an element should explicitly create a new stacking context.
+        @each $isolation-name, $isolation-value in $isolation-array {
+            .#{$infix}#{$isolation-name} {
+                isolation: #{$isolation-value};
+            }
+        }
+    }
+// }
+}

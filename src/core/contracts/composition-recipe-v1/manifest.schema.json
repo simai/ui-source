@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-recipe-v1/manifest.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "simai.composition.recipe-manifest.v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+    },
+    "parameters": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+      },
+      "additionalProperties": {
+        "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/valueSchema"
+      }
+    },
+    "slots": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "min": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "minItems": 0,
+            "maxItems": 500
+          },
+          "defaults": {
+            "type": "array",
+            "items": {
+              "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/entry"
+            },
+            "minItems": 0,
+            "maxItems": 500
+          }
+        },
+        "required": [
+          "min",
+          "max"
+        ]
+      }
+    },
+    "body": {
+      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/placement"
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "parameters",
+    "slots",
+    "body"
+  ]
+}

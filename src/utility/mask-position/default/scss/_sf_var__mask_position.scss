@@ -1,0 +1,15 @@
+// SIMAI Framework
+// https://simai.io
+
+// Mask Position Array
+$mask-position-array: (
+	top: top,
+	inline-end: right,
+	bottom: bottom,
+	inline-start: left,
+	center: center,
+	inline-start-top: left top,
+	inline-start-bottom: left bottom,
+	inline-end-top: right top,
+	inline-end-bottom: right bottom	
+);

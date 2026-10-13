@@ -1,0 +1,19 @@
+@layer sf.base {
+  :root {
+    --sf-ui-1\/3--space-x: var(--sf-b0);
+    --sf-ui-1\/2--space-x: var(--sf-b2);
+    --sf-ui-1--space-x: var(--sf-b4);
+    --sf-ui-2--space-x: var(--sf-b8);
+    --sf-ui-3--space-x: var(--sf-c1);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-ui-1\/3--space-x: var(--sf-b2);
+      --sf-ui-1\/2--space-x: var(--sf-b4);
+      --sf-ui-1--space-x: var(--sf-b6);
+      --sf-ui-2--space-x: var(--sf-c0);
+      --sf-ui-3--space-x: var(--sf-c2);
+    }
+  }
+}

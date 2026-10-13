@@ -1,0 +1,382 @@
+{
+  "schema": "simai.framework.public-api-axes.v1",
+  "purpose": "One name per question a public input answers. The Framework grew three different meanings under the word type, and a developer could not tell from the name which one a component meant. The axes below fix the question each name answers; the alias map records every legacy name that still works, so a rename never breaks a consumer.",
+  "axes": {
+    "appearance": "How the control looks: default, tonal, outline, link, surface, ghost, filled, bordered.",
+    "status": "What the control reports about the world: success, warning, error, info, neutral.",
+    "kind": "What the control carries or is: an icon, an avatar, a checkbox, a folder, a file."
+  },
+  "status_vocabulary": [
+    "success",
+    "warning",
+    "error",
+    "info",
+    "neutral"
+  ],
+  "status_aliases": {
+    "danger": "error",
+    "critical": "error"
+  },
+  "rules": [
+    "A new public input that answers one of these questions uses the axis name, never type.",
+    "A legacy name keeps working through the prop's aliases, and is listed here until it is retired.",
+    "The canonical name wins when both are set on the same element.",
+    "A component may carry several axes at once, because they answer different questions: a tag can be a checkbox (kind) reporting success (status) drawn as a ghost (appearance)."
+  ],
+  "components": [
+    {
+      "component": "buttons",
+      "axis": "status",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "a destructive control is a status, not a colour role: `scheme` keeps saying which colour family a button takes and `status` says what it is about. Only `error` is painted -- a button that succeeds or warns is a colour with no meaning until a product asks for one."
+    },
+    {
+      "component": "icon-buttons",
+      "axis": "status",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "the same split as buttons: the colour family stays `scheme`, what the control is about is `status`, and only the destructive one is painted."
+    },
+    {
+      "component": "buttons",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "icon-buttons",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "tags",
+      "axis": "appearance",
+      "legacy": [],
+      "state": "canonical_from_the_start"
+    },
+    {
+      "component": "badges",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "dropdown",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "inputs",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "textarea",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "tooltip",
+      "axis": "appearance",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "progress-bar",
+      "axis": "status",
+      "legacy": [
+        "tone"
+      ],
+      "state": "converted",
+      "value_legacy": {
+        "neutral": [
+          "primary"
+        ]
+      },
+      "note": "`primary` was a colour role inside a list of statuses; it is answered as neutral, and info gained a fill it never had"
+    },
+    {
+      "component": "progress-scale",
+      "axis": "status",
+      "legacy": [
+        "tone"
+      ],
+      "state": "converted",
+      "value_legacy": {
+        "neutral": [
+          "primary"
+        ]
+      }
+    },
+    {
+      "component": "list-item",
+      "axis": "kind",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "file-preview",
+      "axis": "kind",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "toggle",
+      "axis": "kind",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "tree-item",
+      "axis": "kind",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "skeleton",
+      "axis": "kind",
+      "legacy": [
+        "variant"
+      ],
+      "state": "converted",
+      "note": "the skeleton's `type` is not part of this axis: it marks a placeholder standing in for an icon, which combines with any shape, so merging it into kind would make two combinable answers exclusive"
+    },
+    {
+      "component": "spinner",
+      "axis": "kind",
+      "legacy": [
+        "variant"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "icon-buttons",
+      "axis": "kind",
+      "legacy": [
+        "variant"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "tags",
+      "axis": "kind",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted",
+      "note": "the split: `type` answered both questions from one list, and still does — a status word given as type reaches the status axis, a content word reaches the kind axis",
+      "value_legacy": {
+        "default": [
+          "quantity"
+        ]
+      }
+    },
+    {
+      "component": "tags",
+      "axis": "status",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted",
+      "note": "same split"
+    },
+    {
+      "component": "badges",
+      "axis": "status",
+      "legacy": [
+        "scheme"
+      ],
+      "state": "converted",
+      "note": "the split: `scheme` mixed colour roles with status words. `scheme` is not retired — it keeps answering which semantic colour the badge takes — but a status word given there is routed to the status axis, and the CSS matches the canonical class beside the legacy danger",
+      "value_legacy": {
+        "error": [
+          "danger"
+        ]
+      },
+      "legacy_input_remains_its_own_axis": true
+    },
+    {
+      "component": "alert",
+      "axis": "status",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted",
+      "value_legacy": {
+        "neutral": [
+          "clear"
+        ],
+        "error": [
+          "danger"
+        ]
+      }
+    },
+    {
+      "component": "alert",
+      "axis": "appearance",
+      "legacy": [
+        "variant"
+      ],
+      "state": "converted"
+    },
+    {
+      "component": "toast",
+      "axis": "status",
+      "legacy": [
+        "type"
+      ],
+      "state": "converted",
+      "value_legacy": {
+        "neutral": [
+          "default"
+        ],
+        "info": [
+          "primary"
+        ]
+      },
+      "note": "primary was a colour inside a list of statuses; here it meant info"
+    }
+  ],
+  "not_an_axis": {
+    "scheme": "which colour family a control uses (primary, secondary, on-surface). It is not an appearance -- the same appearance exists in every scheme -- and it is not a status: what a control is about is the status axis.",
+    "size": "the shared size ladder.",
+    "mode": "how a control behaves rather than how it looks (a modal loading inline or over ajax, a dropdown selecting or tagging).",
+    "native-type": "the HTML type attribute of a native element, which belongs to the platform, not to us."
+  },
+  "exempt_properties": [
+    {
+      "component": "table",
+      "property": "data-state",
+      "package": "larena",
+      "reason": "a lifecycle state of the data — auto, loading, populated, empty, error — not a status the control reports about the world. The word error appears in both, which is why the exemption is written down rather than inferred.",
+      "kept_for": "sf-table lives with Larena (package larena, the component folder in simai/larena-ui) since 2026-10-11, and no free component declares data-state. The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
+    },
+    {
+      "component": "icons",
+      "property": "type",
+      "reason": "the value names which icon set the glyph comes from — outlined, rounded, sharp — and the same word keys the loader's global default in SF_BOOT_CONFIG.icons.type, SF.Loader.getDefaultIconType and SF_ICON_TYPE. Renaming only the attribute would split one concept across two names, so this one is left alone deliberately."
+    },
+    {
+      "component": "file-preview",
+      "property": "size",
+      "reason": "a legacy name for file-size: the file's own size as text (12 KB), not a step of the size ladder. It is honoured and documented as legacy; a renderer passes file-size and never size."
+    }
+  ],
+  "size_ladder": {
+    "steps": [
+      "1/7",
+      "1/6",
+      "1/5",
+      "1/4",
+      "1/3",
+      "1/2",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "note": "A component uses the steps it needs, but it uses these names. `full` is not a step: it means as wide as the viewport.",
+    "value_aliases": [
+      {
+        "component": "drawer",
+        "axis": "size",
+        "legacy": {
+          "1/2": "small",
+          "1": "medium",
+          "2": "large"
+        },
+        "state": "converted"
+      }
+    ],
+    "name_aliases": [
+      {
+        "component": "datepicker",
+        "axis": "size",
+        "legacy": [
+          "input-size"
+        ],
+        "state": "converted",
+        "note": "`input-size` named the inner field's size; `size` is the name every field uses. Both reach the same field."
+      }
+    ]
+  },
+  "change_event": {
+    "rule": "Every form value control reports a committed change as `change` on its host, once per change made by the user. A value set from code is not a change. A native control's `change` bubbles from its inner input; a composite control dispatches a `change` CustomEvent on its host. Older names stay emitted with the same detail as aliases for as long as the change journal (contracts/changes/journal.json) keeps them in compatibility; the manifest marks `change` with `canonical: true` and each alias with `alias_of: \"change\"`.",
+    "controls": [
+      "button-group",
+      "checkbox",
+      "country-code",
+      "datepicker",
+      "dropdown",
+      "file-upload",
+      "inputs",
+      "radio",
+      "range-slider",
+      "switch",
+      "tags",
+      "textarea",
+      "toggle"
+    ],
+    "aliases": [
+      {
+        "component": "button-group",
+        "legacy": [
+          "sf-button-group-change"
+        ],
+        "note": "Also emitted by select() and clear()."
+      },
+      {
+        "component": "datepicker",
+        "legacy": [
+          "sf-datepicker-change",
+          "sf-change"
+        ],
+        "note": "`sf-datepicker-change` was named the preferred event; `change` now is."
+      },
+      {
+        "component": "dropdown",
+        "legacy": [
+          "sf-dropdown:change"
+        ]
+      },
+      {
+        "component": "range-slider",
+        "legacy": [
+          "sf-range-slider-change",
+          "onSliderChange"
+        ],
+        "note": "The legacy names also fire when a value is set from code; `change` does not."
+      }
+    ]
+  }
+}

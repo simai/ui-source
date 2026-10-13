@@ -1,0 +1,46 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__filter_brightness' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FILTER
+
+$filter-all: '';
+$infix: hover;
+
+// Brightness
+@each $brightness-name, $brightness-value in $filter-brightness-array {
+    $filter-all: '#{$filter-all}.#{$infix}\\:brightness-#{$brightness-name}:#{$infix},';
+}
+
+$infix: xs;
+$event: hover;
+
+// @include layer-priority(utility,$event) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        #{$filter-all} {
+            --sf-blur: ;
+            --sf-brightness: ;
+            --sf-contrast: ;
+            --sf-grayscale: ;
+            --sf-hue-rotate: ;
+            --sf-invert: ;
+            --sf-saturate: ;
+            --sf-sepia: ;
+            --sf-drop-shadow: ;
+            filter: var(--sf-blur) var(--sf-brightness) var(--sf-contrast) var(--sf-grayscale) var(--sf-hue-rotate) var(--sf-invert) var(--sf-saturate) var(--sf-sepia) var(--sf-drop-shadow);
+        }
+
+        // Brightness
+        @each $brightness-name, $brightness-value in $filter-brightness-array {
+            .#{$event}\:brightness-#{$brightness-name}:#{$event} {
+                --sf-brightness: brightness(#{$brightness-value});
+            }
+        }
+    }
+// }
+}

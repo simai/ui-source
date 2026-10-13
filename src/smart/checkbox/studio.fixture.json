@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.checkbox",
+  "title": "Checkbox reference",
+  "summary": "Deterministic reference fixture for sf-checkbox.",
+  "locale": "ru",
+  "props": {
+    "label": "Получать уведомления",
+    "checked": true
+  },
+  "children": [],
+  "state": "default"
+}

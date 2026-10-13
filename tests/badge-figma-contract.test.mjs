@@ -1,0 +1,117 @@
+import assert from 'node:assert/strict';
+import {Buffer} from 'node:buffer';
+import {readFile} from 'node:fs/promises';
+import test from 'node:test';
+import {URL} from 'node:url';
+
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+
+async function loadContract() {
+  const source = await read('src/component/badges/js/contract.js');
+  return import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+}
+
+test('badge contract exposes the Figma matrix and semantic extensions', async () => {
+  const contract = await loadContract();
+
+  assert.deepEqual(contract.BADGE_TYPES, ['main', 'tonal', 'outline']);
+  assert.deepEqual(
+    contract.BADGE_SCHEMES,
+    [
+      'neutral',
+      'primary',
+      'secondary',
+      'tertiary',
+      'info',
+      'success',
+      'warning',
+      'danger',
+      'on-surface',
+    ],
+  );
+  assert.deepEqual(contract.BADGE_SIZES, ['1/3', '1/2', '1']);
+  assert.equal(contract.BADGE_VARIANTS.length, 78);
+  assert.equal(
+    contract.BADGE_VARIANTS.some(
+      ({type, scheme}) => type === 'tonal' && scheme === 'on-surface',
+    ),
+    false,
+  );
+});
+
+test('badge CSS maps every semantic scheme to theme-aware tokens', async () => {
+  const css = await read('src/component/badges/scss/_css__badges.scss');
+  // The status class as the selector spells it, and the token it must paint with.
+  // `error` is the canonical word; `danger` is matched beside it so old markup
+  // keeps its colour, which is why that selector is an :is() pair.
+  const tokenMap = {
+    info: 'info',
+    success: 'success',
+    warning: 'warning',
+    ':is\\(\\.sf-badge--error, \\.sf-badge--danger\\)': 'error',
+  };
+
+  for (const [scheme, token] of Object.entries(tokenMap)) {
+    assert.match(
+      css,
+      new RegExp(`sf-badge--main${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-${token}\\);`),
+    );
+    assert.match(
+      css,
+      new RegExp(`sf-badge--tonal${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-${token}-container\\);`),
+    );
+    assert.match(
+      css,
+      new RegExp(`sf-badge--outline${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--border-color: var\\(--sf-outline-${token}\\);`),
+    );
+  }
+});
+
+test('badge contract normalizes invalid values and unsupported pairs', async () => {
+  const {normalizeBadgeContract} = await loadContract();
+
+  assert.deepEqual(
+    normalizeBadgeContract({type: 'unknown', scheme: 'unknown', size: '99'}),
+    {type: 'main', scheme: 'neutral', size: '1/3'},
+  );
+  assert.deepEqual(
+    normalizeBadgeContract({type: 'tonal', scheme: 'on-surface', size: '1'}),
+    {type: 'main', scheme: 'on-surface', size: '1'},
+  );
+});
+
+test('Core and Smart renderers share the canonical classes and icon-only shape', async () => {
+  const [core, utilityMap, css, smart, template] = await Promise.all([
+    read('src/component/badges/js/_badges.js'),
+    read('src/component/badges/json/badge.utility.json'),
+    read('src/component/badges/scss/_css__badges.scss'),
+    read('src/smart/badges/index.js'),
+    read('src/smart/badges/js/templates/default.js'),
+  ]);
+
+  assert.match(core, /`sf-badge--\$\{type\}`/);
+  assert.doesNotMatch(core, /sf-badge--type-/);
+  assert.match(core, /if \(this\.textContainer\)/);
+  assert.doesNotMatch(utilityMap, /flex\/1|flex-1/);
+  assert.doesNotMatch(css, /utility-hint:[^\n]*flex\/1/);
+
+  assert.match(smart, /values: BADGE_TYPES/);
+  // The scheme keeps its own axis — the colour roles — and the status words it
+  // used to carry now live on the status axis.
+  assert.match(smart, /values: BADGE_COLOUR_ROLES/);
+  assert.match(smart, /values: BADGE_STATUSES/);
+  assert.match(smart, /values: BADGE_SIZES/);
+  assert.match(smart, /normalizeBadgeContract\(props\)/);
+  assert.match(template, /hasTextContent/);
+  assert.match(template, /: nothing/);
+});
+
+test('Badge documentation records the matrix, semantic extension and official dark variant', async () => {
+  const docs = await read('src/smart/badges/docs/docs.md');
+
+  assert.match(docs, /42 supported combinations/);
+  assert.match(docs, /36 semantic combinations/);
+  assert.match(docs, /`tonal \+ on-surface` is not a designed variant/);
+  assert.match(docs, /type="main" scheme="on-surface"/);
+  assert.match(docs, /not an\s+additional `inverse` scheme/);
+});

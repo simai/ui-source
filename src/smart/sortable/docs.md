@@ -1,0 +1,55 @@
+# sf-sortable
+
+Smart Sortable — примитив перетаскивания для списков: переставить элементы
+внутри списка, перенести между списками одной группы или скопировать из
+библиотеки. Работает мышью, пером, касанием и клавиатурой. Компонент только
+сообщает намерение событием `sf-sortable-intent`; DOM и данные меняет хост.
+
+Код загружается по требованию: загрузчик Framework подключает
+`smart/sortable` только на страницах с тегом `sf-sortable`.
+
+## Базовое использование
+
+```html
+<sf-sortable id="sections" group="sections" label="Секции">
+  <div data-sf-sortable-item="s1"><span data-sf-sortable-handle aria-hidden="true">⠿</span>Секция 1</div>
+  <div data-sf-sortable-item="s2"><span data-sf-sortable-handle aria-hidden="true">⠿</span>Секция 2</div>
+</sf-sortable>
+```
+
+```js
+document.addEventListener('sf-sortable-intent', (event) => {
+  const {item, from, to, index, mode} = event.detail; // index — итоговая позиция
+  // Применить к своей модели с ожидаемой ревизией; при отказе ничего не менять.
+});
+```
+
+## Атрибуты
+
+- `group` — имя группы (`^[a-z][a-z0-9-]{0,31}$`);
+- `accepts` — дополнительные группы, которые список принимает;
+- `mode` — `move` или `copy` (источник-библиотека сохраняет элемент и ничего не принимает);
+- `orientation` — `vertical` или `horizontal`;
+- `label` — имя списка для объявлений.
+
+## Элементы
+
+Элементы — потомки с `data-sf-sortable-item="<id>"`. Ручка
+`data-sf-sortable-handle` ограничивает перетаскивание и служит целью касания;
+без ручки перетаскивается весь элемент.
+
+## Клавиатура и доступность
+
+Пробел или Enter — взять, стрелки вверх/вниз — позиция в списке, влево/вправо —
+соседний список или внешняя цель, Пробел или Enter — положить, Escape или Tab —
+отменить. Каждый шаг объявляется на языке страницы. При перетаскивании мышью
+у краёв прокручиваемой области включается автопрокрутка.
+
+## События
+
+- `sf-sortable-intent` — `{item, from, to, index, mode}`;
+- `sf-sortable-state` — `{state: 'picked' | 'dropped' | 'cancelled', item}`: начало и конец сеанса.
+
+Внешние цели (например, `sf-composition-overlay`) подключаются через
+`SF.Sortable.registerSortableDropTarget`. Сеанс перетаскивания общий для всех
+Smart-бандлов.

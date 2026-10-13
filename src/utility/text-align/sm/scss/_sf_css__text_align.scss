@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__text_align' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TEXT ALIGN
+
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        // Text Align
+        @each $text-align-name, $text-align-value in $text-align-array {
+            .#{$infix}text-#{$text-align-name} {
+                text-align: #{$text-align-value};
+            }
+        }
+    }
+// }
+}

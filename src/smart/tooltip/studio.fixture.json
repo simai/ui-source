@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tooltip",
+  "title": "Tooltip reference",
+  "summary": "Deterministic reference fixture for sf-tooltip.",
+  "locale": "ru",
+  "props": {
+    "text": "Полезная подсказка",
+    "supporting-text": "Дополнительная информация",
+    "type": "dark",
+    "size": "1",
+    "arrow": "bottom-center"
+  },
+  "children": [],
+  "state": "default"
+}

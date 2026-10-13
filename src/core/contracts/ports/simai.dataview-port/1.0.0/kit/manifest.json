@@ -1,0 +1,33 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.dataview-port",
+  "version": "1.0.0",
+  "transport": "neutral",
+  "summary": "Cases a host passes before it claims this port. Each case names the host state, the intent the component raises and the answer the host owes. Addresses, formats and languages are not part of a case.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "query-echoes-applied",
+    "query-rejects-unknown-filter",
+    "query-stale-sequence-dropped",
+    "query-unavailable-is-honest",
+    "records-carry-permissions",
+    "record-mutate-conflict",
+    "record-mutate-refused",
+    "bulk-selected-all-or-nothing",
+    "bulk-under-filter-count-confirmed",
+    "settings-personal-compare-and-set",
+    "settings-shared-needs-permission",
+    "settings-shared-only-field",
+    "view-open-carries-everything",
+    "view-save-conflict",
+    "view-switch-reports-dropped",
+    "capability-absent-is-explained",
+    "create-intent-names-kind",
+    "data-states-declared"
+  ]
+}

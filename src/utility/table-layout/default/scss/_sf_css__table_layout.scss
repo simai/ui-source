@@ -1,0 +1,17 @@
+@use '../../../table/default/scss/sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE LAYOUT
+
+// @include layer-priority(utility,default) {
+    .table- {
+        @each $name, $value in $table-array-layout {
+            &#{$name} {
+                table-layout: #{$value};
+            }
+        }
+    }
+// }
+}

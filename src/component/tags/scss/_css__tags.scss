@@ -1,0 +1,888 @@
+@use 'var__tags' as *;
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-tag {
+    appearance: none;
+    border: 0;
+    border-end-end-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+    border-end-start-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+    border-start-end-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+    border-start-start-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+    gap: var(--sf-tag--gap, var(--sf-a1));
+    padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+    padding-top: var(--sf-tag--block, var(--sf-tag--padding-top));
+    padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+    padding-bottom: var(--sf-tag--block, var(--sf-tag--padding-bottom));
+    background-color: var(--sf-tag--background-color);
+    box-shadow: var(--sf-tag--box-shadow);
+    margin: 0;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    transition: background-color var(--sf-duration-fast) var(--sf-animation),
+      color var(--sf-duration-fast) var(--sf-animation),
+      box-shadow var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-tag--interactive {
+    cursor: pointer;
+  }
+
+  .sf-tag .sf-tag-check {
+    align-items: center;
+    block-size: var(--sf-icon-size-1);
+    border: var(--sf-px) solid var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+    color: var(--sf-on-primary-container);
+    display: inline-flex;
+    flex: 0 0 auto;
+    inline-size: var(--sf-icon-size-1);
+    justify-content: center;
+  }
+
+  .sf-tag .sf-tag-check::before {
+    content: '\2713';
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    opacity: 0;
+  }
+
+  .sf-tag.active .sf-tag-check {
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+
+  .sf-tag.active .sf-tag-check::before {
+    opacity: 1;
+  }
+
+  .sf-tag .sf-avatar {
+    height: var(--sf-avatar--height);
+    opacity: var(--sf-avatar--opacity);
+    width: var(--sf-avatar--width);
+  }
+
+  .sf-tag .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+
+  .sf-tag .sf-dot-item {
+    background-color: var(--sf-dot-item--background-color);
+  }
+
+  .sf-tag .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon--font-size);
+    height: var(--sf-icon--height);
+    width: var(--sf-icon--width);
+  }
+
+  .sf-tag .sf-icon-button {
+    padding-bottom: var(--sf-icon-button--padding-bottom);
+    padding-inline-end: var(--sf-tag--inline-end, var(--sf-icon-button--padding-inline-end));
+    padding-inline-start: var(--sf-tag--inline-start, var(--sf-icon-button--padding-inline-start));
+    padding-top: var(--sf-tag--block, var(--sf-icon-button--padding-top));
+  }
+
+  .sf-tag .sf-tag-color-icon {
+    border-radius: var(--sf-tag-color-icon--border-radius);
+    height: var(--sf-tag-color-icon--height);
+    opacity: var(--sf-tag-color-icon--opacity);
+    width: var(--sf-tag-color-icon--width);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-tag .sf-tag-container {
+    --sf-tag-container--background-color: transparent;
+    background-color: var(--sf-tag-container--background-color);
+    color: var(--sf-tag-container--color);
+    font-family: var(--sf-tag-container--font-family);
+    font-size: var(--sf-tag--font-size, var(--sf-tag-container--font-size));
+    font-weight: var(--sf-tag-container--font-weight);
+    line-height: var(--sf-tag--inline-line, var(--sf-tag--line-height, var(--sf-tag-container--line-height)));
+    padding-inline-end: var(--sf-tag--label-end, var(--sf-tag-container--padding-inline-end));
+    padding-inline-start: var(--sf-tag--label-start, var(--sf-tag-container--padding-inline-start));
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sf-tag .sf-tag-count {
+    background-color: var(--sf-tag-count--background-color);
+    color: var(--sf-tag-count--color);
+    font-family: var(--sf-tag-count--font-family);
+    font-size: var(--sf-tag-count--font-size);
+    font-weight: var(--sf-tag-count--font-weight);
+    line-height: var(--sf-tag-count--line-height);
+    padding-inline-end: var(--sf-tag-count--padding-inline-end);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar {
+    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag .sf-icon-button.sf-icon-button--link.sf-icon-button--close {
+    --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
+    --sf-icon-button--padding-top: var(--sf-space-1\/4);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3) .sf-tag-color-icon {
+    --sf-tag-color-icon--height: var(--sf-text-height-1);
+    --sf-tag-color-icon--width: var(--sf-text-height-1);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar .sf-tag-container {
+    --sf-tag-container--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-tag-container--padding-inline-start: var(--sf-ui-1--space-x);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning .sf-tag-container {
+    --sf-tag-container--font-size: var(--sf-text-size-1);
+    --sf-tag-container--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar .sf-tag-container {
+    --sf-tag-container--font-family: var(--sf-text--family);
+    --sf-tag-container--font-weight: var(--sf-font-weight-regular);
+  }
+
+  .sf-tag.sf-tag--color .sf-tag-container, .sf-tag.sf-tag--checkbox .sf-tag-container, .sf-tag.sf-tag--icon .sf-tag-container, .sf-tag.sf-tag--default .sf-tag-container, .sf-tag.sf-tag--avatar .sf-tag-container {
+    --sf-tag-container--color: var(--sf-on-surface);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success {
+    --sf-tag--background-color: var(--sf-success-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--success .sf-dot-item {
+    --sf-dot-item--background-color: var(--sf-success);
+  }
+
+  .sf-tag.sf-tag--success .sf-tag-container {
+    --sf-tag-container--color: var(--sf-success);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error {
+    --sf-tag--background-color: var(--sf-error-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--error .sf-dot-item {
+    --sf-dot-item--background-color: var(--sf-error);
+  }
+
+  .sf-tag.sf-tag--error .sf-tag-container {
+    --sf-tag-container--color: var(--sf-error);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning {
+    --sf-tag--background-color: var(--sf-warning-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--warning .sf-dot-item {
+    --sf-dot-item--background-color: var(--sf-warning);
+  }
+
+  .sf-tag.sf-tag--warning .sf-tag-container {
+    --sf-tag-container--color: var(--sf-warning);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox {
+    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-3);
+    --sf-icon--height: var(--sf-icon-size-3);
+    --sf-icon--width: var(--sf-icon-size-3);
+  }
+
+  .sf-tag.sf-tag--icon .sf-icon {
+    /* --sf-outline is the role of a boundary. A glyph is read, not drawn round
+       something, so it takes the paler of the two roles for what stands on a
+       surface: 6.47:1 light and 5.95:1 dark, against 4.47 and 5.95. */
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default .sf-tag-container {
+    --sf-tag-container--padding-inline-end: var(--sf-space-1\/3);
+    --sf-tag-container--padding-inline-start: var(--sf-ui-1--space-x);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3) .sf-tag-count {
+    --sf-tag-count--padding-inline-end: var(--sf-space-1\/3);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default .sf-tag-count {
+    --sf-tag-count--font-size: var(--sf-text-size-1);
+    --sf-tag-count--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default .sf-tag-count, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default .sf-tag-count {
+    --sf-tag-count--font-family: var(--sf-text--family);
+    --sf-tag-count--font-weight: var(--sf-font-weight-regular);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-tag.sf-tag--default .sf-tag-count {
+    --sf-tag-count--color: var(--sf-on-surface);
+    --sf-tag-count--background-color: transparent;
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success {
+    --sf-tag--background-color: var(--sf-success-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar .sf-tag-container {
+    --sf-tag-container--padding-inline-end: var(--sf-space-1\/3);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default .sf-tag-container, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar .sf-tag-container {
+    --sf-tag-container--font-size: var(--sf-text-size-1\/2);
+    --sf-tag-container--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error {
+    --sf-tag--background-color: var(--sf-error-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning {
+    --sf-tag--background-color: var(--sf-warning-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox {
+    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3) .sf-tag-color-icon {
+    --sf-tag-color-icon--height: var(--sf-text-height-1\/2);
+    --sf-tag-color-icon--width: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-2);
+    --sf-icon--height: var(--sf-icon-size-2);
+    --sf-icon--width: var(--sf-icon-size-2);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default .sf-tag-container {
+    --sf-tag-container--padding-inline-end: var(--sf-space-1\/4);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3) .sf-tag-count {
+    --sf-tag-count--padding-inline-end: var(--sf-space-1\/4);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default .sf-tag-count {
+    --sf-tag-count--font-size: var(--sf-text-size-1\/2);
+    --sf-tag-count--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-text-height-1\/2);
+  }
+
+  :is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3) {
+    --sf-tag--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-tag--padding-inline-start: var(--sf-ui-1--space-x);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3) .sf-tag-container {
+    --sf-tag-container--padding-inline-start: var(--sf-tag--padding-inline-start);
+  }
+
+  :is(.sf-tag--size-1\/2, .sf-tag--size-1\/3) {
+    --sf-tag--padding-inline-end: var(--sf-ui-1\/2--space-x);
+    --sf-tag--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3) .sf-tag-container {
+    --sf-tag-container--padding-inline-start: var(--sf-space-1\/3);
+  }
+
+  .sf-tag.sf-tag--color .sf-tag-color-icon {
+    --sf-tag-color-icon--border-radius: var(--sf-radius-circle);
+  }
+
+  /* Surface and ghost, built on the neutral alpha ramp. On a tag the appearance
+     is a separate axis from `type`, because a tag's type says what it carries —
+     an icon, an avatar, a checkbox — or what it reports — success, error,
+     warning. Only the neutral types take an appearance: a status tag carries its
+     meaning in its colour, and draining that colour would drain the meaning.
+
+     The boundary is an inset shadow rather than a border, because the tag is
+     built with `border: 0` and a real border would make every tag two pixels
+     taller than the one beside it. */
+  .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
+    --sf-tag--background-color: var(--sf-alpha-4);
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-8);
+  }
+
+  .sf-tag.sf-tag--appearance-ghost:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
+    --sf-tag--background-color: transparent;
+  }
+}
+
+@layer sf.states {
+  .sf-tag.sf-tag--interactive.sf-tag--success:not(:disabled):not(.disabled):hover {
+    --sf-tag--background-color: var(--sf-success-container-hover);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success.active {
+    --sf-tag--background-color: var(--sf-success-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox.disabled {
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.disabled .sf-dot-item {
+    --sf-dot-item--background-color: var(--sf-disable);
+  }
+
+  .sf-tag.sf-tag--success.disabled .sf-tag-container, .sf-tag.sf-tag--error.disabled .sf-tag-container, .sf-tag.sf-tag--warning.disabled .sf-tag-container, .sf-tag.sf-tag--color.disabled .sf-tag-container, .sf-tag.sf-tag--checkbox.disabled .sf-tag-container, .sf-tag.sf-tag--icon.disabled .sf-tag-container, .sf-tag.sf-tag--default.disabled .sf-tag-container, .sf-tag.sf-tag--avatar.disabled .sf-tag-container {
+    --sf-tag-container--color: var(--sf-on-disable);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error.active {
+    --sf-tag--background-color: var(--sf-error-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--interactive.sf-tag--error:not(:disabled):not(.disabled):hover {
+    --sf-tag--background-color: var(--sf-error-container-hover);
+  }
+
+  .sf-tag.sf-tag--interactive.sf-tag--warning:not(:disabled):not(.disabled):hover {
+    --sf-tag--background-color: var(--sf-warning-container-hover);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning.active {
+    --sf-tag--background-color: var(--sf-warning-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--interactive.sf-tag--color:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--checkbox:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--icon:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--default:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--avatar:not(:disabled):not(.disabled):hover {
+    --sf-tag--background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar.active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox.active {
+    --sf-tag--background-color: var(--sf-primary-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--color.disabled .sf-tag-color-icon {
+    --sf-tag-color-icon--opacity: var(--sf-opacity-30);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox.active {
+    --sf-tag--background-color: var(--sf-primary-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox.disabled {
+    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--icon.disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+
+  .sf-tag.sf-tag--default.disabled .sf-tag-count {
+    --sf-tag-count--color: var(--sf-on-disable);
+  }
+
+  .sf-tag.sf-tag--avatar.disabled .sf-avatar {
+    --sf-avatar--opacity: var(--sf-opacity-30);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success.active {
+    --sf-tag--background-color: var(--sf-success-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar.disabled {
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error.active {
+    --sf-tag--background-color: var(--sf-error-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning.active {
+    --sf-tag--background-color: var(--sf-warning-container-active);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color.active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon.active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default.active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar.active {
+    --sf-tag--background-color: var(--sf-primary-container);
+    --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-tag--interactive:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  /* The remove action sits inside the tag, so its ring turns inwards and stays
+     off the tag's own edge. */
+  .sf-tag--removable > .sf-icon-button:not(:disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  .sf-tag.disabled {
+    --sf-tag--background-color: var(--sf-disable);
+  }
+
+  @media (forced-colors: active) {
+    .sf-tag--interactive:focus-visible,
+    .sf-tag--removable > .sf-icon-button:focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      box-shadow: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-tag {
+      transition: none;
+    }
+  }
+
+  /* The states of the two ramp appearances: one step up on hover, with surface
+     raising its boundary alongside. */
+  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
+  .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
+    --sf-tag--background-color: var(--sf-alpha-8);
+  }
+
+  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-12);
+  }
+
+  /* Pressed and selected keep the primary container the tag already uses for
+     both. That is the tag's own language — on a tag, pressing shows what being
+     chosen looks like — and an appearance is not a reason to make one tag answer
+     differently from the one beside it. So the ramp governs rest and hover here,
+     not selection. */
+
+  .sf-tag.sf-tag--appearance-surface:is(:disabled, .disabled),
+  .sf-tag.sf-tag--appearance-ghost:is(:disabled, .disabled) {
+    --sf-tag--background-color: transparent;
+    --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-4);
+  }
+
+  /* Every size publishes its text on the root, so density, inline and an
+     embedding component can read it. Sizes 1/3, 2 and 3 borrow the type, state
+     and colour rules of 1/2 and 1 (aliased above) and set their own text and
+     spacing here. */
+  .sf-tag.sf-tag--size-1\/3 {
+    --sf-tag--font-size: var(--sf-text-size-1\/3);
+    --sf-tag--line-height: var(--sf-text-height-1\/3);
+    --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-tag--inline-start: var(--sf-ui-1\/3--space-x);
+    --sf-tag--inline-end: var(--sf-ui-1\/3--space-x);
+  }
+
+  .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
+    --sf-tag-color-icon--height: var(--sf-text-height-1\/3);
+    --sf-tag-color-icon--width: var(--sf-text-height-1\/3);
+  }
+
+  .sf-tag.sf-tag--size-1\/2 {
+    --sf-tag--font-size: var(--sf-text-size-1\/2);
+    --sf-tag--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tag.sf-tag--size-1 {
+    --sf-tag--font-size: var(--sf-text-size-1);
+    --sf-tag--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-tag.sf-tag--size-2 {
+    --sf-tag--font-size: var(--sf-text-size-2);
+    --sf-tag--line-height: var(--sf-text-height-2);
+    --sf-tag--block: var(--sf-ui-2--space-y-tightness-default);
+    --sf-tag--inline-start: var(--sf-ui-2--space-x);
+    --sf-tag--inline-end: var(--sf-ui-2--space-x);
+  }
+
+  .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
+    --sf-tag-color-icon--height: var(--sf-text-height-2);
+    --sf-tag-color-icon--width: var(--sf-text-height-2);
+  }
+
+  .sf-tag.sf-tag--size-3 {
+    --sf-tag--font-size: var(--sf-text-size-3);
+    --sf-tag--line-height: var(--sf-text-height-3);
+    --sf-tag--block: var(--sf-ui-3--space-y-tightness-default);
+    --sf-tag--inline-start: var(--sf-ui-3--space-x);
+    --sf-tag--inline-end: var(--sf-ui-3--space-x);
+  }
+
+  .sf-tag.sf-tag--size-3 .sf-tag-color-icon {
+    --sf-tag-color-icon--height: var(--sf-text-height-3);
+    --sf-tag-color-icon--width: var(--sf-text-height-3);
+  }
+
+  /* Density, with the names the buttons use: compact, comfortable and spacious
+     move the block padding of each size one step each way. */
+  .sf-tag.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
+  .sf-tag.sf-tag--size-1\/3.spacing-comfortable { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-high); }
+  .sf-tag.sf-tag--size-1\/3.spacing-spacious { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-highest); }
+  .sf-tag.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
+  .sf-tag.sf-tag--size-1\/2.spacing-comfortable { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-high); }
+  .sf-tag.sf-tag--size-1\/2.spacing-spacious { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-highest); }
+  .sf-tag.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
+  .sf-tag.sf-tag--size-1.spacing-comfortable { --sf-tag--block: var(--sf-ui-1--space-y-tightness-high); }
+  .sf-tag.sf-tag--size-1.spacing-spacious { --sf-tag--block: var(--sf-ui-1--space-y-tightness-highest); }
+  .sf-tag.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
+  .sf-tag.sf-tag--size-2.spacing-comfortable { --sf-tag--block: var(--sf-ui-2--space-y-tightness-high); }
+  .sf-tag.sf-tag--size-2.spacing-spacious { --sf-tag--block: var(--sf-ui-2--space-y-tightness-highest); }
+  .sf-tag.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
+  .sf-tag.sf-tag--size-3.spacing-comfortable { --sf-tag--block: var(--sf-ui-3--space-y-tightness-high); }
+  .sf-tag.sf-tag--size-3.spacing-spacious { --sf-tag--block: var(--sf-ui-3--space-y-tightness-highest); }
+
+  /* Inline: a tag that sits on the text line of another control -- a selected
+     value in a dropdown, an input or a table cell. No block padding, one small
+     inline step on each side, the label flush, and the remove button and its
+     mark sized to the line. The line is the text line of the tag itself unless
+     the host publishes --sf-tag--line (a dropdown passes its field line less
+     the border). Doubled class: it has to outrank size and density, which set
+     the same layer. */
+  .sf-tag.sf-tag--inline.sf-tag--inline {
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: var(--sf-space-1\/3);
+    --sf-tag--inline-end: var(--sf-space-1\/4);
+    --sf-tag--label-start: 0;
+    --sf-tag--label-end: 0;
+    --sf-tag--inline-line: var(--sf-tag--line);
+    gap: var(--sf-space-1\/3);
+    min-block-size: var(--sf-tag--line, var(--sf-tag--line-height));
+  }
+
+  /* The short end step makes room for a remove button; without one the tag
+     keeps the same step on both sides. */
+  .sf-tag.sf-tag--inline.sf-tag--inline:not(:has(> .sf-icon-button)) {
+    --sf-tag--inline-end: var(--sf-space-1\/3);
+  }
+
+  .sf-tag.sf-tag--inline.sf-tag--inline > .sf-icon-button {
+    block-size: var(--sf-tag--line, var(--sf-tag--line-height));
+    inline-size: var(--sf-tag--line, var(--sf-tag--line-height));
+    min-block-size: 0;
+    min-inline-size: 0;
+    padding: 0;
+  }
+
+  /* Inline and compact together: a chip that fills a control of its own size,
+     with the compact block padding of its size and its own text line. */
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
+
+  /* The remove mark follows the label: 0.7 of its font size. The button keeps
+     the whole line, so the target does not shrink with the mark. */
+  .sf-tag.sf-tag--inline.sf-tag--inline .sf-close-icon {
+    --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);
+    --sf-close-icon--width: calc(var(--sf-tag--font-size) * 0.7);
+  }
+}
+
+@layer sf.overrides {
+  .sf-tag > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-variant);
+  }
+}
+
+@layer sf.states {
+/* A tag is a control of its size, and its parts take the ladder like a
+   button's: the label keeps the size's text step on both sides, so a text-only
+   tag centres its text (it sat right of centre); a picture before the
+   label is the line high and the label follows it at the same step, with no
+   gap of the tag's own (the step was larger than a button's). Measured before: an icon
+   was a size larger at 1/3, which made the tag taller than its neighbours, and
+   a size smaller at 2 and 3. Inline tags in a field set --sf-tag--label-* and keep
+   their own insets. */
+.sf-tag.sf-tag--size-1\/3 {
+  --sf-tag--gap: 0;
+}
+
+.sf-tag.sf-tag--size-1\/3 .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-tag-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1\/3 .sf-tag-count {
+  --sf-tag-count--font-size: var(--sf-text-size-1\/3);
+  --sf-tag-count--line-height: var(--sf-text-height-1\/3);
+  --sf-tag-count--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1\/3 > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/3);
+  --sf-icon--height: var(--sf-text-height-1\/3);
+  --sf-icon--width: var(--sf-text-height-1\/3);
+}
+
+.sf-tag.sf-tag--size-1\/3 > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-text-height-1\/3);
+  --sf-tag-color-icon--width: var(--sf-text-height-1\/3);
+}
+
+.sf-tag.sf-tag--size-1\/3 > .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1\/3);
+  --sf-avatar--width: var(--sf-text-height-1\/3);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/3) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-tag.sf-tag--size-1\/2 {
+  --sf-tag--gap: 0;
+}
+
+.sf-tag.sf-tag--size-1\/2 .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-tag-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1\/2 .sf-tag-count {
+  --sf-tag-count--font-size: var(--sf-text-size-1\/2);
+  --sf-tag-count--line-height: var(--sf-text-height-1\/2);
+  --sf-tag-count--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1\/2 > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-tag.sf-tag--size-1\/2 > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-text-height-1\/2);
+  --sf-tag-color-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-tag.sf-tag--size-1\/2 > .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1\/2);
+  --sf-avatar--width: var(--sf-text-height-1\/2);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/2) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-tag.sf-tag--size-1 {
+  --sf-tag--gap: 0;
+}
+
+.sf-tag.sf-tag--size-1 .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-tag-container--padding-inline-end: var(--sf-ui-1--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1 .sf-tag-count {
+  --sf-tag-count--font-size: var(--sf-text-size-1);
+  --sf-tag-count--line-height: var(--sf-text-height-1);
+  --sf-tag-count--padding-inline-end: var(--sf-ui-1--text-space-x);
+}
+
+.sf-tag.sf-tag--size-1 > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-tag.sf-tag--size-1 > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-text-height-1);
+  --sf-tag-color-icon--width: var(--sf-text-height-1);
+}
+
+.sf-tag.sf-tag--size-1 > .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1);
+  --sf-avatar--width: var(--sf-text-height-1);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1);
+}
+
+.sf-tag.sf-tag--size-2 {
+  --sf-tag--gap: 0;
+}
+
+.sf-tag.sf-tag--size-2 .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-tag-container--padding-inline-end: var(--sf-ui-2--text-space-x);
+}
+
+.sf-tag.sf-tag--size-2 .sf-tag-count {
+  --sf-tag-count--font-size: var(--sf-text-size-2);
+  --sf-tag-count--line-height: var(--sf-text-height-2);
+  --sf-tag-count--padding-inline-end: var(--sf-ui-2--text-space-x);
+}
+
+.sf-tag.sf-tag--size-2 > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-tag.sf-tag--size-2 > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-text-height-2);
+  --sf-tag-color-icon--width: var(--sf-text-height-2);
+}
+
+.sf-tag.sf-tag--size-2 > .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-2);
+  --sf-avatar--width: var(--sf-text-height-2);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-2) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-2);
+}
+
+.sf-tag.sf-tag--size-3 {
+  --sf-tag--gap: 0;
+}
+
+.sf-tag.sf-tag--size-3 .sf-tag-container {
+  --sf-tag-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  --sf-tag-container--padding-inline-end: var(--sf-ui-3--text-space-x);
+}
+
+.sf-tag.sf-tag--size-3 .sf-tag-count {
+  --sf-tag-count--font-size: var(--sf-text-size-3);
+  --sf-tag-count--line-height: var(--sf-text-height-3);
+  --sf-tag-count--padding-inline-end: var(--sf-ui-3--text-space-x);
+}
+
+.sf-tag.sf-tag--size-3 > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-3);
+  --sf-icon--height: var(--sf-text-height-3);
+  --sf-icon--width: var(--sf-text-height-3);
+}
+
+.sf-tag.sf-tag--size-3 > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-text-height-3);
+  --sf-tag-color-icon--width: var(--sf-text-height-3);
+}
+
+.sf-tag.sf-tag--size-3 > .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-3);
+  --sf-avatar--width: var(--sf-text-height-3);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-3);
+}
+}
+
+@layer sf.states {
+/* The remove mark is drawn by the tag, whatever the close markup carries: a
+   close written without a size class had no glyph at all, so a removable tag
+   in plain markup showed no mark. The mark is 0.7 of the label's font size at
+   every size, the rule inline tags in a field already follow, and it sits
+   after the label at the label's own end step. The button keeps no padding of
+   its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
+   a checkbox's native control does. */
+.sf-tag > .sf-icon-button.sf-icon-button--close {
+  /* Stated outright: the tag's own button rule pads with the tag's insets
+     (at size 2 that made the button several times wider than its mark). */
+  padding: 0;
+  position: relative;
+}
+
+.sf-tag > .sf-icon-button.sf-icon-button--close::after {
+  content: "";
+  position: absolute;
+  inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2)) min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
+}
+
+.sf-tag > .sf-icon-button.sf-icon-button--close > .sf-close {
+  --sf-close--padding-top: 0;
+  --sf-close--padding-bottom: 0;
+  --sf-close--padding-inline-start: 0;
+  --sf-close--padding-inline-end: 0;
+}
+
+.sf-tag > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+  display: block;
+}
+
+.sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--width: calc(var(--sf-text-size-1\/3) * 0.7);
+  --sf-close-icon--height: calc(var(--sf-text-size-1\/3) * 0.7);
+}
+
+.sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--width: calc(var(--sf-text-size-1\/2) * 0.7);
+  --sf-close-icon--height: calc(var(--sf-text-size-1\/2) * 0.7);
+}
+
+.sf-tag.sf-tag--size-1 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--width: calc(var(--sf-text-size-1) * 0.7);
+  --sf-close-icon--height: calc(var(--sf-text-size-1) * 0.7);
+}
+
+.sf-tag.sf-tag--size-2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--width: calc(var(--sf-text-size-2) * 0.7);
+  --sf-close-icon--height: calc(var(--sf-text-size-2) * 0.7);
+}
+
+.sf-tag.sf-tag--size-3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--width: calc(var(--sf-text-size-3) * 0.7);
+  --sf-close-icon--height: calc(var(--sf-text-size-3) * 0.7);
+}
+}
+
+@layer sf.components {
+/* A tag on a text line, in a table cell or beside other text, publishes that
+   line itself, the way a dropdown publishes its field line to its tags. */
+.sf-tag.sf-tag--line-1\/2 {
+  --sf-tag--line: var(--sf-text-height-1\/2);
+}
+
+.sf-tag.sf-tag--line-1 {
+  --sf-tag--line: var(--sf-text-height-1);
+}
+
+.sf-tag.sf-tag--line-2 {
+  --sf-tag--line: var(--sf-text-height-2);
+}
+}

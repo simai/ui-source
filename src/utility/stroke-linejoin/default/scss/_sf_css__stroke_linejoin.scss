@@ -1,0 +1,17 @@
+@use 'sf_var__stroke_linejoin' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SVG - FILL RULE
+
+$infix:'';
+
+// @include layer-priority(utility,default) {
+    @each $name, $value in $stroke-linejoin-array {
+        .#{$infix}linejoin-#{$name} {
+            stroke-linejoin: #{$value};
+        }   
+    }
+// }
+}

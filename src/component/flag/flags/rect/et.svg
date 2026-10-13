@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="356 308 28 20" fill="none" role="img">
+<g id="Country=ET">
+<rect id="Mask_141" x="356" y="308" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask65_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="356" y="308" width="28" height="20">
+<rect id="Mask_142" x="356" y="308" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask65_8205_11341)">
+<path id="Rectangle 2_104" fill-rule="evenodd" clip-rule="evenodd" d="M356 314.667H384V308H356V314.667Z" fill="#6DA544"/>
+<path id="Rectangle 2_105" fill-rule="evenodd" clip-rule="evenodd" d="M356 328H384V321.333H356V328Z" fill="#D80027"/>
+<path id="Rectangle 2_106" fill-rule="evenodd" clip-rule="evenodd" d="M356 321.333H384V314.667H356V321.333Z" fill="#FFDA44"/>
+<path id="Oval 95" fill-rule="evenodd" clip-rule="evenodd" d="M370 322.667C372.577 322.667 374.666 320.577 374.666 318C374.666 315.423 372.577 313.333 370 313.333C367.422 313.333 365.333 315.423 365.333 318C365.333 320.577 367.422 322.667 370 322.667Z" fill="#0052B4"/>
+<path id="Star 8_9" d="M370.448 317.054L370.523 317.279L370.762 317.282L372.171 317.293L371.038 318.133L370.848 318.275L370.919 318.501L371.343 319.847L370.193 319.029L370 318.89L369.807 319.029L368.657 319.847L369.082 318.501L369.153 318.275L368.962 318.133L367.828 317.293L369.239 317.282L369.477 317.279L369.553 317.054L370 315.715L370.448 317.054Z" stroke="#FFDB3D" stroke-width="0.666667"/>
+</g>
+</g>
+</svg>

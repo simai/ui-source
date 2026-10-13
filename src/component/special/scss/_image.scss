@@ -1,0 +1,59 @@
+@layer sf.components {
+html {
+    &.special {
+        &.special-img-none {
+
+            [data-b24-crm-button-cont],
+            [data-b24-crm-button-shadow],
+            iframe,
+            ymaps,
+            img,
+            svg,
+            video {
+                opacity: 0!important;
+            }
+
+            iframe,
+            ymaps {
+                filter: grayscale(1)!important;
+                -webkit-filter: grayscale(1);
+                background-color: transparent!important;
+            }
+
+            .sf-special-white,
+            .sf-special-black
+            .sf-special-yellow,
+            .sf-special-green,
+            .sf-special-blue {
+                [data-b24-crm-button-cont],
+                [data-b24-crm-button-shadow],
+                iframe,
+                ymaps,
+                img,
+                [data-bg],
+                svg,
+                video {
+                    border: var(--sf-px) solid currentColor!important;
+                }
+            }
+
+        }
+
+        &.special-img-black {
+
+            .swiper-lazy-loaded,
+            [data-bg],
+            iframe,
+            img,
+            video,
+            svg,
+            ymaps {
+                filter: grayscale(1)!important;
+                -webkit-filter: grayscale(1);
+                background-color: transparent!important;
+                border: var(--sf-px) solid currentColor!important;
+            }
+        }
+    }
+}
+}

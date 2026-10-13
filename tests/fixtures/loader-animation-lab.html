@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="sf-loader-candidate" content="compact-on-surface-v2" />
+    <link rel="icon" href="data:," />
+    <title>SIMAI Framework Loader — animation lab</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --loader-background: #ffffff;
+        --loader-toolbar-background: rgb(255 255 255 / 92%);
+        --loader-toolbar-color: #1b1b1f;
+        --loader-toolbar-border: rgb(27 27 31 / 14%);
+        --loader-focus: #005fcc;
+        --loader-work-item: #1b1b1f;
+        --loader-mark-color: #e81123;
+        --sf-neutral: #5d5e63;
+        --sf-primary: #005bbe;
+        --sf-secondary: #535e77;
+        --sf-tertiary: #7c4c86;
+        --sf-info: #005bbe;
+        --sf-success: #006e17;
+        --sf-warning: #8f4e00;
+        --sf-error: #bb1919;
+        --sf-on-surface: #1a1b1f;
+        --loader-transition-duration: 0.18s;
+      }
+
+      :root[data-theme="dark"] {
+        --loader-background: #111216;
+        --loader-toolbar-background: rgb(30 31 36 / 92%);
+        --loader-toolbar-color: #f2f0f4;
+        --loader-toolbar-border: rgb(255 255 255 / 18%);
+        --loader-focus: #a8c7fa;
+        --loader-work-item: #ffffff;
+        --sf-neutral: #c6c6cb;
+        --sf-primary: #acc7ff;
+        --sf-secondary: #bbc6e3;
+        --sf-tertiary: #ecb3f4;
+        --sf-info: #acc7ff;
+        --sf-success: #74dd6f;
+        --sf-warning: #ffb779;
+        --sf-error: #ffb4ab;
+        --sf-on-surface: #e3e2e7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: var(--loader-background);
+      }
+
+      .sf-loader.loader-default {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        display: grid;
+        width: 100%;
+        height: 100vh;
+        place-items: center;
+        background: var(--loader-background);
+        text-align: center;
+      }
+
+      .sf-loader-block {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        transition: var(--loader-transition-duration) all ease-in-out;
+      }
+
+      .sf-loader-block svg {
+        flex: 0 0 auto;
+        opacity: 1;
+        filter: none;
+        mix-blend-mode: normal;
+        transition: var(--loader-transition-duration) all ease-in-out;
+      }
+
+      .sf-loader-block [data-loader-mark] path {
+        fill: var(--loader-mark-color);
+      }
+
+      .loader-eyes {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        visibility: hidden;
+        align-items: center;
+        gap: 4px;
+        pointer-events: none;
+        transform: translate(-50%, -50%) scale(0.8);
+        transition:
+          visibility 0s linear 0.18s,
+          transform 0.18s ease-out;
+      }
+
+      .loader-eyes.is-visible {
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+        transition-delay: 0s;
+      }
+
+      .loader-eye {
+        display: grid;
+        width: 12px;
+        height: 16px;
+        place-items: center;
+        border: 1.5px solid #1b1b1f;
+        border-radius: 50%;
+        background: #ffffff;
+        transform-origin: center;
+        transition: transform 0.12s ease-in-out;
+      }
+
+      .loader-pupil {
+        width: 4px;
+        height: 6px;
+        border-radius: 50%;
+        background: #1b1b1f;
+        transition: transform 0.12s ease-out;
+      }
+
+      .loader-eyes.is-blinking .loader-eye {
+        transform: scaleY(0.12);
+      }
+
+      .loader-eyes.is-winking-left .loader-eye:first-child,
+      .loader-eyes.is-winking-right .loader-eye:last-child {
+        transform: scaleY(0.12);
+      }
+
+      .loader-eyes.is-peeking-left .loader-eye:last-child,
+      .loader-eyes.is-peeking-right .loader-eye:first-child {
+        transform: scale(0);
+      }
+
+      .loader-work-item {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        visibility: hidden;
+        z-index: 2;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--loader-work-item);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+
+      .loader-work-item.is-visible {
+        visibility: visible;
+      }
+
+      .sf-loader-block.is-juggling #sv_li_1 {
+        transform-box: fill-box;
+        transform-origin: 75.5% 100%;
+        animation: loader-hand-left 0.72s ease-in-out infinite;
+      }
+
+      .sf-loader-block.is-juggling #sv_li_2 {
+        transform-box: fill-box;
+        transform-origin: 24.5% 100%;
+        animation: loader-hand-right 0.72s ease-in-out -0.36s infinite;
+      }
+
+      .sf-loader-block.is-compact-smooth-motion #sv_li_1,
+      .sf-loader-block.is-compact-smooth-motion #sv_li_2,
+      .sf-loader-block.is-compact-spring-motion #sv_li_1,
+      .sf-loader-block.is-compact-spring-motion #sv_li_2,
+      .sf-loader-block.is-compact-custom-motion #sv_li_1,
+      .sf-loader-block.is-compact-custom-motion #sv_li_2 {
+        transition: none;
+      }
+
+      @keyframes loader-hand-left {
+        0%,
+        100% {
+          transform: translateX(-14px) rotate(-3deg);
+        }
+
+        24% {
+          transform: translateX(-13px) translateY(2px) rotate(8deg);
+        }
+
+        52% {
+          transform: translateX(-15px) translateY(-1px) rotate(-7deg);
+        }
+      }
+
+      @keyframes loader-hand-right {
+        0%,
+        100% {
+          transform: translateX(14px) rotate(3deg);
+        }
+
+        24% {
+          transform: translateX(13px) translateY(2px) rotate(-8deg);
+        }
+
+        52% {
+          transform: translateX(15px) translateY(-1px) rotate(7deg);
+        }
+      }
+
+      .lab-controls {
+        position: fixed;
+        z-index: 2;
+        inset-inline: 50%;
+        bottom: 24px;
+        display: flex;
+        width: min(1120px, calc(100vw - 32px));
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--loader-toolbar-border);
+        border-radius: 16px;
+        color: var(--loader-toolbar-color);
+        background: var(--loader-toolbar-background);
+        box-shadow: 0 8px 32px rgb(0 0 0 / 14%);
+        transform: translateX(-50%);
+        backdrop-filter: blur(16px);
+      }
+
+      .lab-controls button,
+      .lab-controls select {
+        min-height: 40px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 10px;
+        color: inherit;
+        background: transparent;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .lab-controls button:hover,
+      .lab-controls select:hover {
+        background: rgb(127 127 127 / 14%);
+      }
+
+      .lab-controls button:focus-visible,
+      .lab-controls select:focus-visible,
+      .lab-controls input:focus-visible {
+        outline: 2px solid var(--loader-focus);
+        outline-offset: 2px;
+      }
+
+      .tuning-controls {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 1.3fr repeat(5, 1fr);
+        gap: 12px;
+        padding: 12px 8px 4px;
+        border-top: 1px solid var(--loader-toolbar-border);
+      }
+
+      .tuning-controls[hidden] {
+        display: none;
+      }
+
+      .tuning-field {
+        display: grid;
+        min-width: 0;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .tuning-field-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .tuning-field output {
+        color: color-mix(in srgb, currentColor 68%, transparent);
+        font-variant-numeric: tabular-nums;
+        font-weight: 500;
+      }
+
+      .tuning-field select {
+        width: 100%;
+      }
+
+      .tuning-field input[type="range"] {
+        width: 100%;
+        min-height: 24px;
+        margin: 0;
+        accent-color: #e81123;
+        cursor: pointer;
+      }
+
+      .tuning-summary {
+        width: 100%;
+        margin: 0;
+        grid-column: 1 / -1;
+        color: color-mix(in srgb, currentColor 72%, transparent);
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+        text-align: center;
+      }
+
+      .lab-status {
+        min-width: 96px;
+        padding-inline: 8px;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 520px) {
+        .lab-controls {
+          bottom: 16px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .lab-status {
+          order: -1;
+          width: 100%;
+        }
+
+        .tuning-controls {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Standalone baseline for the current SIMAI Framework boot preloader.
+      Canonical sources:
+      - src/core/js/index.js: mountPreloader()
+      - src/core/js/loader.js: setPreloaderParams() and rotatePreloader()
+
+      The default SVG, dimensions and timing below intentionally match the
+      runtime as of 2026-08-28. The controls belong only to this lab page.
+    -->
+    <main
+      class="sf-loader loader-default"
+      aria-label="Предпросмотр анимации загрузки"
+    >
+      <div class="sf-loader-block sf-loader-boot" data-loader-animation>
+        <svg
+          id="sv_li_1"
+          data-loader-mark
+          xmlns="http://www.w3.org/2000/svg"
+          width="66"
+          height="100"
+          viewBox="0 0 66 100"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M0 50.0013L49.812 0L66 16.2495L32.3722 50.0051L65.9938 83.7543L49.8097 100L0 50.0013Z"
+            fill="#E81123"
+          />
+        </svg>
+        <svg
+          id="sv_li_2"
+          data-loader-mark
+          xmlns="http://www.w3.org/2000/svg"
+          width="66"
+          height="100"
+          viewBox="0 0 66 100"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M66 50.0013L16.188 0L0 16.2495L33.6278 50.0051L0.00615692 83.7543L16.1903 100L66 50.0013Z"
+            fill="#E81123"
+          />
+        </svg>
+        <span class="loader-eyes" data-loader-eyes aria-hidden="true">
+          <span class="loader-eye"><span class="loader-pupil"></span></span>
+          <span class="loader-eye"><span class="loader-pupil"></span></span>
+        </span>
+        <span class="loader-work-item" data-loader-work-item></span>
+        <span class="loader-work-item" data-loader-work-item></span>
+        <span class="loader-work-item" data-loader-work-item></span>
+      </div>
+    </main>
+
+    <div class="lab-controls" aria-label="Управление стендом">
+      <label>
+        <span class="visually-hidden">Вариант анимации</span>
+        <select data-variant aria-label="Вариант анимации">
+          <option value="current">Исходный — 100 px</option>
+          <option value="compact">Кандидат v1 — 64 px</option>
+          <option value="compact2" selected>
+            Кандидат v2 — принят в runtime, 48 px
+          </option>
+          <option value="compactSmooth">Плавный кандидат — 64 px</option>
+          <option value="compactSpring">Подпружиненный кандидат — 64 px</option>
+          <option value="compactCustom">Настраиваемый кандидат</option>
+          <option value="breathing">Магнитное дыхание — 64 px</option>
+          <option value="curious">Любопытный — 64 px</option>
+          <option value="worker">Работяга — 64 px</option>
+          <option value="calm">Спокойный — 48 px</option>
+        </select>
+      </label>
+      <button type="button" data-action="restart">Повторить</button>
+      <button type="button" data-action="complete">Завершить</button>
+      <button type="button" data-action="pause">Пауза</button>
+      <button type="button" data-action="theme">Тёмный фон</button>
+      <output class="lab-status" aria-live="polite" data-status
+        >Анимация</output
+      >
+      <div class="tuning-controls" data-tuning-controls>
+        <label class="tuning-field">
+          <span>Характер движения</span>
+          <select data-motion-type>
+            <option value="smooth">Плавный</option>
+            <option value="bounceSoft">Мягкий bounce</option>
+            <option value="bounce" selected>Bounce</option>
+            <option value="bounceStrong">Выраженный bounce</option>
+            <option value="easeInOut">Ease in-out</option>
+            <option value="linear">Линейный</option>
+          </select>
+        </label>
+        <label class="tuning-field">
+          <span class="tuning-field-heading">
+            <span>Длительность цикла</span>
+            <output data-cycle-output>2,1 с</output>
+          </span>
+          <input
+            type="range"
+            min="900"
+            max="3200"
+            step="100"
+            value="2100"
+            data-cycle
+          />
+        </label>
+        <label class="tuning-field">
+          <span class="tuning-field-heading">
+            <span>Размах</span>
+            <output data-distance-output>12 px</output>
+          </span>
+          <input
+            type="range"
+            min="4"
+            max="20"
+            step="1"
+            value="12"
+            data-distance
+          />
+        </label>
+        <label class="tuning-field">
+          <span class="tuning-field-heading">
+            <span>Размер</span>
+            <output data-size-output>64 px</output>
+          </span>
+          <input type="range" min="32" max="64" step="4" value="64" data-size />
+        </label>
+        <label class="tuning-field">
+          <span>Поворот</span>
+          <select data-rotation>
+            <option value="0">Нет</option>
+            <option value="45">45°</option>
+            <option value="90" selected>90°</option>
+            <option value="180">180°</option>
+          </select>
+        </label>
+        <label class="tuning-field">
+          <span>Цвет</span>
+          <select data-color>
+            <option value="brand" selected>SIMAI red</option>
+            <option value="on-surface">On surface</option>
+            <option value="neutral">Neutral</option>
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="tertiary">Tertiary</option>
+            <option value="info">Info</option>
+            <option value="success">Success</option>
+            <option value="warning">Warning</option>
+            <option value="danger">Danger</option>
+          </select>
+        </label>
+        <output class="tuning-summary" data-tuning-summary>
+          bounce · 2100 ms · размах 12 px · размер 64 px · 90° · SIMAI red
+        </output>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const animation = document.querySelector("[data-loader-animation]");
+        const marks = Array.from(
+          animation.querySelectorAll("[data-loader-mark]"),
+        );
+        const eyes = animation.querySelector("[data-loader-eyes]");
+        const pupils = Array.from(eyes.querySelectorAll(".loader-pupil"));
+        const workItems = Array.from(
+          animation.querySelectorAll("[data-loader-work-item]"),
+        );
+        const variantSelect = document.querySelector("[data-variant]");
+        const pauseButton = document.querySelector('[data-action="pause"]');
+        const completeButton = document.querySelector(
+          '[data-action="complete"]',
+        );
+        const themeButton = document.querySelector('[data-action="theme"]');
+        const status = document.querySelector("[data-status]");
+        const tuningControls = document.querySelector("[data-tuning-controls]");
+        const motionTypeSelect = document.querySelector("[data-motion-type]");
+        const cycleInput = document.querySelector("[data-cycle]");
+        const cycleOutput = document.querySelector("[data-cycle-output]");
+        const distanceInput = document.querySelector("[data-distance]");
+        const distanceOutput = document.querySelector("[data-distance-output]");
+        const sizeInput = document.querySelector("[data-size]");
+        const sizeOutput = document.querySelector("[data-size-output]");
+        const rotationSelect = document.querySelector("[data-rotation]");
+        const colorSelect = document.querySelector("[data-color]");
+        const tuningSummary = document.querySelector("[data-tuning-summary]");
+        const timers = new Set();
+        const idleTimers = new Set();
+        let interval = null;
+        let rotationAngle = 0;
+        let running = true;
+        let completing = false;
+        let caughtCooldownUntil = 0;
+        let workAnimations = [];
+        let markAnimations = [];
+        let variant = null;
+
+        const motionPresets = {
+          smooth: {
+            label: "smooth",
+            easing: "cubic-bezier(0.45, 0, 0.55, 1)",
+          },
+          bounceSoft: {
+            label: "bounce-soft",
+            easing: "cubic-bezier(0.34, 1.3, 0.64, 1)",
+          },
+          bounce: {
+            label: "bounce",
+            easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          },
+          bounceStrong: {
+            label: "bounce-strong",
+            easing: "cubic-bezier(0.3, 1.85, 0.55, 1)",
+          },
+          easeInOut: {
+            label: "ease-in-out",
+            easing: "ease-in-out",
+          },
+          linear: { label: "linear", easing: "linear" },
+        };
+
+        const colorPresets = {
+          brand: { label: "SIMAI red", value: "#e81123" },
+          "on-surface": {
+            label: "on-surface",
+            value: "var(--sf-on-surface)",
+          },
+          neutral: { label: "neutral", value: "var(--sf-neutral)" },
+          primary: { label: "primary", value: "var(--sf-primary)" },
+          secondary: { label: "secondary", value: "var(--sf-secondary)" },
+          tertiary: { label: "tertiary", value: "var(--sf-tertiary)" },
+          info: { label: "info", value: "var(--sf-info)" },
+          success: { label: "success", value: "var(--sf-success)" },
+          warning: { label: "warning", value: "var(--sf-warning)" },
+          danger: { label: "danger", value: "var(--sf-error)" },
+        };
+
+        const variants = {
+          current: {
+            label: "Исходный",
+            width: 66,
+            height: 100,
+            approach: 8,
+            separate: 20,
+            approachAt: 100,
+            separateAt: 200,
+            settleAt: 1000,
+            rotateAt: 1300,
+            rotationStep: 90,
+            rotationOvershoot: 5,
+            rotationSettle: 200,
+            cycle: 1800,
+            transition: 200,
+          },
+          // Provisional candidate v1: 64 px, solid #E81123, no opacity changes.
+          // This lab entry is the candidate source of truth; runtime is unchanged.
+          compact: {
+            label: "Кандидат v1",
+            width: 42,
+            height: 64,
+            approach: 5,
+            separate: 12,
+            approachAt: 100,
+            separateAt: 200,
+            settleAt: 780,
+            rotateAt: 1040,
+            rotationStep: 90,
+            rotationOvershoot: 3,
+            rotationSettle: 180,
+            cycle: 1500,
+            transition: 180,
+          },
+          // Candidate v2 selected in the tuning panel:
+          // bounce-strong · 1800 ms · 6 px · 48 px · 90°.
+          // Neutral appearance follows the Framework semantic --sf-on-surface token.
+          compact2: {
+            label: "Кандидат v2",
+            mode: "compactCustom",
+            themeColor: "on-surface",
+            width: 31.68,
+            height: 48,
+            approach: 0,
+            separate: 6,
+            approachAt: 0,
+            separateAt: 0,
+            settleAt: null,
+            rotateAt: 1458,
+            rotationStep: 90,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: 1800,
+            transition: 300,
+            easing: motionPresets.bounceStrong.easing,
+          },
+          compactSmooth: {
+            label: "Плавный кандидат",
+            mode: "compactSmooth",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 12,
+            approachAt: 0,
+            separateAt: 0,
+            settleAt: null,
+            rotateAt: 1500,
+            rotationStep: 90,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: 1900,
+            transition: 300,
+          },
+          compactSpring: {
+            label: "Подпружиненный кандидат",
+            mode: "compactSpring",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 12,
+            approachAt: 0,
+            separateAt: 0,
+            settleAt: null,
+            rotateAt: 1700,
+            rotationStep: 90,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: 2100,
+            transition: 300,
+          },
+          compactCustom: {
+            label: "Настраиваемый кандидат",
+            mode: "compactCustom",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 12,
+            approachAt: 0,
+            separateAt: 0,
+            settleAt: null,
+            rotateAt: 1700,
+            rotationStep: 90,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: 2100,
+            transition: 300,
+            easing: motionPresets.bounce.easing,
+          },
+          breathing: {
+            label: "Магнитное дыхание",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 5,
+            approachAt: 0,
+            separateAt: 40,
+            settleAt: 1120,
+            rotateAt: null,
+            rotationStep: 0,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: 2240,
+            transition: 1000,
+          },
+          curious: {
+            label: "Любопытный",
+            mode: "curious",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 16,
+            approachAt: 0,
+            separateAt: 60,
+            settleAt: null,
+            rotateAt: null,
+            rotationStep: 0,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: null,
+            transition: 520,
+          },
+          worker: {
+            label: "Работяга",
+            mode: "worker",
+            width: 42,
+            height: 64,
+            approach: 0,
+            separate: 18,
+            approachAt: 0,
+            separateAt: 60,
+            settleAt: null,
+            rotateAt: null,
+            rotationStep: 0,
+            rotationOvershoot: 0,
+            rotationSettle: 0,
+            cycle: null,
+            transition: 280,
+          },
+          calm: {
+            label: "Спокойный",
+            width: 32,
+            height: 48,
+            approach: 3,
+            separate: 7,
+            approachAt: 140,
+            separateAt: 280,
+            settleAt: 920,
+            rotateAt: null,
+            rotationStep: 0,
+            rotationOvershoot: 0,
+            rotationSettle: 220,
+            cycle: 1800,
+            transition: 220,
+          },
+        };
+
+        const later = (callback, delay) => {
+          const timer = window.setTimeout(() => {
+            timers.delete(timer);
+            callback();
+          }, delay);
+          timers.add(timer);
+          return timer;
+        };
+
+        const idleLater = (callback, delay) => {
+          const timer = window.setTimeout(() => {
+            idleTimers.delete(timer);
+            callback();
+          }, delay);
+          idleTimers.add(timer);
+          return timer;
+        };
+
+        const clearIdleSchedule = () => {
+          idleTimers.forEach((timer) => window.clearTimeout(timer));
+          idleTimers.clear();
+        };
+
+        const clearSchedule = () => {
+          timers.forEach((timer) => window.clearTimeout(timer));
+          timers.clear();
+          if (interval !== null) {
+            window.clearInterval(interval);
+            interval = null;
+          }
+          clearIdleSchedule();
+          workAnimations.forEach((itemAnimation) => itemAnimation.cancel());
+          workAnimations = [];
+          markAnimations.forEach((markAnimation) => markAnimation.cancel());
+          markAnimations = [];
+          animation.classList.remove(
+            "is-juggling",
+            "is-compact-smooth-motion",
+            "is-compact-spring-motion",
+            "is-compact-custom-motion",
+          );
+        };
+
+        const moveItem = (item, number) => {
+          item.style.transform = `translateX(${number}px)`;
+        };
+
+        const updateRotation = () => {
+          if (!running || !variant.rotationStep) return;
+          animation.style.transform = `rotate(${
+            rotationAngle - variant.rotationOvershoot
+          }deg)`;
+          rotationAngle += variant.rotationStep;
+          later(() => {
+            if (running) {
+              animation.style.transform = `rotate(${rotationAngle}deg)`;
+            }
+          }, variant.rotationSettle);
+        };
+
+        const animateArrows = () => {
+          marks.forEach((child, index) => {
+            later(() => {
+              if (running) {
+                moveItem(
+                  child,
+                  index === 0 ? variant.approach : -variant.approach,
+                );
+              }
+            }, variant.approachAt);
+            later(() => {
+              if (running) {
+                moveItem(
+                  child,
+                  index === 0 ? -variant.separate : variant.separate,
+                );
+              }
+            }, variant.separateAt);
+            if (variant.settleAt !== null) {
+              later(() => {
+                if (running) {
+                  moveItem(child, 0);
+                }
+              }, variant.settleAt);
+            }
+          });
+          if (variant.rotateAt !== null) {
+            later(updateRotation, variant.rotateAt);
+          }
+        };
+
+        const startCompactMotion = () => {
+          const spring = variant.mode === "compactSpring";
+          const custom = variant.mode === "compactCustom";
+          animation.classList.add(
+            custom
+              ? "is-compact-custom-motion"
+              : spring
+                ? "is-compact-spring-motion"
+                : "is-compact-smooth-motion",
+          );
+          const easing =
+            variant.easing ||
+            (spring
+              ? "cubic-bezier(0.34, 1.56, 0.64, 1)"
+              : "cubic-bezier(0.45, 0, 0.55, 1)");
+
+          const rotateSmoothly = () => {
+            if (
+              !running ||
+              (variant.mode !== "compactSmooth" &&
+                variant.mode !== "compactSpring" &&
+                variant.mode !== "compactCustom")
+            ) {
+              return;
+            }
+            if (!variant.rotationStep) return;
+            rotationAngle += variant.rotationStep;
+            animation.style.transform = `rotate(${rotationAngle}deg)`;
+            later(rotateSmoothly, variant.cycle);
+          };
+
+          markAnimations = marks.map((mark, index) => {
+            const distance = index === 0 ? -variant.separate : variant.separate;
+            const keyframes =
+              spring || custom
+                ? [
+                    { transform: "translateX(0)", offset: 0, easing },
+                    {
+                      transform: `translateX(${distance}px)`,
+                      offset: 0.36,
+                      easing,
+                    },
+                    {
+                      transform: `translateX(${distance}px)`,
+                      offset: 0.48,
+                      easing,
+                    },
+                    { transform: "translateX(0)", offset: 0.84, easing },
+                    { transform: "translateX(0)", offset: 1 },
+                  ]
+                : [
+                    { transform: "translateX(0)", offset: 0, easing },
+                    {
+                      transform: `translateX(${distance}px)`,
+                      offset: 0.34,
+                      easing,
+                    },
+                    {
+                      transform: `translateX(${distance}px)`,
+                      offset: 0.46,
+                      easing,
+                    },
+                    { transform: "translateX(0)", offset: 0.8, easing },
+                    { transform: "translateX(0)", offset: 1 },
+                  ];
+            return mark.animate(keyframes, {
+              duration: variant.cycle,
+              iterations: Number.POSITIVE_INFINITY,
+            });
+          });
+          if (variant.rotationStep) {
+            later(rotateSmoothly, variant.rotateAt);
+          }
+        };
+
+        const lookIndependently = (positions) => {
+          pupils.forEach((pupil, index) => {
+            const [x, y] = positions[index];
+            pupil.style.transform = `translate(${x}px, ${y}px)`;
+          });
+        };
+
+        const lookAt = (x, y) => {
+          lookIndependently([
+            [x * 0.92 - 0.1, y * 0.96],
+            [x * 1.04 + 0.1, y],
+          ]);
+        };
+
+        const randomBetween = (min, max) => min + Math.random() * (max - min);
+
+        const blink = (side = "both") => {
+          if (
+            !running ||
+            (variant.mode !== "curious" && variant.mode !== "worker")
+          ) {
+            return;
+          }
+          const className =
+            side === "both" ? "is-blinking" : `is-winking-${side}`;
+          eyes.classList.add(className);
+          idleLater(() => eyes.classList.remove(className), 140);
+        };
+
+        const openMascot = () => {
+          marks.forEach((mark, index) => {
+            moveItem(mark, index === 0 ? -variant.separate : variant.separate);
+          });
+          eyes.classList.remove(
+            "is-blinking",
+            "is-winking-left",
+            "is-winking-right",
+            "is-peeking-left",
+            "is-peeking-right",
+          );
+          eyes.classList.add("is-visible");
+        };
+
+        const peekMascot = () => {
+          const side = Math.random() < 0.5 ? "left" : "right";
+          const className = `is-peeking-${side}`;
+          openMascot();
+          eyes.classList.add(className);
+          idleLater(() => eyes.classList.remove(className), 420);
+        };
+
+        const queueIdleAction = (delay = randomBetween(900, 1900)) => {
+          idleLater(performIdleAction, delay);
+        };
+
+        const performIdleAction = () => {
+          if (!running || variant.mode !== "curious") return;
+          const action = Math.random();
+
+          if (action < 0.52) {
+            const baseX = randomBetween(-2.8, 2.8);
+            const baseY = randomBetween(-1.8, 1.8);
+            lookIndependently([
+              [
+                baseX + randomBetween(-0.6, 0.3),
+                baseY + randomBetween(-0.3, 0.3),
+              ],
+              [
+                baseX + randomBetween(-0.3, 0.6),
+                baseY + randomBetween(-0.3, 0.3),
+              ],
+            ]);
+            queueIdleAction();
+            return;
+          }
+
+          if (action < 0.74) {
+            blink();
+            queueIdleAction();
+            return;
+          }
+
+          if (action < 0.9) {
+            blink(Math.random() < 0.5 ? "left" : "right");
+            queueIdleAction();
+            return;
+          }
+
+          eyes.classList.remove("is-visible");
+          marks.forEach((mark, index) => {
+            moveItem(mark, index === 0 ? -2 : 2);
+          });
+          idleLater(() => {
+            if (!running || variant.mode !== "curious") return;
+            openMascot();
+            lookIndependently([
+              [randomBetween(-2.5, -1), randomBetween(-1, 1)],
+              [randomBetween(-1, 1), randomBetween(-1, 1)],
+            ]);
+            idleLater(() => blink(Math.random() < 0.5 ? "left" : "right"), 260);
+            queueIdleAction(randomBetween(1200, 2200));
+          }, 560);
+        };
+
+        const restartIdleLife = () => {
+          clearIdleSchedule();
+          queueIdleAction(1500);
+        };
+
+        const reactToCaughtGaze = () => {
+          if (
+            !running ||
+            completing ||
+            variant.mode !== "curious" ||
+            Date.now() < caughtCooldownUntil
+          ) {
+            return;
+          }
+          caughtCooldownUntil = Date.now() + 4200;
+          clearIdleSchedule();
+          lookAt(0, 0);
+          status.value = "Попался";
+          idleLater(() => blink(Math.random() < 0.5 ? "left" : "right"), 180);
+          idleLater(() => {
+            eyes.classList.remove("is-visible");
+            marks.forEach((mark, index) => {
+              moveItem(mark, index === 0 ? -5 : 5);
+            });
+          }, 460);
+          idleLater(() => {
+            if (!running || completing || variant.mode !== "curious") return;
+            peekMascot();
+            status.value = variant.label;
+            queueIdleAction(1500);
+          }, 980);
+        };
+
+        const startCurious = () => {
+          animateArrows();
+          later(() => {
+            if (running && variant.mode === "curious") {
+              peekMascot();
+            }
+          }, 620);
+          restartIdleLife();
+        };
+
+        const startWorker = () => {
+          openMascot();
+          animation.classList.add("is-juggling");
+          const ballPath = [
+            {
+              transform: "translate(calc(-50% - 25px), calc(-50% - 31px))",
+            },
+            {
+              transform: "translate(calc(-50% - 12px), calc(-50% - 57px))",
+              offset: 0.18,
+            },
+            {
+              transform: "translate(-50%, calc(-50% - 68px))",
+              offset: 0.3,
+            },
+            {
+              transform: "translate(calc(-50% + 12px), calc(-50% - 57px))",
+              offset: 0.42,
+            },
+            {
+              transform: "translate(calc(-50% + 25px), calc(-50% - 31px))",
+              offset: 0.5,
+            },
+            {
+              transform: "translate(calc(-50% + 18px), calc(-50% - 18px))",
+              offset: 0.6,
+            },
+            {
+              transform: "translate(-50%, calc(-50% - 18px))",
+              offset: 0.75,
+            },
+            {
+              transform: "translate(calc(-50% - 18px), calc(-50% - 18px))",
+              offset: 0.9,
+            },
+            {
+              transform: "translate(calc(-50% - 25px), calc(-50% - 31px))",
+            },
+          ];
+
+          workItems.forEach((item) => item.classList.add("is-visible"));
+          workAnimations = workItems.map((item, index) =>
+            item.animate(ballPath, {
+              duration: 2160,
+              delay: index * -720,
+              easing: "linear",
+              iterations: Number.POSITIVE_INFINITY,
+            }),
+          );
+
+          let gazeStep = 0;
+          const gazePositions = [
+            [-2.5, -2.8],
+            [0, -3],
+            [2.5, -2.8],
+            [2.7, -1.5],
+            [0, -1.5],
+            [-2.7, -1.5],
+          ];
+          lookAt(...gazePositions[gazeStep]);
+          interval = window.setInterval(() => {
+            if (!running || completing || variant.mode !== "worker") return;
+            gazeStep = (gazeStep + 1) % gazePositions.length;
+            lookAt(...gazePositions[gazeStep]);
+            if (gazeStep === 0 && Math.random() < 0.34) {
+              blink(Math.random() < 0.25 ? "left" : "both");
+            }
+          }, 360);
+        };
+
+        const getCustomVariant = () => {
+          const motion = motionPresets[motionTypeSelect.value];
+          const cycle = Number(cycleInput.value);
+          const distance = Number(distanceInput.value);
+          const size = Number(sizeInput.value);
+          const rotationStep = Number(rotationSelect.value);
+          const color = colorPresets[colorSelect.value];
+
+          cycleOutput.value = `${(cycle / 1000)
+            .toFixed(1)
+            .replace(".", ",")} с`;
+          distanceOutput.value = `${distance} px`;
+          sizeOutput.value = `${size} px`;
+          tuningSummary.value = `${motion.label} · ${cycle} ms · размах ${distance} px · размер ${size} px · ${rotationStep}° · ${color.label}`;
+
+          return {
+            ...variants.compactCustom,
+            width: (size * 66) / 100,
+            height: size,
+            separate: distance,
+            rotateAt: Math.round(cycle * 0.81),
+            rotationStep,
+            cycle,
+            easing: motion.easing,
+            themeColor: colorSelect.value,
+          };
+        };
+
+        const start = () => {
+          clearSchedule();
+          const custom = variantSelect.value === "compactCustom";
+          tuningControls.hidden = !custom;
+          status.classList.toggle("visually-hidden", custom);
+          variant = custom ? getCustomVariant() : variants[variantSelect.value];
+          running = true;
+          completing = false;
+          caughtCooldownUntil = 0;
+          rotationAngle = 0;
+          animation.style.setProperty(
+            "--loader-transition-duration",
+            `${variant.transition}ms`,
+          );
+          animation.style.setProperty(
+            "--loader-mark-color",
+            colorPresets[variant.themeColor]?.value || colorPresets.brand.value,
+          );
+          animation.style.transform = "rotate(0deg)";
+          animation.classList.remove("is-juggling");
+          eyes.classList.remove(
+            "is-visible",
+            "is-blinking",
+            "is-winking-left",
+            "is-winking-right",
+            "is-peeking-left",
+            "is-peeking-right",
+          );
+          workItems.forEach((item) => {
+            item.classList.remove("is-visible");
+            item.style.transform = "translate(-50%, -50%)";
+          });
+          lookAt(0, 0);
+          marks.forEach((child) => {
+            child.style.transform = "none";
+            child.style.width = `${variant.width}px`;
+            child.style.height = `${variant.height}px`;
+          });
+          pauseButton.textContent = "Пауза";
+          status.value = variant.label;
+          if (
+            variant.mode === "compactSmooth" ||
+            variant.mode === "compactSpring" ||
+            variant.mode === "compactCustom"
+          ) {
+            startCompactMotion();
+          } else if (variant.mode === "curious") {
+            startCurious();
+          } else if (variant.mode === "worker") {
+            startWorker();
+          } else {
+            animateArrows();
+            interval = window.setInterval(animateArrows, variant.cycle);
+          }
+        };
+
+        const pause = () => {
+          clearSchedule();
+          running = false;
+          pauseButton.textContent = "Продолжить";
+          status.value = "Пауза";
+        };
+
+        const completeMascot = () => {
+          if (completing) return;
+          if (
+            variant.mode === "compactSmooth" ||
+            variant.mode === "compactSpring" ||
+            variant.mode === "compactCustom"
+          ) {
+            clearSchedule();
+            completing = true;
+            running = true;
+            marks.forEach((mark) => moveItem(mark, 0));
+            status.value = "Готово";
+            later(() => {
+              running = false;
+              completing = false;
+              pauseButton.textContent = "Повторить";
+            }, variant.transition);
+            return;
+          }
+          if (variant.mode !== "curious" && variant.mode !== "worker") {
+            variantSelect.value = "worker";
+            start();
+            later(completeMascot, 1250);
+            return;
+          }
+
+          clearSchedule();
+          completing = true;
+          running = true;
+          caughtCooldownUntil = Number.POSITIVE_INFINITY;
+          animation.classList.remove("is-juggling");
+          openMascot();
+          workItems.forEach((item, index) => {
+            item.classList.toggle(
+              "is-visible",
+              variant.mode === "worker" && index === 0,
+            );
+            item.style.transform = "translate(-50%, -50%)";
+          });
+          lookAt(0, -0.5);
+          status.value = "Готово";
+          later(() => eyes.classList.add("is-blinking"), 180);
+          later(() => {
+            eyes.classList.remove("is-visible", "is-blinking");
+            workItems.forEach((item) => item.classList.remove("is-visible"));
+          }, 360);
+          later(() => {
+            marks.forEach((mark) => moveItem(mark, 0));
+          }, 420);
+          later(() => {
+            running = false;
+            completing = false;
+            pauseButton.textContent = "Повторить";
+          }, 980);
+        };
+
+        document
+          .querySelector('[data-action="restart"]')
+          .addEventListener("click", start);
+        completeButton.addEventListener("click", completeMascot);
+        variantSelect.addEventListener("change", start);
+        motionTypeSelect.addEventListener("change", start);
+        cycleInput.addEventListener("input", start);
+        distanceInput.addEventListener("input", start);
+        sizeInput.addEventListener("input", start);
+        rotationSelect.addEventListener("change", start);
+        colorSelect.addEventListener("change", start);
+        window.addEventListener("pointermove", (event) => {
+          if (!running || completing || variant.mode !== "curious") return;
+          openMascot();
+          const deltaX = event.clientX - window.innerWidth / 2;
+          const deltaY = event.clientY - window.innerHeight / 2;
+          const x = Math.max(-3.5, Math.min(3.5, deltaX / 60));
+          const y = Math.max(-3, Math.min(3, deltaY / 60));
+          lookAt(x, y);
+          restartIdleLife();
+          if (
+            Math.hypot(deltaX, deltaY) < 96 &&
+            Date.now() >= caughtCooldownUntil
+          ) {
+            idleLater(reactToCaughtGaze, 720);
+          }
+        });
+        pauseButton.addEventListener("click", () => {
+          if (running) {
+            pause();
+          } else {
+            start();
+          }
+        });
+        themeButton.addEventListener("click", () => {
+          const dark = document.documentElement.dataset.theme !== "dark";
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          themeButton.textContent = dark ? "Светлый фон" : "Тёмный фон";
+        });
+
+        start();
+      })();
+    </script>
+  </body>
+</html>

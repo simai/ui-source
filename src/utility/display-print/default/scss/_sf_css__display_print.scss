@@ -1,0 +1,35 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__display_print' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DISPLAY
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Display Print
+        @each $display-print-name, $display-print-value in $display-print-array {
+            .#{$infix}print-#{$display-print-name} {
+                display: none;
+                @media print { display:#{$display-print-value}; }
+            }
+        }
+
+        // Print visibility helpers (do not affect normal screen flow)
+        .#{$infix}print-visible {
+            @media print { visibility: visible; }
+        }
+
+        .#{$infix}print-hidden,
+        .#{$infix}print-visible-none {
+            @media print { visibility: hidden; }
+        }
+    }
+// }
+}

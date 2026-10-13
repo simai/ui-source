@@ -1,0 +1,3 @@
+// The first layer declaration establishes order; a trailing declaration cannot
+// reorder layers already emitted by other modules. Keep this dependency first.
+@layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;

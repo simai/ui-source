@@ -1,0 +1,1 @@
+SF.RuleLoader['height/lg'] = new RegExp("^(?:lg:h-(?:0|1\\/(?:2|3|4|5|6)|2\\/(?:3|4|5|6)|3\\/(?:4|5|6)|4\\/(?:5|6)|5\\/6|auto|content-m(?:ax|in)|f(?:it|ull)|m(?:ax|in)|px|screen(?:-(?:1\\/(?:2|3|4)|2\\/(?:3|4)|3\\/4|dynamic|large|small))?))(?![\\s\\S])");

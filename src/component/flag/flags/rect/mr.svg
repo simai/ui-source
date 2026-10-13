@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="308 644 28 20" fill="none" role="img">
+<g id="Country=MR">
+<rect id="Mask_319" x="308" y="644" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask148_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="308" y="644" width="28" height="20">
+<rect id="Mask_320" x="308" y="644" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask148_8205_11341)">
+<rect id="Mask Copy_35" x="308" y="644" width="28" height="20" fill="#496E2D"/>
+<path id="Star 8_12" fill-rule="evenodd" clip-rule="evenodd" d="M327.814 651.733C327.862 652.041 327.888 652.356 327.888 652.677C327.888 655.991 325.201 658.677 321.888 658.677C318.574 658.677 315.888 655.991 315.888 652.677C315.888 652.356 315.913 652.041 315.961 651.733C316.414 654.599 318.895 656.789 321.888 656.789C324.88 656.789 327.361 654.599 327.814 651.733ZM322 652.564L320.352 653.739L320.96 651.808L319.334 650.604L321.357 650.586L322 648.667L322.643 650.586L324.667 650.604L323.04 651.808L323.648 653.739L322 652.564Z" fill="#FFDA44"/>
+</g>
+</g>
+</svg>

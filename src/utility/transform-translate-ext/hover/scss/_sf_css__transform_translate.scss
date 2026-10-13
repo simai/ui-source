@@ -1,0 +1,45 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+$event: hover;
+$infix: xs;
+
+// @include layer-priority(utility,$event) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Transform Translate
+        
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+
+                .#{$infix}#{$event}\:translate-x-#{$size-range-name}#{$size-name}:#{$event} {
+                    --sf-translate-x: var(--sf-#{$size-range-name}#{$size-name});
+                    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+                }
+
+                .#{$infix}#{$event}\:translate-y-#{$size-range-name}#{$size-name}:#{$event} {
+                    --sf-translate-y: var(--sf-#{$size-range-name}#{$size-name});
+                    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+                }
+
+                .-#{$infix}#{$event}\:translate-x-#{$size-range-name}#{$size-name}:#{$event} {
+                    --sf-translate-x: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+                }
+
+                .-#{$infix}#{$event}\:translate-y-#{$size-range-name}#{$size-name}:#{$event} {
+                    --sf-translate-y: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+                }
+            }
+        }
+    }
+// }
+}

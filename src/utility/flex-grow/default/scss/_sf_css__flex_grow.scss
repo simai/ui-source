@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__flex_grow' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEXBOX GROW
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Flex Grow Utilities
+        @each $flex-grow-name, $flex-grow-value in $flex-grow-array {
+            .#{$infix}#{$flex-grow-name} {
+                flex-grow: #{$flex-grow-value};
+            }
+        }
+    }
+// }
+}

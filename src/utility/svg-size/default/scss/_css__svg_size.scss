@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'var__svg_size' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SVG SIZE
+// @include layer-priority(utility,default) {
+	@include breakpoint-media(xs) {
+		$infix: breakpoint-infix(xs, $breakpoint-array);
+
+		@each $svg-size in $svg-size-array {
+			.#{$infix}svg-#{$svg-size} {
+				width: var(--sf-text-size-#{$svg-size});
+				height: var(--sf-text-size-#{$svg-size});
+				line-height: var(--sf-text-height-#{$svg-size});
+			}
+		}
+	}
+// }
+}

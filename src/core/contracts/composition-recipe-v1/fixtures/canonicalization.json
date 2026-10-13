@@ -1,0 +1,195 @@
+{
+  "schema": "simai.recipe.canonicalization-vectors.v1",
+  "positive": [
+    {
+      "id": "0",
+      "value": null,
+      "utf8Hex": "6e756c6c",
+      "canonical": "null",
+      "digest": "sha256:74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    {
+      "id": "1",
+      "value": true,
+      "utf8Hex": "74727565",
+      "canonical": "true",
+      "digest": "sha256:b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+    },
+    {
+      "id": "2",
+      "value": false,
+      "utf8Hex": "66616c7365",
+      "canonical": "false",
+      "digest": "sha256:fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+    },
+    {
+      "id": "3",
+      "value": 0,
+      "utf8Hex": "30",
+      "canonical": "0",
+      "digest": "sha256:5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "id": "4",
+      "value": 1,
+      "utf8Hex": "31",
+      "canonical": "1",
+      "digest": "sha256:6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    {
+      "id": "5",
+      "value": -1,
+      "utf8Hex": "2d31",
+      "canonical": "-1",
+      "digest": "sha256:1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464"
+    },
+    {
+      "id": "6",
+      "value": 9007199254740991,
+      "utf8Hex": "39303037313939323534373430393931",
+      "canonical": "9007199254740991",
+      "digest": "sha256:f40b423c2dd95ff2b2f027e22208f438cf7242862e5e746860e697308c9add26"
+    },
+    {
+      "id": "7",
+      "value": -9007199254740991,
+      "utf8Hex": "2d39303037313939323534373430393931",
+      "canonical": "-9007199254740991",
+      "digest": "sha256:4c933a456bb8f2e9894b2d0b26480439cd72d52fb8a27cbf8fd7f323f22c7815"
+    },
+    {
+      "id": "8",
+      "value": {},
+      "utf8Hex": "7b7d",
+      "canonical": "{}",
+      "digest": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "id": "9",
+      "value": [],
+      "utf8Hex": "5b5d",
+      "canonical": "[]",
+      "digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "10",
+      "value": {
+        "b": 2,
+        "a": 1
+      },
+      "utf8Hex": "7b2261223a312c2262223a327d",
+      "canonical": "{\"a\":1,\"b\":2}",
+      "digest": "sha256:43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777"
+    },
+    {
+      "id": "11",
+      "value": [
+        "Привет",
+        "😀",
+        "é",
+        "é"
+      ],
+      "utf8Hex": "5b22d09fd180d0b8d0b2d0b5d182222c22f09f9880222c22c3a9222c2265cc81225d",
+      "canonical": "[\"Привет\",\"😀\",\"é\",\"é\"]",
+      "digest": "sha256:bdc526db7b63a0cdd7633ce8e9019468990178a0007c1fec6069fd4b84604bec"
+    },
+    {
+      "id": "12",
+      "value": {
+        "line": "a\nb\t\"c\"\\/",
+        "empty": []
+      },
+      "utf8Hex": "7b22656d707479223a5b5d2c226c696e65223a22615c6e625c745c22635c225c5c2f227d",
+      "canonical": "{\"empty\":[],\"line\":\"a\\nb\\t\\\"c\\\"\\\\/\"}",
+      "digest": "sha256:9bbdaca26c4bb25bf8cbeb7411424b2c89da38da654fb232b961f7f08950019a"
+    },
+    {
+      "id": "13",
+      "value": {
+        "😀": 1,
+        "": 2
+      },
+      "utf8Hex": "7b22f09f9880223a312c22ee8080223a327d",
+      "canonical": "{\"😀\":1,\"\":2}",
+      "digest": "sha256:04208f6cdb854e2ab1b07dd3633a39dec854344fe72824cf7f2fdb4e2e33129e"
+    },
+    {
+      "id": "14",
+      "value": {
+        "nest": [
+          {},
+          [],
+          null
+        ]
+      },
+      "utf8Hex": "7b226e657374223a5b7b7d2c5b5d2c6e756c6c5d7d",
+      "canonical": "{\"nest\":[{},[],null]}",
+      "digest": "sha256:4c3394733c58c8cf50af56b19e49384639daef47d725f8b649929021dc8bf8ce"
+    },
+    {
+      "id": "15",
+      "value": {
+        "0": "zero",
+        "01": "one"
+      },
+      "utf8Hex": "7b2230223a227a65726f222c223031223a226f6e65227d",
+      "canonical": "{\"0\":\"zero\",\"01\":\"one\"}",
+      "digest": "sha256:3c39eaabd0f1d458938dcb836a3829d7459ed9cf801b890ad162a82dc9bd7607"
+    },
+    {
+      "id": "16",
+      "value": "line separator ",
+      "utf8Hex": "226c696e65e280a8736570617261746f72e280a922",
+      "canonical": "\"line separator \"",
+      "digest": "sha256:d8dd96c681c9a29ab3f29058b8c8e2f78ff4568de1eb9dd66bf1f4d6eeafbdf4"
+    },
+    {
+      "id": "17",
+      "value": "\u0000\b\f\r",
+      "utf8Hex": "225c75303030305c625c665c7222",
+      "canonical": "\"\\u0000\\b\\f\\r\"",
+      "digest": "sha256:cd19d774675d1caa65587ac39553a76b26e1b68fdc7395efec5e3a79d985425b"
+    },
+    {
+      "id": "18",
+      "value": {
+        "a": [
+          true,
+          false,
+          null
+        ]
+      },
+      "utf8Hex": "7b2261223a5b747275652c66616c73652c6e756c6c5d7d",
+      "canonical": "{\"a\":[true,false,null]}",
+      "digest": "sha256:65562750968a608d441205477d42904d28dc1c74274d08932e8c2615d7fbefb0"
+    },
+    {
+      "id": "19",
+      "value": {
+        "10": "ten",
+        "2": "two",
+        "01": "leading",
+        "4294967295": "not-index"
+      },
+      "utf8Hex": "7b2232223a2274776f222c223130223a2274656e222c223031223a226c656164696e67222c2234323934393637323935223a226e6f742d696e646578227d",
+      "canonical": "{\"2\":\"two\",\"10\":\"ten\",\"01\":\"leading\",\"4294967295\":\"not-index\"}",
+      "digest": "sha256:52437e1186cc8bb62f9c0e61d1bc92b3092f1bc96a2607d97da5bd05ac5b8c62"
+    }
+  ],
+  "negativeJsonTexts": [
+    "0.5",
+    "9007199254740992",
+    "{\"a\":1,\"a\":2}",
+    "\"\\ud800\"",
+    "NaN",
+    "Infinity"
+  ],
+  "negativeReason": [
+    "fractional_number",
+    "unsafe_integer",
+    "duplicate_key",
+    "unpaired_surrogate",
+    "non_json",
+    "non_json"
+  ]
+}

@@ -1,0 +1,21 @@
+@use 'var__breadcrumbs' as *;
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/wrap (.flex-wrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-breadcrumbs {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex-wrap: wrap;
+    background-color: var(--sf-breadcrumbs--background-color, transparent);
+    gap: var(--sf-breadcrumbs--gap, var(--sf-space-1\/3));
+    overscroll-behavior-inline: contain;
+  }
+
+  .sf-breadcrumbs-item[hidden] {
+    display: none;
+  }
+
+  [dir="rtl"] .sf-breadcrumbs .sf-breadcrumbs-item--separator .sf-icon,
+  .sf-breadcrumbs[dir="rtl"] .sf-breadcrumbs-item--separator .sf-icon {
+    transform: scaleX(-1);
+  }
+}

@@ -1,0 +1,17 @@
+<div class="sf-avatar-group">
+    <% data.avatars.forEach(avatar => { %>
+        <div class="sf-avatar sf-avatar-round">
+            <button class="sf-avatar--image" style="background-image: url(<%=avatar.imageUrl%>);">
+            </button>
+        </div>
+        <% }) %>
+        <% if(data.avatars_more) {%>
+            <div class="sf-avatar-round">
+                <button class="sf-avatar--image">
+                    <span> <%=data.avatars_more%>> </span>
+                </button>
+              </div>
+
+        <% } %>
+
+</div>

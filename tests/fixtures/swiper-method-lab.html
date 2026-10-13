@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Swiper — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/swiper-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/swiper-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/swiper-browser';
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, theme: false};
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Swiper</h1>
+    <div id="false-positive" class="swiper-slide">Класс слайда без корня</div>
+    <button id="mount" class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Добавить примеры</span></button>
+    <div id="examples" class="grid gap-4"></div>
+  </main>
+  <script>
+    const createSlides = count => Array.from({length: count}, (_, index) => `<article class="swiper-slide p-inline-1 p-bottom-2"><div class="bg-surface-container color-on-surface border border-outline-variant p-3 radius-default">Слайд ${index + 1}</div></article>`).join('');
+
+    const waitForSwiper = callback => {
+      if (typeof window.Swiper === 'function') callback();
+      else window.setTimeout(() => waitForSwiper(callback), 25);
+    };
+
+    document.getElementById('mount').addEventListener('click', () => {
+      const examples = document.getElementById('examples');
+      examples.innerHTML = `
+        <section><h2>Основной пример</h2><div id="basic" class="swiper overflow-hidden" role="region" aria-label="Основные материалы"><div class="swiper-wrapper">${createSlides(3)}</div><div class="swiper-pagination"></div></div></section>
+        <section><h2>Адаптивный пример</h2><div id="responsive" class="swiper overflow-hidden" role="region" aria-label="Адаптивные материалы"><div class="swiper-wrapper">${createSlides(4)}</div></div></section>
+        <section><h2>Жизненный цикл</h2><div class="flex flex-wrap gap-1 mb-2"><button id="add-slide" class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Добавить</span></button><button id="remove-slide" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Удалить</span></button></div><div id="lifecycle" class="swiper overflow-hidden" role="region" aria-label="Изменяемые материалы"><div class="swiper-wrapper">${createSlides(2)}</div><div class="swiper-pagination"></div></div></section>`;
+
+      waitForSwiper(() => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const shared = {
+          a11y: {enabled: true},
+          keyboard: {enabled: true, onlyInViewport: true},
+          ...(reduced ? {speed: 0} : {}),
+        };
+        const pagination = root => ({el: root.querySelector('.swiper-pagination'), clickable: true, bulletElement: 'button'});
+        const basic = document.getElementById('basic');
+        const responsive = document.getElementById('responsive');
+        const lifecycle = document.getElementById('lifecycle');
+        window.__swiperInstances = {
+          basic: new window.Swiper(basic, {...shared, pagination: pagination(basic)}),
+          responsive: new window.Swiper(responsive, {...shared, slidesPerView: 1, breakpoints: {640: {slidesPerView: 2}, 960: {slidesPerView: 3}}}),
+          lifecycle: new window.Swiper(lifecycle, {...shared, pagination: pagination(lifecycle)}),
+        };
+        document.getElementById('add-slide').addEventListener('click', () => {
+          const wrapper = lifecycle.querySelector('.swiper-wrapper');
+          const slide = document.createElement('article');
+          slide.className = 'swiper-slide p-inline-1 p-bottom-2';
+          const surface = document.createElement('div');
+          surface.className = 'bg-surface-container color-on-surface border border-outline-variant p-3 radius-default';
+          surface.textContent = `Слайд ${wrapper.children.length + 1}`;
+          slide.append(surface);
+          wrapper.append(slide);
+          window.__swiperInstances.lifecycle.update();
+          window.__swiperInstances.lifecycle.pagination.render();
+          window.__swiperInstances.lifecycle.pagination.update();
+        });
+        document.getElementById('remove-slide').addEventListener('click', () => {
+          const wrapper = lifecycle.querySelector('.swiper-wrapper');
+          if (wrapper.children.length <= 1) return;
+          wrapper.lastElementChild.remove();
+          window.__swiperInstances.lifecycle.update();
+          window.__swiperInstances.lifecycle.pagination.render();
+          window.__swiperInstances.lifecycle.pagination.update();
+        });
+      });
+    }, {once: true});
+  </script>
+  <script src="../../source/output/swiper-browser/core/js/core.js"></script>
+</body>
+</html>

@@ -1,0 +1,3307 @@
+{
+  "capability": "layout.scope",
+  "cases": [
+    {
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"orders-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"order-lines\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки заказа\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:e3a2f3a17951934d1a28ed6be530d503ca7a15433cdb934d610f06bd65843d87",
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"orders-scope\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;order-lines&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Строки заказа\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "lines",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "orders-scope",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.master-detail"
+    },
+    {
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"chain\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-b\",\"to\":{\"endpoint\":\"b\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"b\",\"port\":\"selection\"},\"id\":\"b-c\",\"to\":{\"endpoint\":\"c\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-d\",\"to\":{\"endpoint\":\"d\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"a\"}},\"id\":\"a\",\"props\":{\"aria-label\":\"A\",\"table-settings-key\":\"example.a\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"b\"}},\"id\":\"b\",\"props\":{\"aria-label\":\"B\",\"table-settings-key\":\"example.b\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"c\"}},\"id\":\"c\",\"props\":{\"aria-label\":\"C\",\"table-settings-key\":\"example.c\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"d\"}},\"id\":\"d\",\"props\":{\"aria-label\":\"D\",\"table-settings-key\":\"example.d\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:4956f3ab1ea1494f92f962334bc8f18bff782fbee4a13cef2d6b2aa2e070d8d5",
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "chain",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "a-b",
+                "to": {
+                  "endpoint": "b",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "b",
+                  "port": "selection"
+                },
+                "id": "b-c",
+                "to": {
+                  "endpoint": "c",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "a-d",
+                "to": {
+                  "endpoint": "d",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "a"
+                  }
+                },
+                "id": "a",
+                "props": {
+                  "aria-label": "A",
+                  "table-settings-key": "example.a"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "b"
+                  }
+                },
+                "id": "b",
+                "props": {
+                  "aria-label": "B",
+                  "table-settings-key": "example.b"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "c"
+                  }
+                },
+                "id": "c",
+                "props": {
+                  "aria-label": "C",
+                  "table-settings-key": "example.c"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "d"
+                  }
+                },
+                "id": "d",
+                "props": {
+                  "aria-label": "D",
+                  "table-settings-key": "example.d"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"chain\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;a&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;a-b&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;b&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}},{&quot;from&quot;:{&quot;endpoint&quot;:&quot;b&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;b-c&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;c&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}},{&quot;from&quot;:{&quot;endpoint&quot;:&quot;a&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;a-d&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;d&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"A\" table-settings-key=\"example.a\" data-sf-endpoint=\"a\"></sf-table><sf-table aria-label=\"B\" table-settings-key=\"example.b\" data-sf-endpoint=\"b\"></sf-table><sf-table aria-label=\"C\" table-settings-key=\"example.c\" data-sf-endpoint=\"c\"></sf-table><sf-table aria-label=\"D\" table-settings-key=\"example.d\" data-sf-endpoint=\"d\"></sf-table></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "a",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "b",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "c",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "d",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "chain",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.chain-and-fan-out"
+    },
+    {
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"pick\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-list\",\"props\":{\"label\":\"Список\",\"landmark\":\"region\",\"name\":\"list\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Детали\",\"landmark\":\"complementary\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:f28b466efe79a32e61db6ab1a45ddea650032a39262f45290f38b04858c2e687",
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "shell-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "pick",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-list",
+                      "props": {
+                        "label": "Список",
+                        "landmark": "region",
+                        "name": "list",
+                        "placement": "center"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "extensions": {
+                              "simai.composition:endpoint": {
+                                "name": "orders"
+                              }
+                            },
+                            "id": "orders",
+                            "props": {
+                              "aria-label": "Заказы",
+                              "table-settings-key": "example.orders"
+                            },
+                            "type": "example.records"
+                          }
+                        ]
+                      },
+                      "type": "layout.region"
+                    },
+                    {
+                      "id": "r-detail",
+                      "props": {
+                        "label": "Детали",
+                        "landmark": "complementary",
+                        "name": "detail",
+                        "placement": "end"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "extensions": {
+                              "simai.composition:endpoint": {
+                                "name": "lines"
+                              }
+                            },
+                            "id": "lines",
+                            "props": {
+                              "aria-label": "Строки",
+                              "table-settings-key": "example.lines"
+                            },
+                            "type": "example.records"
+                          }
+                        ]
+                      },
+                      "type": "layout.region"
+                    }
+                  ]
+                },
+                "type": "layout.regions"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"shell-scope\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;pick&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><section class=\"sf-composition-region\" data-sf-composition-id=\"r-list\" data-sf-region=\"list\" data-sf-region-placement=\"center\" aria-label=\"Список\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table></section><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-detail\" data-sf-region=\"detail\" data-sf-region-placement=\"end\" aria-label=\"Детали\"><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></aside></div></div></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "lines",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "shell-scope",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.endpoints-inside-regions",
+      "regions": [
+        {
+          "digest": "sha256:648c5d6acb22683886f2620da856d8d728e7da4a602bf6f61884db8a68def4ab",
+          "landmark": "region",
+          "layout": "shell",
+          "name": "list",
+          "node": "r-list",
+          "placement": "center"
+        },
+        {
+          "digest": "sha256:e6df377fde91e5deb0f083f4de32b8ecf6e34aea77c4914f6a6ca4bdc13dabf9",
+          "landmark": "complementary",
+          "layout": "shell",
+          "name": "detail",
+          "node": "r-detail",
+          "placement": "end"
+        }
+      ]
+    },
+    {
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"outer\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"outer-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"},{\"id\":\"inner\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"inner-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"inner-orders\",\"props\":{\"aria-label\":\"Внутренние заказы\",\"table-settings-key\":\"example.inner-orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"inner-lines\",\"props\":{\"aria-label\":\"Внутренние строки\",\"table-settings-key\":\"example.inner-lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:ee74aaea7c10b4b3f7074b1eb28a5226f3253744a26090847bc2277d6660c93b",
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "outer",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "outer-route",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              },
+              {
+                "id": "inner",
+                "props": {
+                  "routes": [
+                    {
+                      "from": {
+                        "endpoint": "orders",
+                        "port": "selection"
+                      },
+                      "id": "inner-route",
+                      "to": {
+                        "endpoint": "lines",
+                        "port": "context"
+                      }
+                    }
+                  ]
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "orders"
+                        }
+                      },
+                      "id": "inner-orders",
+                      "props": {
+                        "aria-label": "Внутренние заказы",
+                        "table-settings-key": "example.inner-orders"
+                      },
+                      "type": "example.records"
+                    },
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "lines"
+                        }
+                      },
+                      "id": "inner-lines",
+                      "props": {
+                        "aria-label": "Внутренние строки",
+                        "table-settings-key": "example.inner-lines"
+                      },
+                      "type": "example.records"
+                    }
+                  ]
+                },
+                "type": "layout.scope"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"outer\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;outer-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table><sf-composition-scope data-sf-composition-id=\"inner\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;inner-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Внутренние заказы\" table-settings-key=\"example.inner-orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Внутренние строки\" table-settings-key=\"example.inner-lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "lines",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "inner-orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-table",
+          "id": "inner-lines",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "inner",
+          "type": "layout.scope"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "outer",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.nested-scopes-are-encapsulated"
+    },
+    {
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"bound\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"products\",\"port\":\"selection\"},\"id\":\"bound-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"products\"}},\"id\":\"products\",\"type\":\"example.product-list\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "diagnostics": [],
+      "digest": "sha256:d43b2afb9ddc511ac5b040b70210d70235b9b8c6970a21c9d9cba9d44dafd924",
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "bound",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "products",
+                  "port": "selection"
+                },
+                "id": "bound-route",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "products"
+                  }
+                },
+                "id": "products",
+                "type": "example.product-list"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"bound\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;products&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;bound-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Товары\" table-settings-key=\"example.products\" data-sf-endpoint=\"products\"></sf-table><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "lines",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "bound",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.product-type-bound-to-published-ports"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "missing",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-endpoint"
+    },
+    {
+      "diagnostics": [
+        "route_port_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "rows"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-port"
+    },
+    {
+      "diagnostics": [
+        "route_port_direction"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "context"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.wrong-direction"
+    },
+    {
+      "diagnostics": [
+        "route_self"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "orders",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.self-route"
+    },
+    {
+      "diagnostics": [
+        "route_cycle"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "lines",
+                  "port": "selection"
+                },
+                "id": "back",
+                "to": {
+                  "endpoint": "orders",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.cycle"
+    },
+    {
+      "diagnostics": [
+        "route_input_conflict"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "customers",
+                  "port": "selection"
+                },
+                "id": "second",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "customers"
+                  }
+                },
+                "id": "customers",
+                "props": {
+                  "aria-label": "Клиенты",
+                  "table-settings-key": "example.customers"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.input-conflict"
+    },
+    {
+      "diagnostics": [
+        "route_id_duplicate"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "extra",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "extra"
+                  }
+                },
+                "id": "extra",
+                "props": {
+                  "aria-label": "Ещё",
+                  "table-settings-key": "example.extra"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.duplicate-route-id"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_duplicate",
+        "route_endpoint_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.duplicate-endpoint"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_invalid",
+        "route_endpoint_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "method": "reload",
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.invalid-endpoint-extension"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "id": "inner",
+                "props": {
+                  "routes": [
+                    {
+                      "from": {
+                        "endpoint": "x",
+                        "port": "selection"
+                      },
+                      "id": "inner",
+                      "to": {
+                        "endpoint": "lines",
+                        "port": "context"
+                      }
+                    }
+                  ]
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "x"
+                        }
+                      },
+                      "id": "x",
+                      "props": {
+                        "aria-label": "X",
+                        "table-settings-key": "example.x"
+                      },
+                      "type": "example.records"
+                    },
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "lines"
+                        }
+                      },
+                      "id": "lines",
+                      "props": {
+                        "aria-label": "Строки заказа",
+                        "table-settings-key": "example.lines"
+                      },
+                      "type": "example.records"
+                    }
+                  ]
+                },
+                "type": "layout.scope"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.endpoint-inside-nested-scope"
+    },
+    {
+      "diagnostics": [
+        "route_port_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "text",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              },
+              {
+                "data": {
+                  "content": []
+                },
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "text"
+                  }
+                },
+                "id": "text",
+                "type": "content.paragraph"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unported-type"
+    },
+    {
+      "diagnostics": [
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "action": "delete",
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.arbitrary-action-field"
+    },
+    {
+      "diagnostics": [
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "endpoint_url": "/api/lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.endpoint-url-field"
+    },
+    {
+      "diagnostics": [
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "handler": "reload()",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.executable-field"
+    },
+    {
+      "diagnostics": [
+        "executable_or_secret_field_forbidden",
+        "schema_additional_property"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "query": "select * from lines",
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.query-field"
+    },
+    {
+      "diagnostics": [
+        "schema_min_items"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": []
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.empty-routes"
+    },
+    {
+      "diagnostics": [
+        "route_fanout_limit",
+        "schema_max_items"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "many",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-0",
+                "to": {
+                  "endpoint": "t-0",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-1",
+                "to": {
+                  "endpoint": "t-1",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-2",
+                "to": {
+                  "endpoint": "t-2",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-3",
+                "to": {
+                  "endpoint": "t-3",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-4",
+                "to": {
+                  "endpoint": "t-4",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-5",
+                "to": {
+                  "endpoint": "t-5",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-6",
+                "to": {
+                  "endpoint": "t-6",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-7",
+                "to": {
+                  "endpoint": "t-7",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-8",
+                "to": {
+                  "endpoint": "t-8",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-9",
+                "to": {
+                  "endpoint": "t-9",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-10",
+                "to": {
+                  "endpoint": "t-10",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-11",
+                "to": {
+                  "endpoint": "t-11",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-12",
+                "to": {
+                  "endpoint": "t-12",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-13",
+                "to": {
+                  "endpoint": "t-13",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-14",
+                "to": {
+                  "endpoint": "t-14",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-15",
+                "to": {
+                  "endpoint": "t-15",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-16",
+                "to": {
+                  "endpoint": "t-16",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-17",
+                "to": {
+                  "endpoint": "t-17",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-18",
+                "to": {
+                  "endpoint": "t-18",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-19",
+                "to": {
+                  "endpoint": "t-19",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-20",
+                "to": {
+                  "endpoint": "t-20",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-21",
+                "to": {
+                  "endpoint": "t-21",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-22",
+                "to": {
+                  "endpoint": "t-22",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-23",
+                "to": {
+                  "endpoint": "t-23",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-24",
+                "to": {
+                  "endpoint": "t-24",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-25",
+                "to": {
+                  "endpoint": "t-25",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-26",
+                "to": {
+                  "endpoint": "t-26",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-27",
+                "to": {
+                  "endpoint": "t-27",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-28",
+                "to": {
+                  "endpoint": "t-28",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-29",
+                "to": {
+                  "endpoint": "t-29",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-30",
+                "to": {
+                  "endpoint": "t-30",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-31",
+                "to": {
+                  "endpoint": "t-31",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r-32",
+                "to": {
+                  "endpoint": "t-32",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "a"
+                  }
+                },
+                "id": "a",
+                "props": {
+                  "aria-label": "A",
+                  "table-settings-key": "example.a"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-0"
+                  }
+                },
+                "id": "t-0",
+                "props": {
+                  "aria-label": "T0",
+                  "table-settings-key": "example.t-0"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-1"
+                  }
+                },
+                "id": "t-1",
+                "props": {
+                  "aria-label": "T1",
+                  "table-settings-key": "example.t-1"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-2"
+                  }
+                },
+                "id": "t-2",
+                "props": {
+                  "aria-label": "T2",
+                  "table-settings-key": "example.t-2"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-3"
+                  }
+                },
+                "id": "t-3",
+                "props": {
+                  "aria-label": "T3",
+                  "table-settings-key": "example.t-3"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-4"
+                  }
+                },
+                "id": "t-4",
+                "props": {
+                  "aria-label": "T4",
+                  "table-settings-key": "example.t-4"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-5"
+                  }
+                },
+                "id": "t-5",
+                "props": {
+                  "aria-label": "T5",
+                  "table-settings-key": "example.t-5"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-6"
+                  }
+                },
+                "id": "t-6",
+                "props": {
+                  "aria-label": "T6",
+                  "table-settings-key": "example.t-6"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-7"
+                  }
+                },
+                "id": "t-7",
+                "props": {
+                  "aria-label": "T7",
+                  "table-settings-key": "example.t-7"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-8"
+                  }
+                },
+                "id": "t-8",
+                "props": {
+                  "aria-label": "T8",
+                  "table-settings-key": "example.t-8"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-9"
+                  }
+                },
+                "id": "t-9",
+                "props": {
+                  "aria-label": "T9",
+                  "table-settings-key": "example.t-9"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-10"
+                  }
+                },
+                "id": "t-10",
+                "props": {
+                  "aria-label": "T10",
+                  "table-settings-key": "example.t-10"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-11"
+                  }
+                },
+                "id": "t-11",
+                "props": {
+                  "aria-label": "T11",
+                  "table-settings-key": "example.t-11"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-12"
+                  }
+                },
+                "id": "t-12",
+                "props": {
+                  "aria-label": "T12",
+                  "table-settings-key": "example.t-12"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-13"
+                  }
+                },
+                "id": "t-13",
+                "props": {
+                  "aria-label": "T13",
+                  "table-settings-key": "example.t-13"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-14"
+                  }
+                },
+                "id": "t-14",
+                "props": {
+                  "aria-label": "T14",
+                  "table-settings-key": "example.t-14"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-15"
+                  }
+                },
+                "id": "t-15",
+                "props": {
+                  "aria-label": "T15",
+                  "table-settings-key": "example.t-15"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-16"
+                  }
+                },
+                "id": "t-16",
+                "props": {
+                  "aria-label": "T16",
+                  "table-settings-key": "example.t-16"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-17"
+                  }
+                },
+                "id": "t-17",
+                "props": {
+                  "aria-label": "T17",
+                  "table-settings-key": "example.t-17"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-18"
+                  }
+                },
+                "id": "t-18",
+                "props": {
+                  "aria-label": "T18",
+                  "table-settings-key": "example.t-18"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-19"
+                  }
+                },
+                "id": "t-19",
+                "props": {
+                  "aria-label": "T19",
+                  "table-settings-key": "example.t-19"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-20"
+                  }
+                },
+                "id": "t-20",
+                "props": {
+                  "aria-label": "T20",
+                  "table-settings-key": "example.t-20"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-21"
+                  }
+                },
+                "id": "t-21",
+                "props": {
+                  "aria-label": "T21",
+                  "table-settings-key": "example.t-21"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-22"
+                  }
+                },
+                "id": "t-22",
+                "props": {
+                  "aria-label": "T22",
+                  "table-settings-key": "example.t-22"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-23"
+                  }
+                },
+                "id": "t-23",
+                "props": {
+                  "aria-label": "T23",
+                  "table-settings-key": "example.t-23"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-24"
+                  }
+                },
+                "id": "t-24",
+                "props": {
+                  "aria-label": "T24",
+                  "table-settings-key": "example.t-24"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-25"
+                  }
+                },
+                "id": "t-25",
+                "props": {
+                  "aria-label": "T25",
+                  "table-settings-key": "example.t-25"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-26"
+                  }
+                },
+                "id": "t-26",
+                "props": {
+                  "aria-label": "T26",
+                  "table-settings-key": "example.t-26"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-27"
+                  }
+                },
+                "id": "t-27",
+                "props": {
+                  "aria-label": "T27",
+                  "table-settings-key": "example.t-27"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-28"
+                  }
+                },
+                "id": "t-28",
+                "props": {
+                  "aria-label": "T28",
+                  "table-settings-key": "example.t-28"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-29"
+                  }
+                },
+                "id": "t-29",
+                "props": {
+                  "aria-label": "T29",
+                  "table-settings-key": "example.t-29"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-30"
+                  }
+                },
+                "id": "t-30",
+                "props": {
+                  "aria-label": "T30",
+                  "table-settings-key": "example.t-30"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-31"
+                  }
+                },
+                "id": "t-31",
+                "props": {
+                  "aria-label": "T31",
+                  "table-settings-key": "example.t-31"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-32"
+                  }
+                },
+                "id": "t-32",
+                "props": {
+                  "aria-label": "T32",
+                  "table-settings-key": "example.t-32"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.route-limit"
+    },
+    {
+      "diagnostics": [
+        "route_fanout_limit"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "fan",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-0",
+                "to": {
+                  "endpoint": "t-0",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-1",
+                "to": {
+                  "endpoint": "t-1",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-2",
+                "to": {
+                  "endpoint": "t-2",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-3",
+                "to": {
+                  "endpoint": "t-3",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-4",
+                "to": {
+                  "endpoint": "t-4",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-5",
+                "to": {
+                  "endpoint": "t-5",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-6",
+                "to": {
+                  "endpoint": "t-6",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-7",
+                "to": {
+                  "endpoint": "t-7",
+                  "port": "context"
+                }
+              },
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "f-8",
+                "to": {
+                  "endpoint": "t-8",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "a"
+                  }
+                },
+                "id": "a",
+                "props": {
+                  "aria-label": "A",
+                  "table-settings-key": "example.a"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-0"
+                  }
+                },
+                "id": "t-0",
+                "props": {
+                  "aria-label": "T0",
+                  "table-settings-key": "example.t-0"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-1"
+                  }
+                },
+                "id": "t-1",
+                "props": {
+                  "aria-label": "T1",
+                  "table-settings-key": "example.t-1"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-2"
+                  }
+                },
+                "id": "t-2",
+                "props": {
+                  "aria-label": "T2",
+                  "table-settings-key": "example.t-2"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-3"
+                  }
+                },
+                "id": "t-3",
+                "props": {
+                  "aria-label": "T3",
+                  "table-settings-key": "example.t-3"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-4"
+                  }
+                },
+                "id": "t-4",
+                "props": {
+                  "aria-label": "T4",
+                  "table-settings-key": "example.t-4"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-5"
+                  }
+                },
+                "id": "t-5",
+                "props": {
+                  "aria-label": "T5",
+                  "table-settings-key": "example.t-5"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-6"
+                  }
+                },
+                "id": "t-6",
+                "props": {
+                  "aria-label": "T6",
+                  "table-settings-key": "example.t-6"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-7"
+                  }
+                },
+                "id": "t-7",
+                "props": {
+                  "aria-label": "T7",
+                  "table-settings-key": "example.t-7"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "t-8"
+                  }
+                },
+                "id": "t-8",
+                "props": {
+                  "aria-label": "T8",
+                  "table-settings-key": "example.t-8"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.fan-out-limit"
+    },
+    {
+      "diagnostics": [
+        "scope_nesting_limit"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "s-1",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "a",
+                  "port": "selection"
+                },
+                "id": "r",
+                "to": {
+                  "endpoint": "b",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "a"
+                  }
+                },
+                "id": "a-1",
+                "props": {
+                  "aria-label": "A",
+                  "table-settings-key": "example.a-1"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "b"
+                  }
+                },
+                "id": "b-1",
+                "props": {
+                  "aria-label": "B",
+                  "table-settings-key": "example.b-1"
+                },
+                "type": "example.records"
+              },
+              {
+                "id": "s-2",
+                "props": {
+                  "routes": [
+                    {
+                      "from": {
+                        "endpoint": "a",
+                        "port": "selection"
+                      },
+                      "id": "r",
+                      "to": {
+                        "endpoint": "b",
+                        "port": "context"
+                      }
+                    }
+                  ]
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "a"
+                        }
+                      },
+                      "id": "a-2",
+                      "props": {
+                        "aria-label": "A",
+                        "table-settings-key": "example.a-2"
+                      },
+                      "type": "example.records"
+                    },
+                    {
+                      "extensions": {
+                        "simai.composition:endpoint": {
+                          "name": "b"
+                        }
+                      },
+                      "id": "b-2",
+                      "props": {
+                        "aria-label": "B",
+                        "table-settings-key": "example.b-2"
+                      },
+                      "type": "example.records"
+                    },
+                    {
+                      "id": "s-3",
+                      "props": {
+                        "routes": [
+                          {
+                            "from": {
+                              "endpoint": "a",
+                              "port": "selection"
+                            },
+                            "id": "r",
+                            "to": {
+                              "endpoint": "b",
+                              "port": "context"
+                            }
+                          }
+                        ]
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "extensions": {
+                              "simai.composition:endpoint": {
+                                "name": "a"
+                              }
+                            },
+                            "id": "a-3",
+                            "props": {
+                              "aria-label": "A",
+                              "table-settings-key": "example.a-3"
+                            },
+                            "type": "example.records"
+                          },
+                          {
+                            "extensions": {
+                              "simai.composition:endpoint": {
+                                "name": "b"
+                              }
+                            },
+                            "id": "b-3",
+                            "props": {
+                              "aria-label": "B",
+                              "table-settings-key": "example.b-3"
+                            },
+                            "type": "example.records"
+                          },
+                          {
+                            "id": "s-4",
+                            "props": {
+                              "routes": [
+                                {
+                                  "from": {
+                                    "endpoint": "a",
+                                    "port": "selection"
+                                  },
+                                  "id": "r",
+                                  "to": {
+                                    "endpoint": "b",
+                                    "port": "context"
+                                  }
+                                }
+                              ]
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "extensions": {
+                                    "simai.composition:endpoint": {
+                                      "name": "a"
+                                    }
+                                  },
+                                  "id": "a-4",
+                                  "props": {
+                                    "aria-label": "A",
+                                    "table-settings-key": "example.a-4"
+                                  },
+                                  "type": "example.records"
+                                },
+                                {
+                                  "extensions": {
+                                    "simai.composition:endpoint": {
+                                      "name": "b"
+                                    }
+                                  },
+                                  "id": "b-4",
+                                  "props": {
+                                    "aria-label": "B",
+                                    "table-settings-key": "example.b-4"
+                                  },
+                                  "type": "example.records"
+                                },
+                                {
+                                  "id": "s-5",
+                                  "props": {
+                                    "routes": [
+                                      {
+                                        "from": {
+                                          "endpoint": "a",
+                                          "port": "selection"
+                                        },
+                                        "id": "r",
+                                        "to": {
+                                          "endpoint": "b",
+                                          "port": "context"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "slots": {
+                                    "default": [
+                                      {
+                                        "extensions": {
+                                          "simai.composition:endpoint": {
+                                            "name": "a"
+                                          }
+                                        },
+                                        "id": "a-5",
+                                        "props": {
+                                          "aria-label": "A",
+                                          "table-settings-key": "example.a-5"
+                                        },
+                                        "type": "example.records"
+                                      },
+                                      {
+                                        "extensions": {
+                                          "simai.composition:endpoint": {
+                                            "name": "b"
+                                          }
+                                        },
+                                        "id": "b-5",
+                                        "props": {
+                                          "aria-label": "B",
+                                          "table-settings-key": "example.b-5"
+                                        },
+                                        "type": "example.records"
+                                      }
+                                    ]
+                                  },
+                                  "type": "layout.scope"
+                                }
+                              ]
+                            },
+                            "type": "layout.scope"
+                          }
+                        ]
+                      },
+                      "type": "layout.scope"
+                    }
+                  ]
+                },
+                "type": "layout.scope"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.scope-nesting-limit"
+    },
+    {
+      "diagnostics": [
+        "route_port_unknown",
+        "type_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.unknown"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.unknown-type"
+    },
+    {
+      "diagnostics": [
+        "route_port_unknown"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "constructor"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "constructor"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.prototype-port-name"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_invalid"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "id": "page",
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "extra": 1,
+                    "name": {
+                      "value": "x"
+                    }
+                  }
+                },
+                "id": "orphan",
+                "props": {
+                  "aria-label": "Сирота",
+                  "table-settings-key": "example.orphan"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.section"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.endpoint-extension-outside-scope"
+    },
+    {
+      "diagnostics": [
+        "route_endpoint_invalid"
+      ],
+      "document": {
+        "id": "routing-case",
+        "profile": "ui-layout",
+        "root": {
+          "extensions": {
+            "simai.composition:endpoint": "scope"
+          },
+          "id": "orders-scope",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "order-lines",
+                "to": {
+                  "endpoint": "lines",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "lines"
+                  }
+                },
+                "id": "lines",
+                "props": {
+                  "aria-label": "Строки заказа",
+                  "table-settings-key": "example.lines"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document.v1"
+      },
+      "expect": "invalid",
+      "id": "negative.endpoint-extension-on-scope"
+    }
+  ],
+  "schema": "simai.composition.capability-fixtures.v1",
+  "setup": {
+    "port_bindings": {
+      "example.product-list": "sf-table"
+    },
+    "registered_renderers": {
+      "example.product-list": "<sf-table aria-label=\"Товары\" table-settings-key=\"example.products\" data-sf-endpoint=\"{endpoint}\"></sf-table>"
+    },
+    "types": [
+      {
+        "assets": [
+          "smart/table"
+        ],
+        "capabilities": [
+          "html",
+          "hydration"
+        ],
+        "category": "smart",
+        "data_schema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "mode": "leaf",
+        "presentation": {
+          "modifiers": [],
+          "presets": [],
+          "views": [
+            "default"
+          ]
+        },
+        "profiles": [
+          "ui-layout"
+        ],
+        "props_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "aria-label": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            "table-settings-key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "renderer": {
+          "kind": "custom-element",
+          "name": "sf-table"
+        },
+        "schema": "simai.composition.type-manifest.v1",
+        "slots": {},
+        "type": "example.records",
+        "version": "1.0.0"
+      },
+      {
+        "assets": [],
+        "capabilities": [
+          "html",
+          "hydration"
+        ],
+        "category": "smart",
+        "data_schema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "mode": "leaf",
+        "presentation": {
+          "modifiers": [],
+          "presets": [],
+          "views": [
+            "default"
+          ]
+        },
+        "profiles": [
+          "ui-layout"
+        ],
+        "props_schema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "renderer": {
+          "kind": "registered",
+          "name": "example.product-list"
+        },
+        "schema": "simai.composition.type-manifest.v1",
+        "slots": {},
+        "type": "example.product-list",
+        "version": "1.0.0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+@use '../../../table/default/scss/sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE
+
+$prefix: --sf-table-;
+
+// @include layer-priority(utility,default) {
+    .table-stripe {
+        &>tbody>tr:nth-of-type(odd)>* {
+            #{$prefix}accent-bg: var(#{$prefix}stripe-bg);
+            color: var(#{$prefix}stripe-color);
+        }
+    }
+
+    .table-stripe-col>:not(caption)>tr>:nth-child(2n) {
+        #{$prefix}accent-bg: var(#{$prefix}stripe-bg);
+        color: var(#{$prefix}stripe-color);
+    }
+// }
+}

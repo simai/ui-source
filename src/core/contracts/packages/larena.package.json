@@ -1,0 +1,119 @@
+{
+  "schema_id": "simai.framework.package-reference",
+  "schema_version": 1,
+  "package": "larena",
+  "title": "Larena components",
+  "summary": "Smart components that live with Larena, their owner (owner's decision 2026-10-11: a component lives with its owner; SIMAI Framework Pro is dropped). They are open, under Apache-2.0, built from the component folder in simai/larena-ui by the Framework builder over a pinned ui-source revision (standard simai.component-package 1.0.0), and delivered inside Larena's distribution. A page loads them as a component package of the Loader: SF_BOOT_CONFIG.packages.larena = {base: '<package base>'}. This file names them, and what each needs, so the free registry can place them in the one free recipe that still names them; it carries no bytes and grants nothing. It leaves the free Framework together with recipe.admin.collection, once Larena reads both from its own folder.",
+  "distribution": {
+    "owner": "simai/larena-ui",
+    "repository": "https://github.com/simai/larena-ui",
+    "runtime_path": "smart",
+    "rule_file": "smart/rule.js",
+    "receipt": "package-receipt.json"
+  },
+  "provides": [
+    {
+      "id": "smart.admin-menu",
+      "element": "sf-admin-menu",
+      "rule_name": "cl-admin-menu",
+      "folder": "admin-menu",
+      "requires": [
+        "component.admin-menu",
+        "component.badges",
+        "component.icons",
+        "component.inputs",
+        "smart.badges",
+        "smart.buttons",
+        "smart.context-menu",
+        "smart.icon-buttons",
+        "smart.icons",
+        "smart.inputs",
+        "smart.sortable"
+      ]
+    },
+    {
+      "id": "smart.data-view",
+      "element": "sf-table",
+      "rule_name": "cl-table",
+      "folder": "table",
+      "requires": [
+        "component.icons",
+        "smart.avatar",
+        "smart.badges",
+        "smart.buttons",
+        "smart.checkbox",
+        "smart.color",
+        "smart.context-menu",
+        "smart.country-code",
+        "smart.datepicker",
+        "smart.dropdown",
+        "smart.icon-buttons",
+        "smart.inputs",
+        "smart.list-item",
+        "smart.modal",
+        "smart.pagination",
+        "smart.range-slider",
+        "smart.spinner",
+        "smart.tabs",
+        "smart.tags"
+      ]
+    },
+    {
+      "id": "smart.data-view-composite",
+      "element": "sf-data-view",
+      "rule_name": "cl-data-view",
+      "folder": "data-view",
+      "requires": [
+        "component.icons",
+        "smart.buttons",
+        "smart.checkbox",
+        "smart.data-view",
+        "smart.dropdown",
+        "smart.icon-buttons",
+        "smart.pagination",
+        "smart.toast"
+      ]
+    },
+    {
+      "id": "smart.property-view",
+      "element": "sf-property-view",
+      "rule_name": "cl-property-view",
+      "folder": "property-view",
+      "requires": [
+        "component.accordion",
+        "component.icons",
+        "smart.avatar",
+        "smart.badges",
+        "smart.button-group",
+        "smart.buttons",
+        "smart.checkbox",
+        "smart.color",
+        "smart.country-code",
+        "smart.data-view",
+        "smart.data-view-composite",
+        "smart.datepicker",
+        "smart.drawer",
+        "smart.dropdown",
+        "smart.file-preview",
+        "smart.file-upload",
+        "smart.icon-buttons",
+        "smart.icons",
+        "smart.inputs",
+        "smart.list-item",
+        "smart.popover",
+        "smart.progress-bar",
+        "smart.progress-scale",
+        "smart.range-slider",
+        "smart.reference-link",
+        "smart.sortable",
+        "smart.spinner",
+        "smart.switch",
+        "smart.tabs",
+        "smart.tags",
+        "smart.textarea",
+        "smart.tree",
+        "smart.tree-item"
+      ]
+    }
+  ]
+}

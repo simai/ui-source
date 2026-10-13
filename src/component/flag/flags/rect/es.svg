@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 308 28 20" fill="none" role="img">
+<g id="Country=ES">
+<rect id="Mask_137" x="260" y="308" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask63_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="308" width="28" height="20">
+<rect id="Mask_138" x="260" y="308" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask63_8205_11341)">
+<path id="Rectangle 2_99" fill-rule="evenodd" clip-rule="evenodd" d="M260 313.333H288V308H260V313.333Z" fill="#D80027"/>
+<path id="Rectangle 2_100" fill-rule="evenodd" clip-rule="evenodd" d="M260 328H288V322.667H260V328Z" fill="#D80027"/>
+<path id="Rectangle 2_101" fill-rule="evenodd" clip-rule="evenodd" d="M260 322.667H288V313.333H260V322.667Z" fill="#FFDA44"/>
+<path id="Rectangle 139 Copy_2" fill-rule="evenodd" clip-rule="evenodd" d="M267.333 317.333H268.666V318H267.333V317.333Z" fill="#A1E367"/>
+<path id="Rectangle 137_2" d="M266.392 317H268.275C268.47 317 268.625 317.167 268.608 317.361L268.437 319.417C268.393 319.935 267.96 320.333 267.44 320.333H267.228C266.708 320.333 266.274 319.935 266.23 319.417L266.06 317.361C266.043 317.166 266.197 317 266.392 317Z" stroke="#A41517" stroke-width="0.666667"/>
+<path id="Rectangle 139_2" fill-rule="evenodd" clip-rule="evenodd" d="M266 318H268.667V318.667H268L267.333 320L266.667 318.667H266V318Z" fill="#A2001D"/>
+<rect id="Rectangle 135" x="264" y="316" width="1.33333" height="4.66667" rx="0.666667" fill="#A2001D"/>
+<rect id="Rectangle 135 Copy" x="269.333" y="316" width="1.33333" height="4.66667" rx="0.666667" fill="#A2001D"/>
+<path id="Rectangle 138" d="M266 315.733C266 315.144 266.478 314.667 267.067 314.667H267.6C268.189 314.667 268.667 315.144 268.667 315.733C268.667 315.88 268.547 316 268.4 316H266.267C266.119 316 266 315.88 266 315.733Z" fill="#A2001D"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,71 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEX FLEX ALIGN
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        // FLEX ALIGN CONTENT
+        // First - main axis, second for cross axis
+        
+        // Align to start position on cross axis and start position on cross axis
+        .#{$infix}start-start { 
+            justify-content: flex-start; 
+            align-items: flex-start;
+        }
+
+        // Align to start position on cross axis and center position on cross axis
+        .#{$infix}start-center { 
+            justify-content: flex-start; 
+            align-items: center;
+        }  
+
+        // Align to start position on cross axis and end position on cross axis
+        .#{$infix}start-end { 
+            justify-content: flex-start; 
+            align-items: flex-end;
+        }
+
+        // Align to center position on cross axis and start position on cross axis
+        .#{$infix}center-start { 
+            justify-content: center; 
+            align-items: flex-start;
+        }
+
+        // Align to center position on cross axis and center position on cross axis
+        .#{$infix}center-center { 
+            justify-content: center; 
+            align-items: center;
+        }  
+
+        // Align to center position on cross axis and end position on cross axis
+        .#{$infix}center-end { 
+            justify-content: center; 
+            align-items: flex-end;
+        }       
+
+        // Align to end position on cross axis and start position on cross axis
+        .#{$infix}end-start { 
+            justify-content: flex-end; 
+            align-items: flex-start;
+        }
+
+        // Align to end position on cross axis and center position on cross axis
+        .#{$infix}end-center { 
+            justify-content: flex-end; 
+            align-items: center;
+        }
+
+        // Align to end position on cross axis and end position on cross axis
+        .#{$infix}end-end { 
+            justify-content: flex-end; 
+            align-items: flex-end;
+        }  
+
+    }
+// }
+}

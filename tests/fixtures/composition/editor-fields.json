@@ -1,0 +1,73 @@
+{
+  "schema": "simai.composition.document.v1",
+  "id": "editor-fields",
+  "profile": "ui-layout",
+  "root": {
+    "id": "page",
+    "type": "layout.page",
+    "slots": {
+      "default": [
+        {
+          "id": "surface-a",
+          "type": "layout.section",
+          "presentation": {"preset": "surface"},
+          "slots": {
+            "default": [
+              {
+                "id": "heading-a",
+                "type": "content.heading",
+                "data": {
+                  "level": 2,
+                  "content": [{"type": "text", "value": "Primary heading"}]
+                }
+              },
+              {
+                "id": "columns-nested",
+                "type": "layout.columns",
+                "props": {"columns": 3},
+                "slots": {
+                  "columns": [
+                    {
+                      "id": "nested-copy",
+                      "type": "layout.section",
+                      "presentation": {"preset": "contrast"},
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "heading-nested",
+                            "type": "content.heading",
+                            "data": {
+                              "level": 4,
+                              "content": [{"type": "text", "value": "Nested heading"}]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "surface-b",
+          "type": "layout.section",
+          "presentation": {"preset": "contrast"},
+          "slots": {
+            "default": [
+              {
+                "id": "heading-b",
+                "type": "content.heading",
+                "data": {
+                  "level": 3,
+                  "content": [{"type": "text", "value": "Secondary heading"}]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

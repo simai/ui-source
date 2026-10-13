@@ -1,0 +1,17 @@
+@use '../scss/sf_var__background_color_brand' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BRAND COLOR
+
+$infix: hover;
+
+// @include layer-priority(utility,$infix) {
+    @each $bg-color-brand-name, $bg-color-brand-value in $bg-color-brand-array {
+        .#{$infix}\:bg-#{$bg-color-brand-name}:#{$infix} {
+            background-color: #{$bg-color-brand-value};
+        }
+    }
+// }
+}

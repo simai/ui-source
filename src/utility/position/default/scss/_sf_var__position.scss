@@ -1,0 +1,13 @@
+// SIMAI Framework
+// https://simai.io
+
+// POSITION
+
+// Position Property
+$position-array: (
+	static: static,
+    fixed: fixed,
+    absolute: absolute,
+    relative: relative,
+    sticky: sticky,
+);

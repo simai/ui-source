@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__mask_size' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// Mask Size
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);	
+
+        // Mask Size Utilities
+        @each $mask-size-name, $mask-size-value in $mask-size-array {
+            .#{$infix}mask-#{$mask-size-name} {
+                mask-size: #{$mask-size-value}
+            }
+        }
+    }
+// }
+}

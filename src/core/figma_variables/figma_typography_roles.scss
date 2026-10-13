@@ -1,0 +1,58 @@
+/*
+ * Generated from src/core/contracts/adaptive-sizing.v1.json.
+ * contract-sha256: b70d02d6902345e17954eafb44f24052b7478439184286bed5a8df6c69c1fe45
+ * Do not edit semantic values in this file directly.
+ */
+@layer sf.base {
+  :root {
+    --sf-label-small--size: var(--sf-text--size-1\/4);
+    --sf-label-small--height: var(--sf-text--height-1\/4);
+    --sf-label-medium--size: var(--sf-text--size-1\/3);
+    --sf-label-medium--height: var(--sf-text--height-1\/3);
+    /* Подпись не растёт вместе с экраном: она привязана к контролу, а контрол
+       своего размера от ширины не меняет. Две младшие ступени это и делали,
+       а большая стояла на адаптивной --sf-text--size-1\/2 и росла как абзац,
+       из-за чего совпадала с text-small и выпадала из собственного семейства.
+       Фиксирована на прежнем широком значении, 14/20. */
+    --sf-label-large--size: var(--sf-b4);
+    --sf-label-large--height: var(--sf-c0);
+    --sf-text-small--size: var(--sf-text--size-1\/2);
+    --sf-text-small--height: var(--sf-text--height-1\/2);
+    --sf-text-medium--size: var(--sf-text--size-1);
+    --sf-text-medium--height: var(--sf-text--height-1);
+    --sf-text-large--size: var(--sf-text--size-2);
+    --sf-text-large--height: var(--sf-text--height-2);
+    --sf-heading-1--size: var(--sf-text--size-6);
+    --sf-heading-1--height: var(--sf-title--height-6);
+    --sf-heading-2--size: var(--sf-text--size-5);
+    --sf-heading-2--height: var(--sf-title--height-5);
+    --sf-heading-3--size: var(--sf-text--size-4);
+    --sf-heading-3--height: var(--sf-title--height-4);
+    --sf-heading-4--size: var(--sf-text--size-3);
+    --sf-heading-4--height: var(--sf-title--height-3);
+    --sf-heading-5--size: var(--sf-text--size-2);
+    --sf-heading-5--height: var(--sf-title--height-2);
+    --sf-heading-6--size: var(--sf-text--size-1);
+    --sf-heading-6--height: var(--sf-title--height-1);
+    --sf-display-1--size: var(--sf-text--size-12);
+    --sf-display-1--height: var(--sf-title--height-12);
+    --sf-display-2--size: var(--sf-text--size-11);
+    --sf-display-2--height: var(--sf-title--height-11);
+    --sf-display-3--size: var(--sf-text--size-10);
+    --sf-display-3--height: var(--sf-title--height-10);
+    --sf-display-4--size: var(--sf-text--size-9);
+    --sf-display-4--height: var(--sf-title--height-9);
+    --sf-display-5--size: var(--sf-text--size-8);
+    --sf-display-5--height: var(--sf-title--height-8);
+    --sf-display-6--size: var(--sf-text--size-7);
+    --sf-display-6--height: var(--sf-title--height-7);
+    --sf-content--space-text: var(--sf-space-1);
+    --sf-content--space-related: var(--sf-space-2);
+    --sf-content--space-block: var(--sf-space-3);
+    --sf-content--space-section: var(--sf-space-4);
+    --sf-text--space-bottom: var(--sf-content--space-text);
+    --sf-heading--space-top: var(--sf-content--space-section);
+    --sf-heading--space-bottom: var(--sf-content--space-text);
+    --sf-heading--margin: var(--sf-heading--space-top);
+  }
+}

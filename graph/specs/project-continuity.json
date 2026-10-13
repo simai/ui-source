@@ -1,0 +1,55 @@
+{
+  "objects": [
+    {
+      "changed_surfaces": [
+        "graph.specs.framework.exact-pair-target"
+      ],
+      "checks": [
+        {
+          "evidence_ref": "graph/generated/project-technology/target-provider-export.json",
+          "id": "check.framework.target-connect",
+          "verdict": "pass"
+        },
+        {
+          "evidence_ref": "graph/generated/project-technology/target-provider-export.json",
+          "id": "check.framework.target-export",
+          "verdict": "pass"
+        }
+      ],
+      "evidence_refs": [
+        "graph/generated/project-technology/target-provider-export.json"
+      ],
+      "id": "evidence.continuity.c0e0306b49f92380",
+      "kind": "evidence",
+      "profile": "project_management",
+      "provenance_digest": "sha256:c0e0306b49f92380912b7e1cd18cc7e0294bc96ed71d0e2acb5bc73c664e06f7",
+      "readiness": "accepted",
+      "requirement_refs": [
+        "requirement.framework.exact-pair.8"
+      ],
+      "source_revision": "02f3f7c2cb4e21d64ec4910ed916b30071ba13bd",
+      "summary": "Native exact target export and connection pass; eight requirements covered and owner baseline ready. Consumer acceptance and publication remain pending.",
+      "task_digest": "sha256:b8c75c42446e86287f9ed7ffc51bbc8d792df303895411582ea81737a62b1eee",
+      "title": "Verified task result c0e0306b49f92380"
+    },
+    {
+      "boundary": "stage_complete",
+      "case_signature": "ad8edacc4017420acce4684a",
+      "evidence_refs": [
+        "evidence.continuity.c0e0306b49f92380"
+      ],
+      "id": "regression_case.continuity.c0e0306b49f92380",
+      "kind": "regression_case",
+      "profile": "implementation_control",
+      "provenance_digest": "sha256:c0e0306b49f92380912b7e1cd18cc7e0294bc96ed71d0e2acb5bc73c664e06f7",
+      "readiness": "accepted",
+      "requirement_refs": [
+        "requirement.framework.exact-pair.8"
+      ],
+      "summary": "Native exact target export and connection pass; eight requirements covered and owner baseline ready. Consumer acceptance and publication remain pending.",
+      "task_digest": "sha256:b8c75c42446e86287f9ed7ffc51bbc8d792df303895411582ea81737a62b1eee",
+      "title": "Verified reusable case c0e0306b49f92380"
+    }
+  ],
+  "schema_version": "1.0.0"
+}

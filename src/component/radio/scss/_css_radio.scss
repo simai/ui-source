@@ -1,0 +1,281 @@
+@layer sf.components {
+  /* The native input of a radio drawn by the component (the font variant among
+     them): kept in the form and the focus order, out of sight. */
+  .sf-radio-native {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    inline-size: 0;
+    block-size: 0;
+    margin: 0;
+  }
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-radio-button {
+  background-color: var(--sf-radio-button--background-color, transparent);
+  gap: var(--sf-radio-button--gap);
+}
+
+.sf-radio-button > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  width: var(--sf-icon--width, var(--sf-icon-size-3));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-radio-button-box--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-radio-button .sf-radio-button-box {
+  --sf-radio-button-box--background-color: transparent;
+  --sf-radio-button-box--border: var(--sf-px) solid;
+  --sf-radio-button-box--border-color: var(--sf-outline);
+  --sf-radio-button-box--border-end-end-radius: var(--sf-radius-circle);
+  --sf-radio-button-box--border-end-start-radius: var(--sf-radius-circle);
+  --sf-radio-button-box--border-start-end-radius: var(--sf-radius-circle);
+  --sf-radio-button-box--border-start-start-radius: var(--sf-radius-circle);
+  --sf-radio-button-box--border-style: solid;
+  --sf-radio-button-box--border-width: var(--sf-px);
+  --sf-radio-button-box--gap: var(--sf-a0);
+  background-color: var(--sf-radio-button-box--background-color);
+  border: var(--sf-radio-button-box--border);
+  border-color: var(--sf-radio-button-box--border-color, transparent);
+  border-end-end-radius: var(--sf-radio-button-box--border-end-end-radius);
+  border-end-start-radius: var(--sf-radio-button-box--border-end-start-radius);
+  border-start-end-radius: var(--sf-radio-button-box--border-start-end-radius);
+  border-start-start-radius: var(--sf-radio-button-box--border-start-start-radius);
+  border-style: var(--sf-radio-button-box--border-style, solid);
+  border-width: var(--sf-radio-button-box--border-width);
+  box-shadow: var(--sf-radio-button-box--box-shadow);
+  gap: var(--sf-radio-button-box--gap);
+  height: var(--sf-radio-button-box--height);
+  width: var(--sf-radio-button-box--width);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-radio-button .sf-radio-button-container {
+  --sf-radio-button-container--background-color: transparent;
+  background-color: var(--sf-radio-button-container--background-color);
+}
+
+.sf-radio-button .sf-radio-button-description {
+  --sf-radio-button-description--color: var(--sf-on-surface-variant);
+  --sf-radio-button-description--font-family: var(--sf-text--family);
+  --sf-radio-button-description--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-radio-button-description--color);
+  font-family: var(--sf-radio-button-description--font-family);
+  font-size: var(--sf-radio-button-description--font-size);
+  font-weight: var(--sf-radio-button-description--font-weight);
+  line-height: var(--sf-radio-button-description--line-height);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-radio-button-top--gap) */
+.sf-radio-button .sf-radio-button-top {
+  --sf-radio-button-top--background-color: transparent;
+  background-color: var(--sf-radio-button-top--background-color);
+  gap: var(--sf-radio-button-top--gap);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-radio-button .sf-radio-button-text {
+  --sf-radio-button-text--background-color: transparent;
+  background-color: var(--sf-radio-button-text--background-color);
+  color: var(--sf-radio-button-text--color);
+  font-family: var(--sf-radio-button-text--font-family);
+  font-size: var(--sf-radio-button-text--font-size);
+  font-weight: var(--sf-radio-button-text--font-weight);
+  line-height: var(--sf-radio-button-text--line-height);
+  --sf-radio-button-text--color: var(--sf-on-surface);
+}
+
+.sf-radio-button .sf-radio-button-mark {
+  background-color: var(--sf-radio-button-mark--background-color);
+  border-radius: var(--sf-radio-button-mark--border-radius);
+  height: var(--sf-radio-button-mark--height);
+  width: var(--sf-radio-button-mark--width);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-box {
+  --sf-radio-button-box--height: var(--sf-text-height-1\/2);
+  --sf-radio-button-box--width: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-box {
+  --sf-radio-button-box--height: var(--sf-text-height-1);
+  --sf-radio-button-box--width: var(--sf-text-height-1);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-description {
+  --sf-radio-button-description--font-size: var(--sf-text-size-1\/3);
+  --sf-radio-button-description--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-description {
+  --sf-radio-button-description--font-size: var(--sf-text-size-1\/2);
+  --sf-radio-button-description--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-text {
+  --sf-radio-button-text--font-size: var(--sf-text-size-1\/2);
+  --sf-radio-button-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-text {
+  --sf-radio-button-text--font-size: var(--sf-text-size-1);
+  --sf-radio-button-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-text {
+  --sf-radio-button-text--font-family: var(--sf-text--family);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-text{
+  --sf-radio-button-text--font-family: var(--sf-text--family);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-top {
+  --sf-radio-button-top--gap: var(--sf-space-1\/4);
+}
+
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-top {
+  --sf-radio-button-top--gap: var(--sf-space-1\/4);
+}
+
+.sf-radio-button.sf-radio-button--size-1\/2:has(input:checked) .sf-radio-button-mark {
+  --sf-radio-button-mark--height: var(--sf-b2);
+  --sf-radio-button-mark--width: var(--sf-b2);
+}
+
+.sf-radio-button.sf-radio-button--size-1:has(input:checked) .sf-radio-button-mark {
+  --sf-radio-button-mark--height: var(--sf-b2);
+  --sf-radio-button-mark--width: var(--sf-b2);
+}
+
+.sf-radio-button:has(input:disabled) .sf-radio-button-text {
+  --sf-radio-button-text--color: var(--sf-on-disable);
+}
+
+
+
+
+
+
+
+/* The mark is the picture before a label: the label follows it at the size's
+   text step, as an option label follows its picture in a list. */
+.sf-radio-button--size-1\/2 {
+  --sf-radio-button--gap: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-radio-button--size-1 {
+  --sf-radio-button--gap: var(--sf-ui-1--text-space-x);
+}
+
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-box {
+  --sf-radio-button-box--height: var(--sf-text-height-2);
+  --sf-radio-button-box--width: var(--sf-text-height-2);
+}
+
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-description {
+  --sf-radio-button-description--font-size: var(--sf-text-size-1);
+  --sf-radio-button-description--line-height: var(--sf-text-height-1);
+}
+
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-text {
+  --sf-radio-button-text--font-size: var(--sf-text-size-2);
+  --sf-radio-button-text--line-height: var(--sf-text-height-2);
+}
+
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-text{
+  --sf-radio-button-text--font-family: var(--sf-text--family);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-top {
+  --sf-radio-button-top--gap: var(--sf-space-1\/4);
+}
+
+.sf-radio-button.sf-radio-button--size-2:has(input:checked) .sf-radio-button-mark {
+  --sf-radio-button-mark--height: var(--sf-b2);
+  --sf-radio-button-mark--width: var(--sf-b2);
+}
+
+.sf-radio-button--size-2 {
+  --sf-radio-button--gap: var(--sf-ui-2--text-space-x);
+}
+
+
+.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-radio-button-box {
+  --sf-radio-button-box--border-color: var(--sf-primary-hover);
+}
+
+.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled)):hover {
+  --sf-radio-button--background-color: var(--sf-surface-container-hover);
+}
+
+.sf-radio-button:has(input:checked):not(:has(input:disabled)) .sf-radio-button-box {
+  --sf-radio-button-box--border-color: var(--sf-primary);
+}
+
+.sf-radio-button:has(input:checked) .sf-radio-button-mark {
+  --sf-radio-button-mark--border-radius: var(--sf-radius-circle);
+}
+
+.sf-radio-button:has(input:checked):not(:has(input:disabled)) .sf-radio-button-mark {
+  --sf-radio-button-mark--background-color: var(--sf-primary);
+}
+
+.sf-radio-button:has(input:not(:disabled):not(.disabled):focus-visible) .sf-radio-button-box {
+  --sf-radio-button-box--background-color: var(--sf-transparent-for-focus);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+/* The global :focus-visible rule paints the ring on whatever holds the focus.
+   Here the focus lives on the bare control while the ring belongs to the part
+   the person sees, so the control gives its own ring up: one component, one
+   ring. */
+.sf-radio-button input:focus-visible {
+  outline: none;
+}
+
+.sf-radio-button:has(input:disabled) .sf-radio-button-box {
+  --sf-radio-button-box--border-color: var(--sf-outline-disable);
+}
+
+.sf-radio-button:has(input:disabled) .sf-radio-button-mark {
+  --sf-radio-button-mark--background-color: var(--sf-on-disable);
+}
+
+.sf-radio-button:has(input:disabled) > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-radio-button:has(input:disabled) .sf-radio-button-description {
+  --sf-radio-button-description--color: var(--sf-on-disable);
+}
+
+.sf-radio-button.error .sf-radio-button-box {
+  --sf-radio-button-box--border-color: var(--sf-error);
+}
+}
+
+@layer sf.states {
+  @media (forced-colors: active) {
+    .sf-radio-button .sf-radio-button-box {
+      forced-color-adjust: none;
+      background-color: Canvas;
+      border-color: ButtonText;
+    }
+    .sf-radio-button .sf-radio-button-mark { background-color: transparent; }
+    .sf-radio-button:has(input:checked) .sf-radio-button-box { border-color: Highlight; }
+    .sf-radio-button:has(input:checked) .sf-radio-button-mark { background-color: Highlight; }
+    .sf-radio-button:has(input:disabled) .sf-radio-button-box { border-color: GrayText; }
+    .sf-radio-button:has(input:disabled:checked) .sf-radio-button-mark { background-color: GrayText; }
+    .sf-radio-button:has(input:not(:disabled):not(.disabled):focus-visible) .sf-radio-button-box {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      --sf-radio-button-box--box-shadow: none;
+    }
+  }
+}

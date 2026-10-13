@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — inline editor</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    const smart = view.get('smart');
+    document.documentElement.className = view.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    document.write(`<link rel="stylesheet" href="${assets}/core/css/core.css">`);
+    window.sfPath = assets;
+    window.sfSmartPath = smart;
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, smart: {base: false}, theme: false};
+    window.lab = {inputs: [], commits: [], cancels: 0};
+  </script>
+  <style>
+    body { margin: 0; padding: 4rem var(--sf-space-2, .5rem) 1rem; background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); }
+  </style>
+</head>
+<body>
+  <a id="before" href="#start">До холста</a>
+  <div id="canvas"></div>
+  <sf-inline-editor></sf-inline-editor>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      const composition = window.SF.Composition;
+      let model = {schema: 'simai.composition.document.v1', id: 'inline', profile: 'ui-layout', root: {id: 'section', type: 'layout.section', slots: {default: [
+        {id: 'title', type: 'content.heading', data: {level: 2, content: [{type: 'text', value: 'Заголовок страницы'}]}},
+        {id: 'body', type: 'content.paragraph', data: {content: [{type: 'text', value: 'Первый абзац '}, {type: 'text', value: 'с пометкой', marks: ['em']}, {type: 'text', value: ' и '}, {type: 'link', href: '/help/', children: [{type: 'text', value: 'ссылкой'}]}]}},
+      ]}}};
+      const find = (id) => model.root.slots.default.find((node) => node.id === id);
+      const draw = async () => {
+        const output = await composition.render(model);
+        document.getElementById('canvas').innerHTML = output.html;
+        window.lab.renderedHtml = output.html;
+      };
+      document.addEventListener('sf-inline-edit-input', (event) => window.lab.inputs.push(event.detail.content));
+      document.addEventListener('sf-inline-edit-cancel', () => { window.lab.cancels += 1; });
+      document.addEventListener('sf-inline-edit-commit', async (event) => {
+        const {node_id: id, content} = event.detail;
+        window.lab.commits.push({id, content});
+        const next = structuredClone(model);
+        next.root.slots.default.find((node) => node.id === id).data.content = content;
+        if (!composition.validate(next).valid) { window.lab.refused = true; return; }
+        model = next;
+        await draw();
+      });
+      // Like the editor overlay, the host never follows canvas links while editing.
+      document.getElementById('canvas').addEventListener('click', (event) => { if (event.target.closest('a')) event.preventDefault(); });
+      document.getElementById('canvas').addEventListener('dblclick', (event) => {
+        const element = event.target.closest('[data-sf-composition-id]');
+        if (!element || element.hasAttribute('data-sf-inline-editing')) return;
+        const id = element.getAttribute('data-sf-composition-id');
+        const node = find(id);
+        if (!node || !node.data?.content) return;
+        event.preventDefault();
+        window.lab.editor = composition.startInlineEdit(element, {content: node.data.content, nodeId: id, label: node.type === 'content.heading' ? 'Заголовок' : 'Абзац'});
+      });
+      window.lab.model = () => structuredClone(model);
+      // The inline editor is a Smart component; Core startInlineEdit delegates once it is loaded.
+      await customElements.whenDefined('sf-inline-editor');
+      await draw();
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

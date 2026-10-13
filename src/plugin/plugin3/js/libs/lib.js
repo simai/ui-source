@@ -1,0 +1,1 @@
+console.log('imported libs in plugin3');

@@ -1,0 +1,31 @@
+@layer sf.components {
+.sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-on-primary);
+}
+
+.sf-icon-button.sf-icon-button--tonal.sf-icon-button--secondary.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-on-secondary-container);
+}
+
+.sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-primary);
+}
+
+.sf-icon-button.sf-icon-button--link.sf-icon-button--primary.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-primary-active);
+}
+
+.sf-icon-button.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-on-surface);
+}
+
+.sf-icon-button.sf-icon-button--default.sf-icon-button--on-surface.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-on-surface-inverse);
+}
+}
+
+@layer sf.states {
+.sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--tonal.sf-icon-button--secondary.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--tonal.sf-icon-button--on-surface.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--default.sf-icon-button--on-surface.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--outline.sf-icon-button--on-surface.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--link.sf-icon-button--primary.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--link.sf-icon-button--on-surface.sf-icon-button--close:disabled > sf-close > .sf-close > .sf-close-icon {
+--sf-close-icon--background-color: var(--sf-on-disable);
+}
+}

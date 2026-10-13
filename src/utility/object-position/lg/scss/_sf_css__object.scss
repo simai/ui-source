@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__object' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OBJECT
+
+$infix: lg;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Object Position
+        // Utilities for controlling how a replaced element's content should be positioned within its container.
+        @each $object-position-name, $object-position-value in $object-position-array {
+            .#{$infix}object-#{$object-position-name} {
+                object-position: #{$object-position-value};
+            }
+        }
+    }
+// }
+}

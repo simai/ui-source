@@ -1,0 +1,879 @@
+// SIMAI Framework
+// https://simai.io
+
+// COLOR
+
+// Color RGB Value
+// For example gray-0: rgb(250,251,252)
+
+
+$color-array-v53: (
+    'white' : (
+        'alfa-4' : 'rgba(255,255,255,0.04)',
+        'alfa-8' : 'rgba(255,255,255,0.08)',
+        'alfa-12' : 'rgba(255,255,255,0.12)',
+        'alfa-24' : 'rgba(255,255,255,0.24)',
+    ),
+    'black' : (
+        'alfa-4' : 'rgba(0,0,0,0.04)',
+        'alfa-8' : 'rgba(0,0,0,0.08)',
+        'alfa-12' : 'rgba(0,0,0,0.12)',
+        'alfa-24' : 'rgba(0,0,0,0.24)',
+    ),
+    'primary' : (
+        '98' : '#f9f9ff',
+        '95' : '#edf0ff',
+        '90' : '#d7e2ff',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-90) 24%)',
+        '85' : '#c2d5ff',
+        '80' : '#acc7ff',
+        '70' : '#7eabff',
+        '60' : '#488fff',
+        '50' : '#0073ed',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-primary-50) 24%)',
+        '40' : '#005bbe',
+        '35' : '#0050a7',
+        '30' : '#004491',
+        '25' : '#00397c',
+        '20' : '#002f67',
+        '15' : '#002453',
+        '10' : '#001a40',
+        '5' : '#00102c',
+    ),
+    'secondary' : (
+        '98': '#f9f9ff',
+        '95': '#edf0ff',
+        '90': '#d7e2ff',
+        '90--alfa-4': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-90) 4%)',
+        '90--alfa-8': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-90) 8%)',
+        '90--alfa-12': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-90) 12%)',
+        '90--alfa-24': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-90) 24%)',
+        '85': '#c9d4f1',
+        '80': '#bbc6e3',
+        '70': '#a0abc7',
+        '60': '#8591ab',
+        '50': '#6c7791',
+        '50--alfa-4': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-50) 4%)',
+        '50--alfa-8': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-50) 8%)',
+        '50--alfa-12': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-50) 12%)',
+        '50--alfa-24': 'color-mix(in srgb, var(--sf-transparent), var(--sf-secondary-50) 24%)',
+        '40': '#535e77',
+        '35': '#47526a',
+        '30': '#3c475e',
+        '25': '#303b52',
+        '20': '#253047',
+        '15': '#1a263b',
+        '10': '#101b31',
+        '5': '#051126',
+    ),
+    'tertiary' : (
+        '98' : '#fff7fa',
+        '95' : '#ffebfd',
+        '90' : '#fdd6ff',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-90) 24%)',
+        '85' : '#f9c2ff',
+        '80' : '#ecb3f4',
+        '70' : '#cf98d8',
+        '60' : '#b37ebb',
+        '50' : '#9765a0',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-tertiary-50) 24%)',
+        '40' : '#7c4c86',
+        '35' : '#6f4079',
+        '30' : '#63356c',
+        '25' : '#562960',
+        '20' : '#4a1e54',
+        '15' : '#3e1249',
+        '10' : '#32053e',
+        '5' : '#23002d',
+    ),
+    'error' : (
+        '98' : '#fff8f7',
+        '95' : '#ffedea',
+        '90' : '#ffdad6',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-90) 24%)',
+        '85' : '#ffc7c0',
+        '80' : '#ffb4ab',
+        '70' : '#ff897d',
+        '60' : '#ff5449',
+        '50' : '#df362f',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-error-50) 24%)',
+        '40' : '#bb1919',
+        '35' : '#a9040e',
+        '30' : '#93000a',
+        '25' : '#7e0007',
+        '20' : '#690005',
+        '15' : '#540003',
+        '10' : '#410002',
+        '5' : '#2d0001',
+    ),
+    'warning' : (
+        '98' : '#fff8f5',
+        '95' : '#ffeee2',
+        '90' : '#ffdcc1',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-90) 24%)',
+        '85' : '#ffca9f',
+        '80' : '#ffb779',
+        '70' : '#fa911c',
+        '60' : '#d87900',
+        '50' : '#b26300',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-warning-50) 24%)',
+        '40' : '#8f4e00',
+        '35' : '#7d4400',
+        '30' : '#6c3a00',
+        '25' : '#5c3000',
+        '20' : '#4c2700',
+        '15' : '#3d1e00',
+        '10' : '#2e1500',
+        '5' : '#1f0c00',
+    ),
+    'success' : (
+        '98' : '#ecffe4',
+        '95' : '#c9ffbe',
+        '90' : '#8ffa88',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-90) 24%)',
+        '85' : '#81ec7c',
+        '80' : '#74dd6f',
+        '70' : '#58c157',
+        '60' : '#3ba53f',
+        '50' : '#198a27',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-success-50) 24%)',
+        '40' : '#006e17',
+        '35' : '#006013',
+        '30' : '#00530f',
+        '25' : '#00460b',
+        '20' : '#003908',
+        '15' : '#002d05',
+        '10' : '#002203',
+        '5' : '#001501',
+    ),
+    'neutral' : (
+        '98' : '#faf9fe',
+        '95' : '#f1f0f6',
+        '90' : '#e3e2e7',
+        '90--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-90) 4%)',
+        '90--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-90) 8%)',
+        '90--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-90) 12%)',
+        '90--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-90) 24%)',
+        '85' : '#d4d4d9',
+        '80' : '#c6c6cb',
+        '70' : '#ababb0',
+        '60' : '#909095',
+        '50' : '#76777c',
+        '50--alfa-4' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 4%)',
+        '50--alfa-8' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 8%)',
+        '50--alfa-12' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 12%)',
+        '50--alfa-24' : 'color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 24%)',
+        '40' : '#5d5e63',
+        '35' : '#515257',
+        '30' : '#45474b',
+        '25' : '#3a3b40',
+        '20' : '#2f3035',
+        '15' : '#24262a',
+        '10' : '#1a1b1f',
+        '5' : '#0f1115',
+    ),
+) !default;
+
+$color-array-hex: (
+    'neutral': (
+        100: #FFF,
+        98: #FBFAFC,
+        96: #F5F4F8,
+        94: #EEEEF3,
+        92: #E8E8EF,
+        90: #E2E3E9,
+        87: #E2E3E9,
+        80: #C4C7D0,
+        70: #A8ABB4,
+        60: #74777F,
+        50: #74777F,
+        40: #5A5E66,
+        30: #43474E,
+        22: #31353C,
+        20: #2D3138,
+        18: #282C33,
+        14: #20242A,
+        10: #181C22,
+        6: #10141A,
+        0: #000,
+    ),
+    'primary': (
+        100: #FFF,
+        98: #FDF8FF,
+        96: #F8F2FD,
+        94: #F2EBFE,
+        92: #EDE5FD,
+        90: #E6DDFF,
+        87: #E6DDFF,
+        80: #CBBDFF,
+        70: #AFA2EA,
+        60: #9583E1,
+        50: #7B67CF,
+        40: #624EB2,
+        30: #4A3A88,
+        22: #372B68,
+        20: #322760,
+        18: #2E2455,
+        14: #251D46,
+        10: #1D153C,
+        6: #150F2E,
+        0: #000,
+    ),
+    'secondary': (
+        100: #FFF,
+        98: #FBFAFC,
+        96: #F5F4F8,
+        94: #EEEEF3,
+        92: #E8E8EF,
+        90: #E2E3E9,
+        87: #E2E3E9,
+        80: #C4C7D0,
+        70: #A8ABB4,
+        60: #74777F,
+        50: #74777F,
+        40: #5A5E66,
+        30: #43474E,
+        22: #31353C,
+        20: #2D3138,
+        18: #282C33,
+        14: #20242A,
+        10: #181C22,
+        6: #10141A,
+        0: #000,
+    ),
+    'tertiary': (
+        100: #FFF,
+        98: #FFF7F6,
+        96: #FFF1EF,
+        94: #FFE9E6,
+        92: #FFE2DF,
+        90: #FFD9D5,
+        87: #FFD9D5,
+        80: #F8B7B0,
+        70: #D89C96,
+        60: #BC827C,
+        50: #A06A65,
+        40: #82514C,
+        30: #683A36,
+        22: #522925,
+        20: #4D2521,
+        18: #47211E,
+        14: #3A1B18,
+        10: #301311,
+        6: #250E0B,
+        0: #000,
+    ),
+    'purple': (
+        100: #FFF,
+        98: #FDF8FF,
+        96: #F8F2FD,
+        94: #F2EBFE,
+        92: #EDE5FD,
+        90: #E6DDFF,
+        87: #E6DDFF,
+        80: #CBBDFF,
+        70: #AFA2EA,
+        60: #9583E1,
+        50: #624EB2,
+        40: #624EB2,
+        30: #4A3A88,
+        22: #372B68,
+        20: #322760,
+        18: #2E2455,
+        14: #251D46,
+        10: #1D153C,
+        6: #150F2E,
+        0: #000,
+    ),
+    'blue': (
+        100: #FFF,
+        98: #F8F9FF,
+        96: #F2F4FD,
+        94: #E8EEFE,
+        92: #E0E9FD,
+        90: #D3E3FF,
+        87: #D3E3FF,
+        80: #A4C8FF,
+        70: #84ADE9,
+        60: #5892E0,
+        50: #2C78CF,
+        40: #005EB3,
+        30: #004789,
+        22: #003568,
+        20: #003061,
+        18: #062C55,
+        14: #052446,
+        10: #001B3C,
+        6: #00142E,
+        0: #000,
+    ),
+    'green': (
+        100: #FFF,
+        98: #F6FBF3,
+        96: #EFF6EC,
+        94: #E3F2E2,
+        92: #DAEEDA,
+        90: #CCEACF,
+        87: #CCEACF,
+        80: #96D4A4,
+        70: #75BA87,
+        60: #42A265,
+        50: #008949,
+        40: #006D38,
+        30: #005329,
+        22: #003E1D,
+        20: #053418,
+        18: #053418,
+        14: #042A13,
+        10: #00210D,
+        6: #001908,
+        0: #000,
+    ),
+    'yellow': (
+        100: #FFF,
+        98: #FEF8F5,
+        96: #FCF3E9,
+        94: #F9ECDC,
+        92: #F7E7D1,
+        90: #F4DFC2,
+        87: #F9D59C,
+        80: #E8C17E,
+        70: #D8A33A,
+        60: #BD8700,
+        50: #9C6F00,
+        40: #7C5700,
+        30: #5F4200,
+        22: #473100,
+        20: #422D00,
+        18: #3B2902,
+        14: #312102,
+        10: #271900,
+        6: #1E1200,
+        0: #000,
+    ),
+    'red': (
+        100: #FFF,
+        98: #FFF8F7,
+        96: #FFF1EF,
+        94: #FFE9E5,
+        92: #FFE3DD,
+        90: #FFDAD2,
+        87: #FFCFC4,
+        80: #FFB4A4,
+        70: #F78E79,
+        60: #DD725B,
+        50: #C35540,
+        40: #A13E2B,
+        30: #7C2E1F,
+        22: #5E2115,
+        20: #571E12,
+        18: #4F1C12,
+        14: #41160E,
+        10: #350F07,
+        6: #290A05,
+        0: #000,
+    ),
+) !default;
+
+$color-array: (
+	'white': (
+		default: (
+            r: 255,
+            g: 255,
+            b: 255
+        ),
+	),
+	'black': (
+		default: (
+            r: 0,
+            g: 0,
+            b: 0
+        ),
+	),
+	'gray': (
+        default: (
+            r: 106,
+            g: 115,
+            b: 125
+        ),    
+        0: (
+            r: 250,
+            g: 251,
+            b: 252
+        ),
+        1: (
+            r: 246,
+            g: 248,
+            b: 250
+        ),
+        2: (
+            r: 225,
+            g: 228,
+            b: 232
+        ),
+        3: (
+            r: 209,
+            g: 213,
+            b: 218
+        ),
+        4: (
+            r: 149,
+            g: 157,
+            b: 165
+        ),
+        5: (
+            r: 106,
+            g: 115,
+            b: 125
+        ),
+        6: (
+            r: 88,
+            g: 96,
+            b: 105
+        ),
+        7: (
+            r: 68,
+            g: 77,
+            b: 86
+        ),
+        8: (
+            r: 47,
+            g: 54,
+            b: 61
+        ),
+        9: (
+            r: 36,
+            g: 41,
+            b: 46
+        ),
+	),
+	'red': (
+        default: (
+            r: 215,
+            g: 58,
+            b: 73
+        ),
+        0: (
+            r: 255,
+            g: 238,
+            b: 240
+        ),
+        1: (
+            r: 255,
+            g: 220,
+            b: 224
+        ),
+        2: (
+            r: 253,
+            g: 174,
+            b: 183
+        ),
+        3: (
+            r: 249,
+            g: 117,
+            b: 131
+        ),
+        4: (
+            r: 234,
+            g: 74,
+            b: 90
+        ),
+        5: (
+            r: 215,
+            g: 58,
+            b: 73
+        ),
+        6: (
+            r: 203,
+            g: 36,
+            b: 49
+        ),
+        7: (
+            r: 179,
+            g: 29,
+            b: 40
+        ),
+        8: (
+            r: 158,
+            g: 28,
+            b: 35
+        ),
+        9: (
+            r: 134,
+            g: 24,
+            b: 29
+        ),
+	),	
+	'orange': (
+        default: (
+            r: 246,
+            g: 106,
+            b: 10
+        ),
+        0: (
+            r: 255,
+            g: 248,
+            b: 242
+        ),
+        1: (
+            r: 255,
+            g: 235,
+            b: 218
+        ),
+        2: (
+            r: 255,
+            g: 209,
+            b: 172
+        ),
+        3: (
+            r: 255,
+            g: 171,
+            b: 112
+        ),
+        4: (
+            r: 251,
+            g: 133,
+            b: 50
+        ),
+        5: (
+            r: 246,
+            g: 106,
+            b: 10
+        ),
+        6: (
+            r: 227,
+            g: 98,
+            b: 9
+        ),
+        7: (
+            r: 209,
+            g: 87,
+            b: 4
+        ),
+        8: (
+            r: 194,
+            g: 78,
+            b: 0
+        ),
+        9: (
+            r: 160,
+            g: 65,
+            b: 0
+        ),
+	),	
+	'yellow': (
+        default: (
+            r: 255,
+            g: 211,
+            b: 61
+        ),
+        0: (
+            r: 255,
+            g: 253,
+            b: 239
+        ),
+        1: (
+            r: 255,
+            g: 251,
+            b: 221
+        ),
+        2: (
+            r: 255,
+            g: 245,
+            b: 177
+        ),
+        3: (
+            r: 255,
+            g: 234,
+            b: 127
+        ),
+        4: (
+            r: 255,
+            g: 223,
+            b: 93
+        ),
+        5: (
+            r: 255,
+            g: 211,
+            b: 61
+        ),
+        6: (
+            r: 249,
+            g: 197,
+            b: 19
+        ),
+        7: (
+            r: 219,
+            g: 171,
+            b: 9
+        ),
+        8: (
+            r: 176,
+            g: 136,
+            b: 0
+        ),
+        9: (
+            r: 115,
+            g: 92,
+            b: 15
+        ),
+	),		
+	'green': (
+        default: (
+            r: 40,
+            g: 167,
+            b: 69
+        ),
+        0: (
+            r: 240,
+            g: 255,
+            b: 244
+        ),
+        1: (
+            r: 220,
+            g: 255,
+            b: 228
+        ),
+        2: (
+            r: 190,
+            g: 245,
+            b: 203
+        ),
+        3: (
+            r: 133,
+            g: 232,
+            b: 157
+        ),
+        4: (
+            r: 52,
+            g: 208,
+            b: 88
+        ),
+        5: (
+            r: 40,
+            g: 167,
+            b: 69
+        ),
+        6: (
+            r: 34,
+            g: 134,
+            b: 58
+        ),
+        7: (
+            r: 23,
+            g: 111,
+            b: 44
+        ),
+        8: (
+            r: 22,
+            g: 92,
+            b: 38
+        ),
+        9: (
+            r: 20,
+            g: 70,
+            b: 32
+        ),
+	),	
+	'blue': (
+        default: (
+            r: 3,
+            g: 102,
+            b: 214
+        ),
+        0: (
+            r: 241,
+            g: 248,
+            b: 255
+        ),
+        1: (
+            r: 219,
+            g: 237,
+            b: 255
+        ),
+        2: (
+            r: 200,
+            g: 225,
+            b: 255
+        ),
+        3: (
+            r: 121,
+            g: 184,
+            b: 255
+        ),
+        4: (
+            r: 33,
+            g: 136,
+            b: 255
+        ),
+        5: (
+            r: 3,
+            g: 102,
+            b: 214
+        ),
+        6: (
+            r: 0,
+            g: 92,
+            b: 197
+        ),
+        7: (
+            r: 4,
+            g: 66,
+            b: 137
+        ),
+        8: (
+            r: 3,
+            g: 47,
+            b: 98
+        ),
+        9: (
+            r: 5,
+            g: 38,
+            b: 76
+        ),
+	),
+	'purple': (
+        default: (
+            r: 111,
+            g: 66,
+            b: 193
+        ),
+        0: (
+            r: 245,
+            g: 240,
+            b: 255
+        ),
+        1: (
+            r: 230,
+            g: 220,
+            b: 253
+        ),
+        2: (
+            r: 209,
+            g: 188,
+            b: 249
+        ),
+        3: (
+            r: 179,
+            g: 146,
+            b: 240
+        ),
+        4: (
+            r: 138,
+            g: 99,
+            b: 210
+        ),
+        5: (
+            r: 111,
+            g: 66,
+            b: 193
+        ),
+        6: (
+            r: 90,
+            g: 50,
+            b: 163
+        ),
+        7: (
+            r: 76,
+            g: 40,
+            b: 136
+        ),
+        8: (
+            r: 58,
+            g: 29,
+            b: 110
+        ),
+        9: (
+            r: 41,
+            g: 19,
+            b: 78
+        ),
+	),	
+	'pink': (
+        default: (
+            r: 234,
+            g: 74,
+            b: 170
+        ),
+        0: (
+            r: 255,
+            g: 238,
+            b: 248
+        ),
+        1: (
+            r: 254,
+            g: 219,
+            b: 240
+        ),
+        2: (
+            r: 249,
+            g: 179,
+            b: 221
+        ),
+        3: (
+            r: 246,
+            g: 146,
+            b: 206
+        ),
+        4: (
+            r: 236,
+            g: 108,
+            b: 185
+        ),
+        5: (
+            r: 234,
+            g: 74,
+            b: 170
+        ),
+        6: (
+            r: 208,
+            g: 53,
+            b: 146
+        ),
+        7: (
+            r: 185,
+            g: 58,
+            b: 134
+        ),
+        8: (
+            r: 153,
+            g: 48,
+            b: 111
+        ),
+        9: (
+            r: 109,
+            g: 34,
+            b: 79
+        ),
+	)
+) !default; 

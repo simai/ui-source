@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="404 884 28 20" fill="none" role="img">
+<g id="Country=ST">
+<rect id="Mask_401" x="404" y="884" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask186_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="404" y="884" width="28" height="20">
+<rect id="Mask_402" x="404" y="884" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask186_8205_11341)">
+<path id="Rectangle 2_258" fill-rule="evenodd" clip-rule="evenodd" d="M404 904H432V897.333H404V904Z" fill="#A1E367"/>
+<path id="Rectangle 2_259" fill-rule="evenodd" clip-rule="evenodd" d="M404 890.667H432V884H404V890.667Z" fill="#A1E367"/>
+<path id="Rectangle 2_260" fill-rule="evenodd" clip-rule="evenodd" d="M404 897.333H432V890.667H404V897.333Z" fill="#FFDA44"/>
+<path id="Rectangle 83_11" fill-rule="evenodd" clip-rule="evenodd" d="M404 884L414.667 894L404 904V884Z" fill="#D80027"/>
+<path id="Star 33_5" fill-rule="evenodd" clip-rule="evenodd" d="M418.667 895.093L417.099 896.158L417.627 894.338L416.131 893.176L418.024 893.116L418.667 891.333L419.309 893.116L421.203 893.176L419.706 894.338L420.234 896.158L418.667 895.093Z" fill="#333333"/>
+<path id="Star 33_6" fill-rule="evenodd" clip-rule="evenodd" d="M425.334 895.093L423.766 896.158L424.294 894.338L422.798 893.176L424.691 893.116L425.334 891.333L425.976 893.116L427.87 893.176L426.373 894.338L426.901 896.158L425.334 895.093Z" fill="#333333"/>
+</g>
+</g>
+</svg>

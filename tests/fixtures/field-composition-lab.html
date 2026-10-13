@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field composition lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/inputs/css/inputs.css">
+<link rel="stylesheet" href="/ui/distr/component/textarea/css/textarea.css">
+<link rel="stylesheet" href="/ui/distr/component/country-code/css/country-code.css">
+<link rel="stylesheet" href="/ui/distr/component/flag/css/flag.css">
+<link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css">
+<style>
+body{margin:0;padding:24px 24px 60vh;background:var(--sf-surface-0);color:var(--sf-on-surface);font-family:var(--sf-text--family)}
+h1{font-size:28px;margin:0 0 16px} h2{font-size:20px;margin:32px 0 12px}
+.row{display:grid;grid-template-columns:56px repeat(3, 320px);gap:24px;align-items:start;margin-bottom:24px}
+.row>b{font-size:13px;padding-top:28px}
+</style>
+<script>window.sfPath='/ui/distr/';</script>
+</head>
+<body>
+
+<main id="lab"></main>
+<script>
+const SIZES=['1/2','1','2'];
+const input=(s,look,kind)=>{
+  const icon = kind==='bare' ? '<i class="sf-icon" aria-hidden="true">search</i>' : kind!=='text' ? '<span class="sf-input-left flex"><i class="sf-icon" aria-hidden="true">search</i></span>' : '';
+  const right = kind==='both' ? '<span class="sf-input-right">⌘ K</span>' : '';
+  return `<label class="sf-input sf-input--size-${s} sf-input--${look} flex flex-col" data-lab="input ${kind} ${look} ${s}"><span class="sf-input-label flex"><span class="sf-input-text">Field ${kind}</span></span><span class="sf-input-field items-cross-center transition flex">${icon}<input type="text" value="Value"></span>${right ? '' : ''}</label>`.replace('<input type="text" value="Value"></span>', `<input type="text" value="Value">${right}</span>`);
+};
+const textarea=(s,look)=>`<label class="sf-textarea sf-textarea--size-${s} sf-textarea--${look} flex flex-col" data-lab="textarea ${look} ${s}"><span class="sf-textarea-label flex"><span class="sf-textarea-text">Multiline</span></span><span class="sf-textarea-field transition flex"><textarea rows="1">Value</textarea></span></label>`;
+const phone=(s)=>`<label class="sf-country-code sf-country-code--size-${s} flex flex-col" data-lab="phone ${s}" data-multi-country="true" data-iso2="RU" data-show-code="true"><span class="sf-country-code-label flex"><span class="sf-country-code-text">Phone</span></span><span class="sf-country-code-field transition flex items-center"><span class="sf-country-code-left flex items-center"><span class="sf-country-code-flag-icon flex"></span><i class="sf-icon" aria-hidden="true">expand_more</i></span><input type="tel" value="+7 903 123-45-67"></span></label>`;
+const dd=(s,look,icon)=>`<div class="sf-dropdown sf-dropdown--size-${s} sf-dropdown--${look==='bordered'?'outlined':'filled'} sf-dropdown--text flex flex-col" data-lab="dropdown ${icon?'icon':'text'} ${look} ${s}"><span class="sf-dropdown-label"><span class="sf-dropdown-text">List</span></span><div class="sf-dropdown-field cursor-pointer items-cross-center transition flex relative"><input type="text" placeholder="Choose"><button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--size-${s} absolute" aria-label="Open"><i class="sf-icon" aria-hidden="true">keyboard_arrow_down</i></button></div><div class="sf-list flex flex-col"><div class="sf-list-container-wrap"><div class="sf-list-container flex flex-col"><div class="sf-list-item sf-list-item--${icon?'icon':'text'} sf-list-item--size-${s} cursor-pointer selected" role="option" tabindex="-1" data-value="a"><div class="sf-list-item-wrap">${icon?'<i class="sf-icon" aria-hidden="true">search</i>':''}<div class="sf-list-item-container">Value</div></div></div><div class="sf-list-item sf-list-item--${icon?'icon':'text'} sf-list-item--size-${s} cursor-pointer" role="option" tabindex="-1" data-value="b"><div class="sf-list-item-wrap">${icon?'<i class="sf-icon" aria-hidden="true">home</i>':''}<div class="sf-list-item-container">Other</div></div></div></div></div></div></div>`;
+const rows=[];
+for (const look of ['bordered','filled']) {
+  rows.push(`<h2>${look==='bordered'?'Bordered':'Filled'}</h2>`);
+  for (const [name,fn] of [['Field',s=>input(s,look,'text')],['Field + иконка',s=>input(s,look,'icon')],['Field + иконка без обёртки',s=>input(s,look,'bare')],['Field + иконка + справа',s=>input(s,look,'both')],['Multiline',s=>textarea(s,look)],['List',s=>dd(s,look,false)],['List + иконка',s=>dd(s,look,true)]].concat(look==='bordered'?[['Phone',s=>phone(s)]]:[])) {
+    rows.push(`<div class="row"><b>${name}</b>${SIZES.map(fn).join('')}</div>`);
+  }
+}
+document.getElementById('lab').innerHTML=rows.join('');
+document.fonts.load('24px "Material Symbols Outlined"','home').then(()=>{const m=()=>document.querySelectorAll('.sf-icon:not(.sf-icon-loaded)').forEach(i=>i.classList.add('sf-icon-loaded'));m();new MutationObserver(m).observe(document.body,{subtree:true,childList:true});});
+</script>
+<script src="/ui/distr/component/flag/js/flag.js"></script>
+<script src="/ui/distr/component/inputs/js/inputs.js"></script>
+<script src="/ui/distr/component/textarea/js/textarea.js"></script>
+<script src="/ui/distr/component/country-code/js/country-code.js"></script>
+<script src="/ui/distr/component/dropdown/js/dropdown.js"></script>
+</body>
+</html>

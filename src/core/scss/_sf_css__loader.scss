@@ -1,0 +1,59 @@
+// SIMAI Framework
+// https://simai.io
+
+// LOADER STYLES
+@use "sass:list";
+@layer sf.base {
+  .sf-loader.loader-default {
+    top: 0;
+    inset-inline-start: 0;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    opacity: 1;
+    z-index: 1000;
+    // Экран загрузки закрывает страницу: роль прежней схемы здесь не
+    // объявлена, и фон оставался прозрачным. JS-версия того же экрана давно
+    // читает surface-0 — теперь и стиль.
+    background-color: var(--sf-surface-0);
+    text-align: center;
+  }
+
+  .sf-loader.hidden {
+    display: none;
+  }
+
+  .sf-loader-inner {
+    position: absolute;
+    inset-inline-start: 50vw;
+    top: 50vh;
+  }
+
+  $delays: 0 125ms 250ms .375s;
+  @each $delay in $delays {
+    $i: list.index($delays, $delay);
+
+    .circle#{$i} {
+      animation: bounce linear 2.2s infinite forwards;
+      animation-delay: $delay;
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    20%, 50% {
+      transform: translateY(var(--sf-a9));
+    }
+    80% {
+      transform: translateY(var(--sf-a2))
+    }
+    40% {
+      transform: translateY(calc(-1 * var(--sf-b5)));
+    }
+    60% {
+      transform: translateY(calc(-1 * var(--sf-a7)));
+    }
+  }
+}

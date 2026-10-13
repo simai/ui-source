@@ -1,0 +1,47 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__absolute' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ELEMENT POSITION EXT (SIZE SYSTEM)
+
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+
+        // Utilities for controlling the placement of positioned elements.
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+            
+                // Absolute Side Position 
+                @each $absolute-side in $absolute-side-array {
+                    $prop: if(
+                        $absolute-side == inline-start,
+                        inset-inline-start,
+                        if(
+                            $absolute-side == inline-end,
+                            inset-inline-end,
+                            if(
+                                $absolute-side == block-start,
+                                inset-block-start,
+                                if($absolute-side == block-end, inset-block-end, $absolute-side)
+                            )
+                        )
+                    );
+                    // Positive Value
+                    .#{$infix}#{$absolute-side}-#{$size-range-name}#{$size-name}{
+                        #{$prop}: var(--sf-#{$size-range-name}#{$size-name});
+                    }
+                    // Negative Value
+                    .-#{$infix}#{$absolute-side}-#{$size-range-name}#{$size-name}{
+                        #{$prop}: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                    }
+                }
+            }
+        }
+    }
+// }
+}

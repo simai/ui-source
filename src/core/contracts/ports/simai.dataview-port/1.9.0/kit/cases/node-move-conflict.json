@@ -1,0 +1,36 @@
+{
+  "id": "node-move-conflict",
+  "intent": "node.move",
+  "capability": "tree-move",
+  "summary": "A node with a revision moved against a stale one is answered with a conflict.",
+  "given": {
+    "records": [
+      {
+        "id": "about",
+        "parent": "site",
+        "has_children": false,
+        "revision": "r3",
+        "actions": [
+          "view",
+          "move"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "node.move",
+    "payload": {
+      "id": "about",
+      "parent": null,
+      "index": 0,
+      "revision": "r2"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "A node without a revision (a group plane) cannot conflict; it may ask for a confirmation instead."
+  }
+}

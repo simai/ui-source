@@ -1,0 +1,41 @@
+@layer sf.utilities {
+  // Keep the browser/OS scrollbar lifecycle while making the thumb quiet.
+  .scroll-subtle {
+    --sf-scroll-thumb-subtle: color-mix(
+      in srgb,
+      var(--sf-on-surface) 10%,
+      var(--sf-transparent)
+    );
+    --sf-scroll-thumb-subtle-interactive: color-mix(
+      in srgb,
+      var(--sf-on-surface) 20%,
+      var(--sf-transparent)
+    );
+    --sf-scroll-bg-track: var(--sf-transparent);
+    --sf-scroll-bg-thumb: var(--sf-scroll-thumb-subtle);
+
+    scrollbar-gutter: auto;
+    // Keep one native width in every state; changing it on hover shifts content
+    // on platforms that use classic (non-overlay) scrollbars.
+    scrollbar-width: thin;
+    scrollbar-color: var(--sf-scroll-thumb-subtle) var(--sf-transparent);
+
+    &:hover,
+    &:focus-within {
+      --sf-scroll-bg-thumb: var(--sf-scroll-thumb-subtle-interactive);
+
+      scrollbar-color:
+        var(--sf-scroll-thumb-subtle-interactive)
+        var(--sf-transparent);
+    }
+  }
+
+  // In high-contrast modes the user agent owns scrollbar visibility/colors.
+  @media (forced-colors: active) {
+    .scroll-subtle,
+    .scroll-subtle:hover,
+    .scroll-subtle:focus-within {
+      scrollbar-color: auto;
+    }
+  }
+}

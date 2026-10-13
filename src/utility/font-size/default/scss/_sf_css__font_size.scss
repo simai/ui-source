@@ -1,0 +1,34 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__font_size' as *;
+@use '../../../title/default/scss/sf_var__title' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FONT SIZE
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Font size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size in $font-size-array {
+            .#{$infix}text-#{$size} {
+                font-size: var(--sf-text--size-#{$size});
+                line-height: var(--sf-text--height-#{$size});
+            }
+        }
+
+        // The heading modifier changes only the line-height family. Size stays
+        // owned by the selected text utility.
+        @each $size in $title-array {
+            .#{$infix}text-#{$size}.heading {
+                line-height: var(--sf-title--height-#{$size});
+            }
+        }
+    }
+// }
+}

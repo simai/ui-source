@@ -1,0 +1,13 @@
+{
+  "id": "removing-a-file-is-a-save",
+  "intent": "group.save",
+  "summary": "Removing a stored file is a value change like any other: it travels in group.save and nothing is deleted until the button is pressed.",
+  "given": {"capabilities": ["field-upload"]},
+  "when": {"intent": "group.save", "payload": {"record_id": "record-1", "collection": "pages",
+            "section": "main", "group": "files", "values": {"document": []}, "revision": "7"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "There is deliberately no remove intent. A file that disappeared from storage the moment someone pressed a cross, before saving, would be the one edit in this component that could not be cancelled -- and cancelling is the whole promise of saving by the button."
+  }
+}

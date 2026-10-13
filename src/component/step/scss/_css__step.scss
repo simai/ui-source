@@ -1,0 +1,168 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-step {
+  max-inline-size: 100%;
+  box-shadow: var(--sf-step--box-shadow);
+  border-bottom-width: var(--sf-step--border-bottom-width, var(--sf-px));
+  border-end-end-radius: var(--sf-step--border-bottom-right-radius, var(--sf-radius-circle));
+  border-end-start-radius: var(--sf-step--border-bottom-left-radius, var(--sf-radius-circle));
+  border-inline-end-width: var(--sf-step--border-right-width, var(--sf-px));
+  border-inline-start-width: var(--sf-step--border-left-width, var(--sf-px));
+  border-start-end-radius: var(--sf-step--border-top-right-radius, var(--sf-radius-circle));
+  border-start-start-radius: var(--sf-step--border-top-left-radius, var(--sf-radius-circle));
+  border-style: var(--sf-step--border-style, solid);
+  border-top-width: var(--sf-step--border-top-width, var(--sf-px));
+  border-width: var(--sf-step--border-width, var(--sf-px));
+  font-family: var(--sf-step--font-family, var(--sf-text--family));
+  font-weight: var(--sf-step--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-step--gap, var(--sf-space-1\/4));
+  min-width: var(--sf-step--min-width, var(--sf-c2));
+  padding-inline-end: var(--sf-step--padding-right, var(--sf-space-1\/4));
+  padding-inline-start: var(--sf-step--padding-left, var(--sf-space-1\/4));
+  padding-top: var(--sf-step--padding-top);
+  padding-bottom: var(--sf-step--padding-bottom);
+  border-color: var(--sf-step--border-color, transparent);
+  background-color: var(--sf-step--background-color);
+  color: var(--sf-step--color);
+  font-size: var(--sf-step--font-size);
+  line-height: var(--sf-step--line-height);
+  transition-duration: var(--sf-duration-fast);
+  transition-property: background-color, border-color, box-shadow, color;
+  transition-timing-function: var(--sf-animation);
+  --sf-step--border-color: var(--sf-outline-variant);
+  --sf-step--background-color: transparent;
+  --sf-step--color: var(--sf-on-surface-variant);
+}
+
+.sf-step .sf-icon {
+  flex-shrink: 0;
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-step .sf-step-container {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  --sf-step-container--background-color: transparent;
+  background-color: var(--sf-step-container--background-color);
+  color: var(--sf-step-container--color);
+  font-family: var(--sf-step-container--font-family);
+  font-size: var(--sf-step-container--font-size);
+  font-weight: var(--sf-step-container--font-weight);
+  line-height: var(--sf-step-container--line-height);
+}
+
+.sf-step.sf-step--size-1 .sf-step-container {
+  --sf-step-container--font-size: var(--sf-text-size-1);
+  --sf-step-container--line-height: var(--sf-text-height-1);
+}
+
+.sf-step.sf-step--stage-default .sf-step-container, .sf-step.sf-step--stage-completed .sf-step-container, .sf-step.sf-step--stage-error .sf-step-container {
+  --sf-step-container--color: var(--sf-on-surface-variant);
+}
+
+.sf-step.sf-step--stage-completed .sf-icon {
+  --sf-icon--color: var(--sf-success);
+}
+
+.sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
+  --sf-step-container--color: var(--sf-on-surface);
+}
+
+.sf-step.disabled.sf-step--stage-default .sf-step-container, .sf-step.disabled.sf-step--stage-completed .sf-step-container, .sf-step.disabled.sf-step--stage-error .sf-step-container {
+  --sf-step-container--color: var(--sf-on-disable);
+}
+
+.sf-step.disabled.sf-step--stage-completed .sf-icon, .sf-step.disabled.sf-step--stage-error .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-step.sf-step--size-1\/2 .sf-step-container {
+  --sf-step-container--font-size: var(--sf-text-size-1\/2);
+  --sf-step-container--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-step.sf-step--size-1\/2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-2);
+  --sf-icon--height: var(--sf-text-size-2);
+  --sf-icon--width: var(--sf-text-size-2);
+}
+
+.sf-step--size-1 {
+  --sf-step--font-size: var(--sf-text-size-1);
+  --sf-step--line-height: var(--sf-text-height-1);
+  --sf-step--padding-bottom: var(--sf-space-1\/4);
+  --sf-step--padding-top: var(--sf-space-1\/4);
+}
+
+.sf-step--size-1\/2 {
+  --sf-step--font-size: var(--sf-text-size-1\/2);
+  --sf-step--line-height: var(--sf-text-height-1\/2);
+  --sf-step--padding-bottom: calc(var(--sf-space-1\/4) / 2);
+  --sf-step--padding-top: calc(var(--sf-space-1\/4) / 2);
+}
+
+.sf-step:is(button, a, [role="button"]):not(:disabled):not(.disabled):hover {
+  --sf-step--background-color: var(--sf-surface-container);
+}
+
+.sf-step.selected {
+  --sf-step--border-color: var(--sf-outline-primary);
+  --sf-step--color: var(--sf-on-surface);
+}
+
+.sf-step.disabled,
+.sf-step:disabled {
+  --sf-step--border-color: var(--sf-outline-disable);
+  --sf-step--color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-step.sf-step--stage-error .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+/* A disabled step dims all of it, whatever its stage and however it is
+   disabled. The dimming lived on stage-scoped rules for the class alone: a
+   default-stage icon kept its colour, a step disabled natively or by
+   aria-disabled dimmed only its border, and the error stage's icon rule, later
+   in the sheet, outranked the disabled one. Last in the layer and one class
+   heavier than the selected and stage rules, so it wins over both. */
+.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) {
+  --sf-step--border-color: var(--sf-outline-disable);
+  --sf-step--color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-step-container {
+  --sf-step-container--color: var(--sf-on-disable);
+}
+
+.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+}
+
+@layer sf.states {
+  .sf-step:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  @media (forced-colors: active) {
+    .sf-step:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      --sf-step--box-shadow: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-step {
+      transition-duration: 0s;
+    }
+  }
+}

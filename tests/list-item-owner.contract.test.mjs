@@ -1,0 +1,63 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+import { URL } from 'node:url';
+
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+
+test('List Item keeps interaction semantics with its owning Dropdown', async () => {
+  const [template, dropdownTemplate, interaction] = await Promise.all([
+    read('src/smart/list-item/js/templates/default.js'),
+    read('src/smart/dropdown/js/templates/default.js'),
+    read('src/component/dropdown/interaction.js'),
+  ]);
+
+  assert.match(template, /const isOption = context\.option === true/);
+  assert.match(template, /role=\$\{isOption \? "option" : nothing\}/);
+  assert.match(template, /tabindex=\$\{isOption \? "-1" : nothing\}/);
+  assert.doesNotMatch(template, /role="button"/);
+  assert.match(template, /isOption \? "cursor-pointer" : ""/);
+  // The option row is made in one place now: the list item's own template.
+  // The dropdown drew it inline, so nothing else could have one.
+  assert.match(template, /option: true/);
+  assert.match(dropdownTemplate, /renderListItemOption\(/);
+  assert.match(interaction, /container\.setAttribute\('role','listbox'\)/);
+  assert.match(interaction, /item\.setAttribute\('role','option'\)/);
+});
+
+test('List Item decorations never create nested option controls', async () => {
+  const template = await read('src/smart/list-item/js/templates/default.js');
+
+  assert.match(template, /class="sf-icon" aria-hidden="true"/);
+  assert.match(template, /class="sf-tag-color-icon \$\{context\.colorClass\}" aria-hidden="true"/);
+  assert.equal((template.match(/class="sf-checkbox sf-checkbox--size-/g) || []).length, 2);
+  assert.equal((template.match(/<label[\s\S]*?aria-hidden="true"/g) || []).length >= 2, true);
+  assert.equal((template.match(/tabindex="-1"/g) || []).length, 2);
+  assert.doesNotMatch(template, /"transition"/);
+});
+
+test('List Item source contract includes machine value and all visible labels update', async () => {
+  const [source, manifest] = await Promise.all([
+    read('src/smart/list-item/index.js'),
+    read('src/smart/list-item/smart.manifest.json').then(JSON.parse),
+  ]);
+
+  assert.match(source, /itemValue: \{ attribute: 'value', default: '' \}/);
+  assert.match(source, /\.sf-list-item-container, \.sf-avatar-label-group-title, \.sf-tag-container/);
+  assert.equal(manifest.inputs.properties.value.type, 'string');
+  assert.equal(manifest.item_contract.parent, 'smart.dropdown');
+  assert.match(manifest.contracts.standalone.const, /Non-interactive/);
+  assert.match(manifest.accessibility.role, /option when rendered by Dropdown/);
+});
+
+test('List Item presentation uses semantic tokens and owner-scoped states', async () => {
+  const style = await read('src/component/dropdown/scss/_css__list-item.scss');
+
+  assert.match(style, /--sf-list-item--border-bottom-width: var\(--sf-px\)/);
+  assert.match(style, /transition-property: background-color, border-color, box-shadow, color/);
+  assert.match(style, /transition-duration: var\(--sf-duration-fast\)/);
+  assert.match(style, /\.sf-list \[role="option"\]\.sf-list-item[^\n]*:hover/);
+  assert.match(style, /\.sf-list \[role="option"\]\.sf-list-item[^\n]*:focus-visible/);
+  assert.match(style, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(style, /\b\d+(?:\.\d+)?(?:px|rem)\b/);
+});

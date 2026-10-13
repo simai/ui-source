@@ -1,0 +1,1 @@
+SF.RuleLoader['stripe-color/default'] = new RegExp("^(?:stripe-(?:current|inherit|on-surface|primary(?:-container)?|s(?:econdary(?:-container)?|urface-transparent-overlay)|t(?:ertiary(?:-container)?|ransparent)))(?![\\s\\S])");

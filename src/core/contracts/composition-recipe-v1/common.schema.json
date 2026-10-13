@@ -1,0 +1,747 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-recipe-v1/common.schema.json",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "scope",
+        "owner",
+        "ref",
+        "revision"
+      ]
+    },
+    "expectedOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "owner",
+        "ref"
+      ]
+    },
+    "json": {
+      "oneOf": [
+        {
+          "type": [
+            "null",
+            "boolean",
+            "string"
+          ]
+        },
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+          }
+        }
+      ]
+    },
+    "value": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "literal": {
+              "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+            }
+          },
+          "required": [
+            "literal"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            }
+          },
+          "required": [
+            "input"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "parameter": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            }
+          },
+          "required": [
+            "parameter"
+          ]
+        }
+      ]
+    },
+    "reference": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "template",
+                "fragment"
+              ]
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "policy": {
+              "const": "pinned"
+            },
+            "revision": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "extensions": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "owner",
+            "ref",
+            "policy",
+            "revision"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "template",
+                "fragment"
+              ]
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "policy": {
+              "const": "follow-published"
+            },
+            "pointer": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "extensions": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "owner",
+            "ref",
+            "policy",
+            "pointer"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "node": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+                },
+                "data": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                  }
+                },
+                "props": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                  }
+                },
+                "presentation": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "view": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    },
+                    "preset": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    },
+                    "modifiers": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    }
+                  },
+                  "required": []
+                },
+                "slots": {
+                  "type": "object",
+                  "propertyNames": {
+                    "pattern": "^[a-z][a-z0-9-]*$"
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/entry"
+                    },
+                    "minItems": 0,
+                    "maxItems": 500
+                  }
+                },
+                "bindings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "input": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                      },
+                      "target": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                      }
+                    },
+                    "required": [
+                      "input",
+                      "target"
+                    ]
+                  },
+                  "minItems": 0,
+                  "maxItems": 500
+                },
+                "extensions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "node"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "ref": {
+              "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/reference"
+            },
+            "params": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+              },
+              "additionalProperties": {
+                "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+              }
+            },
+            "slots": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/entry"
+                },
+                "minItems": 0,
+                "maxItems": 500
+              }
+            },
+            "extensions": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "ref"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "select": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                },
+                "cases": {
+                  "type": "object",
+                  "minProperties": 1,
+                  "maxProperties": 64,
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/placement"
+                  }
+                },
+                "missingCase": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                }
+              },
+              "required": [
+                "value",
+                "cases"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "select"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "insertSlot": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            }
+          },
+          "required": [
+            "id",
+            "insertSlot"
+          ]
+        }
+      ]
+    },
+    "placement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "node": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+                },
+                "data": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                  }
+                },
+                "props": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                  }
+                },
+                "presentation": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "view": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    },
+                    "preset": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    },
+                    "modifiers": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                    }
+                  },
+                  "required": []
+                },
+                "slots": {
+                  "type": "object",
+                  "propertyNames": {
+                    "pattern": "^[a-z][a-z0-9-]*$"
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/entry"
+                    },
+                    "minItems": 0,
+                    "maxItems": 500
+                  }
+                },
+                "bindings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "input": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                      },
+                      "target": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                      }
+                    },
+                    "required": [
+                      "input",
+                      "target"
+                    ]
+                  },
+                  "minItems": 0,
+                  "maxItems": 500
+                },
+                "extensions": {
+                  "type": "object",
+                  "propertyNames": {
+                    "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "node"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "ref": {
+              "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/reference"
+            },
+            "params": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+              },
+              "additionalProperties": {
+                "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+              }
+            },
+            "slots": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/entry"
+                },
+                "minItems": 0,
+                "maxItems": 500
+              }
+            },
+            "extensions": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "ref"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+            },
+            "select": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+                },
+                "cases": {
+                  "type": "object",
+                  "minProperties": 1,
+                  "maxProperties": 64,
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                  },
+                  "additionalProperties": {
+                    "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/placement"
+                  }
+                },
+                "missingCase": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+                }
+              },
+              "required": [
+                "value",
+                "cases"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "select"
+          ]
+        }
+      ]
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+      }
+    },
+    "valueSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "string",
+            "integer",
+            "boolean",
+            "null",
+            "object",
+            "array"
+          ]
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "const": {
+          "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/valueSchema"
+          }
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+          },
+          "minItems": 0,
+          "maxItems": 500
+        },
+        "additionalProperties": {
+          "const": false
+        },
+        "items": {
+          "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/valueSchema"
+        },
+        "minimum": {
+          "type": "integer"
+        },
+        "maximum": {
+          "type": "integer"
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "default": {
+          "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/value"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "required": [
+            "const"
+          ]
+        },
+        {
+          "required": [
+            "enum"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,63 @@
+@layer sf.components {
+.sf-toggle {
+  position: relative;
+  min-width: 0;
+}
+
+.sf-toggle:not(.disabled):has(input:not(:disabled)) {
+  cursor: pointer;
+}
+
+.sf-toggle:has(input:disabled) {
+  cursor: default;
+}
+
+.sf-toggle .sf-toggle-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-toggle .sf-toggle-control {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-grid;
+  align-items: center;
+}
+
+.sf-toggle .sf-toggle-control > * {
+  grid-area: 1 / 1;
+}
+
+.sf-toggle .sf-toggle-container {
+  position: relative;
+}
+
+.sf-toggle.sf-toggle--short .sf-toggle-inner-wrap {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  transform: translateY(-50%);
+}
+
+.sf-toggle.sf-toggle--short .sf-toggle-container.content-main-end .sf-toggle-inner-wrap {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+.sf-toggle .sf-toggle-control > input[type='checkbox'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 2;
+  margin: 0;
+}
+
+.sf-toggle:not(.disabled) .sf-toggle-control > input[type='checkbox']:not(:disabled) {
+  cursor: pointer;
+}
+
+.sf-toggle.disabled .sf-toggle-control > input[type='checkbox'],
+.sf-toggle .sf-toggle-control > input[type='checkbox']:disabled {
+  cursor: default;
+}
+}

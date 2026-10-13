@@ -1,0 +1,65 @@
+@use 'sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE
+
+$prefix: --sf-table-;
+
+// @include layer-priority(utility,default) {
+
+    table {
+        caption-side: bottom;
+        border-collapse: collapse;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+    }
+
+    .table {
+        #{$prefix}color: #{$table-color};
+        //#{$prefix}bg: #{$table-bg};
+        #{$prefix}border-color: #{$table-border-color};
+        #{$prefix}accent-bg: #{$table-accent-bg};
+        #{$prefix}stripe-color: #{$table-stripe-color};
+        #{$prefix}stripe-bg: #{$table-stripe-bg};
+        #{$prefix}active-color: #{$table-active-color};
+        #{$prefix}active-bg: #{$table-active-bg};
+        #{$prefix}hover-color: #{$table-hover-color};
+        #{$prefix}hover-bg: #{$table-hover-bg};
+
+        width: 100%;
+        margin-bottom: var(--sf-b6);
+        color: var(#{$prefix}color);
+        vertical-align: top;
+        border-color: var(#{$prefix}border-color);
+        text-align: start;
+
+        > :not(caption) > * > * {
+            padding: $table-cell-padding-y $table-cell-padding-x;
+            //background-color: var(#{$prefix}bg);
+            border-bottom-width: var(--sf-px);
+            background-image: linear-gradient(var(#{$prefix}accent-bg), var(#{$prefix}accent-bg));
+        }
+
+        > tbody {
+            vertical-align: inherit;
+        }
+
+        > thead {
+            vertical-align: bottom;
+        }
+    }
+
+    .table-sm,
+    .table-small {
+        > :not(caption) > * > * {
+            padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
+        }
+    }
+// }
+}

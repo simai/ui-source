@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="68 980 28 20" fill="none" role="img">
+<g id="Country=TO">
+<rect x="68" y="980" width="28" height="20" fill="#F0F0F0"/>
+<path id="Combined Shape_15" d="M96 1000H68V990.667H84V980H96V1000Z" fill="#D80027"/>
+<path id="Rectangle 1703" d="M77 981.333C77.184 981.333 77.3328 981.483 77.333 981.667V984H79.667C79.8509 984.001 80 984.15 80 984.333V986.333C80 986.517 79.8509 986.666 79.667 986.667H77.333V989C77.3328 989.184 77.184 989.333 77 989.333H75C74.816 989.333 74.6672 989.184 74.667 989V986.667H72.333C72.1491 986.666 72 986.517 72 986.333V984.333C72 984.15 72.1491 984.001 72.333 984H74.667V981.667C74.6672 981.483 74.816 981.333 75 981.333H77Z" fill="url(#paint25_linear_8205_11341)"/>
+</g>
+<defs><linearGradient id="paint25_linear_8205_11341" x1="72" y1="981.333" x2="72" y2="989.333" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DF101B"/>
+<stop offset="1" stop-color="#C00711"/>
+</linearGradient></defs>
+</svg>

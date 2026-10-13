@@ -1,0 +1,64 @@
+// Sortable drag-and-drop (sf-sortable). The drop indicator is fixed to the
+// viewport; the host list and its items keep their own layout.
+// The host default lives in sf.base so layout utilities such as .flex on the
+// list itself still apply (sf.utilities sits above sf.base).
+/* sf-focus-ring: editor — the editing canvas marks what is being edited in its
+   own colour, which is part of the editor's language rather than the product's
+   focus colour. Width and style stay the system's. */
+@layer sf.base {
+    sf-sortable {
+        display: block;
+    }
+}
+
+@layer sf.components {
+    [data-sf-sortable-item][data-sf-sortable-dragging] {
+        opacity: .4;
+    }
+
+    [data-sf-sortable-item]:focus-visible {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-primary, Highlight);
+        outline-offset: 2px;
+    }
+
+    [data-sf-sortable-handle] {
+        cursor: grab;
+        touch-action: none;
+    }
+
+    .sf-sortable-ghost {
+        position: fixed;
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        margin: 0;
+        pointer-events: none;
+        opacity: .9;
+        box-shadow: var(--sf-ui-shadow-4, 0 4px 12px rgb(0 0 0 / 30%));
+    }
+
+    .sf-sortable-indicator {
+        position: fixed;
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        border-radius: 2px;
+        background: var(--sf-primary, Highlight);
+        pointer-events: none;
+    }
+
+    .sf-sortable-indicator[hidden] {
+        display: none;
+    }
+
+    .sf-sortable-live {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    html[data-sf-sortable-active],
+    html[data-sf-sortable-active] * {
+        cursor: grabbing;
+        user-select: none;
+    }
+}

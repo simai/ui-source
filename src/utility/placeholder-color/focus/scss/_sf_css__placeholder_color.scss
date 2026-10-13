@@ -1,0 +1,18 @@
+@use '../../../text-color/default/scss/sf_var__color_base' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// PLACEHOLDER
+
+$infix: focus;
+
+// @include layer-priority(utility,$infix) {
+    // Placeholder Color
+    @each $color-name, $color-value in $color-base-array {
+        .#{$infix}\:placeholder-#{$color-name}:#{$infix}::placeholder {
+            color: var(--sf-#{$color-value});
+        }
+    }
+// }
+}

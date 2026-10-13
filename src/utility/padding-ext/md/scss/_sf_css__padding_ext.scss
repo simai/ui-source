@@ -1,0 +1,48 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// PADDING
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+        
+        // Padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+
+                // PADDING SETTINGS
+                // for all sides
+                .#{$infix}p-#{$size-range-name}#{$size-name} {
+                    padding: var(--sf-#{$size-range-name}#{$size-name});
+                }
+
+                // for top sides
+                .#{$infix}p-top-#{$size-range-name}#{$size-name} {
+                    padding-top: var(--sf-#{$size-range-name}#{$size-name});
+                }
+
+                // for inline end
+                .#{$infix}p-inline-end-#{$size-range-name}#{$size-name} {
+                    padding-inline-end: var(--sf-#{$size-range-name}#{$size-name});
+                }
+
+                // for bottom sides
+                .#{$infix}p-bottom-#{$size-range-name}#{$size-name} {
+                    padding-bottom: var(--sf-#{$size-range-name}#{$size-name});
+                }    
+                
+                // for inline start
+                .#{$infix}p-inline-start-#{$size-range-name}#{$size-name} {
+                    padding-inline-start: var(--sf-#{$size-range-name}#{$size-name});
+                }
+            }
+        }
+    }
+// }
+}

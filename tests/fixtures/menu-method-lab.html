@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Menu — component method lab</title>
+  <link rel="stylesheet" href="../../source/output/menu-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/menu-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/menu-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/menu-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/menu-browser/component/menu/css/menu.css?sf_candidate=menu">
+</head>
+<body>
+  <main class="p-4">
+    <h1>Проверка Menu</h1>
+    <div class="max-w-sm">
+      <nav aria-label="Разделы проекта">
+        <ul id="menu" class="sf-menu">
+          <li id="current" class="sf-menu-item">
+            <a class="sf-menu-element" href="#overview" aria-current="page">
+              <span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Обзор</span></span>
+            </a>
+          </li>
+          <li id="generated" class="sf-menu-item">Проекты
+            <ul class="sf-menu">
+              <li class="sf-menu-item"><a class="sf-menu-element" href="#documentation">Документация</a></li>
+              <li class="sf-menu-item"><a class="sf-menu-element" href="#application">Приложение</a></li>
+            </ul>
+          </li>
+          <li id="combined" class="sf-menu-item">
+            <div class="sf-menu-element">
+              <span class="sf-menu-element-wrap">
+                <a class="sf-link" href="#catalog"><span class="sf-menu-element-text">Каталог</span></a>
+              </span>
+              <button type="button" class="sf-icon-button" aria-label="Показать разделы каталога">
+                <span class="sf-icon" aria-hidden="true">chevron_right</span>
+              </button>
+            </div>
+            <ul class="sf-menu">
+              <li class="sf-menu-item"><a class="sf-menu-element" href="#services">Услуги</a></li>
+            </ul>
+          </li>
+          <li id="disabled" class="sf-menu-item disabled" disabled>Архив
+            <ul class="sf-menu"><li class="sf-menu-item">2025</li></ul>
+          </li>
+          <li id="long" class="sf-menu-item">Очень длинное локализованное название раздела, которое должно переноситься внутри доступной ширины
+            <ul class="sf-menu">
+              <li class="sf-menu-item">Вложенный пункт первого уровня
+                <ul class="sf-menu"><li class="sf-menu-item">Вложенный пункт второго уровня</li></ul>
+              </li>
+            </ul>
+          </li>
+          <li id="dynamic" class="sf-menu-item">Динамический пункт</li>
+        </ul>
+      </nav>
+    </div>
+    <section id="overview">Обзор проекта</section>
+    <section id="catalog">Каталог проекта</section>
+    <nav aria-label="Основные разделы" class="mt-4">
+      <ul id="horizontal" class="sf-menu sf-menu--horizontal">
+        <li id="horizontal-overview" class="sf-menu-item"><a class="sf-menu-element" href="#overview">Обзор</a></li>
+        <li id="horizontal-products" class="sf-menu-item">Продукты
+          <ul class="sf-menu">
+            <li class="sf-menu-item"><a class="sf-menu-element" href="#framework">Framework</a></li>
+            <li id="horizontal-tools" class="sf-menu-item">Инструменты
+              <ul class="sf-menu"><li class="sf-menu-item"><a class="sf-menu-element" href="#studio">UI Studio</a></li></ul>
+            </li>
+          </ul>
+        </li>
+        <li id="horizontal-support" class="sf-menu-item">Поддержка
+          <ul class="sf-menu"><li class="sf-menu-item"><a class="sf-menu-element" href="#help">Помощь</a></li></ul>
+        </li>
+      </ul>
+    </nav>
+  </main>
+  <script src="../../source/output/menu-browser/component/menu/js/menu.js?sf_candidate=menu"></script>
+</body>
+</html>

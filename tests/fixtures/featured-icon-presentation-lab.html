@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Featured Icon presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/featured-icon-browser/component/featured-icon.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <h1>Акцентная иконка</h1>
+    <section class="flex flex-wrap gap-2 items-cross-center" aria-label="Интенсивность">
+      <span class="sf-featured-icon sf-featured-icon--soft" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--medium" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--solid" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--elevated sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+    </section>
+    <section class="flex flex-wrap gap-2 items-cross-center" aria-label="Цветовые роли">
+      <span class="sf-featured-icon sf-featured-icon--primary" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--neutral" aria-hidden="true"><i class="sf-icon">circle</i></span>
+      <span class="sf-featured-icon sf-featured-icon--info" aria-hidden="true"><i class="sf-icon">info</i></span>
+      <span class="sf-featured-icon sf-featured-icon--success" aria-hidden="true"><i class="sf-icon">check</i></span>
+      <span class="sf-featured-icon sf-featured-icon--warning" aria-hidden="true"><i class="sf-icon">warning</i></span>
+      <span class="sf-featured-icon sf-featured-icon--error" aria-hidden="true"><i class="sf-icon">error</i></span>
+    </section>
+    <section class="flex flex-wrap gap-2 items-cross-center" aria-label="Размеры">
+      <span class="sf-featured-icon sf-featured-icon--size-1/3 sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--size-1/2 sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--size-1 sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--size-2 sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+      <span class="sf-featured-icon sf-featured-icon--size-3 sf-featured-icon--square" aria-hidden="true"><i class="sf-icon">star</i></span>
+    </section>
+    <div class="flex gap-2 items-cross-center">
+      <span class="sf-featured-icon sf-featured-icon--success" aria-hidden="true"><i class="sf-icon">check</i></span>
+      <span>Проверка пройдена</span>
+    </div>
+    <span class="sf-featured-icon sf-featured-icon--info" role="img" aria-label="Информация"><i class="sf-icon" aria-hidden="true">info</i></span>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

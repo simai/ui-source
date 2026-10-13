@@ -1,0 +1,110 @@
+{
+  "status": "expected_budget_tests_for_future_resolver",
+  "cases": [
+    {
+      "limit": "maxRecipeBytes",
+      "inclusiveAllowed": 1048576,
+      "firstRejected": 1048577,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxSourceBytes",
+      "inclusiveAllowed": 1048576,
+      "firstRejected": 1048577,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxTotalSourceBytes",
+      "inclusiveAllowed": 8388608,
+      "firstRejected": 8388609,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxInputBytes",
+      "inclusiveAllowed": 1048576,
+      "firstRejected": 1048577,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxTotalInputBytes",
+      "inclusiveAllowed": 4194304,
+      "firstRejected": 4194305,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxUniqueReferences",
+      "inclusiveAllowed": 128,
+      "firstRejected": 129,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxInputs",
+      "inclusiveAllowed": 256,
+      "firstRejected": 257,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxReferenceDepth",
+      "inclusiveAllowed": 16,
+      "firstRejected": 17,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxExpansionSteps",
+      "inclusiveAllowed": 10000,
+      "firstRejected": 10001,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxIntermediateBytes",
+      "inclusiveAllowed": 4194304,
+      "firstRejected": 4194305,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxOutputBytes",
+      "inclusiveAllowed": 1048576,
+      "firstRejected": 1048577,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxOutputNodes",
+      "inclusiveAllowed": 2000,
+      "firstRejected": 2001,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxOutputDepth",
+      "inclusiveAllowed": 32,
+      "firstRejected": 33,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxChildrenPerSlot",
+      "inclusiveAllowed": 500,
+      "firstRejected": 501,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    },
+    {
+      "limit": "maxSelectCases",
+      "inclusiveAllowed": 64,
+      "firstRejected": 65,
+      "expectedCode": "limit_exceeded",
+      "errorDocument": null
+    }
+  ]
+}

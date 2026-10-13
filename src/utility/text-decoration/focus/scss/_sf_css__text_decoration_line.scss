@@ -1,0 +1,18 @@
+@use '../../default/scss/sf_var__text_decoration_line' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TEXT DECORATION
+
+$infix:focus;
+
+// @include layer-priority(utility,$infix) {
+    // Text Decoration Line
+    @each $line-name, $line-value in $text-decoration-line-array {
+        .#{$infix}\:#{$line-name}:#{$infix} {
+            text-decoration-line: #{$line-value}
+        }
+    }
+// }
+}

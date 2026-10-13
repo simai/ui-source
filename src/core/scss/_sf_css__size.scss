@@ -1,0 +1,24 @@
+@use "vars/sf_var__size" as size;
+@use '../../utility/z-index/default/scss/sf_var__z_index' as zIndexVars;
+
+:root {
+	// Zero Size
+    --sf-0: 0;
+
+	// Pixel Size
+	--sf-px: #{size.$size-pixel};
+
+	// Auto Size
+	--sf-auto: auto;
+
+	// Set Size CSS Variables
+	@each $size-range-name, $range-array in size.$size-array {
+		@each $size-name, $size-value in $range-array {
+			--sf-#{$size-range-name}#{$size-name}: #{$size-value};
+		}
+	}
+
+	@each $z-index-name, $z-index-value in zIndexVars.$z-index-array {
+		--sf-z-index-#{$z-index-name}: #{$z-index-value};
+	}
+}

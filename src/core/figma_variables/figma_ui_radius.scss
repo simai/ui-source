@@ -1,0 +1,11 @@
+@layer sf.base {
+  :root {
+    --sf-ui-radius-default: var(--sf-radius--ui);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-ui-radius-default: var(--sf-radius--ui);
+    }
+  }
+}

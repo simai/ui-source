@@ -1,0 +1,1175 @@
+{
+  "status": "normative_expected_results_no_recipe_runtime",
+  "recipe": {
+    "schema": "simai.composition.recipe.v1",
+    "id": "demo.header-switch",
+    "profile": "ui-layout",
+    "locale": "ru",
+    "inputs": {
+      "headerMode": {
+        "kind": "setting",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "compact",
+            "expanded"
+          ]
+        },
+        "default": {
+          "literal": "compact"
+        },
+        "expectedOrigin": {
+          "owner": "larena/setting",
+          "ref": "header.mode",
+          "revision": "7"
+        }
+      },
+      "body": {
+        "kind": "content",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "expectedOrigin": {
+          "owner": "larena/content",
+          "ref": "article.demo",
+          "revision": "108"
+        }
+      }
+    },
+    "root": {
+      "id": "page",
+      "ref": {
+        "kind": "template",
+        "owner": "example/library",
+        "ref": "article",
+        "policy": "pinned",
+        "revision": "r1"
+      },
+      "slots": {
+        "header": [
+          {
+            "id": "header-choice",
+            "select": {
+              "value": {
+                "input": "headerMode"
+              },
+              "cases": {
+                "compact": {
+                  "id": "chosen-header",
+                  "ref": {
+                    "kind": "fragment",
+                    "owner": "example/library",
+                    "ref": "header.compact",
+                    "policy": "pinned",
+                    "revision": "r1"
+                  }
+                },
+                "expanded": {
+                  "id": "chosen-header",
+                  "ref": {
+                    "kind": "fragment",
+                    "owner": "example/library",
+                    "ref": "header.expanded",
+                    "policy": "pinned",
+                    "revision": "r1"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "main": [
+          {
+            "id": "body",
+            "node": {
+              "type": "content.paragraph",
+              "data": {
+                "content": {
+                  "input": "body"
+                }
+              },
+              "bindings": [
+                {
+                  "input": "body",
+                  "target": "content"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "sources": {
+    "article": {
+      "schema": "simai.composition.recipe-manifest.v1",
+      "id": "article",
+      "parameters": {},
+      "slots": {
+        "header": {
+          "min": 1,
+          "max": 1,
+          "types": [
+            "layout.section"
+          ]
+        },
+        "main": {
+          "min": 1,
+          "max": 1,
+          "types": [
+            "content.paragraph"
+          ]
+        }
+      },
+      "body": {
+        "id": "shell",
+        "node": {
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "header-point",
+                "insertSlot": "header"
+              },
+              {
+                "id": "main-point",
+                "insertSlot": "main"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "header.compact": {
+      "id": "header",
+      "node": {
+        "type": "layout.section",
+        "slots": {
+          "default": [
+            {
+              "id": "title",
+              "node": {
+                "type": "content.heading",
+                "data": {
+                  "level": {
+                    "literal": 2
+                  },
+                  "content": {
+                    "literal": [
+                      {
+                        "type": "text",
+                        "value": "Краткая шапка"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "header.expanded": {
+      "id": "header",
+      "node": {
+        "type": "layout.section",
+        "slots": {
+          "default": [
+            {
+              "id": "title",
+              "node": {
+                "type": "content.heading",
+                "data": {
+                  "level": {
+                    "literal": 2
+                  },
+                  "content": {
+                    "literal": [
+                      {
+                        "type": "text",
+                        "value": "Расширенная шапка"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "id": "description",
+              "node": {
+                "type": "content.paragraph",
+                "data": {
+                  "content": {
+                    "literal": [
+                      {
+                        "type": "text",
+                        "value": "Дополнительная строка шапки"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "trustedContext": {
+    "scope": "example-site-17"
+  },
+  "inputs": {
+    "compact": {
+      "schema": "simai.composition.inputs.v1",
+      "scope": "example-site-17",
+      "values": {
+        "headerMode": {
+          "kind": "setting",
+          "value": "compact",
+          "valueDigest": "sha256:886faf3fbc9f853264de745e42584714338cc21178976b45aa9c67f19d42c2c1",
+          "origin": {
+            "scope": "example-site-17",
+            "owner": "larena/setting",
+            "ref": "header.mode",
+            "revision": "7"
+          }
+        },
+        "body": {
+          "kind": "content",
+          "value": [
+            {
+              "type": "text",
+              "value": "Одинаковый основной текст."
+            }
+          ],
+          "valueDigest": "sha256:14c5fd076cabc2f19ff98efa0dd836e31e42cf01f359049a584ba2eb927a52a5",
+          "origin": {
+            "scope": "example-site-17",
+            "owner": "larena/content",
+            "ref": "article.demo",
+            "revision": "108"
+          }
+        }
+      }
+    },
+    "expanded": {
+      "schema": "simai.composition.inputs.v1",
+      "scope": "example-site-17",
+      "values": {
+        "headerMode": {
+          "kind": "setting",
+          "value": "expanded",
+          "valueDigest": "sha256:c60ad395f956f970f43b45b950c381db8108ca2064e11748e72262d8c2ab46b0",
+          "origin": {
+            "scope": "example-site-17",
+            "owner": "larena/setting",
+            "ref": "header.mode",
+            "revision": "7"
+          }
+        },
+        "body": {
+          "kind": "content",
+          "value": [
+            {
+              "type": "text",
+              "value": "Одинаковый основной текст."
+            }
+          ],
+          "valueDigest": "sha256:14c5fd076cabc2f19ff98efa0dd836e31e42cf01f359049a584ba2eb927a52a5",
+          "origin": {
+            "scope": "example-site-17",
+            "owner": "larena/content",
+            "ref": "article.demo",
+            "revision": "108"
+          }
+        }
+      }
+    }
+  },
+  "expected": {
+    "compact": {
+      "document": {
+        "schema": "simai.composition.document.v1",
+        "id": "demo.header-switch",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "n-c7bdd9e8d8e172a3dc74e09a170e2bac47b6ca7e6076c91906d4ba60d7d10ac0",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "n-8ee461456ca68aa3aea9874926906236827cf7a06bab84c4512e48f891629c40",
+                "type": "layout.section",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "n-795bbfeb120c9f7846042727e28b6b2798c695b77d9e4c5f2feee329743eb3a9",
+                      "type": "content.heading",
+                      "data": {
+                        "level": 2,
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Краткая шапка"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "n-764f5357dde943884297f2ce493402933acb53fbdbb0e7d9717f885ca9368770",
+                "type": "content.paragraph",
+                "data": {
+                  "content": [
+                    {
+                      "type": "text",
+                      "value": "Одинаковый основной текст."
+                    }
+                  ]
+                },
+                "bindings": [
+                  {
+                    "owner": "larena/content",
+                    "ref": "article.demo",
+                    "target": "content",
+                    "revision": "108"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "dependencyReceipt": {
+        "schema": "simai.composition.dependencies.v1",
+        "scope": "example-site-17",
+        "recipeDigest": "sha256:86722d90b48c9a5c14821bc7bb45ccbb5897c3ee12f2a68cdc0f9d930f6d3222",
+        "documentDigest": "sha256:6a687e4833ec5c11d775e44e722a799cfd2aff6bdc12978e17c7f7c5b982d38c",
+        "references": [
+          {
+            "kind": "template",
+            "owner": "example/library",
+            "ref": "article",
+            "revision": "r1",
+            "digest": "sha256:fb78019b90f2c64d36e660ab37e917e821677812933d01d3e2d930c891251d09",
+            "scope": "example-site-17"
+          },
+          {
+            "kind": "fragment",
+            "owner": "example/library",
+            "ref": "header.compact",
+            "revision": "r1",
+            "digest": "sha256:3c4d8452a532543d183ee34a5b5349e9ea22ad67a499633a6edaba9aa5e16f86",
+            "scope": "example-site-17"
+          }
+        ],
+        "inputs": [
+          {
+            "name": "headerMode",
+            "kind": "setting",
+            "valueDigest": "sha256:886faf3fbc9f853264de745e42584714338cc21178976b45aa9c67f19d42c2c1",
+            "origin": {
+              "scope": "example-site-17",
+              "owner": "larena/setting",
+              "ref": "header.mode",
+              "revision": "7"
+            },
+            "resolution": "provided"
+          },
+          {
+            "name": "body",
+            "kind": "content",
+            "valueDigest": "sha256:14c5fd076cabc2f19ff98efa0dd836e31e42cf01f359049a584ba2eb927a52a5",
+            "origin": {
+              "scope": "example-site-17",
+              "owner": "larena/content",
+              "ref": "article.demo",
+              "revision": "108"
+            },
+            "resolution": "provided"
+          }
+        ],
+        "logicalPointers": [],
+        "executionContract": {
+          "contractDigest": "sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2",
+          "registryDigest": "sha256:34784472b97fd1adf254248d80ef3500d5815107459d0b11cb4d7a99783e3c5b",
+          "rendererDigest": "sha256:b658c13171be6f0089170bcc4b2e6ce586c4c7b3b1693b3588ce68ef947687de",
+          "canonicalization": "simai.recipe.canonical-json.v1"
+        }
+      },
+      "expectedExternalReads": [
+        "template:article@r1",
+        "input:headerMode",
+        "fragment:header.compact@r1",
+        "input:body"
+      ]
+    },
+    "expanded": {
+      "document": {
+        "schema": "simai.composition.document.v1",
+        "id": "demo.header-switch",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "n-c7bdd9e8d8e172a3dc74e09a170e2bac47b6ca7e6076c91906d4ba60d7d10ac0",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "n-600afd2afb695d8efeae6c54d19cd42d330baa033415d6349a026680b8595b69",
+                "type": "layout.section",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "n-22689da65720608f104d71536fa6ef6227efc2ceb383c725bf1b6850ed4570de",
+                      "type": "content.heading",
+                      "data": {
+                        "level": 2,
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Расширенная шапка"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "n-ddbdd5886447ae48ae59b1c1ce9604d6f7a67053d3677552a7e648767247a78d",
+                      "type": "content.paragraph",
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Дополнительная строка шапки"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "n-764f5357dde943884297f2ce493402933acb53fbdbb0e7d9717f885ca9368770",
+                "type": "content.paragraph",
+                "data": {
+                  "content": [
+                    {
+                      "type": "text",
+                      "value": "Одинаковый основной текст."
+                    }
+                  ]
+                },
+                "bindings": [
+                  {
+                    "owner": "larena/content",
+                    "ref": "article.demo",
+                    "target": "content",
+                    "revision": "108"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "dependencyReceipt": {
+        "schema": "simai.composition.dependencies.v1",
+        "scope": "example-site-17",
+        "recipeDigest": "sha256:86722d90b48c9a5c14821bc7bb45ccbb5897c3ee12f2a68cdc0f9d930f6d3222",
+        "documentDigest": "sha256:65f4b0e79fba6d4338768c28c73534835cefaff46cd57aa09328c25a849ddaea",
+        "references": [
+          {
+            "kind": "template",
+            "owner": "example/library",
+            "ref": "article",
+            "revision": "r1",
+            "digest": "sha256:fb78019b90f2c64d36e660ab37e917e821677812933d01d3e2d930c891251d09",
+            "scope": "example-site-17"
+          },
+          {
+            "kind": "fragment",
+            "owner": "example/library",
+            "ref": "header.expanded",
+            "revision": "r1",
+            "digest": "sha256:4d8fb0221e9304d8765205adc614fb78ad5f67f231794d23870a0221cc3d5ce8",
+            "scope": "example-site-17"
+          }
+        ],
+        "inputs": [
+          {
+            "name": "headerMode",
+            "kind": "setting",
+            "valueDigest": "sha256:c60ad395f956f970f43b45b950c381db8108ca2064e11748e72262d8c2ab46b0",
+            "origin": {
+              "scope": "example-site-17",
+              "owner": "larena/setting",
+              "ref": "header.mode",
+              "revision": "7"
+            },
+            "resolution": "provided"
+          },
+          {
+            "name": "body",
+            "kind": "content",
+            "valueDigest": "sha256:14c5fd076cabc2f19ff98efa0dd836e31e42cf01f359049a584ba2eb927a52a5",
+            "origin": {
+              "scope": "example-site-17",
+              "owner": "larena/content",
+              "ref": "article.demo",
+              "revision": "108"
+            },
+            "resolution": "provided"
+          }
+        ],
+        "logicalPointers": [],
+        "executionContract": {
+          "contractDigest": "sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2",
+          "registryDigest": "sha256:34784472b97fd1adf254248d80ef3500d5815107459d0b11cb4d7a99783e3c5b",
+          "rendererDigest": "sha256:b658c13171be6f0089170bcc4b2e6ce586c4c7b3b1693b3588ce68ef947687de",
+          "canonicalization": "simai.recipe.canonical-json.v1"
+        }
+      },
+      "expectedExternalReads": [
+        "template:article@r1",
+        "input:headerMode",
+        "fragment:header.expanded@r1",
+        "input:body"
+      ]
+    }
+  },
+  "identityVectors": [
+    {
+      "label": "compact.root",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ]
+      ],
+      "expectedId": "n-c7bdd9e8d8e172a3dc74e09a170e2bac47b6ca7e6076c91906d4ba60d7d10ac0"
+    },
+    {
+      "label": "compact.header",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "header-point"
+        ],
+        [
+          "argument-slot",
+          "header"
+        ],
+        [
+          "select",
+          "header-choice"
+        ],
+        [
+          "case",
+          "compact"
+        ],
+        [
+          "placement",
+          "chosen-header"
+        ],
+        [
+          "node",
+          "header"
+        ]
+      ],
+      "expectedId": "n-8ee461456ca68aa3aea9874926906236827cf7a06bab84c4512e48f891629c40"
+    },
+    {
+      "label": "compact.title",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "header-point"
+        ],
+        [
+          "argument-slot",
+          "header"
+        ],
+        [
+          "select",
+          "header-choice"
+        ],
+        [
+          "case",
+          "compact"
+        ],
+        [
+          "placement",
+          "chosen-header"
+        ],
+        [
+          "node",
+          "header"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "node",
+          "title"
+        ]
+      ],
+      "expectedId": "n-795bbfeb120c9f7846042727e28b6b2798c695b77d9e4c5f2feee329743eb3a9"
+    },
+    {
+      "label": "compact.body",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "main-point"
+        ],
+        [
+          "argument-slot",
+          "main"
+        ],
+        [
+          "node",
+          "body"
+        ]
+      ],
+      "expectedId": "n-764f5357dde943884297f2ce493402933acb53fbdbb0e7d9717f885ca9368770"
+    },
+    {
+      "label": "expanded.root",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ]
+      ],
+      "expectedId": "n-c7bdd9e8d8e172a3dc74e09a170e2bac47b6ca7e6076c91906d4ba60d7d10ac0"
+    },
+    {
+      "label": "expanded.header",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "header-point"
+        ],
+        [
+          "argument-slot",
+          "header"
+        ],
+        [
+          "select",
+          "header-choice"
+        ],
+        [
+          "case",
+          "expanded"
+        ],
+        [
+          "placement",
+          "chosen-header"
+        ],
+        [
+          "node",
+          "header"
+        ]
+      ],
+      "expectedId": "n-600afd2afb695d8efeae6c54d19cd42d330baa033415d6349a026680b8595b69"
+    },
+    {
+      "label": "expanded.title",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "header-point"
+        ],
+        [
+          "argument-slot",
+          "header"
+        ],
+        [
+          "select",
+          "header-choice"
+        ],
+        [
+          "case",
+          "expanded"
+        ],
+        [
+          "placement",
+          "chosen-header"
+        ],
+        [
+          "node",
+          "header"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "node",
+          "title"
+        ]
+      ],
+      "expectedId": "n-22689da65720608f104d71536fa6ef6227efc2ceb383c725bf1b6850ed4570de"
+    },
+    {
+      "label": "expanded.body",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "page"
+        ],
+        [
+          "node",
+          "shell"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "main-point"
+        ],
+        [
+          "argument-slot",
+          "main"
+        ],
+        [
+          "node",
+          "body"
+        ]
+      ],
+      "expectedId": "n-764f5357dde943884297f2ce493402933acb53fbdbb0e7d9717f885ca9368770"
+    },
+    {
+      "label": "two-placements-a",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "a"
+        ],
+        [
+          "node",
+          "root"
+        ]
+      ],
+      "expectedId": "n-be7c7f385cd7b438f9ca8e489c86758387fb495e5d096e97dc91f3f41757653f"
+    },
+    {
+      "label": "two-placements-b",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "b"
+        ],
+        [
+          "node",
+          "root"
+        ]
+      ],
+      "expectedId": "n-e3b222428adc6c4b8b03ef4e6782e027f84b19fd263f45f35eec7253316d466d"
+    },
+    {
+      "label": "same-root-name",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "same"
+        ],
+        [
+          "node",
+          "same"
+        ]
+      ],
+      "expectedId": "n-b0165c453ff68b8c3f36ef7c009a3d048cb5c4bc678189540eaf941958340c5c"
+    },
+    {
+      "label": "slot-child-same",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "node",
+          "root"
+        ],
+        [
+          "slot",
+          "same"
+        ],
+        [
+          "node",
+          "same"
+        ]
+      ],
+      "expectedId": "n-08d765dac6cfdcc92b6bae96332e0f973d2a9d32318787ad5dca0f51f0207277"
+    },
+    {
+      "label": "insert-a",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "p"
+        ],
+        [
+          "node",
+          "r"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "a"
+        ],
+        [
+          "argument-slot",
+          "body"
+        ],
+        [
+          "node",
+          "body"
+        ]
+      ],
+      "expectedId": "n-beac3a6f930ab0fdccb0df080b70caa64f0ffcbf6c66f61f71267ee0928d0738"
+    },
+    {
+      "label": "insert-b",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "p"
+        ],
+        [
+          "node",
+          "r"
+        ],
+        [
+          "slot",
+          "default"
+        ],
+        [
+          "insertion",
+          "b"
+        ],
+        [
+          "argument-slot",
+          "body"
+        ],
+        [
+          "node",
+          "body"
+        ]
+      ],
+      "expectedId": "n-147cd5eede3f986b193a63fa64f8a68c0eefe5cd19066bcadaa7e877fa3448b7"
+    },
+    {
+      "label": "long-path",
+      "recipeId": "demo.header-switch",
+      "segments": [
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "placement",
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ],
+        [
+          "node",
+          "body"
+        ]
+      ],
+      "expectedId": "n-47500fcf459be279e132edc812ee2e91ed0c183bf56f8863faef5f1d3f532dbc"
+    }
+  ],
+  "negativeCases": [
+    {
+      "case": "headerMode=unknown",
+      "expectedCode": "invalid_value",
+      "document": null
+    },
+    {
+      "case": "headerMode access denied",
+      "expectedCode": "access_denied",
+      "document": null
+    },
+    {
+      "case": "headerMode port error",
+      "expectedCode": "source_error",
+      "document": null
+    },
+    {
+      "case": "content value changed without digest",
+      "expectedCode": "input_digest_mismatch",
+      "document": null
+    },
+    {
+      "case": "content revision changed",
+      "expectedCode": "input_origin_mismatch",
+      "document": null
+    },
+    {
+      "case": "content owner changed",
+      "expectedCode": "input_origin_mismatch",
+      "document": null
+    },
+    {
+      "case": "duplicate insertion id",
+      "expectedCode": "duplicate_id",
+      "document": null
+    },
+    {
+      "case": "duplicate identity",
+      "expectedCode": "duplicate_id",
+      "document": null
+    }
+  ],
+  "missingInput": {
+    "headerMode": {
+      "portStatus": "missing",
+      "useDeclaredDefault": "compact",
+      "expectedTree": "compact",
+      "receiptDifference": "input records resolution=default and missing logical source dependency; no invented revision or origin"
+    }
+  },
+  "publicationCases": [
+    {
+      "case": "older candidate completes last",
+      "expected": "reject by desired generation comparison"
+    },
+    {
+      "case": "one page fails among ten",
+      "expected": "nine new snapshots; one previous if access still allowed"
+    },
+    {
+      "case": "page rollback",
+      "expected": "activate complete previous snapshot under new generation"
+    },
+    {
+      "case": "access revoked",
+      "expected": "do not serve previous snapshot"
+    }
+  ],
+  "reviewedR3FixtureDigest": "sha256:6c96e117f2b06c04075deb0684d1e7f6095901d553b845b534c49f95ea107837"
+}

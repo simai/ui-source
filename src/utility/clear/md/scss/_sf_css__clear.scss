@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__clear' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// CLEAR
+
+$infix: md;
+
+// @include layer-priority(utility,$infix) {
+  @include breakpoint-media($infix) {
+    $infix: breakpoint-infix($infix, $breakpoint-array);
+    
+    // Utilities for controlling the wrapping of content around an element.  
+    @each $clear-name, $clear-value in $clear-array {
+      .#{$infix}clear-#{$clear-name} {
+        clear: #{$clear-value};
+      }
+    }
+  }
+// }
+}

@@ -1,0 +1,27 @@
+{
+  "capability": "simai.composition.routing",
+  "checks": {
+    "checks/digest-parity.php": "sha256:1ec7e4b884899a25bb281d0a12225b19c382fe8740844eb47c5f67f1c04753ac",
+    "checks/schemas.py": "sha256:32e168b901279ed0d09ba6bff64453dbff7315e8d834606b87eb8b7204e452e8"
+  },
+  "compatibility": {
+    "document": "simai.composition.document.v1 unchanged",
+    "ports": "new simai.composition.port-registry.v1 in composition-ports.v1.json",
+    "recipe": "simai.composition.recipe.v1@1.0.1 unchanged",
+    "registry": "additive layout.scope entry in composition-types.v1.json",
+    "smart": "smart.data-view 1.2.0 additive ports and query intent",
+    "type_manifest": "simai.composition.type-manifest.v1 unchanged"
+  },
+  "contractDigest": "sha256:4a5d5659cad460be74808b11cbdf35d2565003795b4dc542eee008fcec5aafc4",
+  "manifests": {
+    "port:sf-table@1.0.0": "sha256:8c523d72fa464dbbe0af81e6ad5f3bfaa042d2f36797ec0cabb011bc84113e6c",
+    "type:layout.scope@1.0.0": "sha256:eec5dd3a5ef43b41270222900638a340191da8cbc4b7d29990a67217db34790c"
+  },
+  "normativeFiles": {
+    "README.md": "sha256:d4e926f013889b5adf945144770caa1eb4493c0ae9c66628b718d423f1dad877",
+    "fixtures/routing.json": "sha256:e8bd1264620f0f918f045ecd503422000d80cf9e3cee3e8d4294790414e746ad"
+  },
+  "schema": "simai.composition.capability-contract-lock.v1",
+  "status": "owner-accepted-candidate",
+  "version": "1.0.0"
+}

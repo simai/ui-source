@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.avatar",
+  "title": "Avatar reference",
+  "summary": "Deterministic reference fixture for sf-avatar.",
+  "locale": "ru",
+  "props": {
+    "template": "label",
+    "text": "AZ",
+    "title": "Анна Захарова",
+    "description": "Дизайнер продукта",
+    "status": "online",
+    "size": "2"
+  },
+  "children": [],
+  "state": "default"
+}

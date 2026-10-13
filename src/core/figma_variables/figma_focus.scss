@@ -1,0 +1,11 @@
+@layer sf.base {
+  :root {
+    --sf-focus-outline-width: calc(var(--sf-px) * 2);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-focus-outline-width: calc(var(--sf-px) * 2);
+    }
+  }
+}

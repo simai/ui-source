@@ -1,0 +1,16 @@
+// SIMAI Framework
+// https://simai.io
+
+// OBJECT
+
+$object-position-array:(
+    bottom:bottom,
+    center:center,
+    inline-start:left,
+    inline-start-bottom:left bottom,
+    inline-start-top:left top,
+    inline-end:right,
+    inline-end-bottom: right bottom,
+    inline-end-top: right top,
+    top: top
+);

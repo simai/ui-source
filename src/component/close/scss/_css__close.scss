@@ -1,0 +1,177 @@
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-close {
+    background-color: var(--sf-close--background-color, transparent);
+    padding-inline-start: var(--sf-close--padding-inline-start);
+    padding-top: var(--sf-close--padding-top);
+    padding-inline-end: var(--sf-close--padding-inline-end);
+    padding-bottom: var(--sf-close--padding-bottom);
+  }
+
+  .sf-close .sf-close-icon {
+    --sf-close-icon---webkit-mask-repeat: no-repeat;
+    --sf-close-icon---webkit-mask-size: contain;
+    /* The cross is a glyph, read like any other: --sf-outline is the role of a
+       boundary, 4.47:1, and a theme retuning its borders would have moved it.
+       The paler of the two roles for what stands on a surface is 6.47:1 light
+       and 5.95:1 dark (owner, 2026-10-08). */
+    --sf-close-icon--background-color: var(--sf-on-surface-variant);
+    --sf-close-icon--mask-repeat: no-repeat;
+    --sf-close-icon--mask-size: contain;
+    -webkit-mask-image: var(--sf-close-icon---webkit-mask-image);
+    -webkit-mask-repeat: var(--sf-close-icon---webkit-mask-repeat);
+    -webkit-mask-size: var(--sf-close-icon---webkit-mask-size);
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+    font-size: var(--sf-close-icon--font-size);
+    height: var(--sf-close-icon--height);
+    mask-image: var(--sf-close-icon--mask-image);
+    mask-repeat: var(--sf-close-icon--mask-repeat);
+    mask-size: var(--sf-close-icon--mask-size);
+    width: var(--sf-close-icon--width);
+  }
+
+  .sf-close.sf-close--size-1 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-1);
+    --sf-close-icon--height: var(--sf-text-size-1);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M15.998%201.41504L9.41309%208L15.998%2014.5859L14.584%2016.001L7.99902%209.41504L1.41406%2016.001L0%2014.5859L6.58398%208L0%201.41504L1.41406%200.000976562L7.99805%206.58594L14.584%200L15.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-1);
+  }
+
+  .sf-close.sf-close--size-2 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M20%201.41406L11.4141%2010L19.999%2018.5859L18.585%2020L10%2011.4141L1.41504%2020L0.000976562%2018.5859L8.58594%2010L0%201.41406L1.41504%200L10%208.58594L18.5859%200L20%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-2);
+    --sf-close-icon--height: var(--sf-text-size-2);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M20%201.41406L11.4141%2010L19.999%2018.5859L18.585%2020L10%2011.4141L1.41504%2020L0.000976562%2018.5859L8.58594%2010L0%201.41406L1.41504%200L10%208.58594L18.5859%200L20%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-2);
+  }
+
+  .sf-close.sf-close--size-3 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M24%201.41406L13.4141%2012L23.998%2022.584L22.584%2023.999L12%2013.4141L1.41602%2023.999L0.00195312%2022.584L10.585%2012L0%201.41406L1.41504%200L12%2010.585L22.585%200L24%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-3);
+    --sf-close-icon--height: var(--sf-text-size-3);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M24%201.41406L13.4141%2012L23.998%2022.584L22.584%2023.999L12%2013.4141L1.41602%2023.999L0.00195312%2022.584L10.585%2012L0%201.41406L1.41504%200L12%2010.585L22.585%200L24%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-3);
+  }
+
+  .sf-close.sf-close--size-4 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2228%22%20height%3D%2228%22%20viewBox%3D%220%200%2028%2028%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M28%201.41406L15.4131%2014L27.998%2026.585L26.584%2028L13.999%2015.4141L1.41504%2028L0.000976562%2026.5859L12.585%2014L0%201.41406L1.41406%200L13.999%2012.5859L26.585%200L28%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-4);
+    --sf-close-icon--height: var(--sf-text-size-4);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2228%22%20height%3D%2228%22%20viewBox%3D%220%200%2028%2028%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M28%201.41406L15.4131%2014L27.998%2026.585L26.584%2028L13.999%2015.4141L1.41504%2028L0.000976562%2026.5859L12.585%2014L0%201.41406L1.41406%200L13.999%2012.5859L26.585%200L28%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-4);
+  }
+
+  .sf-close.sf-close--size-5 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M32%201.41406L17.4141%2016L31.999%2030.585L30.585%2032L16%2017.4141L1.41504%2032L0.000976562%2030.5859L14.5859%2016L0%201.41406L1.41504%200L16%2014.585L30.5859%200L32%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-5);
+    --sf-close-icon--height: var(--sf-text-size-5);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M32%201.41406L17.4141%2016L31.999%2030.585L30.585%2032L16%2017.4141L1.41504%2032L0.000976562%2030.5859L14.5859%2016L0%201.41406L1.41504%200L16%2014.585L30.5859%200L32%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-5);
+  }
+
+  .sf-close.sf-close--size-6 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2036%2036%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M36%201.41406L19.4131%2018.001L35.998%2034.5859L34.584%2036L18%2019.415L1.41602%2036L0.00195312%2034.5859L16.5859%2018.001L0%201.41406L1.41406%200L18%2016.5859L34.5859%200L36%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-6);
+    --sf-close-icon--height: var(--sf-text-size-6);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2036%2036%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M36%201.41406L19.4131%2018.001L35.998%2034.5859L34.584%2036L18%2019.415L1.41602%2036L0.00195312%2034.5859L16.5859%2018.001L0%201.41406L1.41406%200L18%2016.5859L34.5859%200L36%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-6);
+  }
+
+  .sf-close.sf-close--size-7 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M39.998%201.41504L21.4131%2020L39.998%2038.5859L38.584%2040L19.999%2021.415L1.41504%2040L0.000976562%2038.5859L18.584%2020L0%201.41602L1.41406%200.000976562L19.998%2018.5859L38.584%200L39.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-7);
+    --sf-close-icon--height: var(--sf-text-size-7);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M39.998%201.41504L21.4131%2020L39.998%2038.5859L38.584%2040L19.999%2021.415L1.41504%2040L0.000976562%2038.5859L18.584%2020L0%201.41602L1.41406%200.000976562L19.998%2018.5859L38.584%200L39.998%201.41504Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-7);
+  }
+
+  .sf-close.sf-close--size-1\/4 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2010%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M10%201.41406L6.41406%205L10%208.58594L8.58594%2010L5%206.41406L1.41406%2010L0%208.58594L3.58594%205L0%201.41406L1.41406%200L5%203.58594L8.58594%200L10%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-1\/4);
+    --sf-close-icon--height: var(--sf-text-size-1\/4);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2010%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M10%201.41406L6.41406%205L10%208.58594L8.58594%2010L5%206.41406L1.41406%2010L0%208.58594L3.58594%205L0%201.41406L1.41406%200L5%203.58594L8.58594%200L10%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-1\/4);
+  }
+
+  .sf-close.sf-close--size-1\/3 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M11.999%201.41406L7.41406%205.99805L12%2010.584L10.5859%2011.998L6%207.41211L1.41406%2011.998L0%2010.584L4.58496%205.99805L0.000976562%201.41406L1.41504%200L6%204.58398L10.585%200L11.999%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-1\/3);
+    --sf-close-icon--height: var(--sf-text-size-1\/3);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M11.999%201.41406L7.41406%205.99805L12%2010.584L10.5859%2011.998L6%207.41211L1.41406%2011.998L0%2010.584L4.58496%205.99805L0.000976562%201.41406L1.41504%200L6%204.58398L10.585%200L11.999%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-1\/3);
+  }
+
+  .sf-close.sf-close--size-1\/2 .sf-close-icon {
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M13.999%201.41406L8.41309%206.99902L14%2012.5859L12.5859%2014L6.99902%208.41309L1.41406%2014L0%2012.585L5.58496%206.99902L0.000976562%201.41504L1.41504%200L6.99902%205.58496L12.585%200L13.999%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--font-size: var(--sf-text-size-1\/2);
+    --sf-close-icon--height: var(--sf-text-size-1\/2);
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M13.999%201.41406L8.41309%206.99902L14%2012.5859L12.5859%2014L6.99902%208.41309L1.41406%2014L0%2012.585L5.58496%206.99902L0.000976562%201.41504L1.41504%200L6.99902%205.58496L12.585%200L13.999%201.41406Z%22%20fill%3D%22%2376777C%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+    --sf-close-icon--width: var(--sf-text-size-1\/2);
+  }
+
+  .sf-close--size-1, .sf-close--size-2 {
+    --sf-close--padding-bottom: var(--sf-a4);
+    --sf-close--padding-inline-end: var(--sf-a4);
+    --sf-close--padding-inline-start: var(--sf-a4);
+    --sf-close--padding-top: var(--sf-a4);
+  }
+
+  .sf-close--size-3, .sf-close--size-4 {
+    --sf-close--padding-bottom: var(--sf-a6);
+    --sf-close--padding-inline-end: var(--sf-a6);
+    --sf-close--padding-inline-start: var(--sf-a6);
+    --sf-close--padding-top: var(--sf-a6);
+  }
+
+  .sf-close--size-5, .sf-close--size-6 {
+    --sf-close--padding-bottom: var(--sf-a8);
+    --sf-close--padding-inline-end: var(--sf-a8);
+    --sf-close--padding-inline-start: var(--sf-a8);
+    --sf-close--padding-top: var(--sf-a8);
+  }
+
+  .sf-close--size-7 {
+    --sf-close--padding-bottom: var(--sf-b0);
+    --sf-close--padding-inline-end: var(--sf-b0);
+    --sf-close--padding-inline-start: var(--sf-b0);
+    --sf-close--padding-top: var(--sf-b0);
+  }
+
+  .sf-close--size-1\/4 {
+    --sf-close--padding-bottom: var(--sf-a1);
+    --sf-close--padding-inline-end: var(--sf-a1);
+    --sf-close--padding-inline-start: var(--sf-a1);
+    --sf-close--padding-top: var(--sf-a1);
+  }
+
+  .sf-close--size-1\/3 {
+    --sf-close--padding-bottom: var(--sf-a2);
+    --sf-close--padding-inline-end: var(--sf-a2);
+    --sf-close--padding-inline-start: var(--sf-a2);
+    --sf-close--padding-top: var(--sf-a2);
+  }
+
+  .sf-close--size-1\/2 {
+    --sf-close--padding-bottom: var(--sf-a3);
+    --sf-close--padding-inline-end: var(--sf-a3);
+    --sf-close--padding-inline-start: var(--sf-a3);
+    --sf-close--padding-top: var(--sf-a3);
+  }
+
+  @media (forced-colors: active) {
+    // Preserve only the mask paint, not the control's native focus/background.
+    .sf-close .sf-close-icon,
+    .sf-icon-button .sf-close .sf-close-icon {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+
+    :disabled .sf-close .sf-close-icon,
+    [aria-disabled='true'] .sf-close .sf-close-icon,
+    .sf-close:disabled .sf-close-icon {
+      background-color: GrayText;
+    }
+  }
+}

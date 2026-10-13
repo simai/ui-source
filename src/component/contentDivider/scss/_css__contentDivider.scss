@@ -1,0 +1,213 @@
+@use 'var__contentDivider' as *;
+
+@layer sf.components {
+  .sf-divider {
+    --sf-divider--background-color: var(--sf-outline-variant);
+    --sf-divider--border-color: var(
+      --sf-divider-borders--border-color,
+      var(--sf-outline-variant)
+    );
+    --sf-divider--thickness: var(--sf-px);
+    --sf-divider--gap: var(--sf-space-1);
+    --sf-divider--length: var(--sf-d0);
+    --sf-divider-content--padding: var(--sf-space-1\/3) 0;
+    --sf-divider-content--background-color: var(--sf-transparent);
+    --sf-divider-content--color: var(--sf-on-surface);
+    --sf-divider-content--font-size: var(--sf-text--size);
+    --sf-divider-content--line-height: var(--sf-text--height);
+
+    box-sizing: border-box;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    color: var(--sf-divider-content--color);
+    text-align: center;
+  }
+
+  /* An empty divider is one continuous boundary. With content, two flex lines
+     create real clearance instead of painting underneath a background mask. */
+  .sf-divider-horizontal {
+    inline-size: 100%;
+  }
+
+  .sf-divider-horizontal:empty {
+    display: block;
+    block-size: var(--sf-divider--thickness);
+    background-color: var(--sf-divider--background-color);
+  }
+
+  .sf-divider-horizontal:not(:empty) {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-divider--gap);
+  }
+
+  .sf-divider-horizontal:not(:empty)::before,
+  .sf-divider-horizontal:not(:empty)::after {
+    content: '';
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    block-size: var(--sf-divider--thickness);
+    background-color: var(--sf-divider--background-color);
+  }
+
+  .sf-divider-vertical {
+    display: inline-block;
+    align-self: stretch;
+    inline-size: var(--sf-divider--thickness);
+    min-block-size: var(--sf-divider--length);
+    background-color: var(--sf-divider--background-color);
+  }
+
+  /* Backward-compatible double-boundary presentation. */
+  .sf-divider-borders {
+    position: relative;
+  }
+
+  .sf-divider-borders::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-block: var(--sf-divider--thickness) solid
+      var(--sf-divider--border-color);
+    pointer-events: none;
+  }
+
+  .sf-divider-content {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-inline-size: 0;
+    padding: var(--sf-divider-content--padding);
+    background-color: var(--sf-divider-content--background-color);
+    color: var(--sf-divider-content--color);
+    font-size: var(--sf-divider-content--font-size);
+    line-height: var(--sf-divider-content--line-height);
+  }
+
+  .sf-divider-content--bold {
+    font-weight: var(--sf-font-weight-bold);
+  }
+
+  .sf-divider-content-border {
+    --sf-divider-content--padding: var(--sf-space-1\/3) var(--sf-space-1);
+    --sf-divider-content--font-size: var(--sf-text-small--size);
+    --sf-divider-content--line-height: var(--sf-text-small--height);
+
+    border: var(--sf-divider--thickness) solid var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-divider-content--small {
+    --sf-divider-content--font-size: var(--sf-text-small--size);
+    --sf-divider-content--line-height: var(--sf-text-small--height);
+
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-divider-buttons {
+    --sf-divider-buttons--gap: var(--sf-space-1\/2);
+
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: stretch;
+    gap: var(--sf-divider-buttons--gap);
+    max-inline-size: 100%;
+  }
+
+  /* Legacy action paint remains source-compatible. New markup composes the
+     regular Button or Icon Button component inside sf-divider-buttons. */
+  .sf-divider-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--sf-ui-1--control-height);
+    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    border: var(--sf-divider--thickness) solid var(--sf-outline);
+    border-inline-end-width: 0;
+    background-color: var(--sf-surface-0);
+    color: var(--sf-on-surface);
+    font-family: inherit;
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+
+  .sf-divider-button .sf-icon {
+    inline-size: var(--sf-icon-size-3);
+    block-size: var(--sf-icon-size-3);
+    font-size: var(--sf-icon-size-3);
+  }
+
+  .sf-divider-button--solo {
+    inline-size: var(--sf-ui-1--control-height);
+    padding: 0;
+    border-inline-end-width: var(--sf-divider--thickness);
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-divider-button--left {
+    border-start-start-radius: var(--sf-radius--ui);
+    border-end-start-radius: var(--sf-radius--ui);
+    border-start-end-radius: var(--sf-radius-square);
+    border-end-end-radius: var(--sf-radius-square);
+  }
+
+  .sf-divider-button--right {
+    border-inline-end-width: var(--sf-divider--thickness);
+    border-start-start-radius: var(--sf-radius-square);
+    border-end-start-radius: var(--sf-radius-square);
+    border-start-end-radius: var(--sf-radius--ui);
+    border-end-end-radius: var(--sf-radius--ui);
+  }
+
+  .sf-divider-button:not(:last-child) {
+    border-inline-end-width: 0;
+  }
+
+  .sf-divider-button-square--left {
+    border-start-start-radius: var(--sf-radius-square);
+    border-end-start-radius: var(--sf-radius-square);
+    border-start-end-radius: var(--sf-radius-square);
+    border-end-end-radius: var(--sf-radius-square);
+  }
+
+  .sf-divider-button-square--right {
+    border-inline-end-width: var(--sf-divider--thickness);
+    border-radius: var(--sf-radius-square);
+  }
+
+  .sf-divider-button:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .sf-divider-button:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  @media (forced-colors: active) {
+    .sf-divider-horizontal:empty,
+    .sf-divider-horizontal:not(:empty)::before,
+    .sf-divider-horizontal:not(:empty)::after,
+    .sf-divider-vertical {
+      background-color: CanvasText;
+    }
+
+    .sf-divider-borders::after,
+    .sf-divider-content-border,
+    .sf-divider-button {
+      border-color: CanvasText;
+    }
+
+    .sf-divider-button:focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      box-shadow: none;
+    }
+  }
+}

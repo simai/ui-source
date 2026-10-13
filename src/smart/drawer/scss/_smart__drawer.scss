@@ -1,0 +1,291 @@
+@property --sf-drawer-stack-offset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer sf.components {
+  .sf-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--sf-drawer-z-index, var(--sf-z-index-9));
+    pointer-events: none;
+  }
+
+  .sf-drawer-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--sf-drawer-overlay-background, var(--sf-black));
+    opacity: var(--sf-drawer-overlay-opacity, var(--sf-opacity-60));
+    transition: opacity var(--sf-duration-normal) var(--sf-ease-exit);
+  }
+
+  .sf-drawer.is-open .sf-drawer-overlay {
+    transition-timing-function: var(--sf-ease-enter);
+  }
+
+  .sf-drawer:not(.is-open) .sf-drawer-overlay {
+    opacity: var(--sf-0);
+  }
+
+  .sf-drawer.is-open .sf-drawer-overlay {
+    pointer-events: auto;
+  }
+
+  .sf-drawer-overlay[hidden] {
+    display: none !important;
+  }
+
+  /* A stacked drawer stands depth × offset in from its edge, so the drawer below
+     shows past it. Registered as a length so a unitless 0 still multiplies. */
+  .sf-drawer-panel {
+    --sf-drawer-stack-inset: calc(var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset));
+    position: fixed;
+    inset-block: 0;
+    display: flex;
+    flex-direction: column;
+    width: min(var(--sf-drawer-width, var(--sf-g2)), 100vi);
+    max-width: 100vi;
+    height: 100vb;
+    box-sizing: border-box;
+    /* The panel scrolls, not the body inside it. A scroller on the body put its
+       scrollbar inside the body's own inline padding: the content ended a
+       scrollbar's width short of the right edge while the head reached it, so
+       one panel had two different margins. Here the bar sits at the panel's own
+       edge, outside the padding head, body and foot all share. */
+    overflow: hidden auto;
+    /* The scrollbar takes its room from both sides, so the panel has the same
+       margin on each. Taken from one side only it left a strip on the right that
+       nothing explained. */
+    scrollbar-gutter: stable both-edges;
+    pointer-events: auto;
+    border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
+    background: var(--sf-drawer-background, var(--sf-elevation-4--surface));
+    --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
+    color: var(--sf-drawer-color, var(--sf-on-surface));
+    box-shadow: var(--sf-drawer-shadow, var(--sf-elevation-4--shadow));
+    /* sf-focus-ring: none — the panel takes focus programmatically when it
+       opens, so it draws no ring of its own; the ring belongs to the controls
+       inside it. */
+    outline: 0;
+    transition: transform var(--sf-duration-normal) var(--sf-ease-exit);
+  }
+
+  /* The drawer is on the shared size ladder. The words small, large and medium
+     are legacy values the component still accepts; it renders the step. */
+  .sf-drawer[data-sf-drawer-size='1\/2'] {
+    --sf-drawer-width: var(--sf-g0);
+  }
+
+  .sf-drawer[data-sf-drawer-size='2'] {
+    --sf-drawer-width: var(--sf-g5);
+  }
+
+  .sf-drawer[data-sf-drawer-size='full'] {
+    --sf-drawer-width: 100vi;
+    --sf-drawer-radius: var(--sf-0);
+  }
+
+  /* Physical values remain compatibility aliases. */
+  .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
+    left: var(--sf-drawer-stack-inset);
+    border-right: var(--sf-px) solid var(--sf-outline-variant);
+    border-top-left-radius: var(--sf-0);
+    border-bottom-left-radius: var(--sf-0);
+    transform: translateX(-100%);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
+    right: var(--sf-drawer-stack-inset);
+    border-left: var(--sf-px) solid var(--sf-outline-variant);
+    border-top-right-radius: var(--sf-0);
+    border-bottom-right-radius: var(--sf-0);
+    transform: translateX(100%);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
+    inset-inline-start: var(--sf-drawer-stack-inset);
+    border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-start-start-radius: var(--sf-0);
+    border-end-start-radius: var(--sf-0);
+    transform: translateX(-100%);
+  }
+
+  /* Closed only: with :dir(rtl) this outranked .is-open, so a drawer at an
+     inline edge opened off-screen in a right-to-left page. */
+  .sf-drawer:not(.is-open)[data-sf-drawer-placement='inline-start']:dir(rtl) .sf-drawer-panel {
+    transform: translateX(100%);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
+    inset-inline-end: var(--sf-drawer-stack-inset);
+    border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-start-end-radius: var(--sf-0);
+    border-end-end-radius: var(--sf-0);
+    transform: translateX(100%);
+  }
+
+  /* Closed only: with :dir(rtl) this outranked .is-open, so a drawer at an
+     inline edge opened off-screen in a right-to-left page. */
+  .sf-drawer:not(.is-open)[data-sf-drawer-placement='inline-end']:dir(rtl) .sf-drawer-panel {
+    transform: translateX(-100%);
+  }
+
+  .sf-drawer.is-open .sf-drawer-panel {
+    transition-timing-function: var(--sf-ease-enter);
+    transform: translateX(var(--sf-0));
+  }
+
+  /* One gutter for the head and the body, so the title and the content share an
+     inline start. A composite that wants a wider reading gutter sets the gutter
+     attribute (or a theme sets --sf-drawer-gutter) instead of insetting its own
+     content inside the body, which put a property view's title, controls and
+     labels on three axes. */
+  /* The head stays in view while the panel scrolls under it, which is where it
+     was when the body was the scroller. */
+  .sf-drawer-head {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-1);
+    min-height: var(--sf-ui-2--control-height);
+    padding: var(--sf-space-1) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-1\/2);
+  }
+
+  .sf-drawer-title {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--sf-on-surface);
+    font-size: var(--sf-heading-6--size);
+    line-height: var(--sf-heading-6--height);
+    font-weight: var(--sf-heading--weight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The body takes the height the panel has left, so content that does not fill
+     the panel can still hold its foot at the bottom: a bar of actions pinned to
+     the end of a short record used to rise into the middle of an empty panel.
+     Taller content is unaffected -- the panel is the scroller either way. */
+  .sf-drawer-body {
+    min-width: 0;
+    flex: 1 1 auto;
+    /* And no taller than that: left at `auto` a flex item keeps the height of
+       its content, so content that owns its own scrollers could never be told
+       how much room it has. The panel still scrolls whatever overflows. */
+    min-block-size: 0;
+    display: flex;
+    flex-direction: column;
+    padding: var(--sf-space-1\/2) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-3);
+  }
+
+  /* One child fills it; several keep the order they were written in. */
+  .sf-drawer-body > * {
+    flex: 0 0 auto;
+  }
+
+  .sf-drawer-body > :only-child {
+    flex: 1 1 auto;
+    min-block-size: 0;
+  }
+
+  /* With no head above it the body's own small top padding is the whole top of
+     the panel, and the panel then has a narrower margin above its content than
+     beside it. It takes the gutter there instead, so one panel has one frame. */
+  /* The panel keeps the scrollbar's room on both of its inline edges, so what a
+     person sees beside the content is the gutter plus that room. The block edges
+     have no scrollbar, so they take the same two together -- otherwise the frame
+     is narrower above the content than beside it, which is what the owner
+     measured. The width is the Framework's own scrollbar token, not a guess. */
+  .sf-drawer-panel:not(:has(.sf-drawer-head)) .sf-drawer-body {
+    padding-block: calc(var(--sf-drawer-gutter, var(--sf-space-1)) + var(--sf-scroll-bg-width));
+  }
+
+  /* The outer edge of the panel: a column of controls standing beside it, not in
+     it. The panel clips to its own rounded corners, so anything positioned past
+     100% of it -- the outside close included -- was never drawn. This is a
+     sibling of the panel, inside the root, which clips nothing. */
+  .sf-drawer-edge {
+    /* The panel's own width and stack offset are declared on the root as well as
+       on the panel, because this stands beside the panel and has to know where
+       the panel's edge is. Reading them off the panel left the strip against the
+       far side of the window. */
+    --sf-drawer-edge-inset: calc(
+      var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset)
+      + min(var(--sf-drawer-width, var(--sf-g2)), 100vi)
+      + var(--sf-space-1\/2)
+    );
+    position: absolute;
+    inset-block-start: var(--sf-space-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1);
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .sf-drawer-edge:empty {
+    display: none;
+  }
+
+  /* A panel filling the screen has no outside, so the edge comes inside it and
+     lies along the top. Placing it outside there put every control at a negative
+     inline start -- a drawer opened on a phone could not be closed. */
+  .sf-drawer[data-sf-drawer-size='full'] .sf-drawer-edge {
+    inset-inline: var(--sf-space-1) auto;
+    flex-direction: row;
+  }
+
+  .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-edge {
+    inset-inline-end: var(--sf-drawer-edge-inset);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-edge {
+    inset-inline-start: var(--sf-drawer-edge-inset);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-edge {
+    right: var(--sf-drawer-edge-inset);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-edge {
+    left: var(--sf-drawer-edge-inset);
+  }
+
+  .sf-drawer-close--outside {
+    position: static;
+  }
+
+  /* Docked drawers are modeless page columns: no scrim, no shadow, square edges. */
+  .sf-drawer[data-sf-drawer-docked='true'] .sf-drawer-overlay {
+    display: none;
+  }
+
+  .sf-drawer[data-sf-drawer-docked='true'] .sf-drawer-panel {
+    inset-block-start: var(--sf-drawer-dock-block-start, 0);
+    height: auto;
+    border-radius: var(--sf-0);
+    box-shadow: none;
+  }
+
+  /* The host layout reserves the width of open docked panels on each side. */
+  [data-sf-drawer-dock-host] {
+    box-sizing: border-box;
+    padding-inline-start: var(--sf-drawer-dock-inline-start, var(--sf-0));
+    padding-inline-end: var(--sf-drawer-dock-inline-end, var(--sf-0));
+    transition: padding var(--sf-duration-normal) var(--sf-animation);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-drawer-overlay,
+    .sf-drawer-panel,
+    [data-sf-drawer-dock-host] {
+      transition: none;
+    }
+  }
+}

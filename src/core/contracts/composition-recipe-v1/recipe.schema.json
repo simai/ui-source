@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-recipe-v1/recipe.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "simai.composition.recipe.v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+    },
+    "profile": {
+      "enum": [
+        "ui-layout",
+        "structured-content"
+      ]
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"
+    },
+    "inputs": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "parameter",
+              "setting",
+              "content"
+            ]
+          },
+          "schema": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/valueSchema"
+          },
+          "default": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "literal": {
+                "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/json"
+              }
+            },
+            "required": [
+              "literal"
+            ]
+          },
+          "expectedOrigin": {
+            "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/expectedOrigin"
+          },
+          "extensions": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "schema"
+        ]
+      },
+      "maxProperties": 256
+    },
+    "root": {
+      "$ref": "https://simai.io/contracts/composition-recipe-v1/common.schema.json#/$defs/placement"
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "profile",
+    "root"
+  ]
+}

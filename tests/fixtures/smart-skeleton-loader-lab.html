@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Skeleton — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/skeleton-browser/component/skeleton/css/skeleton.css">
+  <script>
+    window.sfPath = '../../source/output/skeleton-browser';
+    window.sfSmartPath = '../../source/output/skeleton-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: false},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Smart Skeleton</h1>
+
+    <section id="loading-region" class="grid gap-2" aria-busy="true">
+      <span class="sr-only">Загружается профиль</span>
+      <div class="flex items-start gap-2">
+        <sf-skeleton id="avatar" type="icon" variant="circle" size="7" animation="wave"></sf-skeleton>
+        <sf-skeleton id="lines" count="3" width="100%,75%,50%" size="1" animation="wave"></sf-skeleton>
+      </div>
+      <sf-skeleton id="surface" variant="rounded" height="d6" animation="pulse"></sf-skeleton>
+    </section>
+
+    <section class="grid gap-2">
+      <h2>Без движения</h2>
+      <sf-skeleton id="static" count="2" width="100%,50%" animation="none"></sf-skeleton>
+      <div id="dynamic-target"></div>
+    </section>
+
+    <button id="add-skeleton" class="sf-button sf-button--default sf-button--primary sf-button--size-2" type="button">
+      <span class="sf-button-text-container">Добавить ожидаемый блок</span>
+    </button>
+  </main>
+
+  <script>
+    document.getElementById('add-skeleton').addEventListener('click', () => {
+      document.getElementById('dynamic-target').innerHTML =
+        '<sf-skeleton id="dynamic" variant="rounded" height="c5" animation="wave"></sf-skeleton>';
+    });
+  </script>
+  <script src="../../source/output/skeleton-browser/core/js/core.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var_background_clip' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND
+
+$infix: xl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Background Clip
+        // Utilities for controlling the bounding box of an element's background.
+        @each $bg-clip-name,$bg-clip-value in $bg-clip-array {
+            .#{$infix}bg-clip-#{$bg-clip-name} {
+                background-clip: #{$bg-clip-value};
+            }
+        }
+    }
+// }
+}

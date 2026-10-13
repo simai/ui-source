@@ -1,0 +1,17 @@
+@use '../../default/scss/sf_var__fill_brand' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BRAND COLOR
+
+// @include layer-priority(utility,default) {
+    $infix: hover;
+
+    @each $fill-brand-name, $fill-brand-value in $fill-brand-array {
+        .#{$infix}\:fill-#{$fill-brand-name}:#{$infix} {
+            fill: #{$fill-brand-value};
+        }
+    }
+// }
+}

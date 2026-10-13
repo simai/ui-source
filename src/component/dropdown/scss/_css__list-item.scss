@@ -1,0 +1,456 @@
+/* A row's divider is inside its control height: the bottom padding gives the
+   border back, so a standalone row and the same row in a list without
+   dividers stand equally tall. The width is registered as a length, so a
+   unitless 0 written by a list still subtracts; unregistered, it would
+   invalidate the padding. Measured before: a standalone row stood one pixel
+   taller than the control height at every size. */
+@property --sf-list-item--border-bottom-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item {
+  padding-inline-start: var(--sf-list-item--padding-inline-start);
+  padding-top: var(--sf-list-item--padding-top);
+  padding-inline-end: var(--sf-list-item--padding-inline-end);
+  padding-bottom: calc(var(--sf-list-item--padding-bottom) - var(--sf-list-item--border-bottom-width));
+  background-color: var(--sf-list-item--background-color);
+  border-color: var(--sf-list-item--border-color, transparent);
+  border-bottom-width: var(--sf-list-item--border-bottom-width);
+  border-style: var(--sf-list-item--border-style, solid);
+  box-shadow: var(--sf-list-item--box-shadow);
+  --sf-list-item--background-color: var(--sf-elevation-1--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
+  --sf-list-item--border-color: var(--sf-outline-variant);
+  --sf-list-item--border-bottom-width: var(--sf-px);
+  --sf-list-item--border-style: solid;
+  min-inline-size: 0;
+  transition-property: background-color, border-color, box-shadow, color;
+  transition-duration: var(--sf-duration-fast);
+  transition-timing-function: var(--sf-animation);
+}
+
+/* The wrap lays out its own row: it fills the option, so the selected mark
+   that follows it sits at the end, and its picture and label share one centre
+   line. Markup without the flex utilities used to shrink it to the label and
+   put the mark right after the text. */
+.sf-list-item .sf-list-item-wrap {
+  background-color: var(--sf-list-item-wrap--background-color);
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+.sf-list-item .sf-list-item-container {
+  background-color: var(--sf-list-item-container--background-color);
+  color: var(--sf-list-item-container--color);
+  font-family: var(--sf-list-item-container--font-family);
+  font-size: var(--sf-list-item-container--font-size);
+  font-weight: var(--sf-list-item-container--font-weight);
+  line-height: var(--sf-list-item-container--line-height);
+  padding-inline-end: var(--sf-list-item-container--padding-inline-end);
+  padding-inline-start: var(--sf-list-item-container--padding-inline-start);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-list-item .sf-tag {
+  background-color: var(--sf-tag--background-color);
+}
+
+.sf-list-item .sf-tag-container {
+  font-size: var(--sf-tag-container--font-size);
+  line-height: var(--sf-tag-container--line-height);
+}
+
+.sf-list-item .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+  flex-shrink: 0;
+}
+
+.sf-list-item .sf-avatar-label-group-title {
+  color: var(--sf-avatar-label-group-title--color);
+  font-size: var(--sf-avatar-label-group-title--font-size);
+  line-height: var(--sf-avatar-label-group-title--line-height);
+}
+
+.sf-list-item .sf-list-item-selected-item {
+  background-color: var(--sf-list-item-selected-item--background-color);
+}
+
+.sf-list-item .sf-avatar {
+  opacity: var(--sf-avatar--opacity);
+}
+
+.sf-list-item .sf-checkbox-box {
+  border-color: var(--sf-checkbox-box--border-color, transparent);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container {
+  --sf-list-item-container--padding-inline-end: var(--sf-ui-1--text-space-x);
+  --sf-list-item-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-list-item-container--font-size: var(--sf-text-size-1);
+  --sf-list-item-container--line-height: var(--sf-text-height-1);
+}
+
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
+  --sf-list-item-container--font-family: var(--sf-text--family);
+  --sf-list-item-container--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-list-item.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.sf-list-item--text .sf-list-item-container, .sf-list-item.sf-list-item--icon .sf-list-item-container {
+  --sf-list-item-container--color: var(--sf-on-surface);
+}
+
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-list-item.selected.sf-list-item--text .sf-list-item-selected-item, .sf-list-item.selected.sf-list-item--icon .sf-list-item-selected-item {
+  --sf-list-item-selected-item--background-color: transparent;
+}
+
+.sf-list-item.selected.sf-list-item--text.sf-list-item--size-1 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-list-item.selected.sf-list-item--text > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-list-item.disabled.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.disabled.sf-list-item--text .sf-list-item-container, .sf-list-item.disabled.sf-list-item--icon .sf-list-item-container {
+  --sf-list-item-container--color: var(--sf-on-disable);
+}
+
+.sf-list-item.disabled.sf-list-item--avatar .sf-avatar-label-group-title {
+  --sf-avatar-label-group-title--color: var(--sf-on-disable);
+}
+
+.sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container {
+  --sf-list-item-container--padding-inline-end: var(--sf-ui-2--text-space-x);
+  --sf-list-item-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-list-item-container--font-size: var(--sf-text-size-2);
+  --sf-list-item-container--line-height: var(--sf-text-height-2);
+}
+
+.sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag-container {
+  --sf-tag-container--font-size: var(--sf-text-size-2);
+  --sf-tag-container--line-height: var(--sf-text-height-2);
+}
+
+.sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-list-item.selected.sf-list-item--text.sf-list-item--size-2 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-list-item.disabled.sf-list-item--checkbox .sf-checkbox-box {
+  --sf-checkbox-box--border-color: var(--sf-on-disable);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container {
+  --sf-list-item-container--padding-inline-end: var(--sf-ui-3--text-space-x);
+  --sf-list-item-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  --sf-list-item-container--font-size: var(--sf-text-size-3);
+  --sf-list-item-container--line-height: var(--sf-text-height-3);
+}
+
+.sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag-container {
+  --sf-tag-container--font-size: var(--sf-text-size-3);
+  --sf-tag-container--line-height: var(--sf-text-height-3);
+}
+
+.sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-3);
+  --sf-icon--height: var(--sf-text-height-3);
+  --sf-icon--width: var(--sf-text-height-3);
+}
+
+.sf-list-item.selected.sf-list-item--text.sf-list-item--size-3 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-3);
+  --sf-icon--height: var(--sf-text-height-3);
+  --sf-icon--width: var(--sf-text-height-3);
+}
+
+.sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-3 .sf-avatar {
+  --sf-avatar--opacity: var(--sf-opacity-30);
+}
+
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container {
+  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-list-item-container--font-size: var(--sf-text-size-1\/2);
+  --sf-list-item-container--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-list-item.selected.sf-list-item--text.sf-list-item--size-1\/2 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-list-item.disabled.sf-list-item--checkbox.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--text.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--icon.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+}
+
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--color.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+}
+
+.sf-list-item.disabled.sf-list-item--color.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--checkbox.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--text.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--color.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--icon.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
+  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-list-item-container--font-size: var(--sf-text-size-1\/3);
+  --sf-list-item-container--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 .sf-tag-container {
+  --sf-tag-container--font-size: var(--sf-text-size-1\/3);
+  --sf-tag-container--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/3);
+  --sf-icon--height: var(--sf-text-height-1\/3);
+  --sf-icon--width: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item.selected.sf-list-item--text.sf-list-item--size-1\/3 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-selected-item > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/3);
+  --sf-icon--height: var(--sf-text-height-1\/3);
+  --sf-icon--width: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-avatar-label-group-title {
+  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/3);
+  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item--size-1 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-list-item--padding-inline-end: var(--sf-ui-1--space-x);
+  --sf-list-item--padding-inline-start: var(--sf-ui-1--space-x);
+  --sf-list-item--padding-top: var(--sf-ui-1--space-y-tightness-default);
+}
+
+.sf-list-item--size-2 {
+  --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-list-item--padding-inline-end: var(--sf-ui-2--space-x);
+  --sf-list-item--padding-inline-start: var(--sf-ui-2--space-x);
+  --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+}
+
+.sf-list-item--size-3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-list-item--padding-inline-end: var(--sf-ui-3--space-x);
+  --sf-list-item--padding-inline-start: var(--sf-ui-3--space-x);
+  --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+}
+
+.sf-list-item--size-1\/2 {
+  --sf-list-item--padding-inline-end: var(--sf-ui-1\/2--space-x);
+  --sf-list-item--padding-inline-start: var(--sf-ui-1\/2--space-x);
+}
+
+.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-inline-end: var(--sf-ui-1\/3--space-x);
+  --sf-list-item--padding-inline-start: var(--sf-ui-1\/3--space-x);
+}
+
+.sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+  --sf-list-item--background-color: var(--sf-primary-container-hover);
+}
+
+.sf-list-item.selected {
+  --sf-list-item--background-color: var(--sf-primary-container-active);
+}
+
+/* An option sits flush against the options above and below it. */
+.sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+.sf-list-item.disabled {
+  --sf-list-item--border-color: var(--sf-outline-disable);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/space-between (.justify-between) align-items/center (.items-center) justify-content/flex-start (.justify-start) */
+.sf-list-item--checkbox .sf-list-item-wrap, .sf-list-item--text .sf-list-item-wrap, .sf-list-item--icon .sf-list-item-wrap {
+  --sf-list-item-wrap--background-color: transparent;
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-list-item--checkbox .sf-list-item-container, .sf-list-item--text .sf-list-item-container, .sf-list-item--icon .sf-list-item-container {
+  --sf-list-item-container--background-color: transparent;
+}
+
+/* utility-hint: flex/1 (.flex-1) */
+.sf-list-item--color .sf-tag.sf-tag--color, .sf-list [role="option"].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled):hover .sf-tag.sf-tag--color, .sf-list [role="option"].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled):focus-visible .sf-tag.sf-tag--color, .sf-list-item.disabled.sf-list-item--color .sf-tag.sf-tag--color {
+  --sf-tag--background-color: var(--sf-transparent);
+}
+
+.sf-list-item .sf-checkbox {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-list-item {
+    transition-duration: 0s;
+  }
+}
+}
+
+@layer sf.states {
+/* A colour option is a dot and a label, like an icon option, not a tag inside
+   an option: the tag markup it is written with keeps no fill, no padding and
+   no gap, the dot takes the place of the icon and the label the place and
+   inline padding of an option label. In the states layer, because the tag's
+   own size 2 and 3 padding lives there and outranked this at those sizes. */
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-1 {
+  --sf-list-item--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-1--space-y-tightness-default);
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-2 {
+  --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-3 {
+  --sf-list-item--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-3--space-y-tightness-default);
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 .sf-tag.sf-tag {
+  --sf-tag--background-color: transparent;
+  --sf-tag--block: 0;
+  --sf-tag--inline-start: 0;
+  --sf-tag--inline-end: 0;
+  --sf-tag--label-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-tag--label-end: var(--sf-ui-1\/3--text-space-x);
+  gap: 0;
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 .sf-tag.sf-tag {
+  --sf-tag--background-color: transparent;
+  --sf-tag--block: 0;
+  --sf-tag--inline-start: 0;
+  --sf-tag--inline-end: 0;
+  --sf-tag--label-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-tag--label-end: var(--sf-ui-1\/2--text-space-x);
+  gap: 0;
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-1 .sf-tag.sf-tag {
+  --sf-tag--background-color: transparent;
+  --sf-tag--block: 0;
+  --sf-tag--inline-start: 0;
+  --sf-tag--inline-end: 0;
+  --sf-tag--label-start: var(--sf-ui-1--text-space-x);
+  --sf-tag--label-end: var(--sf-ui-1--text-space-x);
+  gap: 0;
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag.sf-tag {
+  --sf-tag--background-color: transparent;
+  --sf-tag--block: 0;
+  --sf-tag--inline-start: 0;
+  --sf-tag--inline-end: 0;
+  --sf-tag--label-start: var(--sf-ui-2--text-space-x);
+  --sf-tag--label-end: var(--sf-ui-2--text-space-x);
+  gap: 0;
+}
+.sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag.sf-tag {
+  --sf-tag--background-color: transparent;
+  --sf-tag--block: 0;
+  --sf-tag--inline-start: 0;
+  --sf-tag--inline-end: 0;
+  --sf-tag--label-start: var(--sf-ui-3--text-space-x);
+  --sf-tag--label-end: var(--sf-ui-3--text-space-x);
+  gap: 0;
+}
+}
+
+@layer sf.states {
+/* An avatar option is as tall as a text option of its size: the avatar takes
+   the line, like an icon, and its initials half of it. Avatar sizes are their
+   own, larger scale, which made avatar rows taller than the rest of their list. */
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1\/3);
+  --sf-avatar--width: var(--sf-text-height-1\/3);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/3) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1\/3);
+}
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2 .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1\/2);
+  --sf-avatar--width: var(--sf-text-height-1\/2);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/2) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1\/2);
+}
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1 .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-1);
+  --sf-avatar--width: var(--sf-text-height-1);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-1);
+}
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-2 .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-2);
+  --sf-avatar--width: var(--sf-text-height-2);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-2) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-2);
+}
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-3 .sf-avatar {
+  --sf-avatar--height: var(--sf-text-height-3);
+  --sf-avatar--width: var(--sf-text-height-3);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
+  --sf-avatar--line-height: var(--sf-text-height-3);
+}
+}

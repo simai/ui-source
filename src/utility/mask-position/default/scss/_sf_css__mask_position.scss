@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__mask_position' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// Mask Position
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);	
+
+        // Mask Position Utilities
+        @each $mask-position-name, $mask-position-value in $mask-position-array {
+            .#{$infix}mask-#{$mask-position-name} {
+                mask-position: #{$mask-position-value}
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "aliases": {
+    "column-gap/default": "gap/default",
+    "column-gap/sm": "gap/sm",
+    "column-gap/md": "gap/md",
+    "column-gap/lg": "gap/lg",
+    "column-gap/xl": "gap/xl",
+    "column-gap/xxl": "gap/xxl"
+  }
+}

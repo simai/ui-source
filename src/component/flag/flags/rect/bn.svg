@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 116 28 20" fill="none" role="img">
+<g id="Country=BN">
+<rect id="Mask_71" x="260" y="116" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask32_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="116" width="28" height="20">
+<rect id="Mask_72" x="260" y="116" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask32_8205_11341)">
+<rect id="Mask Copy_14" x="260" y="116" width="28" height="20" fill="#FFDA44"/>
+<g id="Rectangle 2 Copy 4 + Rectangle 2 Copy 4">
+<path id="Rectangle 2 Copy 4_3" fill-rule="evenodd" clip-rule="evenodd" d="M255.833 119.388L292.168 132.612L293.536 128.854L257.201 115.629L255.833 119.388Z" fill="#F0F0F0"/>
+<path id="Rectangle 2 Copy 4_4" fill-rule="evenodd" clip-rule="evenodd" d="M254.465 123.146L290.8 136.371L292.168 132.612L255.833 119.388L254.465 123.146Z" fill="#333333"/>
+</g>
+</g>
+</g>
+</svg>

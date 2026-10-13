@@ -1,0 +1,348 @@
+@use "sass:map";
+@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination {
+  background-color: var(--sf-pagination--background-color, transparent);
+  min-inline-size: 0;
+}
+
+/* Step 1/2 of the size ladder (size="1/2"): the labels and the page numbers
+   take the step's text and control height, as its fields and buttons do. */
+.sf-pagination.sf-pagination--size-1\/2 {
+  --sf-pagination-marked-text--font-size: var(--sf-text-size-1\/2);
+  --sf-pagination-marked-text--line-height: var(--sf-text-height-1\/2);
+  --sf-pagination-total--font-size: var(--sf-text-size-1\/2);
+  --sf-pagination-total--line-height: var(--sf-text-height-1\/2);
+  --sf-pagination-container--font-size: var(--sf-text-size-1\/2);
+  --sf-pagination-container--line-height: var(--sf-text-height-1\/2);
+  --sf-pagination-count--font-size: var(--sf-text-size-1\/2);
+  --sf-pagination-count--line-height: var(--sf-text-height-1\/2);
+  --sf-page-number--font-size: var(--sf-text-size-1\/2);
+  --sf-page-number--line-height: var(--sf-text-height-1\/2);
+  --sf-page-number--height: var(--sf-ui-1\/2--control-height);
+  --sf-page-number--width: var(--sf-ui-1\/2--control-height);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-top {
+  --sf-pagination-top--background-color: transparent;
+  --sf-pagination-top--border-bottom-width: var(--sf-px);
+  --sf-pagination-top--border-color: var(--sf-outline-variant);
+  --sf-pagination-top--border-style: solid;
+  /* The row with Show more sits between the table above it and the page row
+     below it, and the two gaps have to read the same. A card spaces its parts
+     by --sf-space-3, and the page row already pads itself by --sf-space-1, so
+     this row contributes only the difference. */
+  --sf-pagination-top--padding-bottom: calc(var(--sf-space-3) - var(--sf-space-1));
+  background-color: var(--sf-pagination-top--background-color);
+  border-bottom-width: var(--sf-pagination-top--border-bottom-width);
+  border-color: var(--sf-pagination-top--border-color, transparent);
+  border-style: var(--sf-pagination-top--border-style, solid);
+  gap: var(--sf-b0);
+  padding-bottom: var(--sf-pagination-top--padding-bottom);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1) justify-content/space-between (.justify-between) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-main {
+  --sf-pagination-main--background-color: transparent;
+  --sf-pagination-main--border-bottom-width: var(--sf-px);
+  --sf-pagination-main--border-color: var(--sf-outline-variant);
+  --sf-pagination-main--border-style: solid;
+  --sf-pagination-main--padding-bottom: var(--sf-space-1);
+  --sf-pagination-main--padding-top: var(--sf-space-1);
+  background-color: var(--sf-pagination-main--background-color);
+  border-bottom-width: var(--sf-pagination-main--border-bottom-width);
+  border-color: var(--sf-pagination-main--border-color, transparent);
+  border-style: var(--sf-pagination-main--border-style, solid);
+  gap: var(--sf-space-1);
+  padding-bottom: var(--sf-pagination-main--padding-bottom);
+  padding-top: var(--sf-pagination-main--padding-top);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-left--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-left {
+  --sf-pagination-left--background-color: transparent;
+  --sf-pagination-left--gap: var(--sf-space-1);
+  background-color: var(--sf-pagination-left--background-color);
+  gap: var(--sf-pagination-left--gap);
+  min-inline-size: 0;
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-marked--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-marked {
+  --sf-pagination-marked--background-color: transparent;
+  --sf-pagination-marked--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-pagination-marked--background-color);
+  gap: var(--sf-pagination-marked--gap);
+}
+
+.sf-pagination .sf-pagination-marked-text {
+  --sf-pagination-marked-text--font-family: var(--sf-text--family);
+  --sf-pagination-marked-text--font-size: var(--sf-text-size-1);
+  --sf-pagination-marked-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-pagination.sf-pagination--size-1\/2 .sf-pagination-marked-text {
+  --sf-pagination-marked-text--font-size: var(--sf-text-size-1\/2);
+  --sf-pagination-marked-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-pagination .sf-pagination-marked-text {
+  color: var(--sf-pagination-marked-text--color);
+  font-family: var(--sf-pagination-marked-text--font-family);
+  font-size: var(--sf-pagination-marked-text--font-size);
+  font-weight: var(--sf-pagination-marked-text--font-weight);
+  line-height: var(--sf-pagination-marked-text--line-height);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-total--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-total {
+  --sf-pagination-total--background-color: transparent;
+  --sf-pagination-total--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-pagination-total--background-color);
+  color: var(--sf-pagination-total--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-pagination-total--font-family, var(--sf-text--family));
+  font-size: var(--sf-pagination-total--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-pagination-total--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-pagination-total--gap);
+  line-height: var(--sf-pagination-total--line-height, var(--sf-text-height-1));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-container {
+  --sf-pagination-container--background-color: transparent;
+  --sf-pagination-container--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-pagination-container--background-color);
+  color: var(--sf-pagination-container--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-pagination-container--font-family, var(--sf-text--family));
+  font-size: var(--sf-pagination-container--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-pagination-container--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-pagination-container--gap);
+  line-height: var(--sf-pagination-container--line-height, var(--sf-text-height-1));
+  min-inline-size: 0;
+  white-space: nowrap;
+}
+
+.sf-pagination .sf-pagination-list {
+  gap: var(--sf-pagination-container--gap);
+  list-style: none;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.sf-pagination .sf-pagination-item {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.sf-pagination .sf-icon-button {
+  --sf-icon-button--border-end-end-radius: var(--sf-radius--ui);
+  --sf-icon-button--border-end-start-radius: var(--sf-radius--ui);
+  --sf-icon-button--border-start-end-radius: var(--sf-radius--ui);
+  --sf-icon-button--border-start-start-radius: var(--sf-radius--ui);
+  border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
+  border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
+  border-start-end-radius: var(--sf-icon-button--border-start-end-radius);
+  border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
+}
+
+.sf-pagination .sf-pagination-main .sf-pagination-container .sf-icon-button.sf-icon-button--link:not(:disabled):not(.disabled) > .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+  color: var(--sf-icon--color);
+}
+
+[dir="rtl"] .sf-pagination .sf-pagination-direction .sf-icon,
+[dir="rtl"] .sf-pagination .sf-pagination-direction sf-icon {
+  transform: scaleX(-1);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-count--gap) justify-content/flex-end (.justify-end) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-count {
+  --sf-pagination-count--background-color: transparent;
+  --sf-pagination-count--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-pagination-count--background-color);
+  color: var(--sf-pagination-count--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-pagination-count--font-family, var(--sf-text--family));
+  font-size: var(--sf-pagination-count--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-pagination-count--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-pagination-count--gap);
+  line-height: var(--sf-pagination-count--line-height, var(--sf-text-height-1));
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-bottom--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-pagination .sf-pagination-bottom {
+  --sf-pagination-bottom--background-color: transparent;
+  --sf-pagination-bottom--gap: var(--sf-space-1\/2);
+  --sf-pagination-bottom--padding-bottom: var(--sf-space-1);
+  --sf-pagination-bottom--padding-top: var(--sf-space-1);
+  background-color: var(--sf-pagination-bottom--background-color);
+  gap: var(--sf-pagination-bottom--gap);
+  padding-bottom: var(--sf-pagination-bottom--padding-bottom);
+  padding-top: var(--sf-pagination-bottom--padding-top);
+  min-inline-size: 0;
+}
+
+/* The bulk controls are the last band of the table they belong to, under the
+   page row and across the full width of the card. While the bottom of the card
+   is below the window they stick to the bottom of the window, keeping the card's
+   own left and right edges, with a shadow upwards to say they are over the rows.
+
+   They were a panel floating at the bottom of the window, centred and narrow.
+   The consumer's owner replaced that on 2026-10-04: floating, it did not read as
+   part of the table it acted on. Sticky inside the card does read as part of it,
+   and costs the host no CSS either.
+   utility-hint: display/flex (.flex) align-items/center (.items-center) */
+/* The band is placed by whatever owns the card it belongs to: inside the
+   pagination when a page row carries it, and by the data view at the end of the
+   card. Hence the unscoped selector — it is the same band either way. */
+.sf-pagination-actions {
+  /* It floats over the rows (sticky): step 2's surface, not the page's. */
+  --sf-pagination-actions--background-color: var(--sf-elevation-2--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+  --sf-pagination-actions--border-color: var(--sf-outline-variant);
+  --sf-pagination-actions--gap: var(--sf-space-1);
+  --sf-pagination-actions--padding-block: var(--sf-space-1);
+  --sf-pagination-actions--padding-inline: var(--sf-space-2);
+  --sf-pagination-actions--radius: var(--sf-radius--surface);
+  position: sticky;
+  inset-block-end: 0;
+  inline-size: 100%;
+  flex-wrap: wrap;
+  gap: var(--sf-pagination-actions--gap);
+  padding-block: var(--sf-pagination-actions--padding-block);
+  padding-inline: var(--sf-pagination-actions--padding-inline);
+  background-color: var(--sf-pagination-actions--background-color);
+  border-block-start: var(--sf-px) solid var(--sf-pagination-actions--border-color);
+  /* It is a surface of its own -- it floats over the rows and holds the bottom
+     of the card -- so it is rounded like one. */
+  border-radius: var(--sf-pagination-actions--radius);
+  box-shadow: var(--sf-elevation-2--shadow);
+  z-index: var(--sf-z-index-3);
+}
+
+/* A direction is a button, not a cell: its item box would otherwise take a gap
+   of its own even while it is hidden, and the row of numbers moved by a few
+   pixels between the middle pages and the ends. */
+.sf-pagination .sf-pagination-list .sf-pagination-item:has(sf-icon-button) {
+  display: contents;
+}
+
+/* The page row itself does not stick. It did for one pair, as the only way to
+   give the band any travel while the band lived inside it: a sticky box cannot
+   leave the box that contains it. The consumer saw what that costs — the whole
+   row, Show more included, floating over its own last rows — so the band moved
+   to the card instead, where it is the card that contains it. */
+
+/* The page field sits beside the window of numbers. The digit count lives here,
+   on the field, because a custom property is inherited and the input itself is
+   written by another component. */
+.sf-pagination .sf-pagination-page-field {
+  --sf-pagination-page-input--digits: 1;
+  gap: var(--sf-space-1\/2);
+  white-space: nowrap;
+}
+
+/* As wide as the number it holds, not as wide as the longest number a site
+   might ever have: the digit count comes from the component, and the field
+   grows by a digit's width as the person types. One digit is the floor.
+
+   The width is set on the input, as its content box, and the field around it
+   hugs. It used to be set on the field, where the arithmetic had to guess the
+   chrome inside it -- the field's own padding and the input's -- and guessed
+   short: two digits had about eleven pixels to stand in and the number was
+   clipped. A content box needs no guess, and `ch` here is read in the font the
+   digits are actually drawn in. */
+.sf-pagination .sf-pagination-page-input {
+  inline-size: auto;
+}
+
+/* Through the field, so the rule outranks `.sf-input .sf-input-field input`
+   whatever order the two sheets are loaded in: that rule gives the input
+   `flex: 1 1 auto; width: auto`, and an equal-weight selector only wins while
+   this sheet happens to come later. */
+.sf-pagination .sf-pagination-page-input .sf-input-field input {
+  /* The input is a flex child of its field; in this one field it takes the
+     width it is given and the field hugs it. */
+  flex: 0 0 auto;
+  /* The width counts the input's own padding and the box is a border box, so a
+     host's global reset agrees with this rule instead of fighting it. An
+     unlayered `* { box-sizing: border-box }` in a host shell beats every
+     layered declaration whatever its specificity -- a consumer hit exactly that
+     and the number was clipped again -- and under a reset that forces
+     content-box the field only comes out wider by its padding, never short. */
+  box-sizing: border-box;
+  inline-size: calc(
+    max(var(--sf-pagination-page-input--digits, 1), 1) * 1ch
+      + var(--sf-input-input--padding-inline-start, var(--sf-a0))
+      + var(--sf-input-input--padding-inline-end, var(--sf-a0))
+  );
+  min-inline-size: calc(
+    1ch
+      + var(--sf-input-input--padding-inline-start, var(--sf-a0))
+      + var(--sf-input-input--padding-inline-end, var(--sf-a0))
+  );
+  text-align: center;
+}
+
+.sf-pagination-actions-count {
+  color: var(--sf-on-surface);
+  font-weight: var(--sf-font-weight-medium);
+  white-space: nowrap;
+}
+
+.sf-pagination-actions-separator {
+  align-self: stretch;
+  inline-size: var(--sf-px);
+  background-color: var(--sf-outline-variant);
+}
+
+.sf-pagination .sf-pagination-marked-text:nth-child(1) {
+  --sf-pagination-marked-text--color: var(--sf-on-surface-variant);
+  --sf-pagination-marked-text--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-pagination .sf-pagination-marked-text:nth-child(2) {
+  --sf-pagination-marked-text--color: var(--sf-on-surface);
+  --sf-pagination-marked-text--font-weight: var(--sf-font-weight-medium);
+}
+
+@media (max-width: map.get(bp.$breakpoint-array, md)) {
+  .sf-pagination .sf-pagination-main {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sf-pagination .sf-pagination-left {
+    justify-content: space-between;
+    inline-size: 100%;
+  }
+
+  .sf-pagination .sf-pagination-container {
+    justify-content: space-between;
+    inline-size: 100%;
+  }
+
+  /* A narrow screen used to drop the gap and the edge pages to keep the row of
+     numbers short. It cannot any more: the row is five places at most by
+     design, and the gap is now the only way into the pages it hides — dropping
+     it would make them unreachable on a phone. The label goes, because it
+     repeats what the row already is. */
+  .sf-pagination .sf-pagination-pages-label {
+    display: none;
+  }
+
+  .sf-pagination .sf-pagination-list {
+    justify-content: center;
+    inline-size: 100%;
+  }
+
+  .sf-pagination .sf-pagination-count,
+  .sf-pagination .sf-pagination-bottom {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+}

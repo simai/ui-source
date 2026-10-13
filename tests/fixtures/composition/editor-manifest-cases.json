@@ -1,0 +1,123 @@
+{
+  "schema": "simai.composition.editor-manifest-fixtures.v1",
+  "positive": [
+    {
+      "id": "surface_full_metadata",
+      "type": "layout.section",
+      "expected": {
+        "help_key": "sf.composition.layout_section.surface_help",
+        "visibility": "visible",
+        "capability_hints": ["composition.presentation.preset"],
+        "permission_hints": ["composition.node.update"]
+      }
+    },
+    {
+      "id": "collapsed_visibility",
+      "type": "layout.columns",
+      "field_patch": {"visibility": "collapsed"}
+    },
+    {
+      "id": "hidden_visibility",
+      "type": "layout.columns",
+      "field_patch": {"visibility": "hidden"}
+    },
+    {
+      "id": "advanced_heading_level",
+      "type": "content.heading",
+      "expected": {
+        "group": "advanced",
+        "visibility": "collapsed",
+        "property": {"type": "integer", "version": 1},
+        "constraints": {"min": 1, "max": 6},
+        "capability_hints": ["composition.data.level"],
+        "permission_hints": ["composition.node.update"]
+      }
+    }
+  ],
+  "negative": [
+    {
+      "id": "unknown_field",
+      "type": "layout.section",
+      "field_patch": {"unexpected": true},
+      "expected_code": "editor_unknown_field"
+    },
+    {
+      "id": "unknown_property_type",
+      "type": "layout.section",
+      "field_patch": {"property": {"type": "unknown", "version": 1}},
+      "expected_code": "editor_property_registration_unknown"
+    },
+    {
+      "id": "unknown_property_version",
+      "type": "layout.section",
+      "field_patch": {"property": {"type": "string", "version": 99}},
+      "expected_code": "editor_property_registration_unknown"
+    },
+    {
+      "id": "unknown_choice",
+      "type": "layout.section",
+      "field_patch": {"choices": ["surface", "contrast", "neon"]},
+      "expected_code": "editor_presentation_choice_unknown"
+    },
+    {
+      "id": "duplicate_destination",
+      "type": "layout.section",
+      "duplicate_field": true,
+      "expected_code": "editor_destination_duplicate"
+    },
+    {
+      "id": "secret_target",
+      "type": "layout.section",
+      "field_patch": {"target": "secret"},
+      "expected_code": "editor_executable_or_secret_field_forbidden"
+    },
+    {
+      "id": "executable_constraint",
+      "type": "layout.section",
+      "field_patch": {"constraints": {"handler": "Product\\Handler"}},
+      "expected_code": "editor_executable_or_secret_field_forbidden"
+    },
+    {
+      "id": "unknown_visibility",
+      "type": "layout.section",
+      "field_patch": {"visibility": "authorized"},
+      "expected_code": "editor_visibility_unknown"
+    },
+    {
+      "id": "invalid_help_reference",
+      "type": "layout.section",
+      "field_patch": {"help_key": "https://example.invalid/help"},
+      "expected_code": "editor_help_key_invalid"
+    },
+    {
+      "id": "invalid_capability_hint",
+      "type": "layout.section",
+      "field_patch": {"capability_hints": ["Composition.Preset"]},
+      "expected_code": "editor_hint_list_invalid"
+    },
+    {
+      "id": "invalid_permission_hint",
+      "type": "layout.section",
+      "field_patch": {"permission_hints": ["composition.node.update", "composition.node.update"]},
+      "expected_code": "editor_hint_list_invalid"
+    },
+    {
+      "id": "instance_value_in_manifest",
+      "type": "layout.section",
+      "field_patch": {"value": "contrast"},
+      "expected_code": "editor_unknown_field"
+    },
+    {
+      "id": "advanced_unknown_destination",
+      "type": "content.heading",
+      "field_patch": {"target": "rank"},
+      "expected_code": "editor_destination_unknown"
+    },
+    {
+      "id": "advanced_unknown_property_version",
+      "type": "content.heading",
+      "field_patch": {"property": {"type": "integer", "version": 2}},
+      "expected_code": "editor_property_registration_unknown"
+    }
+  ]
+}

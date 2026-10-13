@@ -1,0 +1,50 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// THEME BLACK COLOR CSS
+
+html {
+    &.special {
+        .sf-special-black {
+            background-color: #000!important;
+            color: #FFF!important;
+            border-color:#FFF!important;
+
+            *:not(.special-panel,[data-bg]),
+            ::after,::before {
+                background: none;
+                background-color: inherit!important;
+                color: inherit!important;
+                border-color: inherit!important;
+                box-shadow: none!important;
+                text-decoration-color: inherit!important;
+            }
+
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #FFF!important;
+                color:#000!important;
+                border-color:#000!important;
+            }
+
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #FFF!important;
+                color:#000!important;
+                border-color: #000!important;
+            }
+
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #FFF!important;
+                color:#000!important;
+                border-color: #000!important;
+            }
+        }
+    }
+}
+}

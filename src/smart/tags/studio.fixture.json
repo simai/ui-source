@@ -1,0 +1,16 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tags",
+  "title": "Tags reference",
+  "summary": "Deterministic reference fixture for sf-tag.",
+  "locale": "ru",
+  "props": {
+    "type": "default",
+    "text": "Дизайн",
+    "closable": true,
+    "close-label": "Удалить тег Дизайн"
+  },
+  "children": [],
+  "state": "default"
+}

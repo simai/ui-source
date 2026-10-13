@@ -1,0 +1,1 @@
+SF.RuleLoader["display/xl"] = new RegExp("^(?:xl:(?:block|content|display-table|fl(?:ex|ow-root)|grid|hidden|inline(?:-(?:block|flex|grid|table))?|list-item|table(?:-(?:c(?:aption|ell|olumn(?:-group)?)|footer-group|header-group|row(?:-group)?))?))(?![\\s\\S])");

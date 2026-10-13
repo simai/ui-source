@@ -1,0 +1,99 @@
+{
+  "schema": "simai.framework.delivery-target-review.v1",
+  "status": "reviewed_not_accepted",
+  "architecture_owner": "Rim Zabarov",
+  "target_id": "target.framework.exact-pair-recipe-101-table-actions",
+  "goal": {
+    "objective": "Exact compatible reproducible Core/Smart delivery carrying Composition Recipe 1.0.1 and typed table row/context/bulk action intent",
+    "requirements": [
+      {
+        "id": "requirement.framework.exact-pair.1",
+        "done_when_id": "done.framework.exact-pair.1",
+        "criterion": "Deliver the exact compatible Core/Smart pair from committed source and native builder inputs; independently repeated builds produce identical runtime bytes."
+      },
+      {
+        "id": "requirement.framework.exact-pair.2",
+        "done_when_id": "done.framework.exact-pair.2",
+        "criterion": "Ship Composition Recipe 1.0.1 with all ten normative lock paths present and checksum-valid; emitted ESM imports and inherited owner-bound content compilation work."
+      },
+      {
+        "id": "requirement.framework.exact-pair.3",
+        "done_when_id": "done.framework.exact-pair.3",
+        "criterion": "Bind registry, BOM, resource origin/checksum index and runtime archive hashes to that same pair; no moving reference substitutes for an immutable revision."
+      },
+      {
+        "id": "requirement.framework.exact-pair.4",
+        "done_when_id": "done.framework.exact-pair.4",
+        "criterion": "Preserve shared JavaScript/PHP canonicalization and positive/negative Recipe checks, with PHP fixture checks distinguished from a complete PHP resolver."
+      },
+      {
+        "id": "requirement.framework.exact-pair.5",
+        "done_when_id": "done.framework.exact-pair.5",
+        "criterion": "Implement the accepted typed row/context/bulk action port: complete string/safe-integer IDs, closed immutable payload, owning-instance routing, exactly-once activation, keyboard/nested controls and disconnect/remount cleanup. Framework emits intent; product operations and ACL remain Larena-owned."
+      },
+      {
+        "id": "requirement.framework.exact-pair.6",
+        "done_when_id": "done.framework.exact-pair.6",
+        "criterion": "Confirm bounded regression and archived-pair browser scenarios: login/password form participation, structured/nested cells, search/filter/query, dropdown/modal/forms, wide/narrow widths, dark RTL, restart and console."
+      },
+      {
+        "id": "requirement.framework.exact-pair.7",
+        "done_when_id": "done.framework.exact-pair.7",
+        "criterion": "Obtain exact-pair Larena consumer acceptance in the separately authorized isolated copies, preserving original dirty copies, main, current pins, databases and running sites; never substitute supply readback for actual product hydration/action acceptance."
+      },
+      {
+        "id": "requirement.framework.exact-pair.8",
+        "done_when_id": "done.framework.exact-pair.8",
+        "criterion": "Verify coherent rollback and failed-publication preservation at the claimed release scope, pass applicable coordinated owner gates, and deliver Larena handoff with exact revisions, archives, provenance, commands, limitations and rollback. A local rehearsal is not a production publication transaction."
+      }
+    ]
+  },
+  "ownership": {
+    "ui-source": "Normative Recipe schemas, algorithm, fixtures, public table action port and first-party source runtime",
+    "ui-builder": "Native reproducible packaging and generated contract binding",
+    "ui": "Generated Core runtime and immutable exact-pair contract selection",
+    "ui-smart": "Generated Smart runtime",
+    "ui-control": "Assignments, compatibility state, bounded acceptance and immutable supply handoff",
+    "larena": "Product operations, data, permissions, concurrency and independent consumer acceptance"
+  },
+  "invariants": [
+    "Recipe is assembly input; Document is the complete validated tree; HTML is renderer output",
+    "No grammar fork, new component hierarchy, competing renderer or product storage format",
+    "Framework emits action intent; it does not execute product operations",
+    "No hand edits to generated runtime distributions",
+    "No new runtime dependency or package ownership transfer",
+    "Preserve original dirty worktrees and unfinished ui-loader",
+    "Larena original copies, main/current pins, databases and running sites are protected; independent explicitly approved isolated acceptance copies only"
+  ],
+  "public_action_contract": {
+    "element": "sf-table",
+    "manifest_entity": "smart.data-view",
+    "event": "sf-table-action-intent",
+    "bubbles": true,
+    "composed": true,
+    "detail_fields": [
+      "action_id",
+      "record_ids"
+    ],
+    "record_ids": "Nonempty array of complete opaque nonempty strings or safe integers; integer 0 and string 0 remain distinct",
+    "payload": "Closed immutable copied detail and ID array",
+    "routing": "Owning table instance, nested and sibling isolation, registered product handler",
+    "activation": "Exactly once for supported pointer/keyboard/context/bulk paths",
+    "cleanup": "Disconnect/remount clears selection and owned activation handlers; declared configuration remains",
+    "excluded": "Create without an existing ID; endpoint, permissions, callbacks and product business execution are outside payload"
+  },
+  "candidate": {
+    "source": "846cdca71e65af0c654d795ae127193572c4b10a",
+    "builder_runtime_input": "f450dc59a206db224b0a66851b61ec686e158f81",
+    "core_runtime": "107833f38f4732794c64ce5fbb72f1e23537dbf5",
+    "smart_runtime": "a941bdbafe4fd9e2fbf356191b72047bbf890969",
+    "recipe_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd"
+  },
+  "acceptance_boundary": "This review has no owner acceptance receipt. Code, tests, a live Goal or generic continuation cannot manufacture architecture acceptance. Native target export/connect and publication require the exact accepted contract and separate real consumer/release evidence.",
+  "existing_architecture_reference": {
+    "contract": "contract.sf5.component-evolution",
+    "decision": "decision.sf5.component-evolution-accepted",
+    "digest": "sha256:190f642b9af5582845672cc90748008ecc0a415d97ee5bb89265f966564a2f75",
+    "use": "Historical ownership/compatibility background only; its different execution goal is not reused as current acceptance"
+  }
+}

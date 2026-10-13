@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — editable composition fields</title>
+</head>
+<body>
+  <main>
+    <h1>Параметры композиции</h1>
+    <button id="before" type="button">До полей</button>
+    <form id="editor" aria-label="Параметры композиции"></form>
+    <button id="after" type="button">После полей</button>
+    <section id="rendered-preview" aria-label="Предпросмотр результата"></section>
+    <output id="result" aria-live="polite"></output>
+  </main>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const assetBase = params.get('assets');
+    const sourceBase = params.get('source');
+    if (!assetBase || !sourceBase) throw new Error('composition_editor_lab_paths_required');
+
+    for (const href of [
+      'core/css/core.css',
+      'component/inputs/css/inputs.css',
+      'component/dropdown/css/dropdown.css',
+    ]) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `${assetBase}/${href}`;
+      document.head.append(link);
+    }
+    const labStyles = document.createElement('link');
+    labStyles.rel = 'stylesheet';
+    labStyles.href = `${sourceBase}/tests/fixtures/composition-editor-fields-lab.css`;
+    document.head.append(labStyles);
+
+    const composition = await import(`${sourceBase}/src/core/js/composition/index.mjs`);
+    const documentModel = await fetch(`${sourceBase}/tests/fixtures/composition/editor-fields.json`).then((response) => response.json());
+    const propertyTypes = [{type: 'string', version: 2}, {type: 'integer', version: 1}];
+    const projected = composition.projectDocumentEditorFields(
+      documentModel,
+      composition.createRegistry(),
+      composition.BUILTIN_EDITOR_MANIFESTS,
+      {propertyTypes},
+    );
+    if (!projected.valid) throw new Error(JSON.stringify(projected.diagnostics));
+
+    const form = document.getElementById('editor');
+    const labels = {
+      'sf.composition.layout_section.surface': 'Поверхность секции',
+      'sf.composition.layout_columns.columns': 'Количество колонок',
+      'sf.composition.content_heading.level': 'Уровень заголовка',
+    };
+    const help = {
+      'sf.composition.layout_section.surface_help': 'Выберите зарегистрированный вариант поверхности.',
+      'sf.composition.layout_columns.columns_help': 'Допустимо от 1 до 12 колонок.',
+      'sf.composition.content_heading.level_help': 'Допустим семантический уровень от 1 до 6.',
+    };
+    for (const instance of projected.instances) {
+      const group = document.createElement('fieldset');
+      group.dataset.instance = instance.id;
+      group.innerHTML = `<legend>${instance.id}</legend>`;
+      for (const field of instance.fields) {
+        if (field.visibility === 'hidden') continue;
+        const id = `field-${instance.id}-${field.key}`;
+        const helpId = `${id}-help`;
+        const description = document.createElement('small');
+        description.id = helpId;
+        description.textContent = help[field.help_key] || '';
+        let control;
+        if (field.choices) {
+          control = document.createElement('sf-dropdown');
+          control.id = id;
+          control.setAttribute('name', `${instance.id}.${field.destination}`);
+          control.setAttribute('label', labels[field.label_key]);
+          control.setAttribute('aria-label', labels[field.label_key]);
+          control.setAttribute('aria-describedby', helpId);
+          control.setAttribute('value', field.value);
+          control.dataset.visibility = field.visibility;
+          control.dataset.capabilityHints = (field.capability_hints || []).join(' ');
+          control.dataset.permissionHints = (field.permission_hints || []).join(' ');
+          control.setAttribute('search', 'false');
+          for (const choice of field.choices) {
+            const item = document.createElement('sf-list-item');
+            item.setAttribute('value', choice);
+            item.setAttribute('text', choice === 'surface' ? 'Обычная' : 'Контрастная');
+            if (choice === field.value) item.setAttribute('selected', '');
+            control.append(item);
+          }
+        } else {
+          control = document.createElement('sf-input');
+          control.id = id;
+          control.setAttribute('name', `${instance.id}.${field.destination}`);
+          control.setAttribute('label', labels[field.label_key]);
+          control.setAttribute('aria-label', labels[field.label_key]);
+          control.setAttribute('aria-describedby', helpId);
+          control.setAttribute('inputmode', 'numeric');
+          control.setAttribute('value', String(field.value));
+          control.dataset.min = String(field.constraints.min);
+          control.dataset.max = String(field.constraints.max);
+          control.dataset.visibility = field.visibility;
+          control.dataset.capabilityHints = (field.capability_hints || []).join(' ');
+          control.dataset.permissionHints = (field.permission_hints || []).join(' ');
+        }
+        control.dataset.group = field.group;
+        let container = group;
+        if (field.visibility === 'collapsed') {
+          container = document.createElement('details');
+          container.dataset.fieldGroup = field.group;
+          const summary = document.createElement('summary');
+          summary.textContent = labels[field.label_key];
+          container.append(summary);
+          group.append(container);
+        }
+        container.append(control, description);
+      }
+      form.append(group);
+    }
+
+    for (const src of [
+      'component/inputs/js/inputs.js',
+      'component/dropdown/js/dropdown.js',
+      'smart/inputs/js/inputs.js',
+      'smart/list-item/js/list-item.js',
+      'smart/dropdown/js/dropdown.js',
+    ]) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `${assetBase}/${src}`;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.append(script);
+      });
+    }
+    await Promise.all(['sf-input', 'sf-list-item', 'sf-dropdown'].map((name) => customElements.whenDefined(name)));
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const rendered = await composition.render(documentModel);
+    if (rendered.diagnostics.length) throw new Error(JSON.stringify(rendered.diagnostics));
+    document.getElementById('rendered-preview').innerHTML = rendered.html;
+    document.getElementById('result').value = `${projected.instances.length} instances ready`;
+    document.documentElement.dataset.ready = 'true';
+  </script>
+</body>
+</html>

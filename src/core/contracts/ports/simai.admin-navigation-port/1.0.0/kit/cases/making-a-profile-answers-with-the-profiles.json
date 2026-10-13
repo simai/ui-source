@@ -1,0 +1,31 @@
+{
+  "id": "making-a-profile-answers-with-the-profiles",
+  "intent": "view.create",
+  "capability": "menu-profiles",
+  "summary": "A new profile answers with the list it now belongs to.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.create",
+    "payload": {
+      "label": "Для контент-менеджеров",
+      "shared": true,
+      "from": "regular"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "profiles"
+    ]
+  }
+}

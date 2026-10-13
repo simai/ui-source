@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="20 884 28 20" fill="none" role="img">
+<g id="Country=RW">
+<rect id="Mask_382" x="20" y="884" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask177_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="20" y="884" width="28" height="20">
+<rect id="Mask_383" x="20" y="884" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask177_8205_11341)">
+<g id="Rectangle 2_247" filter="url(#filter19_d_8205_11341)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M20 904H48V898.667H20V904Z" fill="#496E2D"/>
+</g>
+<path id="Rectangle 2_248" fill-rule="evenodd" clip-rule="evenodd" d="M20 893.333H48V884H20V893.333Z" fill="#2394E0"/>
+<path id="Rectangle 2_249" fill-rule="evenodd" clip-rule="evenodd" d="M20 898.667H48V893.333H20V898.667Z" fill="#FFDA44"/>
+<path id="Star 31_2" fill-rule="evenodd" clip-rule="evenodd" d="M41.3337 890L40.3132 891.13L40.3908 889.609L38.87 889.687L40.0003 888.667L38.87 887.646L40.3908 887.724L40.3132 886.203L41.3337 887.333L42.3541 886.203L42.2765 887.724L43.7973 887.646L42.667 888.667L43.7973 889.687L42.2765 889.609L42.3541 891.13L41.3337 890Z" fill="#FFDA44"/>
+</g>
+</g>
+<defs><filter id="filter19_d_8205_11341" x="20" y="898.667" width="28" height="5.3335" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8205_11341"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8205_11341" result="shape"/>
+</filter></defs>
+</svg>

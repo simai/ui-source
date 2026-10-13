@@ -1,0 +1,13 @@
+// SIMAI Framework
+// https://simai.io
+
+// ISOLATION
+
+$isolation-array: (
+    isolate: isolate,
+    // Эмиттер подставляет ключ как имя класса целиком, поэтому ключ auto
+    // отдавал глобальный класс .auto — слово, которое проект может занять
+    // под своё. Имя семейства теперь в ключе; .auto оставлен как устаревший.
+    isolation-auto: auto,
+    auto: auto,
+);

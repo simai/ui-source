@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Progress — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/progress-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/progress-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/progress-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/progress-browser/component/progress-bar/css/progress-bar.css">
+  <link rel="stylesheet" href="../../source/output/progress-browser/component/progress-scale/css/progress-scale.css">
+  <script>
+    window.sfPath = '../../source/output/progress-browser';
+    window.sfSmartPath = '../../source/output/progress-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: false},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Progress</h1>
+
+    <section id="busy-region" class="grid gap-2" aria-busy="true">
+      <div
+        id="ordinary-bar"
+        class="sf-progress-bar sf-progress-bar--size-1 flex"
+        data-value="37"
+        data-position="inline-end"
+        data-tone="primary"
+        aria-label="Загрузка файлов"
+      >
+        <div class="sf-progress-bar-main">
+          <div class="sf-progress-bar-progress transition"></div>
+        </div>
+      </div>
+    </section>
+
+    <div
+      id="ordinary-scale"
+      class="sf-progress-scale flex flex-col"
+      data-size="1"
+      data-value="45"
+      data-tone="primary"
+      data-show-text="true"
+      aria-label="Подготовка проекта"
+    ></div>
+
+    <sf-progress-bar
+      id="smart-bar"
+      label="Обработка данных"
+      value="62"
+      value-text="31 из 50 записей"
+      text-position="bottom"
+      tone="success"
+    ></sf-progress-bar>
+
+    <sf-progress-scale
+      id="smart-scale"
+      label="Этапы публикации"
+      value="63"
+      value-text="Этап 7 из 10"
+      tone="warning"
+    ></sf-progress-scale>
+
+    <sf-progress-bar id="normalized-bar" label="Нормализация" value="999" size="huge" tone="unknown"></sf-progress-bar>
+    <sf-progress-scale id="normalized-scale" label="Нормализация шкалы" value="-20" size="huge" tone="unknown" show-text="false"></sf-progress-scale>
+
+    <button id="add-progress" class="sf-button sf-button--default sf-button--primary sf-button--size-2" type="button">
+      <span class="sf-button-text-container">Добавить прогресс</span>
+    </button>
+  </main>
+
+  <script>
+    document.getElementById('add-progress').addEventListener('click', () => {
+      const progress = document.createElement('sf-progress-scale');
+      progress.id = 'dynamic-progress';
+      progress.setAttribute('label', 'Поздний этап');
+      progress.setAttribute('value', '25');
+      document.querySelector('main').append(progress);
+    });
+  </script>
+  <script src="../../source/output/progress-browser/core/js/core.js"></script>
+</body>
+</html>

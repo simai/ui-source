@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Highlight method lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/clipboard/css/clipboard.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/scrollbar/css/scrollbar.css">
+  <link rel="stylesheet" href="../../source/output/highlight-browser/component/highlight/css/highlight.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4 max-w-xl">
+    <h1>Подсветка кода</h1>
+    <section class="grid gap-2">
+      <h2>Язык и локальная прокрутка</h2>
+      <pre><code id="explicit" class="language-js">const card = document.querySelector('.very-long-component-selector-that-must-scroll-inside-the-code-surface');
+card.dataset.state = 'ready';</code></pre>
+    </section>
+    <section class="grid gap-2">
+      <h2>Короткий атрибут языка</h2>
+      <pre><code id="data-language" data-lang="html">&lt;button class="sf-button sf-button--default sf-button--primary"&gt;Сохранить&lt;/button&gt;</code></pre>
+    </section>
+    <section class="grid gap-2">
+      <h2>Номера строк</h2>
+      <pre><code id="lines" data-lang="css" data-lines data-start="7">.card {
+  padding: var(--sf-space-2);
+  border-radius: var(--sf-radius-default);
+}</code></pre>
+    </section>
+    <section class="grid gap-2">
+      <h2>Без панели</h2>
+      <pre><code id="no-chrome" data-lang="json" data-chrome="none">{"state":"ready"}</code></pre>
+    </section>
+    <section class="grid gap-2">
+      <h2>Панель принадлежит приложению</h2>
+      <div class="sf-highlight sf-code-surface" data-chrome="static">
+        <div class="sf-highlight__head flex content-main-between items-center">
+          <span class="sf-text-1/2 weight-5">shell</span>
+        </div>
+        <pre><code id="static-chrome" data-lang="sh">npm run test:unit</code></pre>
+      </div>
+    </section>
+    <section class="grid gap-2">
+      <h2>Без известной грамматики</h2>
+      <pre><code id="unknown" class="language-example-unknown">alpha beta gamma</code></pre>
+    </section>
+    <section class="grid gap-2">
+      <h2>Динамический блок</h2>
+      <div id="dynamic-host"></div>
+    </section>
+  </main>
+  <script src="../../source/output/highlight-browser/component/icons/js/icons.js"></script>
+  <script src="../../source/output/highlight-browser/component/scrollbar/js/scrollbar.js"></script>
+  <script src="../../source/output/highlight-browser/component/clipboard/js/clipboard.js"></script>
+  <script src="../../source/output/highlight-browser/component/highlight/js/highlight.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    document.documentElement.classList.toggle('theme-light', params.get('theme') !== 'dark');
+    document.documentElement.classList.toggle('theme-dark', params.get('theme') === 'dark');
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    window.addDynamicHighlight = () => {
+      document.querySelector('#dynamic-host').innerHTML = '<pre><code id="dynamic" data-lang="js">const dynamic = true;</code></pre>';
+    };
+    document.fonts.load('400 1rem "Material Symbols Outlined"', 'content_copy').then(() => {
+      document.querySelectorAll('.sf-icon').forEach(icon => icon.classList.add('sf-icon-loaded'));
+    });
+  </script>
+</body>
+</html>

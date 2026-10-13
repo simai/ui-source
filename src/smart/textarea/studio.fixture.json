@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.textarea",
+  "title": "Textarea reference",
+  "summary": "Deterministic reference fixture for sf-textarea.",
+  "locale": "ru",
+  "props": {
+    "label": "Комментарий",
+    "value": "Текст примера",
+    "required": true,
+    "hint": "Добавьте пояснение для пользователя.",
+    "maxlength": 500,
+    "spellcheck": true
+  },
+  "children": [],
+  "state": "default"
+}

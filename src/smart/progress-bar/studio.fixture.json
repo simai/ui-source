@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.progress-bar",
+  "title": "Progress Bar reference",
+  "summary": "Deterministic reference fixture for sf-progress-bar.",
+  "locale": "ru",
+  "props": {
+    "value": "65",
+    "text-position": "inline-end"
+  },
+  "children": [],
+  "state": "default"
+}

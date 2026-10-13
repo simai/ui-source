@@ -1,0 +1,26 @@
+@layer sf.components {
+.sf-verification-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sf-space-1\/3);
+}
+
+.sf-verification-form-label {
+  color: var(--sf-on-surface);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-verification-form-hint {
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/3);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-verification-form.error .sf-verification-form-hint { color: var(--sf-error); }
+}

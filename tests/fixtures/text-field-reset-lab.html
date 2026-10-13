@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — сброс текстовых полей</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/inputs/css/inputs.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/textarea/css/textarea.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Сброс текстовых полей</h1>
+  <form id="text-fields" class="grid gap-3">
+    <label id="base-input" class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+      <span class="sf-input-label flex"><span class="sf-input-text">Код</span></span>
+      <span class="sf-input-field flex"><input name="base-input" value="12" data-mask="true" data-mask-pattern="0000"></span>
+    </label>
+    <label id="base-textarea" class="sf-textarea sf-textarea--size-1 sf-textarea--bordered flex flex-col">
+      <span class="sf-textarea-label flex"><span class="sf-textarea-text">Многострочный код</span></span>
+      <textarea name="base-textarea" rows="2" data-mask="true" data-mask-pattern="0000">12</textarea>
+    </label>
+    <sf-input id="smart-controlled" name="smart-controlled" label="Smart значение" value="Начало" default-value="Сброс"></sf-input>
+    <sf-input id="smart-empty" name="smart-empty" label="Smart пустой default" value="Начало" default-value=""></sf-input>
+    <sf-input id="smart-uncontrolled" name="smart-uncontrolled" label="Smart без value" default-value="Начало"></sf-input>
+    <sf-input id="smart-masked" name="smart-masked" label="Smart маска" value="12" mask mask-pattern="0000"></sf-input>
+    <sf-textarea id="smart-textarea" name="smart-textarea" label="Smart комментарий" value="Начало" rows="2"></sf-textarea>
+    <sf-textarea id="smart-textarea-masked" name="smart-textarea-masked" label="Smart многострочная маска" value="12" mask mask-pattern="0000" rows="2"></sf-textarea>
+    <label><input id="cancel-reset" type="checkbox">Отменять сброс</label>
+    <button id="rerender" type="button">Обновить подсказки</button>
+    <button type="reset">Сбросить текстовые поля</button>
+  </form>
+  <form id="text-factory" class="grid gap-3">
+    <button id="create-text" type="button">Создать текстовые поля</button>
+    <div id="text-created" class="grid gap-3"></div>
+    <button type="reset">Сбросить созданные поля</button>
+  </form>
+</main>
+<script src="../../node_modules/imask/dist/imask.min.js"></script>
+<script>
+window.SF = {Mask: {create: async (el, options) => IMask(el, options), destroy: instance => instance?.destroy()}};
+if(new URLSearchParams(location.search).has('delayed-mask')) {
+  window.maskRequests=[];
+  window.SF.Mask={
+    create: (el,options)=>new Promise(resolve=>{
+      const instance=IMask(el,options);
+      window.maskRequests.push({el,instance,resolve,destroyed:false});
+    }),
+    destroy:instance=>{
+      const entry=window.maskRequests.find(entry=>entry.instance===instance);
+      if(entry)entry.destroyed=true;
+      instance.destroy();
+    },
+  };
+}
+document.getElementById('text-fields').addEventListener('reset', e => {
+  if (document.getElementById('cancel-reset').checked) e.preventDefault();
+});
+document.getElementById('rerender').addEventListener('click', () => {
+  document.querySelectorAll('sf-input, sf-textarea').forEach(e => e.setAttribute('hint', `Подсказка ${Date.now()}`));
+});
+document.getElementById('create-text').addEventListener('click', e => {
+  for (const kind of ['Inputs', 'Textarea']) {
+    const Constructor = new Map(window.SF_PENDING_COMPONENTS).get(kind);
+    const instance = new Constructor({param: {label: kind, value: 'Начало', name: kind, required: false}});
+    document.getElementById('text-created').append(instance.render());
+  }
+  e.currentTarget.disabled = true;
+});
+</script>
+<script src="../../source/output/action-focus-browser/component/inputs/js/inputs.js"></script>
+<script src="../../source/output/action-focus-browser/component/textarea/js/textarea.js"></script>
+<script src="../../source/output/action-focus-browser/smart/inputs/js/inputs.js"></script>
+<script src="../../source/output/action-focus-browser/smart/textarea/js/textarea.js"></script>
+</body></html>

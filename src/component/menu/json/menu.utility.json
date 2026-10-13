@@ -1,0 +1,27 @@
+{
+  ".sf-menu": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1/3)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-menu .sf-menu-item": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-menu-item--gap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-menu-element .sf-menu-element-wrap": [
+    "flex/1 (.flex-1)",
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-menu-element-wrap--gap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ]
+}

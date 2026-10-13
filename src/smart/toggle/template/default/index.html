@@ -1,0 +1,27 @@
+<%
+offset_class = "";
+if((typeof data.label !== 'undefined' && typeof data.description !== 'undefined')){
+  offset_class = "sf-toggle--offset";
+}
+  
+%>
+
+<label class="sf-toggle">
+    <input class="checkbox" type="checkbox">
+    <span class="sf-toggle--background"></span>
+    <div class="sf-toggle--text <%=offset_class%>">
+      <span class="sf-toggle--header"><%=data.label%> 
+        <% if(data.icon){ %>
+          <smart
+            name="icons"
+            sf-code="icons"
+            property = '{"weight": "regular"}'
+            data='{"icon": "<%=data.icon%>"}'
+          >
+          </smart>
+        <% } %>
+        
+      </span>
+      <span><%=data.description%> </span>
+    </div>
+</label>

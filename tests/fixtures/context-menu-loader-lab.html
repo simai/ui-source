@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Context Menu — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/action-focus-browser';
+    window.sfSmartPath = '../../source/output/action-focus-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: false},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main>
+    <sf-context-menu position="bottom-inline-start" aria-label="Действия с документом">
+      <sf-button slot="content" type="link" scheme="on-surface" text="Открыть"></sf-button>
+      <sf-button slot="content" type="link" scheme="on-surface" text="Удалить"></sf-button>
+    </sf-context-menu>
+  </main>
+  <script src="../../source/output/action-focus-browser/core/js/core.js"></script>
+</body>
+</html>

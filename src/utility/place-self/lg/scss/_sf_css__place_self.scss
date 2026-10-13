@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__place_self' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEX PLACE SELF
+
+// @include layer-priority(utility,lg) {
+    @include breakpoint-media(lg) {
+        $infix: breakpoint-infix(lg, $breakpoint-array);
+
+        // Place Self
+        @each $place-self-name, $place-self-value in $place-self-array {
+            .#{$infix}self-#{$place-self-name} {
+                place-self: #{$place-self-value};
+            }
+        }
+    }
+// }
+}

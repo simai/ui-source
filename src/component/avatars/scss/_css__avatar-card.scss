@@ -1,0 +1,46 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-avatar-card {
+  background-color: var(--sf-avatar-card--background-color, transparent);
+  gap: var(--sf-avatar-card--gap, var(--sf-space-1\/3));
+}
+
+.sf-avatar-card .sf-avatar-card-image {
+  background-color: var(--sf-avatar-card-image--background-color, transparent);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-avatar-card .sf-avatar-card-content {
+  background-color: var(--sf-avatar-card-content--background-color, transparent);
+  color: var(--sf-on-surface);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: var(--sf-text-height-1);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-avatar-card-row--gap, var(--sf-space-1\/4)) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-avatar-card .sf-avatar-card-row {
+  background-color: var(--sf-avatar-card-row--background-color, transparent);
+  color: var(--sf-avatar-card-row--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-avatar-card-row--font-family, var(--sf-text--family));
+  font-size: var(--sf-avatar-card-row--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-avatar-card-row--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-avatar-card-row--gap, var(--sf-space-1\/4));
+  line-height: var(--sf-avatar-card-row--line-height, var(--sf-text-height-1));
+}
+
+.sf-avatar-card .sf-icon {
+  font-size: var(--sf-icon--font-size, var(--sf-text-height-1));
+  height: var(--sf-icon--height, var(--sf-text-height-1));
+  width: var(--sf-icon--width, var(--sf-text-height-1));
+}
+
+.sf-avatar-card .sf-avatar-card-title {
+  color: var(--sf-avatar-card-title--color, var(--sf-on-surface));
+  font-family: var(--sf-avatar-card-title--font-family, var(--sf-text--family));
+  font-size: var(--sf-avatar-card-title--font-size, var(--sf-text-size-1));
+  font-weight: var(--sf-avatar-card-title--font-weight, var(--sf-font-weight-medium));
+  line-height: var(--sf-avatar-card-title--line-height, var(--sf-text-height-1));
+}
+}

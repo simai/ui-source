@@ -1,0 +1,9 @@
+﻿@layer sf.base {
+  :root, ::after, ::before {
+    --sf-radius-default: var(--sf-a4);
+    --sf-radius-square: 0;
+    --sf-radius-rounded: 1000px;
+    --sf-radius-round: var(--sf-radius-rounded);
+  }
+}
+

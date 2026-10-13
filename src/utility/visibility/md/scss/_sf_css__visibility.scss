@@ -1,0 +1,20 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// VISIBILITY
+
+$infix: md;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+        // Utilities for controlling the visibility of an element.
+        .#{$infix}visible { visibility: visible; } 
+        .#{$infix}invisible { visibility: hidden; }   
+    }
+// }
+}

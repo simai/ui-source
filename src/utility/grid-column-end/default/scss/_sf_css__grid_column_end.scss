@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__grid_column_end' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID COLUMN END
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Grid Column end Utilities
+        @each $grid-column-end-name, $grid-column-end-value in $grid-column-end-array {
+            .#{$infix}col-end-#{$grid-column-end-name} {
+                grid-column-end: #{$grid-column-end-value};
+            }
+        }
+    }
+// }
+}

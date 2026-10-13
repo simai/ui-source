@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="404 116 28 20" fill="none" role="img">
+<g id="Country=BR">
+<rect id="Mask_65" x="404" y="116" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask29_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="404" y="116" width="28" height="20">
+<rect id="Mask_66" x="404" y="116" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask29_8205_11341)">
+<rect id="Mask Copy_13" x="404" y="116" width="28" height="20" fill="#6DA544"/>
+<path id="Rectangle 60" fill-rule="evenodd" clip-rule="evenodd" d="M407.532 126.56C407.126 126.297 407.126 125.703 407.532 125.44L417.638 118.901C417.859 118.758 418.142 118.758 418.362 118.901L428.469 125.44C428.875 125.703 428.875 126.297 428.469 126.56L418.362 133.099C418.142 133.241 417.859 133.241 417.638 133.099L407.532 126.56Z" fill="#FFDA44"/>
+<g id="Oval 2">
+<path id="Mask_67" fill-rule="evenodd" clip-rule="evenodd" d="M418 130.667C420.577 130.667 422.666 128.577 422.666 126C422.666 123.423 420.577 121.333 418 121.333C415.422 121.333 413.333 123.423 413.333 126C413.333 128.577 415.422 130.667 418 130.667Z" fill="#0052B4"/>
+<mask id="mask30_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="413" y="121" width="10" height="10">
+<path id="Mask_68" fill-rule="evenodd" clip-rule="evenodd" d="M418 130.667C420.577 130.667 422.666 128.577 422.666 126C422.666 123.423 420.577 121.333 418 121.333C415.422 121.333 413.333 123.423 413.333 126C413.333 128.577 415.422 130.667 418 130.667Z" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask30_8205_11341)">
+<path id="Line_3" d="M412.779 124.781C413.512 124.187 415.876 124.749 418.083 125.338C420.291 125.927 422.592 127.161 423.179 127.885" stroke="white" stroke-width="1.33333" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+</g>
+</svg>

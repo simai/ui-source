@@ -1,0 +1,29 @@
+{
+  "id": "a-theme-is-kept",
+  "intent": "preference.theme",
+  "capability": "preferences",
+  "summary": "The chosen theme is kept and echoed.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "preference.theme",
+    "payload": {
+      "theme": "dark"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "theme"
+    ]
+  }
+}

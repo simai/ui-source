@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Datepicker presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/datepicker-browser/component/datepicker.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <h1>Календарь</h1>
+    <section class="sf-datepicker" aria-label="Сентябрь 2026">
+      <div class="sf-datepicker-main flex flex-col gap-2">
+        <div class="sf-datepicker-top flex content-main-between">
+          <span>Сентябрь 2026</span>
+        </div>
+        <div class="sf-datepicker-row grid grid-col-4 sm:grid-col-7">
+          <button class="sf-datepicker-day sf-datepicker-another-month" type="button" aria-label="31 августа 2026" aria-pressed="false"><span class="sf-datepicker-day-date">31</span></button>
+          <button class="sf-datepicker-day" type="button" aria-label="1 сентября 2026" aria-pressed="false"><span class="sf-datepicker-day-date">1</span></button>
+          <button class="sf-datepicker-day sf-datepicker-day-off" type="button" aria-label="6 сентября 2026, выходной" aria-pressed="false"><span class="sf-datepicker-day-date">6</span></button>
+          <button class="sf-datepicker-day active" type="button" aria-label="3 сентября 2026, выбрано" aria-pressed="true"><span class="sf-datepicker-day-date">3</span></button>
+          <button class="sf-datepicker-day sf-datepicker-day-start" type="button" aria-label="8 сентября 2026, начало периода" aria-pressed="true"><span class="sf-datepicker-day-date">8</span></button>
+          <button class="sf-datepicker-day sf-datepicker-day-selected" type="button" aria-label="9 сентября 2026, в периоде" aria-pressed="true"><span class="sf-datepicker-day-date">9</span></button>
+          <button class="sf-datepicker-day sf-datepicker-day-end" type="button" aria-label="10 сентября 2026, конец периода" aria-pressed="true"><span class="sf-datepicker-day-date">10</span></button>
+          <button class="sf-datepicker-day sf-datepicker-day-off" type="button" aria-label="12 сентября 2026, недоступно" disabled><span class="sf-datepicker-day-date">12</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-2" aria-label="Месяцы">
+      <div class="grid grid-col-3 gap-1">
+        <button class="sf-datepicker-text flex content-main-center items-cross-center" type="button" aria-pressed="false"><span class="sf-datepicker-text-date">Январь</span></button>
+        <button class="sf-datepicker-text active flex content-main-center items-cross-center" type="button" aria-pressed="true"><span class="sf-datepicker-text-date">Февраль</span></button>
+        <button class="sf-datepicker-text flex content-main-center items-cross-center" type="button" disabled><span class="sf-datepicker-text-date">Июнь</span></button>
+      </div>
+      <div class="grid grid-col-3">
+        <button class="sf-datepicker-text sf-datepicker-text-start flex content-main-center items-cross-center" type="button" aria-pressed="true"><span class="sf-datepicker-text-date">Март</span></button>
+        <button class="sf-datepicker-text sf-datepicker-text-selected flex content-main-center items-cross-center" type="button" aria-pressed="true"><span class="sf-datepicker-text-date">Апрель</span></button>
+        <button class="sf-datepicker-text sf-datepicker-text-end flex content-main-center items-cross-center" type="button" aria-pressed="true"><span class="sf-datepicker-text-date">Май</span></button>
+      </div>
+    </section>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

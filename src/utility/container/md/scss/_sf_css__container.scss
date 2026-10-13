@@ -1,0 +1,28 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__container' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// CONTAINER
+
+// A component for fixing an element's width to the current breakpoint.
+
+$infix: md;
+
+@include breakpoint-media(md) {
+    $infix: breakpoint-infix(md, $breakpoint-array);
+
+    .#{$infix}container {
+        /* Fill, and stop at the step. The step and the query that opens it
+           were once apart (sm opened at 520px, its step was 704px) and a
+           fixed width overflowed between them; they are one step now, and
+           filling stays right whatever the gutter takes. */
+        width: 100%;
+        max-width: var(--sf-breakpoint-md);
+        padding-inline-start: var(--sf-space-3);
+        padding-inline-end: var(--sf-space-3);
+    }
+}
+}

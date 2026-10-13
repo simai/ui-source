@@ -1,0 +1,284 @@
+{
+  "id": "target.framework.exact-pair-recipe-101-table-actions",
+  "kind": "knowledge",
+  "subtype": "target_outcome",
+  "tz_role": "system",
+  "title": "Verified exact Core Smart supply with Recipe 1.0.1 and typed table action port",
+  "lifecycle": "accepted",
+  "semantic_digest": "sha256:8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226",
+  "source_refs": [
+    "contract.framework.exact-pair-recipe-101-table-actions",
+    "decision.framework.exact-pair-target-accepted"
+  ],
+  "provider_execution_contract": {
+    "decision_refs": [
+      "decision.framework.exact-pair-target-accepted"
+    ],
+    "goal_binding": {
+      "goal_id": "goal.framework.exact-pair-recipe-101-table-actions",
+      "done_when_ids": [
+        "done.framework.exact-pair.1",
+        "done.framework.exact-pair.2",
+        "done.framework.exact-pair.3",
+        "done.framework.exact-pair.4",
+        "done.framework.exact-pair.5",
+        "done.framework.exact-pair.6",
+        "done.framework.exact-pair.7",
+        "done.framework.exact-pair.8"
+      ]
+    },
+    "requirement_bindings": [
+      {
+        "requirement_id": "requirement.framework.exact-pair.1",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.1"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.1"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.2",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.2"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.2"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.3",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.3"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.3"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.4",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.4"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.4"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.5",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.5"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.5"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.6",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.6"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.6"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.7",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.7"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.7"
+        ]
+      },
+      {
+        "requirement_id": "requirement.framework.exact-pair.8",
+        "acceptance_ids": [
+          "acceptance.framework.exact-pair.8"
+        ],
+        "done_when_ids": [
+          "done.framework.exact-pair.8"
+        ]
+      }
+    ],
+    "constraint_ids": [
+      "constraint.framework.native-builder",
+      "constraint.framework.exact-pair",
+      "constraint.framework.preserve-dirty"
+    ],
+    "non_goal_ids": [
+      "non-goal.framework.product-business-writes",
+      "non-goal.framework.grammar-fork",
+      "non-goal.framework.global-federation-publication"
+    ],
+    "deferred_boundary_ids": [
+      "boundary.framework.production-adoption"
+    ],
+    "allowed_change_scope": [
+      {
+        "repository_id": "project.ui-source.3dcd25947162",
+        "owner_id": "framework",
+        "package_id": "simai/ui-source",
+        "file_patterns": [
+          "src/core/**",
+          "src/component/**",
+          "src/smart/**",
+          "tests/**",
+          "contracts/**",
+          "docs/**",
+          "graph/specs/**"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      },
+      {
+        "repository_id": "simai/ui-builder",
+        "owner_id": "ui-builder",
+        "package_id": "simai/ui-builder",
+        "file_patterns": [
+          "libs/**",
+          "scripts/**",
+          "tests/**",
+          "contracts/**"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      },
+      {
+        "repository_id": "simai/ui",
+        "owner_id": "framework",
+        "package_id": "simai/ui",
+        "file_patterns": [
+          "distr/**",
+          "contracts/**"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      },
+      {
+        "repository_id": "simai/ui-smart",
+        "owner_id": "framework",
+        "package_id": "simai/ui-smart",
+        "file_patterns": [
+          "smart/**",
+          "contracts/**"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      },
+      {
+        "repository_id": "simai/ui-control",
+        "owner_id": "ui-control",
+        "package_id": "simai/ui-control",
+        "file_patterns": [
+          "control/**"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      }
+    ],
+    "architecture_contract": {
+      "contract_ref": "contract.framework.exact-pair-recipe-101-table-actions",
+      "acceptance_ref": "decision.framework.exact-pair-target-accepted",
+      "architecture_owner_id": "human.rim-zabarov",
+      "lifecycle": "accepted",
+      "owner_ids": [
+        "framework",
+        "ui-builder",
+        "ui-control",
+        "larena"
+      ],
+      "component_ids": [
+        "sf5.core",
+        "sf5.components",
+        "sf5.smart-components"
+      ],
+      "package_ids": [
+        "simai/ui-source",
+        "simai/ui-builder",
+        "simai/ui",
+        "simai/ui-smart",
+        "simai/ui-control"
+      ],
+      "capability_ids": [
+        "capability.framework.smart-components",
+        "capability.framework.page-recipes",
+        "capability.framework.loader-runtime"
+      ],
+      "ownership_boundaries": [
+        {
+          "subject_ref": "simai/ui-source",
+          "data_owner": "framework",
+          "access_owner": "framework",
+          "lifecycle_owner": "framework",
+          "interface_owner": "framework",
+          "runtime_owner": "framework"
+        },
+        {
+          "subject_ref": "simai/ui-builder",
+          "data_owner": "ui-builder",
+          "access_owner": "ui-builder",
+          "lifecycle_owner": "ui-builder",
+          "interface_owner": "ui-builder",
+          "runtime_owner": "ui-builder"
+        },
+        {
+          "subject_ref": "simai/ui",
+          "data_owner": "framework",
+          "access_owner": "framework",
+          "lifecycle_owner": "framework",
+          "interface_owner": "framework",
+          "runtime_owner": "framework"
+        },
+        {
+          "subject_ref": "simai/ui-smart",
+          "data_owner": "framework",
+          "access_owner": "framework",
+          "lifecycle_owner": "framework",
+          "interface_owner": "framework",
+          "runtime_owner": "framework"
+        },
+        {
+          "subject_ref": "simai/ui-control",
+          "data_owner": "ui-control",
+          "access_owner": "ui-control",
+          "lifecycle_owner": "ui-control",
+          "interface_owner": "ui-control",
+          "runtime_owner": "ui-control"
+        }
+      ],
+      "required_relations": [
+        "sf5.smart-components->sf5.components"
+      ],
+      "allowed_relations": [
+        "sf5.components->sf5.core"
+      ],
+      "forbidden_relations": [],
+      "required_dependencies": [
+        "simai/ui-smart->simai/ui"
+      ],
+      "forbidden_dependencies": []
+    }
+  },
+  "public_export_boundary": "Private source/workflow and source/handoff projections remain host-local under the existing user-authorized control workflow; never include those paths in a shared provider export."
+}

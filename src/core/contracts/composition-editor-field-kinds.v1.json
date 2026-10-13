@@ -1,0 +1,329 @@
+{
+  "entries": [
+    {
+      "accessibility": {
+        "control": "select",
+        "description": "help_key via aria-describedby",
+        "keyboard": [
+          "Tab",
+          "ArrowUp",
+          "ArrowDown",
+          "Enter",
+          "Space",
+          "Escape"
+        ],
+        "name": "label_key",
+        "role": "combobox"
+      },
+      "constraints": {
+        "allowed": [
+          "min_length",
+          "max_length"
+        ]
+      },
+      "default": {
+        "field": "must-be-a-choice",
+        "kind": null
+      },
+      "kind": "choice",
+      "localization": {
+        "direction": "logical",
+        "help": "help_key",
+        "label": "label_key",
+        "value_labels": "<label_key>.<choice> when the choice is a stable segment, otherwise the raw choice"
+      },
+      "match": {
+        "choices": "required",
+        "property": [
+          {
+            "type": "string",
+            "version": 1
+          },
+          {
+            "type": "string",
+            "version": 2
+          }
+        ]
+      },
+      "normalization": {
+        "form": "exact-string",
+        "stored": "value",
+        "unset": "absent-field"
+      },
+      "schema": "simai.composition.editor-field-kind.v1",
+      "server_fallback": {
+        "element": "select",
+        "enhanced_control": "sf-dropdown",
+        "value": "option value"
+      },
+      "status": "formalized-existing",
+      "themes": {
+        "contrast": "WCAG 2.2 AA",
+        "modes": [
+          "light",
+          "dark"
+        ],
+        "tokens": [
+          "--sf-surface-1",
+          "--sf-on-surface",
+          "--sf-outline",
+          "--sf-primary"
+        ]
+      },
+      "validation": [
+        "choice-member"
+      ],
+      "value_schema": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "version": 1
+    },
+    {
+      "accessibility": {
+        "control": "input[type=number]",
+        "description": "help_key via aria-describedby",
+        "keyboard": [
+          "Tab",
+          "ArrowUp",
+          "ArrowDown",
+          "digits"
+        ],
+        "name": "label_key",
+        "role": "spinbutton"
+      },
+      "constraints": {
+        "allowed": [
+          "min",
+          "max"
+        ],
+        "required": [
+          "min",
+          "max"
+        ]
+      },
+      "default": {
+        "field": "must-satisfy-constraints",
+        "kind": null
+      },
+      "kind": "integer",
+      "localization": {
+        "digits": "ASCII decimal",
+        "direction": "logical",
+        "help": "help_key",
+        "label": "label_key",
+        "value_labels": "none"
+      },
+      "match": {
+        "choices": "forbidden",
+        "property": [
+          {
+            "type": "integer",
+            "version": 1
+          }
+        ]
+      },
+      "normalization": {
+        "form": "decimal-integer-text",
+        "stored": "safe-integer",
+        "unset": "empty-text"
+      },
+      "schema": "simai.composition.editor-field-kind.v1",
+      "server_fallback": {
+        "attributes": [
+          "min",
+          "max",
+          "step=1",
+          "inputmode=numeric"
+        ],
+        "element": "input",
+        "enhanced_control": "sf-input",
+        "type": "number"
+      },
+      "status": "formalized-existing",
+      "themes": {
+        "contrast": "WCAG 2.2 AA",
+        "modes": [
+          "light",
+          "dark"
+        ],
+        "tokens": [
+          "--sf-surface-1",
+          "--sf-on-surface",
+          "--sf-outline",
+          "--sf-primary"
+        ]
+      },
+      "validation": [
+        "integer-text",
+        "range"
+      ],
+      "value_schema": {
+        "maximum": 9007199254740991,
+        "minimum": -9007199254740991,
+        "type": "integer"
+      },
+      "version": 1
+    },
+    {
+      "accessibility": {
+        "attributes": [
+          "dir=auto",
+          "maxlength"
+        ],
+        "control": "input[type=text]",
+        "description": "help_key via aria-describedby",
+        "keyboard": [
+          "Tab",
+          "text entry"
+        ],
+        "name": "label_key",
+        "role": "textbox"
+      },
+      "constraints": {
+        "allowed": [
+          "min_length",
+          "max_length"
+        ],
+        "required": [
+          "max_length"
+        ]
+      },
+      "default": {
+        "field": "must-satisfy-constraints",
+        "kind": null
+      },
+      "kind": "text",
+      "localization": {
+        "direction": "dir=auto per value; value is author content in the Document locale",
+        "help": "help_key",
+        "label": "label_key",
+        "value_labels": "none"
+      },
+      "match": {
+        "choices": "forbidden",
+        "property": [
+          {
+            "type": "string",
+            "version": 2
+          }
+        ]
+      },
+      "normalization": {
+        "form": "exact-string-no-trim-no-unicode-normalization",
+        "stored": "value",
+        "unset": "empty-text"
+      },
+      "schema": "simai.composition.editor-field-kind.v1",
+      "server_fallback": {
+        "attributes": [
+          "maxlength",
+          "dir=auto"
+        ],
+        "element": "input",
+        "enhanced_control": "sf-input",
+        "type": "text"
+      },
+      "status": "new",
+      "themes": {
+        "contrast": "WCAG 2.2 AA",
+        "modes": [
+          "light",
+          "dark"
+        ],
+        "tokens": [
+          "--sf-surface-1",
+          "--sf-on-surface",
+          "--sf-outline",
+          "--sf-primary"
+        ]
+      },
+      "validation": [
+        "code-point-length",
+        "no-control-characters",
+        "well-formed-unicode"
+      ],
+      "value_schema": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "version": 1
+    },
+    {
+      "accessibility": {
+        "control": "input[type=checkbox][role=switch]",
+        "description": "help_key via aria-describedby",
+        "keyboard": [
+          "Tab",
+          "Space"
+        ],
+        "name": "label_key",
+        "role": "switch",
+        "states": [
+          "checked"
+        ]
+      },
+      "constraints": {
+        "allowed": []
+      },
+      "default": {
+        "field": "false-or-absent",
+        "kind": false
+      },
+      "kind": "toggle",
+      "localization": {
+        "direction": "logical",
+        "help": "help_key",
+        "label": "label_key",
+        "value_labels": "none"
+      },
+      "match": {
+        "choices": "forbidden",
+        "property": [
+          {
+            "type": "boolean",
+            "version": 1
+          }
+        ]
+      },
+      "normalization": {
+        "form": "present-true-absent-false",
+        "stored": "true only; false removes the key",
+        "unset": "false"
+      },
+      "schema": "simai.composition.editor-field-kind.v1",
+      "server_fallback": {
+        "attributes": [
+          "role=switch",
+          "value=true"
+        ],
+        "element": "input",
+        "enhanced_control": "sf-switch",
+        "type": "checkbox"
+      },
+      "status": "new",
+      "themes": {
+        "contrast": "WCAG 2.2 AA",
+        "modes": [
+          "light",
+          "dark"
+        ],
+        "tokens": [
+          "--sf-surface-1",
+          "--sf-on-surface",
+          "--sf-outline",
+          "--sf-primary"
+        ]
+      },
+      "validation": [
+        "strict-boolean"
+      ],
+      "value_schema": {
+        "type": "boolean"
+      },
+      "version": 1
+    }
+  ],
+  "schema": "simai.composition.editor-field-kind-registry.v1"
+}

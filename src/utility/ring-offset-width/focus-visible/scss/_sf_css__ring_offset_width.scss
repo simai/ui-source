@@ -1,0 +1,17 @@
+@use '../../../ring-width/default/scss/sf_var__ring_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING OFFSET
+
+$infix: focus-visible;
+
+// @include layer-priority(utility,$infix) {
+    @each $width-name, $width-value in $ring-width-array {
+        .#{$infix}\:ring-offset-#{$width-name}:#{$infix} {
+            --sf-ring-offset-width: var(--sf-#{$width-value});
+        }
+    }
+// }
+}

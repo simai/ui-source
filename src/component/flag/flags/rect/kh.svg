@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="308 548 28 20" fill="none" role="img">
+<g id="Country=KH">
+<rect id="Mask_254" x="308" y="548" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask117_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="308" y="548" width="28" height="20">
+<rect id="Mask_255" x="308" y="548" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask117_8205_11341)">
+<path id="Rectangle 2_171" fill-rule="evenodd" clip-rule="evenodd" d="M308 553.333H336V548H308V553.333Z" fill="#0052B4"/>
+<path id="Rectangle 2_172" fill-rule="evenodd" clip-rule="evenodd" d="M308 568H336V562.667H308V568Z" fill="#0052B4"/>
+<path id="Rectangle 2_173" fill-rule="evenodd" clip-rule="evenodd" d="M308 562.667H336V553.333H308V562.667Z" fill="#D80027"/>
+<path id="Rectangle 621" d="M319.334 561.333H316.667L318 558.667H319.334V561.333ZM324 561.333H320V558.667H324V561.333ZM327.334 561.333H324.667V558.667H326L327.334 561.333ZM318.667 556C319.035 556 319.334 556.298 319.334 556.667V558H318V556.667C318 556.298 318.299 556 318.667 556ZM322 555.333C322.368 555.333 322.667 555.632 322.667 556V556.727H324V558H320V556.727H321.334V556C321.334 555.632 321.632 555.334 322 555.333ZM325.334 556C325.702 556.001 326 556.299 326 556.667V558H324.667V556.667C324.667 556.298 324.966 556 325.334 556Z" fill="#F0F0F0"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,29 @@
+// SIMAI Framework
+// https://simai.io
+
+// SPACE CSS VARIABLES
+@use 'mix/mix__breakpoint' as bpMixin;
+@use "vars/sf_var__breakpoint" as bp;
+$breakpoint-var-array: (
+	'sm' : 'g6',
+	'md' : 'h1',
+	'lg' : 'h5',
+	'xl' : 'h8',
+	'xxl' : 'i0',
+);
+
+@layer sf.base {
+	:root {
+		// Space size variables
+		// Space size have differents value for desktop and mobile devices
+
+		@each $break-var, $break-value in $breakpoint-var-array {
+
+			@include bpMixin.breakpoint-media($break-var) {
+				$infix: bpMixin.breakpoint-infix($break-var, bp.$breakpoint-array);
+
+				--sf-breakpoint-#{$break-var}: var(--sf-#{$break-value});
+			}
+		}
+	}
+}

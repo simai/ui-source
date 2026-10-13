@@ -1,0 +1,2021 @@
+{
+  "capability": "editor.field-kinds",
+  "fallbacks": [
+    {
+      "html": "<div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"basic\"><label for=\"sf-field-side-placement\">Расположение области</label><select class=\"sf-editor-field-control\" id=\"sf-field-side-placement\" name=\"side.props.placement\" aria-describedby=\"sf-field-side-placement-help\"><option value=\"block\">Во всю ширину</option><option value=\"start\">В начале строки</option><option value=\"center\">В центре</option><option value=\"end\" selected>В конце строки</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-side-placement-help\">Боковые области стоят рядом с основной на широком экране.</small></div><div class=\"sf-editor-field\" data-sf-field-kind=\"text\" data-sf-field-group=\"basic\"><label for=\"sf-field-side-label\">Доступное название</label><input class=\"sf-editor-field-control\" type=\"text\" dir=\"auto\" maxlength=\"120\" id=\"sf-field-side-label\" name=\"side.props.label\" value=\"Боковая\" aria-describedby=\"sf-field-side-label-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-side-label-help\">Название объявляется программами экранного доступа.</small></div><details class=\"sf-editor-field-disclosure\"><summary>Смысловая роль</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"advanced\"><label for=\"sf-field-side-landmark\">Смысловая роль</label><select class=\"sf-editor-field-control\" id=\"sf-field-side-landmark\" name=\"side.props.landmark\" aria-describedby=\"sf-field-side-landmark-help\"><option value=\"banner\">Шапка сайта</option><option value=\"navigation\">Навигация</option><option value=\"main\">Основное содержимое</option><option value=\"complementary\" selected>Дополнительное содержимое</option><option value=\"contentinfo\">Подвал сайта</option><option value=\"region\">Именованная область</option><option value=\"none\">Без ориентира</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-side-landmark-help\">Определяет ориентир страницы для навигации.</small></div></details><details class=\"sf-editor-field-disclosure\"><summary>Закрепить при прокрутке</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"toggle\" data-sf-field-group=\"advanced\"><input class=\"sf-editor-field-control\" type=\"checkbox\" role=\"switch\" id=\"sf-field-side-sticky\" name=\"side.props.sticky\" value=\"true\" aria-describedby=\"sf-field-side-sticky-help\"><label for=\"sf-field-side-sticky\">Закрепить при прокрутке</label><small class=\"sf-editor-field-help\" id=\"sf-field-side-sticky-help\">Область остаётся видимой при прокрутке содержимого.</small></div></details>",
+      "id": "fallback.region",
+      "instance": "side",
+      "messages": {
+        "sf.composition.layout_region.label": "Доступное название",
+        "sf.composition.layout_region.label_help": "Название объявляется программами экранного доступа.",
+        "sf.composition.layout_region.landmark": "Смысловая роль",
+        "sf.composition.layout_region.landmark.banner": "Шапка сайта",
+        "sf.composition.layout_region.landmark.complementary": "Дополнительное содержимое",
+        "sf.composition.layout_region.landmark.contentinfo": "Подвал сайта",
+        "sf.composition.layout_region.landmark.main": "Основное содержимое",
+        "sf.composition.layout_region.landmark.navigation": "Навигация",
+        "sf.composition.layout_region.landmark.none": "Без ориентира",
+        "sf.composition.layout_region.landmark.region": "Именованная область",
+        "sf.composition.layout_region.landmark_help": "Определяет ориентир страницы для навигации.",
+        "sf.composition.layout_region.placement": "Расположение области",
+        "sf.composition.layout_region.placement.block": "Во всю ширину",
+        "sf.composition.layout_region.placement.center": "В центре",
+        "sf.composition.layout_region.placement.end": "В конце строки",
+        "sf.composition.layout_region.placement.start": "В начале строки",
+        "sf.composition.layout_region.placement_help": "Боковые области стоят рядом с основной на широком экране.",
+        "sf.composition.layout_region.sticky": "Закрепить при прокрутке",
+        "sf.composition.layout_region.sticky_help": "Область остаётся видимой при прокрутке содержимого."
+      },
+      "node": {
+        "id": "side",
+        "props": {
+          "label": "Боковая",
+          "landmark": "complementary",
+          "name": "aside",
+          "placement": "end"
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      }
+    },
+    {
+      "html": "<div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"basic\"><label for=\"sf-field-nav-main-placement\">Расположение области</label><select class=\"sf-editor-field-control\" id=\"sf-field-nav-main-placement\" name=\"nav-main.props.placement\" aria-describedby=\"sf-field-nav-main-placement-help\"><option value=\"block\">Во всю ширину</option><option value=\"start\" selected>В начале строки</option><option value=\"center\">В центре</option><option value=\"end\">В конце строки</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-nav-main-placement-help\">Боковые области стоят рядом с основной на широком экране.</small></div><div class=\"sf-editor-field\" data-sf-field-kind=\"text\" data-sf-field-group=\"basic\"><label for=\"sf-field-nav-main-label\">Доступное название</label><input class=\"sf-editor-field-control\" type=\"text\" dir=\"auto\" maxlength=\"120\" id=\"sf-field-nav-main-label\" name=\"nav-main.props.label\" value=\"قائمة &quot;رئيسية&quot;\" aria-describedby=\"sf-field-nav-main-label-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-nav-main-label-help\">Название объявляется программами экранного доступа.</small></div><details class=\"sf-editor-field-disclosure\"><summary>Смысловая роль</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"advanced\"><label for=\"sf-field-nav-main-landmark\">Смысловая роль</label><select class=\"sf-editor-field-control\" id=\"sf-field-nav-main-landmark\" name=\"nav-main.props.landmark\" aria-describedby=\"sf-field-nav-main-landmark-help\"><option value=\"banner\">Шапка сайта</option><option value=\"navigation\" selected>Навигация</option><option value=\"main\">Основное содержимое</option><option value=\"complementary\">Дополнительное содержимое</option><option value=\"contentinfo\">Подвал сайта</option><option value=\"region\">Именованная область</option><option value=\"none\">Без ориентира</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-nav-main-landmark-help\">Определяет ориентир страницы для навигации.</small></div></details><details class=\"sf-editor-field-disclosure\"><summary>Закрепить при прокрутке</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"toggle\" data-sf-field-group=\"advanced\"><input class=\"sf-editor-field-control\" type=\"checkbox\" role=\"switch\" id=\"sf-field-nav-main-sticky\" name=\"nav-main.props.sticky\" value=\"true\" checked aria-describedby=\"sf-field-nav-main-sticky-help\"><label for=\"sf-field-nav-main-sticky\">Закрепить при прокрутке</label><small class=\"sf-editor-field-help\" id=\"sf-field-nav-main-sticky-help\">Область остаётся видимой при прокрутке содержимого.</small></div></details>",
+      "id": "fallback.region-sticky-rtl-label",
+      "instance": "nav-main",
+      "messages": {
+        "sf.composition.layout_region.label": "Доступное название",
+        "sf.composition.layout_region.label_help": "Название объявляется программами экранного доступа.",
+        "sf.composition.layout_region.landmark": "Смысловая роль",
+        "sf.composition.layout_region.landmark.banner": "Шапка сайта",
+        "sf.composition.layout_region.landmark.complementary": "Дополнительное содержимое",
+        "sf.composition.layout_region.landmark.contentinfo": "Подвал сайта",
+        "sf.composition.layout_region.landmark.main": "Основное содержимое",
+        "sf.composition.layout_region.landmark.navigation": "Навигация",
+        "sf.composition.layout_region.landmark.none": "Без ориентира",
+        "sf.composition.layout_region.landmark.region": "Именованная область",
+        "sf.composition.layout_region.landmark_help": "Определяет ориентир страницы для навигации.",
+        "sf.composition.layout_region.placement": "Расположение области",
+        "sf.composition.layout_region.placement.block": "Во всю ширину",
+        "sf.composition.layout_region.placement.center": "В центре",
+        "sf.composition.layout_region.placement.end": "В конце строки",
+        "sf.composition.layout_region.placement.start": "В начале строки",
+        "sf.composition.layout_region.placement_help": "Боковые области стоят рядом с основной на широком экране.",
+        "sf.composition.layout_region.sticky": "Закрепить при прокрутке",
+        "sf.composition.layout_region.sticky_help": "Область остаётся видимой при прокрутке содержимого."
+      },
+      "node": {
+        "id": "nav-main",
+        "props": {
+          "label": "قائمة \"رئيسية\"",
+          "landmark": "navigation",
+          "name": "nav",
+          "placement": "start",
+          "sticky": true
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      }
+    },
+    {
+      "html": "<div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"basic\"><label for=\"sf-field-bare-placement\">sf.composition.layout_region.placement</label><select class=\"sf-editor-field-control\" id=\"sf-field-bare-placement\" name=\"bare.props.placement\" aria-describedby=\"sf-field-bare-placement-help\"><option value=\"block\">block</option><option value=\"start\">start</option><option value=\"center\">center</option><option value=\"end\" selected>end</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-bare-placement-help\">sf.composition.layout_region.placement_help</small></div><div class=\"sf-editor-field\" data-sf-field-kind=\"text\" data-sf-field-group=\"basic\"><label for=\"sf-field-bare-label\">sf.composition.layout_region.label</label><input class=\"sf-editor-field-control\" type=\"text\" dir=\"auto\" maxlength=\"120\" id=\"sf-field-bare-label\" name=\"bare.props.label\" value=\"Боковая\" aria-describedby=\"sf-field-bare-label-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-bare-label-help\">sf.composition.layout_region.label_help</small></div><details class=\"sf-editor-field-disclosure\"><summary>sf.composition.layout_region.landmark</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"advanced\"><label for=\"sf-field-bare-landmark\">sf.composition.layout_region.landmark</label><select class=\"sf-editor-field-control\" id=\"sf-field-bare-landmark\" name=\"bare.props.landmark\" aria-describedby=\"sf-field-bare-landmark-help\"><option value=\"banner\">banner</option><option value=\"navigation\">navigation</option><option value=\"main\">main</option><option value=\"complementary\" selected>complementary</option><option value=\"contentinfo\">contentinfo</option><option value=\"region\">region</option><option value=\"none\">none</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-bare-landmark-help\">sf.composition.layout_region.landmark_help</small></div></details><details class=\"sf-editor-field-disclosure\"><summary>sf.composition.layout_region.sticky</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"toggle\" data-sf-field-group=\"advanced\"><input class=\"sf-editor-field-control\" type=\"checkbox\" role=\"switch\" id=\"sf-field-bare-sticky\" name=\"bare.props.sticky\" value=\"true\" aria-describedby=\"sf-field-bare-sticky-help\"><label for=\"sf-field-bare-sticky\">sf.composition.layout_region.sticky</label><small class=\"sf-editor-field-help\" id=\"sf-field-bare-sticky-help\">sf.composition.layout_region.sticky_help</small></div></details>",
+      "id": "fallback.missing-translations",
+      "instance": "bare",
+      "messages": {},
+      "node": {
+        "id": "side",
+        "props": {
+          "label": "Боковая",
+          "landmark": "complementary",
+          "name": "aside",
+          "placement": "end"
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      }
+    },
+    {
+      "html": "<div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"basic\"><label for=\"sf-field-quiet-placement\">Расположение области</label><select class=\"sf-editor-field-control\" id=\"sf-field-quiet-placement\" name=\"quiet.props.placement\" aria-describedby=\"sf-field-quiet-placement-help\"><option value=\"block\">Во всю ширину</option><option value=\"start\">В начале строки</option><option value=\"center\">В центре</option><option value=\"end\" selected>В конце строки</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-quiet-placement-help\">Боковые области стоят рядом с основной на широком экране.</small></div><div class=\"sf-editor-field\" data-sf-field-kind=\"text\" data-sf-field-group=\"basic\"><label for=\"sf-field-quiet-label\">Доступное название</label><input class=\"sf-editor-field-control\" type=\"text\" dir=\"auto\" maxlength=\"120\" id=\"sf-field-quiet-label\" name=\"quiet.props.label\" value=\"Боковая\" aria-describedby=\"sf-field-quiet-label-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-quiet-label-help\">Название объявляется программами экранного доступа.</small></div><details class=\"sf-editor-field-disclosure\"><summary>Смысловая роль</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"choice\" data-sf-field-group=\"advanced\"><label for=\"sf-field-quiet-landmark\">Смысловая роль</label><select class=\"sf-editor-field-control\" id=\"sf-field-quiet-landmark\" name=\"quiet.props.landmark\" aria-describedby=\"sf-field-quiet-landmark-help\"><option value=\"banner\">Шапка сайта</option><option value=\"navigation\">Навигация</option><option value=\"main\">Основное содержимое</option><option value=\"complementary\" selected>Дополнительное содержимое</option><option value=\"contentinfo\">Подвал сайта</option><option value=\"region\">Именованная область</option><option value=\"none\">Без ориентира</option></select><small class=\"sf-editor-field-help\" id=\"sf-field-quiet-landmark-help\">Определяет ориентир страницы для навигации.</small></div></details>",
+      "id": "fallback.hidden-field-omitted",
+      "instance": "quiet",
+      "messages": {
+        "sf.composition.layout_region.label": "Доступное название",
+        "sf.composition.layout_region.label_help": "Название объявляется программами экранного доступа.",
+        "sf.composition.layout_region.landmark": "Смысловая роль",
+        "sf.composition.layout_region.landmark.banner": "Шапка сайта",
+        "sf.composition.layout_region.landmark.complementary": "Дополнительное содержимое",
+        "sf.composition.layout_region.landmark.contentinfo": "Подвал сайта",
+        "sf.composition.layout_region.landmark.main": "Основное содержимое",
+        "sf.composition.layout_region.landmark.navigation": "Навигация",
+        "sf.composition.layout_region.landmark.none": "Без ориентира",
+        "sf.composition.layout_region.landmark.region": "Именованная область",
+        "sf.composition.layout_region.landmark_help": "Определяет ориентир страницы для навигации.",
+        "sf.composition.layout_region.placement": "Расположение области",
+        "sf.composition.layout_region.placement.block": "Во всю ширину",
+        "sf.composition.layout_region.placement.center": "В центре",
+        "sf.composition.layout_region.placement.end": "В конце строки",
+        "sf.composition.layout_region.placement.start": "В начале строки",
+        "sf.composition.layout_region.placement_help": "Боковые области стоят рядом с основной на широком экране.",
+        "sf.composition.layout_region.sticky": "Закрепить при прокрутке",
+        "sf.composition.layout_region.sticky_help": "Область остаётся видимой при прокрутке содержимого."
+      },
+      "node": {
+        "id": "side",
+        "props": {
+          "label": "Боковая",
+          "landmark": "complementary",
+          "name": "aside",
+          "placement": "end"
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      }
+    },
+    {
+      "html": "<details class=\"sf-editor-field-disclosure\"><summary>sf.composition.content_heading.level</summary><div class=\"sf-editor-field\" data-sf-field-kind=\"integer\" data-sf-field-group=\"advanced\"><label for=\"sf-field-title-level\">sf.composition.content_heading.level</label><input class=\"sf-editor-field-control\" type=\"number\" inputmode=\"numeric\" step=\"1\" min=\"1\" max=\"6\" id=\"sf-field-title-level\" name=\"title.data.level\" value=\"3\" aria-describedby=\"sf-field-title-level-help\"><small class=\"sf-editor-field-help\" id=\"sf-field-title-level-help\">sf.composition.content_heading.level_help</small></div></details>",
+      "id": "fallback.existing-heading",
+      "instance": "title",
+      "messages": {
+        "sf.composition.layout_region.label": "Доступное название",
+        "sf.composition.layout_region.label_help": "Название объявляется программами экранного доступа.",
+        "sf.composition.layout_region.landmark": "Смысловая роль",
+        "sf.composition.layout_region.landmark.banner": "Шапка сайта",
+        "sf.composition.layout_region.landmark.complementary": "Дополнительное содержимое",
+        "sf.composition.layout_region.landmark.contentinfo": "Подвал сайта",
+        "sf.composition.layout_region.landmark.main": "Основное содержимое",
+        "sf.composition.layout_region.landmark.navigation": "Навигация",
+        "sf.composition.layout_region.landmark.none": "Без ориентира",
+        "sf.composition.layout_region.landmark.region": "Именованная область",
+        "sf.composition.layout_region.landmark_help": "Определяет ориентир страницы для навигации.",
+        "sf.composition.layout_region.placement": "Расположение области",
+        "sf.composition.layout_region.placement.block": "Во всю ширину",
+        "sf.composition.layout_region.placement.center": "В центре",
+        "sf.composition.layout_region.placement.end": "В конце строки",
+        "sf.composition.layout_region.placement.start": "В начале строки",
+        "sf.composition.layout_region.placement_help": "Боковые области стоят рядом с основной на широком экране.",
+        "sf.composition.layout_region.sticky": "Закрепить при прокрутке",
+        "sf.composition.layout_region.sticky_help": "Область остаётся видимой при прокрутке содержимого."
+      },
+      "node": {
+        "data": {
+          "content": [],
+          "level": 3
+        },
+        "id": "title",
+        "type": "content.heading"
+      }
+    }
+  ],
+  "manifests": [
+    {
+      "diagnostics": [],
+      "expect": "valid",
+      "id": "manifest.region-fields",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [],
+      "expect": "valid",
+      "id": "manifest.existing.layout.section",
+      "kinds": [
+        "choice"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.presentation.preset"
+            ],
+            "choices": [
+              "surface",
+              "contrast"
+            ],
+            "constraints": {
+              "max_length": 32,
+              "min_length": 1
+            },
+            "default": "surface",
+            "group": "preset",
+            "help_key": "sf.composition.layout_section.surface_help",
+            "key": "surface",
+            "label_key": "sf.composition.layout_section.surface",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "presentation",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "preset",
+            "visibility": "visible"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.section",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [],
+      "expect": "valid",
+      "id": "manifest.existing.layout.columns",
+      "kinds": [
+        "integer"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.columns"
+            ],
+            "constraints": {
+              "max": 12,
+              "min": 1
+            },
+            "default": 2,
+            "group": "basic",
+            "help_key": "sf.composition.layout_columns.columns_help",
+            "key": "columns",
+            "label_key": "sf.composition.layout_columns.columns",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "integer",
+              "version": 1
+            },
+            "target": "columns",
+            "visibility": "visible"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.columns",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [],
+      "expect": "valid",
+      "id": "manifest.existing.content.heading",
+      "kinds": [
+        "integer"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.data.level"
+            ],
+            "constraints": {
+              "max": 6,
+              "min": 1
+            },
+            "default": 2,
+            "group": "advanced",
+            "help_key": "sf.composition.content_heading.level_help",
+            "key": "level",
+            "label_key": "sf.composition.content_heading.level",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "data",
+            "property": {
+              "type": "integer",
+              "version": 1
+            },
+            "target": "level",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "content.heading",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_default_invalid"
+      ],
+      "expect": "invalid",
+      "id": "manifest.toggle-default-true",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": true,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_kind_unknown"
+      ],
+      "expect": "invalid",
+      "id": "manifest.toggle-with-choices",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        null
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "choices": [
+              true,
+              false
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_constraint_required"
+      ],
+      "expect": "invalid",
+      "id": "manifest.text-without-max-length",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_constraint_unknown"
+      ],
+      "expect": "invalid",
+      "id": "manifest.text-unknown-constraint",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1,
+              "pattern": "^.+$"
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "editor_default_choice_unknown",
+        "field_default_invalid"
+      ],
+      "expect": "invalid",
+      "id": "manifest.choice-default-outside",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "middle",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "editor_property_registration_unknown",
+        "field_kind_unknown"
+      ],
+      "expect": "invalid",
+      "id": "manifest.unknown-property-identity",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        null
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 2
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_kind_unknown"
+      ],
+      "expect": "invalid",
+      "id": "manifest.text-with-old-string-version",
+      "kinds": [
+        "choice",
+        null,
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 1
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_choice_invalid"
+      ],
+      "expect": "invalid",
+      "id": "manifest.choice-longer-than-max-length",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 4,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 120,
+              "min_length": 1
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    },
+    {
+      "diagnostics": [
+        "field_constraint_invalid"
+      ],
+      "expect": "invalid",
+      "id": "manifest.text-inverted-length",
+      "kinds": [
+        "choice",
+        "text",
+        "choice",
+        "toggle"
+      ],
+      "manifest": {
+        "fields": [
+          {
+            "capability_hints": [
+              "composition.props.placement"
+            ],
+            "choices": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "default": "block",
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.placement_help",
+            "key": "placement",
+            "label_key": "sf.composition.layout_region.placement",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "placement",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.label"
+            ],
+            "constraints": {
+              "max_length": 10,
+              "min_length": 50
+            },
+            "group": "basic",
+            "help_key": "sf.composition.layout_region.label_help",
+            "key": "label",
+            "label_key": "sf.composition.layout_region.label",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "label",
+            "visibility": "visible"
+          },
+          {
+            "capability_hints": [
+              "composition.props.landmark"
+            ],
+            "choices": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ],
+            "constraints": {
+              "max_length": 16,
+              "min_length": 1
+            },
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.landmark_help",
+            "key": "landmark",
+            "label_key": "sf.composition.layout_region.landmark",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "string",
+              "version": 2
+            },
+            "target": "landmark",
+            "visibility": "collapsed"
+          },
+          {
+            "capability_hints": [
+              "composition.props.sticky"
+            ],
+            "constraints": {},
+            "default": false,
+            "group": "advanced",
+            "help_key": "sf.composition.layout_region.sticky_help",
+            "key": "sticky",
+            "label_key": "sf.composition.layout_region.sticky",
+            "owner": "simai/framework",
+            "permission_hints": [
+              "composition.node.update"
+            ],
+            "plane": "props",
+            "property": {
+              "type": "boolean",
+              "version": 1
+            },
+            "target": "sticky",
+            "visibility": "collapsed"
+          }
+        ],
+        "schema": "simai.composition.editor-manifest.v1",
+        "type": "layout.region",
+        "type_version": "1.0.0"
+      }
+    }
+  ],
+  "schema": "simai.composition.capability-fixtures.v1",
+  "setup": {
+    "host_property_types": [
+      {
+        "type": "string",
+        "version": 1
+      },
+      {
+        "type": "string",
+        "version": 2
+      },
+      {
+        "type": "integer",
+        "version": 1
+      },
+      {
+        "type": "boolean",
+        "version": 1
+      }
+    ],
+    "messages": {
+      "sf.composition.layout_region.label": "Доступное название",
+      "sf.composition.layout_region.label_help": "Название объявляется программами экранного доступа.",
+      "sf.composition.layout_region.landmark": "Смысловая роль",
+      "sf.composition.layout_region.landmark.banner": "Шапка сайта",
+      "sf.composition.layout_region.landmark.complementary": "Дополнительное содержимое",
+      "sf.composition.layout_region.landmark.contentinfo": "Подвал сайта",
+      "sf.composition.layout_region.landmark.main": "Основное содержимое",
+      "sf.composition.layout_region.landmark.navigation": "Навигация",
+      "sf.composition.layout_region.landmark.none": "Без ориентира",
+      "sf.composition.layout_region.landmark.region": "Именованная область",
+      "sf.composition.layout_region.landmark_help": "Определяет ориентир страницы для навигации.",
+      "sf.composition.layout_region.placement": "Расположение области",
+      "sf.composition.layout_region.placement.block": "Во всю ширину",
+      "sf.composition.layout_region.placement.center": "В центре",
+      "sf.composition.layout_region.placement.end": "В конце строки",
+      "sf.composition.layout_region.placement.start": "В начале строки",
+      "sf.composition.layout_region.placement_help": "Боковые области стоят рядом с основной на широком экране.",
+      "sf.composition.layout_region.sticky": "Закрепить при прокрутке",
+      "sf.composition.layout_region.sticky_help": "Область остаётся видимой при прокрутке содержимого."
+    }
+  },
+  "submissions": [
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "sticky": true
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "sticky",
+      "id": "toggle.checked",
+      "kind": "toggle",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "true",
+      "result": {
+        "value": true
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "side",
+        "props": {
+          "label": "Боковая",
+          "landmark": "complementary",
+          "name": "aside",
+          "placement": "end"
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "sticky",
+      "id": "toggle.absent-removes-key",
+      "kind": "toggle",
+      "node": {
+        "id": "side",
+        "props": {
+          "label": "Боковая",
+          "landmark": "complementary",
+          "name": "aside",
+          "placement": "end",
+          "sticky": true
+        },
+        "slots": {
+          "default": []
+        },
+        "type": "layout.region"
+      },
+      "raw": null,
+      "result": {
+        "unset": true
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "sticky",
+      "id": "toggle.rejects-on",
+      "kind": "toggle",
+      "raw": "on",
+      "result": {
+        "error": "field_submission_invalid"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "sticky",
+      "id": "toggle.rejects-false-text",
+      "kind": "toggle",
+      "raw": "false",
+      "result": {
+        "error": "field_submission_invalid"
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "label": "Связанные материалы — ☕"
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "label",
+      "id": "text.exact-unicode",
+      "kind": "text",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "Связанные материалы — ☕",
+      "result": {
+        "value": "Связанные материалы — ☕"
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "label": "  Отступы  "
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "label",
+      "id": "text.keeps-spaces",
+      "kind": "text",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "  Отступы  ",
+      "result": {
+        "value": "  Отступы  "
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "label",
+      "id": "text.empty-unsets",
+      "kind": "text",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "",
+      "result": {
+        "unset": true
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "label": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "label",
+      "id": "text.max-code-points",
+      "kind": "text",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "result": {
+        "value": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "label",
+      "id": "text.too-long",
+      "kind": "text",
+      "raw": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "result": {
+        "error": "field_value_length"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "label",
+      "id": "text.control-character",
+      "kind": "text",
+      "raw": "a\u0000b",
+      "result": {
+        "error": "field_value_control"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "label",
+      "id": "text.line-break",
+      "kind": "text",
+      "raw": "a\nb",
+      "result": {
+        "error": "field_value_control"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "label",
+      "id": "text.lone-surrogate",
+      "kind": "text",
+      "raw_code_units": [
+        "0061",
+        "d800"
+      ],
+      "result": {
+        "error": "field_value_unicode"
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "placement": "start"
+        },
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "placement",
+      "id": "choice.member",
+      "kind": "choice",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "start",
+      "result": {
+        "value": "start"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "placement",
+      "id": "choice.case-sensitive",
+      "kind": "choice",
+      "raw": "Start",
+      "result": {
+        "error": "field_value_choice"
+      },
+      "type": "layout.region"
+    },
+    {
+      "expect": "rejected",
+      "field": "landmark",
+      "id": "choice.unknown",
+      "kind": "choice",
+      "raw": "hero",
+      "result": {
+        "error": "field_value_choice"
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "type": "layout.region"
+      },
+      "expect": "accepted",
+      "field": "placement",
+      "id": "choice.empty-unsets",
+      "kind": "choice",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.region"
+      },
+      "raw": "",
+      "result": {
+        "unset": true
+      },
+      "type": "layout.region"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "props": {
+          "columns": 12
+        },
+        "type": "layout.columns"
+      },
+      "expect": "accepted",
+      "field": "columns",
+      "id": "integer.in-range",
+      "kind": "integer",
+      "node": {
+        "id": "node",
+        "props": {},
+        "type": "layout.columns"
+      },
+      "raw": "12",
+      "result": {
+        "value": 12
+      },
+      "type": "layout.columns"
+    },
+    {
+      "expect": "rejected",
+      "field": "columns",
+      "id": "integer.out-of-range",
+      "kind": "integer",
+      "raw": "13",
+      "result": {
+        "error": "field_value_range"
+      },
+      "type": "layout.columns"
+    },
+    {
+      "expect": "rejected",
+      "field": "columns",
+      "id": "integer.decimal-text",
+      "kind": "integer",
+      "raw": "2.0",
+      "result": {
+        "error": "field_value_type"
+      },
+      "type": "layout.columns"
+    },
+    {
+      "expect": "rejected",
+      "field": "columns",
+      "id": "integer.leading-zero",
+      "kind": "integer",
+      "raw": "02",
+      "result": {
+        "error": "field_value_type"
+      },
+      "type": "layout.columns"
+    },
+    {
+      "expect": "rejected",
+      "field": "level",
+      "id": "integer.signed-space",
+      "kind": "integer",
+      "raw": " 3",
+      "result": {
+        "error": "field_value_type"
+      },
+      "type": "content.heading"
+    },
+    {
+      "applied": {
+        "id": "node",
+        "type": "content.heading"
+      },
+      "expect": "accepted",
+      "field": "level",
+      "id": "integer.empty-unsets",
+      "kind": "integer",
+      "node": {
+        "data": {},
+        "id": "node",
+        "type": "content.heading"
+      },
+      "raw": "",
+      "result": {
+        "unset": true
+      },
+      "type": "content.heading"
+    }
+  ]
+}

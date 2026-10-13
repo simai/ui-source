@@ -1,0 +1,64 @@
+@layer sf.components {
+  :where(kbd:not(.sf-kbd--group), .sf-kbd:not(.sf-kbd--group)) {
+    --sf-kbd--min-block-size: var(--sf-text-height-1\/3);
+    --sf-kbd--min-inline-size: var(--sf-text-height-1\/3);
+    --sf-kbd--padding-block: var(--sf-space-1\/4);
+    --sf-kbd--padding-inline: var(--sf-space-1\/2);
+    --sf-kbd--color: var(--sf-on-surface);
+    --sf-kbd--background: var(--sf-surface-container);
+    --sf-kbd--border-color: var(--sf-outline-variant);
+    --sf-kbd--border-width: var(--sf-px);
+    --sf-kbd--radius: var(--sf-radius--ui);
+    --sf-kbd--font-family: var(--sf-mono);
+    --sf-kbd--font-size: var(--sf-text-size-1\/3);
+    --sf-kbd--font-weight: var(--sf-font-weight-medium);
+    --sf-kbd--line-height: var(--sf-text-height-1\/3);
+
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--sf-kbd--min-block-size);
+    min-inline-size: var(--sf-kbd--min-inline-size);
+    padding-block: var(--sf-kbd--padding-block);
+    padding-inline: var(--sf-kbd--padding-inline);
+    color: var(--sf-kbd--color);
+    background: var(--sf-kbd--background);
+    border: var(--sf-kbd--border-width) solid var(--sf-kbd--border-color);
+    border-radius: var(--sf-kbd--radius);
+    font-family: var(--sf-kbd--font-family);
+    font-size: var(--sf-kbd--font-size);
+    font-weight: var(--sf-kbd--font-weight);
+    line-height: var(--sf-kbd--line-height);
+    unicode-bidi: isolate;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
+  kbd:has(> kbd),
+  .sf-kbd--group {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    min-block-size: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    color: inherit;
+    background: var(--sf-transparent);
+    border: none;
+    border-radius: var(--sf-0);
+    font: inherit;
+    line-height: inherit;
+    unicode-bidi: isolate;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    :where(kbd:not(.sf-kbd--group), .sf-kbd:not(.sf-kbd--group)) {
+      border-color: CanvasText;
+    }
+  }
+}

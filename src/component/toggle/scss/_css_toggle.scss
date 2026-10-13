@@ -1,0 +1,316 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) align-items/center (.items-center) */
+.sf-toggle {
+  background-color: var(--sf-toggle--background-color, transparent);
+  font-family: var(--sf-toggle--font-family, var(--sf-text--family));
+  font-weight: var(--sf-toggle--font-weight, var(--sf-font-weight-regular));
+  gap: var(--sf-toggle--gap);
+  color: var(--sf-toggle--color);
+  font-size: var(--sf-toggle--font-size);
+  line-height: var(--sf-toggle--line-height);
+  --sf-toggle--color: var(--sf-on-surface-variant);
+}
+
+.sf-toggle .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+  height: var(--sf-icon--height, var(--sf-text-size-3));
+  width: var(--sf-icon--width, var(--sf-text-size-3));
+}
+
+.sf-toggle .sf-toggle-container {
+  --sf-toggle-container--background-color: var(--sf-surface-container);
+  --sf-toggle-container--border-end-end-radius: var(--sf-radius-circle);
+  --sf-toggle-container--border-end-start-radius: var(--sf-radius-circle);
+  --sf-toggle-container--border-start-end-radius: var(--sf-radius-circle);
+  --sf-toggle-container--border-start-start-radius: var(--sf-radius-circle);
+  background-color: var(--sf-toggle-container--background-color);
+  border-end-end-radius: var(--sf-toggle-container--border-end-end-radius);
+  border-end-start-radius: var(--sf-toggle-container--border-end-start-radius);
+  border-start-end-radius: var(--sf-toggle-container--border-start-end-radius);
+  border-start-start-radius: var(--sf-toggle-container--border-start-start-radius);
+  box-shadow: var(--sf-toggle-container--box-shadow);
+  outline: var(--sf-px) solid var(--sf-toggle-container--outline-color, var(--sf-outline));
+  outline-offset: calc(-1 * var(--sf-px));
+  height: var(--sf-toggle-container--height);
+  padding-bottom: var(--sf-toggle-container--padding-bottom);
+  padding-inline-end: var(--sf-toggle-container--padding-inline-end);
+  padding-inline-start: var(--sf-toggle-container--padding-inline-start);
+  padding-top: var(--sf-toggle-container--padding-top);
+  width: var(--sf-toggle-container--width);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) align-items/center (.items-center) */
+.sf-toggle .sf-toggle-inner-wrap {
+  background-color: var(--sf-toggle-inner-wrap--background-color);
+  border-end-end-radius: var(--sf-toggle-inner-wrap--border-end-end-radius);
+  border-end-start-radius: var(--sf-toggle-inner-wrap--border-end-start-radius);
+  border-start-end-radius: var(--sf-toggle-inner-wrap--border-start-end-radius);
+  border-start-start-radius: var(--sf-toggle-inner-wrap--border-start-start-radius);
+  box-shadow: var(--sf-toggle-inner-wrap--box-shadow);
+  padding-bottom: var(--sf-toggle-inner-wrap--padding-bottom);
+  padding-inline-end: var(--sf-toggle-inner-wrap--padding-inline-end);
+  padding-inline-start: var(--sf-toggle-inner-wrap--padding-inline-start);
+  padding-top: var(--sf-toggle-inner-wrap--padding-top);
+}
+
+.sf-toggle .sf-toggle-inner {
+  background-color: var(--sf-toggle-inner--background-color);
+  border-end-end-radius: var(--sf-toggle-inner--border-end-end-radius);
+  border-end-start-radius: var(--sf-toggle-inner--border-end-start-radius);
+  border-start-end-radius: var(--sf-toggle-inner--border-start-end-radius);
+  border-start-start-radius: var(--sf-toggle-inner--border-start-start-radius);
+  height: var(--sf-toggle-inner--height);
+  width: var(--sf-toggle-inner--width);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-toggle.sf-toggle--simple.sf-toggle--size-1 .sf-toggle-container, .sf-toggle.sf-toggle--icon.sf-toggle--size-1 .sf-toggle-container {
+  --sf-toggle-container--padding-bottom: var(--sf-a2);
+  --sf-toggle-container--padding-inline-end: var(--sf-a2);
+  --sf-toggle-container--padding-inline-start: var(--sf-a2);
+  --sf-toggle-container--padding-top: var(--sf-a2);
+  --sf-toggle-container--width: var(--sf-text-size-7);
+}
+
+.sf-toggle.sf-toggle--simple.sf-toggle--size-1 .sf-toggle-inner, .sf-toggle.sf-toggle--short.sf-toggle--size-1 .sf-toggle-inner {
+  --sf-toggle-inner--height: var(--sf-text-size-1);
+  --sf-toggle-inner--width: var(--sf-text-size-1);
+}
+
+.sf-toggle.sf-toggle--simple .sf-toggle-inner {
+  --sf-toggle-inner--background-color: var(--sf-on-surface-variant);
+}
+
+.sf-toggle.sf-toggle--icon .sf-icon {
+  --sf-icon--color: var(--sf-surface-0);
+  --sf-icon--font-size: var(--sf-text-size-1);
+  --sf-icon--height: var(--sf-text-size-1);
+  --sf-icon--width: var(--sf-text-size-1);
+}
+
+/* utility-hint: justify-content/center (.justify-center) */
+.sf-toggle.sf-toggle--icon .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-on-surface-variant);
+  --sf-toggle-inner-wrap--border-end-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-end-start-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-start-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-start-start-radius: var(--sf-radius-circle);
+}
+
+.sf-toggle.sf-toggle--short.sf-toggle--size-1 .sf-toggle-container {
+  --sf-toggle-container--height: var(--sf-text-height-1\/3);
+  --sf-toggle-container--width: var(--sf-text-size-7);
+}
+
+/* utility-hint: justify-content/flex-start (.justify-start) */
+.sf-toggle.sf-toggle--short .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-surface-container);
+  outline: var(--sf-px) solid var(--sf-toggle-container--outline-color, var(--sf-outline));
+  outline-offset: calc(-1 * var(--sf-px));
+  --sf-toggle-inner-wrap--border-end-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-end-start-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-start-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--border-start-start-radius: var(--sf-radius-circle);
+  --sf-toggle-inner-wrap--padding-bottom: var(--sf-a2);
+  --sf-toggle-inner-wrap--padding-inline-end: var(--sf-a2);
+  --sf-toggle-inner-wrap--padding-inline-start: var(--sf-a2);
+  --sf-toggle-inner-wrap--padding-top: var(--sf-a2);
+}
+
+.sf-toggle.disabled.sf-toggle--short .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-disable);
+}
+
+/* The container keeps its own boundary in the outline, because moving it to a
+   border would make the control two pixels taller: that part has no fixed
+   height. The ring therefore lands on the control wrapper, which is exactly the
+   switch and nothing else — no fight over the property, and in high contrast
+   the boundary and the ring are visible at the same time. The root is the wrong
+   place for it: that box spans the label as well, so the ring would circle a
+   whole line of text to report a twenty-pixel switch. */
+.sf-toggle:has(input:not(:disabled):not(.disabled):focus-visible) .sf-toggle-control {
+  border-radius: var(--sf-radius--ui);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+/* The focus lives on the bare control while the ring belongs to the part the
+   person sees, so the control gives its own ring up. */
+.sf-toggle input:focus-visible {
+  outline: none;
+}
+
+.sf-toggle.active:not(:has(input:disabled)).sf-toggle--short .sf-toggle-container, .sf-toggle.active:not(:has(input:disabled)).sf-toggle--simple .sf-toggle-container, .sf-toggle.active:not(:has(input:disabled)).sf-toggle--icon .sf-toggle-container {
+  --sf-toggle-container--background-color: var(--sf-primary);
+  --sf-toggle-container--outline-color: var(--sf-primary);
+}
+
+.sf-toggle:not(:disabled):not(.disabled):active.sf-toggle--short .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-primary);
+}
+
+.sf-toggle.active:not(:has(input:disabled)).sf-toggle--short .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-primary);
+}
+
+.sf-toggle.sf-toggle--short:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-surface-container-hover);
+}
+
+.sf-toggle.disabled.sf-toggle--icon .sf-icon {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+/* utility-hint: align-items/center (.items-center) */
+.sf-toggle:not(:disabled):not(.disabled):active.sf-toggle--simple .sf-toggle-inner {
+  --sf-toggle-inner--background-color: var(--sf-on-primary);
+}
+
+.sf-toggle.active:not(:has(input:disabled)).sf-toggle--simple .sf-toggle-inner {
+  --sf-toggle-inner--background-color: var(--sf-on-primary);
+}
+
+.sf-toggle:not(:disabled):not(.disabled):active.sf-toggle--icon .sf-icon {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-toggle.active:not(:has(input:disabled)).sf-toggle--icon .sf-icon {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-toggle:not(:disabled):not(.disabled):active.sf-toggle--icon .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-on-primary);
+}
+
+.sf-toggle.active:not(:has(input:disabled)).sf-toggle--icon .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-on-primary);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) align-items/center (.items-center) */
+.sf-toggle.sf-toggle--simple.sf-toggle--size-2 .sf-toggle-container, .sf-toggle.sf-toggle--icon.sf-toggle--size-2 .sf-toggle-container {
+  --sf-toggle-container--padding-bottom: var(--sf-space-1\/4);
+  --sf-toggle-container--padding-inline-end: var(--sf-space-1\/4);
+  --sf-toggle-container--padding-inline-start: var(--sf-space-1\/4);
+  --sf-toggle-container--padding-top: var(--sf-space-1\/4);
+  --sf-toggle-container--width: var(--sf-text-size-9);
+}
+
+.sf-toggle.sf-toggle--simple.sf-toggle--size-2 .sf-toggle-inner, .sf-toggle.sf-toggle--short.sf-toggle--size-2 .sf-toggle-inner {
+  --sf-toggle-inner--height: var(--sf-text-size-3);
+  --sf-toggle-inner--width: var(--sf-text-size-3);
+}
+
+/* utility-hint: justify-content/center (.justify-center) */
+.sf-toggle.sf-toggle--icon.sf-toggle--size-2 .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--padding-bottom: var(--sf-space-1\/4);
+  --sf-toggle-inner-wrap--padding-inline-end: var(--sf-space-1\/4);
+  --sf-toggle-inner-wrap--padding-inline-start: var(--sf-space-1\/4);
+  --sf-toggle-inner-wrap--padding-top: var(--sf-space-1\/4);
+}
+
+.sf-toggle.sf-toggle--short.sf-toggle--size-2 .sf-toggle-container {
+  --sf-toggle-container--height: var(--sf-text-height-1\/2);
+  --sf-toggle-container--width: var(--sf-text-size-8);
+}
+
+.sf-toggle--size-1 {
+  --sf-toggle--font-size: var(--sf-text-size-1);
+  --sf-toggle--gap: var(--sf-space-1\/3);
+  --sf-toggle--line-height: var(--sf-text-height-1);
+}
+
+.sf-toggle--size-2 {
+  --sf-toggle--font-size: var(--sf-text-size-2);
+  --sf-toggle--gap: var(--sf-space-1\/2);
+  --sf-toggle--line-height: var(--sf-text-height-2);
+}
+
+.sf-toggle:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-toggle-container {
+  --sf-toggle-container--background-color: var(--sf-surface-container-hover);
+}
+
+/* utility-hint: justify-content/flex-start (.justify-start) */
+.sf-toggle.disabled {
+  --sf-toggle--color: var(--sf-on-disable);
+}
+
+.sf-toggle.disabled .sf-toggle-container {
+  --sf-toggle-container--background-color: var(--sf-disable);
+  --sf-toggle-container--outline-color: var(--sf-outline-disable);
+}
+
+.sf-toggle.disabled.sf-toggle--simple .sf-toggle-inner {
+  --sf-toggle-inner--background-color: var(--sf-on-disable);
+}
+
+.sf-toggle.disabled.sf-toggle--icon .sf-toggle-inner-wrap {
+  --sf-toggle-inner-wrap--background-color: var(--sf-disable);
+}
+
+.sf-toggle:not(:disabled):not(.disabled):active {
+  --sf-toggle--color: var(--sf-on-surface);
+}
+
+.sf-toggle:not(:disabled):not(.disabled):active .sf-toggle-container {
+  --sf-toggle-container--background-color: var(--sf-primary);
+}
+
+.sf-toggle.sf-toggle--simple .sf-toggle-inner {
+  --sf-toggle-inner--border-end-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-end-start-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-start-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-start-start-radius: var(--sf-radius-circle);
+}
+
+.sf-toggle.sf-toggle--short .sf-toggle-inner {
+  --sf-toggle-inner--background-color: var(--sf-surface-0);
+  --sf-toggle-inner--border-end-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-end-start-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-start-end-radius: var(--sf-radius-circle);
+  --sf-toggle-inner--border-start-start-radius: var(--sf-radius-circle);
+}
+}
+
+@layer sf.states {
+  @media (forced-colors: active) {
+    .sf-toggle .sf-toggle-container {
+      forced-color-adjust: none;
+      background-color: Canvas;
+      outline-color: ButtonText;
+    }
+    .sf-toggle .sf-toggle-inner { background-color: ButtonText; }
+    .sf-toggle.sf-toggle--icon .sf-toggle-inner-wrap { background-color: ButtonText; }
+    .sf-toggle.sf-toggle--icon .sf-icon { color: Canvas; }
+    .sf-toggle.sf-toggle--short .sf-toggle-inner-wrap {
+      background-color: Canvas;
+      outline-color: ButtonText;
+    }
+    .sf-toggle:has(input:checked) .sf-toggle-container {
+      background-color: Highlight;
+      outline-color: Highlight;
+    }
+    .sf-toggle:has(input:checked) .sf-toggle-inner { background-color: HighlightText; }
+    .sf-toggle.sf-toggle--icon:has(input:checked) .sf-toggle-inner-wrap { background-color: HighlightText; }
+    .sf-toggle.sf-toggle--icon:has(input:checked) .sf-icon { color: Highlight; }
+    .sf-toggle.sf-toggle--short:has(input:checked) .sf-toggle-inner-wrap {
+      background-color: Highlight;
+      outline-color: Highlight;
+    }
+    .sf-toggle:has(input:disabled) .sf-toggle-container {
+      background-color: Canvas;
+      outline-color: GrayText;
+    }
+    .sf-toggle:has(input:disabled) .sf-toggle-inner { background-color: GrayText; }
+    .sf-toggle.sf-toggle--icon:has(input:disabled) .sf-toggle-inner-wrap { background-color: GrayText; }
+    .sf-toggle.sf-toggle--icon:has(input:disabled) .sf-icon { color: Canvas; }
+    .sf-toggle.sf-toggle--short:has(input:disabled) .sf-toggle-inner-wrap {
+      background-color: Canvas;
+      outline-color: GrayText;
+    }
+    .sf-toggle:has(input:not(:disabled):not(.disabled):focus-visible) .sf-toggle-control {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+    }
+  }
+}

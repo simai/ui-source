@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../opacity/default/scss/sf_var__opacity' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER OPACITY
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $opacity-name, $opacity-value in $opacity-array {
+            .#{$infix}divider-opacity-#{$opacity-name},
+            .#{$infix}divide-opacity-#{$opacity-name} {
+                --sf-divider--alfa: #{$opacity-value};
+            }
+        }
+    }
+// }
+}

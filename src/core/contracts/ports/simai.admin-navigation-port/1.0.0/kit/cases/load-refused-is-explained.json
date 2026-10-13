@@ -1,0 +1,29 @@
+{
+  "id": "load-refused-is-explained",
+  "intent": "navigation.load",
+  "summary": "A refused read is explained, not drawn as an empty menu.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "connected",
+      "site": "no-such-site"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

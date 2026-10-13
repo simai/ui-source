@@ -1,0 +1,120 @@
+// SIMAI Framework
+// https://simai.io
+
+// LINK DEFAULT
+
+// Link Variables
+@use 'vars/sf_var__link' as linkVars;
+@use 'mix/mix__breakpoint' as bpMixin;
+@use "vars/sf_var__breakpoint" as bp;
+
+@layer sf.base {
+:root {
+  --sf-link--underline-weight: var(--sf-px);
+  --sf-link--underline-dotted: var(--sf-a3);
+  --sf-link--underline-dashed: var(--sf-a6);
+}
+
+// @include layer-priority(base,default) {
+// All Link Default Settings
+button:not(:disabled) {
+  &:not([class*="cursor-"]) {
+    cursor: pointer;
+  }
+}
+
+a {
+  &[href] {
+    cursor: pointer;
+  }
+  text-decoration: none;
+  //color: var(--sf-link);
+  //text-decoration-color: var(--sf-link);
+  //text-decoration-thickness: var(--sf-px);
+
+  // Hover, active, visited link color
+  @each $link-name, $link-color in linkVars.$link-color-array {
+    &:#{$link-name}:not(.sf-button) {
+      color: #{$link-color};
+      text-decoration-color: #{$link-color};
+    }
+  }
+}
+
+// Text Link Default Settings
+a:not([class]),
+a[class*=link-],
+[class*=link-] ~ a {
+  color: var(--sf-link);
+  // No outline reset here: it also removed the keyboard ring, so a link was
+  // invisible to anyone moving through the page with Tab. Browsers draw the
+  // default ring only for :focus-visible anyway, and ours replaces it.
+  text-decoration-color: var(--sf-link);
+  text-underline-offset: var(--sf-a3);
+
+  // Hover, active, visited link underline color
+  @each $link-name, $link-color in linkVars.$link-underline-array {
+    &:#{$link-name} {
+      text-decoration-color: #{$link-color};
+      color: #{$link-color};
+    }
+  }
+}
+
+.disabled {
+  a,
+  a[href],
+  a:not([class]),
+  a[class*=link-],
+  [class*=link-] ~ a {
+    color: inherit;
+    cursor: default;
+    text-decoration-color: currentColor;
+  }
+}
+
+// Text Utilites For Breakpoints
+// For breakpoints use prefix:
+// 	 sm:link-inherit
+// 	 lg:l-underline
+@include bpMixin.breakpoint-media(xs) {
+  $infix: bpMixin.breakpoint-infix(xs, bp.$breakpoint-array);
+
+  // Link Inherit Color Utility
+  // For link and hover link
+  a.#{$infix}link-inherit,
+  .#{$infix}link-inherit a,
+  a.#{$infix}link-inherit-link,
+  .#{$infix}link-inherit-link a {
+    text-decoration-color: currentColor;
+    color: var(--sf-current);
+  }
+  // For link only
+  a.#{$infix}link-inherit-link:hover,
+  .#{$infix}link-inherit-link a:hover {
+    text-decoration-color: currentColor;
+    color: var(--sf-current);
+  }
+
+  // Link Underlineless Utility
+  a.#{$infix}link-underline-none,
+  .#{$infix}link-underline-none a,
+  a.#{$infix}link-underline-none:hover,
+  .#{$infix}link-underline-none a:hover {
+    text-decoration-line: none;
+  }
+
+  // Dotted link style
+  a.#{$infix}link-dotted,
+  .#{$infix}link-dotted a {
+    text-decoration-style: dotted;
+  }
+
+  // Dashed link style
+  a.#{$infix}link-dashed,
+  .#{$infix}link-dashed a {
+    text-decoration-style: dashed;
+  }
+}
+}
+// }

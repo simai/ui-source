@@ -1,0 +1,259 @@
+{
+  "schema": "simai.manifest-defaults.v1",
+  "rule": "A manifest default is what the component does when the attribute is absent. tests/browser/manifest-defaults.browser.mjs renders each Smart component with no attributes and compares every manifest default with the value its template receives (else its getter, else getProp). Empty values (null, undefined, '', false, []) count as equal, and a list given as JSON or comma-separated text equals the array. A default derived from the page or generated per instance is exempt with its reason; a known wrong default waits under pending with its owner. An entry that no longer differs fails, so neither list can go stale.",
+  "why": "Consumers, the documentation site and the studio read the manifest. sf-dropdown rendered outlined while its manifest promised filled; sf-admin-menu's labels were Russian while its manifest said English; four other defaults were missing.",
+  "checked_by": "tests/browser/manifest-defaults.browser.mjs",
+  "derived": [
+    {
+      "component": "country-code",
+      "prop": "locale",
+      "reason": "Follows the page when not set: ru on a Russian page, en otherwise."
+    },
+    {
+      "component": "datepicker",
+      "prop": "locale",
+      "reason": "Follows the page: the document's lang, else the browser's language."
+    },
+    {
+      "component": "datepicker",
+      "prop": "month",
+      "reason": "The current month when not set; the manifest's null means 'today'."
+    },
+    {
+      "component": "datepicker",
+      "prop": "year",
+      "reason": "The current year when not set; the manifest's null means 'today'."
+    },
+    {
+      "component": "drawer",
+      "prop": "zIndex",
+      "reason": "The template composes the drawer's layer from its token when no z-index is given."
+    },
+    {
+      "component": "gallery",
+      "prop": "modalId",
+      "reason": "Generated per instance when not set."
+    },
+    {
+      "component": "modal",
+      "prop": "modalId",
+      "reason": "Generated per instance when not set."
+    },
+    {
+      "component": "range-slider",
+      "prop": "start",
+      "reason": "The template takes the initial value (value, else start, else 0); the start attribute itself is empty."
+    },
+    {
+      "component": "alert",
+      "prop": "closeLabel",
+      "reason": "The page language's text when not set: \"Close alert\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "avatar",
+      "prop": "ariaLabel",
+      "reason": "The page language's text when not set: \"Avatar\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "breadcrumbs",
+      "prop": "ariaLabel",
+      "reason": "The page language's text when not set: \"Breadcrumb\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "breadcrumbs",
+      "prop": "expandLabel",
+      "reason": "The page language's text when not set: \"Show hidden breadcrumbs\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "drawer",
+      "prop": "closeLabel",
+      "reason": "The page language's text when not set: \"Close drawer\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "dropdown",
+      "prop": "searchPlaceholder",
+      "reason": "The page language's text when not set: \"Search\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "file-preview",
+      "prop": "ariaLabel",
+      "reason": "The page language's text when not set: \"File\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "file-preview",
+      "prop": "downloadLabel",
+      "reason": "The page language's text when not set: \"Download file\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "file-preview",
+      "prop": "removeLabel",
+      "reason": "The page language's text when not set: \"Remove file\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "file-upload",
+      "prop": "linkText",
+      "reason": "The page language's text when not set: \"Click to upload\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "modal",
+      "prop": "title",
+      "reason": "The page language's text when not set: \"Dialog\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "ariaLabel",
+      "reason": "The page language's text when not set: \"Result pages\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "pagesLabel",
+      "reason": "The page language's text when not set: \"Pages:\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "pageLabel",
+      "reason": "The page language's text when not set: \"Page\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "previousLabel",
+      "reason": "The page language's text when not set: \"Previous page\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "nextLabel",
+      "reason": "The page language's text when not set: \"Next page\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "lastLabel",
+      "reason": "The page language's text when not set: \"Last\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "totalLabel",
+      "reason": "The page language's text when not set: \"Total:\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "selectedLabel",
+      "reason": "The page language's text when not set: \"Selected:\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "showMoreText",
+      "reason": "The page language's text when not set: \"Show more\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "pageSizeLabel",
+      "reason": "The page language's text when not set: \"Per page:\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "actionApplyText",
+      "reason": "The page language's text when not set: \"Apply\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "actionForAllLabel",
+      "reason": "The page language's text when not set: \"For all\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "actionsLabel",
+      "reason": "The page language's text when not set: \"Action for the selected records\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "actionChooseLabel",
+      "reason": "The page language's text when not set: \"Choose an action\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "actionsRegionLabel",
+      "reason": "The page language's text when not set: \"Actions for the selected\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "clearSelectionLabel",
+      "reason": "The page language's text when not set: \"Clear the selection\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "showCountLabel",
+      "reason": "The page language's text when not set: \"Show the number\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "countingLabel",
+      "reason": "The page language's text when not set: \"Counting\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "firstLabel",
+      "reason": "The page language's text when not set: \"First\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "pagination",
+      "prop": "pageFieldLabel",
+      "reason": "The page language's text when not set: \"Page:\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "spinner",
+      "prop": "label",
+      "reason": "The page language's text when not set: \"Loading...\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "steps",
+      "prop": "ariaLabel",
+      "reason": "The page language's text when not set: \"Steps\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "steps",
+      "prop": "completedLabel",
+      "reason": "The page language's text when not set: \"Completed\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "steps",
+      "prop": "errorLabel",
+      "reason": "The page language's text when not set: \"Error\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "toast",
+      "prop": "closeLabel",
+      "reason": "The page language's text when not set: \"Close message\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "tree-item",
+      "prop": "openLabel",
+      "reason": "The page language's text when not set: \"Open item\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "tree-item",
+      "prop": "closeLabel",
+      "reason": "The page language's text when not set: \"Close item\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "tags",
+      "prop": "closeLabel",
+      "reason": "The page language's text when not set: \"Remove\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "color",
+      "prop": "chooseLabel",
+      "reason": "The page language's text when not set: \"Choose a colour\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "color",
+      "prop": "clearLabel",
+      "reason": "The page language's text when not set: \"Use the inherited colour\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "color",
+      "prop": "inheritedText",
+      "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
+    }
+  ],
+  "pending": []
+}

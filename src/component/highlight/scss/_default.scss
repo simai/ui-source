@@ -1,0 +1,169 @@
+@use 'theme';
+@layer sf.components {
+  /* Line numbers (data-lines): one row per line, the number in a column of
+     its own that copying leaves behind. The rows were spans with no display,
+     so every line ran into one. */
+  .sf-code-lines {
+    display: block;
+  }
+
+  .sf-code-line {
+    display: flex;
+  }
+
+  .sf-code-line__number {
+    flex: none;
+    min-inline-size: var(--sf-code-line--number-size, 3ch);
+    padding-inline-end: var(--sf-space-1\/2);
+    color: var(--sf-on-surface-variant);
+    text-align: end;
+    user-select: none;
+  }
+
+  .sf-code-line__content {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    white-space: pre;
+  }
+
+  .sf {
+    &--highlight {
+      &-head {
+        padding: var(--sf-space-1\/3) var(--sf-space-1);
+        margin-bottom: var(--sf-space-1\/2);
+      }
+
+      &-wrap {
+        padding: 0;
+        height: 100%;
+
+        > .sf-scrollbar__viewport:not([class*='p-']) {
+          padding: var(--sf-space-1);
+        }
+      }
+    }
+  }
+
+  .sf-highlight__head {
+    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    margin: 0;
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-highlight__wrap {
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+  }
+
+  /* Public code-surface composition used by documentation and developer tools. */
+  .sf-code-surface {
+    min-width: 0;
+    overflow: hidden;
+    margin: 0;
+    background: var(--sf-surface-container);
+    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius--surface);
+    color: var(--sf-on-surface);
+  }
+
+  .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
+    margin: 0;
+    padding-block: var(--sf-space-1\/3);
+    padding-inline: var(--sf-space-1);
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-code-surface__scroll {
+    max-width: 100%;
+    margin: 0;
+    padding: var(--sf-space-1);
+    overflow: auto;
+    overscroll-behavior-inline: contain;
+    direction: ltr;
+    text-align: start;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .sf-code-surface__scroll code {
+    display: block;
+    min-inline-size: max-content;
+    padding: 0;
+    white-space: pre;
+    background: transparent;
+  }
+
+  li :is(.sf-highlight, .source) {
+    margin-top: var(--sf-space-1);
+  }
+
+  .theme-dark .hljs,
+  .theme-light .hljs {
+    padding: 0 !important;
+  }
+
+  .source + * {
+    margin-top: var(--sf-space-4);
+  }
+
+  .hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    text-align: center;
+    color: var(--sf-highlight-line-number);
+    vertical-align: top;
+
+    div {
+      border-inline-end: var(--sf-px) solid var(--sf-highlight-line-divider);
+      padding-inline-end: var(--sf-a5);
+    }
+
+    /* your custom style here */
+  }
+
+  /* for block of code */
+  .hljs-ln-code {
+    padding-top: 0;
+    padding-inline-start: var(--sf-b0);
+    padding-bottom: 0;
+  }
+
+  .hljs-ln {
+    border-collapse: collapse
+  }
+
+  .hljs-ln-n:before {
+    content: attr(data-line-number)
+  }
+
+  :is(.sf-highlight, .source) pre {
+    overflow: auto;
+  }
+
+  :is(.sf-highlight, .source) code {
+    font-size: var(--sf-text-medium--size);
+    line-height: var(--sf-text-medium--line-height);
+    direction: ltr;
+    text-align: start;
+  }
+
+  @media (forced-colors: active) {
+    .sf-code-surface {
+      border-color: CanvasText;
+    }
+
+    .hljs-ln-numbers div {
+      border-color: CanvasText;
+    }
+  }
+}

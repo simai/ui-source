@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__text_transform' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+        
+        // Text transform
+        @each $text-transform-name,$text-transform-value in $text-transform-array {
+            .#{$infix}#{$text-transform-name} {
+                text-transform: #{$text-transform-value};
+            }
+        }
+    }
+// }
+}

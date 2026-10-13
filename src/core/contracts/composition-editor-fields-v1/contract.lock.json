@@ -1,0 +1,31 @@
+{
+  "capability": "simai.composition.editor-fields",
+  "checks": {
+    "checks/normalization-parity.php": "sha256:d6ca1869abb521949632451855c381380d4d99d4d9ee7cdb7b4fe67e5590ddfe",
+    "checks/schemas.py": "sha256:38ddc6823628b5c26179d6e237445706dfbb46b13c82f00cf60e08d39c1b02da"
+  },
+  "compatibility": {
+    "editor_manifest": "simai.composition.editor-manifest.v1 unchanged",
+    "existing_fields": "layout.section, layout.columns and content.heading fields unchanged",
+    "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
+    "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
+  },
+  "contractDigest": "sha256:773a3915bc0efe5ce2e0618155b94840f5a0cf687aef024ee92338f5cbbc64ad",
+  "manifests": {
+    "editor:content.heading@1.0.0": "sha256:63c6f36a5e8f13bef0ba76148e52ebee3cccf6ed172439348bf1fbf5dd8c4a46",
+    "editor:layout.columns@1.0.0": "sha256:2ae61587cbbc03102118e0df69719ce9ac881924325f2324037e80ca7350f984",
+    "editor:layout.region@1.0.0": "sha256:a3e9b844b6a0c76b1427b69dae162db99cb0c77233d4b44fda1b857877f4ba85",
+    "editor:layout.section@1.0.0": "sha256:2ffd3221b4535d8344350082769a39e30af5005436f48566fc3dd0df41479f91",
+    "field-kind:choice@1": "sha256:79fac0379d79e1cb0b27fe226e290c24f27b959af2a4ff87f21b9c27b590e297",
+    "field-kind:integer@1": "sha256:7250dd1f0aa126424a5848766c41f4ce8122964dcaf66135cf45487cd3bb0359",
+    "field-kind:text@1": "sha256:9022864f9294f3b48457edecd8909f9eb2300b7d69947225c1a721ada23f0d2f",
+    "field-kind:toggle@1": "sha256:4d65b4741f63b3b9fbf7b22c795ea1ce226521e316702fc182f56cbcda04ddf7"
+  },
+  "normativeFiles": {
+    "README.md": "sha256:8d26b4a95d021a37824324cc263c5cabcaa74cbda9aa364e249dcf97e3b2d36d",
+    "fixtures/field-kinds.json": "sha256:67055aea70a776040c66a84c2183080814a4439c52b53d94db91ffa8b314972f"
+  },
+  "schema": "simai.composition.capability-contract-lock.v1",
+  "status": "owner-accepted-candidate",
+  "version": "1.0.0"
+}

@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__font_family' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FONT FAMILY
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Font Family
+        @each $font-family-name, $font-family-value in $font-family-array {
+            .#{$infix}#{$font-family-name} {
+                font-family: var(--sf-#{$font-family-value})
+            }
+        }
+    }
+// }
+}

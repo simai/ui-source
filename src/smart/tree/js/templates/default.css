@@ -1,0 +1,8 @@
+@layer sf.components {
+  .sf-tree > sf-tree-item > .sf-tree-item > .sf-tree-group {
+    padding-inline-start: var(
+      --sf-tree-item--nested-padding-inline-start,
+      var(--sf-space-3)
+    );
+  }
+}

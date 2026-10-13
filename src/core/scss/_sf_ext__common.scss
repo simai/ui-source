@@ -1,0 +1,24 @@
+// SIMAI Framework
+// https://simai.io
+
+// MAIN COMMON EXTEND
+
+@layer sf.base {
+  // Text margin bottom
+  %text--margin-block-end {
+    margin-block-end: var(--sf-text--margin-end-default);
+  }
+
+  // Transition
+  %transition {
+    transition-property: var(--sf-transition--property);
+    transition-duration: var(--sf-transition--duration);
+    transition-timing-function: var(--sf-transition--timing-function);
+    transition-delay: var(--sf-transition--delay);
+  }
+
+  .bg-surface-overlay {
+    background-color: var(--sf-surface-overlay);
+    backdrop-filter: blur(var(--sf-surface-overlay--blur));
+  }
+}

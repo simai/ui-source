@@ -1,0 +1,53 @@
+{
+  "schema_version": "sf.content-spacing.docs.v1",
+  "source": {
+    "contract_id": "simai.vertical-sizing",
+    "contract_version": "1.3.0",
+    "contract_sha256": "b70d02d6902345e17954eafb44f24052b7478439184286bed5a8df6c69c1fe45"
+  },
+  "ownership": {
+    "token_values": "simai/ui-source",
+    "relationship_selection": "consumer parent flow",
+    "component_outer_margin": "none by default"
+  },
+  "public_tokens": [
+    {
+      "role": "text",
+      "token": "--sf-content--space-text",
+      "spacing_role": "1",
+      "mobile_px": 12,
+      "desktop_px": 16,
+      "purpose": "ordinary text rhythm"
+    },
+    {
+      "role": "related",
+      "token": "--sf-content--space-related",
+      "spacing_role": "2",
+      "mobile_px": 16,
+      "desktop_px": 20,
+      "purpose": "closely related elements inside one composition"
+    },
+    {
+      "role": "block",
+      "token": "--sf-content--space-block",
+      "spacing_role": "3",
+      "mobile_px": 16,
+      "desktop_px": 24,
+      "purpose": "independent content blocks inside one section"
+    },
+    {
+      "role": "section",
+      "token": "--sf-content--space-section",
+      "spacing_role": "4",
+      "mobile_px": 24,
+      "desktop_px": 32,
+      "purpose": "transition to a new content section"
+    }
+  ],
+  "compatibility_bindings": {
+    "--sf-text--space-bottom": "--sf-content--space-text",
+    "--sf-heading--space-top": "--sf-content--space-section",
+    "--sf-heading--space-bottom": "--sf-content--space-text",
+    "--sf-heading--margin": "--sf-heading--space-top"
+  }
+}

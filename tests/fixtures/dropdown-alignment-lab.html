@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dropdown alignment lab</title>
+<!-- Served from the GitHub root by the local fixture server: /ui/distr is the
+     published Core runtime of the checked-out pair. -->
+<link rel="stylesheet" href="/ui/distr/core/css/core.css">
+<link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/icon-buttons/css/icon-buttons.css">
+<link rel="stylesheet" href="/ui/distr/component/checkbox/css/checkbox.css">
+<link rel="stylesheet" href="/ui/distr/component/avatars/css/avatars.css">
+<link rel="stylesheet" href="/ui/distr/component/tags/css/tags.css">
+<link rel="stylesheet" href="/ui/distr/component/flag/css/flag.css">
+<link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css">
+<style>
+body { margin: 0; padding: 16px 16px 60vh; background: var(--sf-surface-0); color: var(--sf-on-surface); font-family: var(--sf-text--family); }
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; max-inline-size: 1200px; }
+</style>
+<script>window.sfPath = '/ui/distr/';</script>
+</head>
+<body>
+<main class="lab-grid" id="lab"></main>
+<script>
+/* Every option kind at every form size in both looks: the alignment probe
+   opens each one and compares the field with its list. */
+const KINDS = {
+  text: ['text', ['First value', 'Second value', 'Third value'], (v) => `<div class="sf-list-item-container">${v}</div>`],
+  icon: ['icon', [['home', 'Home'], ['work', 'Work'], ['star', 'Favourites']], ([i, v]) => `<i class="sf-icon" aria-hidden="true">${i}</i><div class="sf-list-item-container">${v}</div>`],
+  flag: ['icon', [['ru', 'Russian'], ['de', 'German'], ['fr', 'French']], ([c, v]) => `<span class="sf-flag sf-flag--rect" data-country="${c}" aria-hidden="true"></span><div class="sf-list-item-container">${v}</div>`],
+  color: ['color', [['bg-primary', 'Primary'], ['bg-secondary', 'Secondary'], ['bg-success', 'Success']], ([c, v], s) => `<div class="sf-tag sf-tag--color sf-tag--size-${s} flex items-center"><span class="sf-tag-color-icon ${c}" aria-hidden="true"></span><span class="sf-tag-container">${v}</span></div>`],
+  avatar: ['avatar', [['DT', 'Design team'], ['CT', 'Content team'], ['ST', 'Sales team']], ([a, v], s) => `<div class="sf-avatar-label-group sf-avatar-label-group--size-${s} flex items-center"><span class="sf-avatar sf-avatar--size-1/2 sf-avatar--text flex justify-center items-center" aria-hidden="true">${a}</span><span class="sf-avatar-label-group-title">${v}</span></div>`],
+  checkbox: ['checkbox', ['Mail', 'Chat', 'Call'], (v, s) => `<label class="sf-checkbox sf-checkbox--size-${s} flex" aria-hidden="true"><span class="sf-checkbox-box transition flex"><input type="checkbox" tabindex="-1"><span class="sf-icon" aria-hidden="true"></span></span></label><div class="sf-list-item-container">${v}</div>`],
+};
+const html = [];
+for (const look of ['outlined', 'filled']) for (const size of ['1/2', '1', '2']) for (const [name, [type, values, cell]] of Object.entries(KINDS)) {
+  const items = values.map((v, i) => `<div class="sf-list-item sf-list-item--${type} sf-list-item--size-${size} cursor-pointer${i === 0 ? ' selected' : ''}" role="option" tabindex="-1" data-value="${name}${i}"><div class="sf-list-item-wrap">${cell(v, size)}</div></div>`).join('');
+  html.push(`<div class="sf-dropdown sf-dropdown--size-${size} sf-dropdown--${look} sf-dropdown--text flex flex-col" data-lab="${look} ${name} ${size}"${name === 'checkbox' ? ' multiple' : ''}><span class="sf-dropdown-label"><span class="sf-dropdown-text">${look} ${name} ${size}</span></span><div class="sf-dropdown-field cursor-pointer items-cross-center transition flex relative"><input type="text" placeholder="Choose"><button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--size-${size} absolute" aria-label="Open"><i class="sf-icon" aria-hidden="true">keyboard_arrow_down</i></button></div><div class="sf-list flex flex-col"><div class="sf-list-container-wrap"><div class="sf-list-container flex flex-col">${items}</div></div></div></div>`);
+}
+document.getElementById('lab').innerHTML = html.join('');
+/* The core loader marks icons loaded once the font is in; the lab does the same. */
+document.fonts.load('24px "Material Symbols Outlined"', 'home').then(() => document.querySelectorAll('.sf-icon').forEach((i) => i.classList.add('sf-icon-loaded')));
+</script>
+<script src="/ui/distr/component/flag/js/flag.js"></script>
+<script src="/ui/distr/component/dropdown/js/dropdown.js"></script>
+<script src="/ui/distr/component/checkbox/js/checkbox.js"></script>
+</body>
+</html>

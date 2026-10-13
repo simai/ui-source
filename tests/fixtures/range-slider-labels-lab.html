@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — подписи диапазона</title>
+  <script>
+    const params=new URLSearchParams(location.search);
+    document.documentElement.dir=params.has('rtl')?'rtl':'ltr';
+    if(params.has('large'))document.documentElement.style.fontSize='32px';
+  </script>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/range-slider/css/range-slider.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/tooltip/css/tooltip.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Подписи границ диапазона</h1>
+  <div id="text" class="sf-range-slider" data-multiple="true" data-start="49,51" data-label="text" data-suffix=" километров в час" aria-label="Скорость"></div>
+  <div id="tooltip" class="sf-range-slider" data-multiple="true" data-start="0,100" data-label="tooltip" data-suffix=" километров в час" aria-label="Скорость"></div>
+  <sf-range-slider id="smart-text" multiple start="49,51" label="text" suffix=" километров в час" aria-label="Скорость"></sf-range-slider>
+  <sf-range-slider id="smart-tooltip" multiple start="0,100" label="tooltip" suffix=" километров в час" aria-label="Скорость"></sf-range-slider>
+  <p>Следующий блок не должен пересекаться с подписями.</p>
+</main>
+<script src="../../source/output/action-focus-browser/component/range-slider/js/range-slider.js"></script>
+<script src="../../source/output/action-focus-browser/smart/range-slider/js/range-slider.js"></script>
+</body></html>

@@ -1,0 +1,151 @@
+@layer sf.components {
+.sf-radio-button {
+  min-width: 0;
+}
+
+.sf-radio-button:not(.disabled):has(input:not(:disabled)) {
+  cursor: pointer;
+}
+
+.sf-radio-button:has(input:disabled) {
+  cursor: default;
+}
+
+.sf-radio-button .sf-radio-button-container {
+  min-width: 0;
+}
+
+.sf-radio-button .sf-radio-button-box {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* The native control is the hit area. It covers the mark and reaches at
+   least 24px on each axis (WCAG 2.2, 2.5.8) where the mark is smaller: a size
+   1/2 mark is 16px on mobile, a size 1 mark 20. The inset only goes negative,
+   evenly on both sides, so a larger mark keeps its own box and RTL needs
+   nothing. The mark itself does not change. */
+.sf-radio-button .sf-radio-button-box > input[type='radio'] {
+  position: absolute;
+  inset: min(0px, calc((100% - var(--sf-c2)) / 2)) min(0px, calc((100% - var(--sf-c2)) / 2));
+  inline-size: max(100%, var(--sf-c2));
+  block-size: max(100%, var(--sf-c2));
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.sf-radio-button .sf-radio-button-text {
+  white-space: var(--sf-radio-button-text--white-space, normal);
+  overflow-wrap: anywhere;
+}
+
+.sf-radio-group--font {
+  gap: var(--sf-space-1\/4);
+  flex-wrap: wrap;
+}
+
+.sf-radio-wrap--type-font {
+  align-items: flex-start;
+  gap: var(--sf-space-1\/3);
+  min-width: 0;
+}
+
+.sf-radio-wrap--type-font:hover {
+  --sf-radio-button--background-color: transparent;
+}
+
+.sf-radio-button--type-font {
+  position: relative;
+}
+
+.sf-radio-button--type-font .sf-radio-text {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  color: var(--sf-on-surface);
+  background-color: var(--sf-surface-0);
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+  font-family: var(--sf-radio-font--family, inherit);
+  font-style: normal;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--sf-duration-fast);
+  transition-timing-function: var(--sf-animation);
+}
+
+.sf-radio-button--type-font.sf-radio-button--size-1\/2 .sf-radio-text {
+  inline-size: var(--sf-d1);
+  block-size: var(--sf-c1);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button--type-font.sf-radio-button--size-1 .sf-radio-text {
+  inline-size: var(--sf-d2);
+  block-size: var(--sf-c2);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-radio-button--type-font.sf-radio-button--size-2 .sf-radio-text {
+  inline-size: var(--sf-d4);
+  block-size: var(--sf-c4);
+  font-size: var(--sf-text-size-2);
+  line-height: var(--sf-text-height-2);
+}
+
+.sf-radio-button--type-font:has(input:not(:disabled):hover) .sf-radio-text {
+  border-color: var(--sf-primary-hover);
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-radio-button--type-font .sf-radio-text.active {
+  color: var(--sf-on-primary);
+  background-color: var(--sf-primary);
+  border-color: var(--sf-primary);
+}
+
+.sf-radio-button--type-font:has(input:focus-visible) .sf-radio-text {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
+  color: var(--sf-on-disable);
+  background-color: var(--sf-surface-0);
+  border-color: var(--sf-outline-disable);
+}
+
+@media (forced-colors: active) {
+  .sf-radio-button--type-font .sf-radio-text {
+    forced-color-adjust: none;
+    color: ButtonText;
+    background-color: Canvas;
+    border-color: ButtonText;
+  }
+
+  .sf-radio-button--type-font .sf-radio-text.active {
+    color: HighlightText;
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
+  .sf-radio-button--type-font:has(input:focus-visible) .sf-radio-text {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline-offset: var(--sf-focus-outline-width);
+    box-shadow: none;
+  }
+
+  .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
+    color: GrayText;
+    border-color: GrayText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-radio-button--type-font .sf-radio-text {
+    transition-duration: 0s;
+  }
+}
+}

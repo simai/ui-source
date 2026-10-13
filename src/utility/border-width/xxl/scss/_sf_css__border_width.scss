@@ -1,0 +1,50 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__border_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BORDER
+
+$mobile: xxl;
+
+// @include layer-priority(utility,$mobile) {
+    @include breakpoint-media($mobile) {
+        $infix: breakpoint-infix($mobile, $breakpoint-array);
+
+        // All Border Sides Property
+        // Border Width
+        @each $width-name, $width-value in $border-width-array {
+            .#{$infix}border-#{$width-name} { border-width: var(--sf-#{$width-value});}
+        }
+
+        // Border Sides Property
+        @each $side-name in $border-side-array {
+            @each $width-name, $width-value in $border-width-array {
+                // Horizontal Borders Property
+                @if ($side-name == top) or ($side-name == inline-end) or ($side-name == bottom) or ($side-name == inline-start) {
+                    // Border Width
+                    .#{$infix}border-#{$side-name}-#{$width-name} {
+                        border-#{$side-name}-width: var(--sf-#{$width-value});
+                    }
+                }
+
+                @if $side-name == x {
+                    .#{$infix}border-#{$side-name}-#{$width-name} {
+                        border-inline-end-width: var(--sf-#{$width-value});
+                        border-inline-start-width: var(--sf-#{$width-value});
+                    }
+                }
+
+                @if $side-name == y {
+                    .#{$infix}border-#{$side-name}-#{$width-name} {
+                        border-top-width: var(--sf-#{$width-value});
+                        border-bottom-width: var(--sf-#{$width-value});
+                    }
+                }
+            }
+        }
+    }
+// }
+}

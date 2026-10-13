@@ -1,0 +1,51 @@
+@layer sf.components {
+    .sf-tag .sf-tag-action {
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        gap: var(--sf-tag--gap, var(--sf-a1));
+        cursor: pointer;
+        /* The ring is drawn by the tag around it, so the bare control does not
+           draw a second one. Paired with the :focus-visible rule below. */
+        outline: none;
+    }
+
+    .sf-tag .sf-tag-action:disabled {
+        cursor: default;
+    }
+
+    .sf-tag--interactive:has(> .sf-tag-action:focus-visible) {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+        outline-offset: var(--sf-focus--offset);
+    }
+
+    @media (forced-colors: active) {
+        .sf-tag--interactive:has(> .sf-tag-action:focus-visible) {
+            outline: var(--sf-focus-outline-width) solid currentColor;
+            outline-offset: var(--sf-focus-outline-width);
+            box-shadow: none;
+        }
+    }
+}
+
+@layer sf.states {
+    .sf-tag.sf-tag--color.disabled > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--icon.disabled > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--default.disabled > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--avatar.disabled > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+        --sf-close-icon--background-color: var(--sf-disable);
+    }
+}
+
+@layer sf.overrides {
+    .sf-tag.sf-tag--color > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--icon > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--default > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon, .sf-tag.sf-tag--avatar > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+        --sf-close-icon--background-color: var(--sf-on-surface-variant);
+    }
+
+    .sf-tag.sf-tag--size-1\/2 > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+        --sf-close-icon--font-size: var(--sf-text-size-1\/4);
+        --sf-close-icon--height: var(--sf-text-size-1\/4);
+        --sf-close-icon--width: var(--sf-text-size-1\/4);
+    }
+}

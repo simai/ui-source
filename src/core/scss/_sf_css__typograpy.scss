@@ -1,0 +1,220 @@
+// SIMAI Framework
+// https://simai.io
+
+// TYPOGRAPHY CSS
+@use '../../utility/line-height/default/scss/sf_var__line_height' as lineHeightVars;
+@use '../../utility/font-weight/default/scss/sf_var__font_weight' as fontWeightVars;
+@use '../../utility/letter-spacing/default/scss/sf_var__letter_spacing' as letterSpacingVars;
+@use '../../utility/text-max-width/default/scss/sf_var__text_measure' as textMeasureVars;
+@use '../figma_variables/figma_input_floating_the_others.scss';
+@use '../figma_variables/figma_input_floating_active.scss';
+@use "../figma_variables/figma_icon_sizes";
+@use '../figma_variables/figma_text_text_size.scss';
+@use '../figma_variables/figma_text_body_text_height.scss';
+@use '../figma_variables/figma_text_title_height.scss';
+@use '../figma_variables/figma_typography_roles.scss';
+@use '../figma_variables/figma_ui_text_space_x.scss';
+@use '../figma_variables/figma_ui_space_x.scss';
+@use '../figma_variables/figma_ui_radius.scss';
+@use '../figma_variables/figma_ui_tightness_default.scss';
+@use '../figma_variables/figma_ui_tightness_low.scss';
+@use '../figma_variables/figma_ui_tightness_high.scss';
+@use '../figma_variables/figma_ui_tightness_highest.scss';
+@use '../figma_variables/figma_ui_control_height.scss';
+@use '../figma_variables/figma_uncategorized.scss';
+
+// ------------------------------------------------
+
+@use '../figma_variables/figma_typography_styles';
+@layer sf.base {
+  body .sf-icon:not(.sf-icon-loaded) {
+    font-size: 0 !important;
+  }
+
+  button {
+    padding: 0;
+    background: none;
+  }
+
+  div[role='button']:not(.disabled):not([disabled]):not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  input, textarea {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-height: auto;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  :root {
+    --sf-font-weight-regular: 400;
+    --sf-font-weight-medium: 500;
+    --sf-font-weight-bold: 700;
+    --sf-font-weight-light: 300;
+    --sf-space-auto: auto;
+    //
+    --sf-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --sf-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --sf-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+    // Text margin end default variable
+    // --sf-text--margin-end-default: var(--sf-text-size-2);
+
+    // Text size variables
+    // Text size have differents value for desktop and mobile devices
+
+    // Headings Variables
+    --sf-heading--font-family: inherit;
+    --sf-heading--font-weight: 600;
+    --sf-heading--font-style: normal;
+
+    //
+    --sf-text--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sf-heading--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sf-display--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    // Default text variables
+    --sf-text--size: var(--sf-text--size-1);
+    --sf-text--height: var(--sf-text--height-1);
+    --sf-text--weight: 400; //var(--sf-text--font-weight-regular);
+    --sf-heading--weight: 700;
+    --sf-display--weight: 300;
+    --sf-text--style: inherit;
+    --sf-text--tracking: inherit;
+    --sf-mark--color: var(--sf-warning-transparent-overlay);
+    --sf-code--color: var(--sf-tertiary);
+    --sf-code--background: var(--sf-tertiary-container);
+    --sf-code--font-family: var(--sf-mono);
+    --sf-code--radius: var(--sf-radius-1\/3);
+
+    // Relative line height variables
+    @each $line-height-name, $line-height-value in lineHeightVars.$line-height-array {
+      --sf-text--line-height-#{$line-height-name}: #{$line-height-value};
+    }
+
+    // Font weight variables
+    @each $font-weight-name, $font-weight-value in fontWeightVars.$font-weight-array {
+      --sf-text--font-weight-#{$font-weight-name}: #{$font-weight-value};
+    }
+
+    // Text tracking utilities variables
+    @each $tracking-name, $tracking-value in letterSpacingVars.$letter-spacing-array {
+      --sf-text--tracking-#{$tracking-name}: #{$tracking-value};
+    }
+
+    // Text measure utilities variables
+    @each $measure-name, $measure-value in textMeasureVars.$text-measure-array {
+      --sf-text--measure#{$measure-name}: #{$measure-value};
+    }
+
+  }
+
+  // Text default properties
+  body {
+    font-style: var(--sf-text--style);
+    font-size: var(--sf-text--size);
+    line-height: var(--sf-text--height);
+    font-weight: var(--sf-text--weight);
+    font-family: var(--sf-text--family);
+    letter-spacing: var(--sf-text--tracking);
+    text-decoration-color: var(--sf-outline);
+  }
+
+  // Compact density: dense applications (admin panels, tables) keep the
+  // mobile body step on desktop. Set data-sf-density="compact" on <html>
+  // or on a region; the ladder steps stay the same, only the default moves.
+  // On <html> it sets the variables only and body reads them: a font-size on
+  // the root element would move rem, and with it every step of the ladder.
+  @media (min-width: 60rem) {
+    [data-sf-density="compact"] {
+      --sf-text--size: var(--sf-text--size-1\/2);
+      --sf-text--height: var(--sf-text--height-1\/2);
+    }
+
+    [data-sf-density="compact"]:not(:root) {
+      font-size: var(--sf-text--size);
+      line-height: var(--sf-text--height);
+    }
+  }
+
+  // Content settings
+  p,
+  table,
+  ol,
+  ul,
+  q,
+  blockquote {
+    word-break: break-word;
+    margin-bottom: var(
+                    --sf-text--space-bottom
+    ); //var(--sf-text--margin-end-default);
+  }
+
+  .label-small {
+    font-size: var(--sf-label-small--size);
+    line-height: var(--sf-label-small--height);
+  }
+
+  .label,
+  .label-medium {
+    font-size: var(--sf-label-medium--size);
+    line-height: var(--sf-label-medium--height);
+  }
+
+  .label-large {
+    font-size: var(--sf-label-large--size);
+    line-height: var(--sf-label-large--height);
+  }
+
+  .body-text-small,
+  .text-small {
+    font-size: var(--sf-text-small--size);
+    line-height: var(--sf-text-small--height);
+  }
+
+  .body-text,
+  .body-text-medium,
+  .text,
+  .text-medium {
+    font-size: var(--sf-text-medium--size);
+    line-height: var(--sf-text-medium--height);
+  }
+
+  .body-text-large,
+  .text-large {
+    font-size: var(--sf-text-large--size);
+    line-height: var(--sf-text-large--height);
+  }
+
+  // Display role selectors are defined in figma_typography_styles.scss:
+  // .sf-display-1..6, .display1..6, .d1..6
+  // @include layer-priority(base,default) {
+  // List settings
+  ul {
+    display: block;
+    list-style-type: disc;
+    list-style-position: outside;
+    margin-block-start: var(--sf-text--size-2);
+    // margin-block-end: var(--sf-text--size-2);
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: var(--sf-text--size-2);
+  }
+
+  // Code Settings
+  code {
+    // Токен веса называется --sf-weight--regular; такого имени в теме нет,
+    // и код терял обычное начертание.
+    font-weight: var(--sf-weight--regular);
+    // Роли text-primary в теме нет; текст кода берёт основную роль текста.
+    color: var(--sf-on-surface);
+  }
+}
+
+// }

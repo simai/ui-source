@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__align_items' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// FLEX ALIGN ITEMS
+// @include layer-priority(utility,xl) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+
+        // Flex Align Items Utilities
+        @each $flex-align-items-name, $flex-align-items-value in $flex-align-items-array {
+            .#{$infix}items-cross-#{$flex-align-items-name} {
+                align-items: #{$flex-align-items-value};
+            }
+        }
+    }
+// }
+}

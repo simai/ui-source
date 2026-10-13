@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.list-item",
+  "title": "List Item reference",
+  "summary": "Deterministic reference fixture for sf-list-item.",
+  "locale": "ru",
+  "props": {
+    "value": "open",
+    "text": "Пункт списка",
+    "icon": "star"
+  },
+  "children": [],
+  "state": "default"
+}

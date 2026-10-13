@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emoji presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/emoji-browser/component/emoji.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <h1>Emoji</h1>
+    <p>Сборка завершена <span class="sf-emoji" aria-hidden="true">🎉</span> и готова к проверке.</p>
+    <p><span class="sf-emoji" role="img" aria-label="Запуск проекта">🚀</span> — самостоятельный смысловой символ.</p>
+    <section class="flex flex-wrap gap-3 items-cross-center" aria-label="Размеры emoji">
+      <span class="sf-emoji sf-emoji--size-1/3" aria-hidden="true">🙂</span>
+      <span class="sf-emoji sf-emoji--size-1/2" aria-hidden="true">🙂</span>
+      <span class="sf-emoji sf-emoji--size-1" aria-hidden="true">🙂</span>
+      <span class="sf-emoji sf-emoji--size-2" aria-hidden="true">🙂</span>
+      <span class="sf-emoji sf-emoji--size-3" aria-hidden="true">🙂</span>
+    </section>
+    <h2 id="programmatic-label">Программный API</h2>
+    <section id="programmatic" class="flex flex-wrap gap-2 items-cross-center" aria-labelledby="programmatic-label"></section>
+  </main>
+  <script src="../../source/output/emoji-browser/component/emoji.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+
+    const Emoji = new Map(window.SF_PENDING_COMPONENTS || []).get('Emoji');
+    if (Emoji) {
+      const programmatic = document.getElementById('programmatic');
+      programmatic.append(new Emoji({param: {emoji: '✅', label: 'Проверка пройдена'}}).render());
+      programmatic.append(new Emoji({param: {emoji: '✨', decorative: true}}).render());
+      programmatic.append(new Emoji({
+        param: {emoji: '💡'},
+        attrs: {'aria-labelledby': 'programmatic-label'},
+      }).render());
+    }
+  </script>
+</body>
+</html>

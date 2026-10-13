@@ -1,0 +1,1 @@
+SF.RuleLoader['transition-property/lg'] = new RegExp("^(?:lg:transition(?:-(?:all|colors|flex(?:-basis)?|height|layout|max-(?:height|size|width)|none|opacity|s(?:hadow|ize)|transform|width))?)(?![\\s\\S])");

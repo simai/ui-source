@@ -1,0 +1,73 @@
+@layer sf.overrides {
+  .sf-datepicker-day.sf-datepicker-day-start, .sf-datepicker-day.sf-datepicker-day-end {
+    --sf-datepicker-day--background-color: var(--sf-primary);
+  }
+  .sf-datepicker-day.sf-datepicker-day-start:not(.sf-datepicker-day.sf-datepicker-day-end) {
+    --sf-datepicker-day--border-end-end-radius: 0;
+    --sf-datepicker-day--border-start-end-radius: 0;
+  }
+  .sf-datepicker-day.sf-datepicker-day-end:not(.sf-datepicker-day.sf-datepicker-day-start) {
+    --sf-datepicker-day--border-end-start-radius: 0;
+    --sf-datepicker-day--border-start-start-radius: 0;
+  }
+  /* A day from the next or previous month can be picked, so its number is text
+     a person has to read: WCAG 1.4.3 asks 4.5:1. Half opacity over the whole
+     cell gave 3.3:1. The muted text role gives about 6.4:1 on a light surface,
+     and an elevation class re-points it on a raised one, so the popup keeps it
+     in the dark theme too. The opacity hook stays for projects that set it,
+     at full by default. */
+  .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) {
+    --sf-datepicker-another-month--opacity: 1;
+    --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
+    opacity: var(--sf-datepicker-another-month--opacity);
+  }
+  .sf-datepicker-day.sf-datepicker-day-start .sf-datepicker-day-date, .sf-datepicker-day.sf-datepicker-day-end .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-primary);
+  }
+  .sf-datepicker-day.sf-datepicker-day-start .sf-datepicker-day-info, .sf-datepicker-day.sf-datepicker-day-end .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-primary);
+  }
+  .sf-datepicker-day.sf-datepicker-day-selected {
+    --sf-datepicker-day--border-end-end-radius: 0;
+    --sf-datepicker-day--border-start-end-radius: 0;
+    --sf-datepicker-day--border-start-start-radius: 0;
+    --sf-datepicker-day--border-end-start-radius: 0;
+    --sf-datepicker-day--background-color: var(--sf-primary-container-active);
+  }
+  .sf-datepicker-day.sf-datepicker-day-selected .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-primary-container);
+  }
+  .sf-datepicker-day.sf-datepicker-day-selected .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-primary-container);
+  }
+.sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-disable);
+}
+
+.sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-disable);
+}
+  .sf-datepicker-text.sf-datepicker-text-start, .sf-datepicker-text.sf-datepicker-text-end {
+    --sf-datepicker-text--background-color: var(--sf-primary);
+    --sf-datepicker-text--color: var(--sf-on-primary);
+  }
+  .sf-datepicker-text.sf-datepicker-text-start {
+    --sf-datepicker-text--border-end-end-radius: var(--sf-radius-square);
+    --sf-datepicker-text--border-start-end-radius: var(--sf-radius-square);
+  }
+  .sf-datepicker-text.sf-datepicker-text-end {
+    --sf-datepicker-text--border-end-start-radius: var(--sf-radius-square);
+    --sf-datepicker-text--border-start-start-radius: var(--sf-radius-square);
+  }
+  .sf-datepicker-text.sf-datepicker-text-selected {
+    --sf-datepicker-text--border-end-end-radius: var(--sf-radius-square);
+    --sf-datepicker-text--border-start-end-radius: var(--sf-radius-square);
+    --sf-datepicker-text--border-start-start-radius: var(--sf-radius-square);
+    --sf-datepicker-text--border-end-start-radius: var(--sf-radius-square);
+    --sf-datepicker-text--background-color: var(--sf-primary-container-active);
+    --sf-datepicker-text--color: var(--sf-on-primary-container);
+  }
+  .sf-datepicker-text:is(:disabled, .disabled) {
+    --sf-datepicker-text--color: var(--sf-on-disable);
+  }
+}

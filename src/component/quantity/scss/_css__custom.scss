@@ -1,0 +1,8 @@
+@layer sf.components {
+.sf-quantity .sf-quantity-wrap input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  text-align: center;
+}
+}

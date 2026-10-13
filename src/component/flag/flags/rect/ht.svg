@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="20 452 28 20" fill="none" role="img">
+<g id="Country=HT">
+<rect id="Mask_196" x="20" y="452" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask89_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="20" y="452" width="28" height="20">
+<rect id="Mask_197" x="20" y="452" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask89_8205_11341)">
+<path id="Rectangle 2_141" fill-rule="evenodd" clip-rule="evenodd" d="M20 461.333H48V452H20V461.333Z" fill="#0052B4"/>
+<path id="Rectangle 2_142" fill-rule="evenodd" clip-rule="evenodd" d="M20 472H48V461.333H20V472Z" fill="#D80027"/>
+<g id="Rectangle 180">
+<rect id="Mask_198" x="29.333" y="458.667" width="9.33333" height="8" rx="0.666667" fill="url(#paint14_linear_8205_11341)"/>
+<mask id="mask90_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="29" y="458" width="10" height="9">
+<rect id="Mask_199" x="29.333" y="458.667" width="9.33333" height="8" rx="0.666667" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask90_8205_11341)">
+<path id="Rectangle 181" d="M32.6289 464.333H35.3701C35.7324 464.333 36.0901 464.418 36.4141 464.58L38.333 465.539V466.333H29.666V465.54L31.5859 464.58C31.9098 464.418 32.2668 464.333 32.6289 464.333Z" fill="#BDBCC1" stroke="#366C14" stroke-width="0.666667"/>
+<path id="Oval 6" fill-rule="evenodd" clip-rule="evenodd" d="M34 464C35.1046 464 36 463.105 36 462C36 460.895 35.1046 460 34 460C32.8954 460 32 460.895 32 462C32 463.105 32.8954 464 34 464Z" fill="#FFDA44"/>
+<path id="Rectangle 182" d="M36.458 463.126C36.6763 462.952 36.999 463.108 36.999 463.387V464.667C36.999 464.851 36.8501 465 36.666 465H31.333C31.1489 465 30.9991 464.851 30.999 464.667V463.387C30.999 463.108 31.3228 462.952 31.541 463.126L33.375 464.593C33.7402 464.885 34.2588 464.885 34.624 464.593L36.458 463.126Z" fill="#FF9811" stroke="#0D3488" stroke-width="0.666667"/>
+<path id="Rectangle 183" fill-rule="evenodd" clip-rule="evenodd" d="M32.569 460.569C32.359 460.359 32.5078 460 32.8047 460H35.1953C35.4922 460 35.641 460.359 35.431 460.569L34.2357 461.764C34.1055 461.894 33.8945 461.894 33.7643 461.764L32.569 460.569Z" fill="#496E2D"/>
+</g>
+</g>
+</g>
+</g>
+<defs><linearGradient id="paint14_linear_8205_11341" x1="29.333" y1="458.667" x2="29.333" y2="466.667" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F0F0F0"/>
+</linearGradient></defs>
+</svg>

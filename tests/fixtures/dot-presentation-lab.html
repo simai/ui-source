@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dot presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/dot-browser/component/dot.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <h1>Точка состояния</h1>
+    <section class="flex gap-3 items-cross-center" aria-label="Размеры точек">
+      <span class="sf-dot sf-dot--size-1/3" aria-hidden="true"><span class="sf-dot-item"></span></span>
+      <span class="sf-dot sf-dot--size-1/2" aria-hidden="true"><span class="sf-dot-item"></span></span>
+      <span class="sf-dot sf-dot--size-1" aria-hidden="true"><span class="sf-dot-item"></span></span>
+      <span class="sf-dot sf-dot--size-2" aria-hidden="true"><span class="sf-dot-item"></span></span>
+    </section>
+    <ul class="grid gap-2 list-none p-0">
+      <li class="flex gap-1 items-cross-center"><span class="sf-dot sf-dot--info" aria-hidden="true"><span class="sf-dot-item"></span></span><span>Идёт обработка</span></li>
+      <li class="flex gap-1 items-cross-center"><span class="sf-dot sf-dot--success" aria-hidden="true"><span class="sf-dot-item"></span></span><span>Сервис доступен</span></li>
+      <li class="flex gap-1 items-cross-center"><span class="sf-dot sf-dot--warning" aria-hidden="true"><span class="sf-dot-item"></span></span><span>Нужна проверка</span></li>
+      <li class="flex gap-1 items-cross-center"><span class="sf-dot sf-dot--error" aria-hidden="true"><span class="sf-dot-item"></span></span><span>Есть ошибка</span></li>
+      <li class="flex gap-1 items-cross-center"><span class="sf-dot sf-dot--neutral" aria-hidden="true"><span class="sf-dot-item"></span></span><span>Нет активности</span></li>
+    </ul>
+    <p>Встроенный статус <span class="sf-dot sf-dot--success" role="img" aria-label="доступен"><span class="sf-dot-item" aria-hidden="true"></span></span> продолжает строку текста.</p>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

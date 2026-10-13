@@ -1,0 +1,26 @@
+@use 'sass:map';
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__container' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// CONTAINER - MAX CONTAINER
+
+$breakpoint: 'desktop';
+@each $m-container-var, $m-container-value in map.get($container-max-array, $breakpoint) {
+    .max-container-#{$m-container-var} .container {
+        width: 100%;
+    }
+}
+
+@include breakpoint-device-media($breakpoint) {
+    @each $m-container-var, $m-container-value in map.get($container-max-array, $breakpoint) {
+        // --sf-container-#{$m-container-var}--size-max: var(--sf-#{$m-container-value});
+        .max-container-#{$m-container-var} .container {
+            max-width: var(--sf-container-#{$m-container-value}--size-max);
+        }
+    }
+}
+}

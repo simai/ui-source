@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Checkbox — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/checkbox-browser/component/checkbox/css/checkbox.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Флажок</h1>
+
+    <form id="ordinary-form" class="grid gap-3">
+      <fieldset class="border-0 p-0 m-0">
+        <legend class="m-bottom-1 weight-6">Каналы уведомлений</legend>
+        <p class="m-top-0 m-bottom-2 color-on-surface-variant">Можно выбрать несколько вариантов</p>
+        <div id="ordinary-group" class="flex flex-col gap-2">
+          <label class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input name="channels[]" value="email" type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Электронная почта</span></span></label>
+          <label class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input name="channels[]" value="push" type="checkbox" checked><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Push-уведомления</span></span></label>
+          <label id="mixed-root" class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input name="summary" value="all" type="checkbox" data-indeterminate><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Выбрана часть каналов</span></span></label>
+        </div>
+      </fieldset>
+      <button id="ordinary-reset" type="reset">Сбросить форму</button>
+    </form>
+
+    <section id="sizes" class="flex flex-col gap-2" aria-label="Размеры">
+      <label class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Обычный размер</span><span class="sf-checkbox-description">Для основной формы</span></span></label>
+      <label class="sf-checkbox sf-checkbox--size-2 flex"><span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Компактный размер</span><span class="sf-checkbox-description">Для плотного списка</span></span></label>
+    </section>
+
+    <section id="states" class="flex flex-col gap-2" aria-label="Состояния">
+      <label class="sf-checkbox error sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input name="consent" type="checkbox" aria-invalid="true"><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Согласие с условиями</span><span class="sf-checkbox-description">Подтвердите согласие перед продолжением</span></span></label>
+      <label class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input type="checkbox" checked disabled><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Недоступный выбранный вариант</span></span></label>
+    </section>
+
+    <section id="position" class="grid gap-2" aria-label="Положение">
+      <label class="sf-checkbox sf-checkbox--size-1 flex content-main-between"><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Индикатор в логическом конце</span></span><span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span></label>
+    </section>
+
+    <form id="smart-form" class="grid gap-2">
+      <sf-checkbox id="smart-default" name="smart-choice" value="news" label="Smart выбор" description="Нативное состояние формы" checked></sf-checkbox>
+      <sf-checkbox id="smart-mixed" label="Smart смешанное состояние" indeterminate></sf-checkbox>
+      <sf-checkbox id="smart-error" label="Smart обязательный выбор" description="Выберите вариант" error></sf-checkbox>
+      <sf-checkbox id="smart-end" label="Smart в логическом конце" position="end"></sf-checkbox>
+      <button id="smart-reset" type="reset">Сбросить Smart</button>
+    </form>
+
+    <label id="long-label" class="sf-checkbox sf-checkbox--size-1 flex"><span class="sf-checkbox-box transition flex"><input type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-label">Очень длинная подпись параметра, которая должна переноситься внутри узкого мобильного контейнера без уменьшения индикатора и без горизонтальной прокрутки</span></span></label>
+  </main>
+
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/action-focus-browser/smart/icons/js/icons.js"></script>
+  <script src="../../source/output/checkbox-browser/component/checkbox/js/checkbox.js"></script>
+  <script src="../../source/output/checkbox-browser/smart/checkbox/js/checkbox.js"></script>
+</body>
+</html>

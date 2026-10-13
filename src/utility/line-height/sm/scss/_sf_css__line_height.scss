@@ -1,0 +1,32 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__font_size' as *;
+@use '../../default/scss/sf_var__line_height' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// LINE HEIGHT
+
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        // Text line height
+        // Fixed line height
+        @each $size in $font-size-array {
+            .#{$infix}line-#{$size} {
+                line-height: var(--sf-text-height-#{$size}); 
+            }
+        }
+
+        // Relative line height
+        @each $line-height-name, $line-height-value in $line-height-array {
+            .#{$infix}line-#{$line-height-name} {
+                line-height: #{$line-height-value};
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,148 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.change-lifecycle",
+  "version": "1.0.0",
+  "title": "SIMAI Framework Change Lifecycle",
+  "appliesTo": [
+    "simai.framework.component",
+    "simai.framework.utility",
+    "simai.framework.token"
+  ],
+  "requirements": [
+    {
+      "id": "one-version-line",
+      "level": "must",
+      "text": "The Framework keeps one version line for a long time. A public name leaves on a calendar, not with a version number: deprecation and removal are dated, and the dates follow a published policy.",
+      "verification": "manual"
+    },
+    {
+      "id": "two-stages",
+      "level": "must",
+      "text": "A public name leaves in two stages. Compat: it still works, through an alias or a shim, and its replacement is documented. Removed: the code is gone. There is no third, undated state.",
+      "verification": "manual"
+    },
+    {
+      "id": "journal-records-every-change",
+      "level": "must",
+      "text": "Every change that asks a consumer to change anything is recorded in a machine-readable change journal: a rename, a retired value, a removed name, a replaced component, a behaviour change. A change without a record is not released.",
+      "verification": "manual"
+    },
+    {
+      "id": "record-says-what-to-write",
+      "level": "must",
+      "text": "A record names each old form and what to write instead, the kind of change, whether the rewrite is mechanical, and, when it is not, an instruction and a before/after example a person or an AI can apply.",
+      "verification": "manual"
+    },
+    {
+      "id": "record-dated-by-policy",
+      "level": "must",
+      "text": "A record carries the date it was deprecated and the sweep day it is removed on, computed by the policy: the first sweep day on or after the deprecation date plus the compat period.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs."
+    },
+    {
+      "id": "journal-append-only",
+      "level": "must",
+      "text": "The journal is append-only. A record is never deleted; a removed name stays as a tombstone, so a consumer on any older pair can still be upgraded by reading it.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs."
+    },
+    {
+      "id": "journal-chronological",
+      "level": "must",
+      "text": "The journal is chronological, so it is also the history of the public surface, readable without the commit log.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs."
+    },
+    {
+      "id": "no-alias-without-record",
+      "level": "must",
+      "text": "Every alias the code keeps (an attribute, a value, an event, a class, a token, a utility, an option) has a record. An alias found in the code without one fails the gate.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs and tests/browser/change-lifecycle.browser.mjs."
+    },
+    {
+      "id": "sweep-on-schedule",
+      "level": "must",
+      "text": "On each sweep day every compat record whose date has passed is removed from the code and marked removed. A compat record past its date fails the gate.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs."
+    },
+    {
+      "id": "extension-once-with-reason",
+      "level": "may",
+      "text": "A record may be extended once, by at most the policy's extension period, with a reason that names the consumer still depending on the name and the date it migrates.",
+      "verification": "manual"
+    },
+    {
+      "id": "compat-out-of-the-way",
+      "level": "should",
+      "text": "Compatibility is resolved in shared places (the base's attribute and value aliases, declared alias tables), not scattered through component code, so removing it touches one place.",
+      "verification": "manual"
+    },
+    {
+      "id": "runtime-notes-use",
+      "level": "must",
+      "text": "A page that uses a legacy name gets it noted at runtime, readable as a list (SF.deprecations.list()). The note is silent by default; a page opts in to console warnings.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/browser/change-lifecycle.browser.mjs."
+    },
+    {
+      "id": "upgrade-from-the-journal",
+      "level": "must",
+      "text": "Upgrading a product reads the journal: a tool finds every old form in the product, rewrites the mechanical ones and lists the rest with their instruction. No upgrade depends on reading prose.",
+      "verification": "manual",
+      "guidance": "Framework: held by scripts/sf-upgrade.mjs."
+    },
+    {
+      "id": "consumers-scanned-before-sweep",
+      "level": "should",
+      "text": "Before a sweep the known consumers are scanned with the upgrade tool and migrated, so a removal breaks nobody who could have been told.",
+      "verification": "manual"
+    },
+    {
+      "id": "documented-for-readers",
+      "level": "must",
+      "text": "The policy, the journal and how to upgrade with it are published in the documentation for readers, and each record's replacement appears where the component is documented.",
+      "verification": "manual"
+    },
+    {
+      "id": "verified-by-gate",
+      "level": "must",
+      "text": "The gate holds the journal's form, the policy's dates, the append-only rule and the alias coverage; a browser check holds the runtime note on built bytes.",
+      "verification": "manual",
+      "guidance": "Framework: held by tests/change-lifecycle.contract.test.mjs."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.change-journal-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/change-journal-1.0.0.schema.json",
+      "sha256": "83ce7198fb4a82917331cc5b397f669d8c8e6e70ef3a96918468244e0ea2c0f1",
+      "description": "The form of a journal record."
+    },
+    {
+      "id": "simai.framework.lifecycle-policy",
+      "version": "1.0.0",
+      "path": "../../pinned/lifecycle-policy-1.0.0.json",
+      "sha256": "f2e4134b6c125d0804c7aa0e29b90a677fa5d205aee351a3b57215c8e3443b00",
+      "description": "The compat period, the sweep day and the extension rule."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "scope_note": "How a public name leaves the Framework and how a product follows it. Which names leave is recorded in contracts/changes/journal.json, not here."
+    }
+  }
+}

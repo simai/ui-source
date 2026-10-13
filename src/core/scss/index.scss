@@ -1,0 +1,40 @@
+/*
+ *	SIMAI Framework
+ *	https://simai.io
+ *
+ *	Copyright (c) 2008-2026 Rim Zabarov and contributors
+ *	Released under the MIT License.
+ */
+
+// Establish layer precedence before any dependency emits CSS.
+@use 'sf_layer_order';
+
+// Variables
+// fix bottom
+@use 'sf_css__border';
+@use '_sf_css__theme';
+@use '_sf_css__theme_custom';
+@use "sf_css__space";
+@use "../figma_variables/figma_opacity";
+@use "../figma_variables/figma_layer_styles";
+@use 'sf_ext__common';
+@use 'sf_css__preset';
+@use 'sf_css__size';
+@use 'sf_css__opacity';
+@use 'sf_css__color';
+@use 'sf_css__scroll';
+@use 'sf_css__max_container';
+// fix bottom
+@use 'sf_css__typograpy';
+@use 'sf_css__link';
+// fix bottom
+@use 'sf_css__breakpoint';
+// fix bottom
+@use 'sf_css__transition';
+@use 'sf_css__loader';
+@use 'sf_css__shadow';
+@use 'sf_css__filter';
+@use 'sf_css__logo';
+@use 'sf_css__viewport';
+@use 'sf_css__fonts';
+@use 'sf_css__composition';

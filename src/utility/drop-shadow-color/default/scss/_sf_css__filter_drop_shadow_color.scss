@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__filter_drop_shadow_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DROP SHADOW COLOR
+$mobile: xs;
+
+@include breakpoint-media($mobile) {
+  $infix: breakpoint-infix($mobile, $breakpoint-array);
+
+  @each $drop-shadow-color-name, $drop-shadow-color-value in $drop-shadow-color-array {
+    .#{$infix}drop-shadow-#{$drop-shadow-color-name} {
+      --sf-shadow--color: var(--sf-#{$drop-shadow-color-value});
+      --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill));
+      --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-outline));
+      --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade));
+      --sf-shadow--color-shade: var(--sf-shadow--color-shading);
+    }
+  }
+}
+}

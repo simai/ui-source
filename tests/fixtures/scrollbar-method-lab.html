@@ -1,0 +1,80 @@
+<!doctype html>
+<html class="theme-light" lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Scrollbar method lab</title>
+  <link rel="stylesheet" href="../../source/output/scrollbar-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/scrollbar-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/scrollbar-browser/component/scrollbar/css/scrollbar.css">
+</head>
+<body>
+  <main class="grid gap-4 p-4">
+    <section>
+      <h1>Полоса прокрутки</h1>
+      <div id="overlay" class="sf-scrollbar h-e4 max-h-e4 w-g0">
+        <div class="sf-scrollbar__viewport p-2" aria-labelledby="overlay-title">
+          <h2 id="overlay-title">Динамический список</h2>
+          <div id="overlay-content" class="grid gap-2">
+            <div class="surface-container p-2 radius-default">Пункт 1</div>
+            <div class="surface-container p-2 radius-default">Пункт 2</div>
+            <div class="surface-container p-2 radius-default">Пункт 3</div>
+            <div class="surface-container p-2 radius-default">Пункт 4</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Режимы</h2>
+      <div id="persistent" class="sf-scrollbar h-e4 max-h-e4 w-g0" data-mode="persistent">
+        <div class="sf-scrollbar__viewport p-2" aria-label="Постоянный список">
+          <div class="grid gap-2">
+            <div class="surface-container p-2">Пункт 1</div><div class="surface-container p-2">Пункт 2</div><div class="surface-container p-2">Пункт 3</div><div class="surface-container p-2">Пункт 4</div>
+          </div>
+        </div>
+      </div>
+      <div id="standard" class="sf-scrollbar h-e4 max-h-e4 w-g0" data-mode="standard">
+        <div class="sf-scrollbar__viewport p-2" aria-label="Системный список">
+          <div class="grid gap-2">
+            <div>Пункт 1</div><div>Пункт 2</div><div>Пункт 3</div><div>Пункт 4</div><div>Пункт 5</div><div>Пункт 6</div>
+          </div>
+        </div>
+      </div>
+      <div id="hidden" class="sf-scrollbar h-e4 max-h-e4 w-g0" data-mode="hidden">
+        <div class="sf-scrollbar__viewport p-2" aria-label="Список без видимой полосы">
+          <div class="grid gap-2">
+            <div>Пункт 1</div><div>Пункт 2</div><div>Пункт 3</div><div>Пункт 4</div><div>Пункт 5</div><div>Пункт 6</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Горизонтальная ось</h2>
+      <div id="horizontal-ltr" class="sf-scrollbar w-g0" data-mode="persistent" data-axis="horizontal">
+        <div class="sf-scrollbar__viewport p-bottom-2" aria-label="Месяцы слева направо">
+          <div class="flex flex-nowrap gap-2 w-max">
+            <div class="surface-container p-2 w-f0 flex-none">Январь</div><div class="surface-container p-2 w-f0 flex-none">Февраль</div><div class="surface-container p-2 w-f0 flex-none">Март</div><div class="surface-container p-2 w-f0 flex-none">Апрель</div>
+          </div>
+        </div>
+      </div>
+      <div id="horizontal-rtl" class="sf-scrollbar w-g0" data-mode="persistent" data-axis="horizontal" dir="rtl">
+        <div class="sf-scrollbar__viewport p-bottom-2" aria-label="Месяцы справа налево">
+          <div class="flex flex-nowrap gap-2 w-max">
+            <div class="surface-container p-2 w-f0 flex-none">يناير</div><div class="surface-container p-2 w-f0 flex-none">فبراير</div><div class="surface-container p-2 w-f0 flex-none">مارس</div><div class="surface-container p-2 w-f0 flex-none">أبريل</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Совместимость</h2>
+      <div id="legacy" class="sf-scrollbar h-e4 max-h-e4 w-g0" data-sf-scrollbar="persistent" data-sf-scrollbar-axis="vertical">
+        <div class="sf-scrollbar__viewport" aria-label="Старый API"><div class="h-g0">Содержимое</div></div>
+      </div>
+    </section>
+  </main>
+  <script src="../../source/output/scrollbar-browser/component/scrollbar/js/scrollbar.js"></script>
+</body>
+</html>

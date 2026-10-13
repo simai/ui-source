@@ -1,0 +1,43 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.property-view-port",
+  "version": "1.9.0",
+  "transport": "neutral",
+  "summary": "Twenty-eight cases: the twenty-five of 1.8.0 byte-identical, one for a layer naming an area the record does not carry, one for a field taken out of an area, and one for the control that opens the record as a page.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "load-applied-carries-the-object",
+    "load-refused-is-explained",
+    "load-unavailable-is-honest",
+    "load-late-answer-is-dropped",
+    "rare-fields-arrive-declared",
+    "group-save-applied-is-one-revision",
+    "group-save-stale-revision-is-a-conflict",
+    "group-save-field-errors-are-refused",
+    "options-page-carries-a-cursor",
+    "options-search-reaches-the-host",
+    "options-without-the-capability",
+    "options-refused-is-explained",
+    "the-address-is-the-hosts",
+    "upload-answers-with-the-stored-file",
+    "upload-refused-is-explained",
+    "removing-a-file-is-a-save",
+    "opening-a-reference-is-the-hosts-decision",
+    "field-presentation-keys-are-declared",
+    "view-save-is-one-layer-one-revision",
+    "view-save-against-a-stale-revision-is-a-conflict",
+    "view-save-rejects-entries-by-kind",
+    "view-reset-answers-with-what-now-resolves",
+    "view-settings-without-the-capability",
+    "a-related-group-is-a-list-not-fields",
+    "a-field-says-what-it-falls-back-to",
+    "view-save-may-name-an-area-the-record-does-not-carry",
+    "a-field-taken-out-of-an-area-is-unplaced",
+    "opening-the-record-as-a-page-is-offered-only-where-it-leads-somewhere"
+  ]
+}

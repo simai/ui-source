@@ -1,0 +1,51 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__absolute' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ELEMENT POSITION
+
+// Set layer piority 
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(sm) {
+        $infix: breakpoint-infix(sm, $breakpoint-array);
+
+        @each $absolute-value-name, $absolute-value-value in $absolute-value-array {
+            @each $absolute-side in $absolute-side-array {
+                $prop: if($absolute-side == inline-start, inset-inline-start, if($absolute-side == inline-end, inset-inline-end, $absolute-side));
+                .#{$infix}#{$absolute-side}-#{$absolute-value-name}{
+                    #{$prop}: #{$absolute-value-value};
+                }
+            }
+        }
+        
+        // Inset
+        .#{$infix}inset-0 {
+            top: 0;
+            inset-inline-end: 0;
+            bottom: 0;
+            inset-inline-start: 0;
+        }
+
+        // Inset to X axes
+        .#{$infix}inset-x-0 {
+            inset-inline-end: 0;
+            inset-inline-start: 0;
+        }
+
+        // Inset to Y axes
+        .#{$infix}inset-y-0 {
+            top: 0;
+            bottom: 0;
+        }
+
+        // Center position
+        .#{$infix}inset-center {
+            inset-inline-start: 50%;
+            top: 50%;
+        }
+    }
+// }
+}

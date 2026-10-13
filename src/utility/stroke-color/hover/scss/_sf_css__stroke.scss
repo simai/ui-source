@@ -1,0 +1,15 @@
+@use '../../default/scss/sf_var__stroke' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SVG - STROKE
+
+$event: hover;
+
+@each $modifier-name, $var-name in $stroke-color-array {
+    .#{$event}\:stroke#{$modifier-name}:#{$event} {
+        stroke: var(--sf-#{$var-name})
+    }
+}
+}

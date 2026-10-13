@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Close — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/close-browser/component/close/css/close.css">
+  <link rel="stylesheet" href="../../source/output/close-browser/component/icon-buttons/css/icon-buttons.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Закрытие</h1>
+
+    <section id="actions" class="flex flex-wrap gap-2 items-cross-center" aria-label="Интерактивные размеры">
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 flex items-cross-center" aria-label="Закрыть уведомление, размер 1/3"><span class="sf-close sf-close--size-1/3 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/2 flex items-cross-center" aria-label="Закрыть уведомление, размер 1/2"><span class="sf-close sf-close--size-1/2 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center" aria-label="Закрыть уведомление, размер 1"><span class="sf-close sf-close--size-1 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-2 flex items-cross-center" aria-label="Закрыть уведомление, размер 2"><span class="sf-close sf-close--size-2 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-3 flex items-cross-center" aria-label="Закрыть уведомление, размер 3"><span class="sf-close sf-close--size-3 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+      <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 flex items-cross-center" aria-label="Недоступное закрытие" disabled><span class="sf-close sf-close--size-1 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>
+    </section>
+
+    <section id="glyphs" class="flex flex-wrap gap-2 items-cross-end" aria-label="Размеры декоративного знака">
+      <span class="sf-close sf-close--size-1/4 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-1/3 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-1/2 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-1 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-2 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-3 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-4 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-5 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-6 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+      <span class="sf-close sf-close--size-7 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span>
+    </section>
+
+    <section class="grid gap-2" aria-label="Smart Close">
+      <sf-close id="smart-glyph" size="1"></sf-close>
+      <sf-close id="smart-invalid" size="unknown"></sf-close>
+      <sf-icon-button id="smart-action" variant="close" type="link" scheme="on-surface" size="1" aria-label="Закрыть Smart уведомление"></sf-icon-button>
+    </section>
+
+    <p id="activation-count" aria-live="polite">Активаций: 0</p>
+  </main>
+
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/close-browser/smart/close/js/close.js"></script>
+  <script src="../../source/output/close-browser/smart/icon-buttons/js/icon-buttons.js"></script>
+  <script>
+    let activations = 0;
+    document.querySelector('#actions button').addEventListener('click', () => {
+      document.querySelector('#activation-count').textContent = `Активаций: ${++activations}`;
+    });
+  </script>
+</body>
+</html>

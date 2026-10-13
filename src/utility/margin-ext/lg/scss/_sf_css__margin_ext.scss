@@ -1,0 +1,63 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// MARGIN
+// @include layer-priority(utility,lg) {
+    @include breakpoint-media(lg) {
+        $infix: breakpoint-infix(lg, $breakpoint-array);
+        
+        // Padding size
+        // For size use text size variables
+        // Atention! Text variables have different size for mobile and destop devices
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+
+                // MARGIN SETTINGS
+                // for all sides
+                .#{$infix}m-#{$size-range-name}#{$size-name} {
+                    margin: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}m-#{$size-range-name}#{$size-name} {
+                    margin: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for top sides
+                .#{$infix}m-top-#{$size-range-name}#{$size-name} {
+                    margin-top: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}m-top-#{$size-range-name}#{$size-name} {
+                    margin-top: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for inline end
+                .#{$infix}m-inline-end-#{$size-range-name}#{$size-name} {
+                    margin-inline-end: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}m-inline-end-#{$size-range-name}#{$size-name} {
+                    margin-inline-end: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for bottom sides
+                .#{$infix}m-bottom-#{$size-range-name}#{$size-name} {
+                    margin-bottom: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}m-bottom-#{$size-range-name}#{$size-name} {
+                    margin-bottom: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+
+                // for inline start
+                .#{$infix}m-inline-start-#{$size-range-name}#{$size-name} {
+                    margin-inline-start: var(--sf-#{$size-range-name}#{$size-name});
+                }
+                .-#{$infix}m-inline-start-#{$size-range-name}#{$size-name} {
+                    margin-inline-start: calc(0rem - var(--sf-#{$size-range-name}#{$size-name}));
+                }
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,60 @@
+@use '../../default/scss/var__shadow' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SHADOW
+
+// $shadowAllClass: '';
+// $infix: hover;
+
+// @each $shadow-name, $shadow-value in $shadow-colored-array {
+//     $shadowAllClass: '#{$shadowAllClass}.#{$infix}\\:shadow-#{$shadow-name}:#{$infix},';
+// }
+
+// @include layer-priority(utility,$infix) {
+    
+    // #{$shadowAllClass} {
+    //     --sf-ring-offset-shadow: 0 0 #0000;
+    //     --sf-ring-shadow: 0 0 #0000;
+    //     --sf-shadow: 0 0 #0000;
+    //     --sf-shadow-colored: 0 0 #0000;
+    // }
+    
+    // // Box Shadow
+    // @each $shadow-name, $shadow-value in $shadow-colored-array {
+    //     .#{$infix}\:shadow-#{$shadow-name}:#{$infix} {
+    //         --sf-shadow: #{$shadow-value};
+    //     }
+    // }
+
+    // #{$shadowAllClass} {
+    //     box-shadow: var(--sf-ring-offset-shadow,0 0 #0000), var(--sf-ring-shadow, 0 0 #0000), var(--sf-shadow);
+    // }
+// }
+
+// Box Shadow
+@each $shadow-name, $shadow-value in $shadow-array {
+    .hover\:shadow-#{$shadow-name}:hover {
+        --sf-shadow--level-ratio: #{$shadow-value};
+        @if $shadow-name == 0 {
+            box-shadow: none;
+        } @else {
+            box-shadow: var(
+                --sf-ui-shadow-#{$shadow-name},
+                0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
+                    calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
+                    calc(-1 * var(--sf-a1) * var(--sf-shadow--level-ratio))
+                    var(--sf-shadow--color-fill),
+                0 calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
+                    calc(var(--sf-a3) * var(--sf-shadow--level-ratio))
+                    0 var(--sf-shadow--color-outline),
+                0 calc(var(--sf-a2) * var(--sf-shadow--level-ratio))
+                    calc(var(--sf-a4) * var(--sf-shadow--level-ratio))
+                    calc(var(--sf-a1) * var(--sf-shadow--level-ratio))
+                    var(--sf-shadow--color-shading)
+            );
+        }
+    }
+}
+}

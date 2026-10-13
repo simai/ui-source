@@ -1,0 +1,180 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.composite-host-port",
+  "version": "1.0.0",
+  "title": "SIMAI Composite Host Port",
+  "appliesTo": [
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "port-declared",
+      "level": "must",
+      "text": "A dynamic composite declares its port in its manifest: the data it accepts, the intents it raises and the settings it keeps, each with a schema. Nothing the component exchanges with its host is left undeclared.",
+      "verification": "manual",
+      "guidance": "Framework: the Smart manifest already declares inputs, methods and events; the port adds what the component exchanges with a host and is read as one contract."
+    },
+    {
+      "id": "port-versioned-separately",
+      "level": "must",
+      "text": "The port carries its own semantic version, independent of the component version, so presentation and behaviour inside the component can change without a port change.",
+      "verification": "manual"
+    },
+    {
+      "id": "port-schemas-closed",
+      "level": "must",
+      "text": "Accepted data, intent payloads and settings are described by closed schemas; a key the port does not declare is not part of the contract and is refused on either side.",
+      "verification": "manual"
+    },
+    {
+      "id": "intent-answers-declared",
+      "level": "must",
+      "text": "Each intent has a stable name, a payload schema, whether it carries a revision, and the answers the host may give: applied, conflict with the current revision, refused with a reason, unavailable.",
+      "verification": "manual",
+      "guidance": "Evidence: the data view raises open, edit, create, delete, restore, bulk archive and settings intents; a host that answers only success leaves the component guessing on a conflict."
+    },
+    {
+      "id": "capabilities-negotiated",
+      "level": "must",
+      "text": "Optional parts of a port are named capabilities. The host announces which it provides for an instance, and the component offers only those; a missing capability is explained, never shown as a broken control.",
+      "verification": "manual",
+      "guidance": "Evidence: saving columns for everyone is a separate permission in Larena; without a declared capability the component shows a control that always fails."
+    },
+    {
+      "id": "permissions-come-with-data",
+      "level": "must",
+      "text": "Permissions travel with the data: the host states, per record and per capability, which actions it allows, and the component offers only those. The component never derives a permission from a field value, a role name or the absence of an error.",
+      "verification": "manual",
+      "guidance": "Evidence: the Larena host sends record.view, record.edit, record.delete and record.restore with every record; a component that guesses shows actions the host will refuse."
+    },
+    {
+      "id": "answer-echoes-request",
+      "level": "must",
+      "text": "An answer echoes the request it answers: the filters, search, sort and window the host actually applied, and whether it refused part of them. The component shows what the host answered, not what the person last typed.",
+      "verification": "manual",
+      "guidance": "Framework: with sequence numbers alone a component can drop a stale answer but cannot tell that the host narrowed the query; the echo makes the difference visible."
+    },
+    {
+      "id": "minor-is-additive",
+      "level": "must",
+      "text": "A minor port version only adds optional data fields, optional intents or capabilities; a host that implements an earlier minor version of the same major keeps working unchanged.",
+      "verification": "manual"
+    },
+    {
+      "id": "major-for-breaking",
+      "level": "must",
+      "text": "Removing or renaming anything, making something required, or changing what a field or intent means is a new major port version.",
+      "verification": "manual"
+    },
+    {
+      "id": "previous-major-kept",
+      "level": "must",
+      "text": "When a port changes its major version, the previous major stays available in published releases for a declared period, and its deprecation names the replacement and the date it ends.",
+      "verification": "manual"
+    },
+    {
+      "id": "host-declares-supported",
+      "level": "must",
+      "text": "A host declares, per component, which port versions it implements; a component binds to a host by that declaration, never by guessing from the responses it gets.",
+      "verification": "manual"
+    },
+    {
+      "id": "mismatch-is-honest",
+      "level": "must",
+      "text": "When the host does not implement the port version a component needs, the component reports the capability as not connected; it never works partially or silently drops what it cannot send.",
+      "verification": "manual",
+      "guidance": "Framework: the data view reports an unconnected capability instead of rendering an empty table."
+    },
+    {
+      "id": "conformance-kit-published",
+      "level": "must",
+      "text": "With every port version the component owner publishes a conformance kit: sample data, the intents the component raises and the answers expected from a host, including conflict, refusal and denial cases.",
+      "verification": "manual",
+      "guidance": "The kit is what lets a second product implement the same port without reading the first host's code."
+    },
+    {
+      "id": "kit-is-transport-neutral",
+      "level": "must",
+      "text": "The conformance kit describes data, intents and answers, not addresses or wire formats, so a host in any language and on any transport can run it.",
+      "verification": "manual"
+    },
+    {
+      "id": "host-claim-backed-by-kit",
+      "level": "must",
+      "text": "A host claims support for a port version only after passing that version's kit; the claim records the kit version, the host revision and the result.",
+      "verification": "manual"
+    },
+    {
+      "id": "reference-host-tested",
+      "level": "should",
+      "text": "The component owner tests each release against a reference host that passes the kit, so a break in the seam is found by the owner before any product upgrades.",
+      "verification": "manual",
+      "guidance": "Framework: the owner gate runs the kit against a reference host, so the seam breaks in the owner's build, not in a product's release."
+    },
+    {
+      "id": "port-owned-by-component-owner",
+      "level": "must",
+      "text": "The port belongs to the owner of the component. A product asks the owner for a change and does not fork or extend the port on its own side.",
+      "verification": "manual"
+    },
+    {
+      "id": "product-rules-in-profiles",
+      "level": "must",
+      "text": "Rules specific to one product, such as its storage, its permission model or its field types, live in that product's profile on top of the port, never in the port itself.",
+      "verification": "manual"
+    },
+    {
+      "id": "change-recorded-with-recheck",
+      "level": "must",
+      "text": "Every port version records what changed and what a host has to re-check, in the lifecycle form of Standard Contract, so a product can tell from the record alone whether an upgrade concerns it.",
+      "verification": "manual",
+      "guidance": "Standard Contract lifecycle form: a product reads the record and decides whether the upgrade concerns it."
+    },
+    {
+      "id": "pinned-by-exact-release",
+      "level": "should",
+      "text": "A product pins a component and its port by an exact published release and upgrades deliberately; a published release is never changed in place.",
+      "verification": "manual"
+    }
+  ],
+  "extends": [
+    {
+      "id": "simai.dynamic-composite-component",
+      "version": "1.0.0",
+      "path": "../../simai.dynamic-composite-component/1.0.0/standard.json",
+      "sha256": "b8a9d9fdf8bd9a4d5fd893c1c9a7dc0ab79e95224590bfe5fa84c624866aa9d1",
+      "description": "Behaviour on the seam: intents, revisions, settings layers, instance lifecycle and data states. This standard declares and versions the seam itself."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.smart-component-manifest",
+      "version": "2.0.0",
+      "path": "../../../schema/smart-component-manifest.v2.schema.json",
+      "sha256": "cb764fd2f37581362725be43cd7bd7a894766a0ab6f3fe15c33f78dd2088817e",
+      "description": "The manifest that carries the port declaration next to inputs, methods, events and provenance."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.dynamic-composite-component 1.0.0",
+      "scope_note": "The seam between a dynamic composite and a product host: what is declared, how it is versioned, how a host proves it implements it. Storage, permission models and field types belong to the product profile above this standard.",
+      "validated_against": [
+        "larena dataview host and the minimal cms records list",
+        "simai framework smart table"
+      ],
+      "origin": "Drafted by simai/larena (larena-specs 0b1db2d0, proposal simai.composite-host-port 1.0.0) and authored for publication by the Framework owner."
+    }
+  }
+}

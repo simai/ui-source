@@ -1,0 +1,16 @@
+{
+  ".sf-avatar-label-group": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-avatar-label-group .sf-avatar-label-group-container": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ]
+}

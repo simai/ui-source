@@ -1,0 +1,24 @@
+{
+  "id": "create-intent-names-kind",
+  "intent": "view.create_record",
+  "capability": null,
+  "summary": "The create request carries the chosen kind, or null when there is only one.",
+  "given": {
+    "create_items": [
+      {
+        "key": "order",
+        "label": "Order"
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.create_record",
+    "payload": {
+      "item": "order"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "The host opens its own form; the component does not build one."
+  }
+}

@@ -1,0 +1,1 @@
+SF.RuleLoader['special'] = {regex:/sf-special/,type:'attribute',js:true,css:true};

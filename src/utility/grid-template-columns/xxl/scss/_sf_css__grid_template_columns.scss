@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__grid_template_columns' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID TEMPLATE COLUMNS
+// @include layer-priority(utility,xxl) {
+    @include breakpoint-media(xxl) {
+        $infix: breakpoint-infix(xxl, $breakpoint-array);
+
+        // Grid Columns Template
+        @each $grid-template-columns-name, $grid-template-columns-value in $grid-template-columns-array {
+            .#{$infix}grid-col-#{$grid-template-columns-name} {
+                grid-template-columns: #{$grid-template-columns-value};
+            }
+        }
+    }
+// }
+}

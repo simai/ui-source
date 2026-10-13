@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.composition-overlay",
+  "title": "composition-overlay reference",
+  "summary": "Deterministic reference fixture for sf-composition-overlay.",
+  "locale": "ru",
+  "props": {
+    "for": "canvas",
+    "accepts": "blocks",
+    "label": "Структура страницы"
+  },
+  "children": [],
+  "state": "default"
+}

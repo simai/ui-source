@@ -1,0 +1,11 @@
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID AUTO ROWS
+
+$grid-auto-rows-array: (
+	'': auto,
+    -min: min-content,
+    -max: max-content,
+    -fr: 'minmax(0, 1fr)',
+);

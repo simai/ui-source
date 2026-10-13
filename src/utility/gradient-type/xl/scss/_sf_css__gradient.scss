@@ -1,0 +1,53 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT
+
+$infix: xl;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Gradient Type Width Color Count
+        // Line Gradient
+        .#{$infix}gr-line-2{background-image: linear-gradient(
+            var(--sf-gradient--angle),
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
+        );}
+        .#{$infix}gr-line-3{background-image: linear-gradient(
+            var(--sf-gradient--angle),
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
+            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+        );}
+
+        // Radial Gradient
+        .#{$infix}gr-radial-2{background-image: radial-gradient(
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
+        );}
+        .#{$infix}gr-radial-3{background-image: radial-gradient(
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
+            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+        );}
+
+        // Conic Gradient
+        .#{$infix}gr-conic-2{background-image: conic-gradient(
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
+        );}
+        .#{$infix}gr-conic-3{background-image: conic-gradient(
+            var(--sf-gradient--color-1),
+            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
+            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+        );}
+
+    }
+// }
+}

@@ -1,0 +1,16 @@
+@use '../../../table/default/scss/sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE
+
+$prefix: --sf-table-;
+
+// @include layer-priority(utility,default) {
+    .table-active {
+        #{$prefix}accent-bg: var(#{$prefix}active-bg);
+        color: var(#{$prefix}active-color);
+    }
+// }
+}

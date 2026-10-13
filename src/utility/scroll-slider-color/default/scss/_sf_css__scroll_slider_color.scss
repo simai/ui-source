@@ -1,0 +1,19 @@
+@use 'sf_var__scroll_slider_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL
+
+$infix: '';
+
+// Scroll Slider Color
+// @include layer-priority(utility,default) {
+    @each $scroll-slider-color-name, $scroll-slider-color-value in $scroll-slider-color-array {
+        .#{$infix}scroll-#{$scroll-slider-color-name},
+        .#{$infix}scroll-thumb-#{$scroll-slider-color-name} {
+            --sf-scroll-bg-thumb: var(--sf-#{$scroll-slider-color-value});
+        }
+    }
+// }
+}

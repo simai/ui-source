@@ -1,0 +1,36 @@
+{
+  "schema": "simai.smart-component-scenario.v1",
+  "id": "smoke",
+  "component": "smart.inputs",
+  "fixture": "reference",
+  "viewport": "desktop",
+  "actions": [
+    {
+      "type": "invoke",
+      "method": "getInputElement",
+      "arguments": []
+    }
+  ],
+  "assertions": [
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "native-attribute",
+      "target": "input",
+      "name": "type",
+      "value": "email"
+    },
+    {
+      "type": "form-value",
+      "target": "input",
+      "value": "hello@example.com"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    }
+  ]
+}

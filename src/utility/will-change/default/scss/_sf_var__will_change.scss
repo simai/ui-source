@@ -1,0 +1,16 @@
+// SIMAI Framework
+// https://simai.io
+
+// INTERACTIVITY
+
+// Will Change
+$will-change-array:(
+    auto: auto,
+    // Остальные ключи этого семейства повторяют значение CSS; этот
+    // назывался короче, и страница обещала полное имя. Короткое
+    // осталось ради совместимости.
+    scroll-position: scroll-position,
+    scroll: scroll-position,
+    contents: contents,
+    transform: transform
+);

@@ -1,0 +1,37 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.context-menu",
+  "title": "Context Menu reference",
+  "summary": "Deterministic reference fixture for sf-context-menu.",
+  "locale": "ru",
+  "props": {
+    "position": "bottom-start",
+    "aria-label": "Действия"
+  },
+  "children": [
+    {
+      "element": "sf-button",
+      "props": {
+        "slot": "content",
+        "type": "link",
+        "scheme": "on-surface",
+        "text": "Открыть"
+      },
+      "text": "",
+      "children": []
+    },
+    {
+      "element": "sf-button",
+      "props": {
+        "slot": "content",
+        "type": "link",
+        "scheme": "on-surface",
+        "text": "Удалить"
+      },
+      "text": "",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

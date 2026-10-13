@@ -1,0 +1,17 @@
+@layer sf.components {
+.sf-menu {
+  list-style: none;
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+}
+
+.sf-menu > .sf-menu-item {
+  list-style: none;
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+}
+
+.sf-menu > .sf-menu-item:not(.open) > .sf-menu {
+  display: none;
+}
+}

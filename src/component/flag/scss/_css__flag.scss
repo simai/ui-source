@@ -1,0 +1,50 @@
+@layer sf.components {
+  /* A flag is a picture with a fixed aspect ratio, and the set ships it twice:
+     a rectangle at 28x20 and a circle at 24x24. The circle is not the rectangle
+     cropped -- it is redrawn, so Nepal keeps its shape and Singapore keeps its
+     crescent. That is why the shape is a modifier the markup picks, not a
+     border-radius the CSS applies.
+
+     The radius and the hairline are not baked into the files. They live here, so
+     a project that changes --sf-radius--ui gets flags that follow, and the edge
+     that keeps a white flag off a white page follows the theme. */
+  .sf-flag {
+    --sf-flag--height: var(--sf-flag--size, var(--sf-b8));
+    --sf-flag--outline-color: var(--sf-outline-variant);
+    --sf-flag--radius: var(--sf-radius--ui);
+    display: inline-block;
+    flex: none;
+    position: relative;
+    overflow: hidden;
+    line-height: 0;
+    block-size: var(--sf-flag--height);
+    border-radius: var(--sf-flag--radius);
+    /* An outline rather than a border: a border would eat into the picture at
+       these sizes, where every pixel of the flag counts. */
+    outline: var(--sf-px) solid var(--sf-flag--outline-color);
+    outline-offset: calc(var(--sf-px) * -1);
+  }
+
+  .sf-flag img,
+  .sf-flag svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* 28x20 -- the proportion a flag is drawn in. */
+  .sf-flag--rect {
+    inline-size: calc(var(--sf-flag--height) * 1.4);
+  }
+
+  .sf-flag--circle {
+    inline-size: var(--sf-flag--height);
+    --sf-flag--radius: var(--sf-radius-circle);
+  }
+
+  /* While the file is still coming, the box holds its place instead of letting
+     the line jump. */
+  .sf-flag:not(:has(img, svg)) {
+    background-color: var(--sf-surface-container);
+  }
+}

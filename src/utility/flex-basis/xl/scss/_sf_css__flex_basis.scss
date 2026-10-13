@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__flex_basis' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEX
+
+// @include layer-priority(utility,xl) {
+    $infix: breakpoint-infix(xl, $breakpoint-array);
+
+    @include breakpoint-media(xl) {
+        // Fixed Basic Additional Utilities
+        @each $flex-basis-name, $flex-basis-value in $flex-basis-array {
+            .#{$infix}basis-#{$flex-basis-name} {
+                flex-basis: #{$flex-basis-value};
+            }
+        }
+    }
+// }
+}

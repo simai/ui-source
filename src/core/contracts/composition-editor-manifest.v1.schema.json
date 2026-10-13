@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-editor-manifest.v1.schema.json",
+  "title": "Simai Composition Editor Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "type", "type_version", "fields"],
+  "properties": {
+    "schema": {"const": "simai.composition.editor-manifest.v1"},
+    "type": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"},
+    "type_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "applies_to": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "views": {"$ref": "#/$defs/stringList"},
+        "presets": {"$ref": "#/$defs/stringList"},
+        "modifiers": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "fields": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {"$ref": "#/$defs/field"}
+    }
+  },
+  "$defs": {
+    "stableKey": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$"},
+    "stringList": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "scalar": {"type": ["string", "integer", "number", "boolean", "null"]},
+    "property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "version"],
+      "properties": {
+        "type": {"$ref": "#/$defs/stableKey"},
+        "version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "plane", "target", "property", "constraints", "group", "visibility", "label_key", "owner"],
+      "properties": {
+        "key": {"$ref": "#/$defs/stableKey"},
+        "plane": {"enum": ["props", "data", "presentation"]},
+        "target": {"$ref": "#/$defs/stableKey"},
+        "property": {"$ref": "#/$defs/property"},
+        "constraints": {"type": "object"},
+        "group": {"enum": ["preset", "basic", "advanced"]},
+        "visibility": {"enum": ["visible", "collapsed", "hidden"]},
+        "choices": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/scalar"}
+        },
+        "default": {"$ref": "#/$defs/scalar"},
+        "label_key": {"$ref": "#/$defs/stableKey"},
+        "help_key": {"$ref": "#/$defs/stableKey"},
+        "capability_hints": {"$ref": "#/$defs/stableKeyList"},
+        "permission_hints": {"$ref": "#/$defs/stableKeyList"},
+        "owner": {"type": "string", "pattern": "^[a-z][a-z0-9.-]*/[a-z][a-z0-9.-]*$"}
+      }
+    },
+    "stableKeyList": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/stableKey"}
+    }
+  }
+}

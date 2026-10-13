@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.inputs",
+  "title": "Inputs reference",
+  "summary": "Deterministic reference fixture for sf-input.",
+  "locale": "ru",
+  "props": {
+    "label": "Электронная почта",
+    "value": "team@simai.ru",
+    "required": true,
+    "hint": "На этот адрес придёт подтверждение.",
+    "input-type": "email",
+    "autocomplete": "email"
+  },
+  "children": [],
+  "state": "default"
+}

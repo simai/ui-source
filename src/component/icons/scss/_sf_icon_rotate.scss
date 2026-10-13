@@ -1,0 +1,11 @@
+.sf-icon {
+
+  @for $i from 1 through 7 {
+    $deg: $i * 45;
+
+    &--rotate-#{$deg} {
+      transform: rotate(#{$deg}deg);
+      transform-origin: center;
+    }
+  }
+}

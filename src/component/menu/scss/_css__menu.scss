@@ -1,0 +1,135 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-menu {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: var(--sf-0);
+  min-inline-size: var(--sf-0);
+  max-width: 100%;
+  max-inline-size: 100%;
+  background-color: var(--sf-menu--background-color, transparent);
+  gap: var(--sf-menu--gap, var(--sf-space-1\/3));
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-menu-item--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-menu .sf-menu-item {
+  --sf-menu-item--background-color: transparent;
+  --sf-menu-item--gap: var(--sf-space-1\/3);
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: var(--sf-0);
+  min-inline-size: var(--sf-0);
+  max-width: 100%;
+  max-inline-size: 100%;
+  background-color: var(--sf-menu-item--background-color);
+  gap: var(--sf-menu-item--gap);
+}
+
+/* The root level becomes a row; every submenu keeps the ordinary vertical menu model. */
+.sf-menu.sf-menu--horizontal {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.sf-menu.sf-menu--horizontal > .sf-menu-item {
+  position: relative;
+  flex: 0 0 auto;
+  max-inline-size: none;
+}
+
+.sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu-element {
+  inline-size: auto;
+  max-inline-size: none;
+}
+
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item {
+  position: relative;
+}
+
+.sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu,
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu {
+  position: absolute;
+  z-index: var(--sf-menu-horizontal-submenu--z-index, 3);
+  inline-size: max-content;
+  min-inline-size: 100%;
+  max-inline-size: calc(100vw - var(--sf-space-2));
+  padding: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/3));
+  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-outline-variant));
+  border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-radius--ui));
+  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-elevation-2--surface));
+  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+  box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-elevation-2--shadow));
+}
+
+.sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu {
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+}
+
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu {
+  inset-block-start: 0;
+  inset-inline-start: 100%;
+}
+
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-element {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  --sf-menu-element--padding-inline-start: var(--sf-space-1);
+}
+
+/* Documentation navigation is a public presentation preset for nested menus. */
+.sf-menu.sf-menu--documentation-tree,
+.sf-menu.sf-menu--documentation-tree .sf-menu {
+  --sf-menu--gap: var(--sf-space-1\/4);
+  list-style: none;
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element {
+  --sf-menu-element--border-width: var(--sf-0);
+  --sf-menu-element--padding-top: var(--sf-0);
+  --sf-menu-element--padding-bottom: var(--sf-0);
+  --sf-menu-element--padding-right: var(--sf-0);
+  min-width: var(--sf-0);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap {
+  min-width: var(--sf-0);
+  padding-block: var(--sf-space-1\/3);
+  padding-inline: var(--sf-space-1);
+  overflow-wrap: anywhere;
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element--level-1 {
+  --sf-menu-element--padding-inline-start: var(--sf-0);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element--level-2 {
+  --sf-menu-element--padding-inline-start: var(--sf-space-1);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element--level-3 {
+  --sf-menu-element--padding-inline-start: var(--sf-space-2);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element--level-4 {
+  --sf-menu-element--padding-inline-start: var(--sf-space-3);
+}
+
+.sf-menu.sf-menu--documentation-tree [aria-current="page"] {
+  background: var(--sf-surface-container-active);
+  color: var(--sf-on-surface);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+}

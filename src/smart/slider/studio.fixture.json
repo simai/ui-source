@@ -1,0 +1,27 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.slider",
+  "title": "Slider reference",
+  "summary": "Deterministic reference fixture for sf-slider.",
+  "locale": "ru",
+  "props": {
+    "dots": true,
+    "arrows": true
+  },
+  "children": [
+    {
+      "element": "div",
+      "props": {},
+      "text": "Первый слайд",
+      "children": []
+    },
+    {
+      "element": "div",
+      "props": {},
+      "text": "Второй слайд",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

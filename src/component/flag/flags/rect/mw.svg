@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="404 644 28 20" fill="none" role="img">
+<g id="Country=MW">
+<rect id="Mask_292" x="404" y="644" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask136_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="404" y="644" width="28" height="20">
+<rect id="Mask_293" x="404" y="644" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask136_8205_11341)">
+<path id="Rectangle 2_200" fill-rule="evenodd" clip-rule="evenodd" d="M404 650.667H432V644H404V650.667Z" fill="#333333"/>
+<path id="Oval 200" fill-rule="evenodd" clip-rule="evenodd" d="M418 656C420.577 656 422.666 653.91 422.666 651.333C422.666 648.756 420.577 646.667 418 646.667C415.422 646.667 413.333 648.756 413.333 651.333C413.333 653.91 415.422 656 418 656Z" fill="#D80027"/>
+<path id="Rectangle 2_201" fill-rule="evenodd" clip-rule="evenodd" d="M404 657.333H432V650.667H404V657.333Z" fill="#D80027"/>
+<path id="Rectangle 2_202" fill-rule="evenodd" clip-rule="evenodd" d="M404 664H432V657.333H404V664Z" fill="#6DA544"/>
+</g>
+</g>
+</svg>

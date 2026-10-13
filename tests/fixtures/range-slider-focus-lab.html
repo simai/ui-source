@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — клавиатура ползунка</title>
+  <script>
+    const parameters=new URLSearchParams(location.search);
+    document.documentElement.dir=parameters.has('rtl')?'rtl':'ltr';
+    if(parameters.has('large'))document.documentElement.style.fontSize='32px';
+  </script>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/range-slider/css/range-slider.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/tooltip/css/tooltip.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Диапазон: клавиатура и фокус</h1>
+  <button id="before" type="button">Перед ползунками</button>
+  <div id="single" class="sf-range-slider" data-min="0" data-max="100" data-start="30" data-step="5"></div>
+  <div id="multiple" class="sf-range-slider" data-multiple="true" data-start="20,80" data-step="5" data-label="text"></div>
+  <div id="disabled" class="sf-range-slider" data-start="40" disabled></div>
+  <div id="no-keyboard" class="sf-range-slider" data-start="40" data-keyboard="false"></div>
+  <sf-range-slider id="smart-single" start="30" step="5" label="tooltip"></sf-range-slider>
+  <sf-range-slider id="smart-multiple" start="20,80" multiple step="5" label="text"></sf-range-slider>
+  <sf-range-slider id="smart-disabled" start="40" disabled></sf-range-slider>
+  <button id="after" type="button">После ползунков</button>
+</main>
+<script src="../../source/output/action-focus-browser/component/range-slider/js/range-slider.js"></script>
+<script src="../../source/output/action-focus-browser/smart/range-slider/js/range-slider.js"></script>
+</body></html>

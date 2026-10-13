@@ -1,0 +1,19 @@
+@use '../../default/scss/sf_var__divider_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER
+
+
+$infix: hover;
+
+// @include layer-priority(utility,$infix) {
+    // Divider Color
+    @each $divider-color-name, $divider-color-value in $divider-color-array {
+        .#{$infix}\:divider-#{$divider-color-name}:#{$infix} >:not([hidden])~:not([hidden]) {
+            border-color: var(--sf-#{$divider-color-value});
+        }
+    }
+// }
+}

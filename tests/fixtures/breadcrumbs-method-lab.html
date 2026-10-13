@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Breadcrumbs — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/breadcrumbs-browser/component/breadcrumbs/css/breadcrumbs.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Хлебные крошки</h1>
+
+    <nav id="ordinary" class="sf-breadcrumbs flex items-cross-center" aria-label="Путь к странице">
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#home" aria-label="Главная"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">home</i></span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#catalog"><span class="sf-breadcrumbs-item-container flex items-cross-center">Каталог</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default active" aria-current="page"><span class="sf-breadcrumbs-item-container flex items-cross-center">Текущая страница</span></span>
+    </nav>
+
+    <nav id="collapsed" class="sf-breadcrumbs flex items-cross-center" aria-label="Длинный путь" data-max-items="4" data-expand-label="Показать скрытые уровни">
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#one"><span class="sf-breadcrumbs-item-container flex items-cross-center">Главная</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#two"><span class="sf-breadcrumbs-item-container flex items-cross-center">Каталог</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#three"><span class="sf-breadcrumbs-item-container flex items-cross-center">Оборудование</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#four"><span class="sf-breadcrumbs-item-container flex items-cross-center">Измерительные приборы</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default active" aria-current="page"><span class="sf-breadcrumbs-item-container flex items-cross-center">Текущий товар</span></span>
+    </nav>
+
+    <nav id="dynamic" class="sf-breadcrumbs flex items-cross-center" aria-label="Динамический путь" data-max-items="3" data-expand-label="Первичная подпись">
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#d1"><span class="sf-breadcrumbs-item-container flex items-cross-center">Первый</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#d2"><span class="sf-breadcrumbs-item-container flex items-cross-center">Второй</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#d3"><span class="sf-breadcrumbs-item-container flex items-cross-center">Третий</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default active" aria-current="page"><span class="sf-breadcrumbs-item-container flex items-cross-center">Четвёртый</span></span>
+    </nav>
+
+    <nav id="long-labels" class="sf-breadcrumbs flex items-cross-center" aria-label="Путь с длинными подписями" data-max-items="0">
+      <a class="sf-breadcrumbs-item sf-breadcrumbs-item--link" href="#long"><span class="sf-breadcrumbs-item-container flex items-cross-center">Раздел с очень длинным названием, которое должно безопасно переноситься на узком экране</span></a>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span></span>
+      <span class="sf-breadcrumbs-item sf-breadcrumbs-item--default active" aria-current="page"><span class="sf-breadcrumbs-item-container flex items-cross-center">Текущая страница с длинным названием</span></span>
+    </nav>
+
+    <sf-breadcrumbs id="smart" aria-label="Smart путь" max-items="4" expand-label="Показать скрытые Smart-уровни" items='[{"label":"Главная","href":"#s1","icon":"home"},{"label":"Каталог","href":"#s2"},{"label":"Раздел","href":"#s3"},{"label":"Подраздел","href":"#s4"},{"label":"Текущая страница","current":true}]'></sf-breadcrumbs>
+    <sf-breadcrumbs id="smart-home" aria-label="Smart путь с домашним элементом" home-label="Главная" home-icon="home" items='[{"href":"#fallback"},{"label":"Текущая","current":true}]'></sf-breadcrumbs>
+  </main>
+
+  <script src="../../source/output/breadcrumbs-browser/component/breadcrumbs/js/breadcrumbs.js"></script>
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/breadcrumbs-browser/smart/breadcrumbs/js/breadcrumbs.js"></script>
+</body>
+</html>

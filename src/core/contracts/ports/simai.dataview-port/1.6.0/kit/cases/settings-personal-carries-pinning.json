@@ -1,0 +1,37 @@
+{
+  "id": "settings-personal-carries-pinning",
+  "intent": "settings.save_personal",
+  "capability": null,
+  "summary": "A person's own layer may say which columns are pinned, beside their order and width.",
+  "given": {
+    "column_settings": {
+      "layers": {
+        "personal": {
+          "revision": "s1",
+          "columns": {}
+        }
+      }
+    },
+    "shared_only_fields": []
+  },
+  "when": {
+    "intent": "settings.save_personal",
+    "payload": {
+      "columnSettings": {
+        "name": {
+          "order": 10,
+          "pinned": true
+        },
+        "city": {
+          "order": 20,
+          "pinned": false
+        }
+      },
+      "base_revision": "s1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "Pinning was a shared-only field before 1.4.0, so a host on an earlier version may refuse this write: that is why the version moved instead of the field changing meaning in place. The mechanism case beside this one still holds — a host that does declare a shared-only field refuses it in a personal write — and 1.4.0 declares none."
+  }
+}

@@ -1,0 +1,26 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SIZE
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Fixed Max Height Utilities: Use Size System 
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+
+                // Fixed Max Height Utilities
+                .#{$infix}max-h-#{$size-range-name}#{$size-name}{
+                    max-height: var(--sf-#{$size-range-name}#{$size-name});
+                }                
+            }
+        }      
+    }
+// }
+}

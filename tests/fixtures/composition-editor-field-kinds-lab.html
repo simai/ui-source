@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — editor field kinds</title>
+  <style>
+    html, body { margin: 0; max-inline-size: 100%; }
+    body { padding: var(--sf-space-2, .5rem); background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); display: grid; gap: var(--sf-space-4, 1rem); }
+    form { display: grid; gap: var(--sf-space-3, .75rem); max-inline-size: 36rem; }
+    .sf-composition-region { outline: 1px dashed var(--sf-outline-variant, GrayText); padding: var(--sf-space-2, .5rem); }
+  </style>
+</head>
+<body>
+  <a id="before" href="#start">До формы</a>
+  <form id="editor" aria-label="Параметры области" novalidate>
+    <div id="fields"></div>
+    <button id="save" type="submit">Сохранить</button>
+    <output id="status" aria-live="polite"></output>
+  </form>
+  <section id="preview" aria-label="Предпросмотр"></section>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const assets = params.get('assets');
+    const source = params.get('source');
+    if (!assets || !source) throw new Error('composition_editor_field_lab_paths_required');
+    if (params.get('theme') === 'dark') document.documentElement.className = 'theme-dark';
+    if (params.get('dir') === 'rtl') document.documentElement.dir = 'rtl';
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${assets}/core/css/core.css`;
+    await new Promise((resolve, reject) => { link.onload = resolve; link.onerror = reject; document.head.append(link); });
+    const composition = await import(`${assets}/core/js/composition/index.mjs`);
+    const fixture = await fetch(`${assets}/core/contracts/composition-editor-fields-v1/fixtures/field-kinds.json`).then((response) => response.json());
+    const messages = fixture.setup.messages;
+    const propertyTypes = fixture.setup.host_property_types;
+    let model = await fetch(`${source}/tests/fixtures/composition/regions.json`).then((response) => response.json());
+    const registry = composition.createRegistry();
+    const manifest = composition.BUILTIN_EDITOR_MANIFESTS.find(({ type }) => type === 'layout.region');
+    const regionIndex = 3;
+    const renderForm = () => {
+      const node = model.root.slots.regions[regionIndex];
+      const projected = composition.projectEditorFields(manifest, registry.types.get('layout.region'), node, { propertyTypes });
+      if (!projected.valid) throw new Error(JSON.stringify(projected.diagnostics));
+      window.labFields = projected.fields;
+      document.getElementById('fields').innerHTML = projected.fields.map((field) => composition.renderFieldFallback(field, { instance: node.id, messages })).join('');
+    };
+    const renderPreview = async () => {
+      const output = await composition.render(model);
+      if (output.diagnostics.length) throw new Error(JSON.stringify(output.diagnostics));
+      document.getElementById('preview').innerHTML = output.html;
+      window.labDigest = (await composition.normalize(model)).digest;
+    };
+    document.getElementById('editor').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.target);
+      const status = document.getElementById('status');
+      let node = model.root.slots.regions[regionIndex];
+      for (const control of event.target.querySelectorAll('[aria-invalid]')) control.removeAttribute('aria-invalid');
+      for (const field of window.labFields) {
+        if (field.visibility === 'hidden') continue;
+        const name = `${node.id}.${field.plane}.${field.target}`;
+        const result = composition.parseFieldSubmission(field, data.has(name) ? data.get(name) : null);
+        if (result.error) {
+          document.querySelector(`[name="${name}"]`).setAttribute('aria-invalid', 'true');
+          status.value = `Ошибка: ${result.error.code}`;
+          return;
+        }
+        node = composition.applyFieldValue(node, field, result);
+      }
+      const candidate = JSON.parse(JSON.stringify(model));
+      candidate.root.slots.regions[regionIndex] = node;
+      const checked = composition.validate(candidate);
+      if (!checked.valid) {
+        status.value = `Ошибка: ${checked.diagnostics.map(({ code }) => code).join(', ')}`;
+        return;
+      }
+      model = candidate;
+      window.labSaves = (window.labSaves || 0) + 1;
+      // Keep the submitted form and its focus; only the preview changes.
+      await renderPreview();
+      status.value = 'Сохранено';
+    });
+    renderForm();
+    await renderPreview();
+    document.documentElement.dataset.ready = 'true';
+  </script>
+</body>
+</html>

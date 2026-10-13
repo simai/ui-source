@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.toggle",
+  "title": "Toggle reference",
+  "summary": "Deterministic reference fixture for sf-toggle.",
+  "locale": "ru",
+  "props": {
+    "label": "Автоматически",
+    "checked": true
+  },
+  "children": [],
+  "state": "default"
+}

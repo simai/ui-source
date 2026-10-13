@@ -1,0 +1,33 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__backdrop_blur' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKDROP
+
+$backdrop-filter-all: '';
+
+$infix: breakpoint-infix(xs, $breakpoint-array);
+
+@each $blur-name, $blur-value in $backdrop-filter-blur-array {
+    $backdrop-filter-all: '#{$backdrop-filter-all}.#{$infix}backdrop-blur#{$blur-name},';
+}
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+$infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Blur
+        @each $blur-name, $blur-value in $backdrop-filter-blur-array {
+            .#{$infix}backdrop-blur#{$blur-name} {
+                --sf-backdrop-blur: blur(var(--sf-blur-#{$blur-value}));
+                backdrop-filter: var(--sf-backdrop-blur, ) var(--sf-backdrop-brightness, ) var(--sf-backdrop-contrast, ) var(--sf-backdrop-grayscale, ) var(--sf-backdrop-hue-rotate, ) var(--sf-backdrop-invert, ) var(--sf-backdrop-opacity, ) var(--sf-backdrop-saturate, ) var(--sf-backdrop-sepia, );
+            }
+        }
+    }
+// }
+}

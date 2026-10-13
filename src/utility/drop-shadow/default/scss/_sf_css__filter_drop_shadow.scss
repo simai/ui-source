@@ -1,0 +1,51 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__filter_drop_shadow' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SHADOW
+
+// $drop-shadow-all: '';
+// $infix: xs;
+
+
+// $infix: breakpoint-infix($infix, $breakpoint-array);
+
+// @each $shadow-name, $shadow-value in $filter-drop-shadow-array {
+//     $drop-shadow-all: '#{$drop-shadow-all}.#{$infix}drop-shadow-#{$shadow-name},';
+// }
+
+// $infix: xs;
+
+// @include layer-priority(utility,default) {
+    // @include breakpoint-media($infix) {
+    //     $infix: breakpoint-infix($infix, $breakpoint-array);
+
+    //     #{$drop-shadow-all} {
+    //         --sf-shadow: 0 0 #0000;
+    //         --sf-shadow-colored: 0 0 #0000;
+    //         --sf-drop-shadow-color: var(--sf-neutral-0);
+    //     }
+        
+    //     #{$drop-shadow-all} {
+    //         filter: var(--sf-drop-shadow);
+    //     }
+
+    //     // Drop Shadow
+    //     @each $drop-shadow-name, $drop-shadow-value in $filter-drop-shadow-array {
+    //         .#{$infix}drop-shadow-#{$drop-shadow-name} {
+    //             --sf-drop-shadow: #{$drop-shadow-value};
+    //         }
+    //     }
+    // }
+// }
+
+// Drop Shadow
+@each $drop-shadow-name, $drop-shadow-value in $drop-shadow-array {
+    .drop-shadow-#{$drop-shadow-name} {
+        --sf-shadow--level-ratio: #{$drop-shadow-value};
+    }
+}
+}

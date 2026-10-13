@@ -1,0 +1,20 @@
+<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choice composition lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css"><link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css"><link rel="stylesheet" href="/ui/distr/component/checkbox/css/checkbox.css">
+<link rel="stylesheet" href="/ui/distr/component/radio/css/radio.css"><link rel="stylesheet" href="/ui/distr/component/switch/css/switch.css">
+<link rel="stylesheet" href="/ui/distr/component/inputs/css/inputs.css">
+<style>body{margin:0;padding:24px;font-family:var(--sf-text--family);background:var(--sf-surface-0);color:var(--sf-on-surface)} .col{display:flex;flex-direction:column;gap:16px;max-width:360px;margin-bottom:32px}</style>
+</head><body><main id="lab"></main>
+<script>
+const S=['1/2','1','2'], rows=[];
+for (const s of S) {
+  rows.push(`<div class="col" data-size="${s}">
+  <label class="sf-input sf-input--size-${s} sf-input--bordered flex flex-col" data-lab="input ${s}"><span class="sf-input-label flex"><span class="sf-input-text">Field label</span></span><span class="sf-input-field items-cross-center transition flex"><input type="text" value="Value"></span></label>
+  <label class="sf-checkbox sf-checkbox--size-${s} flex" data-lab="checkbox ${s}"><span class="sf-checkbox-box transition flex"><input type="checkbox" checked><span class="sf-icon" aria-hidden="true"></span></span><span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label">Receive updates</span></span><span class="sf-checkbox-description">Only important product news</span></span></label>
+  <label class="sf-radio-button sf-radio-button--size-${s} flex" data-lab="radio ${s}"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input name="r${s}" type="radio" checked><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-text">Monthly plan</span><span class="sf-radio-button-description">Billed every month</span></span></label>
+  <label class="sf-switch sf-switch--size-${s} flex" data-lab="switch ${s}"><span class="sf-switch-toggler flex items-cross-center"><input type="checkbox" role="switch" checked><span class="sf-switch-inner" aria-hidden="true"></span></span><span class="sf-switch-container-wrap flex flex-col"><span class="sf-switch-top flex"><span class="sf-switch-container flex items-cross-center"><span class="sf-switch-text">Notifications</span></span></span><span class="sf-switch-description">Report important changes</span></span></label>
+  </div>`);
+}
+document.getElementById('lab').innerHTML = rows.join('');
+</script></body></html>

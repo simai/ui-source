@@ -1,0 +1,163 @@
+@layer sf.components {
+  .sf-featured-icon {
+    --sf-featured-icon--tone: var(--sf-primary);
+    --sf-featured-icon--container: var(--sf-primary-container);
+    --sf-featured-icon--container-strong: var(--sf-primary-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-primary);
+    --sf-featured-icon--on-container: var(--sf-on-primary-container);
+    --sf-featured-icon--padding: var(--sf-ui-1--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-1);
+    --sf-featured-icon--square-radius: var(--sf-radius-1);
+    --sf-featured-icon--radius: var(--sf-radius-circle);
+    --sf-featured-icon--background-color: var(--sf-featured-icon--container);
+    --sf-featured-icon--foreground-color: var(--sf-featured-icon--on-container);
+    --sf-featured-icon--box-shadow: none;
+
+    display: inline-flex;
+    flex: none;
+    inline-size: max-content;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: var(--sf-featured-icon--padding);
+    border: 0 solid var(--sf-featured-icon--container);
+    border-radius: var(--sf-featured-icon--radius);
+    background-color: var(--sf-featured-icon--background-color);
+    background-clip: padding-box;
+    box-shadow: var(--sf-featured-icon--box-shadow);
+    line-height: 0;
+    vertical-align: middle;
+  }
+
+  .sf-featured-icon > .sf-icon {
+    --sf-icon--color: var(--sf-featured-icon--foreground-color);
+    --sf-icon--font-size: var(--sf-featured-icon--icon-size);
+    --sf-icon--height: var(--sf-featured-icon--icon-size);
+    --sf-icon--width: var(--sf-featured-icon--icon-size);
+
+    flex: none;
+  }
+
+  .sf-featured-icon--size-1\/3 {
+    --sf-featured-icon--padding: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-1\/3);
+    --sf-featured-icon--square-radius: var(--sf-radius-1\/2);
+  }
+
+  .sf-featured-icon--size-1\/2 {
+    --sf-featured-icon--padding: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-1\/2);
+    --sf-featured-icon--square-radius: var(--sf-radius-1\/2);
+  }
+
+  .sf-featured-icon--size-1 {
+    --sf-featured-icon--padding: var(--sf-ui-1--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-1);
+    --sf-featured-icon--square-radius: var(--sf-radius-1);
+  }
+
+  .sf-featured-icon--size-2 {
+    --sf-featured-icon--padding: var(--sf-ui-2--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-2);
+    --sf-featured-icon--square-radius: var(--sf-radius-1);
+  }
+
+  .sf-featured-icon--size-3 {
+    --sf-featured-icon--padding: var(--sf-ui-3--space-y-tightness-default);
+    --sf-featured-icon--icon-size: var(--sf-text-height-3);
+    --sf-featured-icon--square-radius: var(--sf-radius-2);
+  }
+
+  .sf-featured-icon--circle {
+    --sf-featured-icon--radius: var(--sf-radius-circle);
+  }
+
+  .sf-featured-icon--square {
+    --sf-featured-icon--radius: var(--sf-featured-icon--square-radius);
+  }
+
+  .sf-featured-icon--primary {
+    --sf-featured-icon--tone: var(--sf-primary);
+    --sf-featured-icon--container: var(--sf-primary-container);
+    --sf-featured-icon--container-strong: var(--sf-primary-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-primary);
+    --sf-featured-icon--on-container: var(--sf-on-primary-container);
+  }
+
+  .sf-featured-icon--neutral,
+  .sf-featured-icon--clear {
+    --sf-featured-icon--tone: var(--sf-on-surface);
+    --sf-featured-icon--container: var(--sf-surface-container);
+    --sf-featured-icon--container-strong: var(--sf-surface-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-surface-inverse);
+    --sf-featured-icon--on-container: var(--sf-on-surface);
+  }
+
+  .sf-featured-icon--info {
+    --sf-featured-icon--tone: var(--sf-info);
+    --sf-featured-icon--container: var(--sf-info-container);
+    --sf-featured-icon--container-strong: var(--sf-info-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-info);
+    --sf-featured-icon--on-container: var(--sf-on-info-container);
+  }
+
+  .sf-featured-icon--success {
+    --sf-featured-icon--tone: var(--sf-success);
+    --sf-featured-icon--container: var(--sf-success-container);
+    --sf-featured-icon--container-strong: var(--sf-success-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-success);
+    --sf-featured-icon--on-container: var(--sf-on-success-container);
+  }
+
+  .sf-featured-icon--warning {
+    --sf-featured-icon--tone: var(--sf-warning);
+    --sf-featured-icon--container: var(--sf-warning-container);
+    --sf-featured-icon--container-strong: var(--sf-warning-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-warning);
+    --sf-featured-icon--on-container: var(--sf-on-warning-container);
+  }
+
+  .sf-featured-icon--error {
+    --sf-featured-icon--tone: var(--sf-error);
+    --sf-featured-icon--container: var(--sf-error-container);
+    --sf-featured-icon--container-strong: var(--sf-error-container-hover);
+    --sf-featured-icon--on-tone: var(--sf-on-error);
+    --sf-featured-icon--on-container: var(--sf-on-error-container);
+  }
+
+  .sf-featured-icon--soft,
+  .sf-featured-icon--light {
+    --sf-featured-icon--background-color: var(--sf-featured-icon--container);
+    --sf-featured-icon--foreground-color: var(--sf-featured-icon--on-container);
+  }
+
+  .sf-featured-icon--medium,
+  .sf-featured-icon--mid {
+    --sf-featured-icon--background-color: var(--sf-featured-icon--container-strong);
+    --sf-featured-icon--foreground-color: var(--sf-featured-icon--on-container);
+  }
+
+  .sf-featured-icon--solid,
+  .sf-featured-icon--dark {
+    --sf-featured-icon--background-color: var(--sf-featured-icon--tone);
+    --sf-featured-icon--foreground-color: var(--sf-featured-icon--on-tone);
+  }
+
+  .sf-featured-icon--elevated,
+  .sf-featured-icon--modern {
+    --sf-featured-icon--background-color: var(--sf-surface-container);
+    --sf-featured-icon--foreground-color: var(--sf-featured-icon--tone);
+    --sf-featured-icon--box-shadow: var(--sf-ui-shadow-2);
+  }
+
+  @media (forced-colors: active) {
+    .sf-featured-icon {
+      --sf-featured-icon--background-color: Canvas;
+      --sf-featured-icon--foreground-color: CanvasText;
+      --sf-featured-icon--box-shadow: none;
+
+      outline: var(--sf-a1) solid CanvasText;
+      outline-offset: calc(-1 * var(--sf-a1));
+    }
+  }
+}

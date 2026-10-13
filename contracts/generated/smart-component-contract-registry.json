@@ -1,0 +1,1777 @@
+{
+  "entries": [
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.alerts",
+          "component.buttons",
+          "smart.icons",
+          "smart.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-alert",
+      "id": "smart.alert",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/alert/smart.manifest.json",
+      "manifest_sha256": "8f0ff10da353b6385c913d6a1f92a75b024785bda5c1f19d935919cec5521732",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
+      "tags": [
+        "alert"
+      ],
+      "title": "Alert"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-avatar",
+      "id": "smart.avatar",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/avatar/smart.manifest.json",
+      "manifest_sha256": "2103778c095c7db7a79382a72504cd429689c7ab0957ab3f9fb05098f1a8ce28",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
+      "tags": [
+        "avatar"
+      ],
+      "title": "Avatar"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-avatars",
+      "id": "smart.avatars",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/avatars/smart.manifest.json",
+      "manifest_sha256": "5c00665ab80c2a6acccc6dff8aeb3a8e0a0b423b29b94c6b02eda5ad47776432",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
+      "tags": [
+        "avatars"
+      ],
+      "title": "Avatars"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.badges"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-badge",
+      "id": "smart.badges",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/badges/smart.manifest.json",
+      "manifest_sha256": "6efad36b1791dd6676ace9faa05d4140e45ddd645a963e99069033ad46db5aff",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A short non-interactive label for a status, category, version or count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
+      "tags": [
+        "badges"
+      ],
+      "title": "Badges"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.breadcrumbs",
+          "component.icons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-breadcrumbs",
+      "id": "smart.breadcrumbs",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/breadcrumbs/smart.manifest.json",
+      "manifest_sha256": "a63e8feefac80718e5f3e21bb4bd51f37128c1f73f69866d0b5214ff30db456f",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
+      "tags": [
+        "breadcrumbs"
+      ],
+      "title": "Breadcrumbs"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.button-group",
+          "smart.buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-button-group",
+      "id": "smart.button-group",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/button-group/smart.manifest.json",
+      "manifest_sha256": "7cca2358c3edf7cb3594321625f33ddfaf225205633275df309fe71092ba57ab",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A controlled single-selection group built from SF5 buttons.",
+      "tags": [
+        "button",
+        "segmented-control",
+        "selection"
+      ],
+      "title": "Button group"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "declarative": {
+          "assets": [
+            "smart/buttons"
+          ],
+          "mode": "leaf",
+          "presentation": {
+            "modifiers": [],
+            "presets": [],
+            "views": [
+              "default"
+            ]
+          },
+          "profiles": [
+            "ui-layout"
+          ],
+          "props": [
+            "template",
+            "size",
+            "appearance",
+            "spacing",
+            "type",
+            "scheme",
+            "status",
+            "text",
+            "icon",
+            "icon-position",
+            "loading",
+            "disabled",
+            "native-type",
+            "aria-label"
+          ],
+          "renderer": {
+            "kind": "custom-element",
+            "name": "sf-button"
+          },
+          "slots": {},
+          "standard": "simai.composition.document.v1",
+          "type": "smart.buttons"
+        },
+        "public_parts": [],
+        "uses": [
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-button",
+      "id": "smart.buttons",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/buttons/smart.manifest.json",
+      "manifest_sha256": "1f122288fc4b66e374b4fdc756a9db515f3562e4246ca814b77813132272efc1",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
+      "tags": [
+        "buttons"
+      ],
+      "title": "Buttons"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-checkbox",
+      "id": "smart.checkbox",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/checkbox/smart.manifest.json",
+      "manifest_sha256": "fe99fa49f386d66f1ed9ade0424f02ea608b42e38ca77f621a1ab8bfaf455074",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
+      "tags": [
+        "checkbox"
+      ],
+      "title": "Checkbox"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-close",
+      "id": "smart.close",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/close/smart.manifest.json",
+      "manifest_sha256": "d66b174aea808ee0a2723df4680098f5a18fb2bf3ff8e03be87ca58f6f0fcded",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
+      "tags": [
+        "close"
+      ],
+      "title": "Close"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "swatch",
+          "chip",
+          "text",
+          "swatches",
+          "preset"
+        ],
+        "uses": [
+          "smart.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-color",
+      "id": "smart.color",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/color/smart.manifest.json",
+      "manifest_sha256": "625a2b744bf7426a20bc28fa524b1a4ce29696bc71b90274b02466ae3059049b",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+      "tags": [
+        "input",
+        "color",
+        "property"
+      ],
+      "title": "Color"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive",
+        "theme"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.sortable"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-composition-overlay",
+      "id": "smart.composition-overlay",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
+      "manifest_sha256": "11bbf486af390c9a11f7fd4f34238b08e316a33ef22a9cac4ca3a260c62926e0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML.",
+      "tags": [
+        "composition",
+        "editor",
+        "overlay"
+      ],
+      "title": "Composition overlay"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.context-menu",
+          "smart.buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-context-menu",
+      "id": "smart.context-menu",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/context-menu/smart.manifest.json",
+      "manifest_sha256": "d33d1ea36963794b1e90490ac1bdc2880ab2e6c41075538ee4a9b66adf9d6bad",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
+      "tags": [
+        "context-menu"
+      ],
+      "title": "Context Menu"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-country-code",
+      "id": "smart.country-code",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/country-code/smart.manifest.json",
+      "manifest_sha256": "dd5e98dfd8b175a636838b047cfd5ffb60401887670b49a2a4f4ab3e45eb2448",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
+      "tags": [
+        "country-code"
+      ],
+      "title": "Country Code"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "date-selection",
+        "date-range",
+        "keyboard-navigation",
+        "popup",
+        "inline",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.datepicker",
+          "smart.inputs",
+          "smart.buttons",
+          "smart.icon-buttons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-datepicker",
+      "id": "smart.datepicker",
+      "kind": "composite",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/datepicker/smart.manifest.json",
+      "manifest_sha256": "a3376eaaf5e868d12ef3ccd6d8c343a1140e48e208732004f0b8e90bd675cd1c",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
+      "tags": [
+        "calendar",
+        "date",
+        "datepicker",
+        "form",
+        "range"
+      ],
+      "title": "Datepicker"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.download-file",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-download-file",
+      "id": "smart.download-file",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/download-file/smart.manifest.json",
+      "manifest_sha256": "320c1447e9069c9d43e41e7a523c56218112b56117ff44da5c1f876e5dbb2657",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Native file download or application-owned file preparation action.",
+      "tags": [
+        "download-file"
+      ],
+      "title": "Download File"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icon-buttons",
+          "component.close"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-drawer",
+      "id": "smart.drawer",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/drawer/smart.manifest.json",
+      "manifest_sha256": "f5376ec89dc6b8081a0fa30f83be3a1977c31fcf89c940cafd0fe2642213472c",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
+      "tags": [
+        "drawer"
+      ],
+      "title": "Drawer"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.dropdown",
+          "smart.list-item",
+          "smart.inputs",
+          "smart.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-dropdown",
+      "id": "smart.dropdown",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/dropdown/smart.manifest.json",
+      "manifest_sha256": "f56408c01df09892e3cf5853c60e33b75237ddd83310509fb034c25335971a46",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
+      "tags": [
+        "dropdown"
+      ],
+      "title": "Dropdown"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "events"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.file-preview",
+          "component.icons",
+          "component.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-file-preview",
+      "id": "smart.file-preview",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/file-preview/smart.manifest.json",
+      "manifest_sha256": "8035653c58429021e7f56ca16037d1cbec0eda23e3f230f98c1d5cd279956d74",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Accessible Smart projection of the ordinary File Preview row.",
+      "tags": [
+        "file-preview"
+      ],
+      "title": "File Preview"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-file-upload",
+      "id": "smart.file-upload",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/file-upload/smart.manifest.json",
+      "manifest_sha256": "d3921d30f7057f57741c75ab559104f848ff40279523f24c8b6a38a8e4a08da6",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
+      "tags": [
+        "file-upload"
+      ],
+      "title": "File Upload"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-gallery",
+      "id": "smart.gallery",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/gallery/smart.manifest.json",
+      "manifest_sha256": "e3e567a19b1edcd65bd3500e662db4c0724ad5bbcbd04de70d41c200721b7791",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
+      "tags": [
+        "gallery"
+      ],
+      "title": "Gallery"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icon-buttons",
+          "smart.icons",
+          "smart.close"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-icon-button",
+      "id": "smart.icon-buttons",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/icon-buttons/smart.manifest.json",
+      "manifest_sha256": "072de80b09443c4325e55085643c0b59ce33bb22b0cc379179c3fa59fedd5abe",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
+      "tags": [
+        "icon-buttons"
+      ],
+      "title": "Icon Buttons"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "accessible-name",
+        "icon-families",
+        "variable-axes",
+        "dynamic-subset",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-icon",
+      "id": "smart.icons",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/icons/smart.manifest.json",
+      "manifest_sha256": "52238cece59eac1c02b98e07ec3daf43466e507339941c02d0aa4e0453586103",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
+      "tags": [
+        "icons"
+      ],
+      "title": "Icons"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "interaction",
+        "keyboard",
+        "theme"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-inline-editor",
+      "id": "smart.inline-editor",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/inline-editor/smart.manifest.json",
+      "manifest_sha256": "8d4a452316585b2ab37bb69c0a8287004df7109783856aa7261340011e73a977",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "In-place editor for content.heading and content.paragraph text: strong, em, code and safe links, own history, safe paste; reports normalized content, never HTML.",
+      "tags": [
+        "composition",
+        "editor",
+        "inline",
+        "text"
+      ],
+      "title": "Inline editor"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-input",
+          "label",
+          "field",
+          "hint",
+          "leading",
+          "trailing"
+        ],
+        "uses": [
+          "component.inputs",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-input",
+      "id": "smart.inputs",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/inputs/smart.manifest.json",
+      "manifest_sha256": "aef4e8afd3627560b01ede180834c6161e7def21b192cde167441c9c29dc9c98",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
+      "tags": [
+        "inputs"
+      ],
+      "title": "Inputs"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "option-descriptor"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-list-item",
+      "id": "smart.list-item",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/list-item/smart.manifest.json",
+      "manifest_sha256": "c340d30cf58d72f540d50e7d43c6e97a54a289474a67d0e00ba4a5166b9a7d64",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Declarative option descriptor and visual row primitive owned by Dropdown.",
+      "tags": [
+        "list-item"
+      ],
+      "title": "List Item"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-modal",
+      "id": "smart.modal",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/modal/smart.manifest.json",
+      "manifest_sha256": "11c4a9a465826518a878906f434475dfff21d18c4f2422771b53a10b65937d6a",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
+      "tags": [
+        "modal"
+      ],
+      "title": "Modal"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.badges",
+          "smart.icon-buttons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-page-header",
+      "id": "smart.page-header",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/page-header/smart.manifest.json",
+      "manifest_sha256": "0981e3bfa753f01bef325620c6e836e9051a7f95c09abadaec30d911518fd25f",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+      "tags": [
+        "page-header",
+        "admin",
+        "navigation"
+      ],
+      "title": "Page header"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.buttons",
+          "smart.checkbox",
+          "smart.dropdown",
+          "smart.icon-buttons",
+          "smart.inputs",
+          "smart.list-item",
+          "smart.spinner"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-pagination",
+      "id": "smart.pagination",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/pagination/smart.manifest.json",
+      "manifest_sha256": "fa03ce5b5dc7b14e822a9f8eb1295f8fa113706a971487c642869e3056127844",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Source-driven navigation for a collection split into numbered pages.",
+      "tags": [
+        "pagination"
+      ],
+      "title": "Pagination"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-popover",
+      "id": "smart.popover",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/popover/smart.manifest.json",
+      "manifest_sha256": "3a6d43f23e24e1bc97cc76c506f74aafdbccb72faf7e29222088eb6ea22f4602",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
+      "tags": [
+        "popover",
+        "anchored",
+        "surface",
+        "overlay"
+      ],
+      "title": "Popover"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "determinate-progress",
+        "accessible-range"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.progress-bar"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-progress-bar",
+      "id": "smart.progress-bar",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/progress-bar/smart.manifest.json",
+      "manifest_sha256": "570bb20da5c2b788f0e6305c78b7759efbee9698df05be6ea3ecfa762f535f03",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
+      "tags": [
+        "progress-bar"
+      ],
+      "title": "Progress Bar"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "determinate-progress",
+        "accessible-range"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.progress-scale"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-progress-scale",
+      "id": "smart.progress-scale",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/progress-scale/smart.manifest.json",
+      "manifest_sha256": "864cba906f35c116912582c66d8baea7262d0d1c7b6064a5f97c3366c1866d33",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
+      "tags": [
+        "progress-scale"
+      ],
+      "title": "Progress Scale"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-input",
+          "indicator",
+          "label",
+          "description"
+        ],
+        "uses": [
+          "component.radio"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-radio",
+      "id": "smart.radio",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/radio/smart.manifest.json",
+      "manifest_sha256": "e5ffc22cb51b4a56349c0d42a89ff5b5c611d414c6919d94a1827c7779ae872c",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "One radio option: a native radio input with a label, description and help text. Radios with the same name form a group in which checking one unchecks the others.",
+      "tags": [
+        "radio"
+      ],
+      "title": "Radio"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-range-slider",
+      "id": "smart.range-slider",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/range-slider/smart.manifest.json",
+      "manifest_sha256": "2003156c0425c5bea91756f4b6697868fdec39837577c1969c3f95b508056b89",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
+      "tags": [
+        "range-slider"
+      ],
+      "title": "Range Slider"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.reference-link",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-reference-link",
+      "id": "smart.reference-link",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/reference-link/smart.manifest.json",
+      "manifest_sha256": "4c72b0357d2602f7da93a876a1e25ef46e08284d265bc7754cb197f83404f633",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Navigation surface that pairs a real destination with a compact reference.",
+      "tags": [
+        "reference-link"
+      ],
+      "title": "Reference Link"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "loading-placeholder",
+        "token-geometry",
+        "reduced-motion",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.skeleton"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-skeleton",
+      "id": "smart.skeleton",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/skeleton/smart.manifest.json",
+      "manifest_sha256": "c1b9212411d7a8a9247de651c7b4bb886491f0fe10165087c42fefc2c913cbd8",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Decorative loading placeholder that reserves source-backed content geometry with semantic tokens and reduced-motion support.",
+      "tags": [
+        "skeleton"
+      ],
+      "title": "Skeleton"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-slider",
+      "id": "smart.slider",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/slider/smart.manifest.json",
+      "manifest_sha256": "ebde91d0e8bf9598ddaeec4b57d28faa10708f85ece713d8482ad5e785a7be7c",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
+      "tags": [
+        "slider"
+      ],
+      "title": "Slider"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-sortable",
+      "id": "smart.sortable",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/sortable/smart.manifest.json",
+      "manifest_sha256": "8b3c1f42b6e0390cc92fdbe12f491dd0abfae8a13fa2d360665738b86d2e8484",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard; reports intent only.",
+      "tags": [
+        "sortable",
+        "drag-and-drop",
+        "editor"
+      ],
+      "title": "Sortable"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "loading-status",
+        "reduced-motion"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.spinner"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-spinner",
+      "id": "smart.spinner",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/spinner/smart.manifest.json",
+      "manifest_sha256": "2198ebedc024f61a76ca549ec256163974588a6d006caecad415eba8f08af766",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Indeterminate waiting indicator with arc or dots presentation, optional polite status announcement and Framework-owned motion.",
+      "tags": [
+        "spinner"
+      ],
+      "title": "Spinner"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-steps",
+      "id": "smart.steps",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/steps/smart.manifest.json",
+      "manifest_sha256": "6a8ea23b81004181e76935498324d1917c4a97d4e949f56f4df1c035f5cda05a",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
+      "tags": [
+        "steps"
+      ],
+      "title": "Steps"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-input",
+          "track",
+          "thumb",
+          "label",
+          "description"
+        ],
+        "uses": [
+          "component.switch"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-switch",
+      "id": "smart.switch",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/switch/smart.manifest.json",
+      "manifest_sha256": "ef49d2c4d5897b58704a81eaecabc8b0d3a005498536fdd626985358f087a7f1",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
+      "tags": [
+        "switch"
+      ],
+      "title": "Switch"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.tabs",
+          "smart.buttons",
+          "smart.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tabs",
+      "id": "smart.tabs",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tabs/smart.manifest.json",
+      "manifest_sha256": "f2971cc2f20c77db14dcec4edebfe9eec0b9473d48e466b942a6f81c89af419a",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
+      "tags": [
+        "tabs"
+      ],
+      "title": "Tabs"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "interaction",
+        "accessibility"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.avatars",
+          "component.dot",
+          "smart.icon-buttons",
+          "component.tags"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tag",
+      "id": "smart.tags",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tags/smart.manifest.json",
+      "manifest_sha256": "232f97d617ab549b3a61d6794a98ae3472f180c24899a6cb25909c4b8632c546",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
+      "tags": [
+        "tags"
+      ],
+      "title": "Tags"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-textarea",
+          "label",
+          "hint"
+        ],
+        "uses": [
+          "component.textarea"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-textarea",
+      "id": "smart.textarea",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/textarea/smart.manifest.json",
+      "manifest_sha256": "72c7f2d5c07418465719927a7dde4349d32572ab16c046276dc39a565a87e310",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
+      "tags": [
+        "textarea"
+      ],
+      "title": "Textarea"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.toast",
+          "component.buttons",
+          "smart.icon-buttons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-toast",
+      "id": "smart.toast",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/toast/smart.manifest.json",
+      "manifest_sha256": "a7cc2183079f8b8c57bd0b05eb871e170ccb80eae6bf32934f9e3a244f70d1d7",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
+      "tags": [
+        "toast"
+      ],
+      "title": "Toast"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [
+          "native-input",
+          "track",
+          "thumb",
+          "label"
+        ],
+        "uses": [
+          "component.toggle"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-toggle",
+      "id": "smart.toggle",
+      "kind": "smart",
+      "lifecycle": "deprecated",
+      "manifest_path": "src/smart/toggle/smart.manifest.json",
+      "manifest_sha256": "1ca9c437148460c06120a1c1cebfe0ebd170a590dd933995c4b35d289c7c09cd",
+      "reuse_mode": "both",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
+      "tags": [
+        "toggle"
+      ],
+      "title": "Toggle"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "accessibility"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tooltip",
+      "id": "smart.tooltip",
+      "kind": "smart",
+      "lifecycle": "released",
+      "manifest_path": "src/smart/tooltip/smart.manifest.json",
+      "manifest_sha256": "87bb7e798a7f186f81ef6d1d08801ee953e8834088f6d8e7059a9d496fc48580",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
+      "tags": [
+        "tooltip"
+      ],
+      "title": "Tooltip"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "keyboard-navigation",
+        "selection",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.tree",
+          "smart.tree-item"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tree",
+      "id": "smart.tree",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tree/smart.manifest.json",
+      "manifest_sha256": "1b33b8711c06b8287080a86e8c827dab308b489251faa37cbaa14daf20c5396c",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Accessible hierarchical composite with roving focus, branch expansion and host-owned selection.",
+      "tags": [
+        "tree"
+      ],
+      "title": "Tree"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "keyboard-focus",
+        "selection",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icon-buttons",
+          "component.tree",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tree-item",
+      "id": "smart.tree-item",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tree-item/smart.manifest.json",
+      "manifest_sha256": "ba1d8f4593adb7a2ddfd096050d2a4ee2c43a0960f0c27aa5e834eb646e0f35b",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "One accessible node in a Smart Tree hierarchy.",
+      "tags": [
+        "tree-item"
+      ],
+      "title": "Tree Item"
+    }
+  ],
+  "schema": "simai.smart-component-contract-registry.v2",
+  "schema_id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+  "schema_path": "contracts/schema/smart-component-manifest.v2.schema.json",
+  "schema_sha256": "4218268a8661e8e9229533280f721123b819237e79ea1612c2115f7c5ee73d9a"
+}

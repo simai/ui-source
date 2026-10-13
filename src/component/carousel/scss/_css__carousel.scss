@@ -1,0 +1,243 @@
+@use 'var__carousel' as *;
+
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+.sf-carousel {
+  --sf-carousel--block-size: var(--sf-g3);
+  --sf-carousel-control--background-color: var(--sf-primary);
+  --sf-carousel-control--color: var(--sf-on-primary);
+  --sf-carousel-pagination--background-color: var(--sf-primary);
+  --sf-carousel-pagination-item--color: var(--sf-on-primary);
+  block-size: var(--sf-carousel--block-size);
+  inline-size: 100%;
+  margin-inline: auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.sf-carousel .sf-carousel-slider,
+.sf-carousel .swiper {
+  block-size: 100%;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.sf-carousel .swiper-wrapper {
+  box-sizing: border-box;
+  display: flex;
+  /* The slides are block-size: 100% of the wrapper, which had no height of its
+     own: a 416px carousel drew its slides in a 50px band. */
+  block-size: 100%;
+}
+
+.sf-carousel .sf-carousel-slide,
+.sf-carousel .swiper-slide {
+  block-size: 100%;
+  flex-shrink: 0;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.sf-carousel .sf-carousel-slide img,
+.sf-carousel .swiper-slide img {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.sf-carousel-switch,
+.sf-carousel-rotation {
+  appearance: none;
+  align-items: center;
+  background-color: var(--sf-carousel-control--background-color);
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  color: var(--sf-carousel-control--color);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  min-block-size: var(--sf-ui-1--control-height);
+  min-inline-size: var(--sf-ui-1--control-height);
+  padding: var(--sf-ui-1--space-y);
+}
+
+.sf-carousel-switch:hover,
+.sf-carousel-rotation:hover {
+  --sf-carousel-control--background-color: var(--sf-primary-hover);
+  --sf-carousel-control--color: var(--sf-on-primary);
+}
+
+.sf-carousel-switch:focus-visible,
+.sf-carousel-rotation:focus-visible,
+.sf-carousel-pagination-item:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+.sf-carousel-switch--secondary-container {
+  --sf-carousel-control--background-color: var(--sf-secondary-container);
+  --sf-carousel-control--color: var(--sf-on-secondary-container);
+}
+
+.sf-carousel-switch--secondary-container:hover {
+  --sf-carousel-control--background-color: var(--sf-secondary-container-hover);
+  --sf-carousel-control--color: var(--sf-on-secondary-container);
+}
+
+.sf-carousel-switch--surface-inverse {
+  --sf-carousel-control--background-color: var(--sf-surface-inverse);
+  --sf-carousel-control--color: var(--sf-on-surface-inverse);
+}
+
+.sf-carousel-switch--surface-inverse:hover {
+  /* The theme has no hover role for the inverse surface; this is the same
+     five-tone step its other hover roles take. */
+  --sf-carousel-control--background-color: light-dark(var(--sf-neutral-25), var(--sf-neutral-85));
+  --sf-carousel-control--color: var(--sf-on-surface-inverse);
+}
+
+.sf-carousel-switch--surface-zero {
+  --sf-carousel-control--background-color: var(--sf-surface-0);
+  --sf-carousel-control--color: var(--sf-on-surface);
+}
+
+.sf-carousel-switch--surface-zero:hover {
+  --sf-carousel-control--background-color: var(--sf-surface-1);
+  --sf-carousel-control--color: var(--sf-on-surface-hover);
+}
+
+.sf-carousel-switch--big {
+  min-block-size: var(--sf-ui-2--control-height);
+  min-inline-size: var(--sf-ui-2--control-height);
+  padding: var(--sf-ui-2--space-y);
+}
+
+.sf-carousel .sf-carousel-switch {
+  inset-block-start: 50%;
+  position: absolute;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.sf-carousel .sf-carousel-switch--right,
+.sf-carousel .sf-carousel-switch--next {
+  inset-inline-end: var(--sf-space-1);
+}
+
+.sf-carousel .sf-carousel-switch--left,
+.sf-carousel .sf-carousel-switch--prev {
+  inset-inline-start: var(--sf-space-1);
+}
+
+.sf-carousel .sf-carousel-rotation {
+  inset-block-start: var(--sf-space-1);
+  inset-inline-end: var(--sf-space-1);
+  position: absolute;
+  z-index: 2;
+}
+
+.sf-carousel-pagination {
+  align-items: center;
+  background-color: var(--sf-carousel-pagination--background-color);
+  border-radius: var(--sf-radius--ui);
+  display: inline-flex;
+  gap: var(--sf-space-1\/2);
+  inset-block-end: var(--sf-space-1);
+  inset-inline-start: 50%;
+  padding: var(--sf-space-1\/2);
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.sf-carousel-pagination-item,
+button.sf-carousel-pagination-item {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--sf-radius-circle);
+  color: var(--sf-carousel-pagination-item--color);
+  cursor: pointer;
+  min-block-size: var(--sf-ui-1\/3--control-height);
+  min-inline-size: var(--sf-ui-1\/3--control-height);
+  padding: 0;
+  position: relative;
+}
+
+.sf-carousel-pagination-item::after {
+  background-color: currentColor;
+  border-radius: var(--sf-radius-circle);
+  block-size: var(--sf-a8);
+  content: '';
+  inline-size: var(--sf-a8);
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  opacity: var(--sf-opacity-40);
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.sf-carousel-pagination-item:hover::after,
+.sf-carousel-pagination-item--active::after,
+.swiper-pagination-bullet-active::after {
+  opacity: unset;
+}
+
+.sf-carousel-pagination--primary-container {
+  --sf-carousel-pagination--background-color: var(--sf-primary-container);
+  --sf-carousel-pagination-item--color: var(--sf-on-primary-container);
+}
+
+.sf-carousel-pagination--surface-2 {
+  --sf-carousel-pagination--background-color: var(--sf-surface-1);
+  --sf-carousel-pagination-item--color: var(--sf-on-surface);
+}
+
+.sf-carousel-pagination--surface-inverse {
+  --sf-carousel-pagination--background-color: var(--sf-surface-inverse);
+  --sf-carousel-pagination-item--color: var(--sf-on-surface-inverse);
+}
+
+.sf-carousel-pagination--no-background {
+  --sf-carousel-pagination--background-color: transparent;
+  --sf-carousel-pagination-item--color: var(--sf-primary);
+}
+
+.sf-carousel-pagination--big .sf-carousel-pagination-item {
+  min-block-size: var(--sf-ui-1--control-height);
+  min-inline-size: var(--sf-ui-1--control-height);
+}
+
+.sf-carousel .swiper-button-disabled {
+  cursor: default;
+  opacity: var(--sf-opacity-40);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-carousel .swiper-wrapper,
+  .sf-carousel .sf-carousel-slide {
+    transition-duration: 0s !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-carousel-switch,
+  .sf-carousel-rotation,
+  .sf-carousel-pagination {
+    border: var(--sf-focus-outline-width) solid ButtonText;
+    forced-color-adjust: none;
+  }
+
+  .sf-carousel-pagination-item {
+    color: ButtonText;
+  }
+
+  .sf-carousel-pagination-item--active {
+    color: Highlight;
+  }
+}
+}

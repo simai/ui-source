@@ -1,0 +1,1 @@
+SF.RuleLoader['scroll-slider-color/default'] = new RegExp("^(?:scroll-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|humb-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|ransparent))|ransparent)))(?![\\s\\S])");

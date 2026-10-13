@@ -1,0 +1,43 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  max-inline-size: 100%;
+}
+
+body {
+  padding: var(--sf-space-1, 1rem);
+}
+
+main,
+form,
+fieldset,
+details,
+sf-dropdown,
+sf-input {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+form {
+  display: grid;
+  gap: var(--sf-space-1, 1rem);
+}
+
+fieldset {
+  margin: 0;
+}
+
+details {
+  margin-block: var(--sf-space-half, 0.5rem);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}

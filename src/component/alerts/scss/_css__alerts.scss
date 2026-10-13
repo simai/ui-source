@@ -1,0 +1,217 @@
+/* The status words are the shared vocabulary: neutral, info, success, warning,
+   error. The component renders the canonical class, and the two words this
+   component used before — clear and danger — are matched beside it so existing
+   markup and project CSS keep working. See contracts/public-api-axes.json. */
+@use 'var__alerts' as *;
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-alert {
+  --sf-alert--color: var(--sf-on-surface);
+  border-bottom-width: var(--sf-alert--border-bottom-width, var(--sf-px));
+  border-end-end-radius: var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface));
+  border-end-start-radius: var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface));
+  border-inline-end-width: var(--sf-alert--border-right-width, var(--sf-px));
+  border-inline-start-width: var(--sf-alert--border-left-width, var(--sf-px));
+  border-start-end-radius: var(--sf-alert--border-top-right-radius, var(--sf-radius--surface));
+  border-start-start-radius: var(--sf-alert--border-top-left-radius, var(--sf-radius--surface));
+  border-style: var(--sf-alert--border-style, solid);
+  border-top-width: var(--sf-alert--border-top-width, var(--sf-px));
+  border-width: var(--sf-alert--border-width, var(--sf-px));
+  gap: var(--sf-alert--gap, var(--sf-space-1));
+  padding-bottom: var(--sf-alert--padding-bottom, var(--sf-space-1));
+  padding-inline-end: var(--sf-alert--padding-right, var(--sf-space-1));
+  padding-inline-start: var(--sf-alert--padding-left, var(--sf-space-1));
+  padding-top: var(--sf-alert--padding-top, var(--sf-space-1));
+  background-color: var(--sf-alert--background-color);
+  border-color: var(--sf-alert--border-color, transparent);
+  color: var(--sf-alert--color);
+  opacity: var(--sf-alert--opacity, 1);
+  transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
+}
+
+.sf-alert.closing {
+  transition-timing-function: var(--sf-ease-exit);
+  --sf-alert--opacity: 0;
+  pointer-events: none;
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-alert .sf-alert-wrap {
+  --sf-alert-wrap--background-color: transparent;
+  --sf-alert-wrap--gap: var(--sf-space-1);
+  background-color: var(--sf-alert-wrap--background-color);
+  gap: var(--sf-alert-wrap--gap);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-buttons--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-alert .sf-alert-buttons {
+  --sf-alert-buttons--background-color: transparent;
+  --sf-alert-buttons--gap: var(--sf-space-1\/3);
+  background-color: var(--sf-alert-buttons--background-color);
+  gap: var(--sf-alert-buttons--gap);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-content--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-alert .sf-alert-content {
+  --sf-alert-content--background-color: transparent;
+  --sf-alert-content--gap: var(--sf-space-1\/2);
+  background-color: var(--sf-alert-content--background-color);
+  gap: var(--sf-alert-content--gap);
+}
+
+.sf-alert .sf-alert-supporting-text {
+  --sf-alert-supporting-text--color: var(--sf-alert--color);
+  --sf-alert-supporting-text--font-family: var(--sf-text--family);
+  --sf-alert-supporting-text--font-size: var(--sf-text-size-1);
+  --sf-alert-supporting-text--font-weight: var(--sf-font-weight-regular);
+  --sf-alert-supporting-text--line-height: var(--sf-text-height-1);
+  color: var(--sf-alert-supporting-text--color);
+  font-family: var(--sf-alert-supporting-text--font-family);
+  font-size: var(--sf-alert-supporting-text--font-size);
+  font-weight: var(--sf-alert-supporting-text--font-weight);
+  line-height: var(--sf-alert-supporting-text--line-height);
+}
+
+.sf-alert .sf-alert-text {
+  --sf-alert-text--color: var(--sf-alert--color);
+  --sf-alert-text--font-family: var(--sf-text--family);
+  --sf-alert-text--font-size: var(--sf-text-size-1);
+  --sf-alert-text--font-weight: var(--sf-font-weight-medium);
+  --sf-alert-text--line-height: var(--sf-text-height-1);
+  color: var(--sf-alert-text--color);
+  font-family: var(--sf-alert-text--font-family);
+  font-size: var(--sf-alert-text--font-size);
+  font-weight: var(--sf-alert-text--font-weight);
+  line-height: var(--sf-alert-text--line-height);
+}
+
+.sf-alert .sf-close-icon {
+  background-color: var(--sf-close-icon--background-color);
+  border-color: var(--sf-close-icon--border-color, transparent);
+}
+
+.sf-alert .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size);
+  height: var(--sf-icon--height);
+  width: var(--sf-icon--width);
+}
+
+.sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--default {
+  --sf-alert--background-color: var(--sf-surface-container);
+  --sf-alert--border-color: var(--sf-outline);
+}
+
+.sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-surface-variant);
+}
+
+.sf-alert.sf-alert--info.sf-alert--default {
+  --sf-alert--background-color: var(--sf-info-container);
+  --sf-alert--border-color: var(--sf-outline-info);
+  --sf-alert--color: var(--sf-on-info-container);
+}
+
+.sf-alert.sf-alert--info .sf-icon {
+  --sf-icon--color: var(--sf-info);
+}
+
+.sf-alert.sf-alert--info.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--default > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--info.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--outlined > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--info.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--warning.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon, .sf-alert.sf-alert--success.sf-alert--flat > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-surface-variant);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--default {
+  --sf-alert--background-color: var(--sf-error-container);
+  --sf-alert--border-color: var(--sf-outline-error);
+  --sf-alert--color: var(--sf-on-error-container);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger) .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--default {
+  --sf-alert--background-color: var(--sf-warning-container);
+  --sf-alert--border-color: var(--sf-outline-warning);
+  --sf-alert--color: var(--sf-on-warning-container);
+}
+
+.sf-alert.sf-alert--warning .sf-icon {
+  --sf-icon--color: var(--sf-warning);
+}
+
+.sf-alert.sf-alert--success.sf-alert--default {
+  --sf-alert--background-color: var(--sf-success-container);
+  --sf-alert--border-color: var(--sf-outline-success);
+  --sf-alert--color: var(--sf-on-success-container);
+}
+
+.sf-alert.sf-alert--success .sf-icon {
+  --sf-icon--color: var(--sf-success);
+}
+
+.sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-outline);
+}
+
+.sf-alert.sf-alert--info.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-outline-info);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-outline-error);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-outline-warning);
+}
+
+.sf-alert.sf-alert--success.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-outline-success);
+}
+
+.sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--flat {
+  --sf-alert--background-color: var(--sf-surface-container);
+}
+
+.sf-alert.sf-alert--info.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-info-container);
+  --sf-alert--color: var(--sf-on-info-container);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--flat {
+  --sf-alert--background-color: var(--sf-error-container);
+  --sf-alert--color: var(--sf-on-error-container);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-warning-container);
+  --sf-alert--color: var(--sf-on-warning-container);
+}
+
+.sf-alert.sf-alert--success.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-success-container);
+  --sf-alert--color: var(--sf-on-success-container);
+}
+
+.sf-alert--outlined {
+  --sf-alert--background-color: transparent;
+}
+
+.sf-alert--flat {
+  --sf-alert--border-color: var(--sf-transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-alert {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-alert {
+    border-color: CanvasText;
+  }
+}

@@ -1,0 +1,25 @@
+// SIMAI Framework
+// https://simai.io
+
+// BORDER RADIUS
+
+// Border radius use size from SIMAI Framework size system
+$border-radius-array: (
+	'0': '0',
+	'1\\/3': '1\\/3',
+	'1\\/2': '1\\/2',
+	'1': '1',
+	'2': '2',
+	'3': '3',
+	'4': '4',
+	'default': 'default',
+	// Смысловые радиусы: мелкий контрол и крупный блок. Значение с ведущим
+	// дефисом даёт var(--sf-radius--ui) и var(--sf-radius--surface) — токены
+	// названы через два дефиса, потому что это роли, а не ступени шкалы.
+	'ui': '-ui',
+	'surface': '-surface',
+	'square': 'square',
+	'rounded': 'rounded',
+	'round': 'round',
+);
+

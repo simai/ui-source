@@ -1,0 +1,397 @@
+{
+  "schema_version": 2,
+  "id": "smart.button-group",
+  "version": "1.0.0",
+  "title": "Button group",
+  "summary": "A controlled single-selection group built from SF5 buttons.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "button",
+    "segmented-control",
+    "selection"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-button-group",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.button-group",
+      "smart.buttons"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name."
+      },
+      "items": {
+        "type": "array",
+        "default": "[]",
+        "description": "Selectable items with stable value, label, icon and disabled fields.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "aria-label": {
+              "type": "string"
+            },
+            "disabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "value",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "examples": [
+          [
+            {
+              "value": "list",
+              "label": "List",
+              "icon": "list"
+            },
+            {
+              "value": "grid",
+              "label": "Grid",
+              "icon": "grid_view"
+            }
+          ]
+        ]
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "Currently selected item value."
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "enum": [
+          "1/3",
+          "1/2",
+          "1",
+          "2",
+          "3"
+        ],
+        "description": "Shared button size token."
+      },
+      "spacing": {
+        "type": "string",
+        "default": "normal",
+        "description": "Shared semantic internal spacing profile.",
+        "enum": [
+          "compact",
+          "normal",
+          "comfortable",
+          "spacious"
+        ]
+      },
+      "tightness": {
+        "type": "string",
+        "default": "",
+        "enum": [
+          "",
+          "low",
+          "high",
+          "highest"
+        ],
+        "description": "Compatibility alias for spacing."
+      },
+      "scheme": {
+        "type": "string",
+        "default": "primary",
+        "enum": [
+          "primary",
+          "secondary",
+          "on-surface"
+        ],
+        "description": "Color scheme for the selected button."
+      },
+      "orientation": {
+        "type": "string",
+        "default": "horizontal",
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
+        "description": "Layout and keyboard navigation orientation."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disables the whole group."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for the group."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Extra classes applied to the group root."
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {
+    "type": "object"
+  },
+  "contracts": {},
+  "methods": {
+    "select": {
+      "summary": "Selects an enabled item by value.",
+      "arguments": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "clear": {
+      "summary": "Clears the current selection.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "focus": {
+      "summary": "Moves focus to the selected or first enabled item.",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object",
+          "null"
+        ]
+      }
+    }
+  },
+  "events": {
+    "change": {
+      "summary": "The selected value changed through select() or clear(); dispatched on the host, bubbles and is composed. The name to bind.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "description": "The emitting sf-button-group."
+          },
+          "previous": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "Empty after clear()."
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The selected item; null after clear()."
+          }
+        },
+        "required": [
+          "component",
+          "previous",
+          "value",
+          "item"
+        ]
+      },
+      "canonical": true
+    },
+    "sf-button-group-change": {
+      "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "previous": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "previous",
+          "value",
+          "item"
+        ]
+      },
+      "alias_of": "change"
+    }
+  },
+  "state": {
+    "machines": {
+      "selection": [
+        "empty",
+        "selected",
+        "disabled"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "disabled",
+      "selected"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "fixture",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "preference persistence",
+      "host route invention"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "items",
+      "value"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "radiogroup",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End"
+    ],
+    "focus": "Use roving tabindex and an inset focus-visible indicator that does not cover adjacent segments."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ]
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_artifacts": [
+      {
+        "path": "src/smart/button-group/index.js",
+        "sha256": "587362665c8f5db011a240a06797a2e12f9c012079d8d310e52d14f8b25223e2"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-button-group for one compact mutually exclusive choice.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not persist selection inside the component",
+      "Do not use it for independent multi-select actions"
+    ],
+    "required_reads": [
+      "inputs",
+      "methods",
+      "events",
+      "ownership",
+      "provenance"
+    ],
+    "minimal_example": "<sf-button-group aria-label=\"View\" items='[{\"value\":\"list\",\"label\":\"List\"},{\"value\":\"grid\",\"label\":\"Grid\"}]' value=\"list\"></sf-button-group>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

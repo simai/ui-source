@@ -1,0 +1,18 @@
+@use 'sf_var__text_decoration_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TEXT DECORATION
+
+$infix: '';
+
+// @include layer-priority(utility,default) {
+    // Text Decoration Color
+    @each $color-name, $color-value in $text-decoration-color-array { // $text-decoration-color-array {
+        .#{$infix}decoration-#{$color-name} {
+            text-decoration-color: var(--sf-#{$color-value})
+        }
+    }
+// }
+}

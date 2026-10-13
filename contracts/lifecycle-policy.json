@@ -1,0 +1,17 @@
+{
+  "schema": "simai.lifecycle-policy.v1",
+  "purpose": "How a public name or behaviour leaves the Framework. One version line stays long; legacy leaves on a calendar, not on a version number.",
+  "stages": {
+    "compat": "Still works through an alias or a shim, recorded in contracts/changes/journal.json, noted at runtime in SF.deprecations (and in the console when the page opts in). Documented with its replacement.",
+    "removed": "The code is gone. The journal record stays forever as a tombstone, so any older consumer can still be upgraded by reading it."
+  },
+  "compat_days": 30,
+  "sweep_day_of_month": 1,
+  "remove_after_rule": "The first sweep day on or after deprecated_on + compat_days.",
+  "extension": {
+    "max_days": 30,
+    "requires": "a reason naming the consumer that still depends on the name and the date it migrates"
+  },
+  "sweep": "On each sweep day every compat record whose remove_after has passed is removed: known consumers are scanned with scripts/sf-upgrade.mjs first, the code and its alias go, the record becomes removed with removed_on, and the gate holds it. A sweep that cannot finish by its day is extended before the day, never after: the gate must not be red on a day the work is in hand, or a known red teaches everyone to read past it. Only the sweeper edits the journal; anyone else who meets a due record says so and waits.",
+  "notice_days": 7
+}

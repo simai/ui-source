@@ -1,0 +1,11 @@
+
+            /*
+            * Main SCSS file for including styles for component.
+            *
+            * Imports:
+            * - Styling variables (_var__component_name.scss)
+            * - Base styles (_css__component_name.scss)
+            *
+            */
+@use "var__contentDivider";
+@use "css__contentDivider";

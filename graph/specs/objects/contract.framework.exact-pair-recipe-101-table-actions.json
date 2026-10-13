@@ -1,0 +1,65 @@
+{
+  "id": "contract.framework.exact-pair-recipe-101-table-actions",
+  "kind": "knowledge",
+  "tz_role": "contract",
+  "subtype": "architecture_contract",
+  "title": "Exact reproducible Framework pair, Recipe 1.0.1 and typed table actions",
+  "lifecycle": "accepted",
+  "semantic_digest": "sha256:8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226",
+  "architecture_owner_id": "human.rim-zabarov",
+  "acceptance_ref": "decision.framework.exact-pair-target-accepted",
+  "accepted_document_ref": "docs/developer/framework-delivery-target-review.json",
+  "accepted_document_sha256": "8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226",
+  "ownership": {
+    "ui-source": "Normative Recipe schemas, algorithm, fixtures, public table action port and first-party source runtime",
+    "ui-builder": "Native reproducible packaging and generated contract binding",
+    "ui": "Generated Core runtime and immutable exact-pair contract selection",
+    "ui-smart": "Generated Smart runtime",
+    "ui-control": "Assignments, compatibility state, bounded acceptance and immutable supply handoff",
+    "larena": "Product operations, data, permissions, concurrency and independent consumer acceptance"
+  },
+  "requirements": [
+    "Deliver the exact compatible Core/Smart pair from committed source and native builder inputs; independently repeated builds produce identical runtime bytes.",
+    "Ship Composition Recipe 1.0.1 with all ten normative lock paths present and checksum-valid; emitted ESM imports and inherited owner-bound content compilation work.",
+    "Bind registry, BOM, resource origin/checksum index and runtime archive hashes to that same pair; no moving reference substitutes for an immutable revision.",
+    "Preserve shared JavaScript/PHP canonicalization and positive/negative Recipe checks, with PHP fixture checks distinguished from a complete PHP resolver.",
+    "Implement the accepted typed row/context/bulk action port: complete string/safe-integer IDs, closed immutable payload, owning-instance routing, exactly-once activation, keyboard/nested controls and disconnect/remount cleanup. Framework emits intent; product operations and ACL remain Larena-owned.",
+    "Confirm bounded regression and archived-pair browser scenarios: login/password form participation, structured/nested cells, search/filter/query, dropdown/modal/forms, wide/narrow widths, dark RTL, restart and console.",
+    "Obtain exact-pair Larena consumer acceptance in the separately authorized isolated copies, preserving original dirty copies, main, current pins, databases and running sites; never substitute supply readback for actual product hydration/action acceptance.",
+    "Verify coherent rollback and failed-publication preservation at the claimed release scope, pass applicable coordinated owner gates, and deliver Larena handoff with exact revisions, archives, provenance, commands, limitations and rollback. A local rehearsal is not a production publication transaction."
+  ],
+  "invariants": [
+    "Recipe is assembly input; Document is the complete validated tree; HTML is renderer output",
+    "No grammar fork, new component hierarchy, competing renderer or product storage format",
+    "Framework emits action intent; it does not execute product operations",
+    "No hand edits to generated runtime distributions",
+    "No new runtime dependency or package ownership transfer",
+    "Preserve original dirty worktrees and unfinished ui-loader",
+    "Larena original copies, main/current pins, databases and running sites are protected; independent explicitly approved isolated acceptance copies only"
+  ],
+  "public_action_contract": {
+    "element": "sf-table",
+    "manifest_entity": "smart.data-view",
+    "event": "sf-table-action-intent",
+    "bubbles": true,
+    "composed": true,
+    "detail_fields": [
+      "action_id",
+      "record_ids"
+    ],
+    "record_ids": "Nonempty array of complete opaque nonempty strings or safe integers; integer 0 and string 0 remain distinct",
+    "payload": "Closed immutable copied detail and ID array",
+    "routing": "Owning table instance, nested and sibling isolation, registered product handler",
+    "activation": "Exactly once for supported pointer/keyboard/context/bulk paths",
+    "cleanup": "Disconnect/remount clears selection and owned activation handlers; declared configuration remains",
+    "excluded": "Create without an existing ID; endpoint, permissions, callbacks and product business execution are outside payload"
+  },
+  "candidate_runtime_input": {
+    "source": "846cdca71e65af0c654d795ae127193572c4b10a",
+    "builder_runtime_input": "f450dc59a206db224b0a66851b61ec686e158f81",
+    "core_runtime": "107833f38f4732794c64ce5fbb72f1e23537dbf5",
+    "smart_runtime": "a941bdbafe4fd9e2fbf356191b72047bbf890969",
+    "recipe_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd"
+  },
+  "legacy_identity_note": "Existing sf5 core/component/Smart identities referenced for compatibility; no new sf5 identities created."
+}

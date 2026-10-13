@@ -1,0 +1,13 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.close",
+  "title": "Close reference",
+  "summary": "Deterministic reference fixture for sf-close.",
+  "locale": "ru",
+  "props": {
+    "size": "1"
+  },
+  "children": [],
+  "state": "default"
+}

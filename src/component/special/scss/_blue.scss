@@ -1,0 +1,68 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// THEME BLUE COLOR CSS
+
+html {
+    &.special {
+        .sf-special-blue {
+            background-color: #9FD7FF!important;
+            color: #000!important;
+            border-color:#000!important;
+
+            *:not(.special-panel,[data-bg]),
+            ::after,::before {
+                background: none;
+                background-color: inherit!important;
+                color: inherit!important;
+                border-color: inherit!important;
+                text-decoration-color: inherit!important;
+            }
+
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:bg-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #000!important;
+                color:#9FD7FF!important;
+                border-color:#9FD7FF!important;
+
+                * {
+                    background-color: #000!important;
+                    color:#9FD7FF!important;
+                    border-color:#9FD7FF!important;
+                    box-shadow: none!important;
+                }
+            }
+
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:color-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #000!important;
+                color:#9FD7FF!important;
+                border-color: #9FD7FF!important;
+
+                * {
+                    background-color: #000!important;
+                    color:#9FD7FF!important;
+                    border-color:#9FD7FF!important;
+                }
+            }
+
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover,
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::after,
+            [class*="hover\:border-"]:not(.special-panel,[data-bg]):hover::before {
+                background-color: #000!important;
+                color:#9FD7FF!important;
+                border-color: #9FD7FF!important;
+
+                * {
+                    background-color: #000!important;
+                    color:#9FD7FF!important;
+                    border-color:#9FD7FF!important;
+                }
+            }
+        }
+    }
+}
+}

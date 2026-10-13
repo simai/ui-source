@@ -1,0 +1,272 @@
+@layer sf.base {
+  :root {
+    --sf-transparent: #ffffff00;
+    /* Два значения-ключевых слова, которые утилиты просили с самого начала:
+       целое семейство классов *-current и *-inherit ссылалось на них, а
+       объявления не было. Без него bg-current давал прозрачный фон, а
+       fill-current — чёрный; там, где начальное значение свойства случайно
+       совпадало с намерением, класс работал по удаче. */
+    --sf-current: currentColor;
+    --sf-inherit: inherit;
+    --sf-transparent-for-focus: var(--sf-transparent);
+    --sf-white: #ffffff;
+    --sf-white--alfa-8: #ffffff14;
+    --sf-white--alfa-24: #ffffff3d;
+    --sf-black: #000000;
+    --sf-black--alfa-4: #0000000a;
+    --sf-black--alfa-8: #00000014;
+    --sf-black--alfa-12: #0000001f;
+    --sf-neutral-98: #faf9fe;
+    --sf-neutral-95: #f1f0f6;
+    --sf-neutral-90: #e3e2e7;
+    --sf-neutral-90--alfa-4: #e3e2e70a;
+    --sf-neutral-90--alfa-8: #e3e2e714;
+    --sf-neutral-90--alfa-12: #e3e2e71f;
+    /* The plate steps in the dark theme. The plate used to be mixed from
+       neutral-50 there, a middle grey, while everything else translucent was
+       mixed from this near-white (owner, 2026-10-08). */
+    --sf-neutral-90--alfa-16: #e3e2e729;
+    --sf-neutral-90--alfa-20: #e3e2e733;
+    --sf-neutral-90--alfa-24: #e3e2e73d;
+    --sf-neutral-90--alfa-32: #e3e2e752;
+    --sf-neutral-90--alfa-48: #e3e2e77a;
+    --sf-neutral-85: #d4d4d9;
+    --sf-neutral-80: #c6c6cb;
+    --sf-neutral-70: #ababb0;
+    --sf-neutral-60: #909095;
+    /* The one alpha step neutral-60 has, and it is on the scale's own footing:
+       the run climbs in fours, and 64 is one of them -- it had simply never
+       been generated, so the boundary role carried a color-mix written in the
+       role itself. neutral-60 over the dark surface measures 5.95:1 at full
+       opacity, and 64% lands at 3.12:1, the WCAG 1.4.11 threshold the light
+       theme reaches at 80% (owner, 2026-10-08). */
+    --sf-neutral-60--alfa-48: #9090957a;
+    --sf-neutral-80--alfa-48: #c6c6cb7a;
+    --sf-neutral-60--alfa-64: #909095a3;
+    --sf-neutral-50: #76777c;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-neutral-50--alfa-4: #76777c0a;
+    --sf-neutral-50--alfa-8: #76777c14;
+    --sf-neutral-50--alfa-12: #76777c1f;
+    --sf-neutral-50--alfa-16: #76777c29;
+    --sf-neutral-50--alfa-20: #76777c33;
+    --sf-neutral-50--alfa-24: #76777c3d;
+    /* The veil over a scene: the backdrop of a modal and the bed of a
+       scrollbar. A step above the strongest plate, because a plate sits on the
+       page and a veil covers it (owner, 2026-10-08). */
+    --sf-neutral-50--alfa-32: #76777c52;
+    /* The ink family of the scale (48, 64, 80): marks drawn with the neutral
+       rather than washes laid under something. neutral-50 over white measures
+       4.47:1 at full opacity, so 80% lands at 3.10:1, level with the dark
+       theme. The state (4/8/12) and fill (12-32) families sit above. */
+    /* The ink step of the scale on the light neutral: the boundary of a control
+       nobody can use. Weaker than the 80 the boundary of a live one takes, and
+       that is the whole of its work (owner, 2026-10-08). */
+    --sf-neutral-50--alfa-48: #76777c7a;
+    --sf-neutral-50--alfa-80: #76777ccc;
+    --sf-neutral-40: #5d5e63;
+    --sf-neutral-35: #515257;
+    --sf-neutral-30: #45474b;
+    --sf-neutral-25: #3a3b40;
+    --sf-neutral-20: #2f3035;
+    --sf-neutral-15: #24262a;
+    --sf-neutral-10: #1a1b1f;
+    --sf-neutral-5: #0f1115;
+    --sf-primary-98: #f9f9ff;
+    --sf-secondary-98: #f9f9ff;
+    --sf-tertiary-98: #fff7fa;
+    --sf-tertiary-95: #ffebfd;
+    --sf-tertiary-90: #fdd6ff;
+    --sf-tertiary-90--alfa-4: #fdd6ff0a;
+    --sf-tertiary-90--alfa-8: #fdd6ff14;
+    --sf-tertiary-90--alfa-12: #fdd6ff1f;
+    --sf-tertiary-90--alfa-24: #fdd6ff3d;
+    --sf-tertiary-85: #f9c2ff;
+    --sf-tertiary-80: #ecb3f4;
+    --sf-tertiary-70: #cf98d8;
+    --sf-tertiary-60: #b37ebb;
+    --sf-tertiary-50: #9765a0;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-tertiary-50--alfa-4: #9765a00a;
+    --sf-tertiary-50--alfa-8: #9765a014;
+    --sf-tertiary-50--alfa-12: #9765a01f;
+    --sf-tertiary-50--alfa-16: #9765a029;
+    --sf-tertiary-50--alfa-20: #9765a033;
+    --sf-tertiary-50--alfa-24: #9765a03d;
+    --sf-tertiary-50--alfa-28: #9765a047;
+    --sf-tertiary-50--alfa-32: #9765a052;
+    --sf-tertiary-40: #7c4c86;
+    --sf-tertiary-35: #6f4079;
+    --sf-tertiary-30: #63356c;
+    --sf-tertiary-25: #562960;
+    --sf-tertiary-20: #4a1e54;
+    --sf-tertiary-15: #3e1249;
+    --sf-tertiary-10: #32053e;
+    --sf-tertiary-5: #23002d;
+    --sf-secondary-95: #edf0ff;
+    --sf-secondary-90: #d7e2ff;
+    --sf-secondary-90--alfa-4: #d7e2ff0a;
+    --sf-secondary-90--alfa-8: #d7e2ff14;
+    --sf-secondary-90--alfa-12: #d7e2ff1f;
+    --sf-secondary-90--alfa-24: #d7e2ff3d;
+    --sf-secondary-85: #c9d4f1;
+    --sf-secondary-80: #bbc6e3;
+    --sf-secondary-70: #a0abc7;
+    --sf-secondary-60: #8591ab;
+    --sf-secondary-50: #6c7791;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-secondary-50--alfa-4: #6c77910a;
+    --sf-secondary-50--alfa-8: #6c779114;
+    --sf-secondary-50--alfa-12: #6c77911f;
+    --sf-secondary-50--alfa-16: #6c779129;
+    --sf-secondary-50--alfa-20: #6c779133;
+    --sf-secondary-50--alfa-24: #6c77913d;
+    --sf-secondary-50--alfa-28: #6c779147;
+    --sf-secondary-50--alfa-32: #6c779152;
+    --sf-secondary-40: #535e77;
+    --sf-secondary-35: #47526a;
+    --sf-secondary-30: #3c475e;
+    --sf-secondary-25: #303b52;
+    --sf-secondary-20: #253047;
+    --sf-secondary-15: #1a263b;
+    --sf-secondary-10: #101b31;
+    --sf-secondary-5: #051126;
+    --sf-primary-95: #edf0ff;
+    --sf-primary-90: #d7e2ff;
+    --sf-primary-90--alfa-4: #d7e2ff0a;
+    --sf-primary-90--alfa-8: #d7e2ff14;
+    --sf-primary-90--alfa-12: #d7e2ff1f;
+    --sf-primary-90--alfa-24: #d7e2ff3d;
+    --sf-primary-85: #c2d5ff;
+    --sf-primary-80: #acc7ff;
+    --sf-info-98: #f9f9ff;
+    --sf-info-95: #edf0ff;
+    --sf-info-90: #d7e2ff;
+    --sf-info-85: #c2d5ff;
+    --sf-info-80: #acc7ff;
+    --sf-info-70: #7eabff;
+    --sf-info-60: #488fff;
+    --sf-info-50: #0073ed;
+    --sf-info-50--alfa-12: #0073ed1f;
+    --sf-info-50--alfa-16: #0073ed29;
+    --sf-info-50--alfa-20: #0073ed33;
+    --sf-info-50--alfa-24: #0073ed3d;
+    --sf-info-50--alfa-28: #0073ed47;
+    --sf-info-50--alfa-32: #0073ed52;
+    --sf-info-40: #005bbe;
+    --sf-info-35: #0050a7;
+    --sf-info-30: #004491;
+    --sf-info-25: #00397c;
+    --sf-info-20: #002f67;
+    --sf-info-15: #002453;
+    --sf-info-10: #001a40;
+    --sf-info-5: #00102c;
+    --sf-primary-70: #7eabff;
+    --sf-primary-60: #488fff;
+    --sf-primary-50: #0073ed;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-primary-50--alfa-4: #0073ed0a;
+    --sf-primary-50--alfa-8: #0073ed14;
+    --sf-primary-50--alfa-12: #0073ed1f;
+    --sf-primary-50--alfa-16: #0073ed29;
+    --sf-primary-50--alfa-20: #0073ed33;
+    --sf-primary-50--alfa-24: #0073ed3d;
+    --sf-primary-50--alfa-28: #0073ed47;
+    --sf-primary-50--alfa-32: #0073ed52;
+    --sf-primary-40: #005bbe;
+    --sf-primary-35: #0050a7;
+    --sf-primary-30: #004491;
+    --sf-primary-25: #00397c;
+    --sf-primary-20: #002f67;
+    --sf-primary-15: #002453;
+    --sf-primary-10: #001a40;
+    --sf-primary-5: #00102c;
+    --sf-error-98: #fff8f7;
+    --sf-error-95: #ffedea;
+    --sf-error-90: #ffdad6;
+    --sf-error-90--alfa-4: #ffdad60a;
+    --sf-error-90--alfa-8: #ffdad614;
+    --sf-error-90--alfa-12: #ffdad61f;
+    --sf-error-90--alfa-24: #ffdad63d;
+    --sf-error-85: #ffc7c0;
+    --sf-error-80: #ffb4ab;
+    --sf-error-70: #ff897d;
+    --sf-error-60: #ff5449;
+    --sf-error-50: #df362f;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-error-50--alfa-4: #df362f0a;
+    --sf-error-50--alfa-8: #df362f14;
+    --sf-error-50--alfa-12: #df362f1f;
+    --sf-error-50--alfa-16: #df362f29;
+    --sf-error-50--alfa-20: #df362f33;
+    --sf-error-50--alfa-24: #df362f3d;
+    --sf-error-50--alfa-28: #df362f47;
+    --sf-error-50--alfa-32: #df362f52;
+    --sf-error-40: #bb1919;
+    --sf-error-35: #a9040e;
+    --sf-error-30: #93000a;
+    --sf-error-25: #7e0007;
+    --sf-error-20: #690005;
+    --sf-error-15: #540003;
+    --sf-error-10: #410002;
+    --sf-error-5: #2d0001;
+    --sf-warning-98: #fff8f5;
+    --sf-warning-95: #ffeee2;
+    --sf-warning-90: #ffdcc1;
+    --sf-warning-90--alfa-4: #ffdcc10a;
+    --sf-warning-90--alfa-8: #ffdcc114;
+    --sf-warning-90--alfa-12: #ffdcc11f;
+    --sf-warning-90--alfa-24: #ffdcc13d;
+    --sf-warning-85: #ffca9f;
+    --sf-warning-80: #ffb779;
+    --sf-warning-70: #fa911c;
+    --sf-warning-60: #d87900;
+    --sf-warning-50: #b26300;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-warning-50--alfa-4: #b263000a;
+    --sf-warning-50--alfa-8: #b2630014;
+    --sf-warning-50--alfa-12: #b263001f;
+    --sf-warning-50--alfa-16: #b2630029;
+    --sf-warning-50--alfa-20: #b2630033;
+    --sf-warning-50--alfa-24: #b263003d;
+    --sf-warning-50--alfa-28: #b2630047;
+    --sf-warning-50--alfa-32: #b2630052;
+    --sf-warning-40: #8f4e00;
+    --sf-warning-35: #7d4400;
+    --sf-warning-30: #6c3a00;
+    --sf-warning-25: #5c3000;
+    --sf-warning-20: #4c2700;
+    --sf-warning-15: #3d1e00;
+    --sf-warning-10: #2e1500;
+    --sf-warning-5: #1f0c00;
+    --sf-success-98: #ecffe4;
+    --sf-success-95: #c9ffbe;
+    --sf-success-90: #8ffa88;
+    --sf-success-90--alfa-4: #8ffa880a;
+    --sf-success-90--alfa-8: #8ffa8814;
+    --sf-success-90--alfa-12: #8ffa881f;
+    --sf-success-90--alfa-24: #8ffa883d;
+    --sf-success-85: #81ec7c;
+    --sf-success-80: #74dd6f;
+    --sf-success-70: #58c157;
+    --sf-success-60: #3ba53f;
+    --sf-success-50: #198a27;
+    /* Ступени 4 % и 8 %: на них стоят слои наведения и выбора этой палитры. */
+    --sf-success-50--alfa-4: #198a270a;
+    --sf-success-50--alfa-8: #198a2714;
+    --sf-success-50--alfa-12: #198a271f;
+    --sf-success-50--alfa-16: #198a2729;
+    --sf-success-50--alfa-20: #198a2733;
+    --sf-success-50--alfa-24: #198a273d;
+    --sf-success-50--alfa-28: #198a2747;
+    --sf-success-50--alfa-32: #198a2752;
+    --sf-success-40: #006e17;
+    --sf-success-35: #006013;
+    --sf-success-30: #00530f;
+    --sf-success-25: #00460b;
+    --sf-success-20: #003908;
+    --sf-success-15: #002d05;
+    --sf-success-10: #002203;
+    --sf-success-5: #001501;
+  }
+}

@@ -1,0 +1,17 @@
+@use 'sf_var__caret_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// INTERACTIVITY
+
+$infix: '';
+
+// @include layer-priority(utility,default) {
+    @each $caret-color-name, $caret-color-value in $caret-color-array {
+        .#{$infix}caret-#{$caret-color-name} {
+            caret-color: var(--sf-#{$caret-color-value});
+        }
+    }
+// }
+}

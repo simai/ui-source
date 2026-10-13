@@ -1,0 +1,80 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__animation' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ANIMATION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+  @include breakpoint-media($infix) {
+    $infix: breakpoint-infix($infix, $breakpoint-array);
+
+    .#{$infix}animation {
+      animation-name: sf-animation-fade;
+      animation-duration: var(--sf-duration-normal);
+      animation-timing-function: var(--sf-animation);
+      animation-fill-mode: both;
+    }
+
+    .#{$infix}infinite {
+      animation-iteration-count: infinite;
+    }
+
+    @each $animation-type-name, $animation-type-value in $animation-type-array {
+      .#{$infix}animation-#{$animation-type-name} {
+        animation-name: #{$animation-type-value};
+      }
+    }
+  }
+// }
+
+@keyframes sf-animation-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sf-animation-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(0rem - var(--sf-b0)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sf-animation-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(var(--sf-b0));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sf-animation-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sf-b0));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+}

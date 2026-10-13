@@ -1,0 +1,142 @@
+// Declared-region Composition layout (layout.regions / layout.region).
+// The outer element is the size container; its only child is the grid, so the
+// container query can change the grid columns. Narrow containers keep document
+// order in one column. Containers from 48rem place start/center/end regions
+// side by side while block regions span the row. Logical grid columns mirror
+// automatically for right-to-left documents.
+/* sf-focus-ring: editor — the editing canvas marks what is being edited in its
+   own colour, which is part of the editor's language rather than the product's
+   focus colour. Width and style stay the system's. */
+@layer sf.components {
+    .sf-composition-regions {
+        --sf-composition-region-side: minmax(0, var(--sf-f6));
+        --sf-composition-region-gap: var(--sf-space-4, 1rem);
+        container-type: inline-size;
+        display: block;
+        min-inline-size: 0;
+    }
+
+    .sf-composition-regions-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        // No dense packing: a later region must never move above an earlier one.
+        grid-auto-flow: row;
+        gap: var(--sf-composition-region-gap);
+        min-inline-size: 0;
+    }
+
+    .sf-composition-region {
+        display: block;
+        min-inline-size: 0;
+    }
+
+    .sf-composition-regions-grid > [data-sf-region-placement="block"][data-sf-region-sticky] {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 1;
+        background: var(--sf-surface-1, Canvas);
+    }
+
+    @container (min-width: 48rem) {
+        .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]) {
+            grid-template-columns: var(--sf-composition-region-side) minmax(0, 1fr);
+        }
+
+        .sf-composition-regions-grid:has(> [data-sf-region-placement="end"]) {
+            grid-template-columns: minmax(0, 1fr) var(--sf-composition-region-side);
+        }
+
+        .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]):has(> [data-sf-region-placement="end"]) {
+            grid-template-columns: var(--sf-composition-region-side) minmax(0, 1fr) var(--sf-composition-region-side);
+        }
+
+        .sf-composition-regions-grid > [data-sf-region-placement="block"] {
+            grid-column: 1 / -1;
+        }
+
+        .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]) > [data-sf-region-placement="start"] {
+            grid-column: 1;
+        }
+
+        .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]) > [data-sf-region-placement="center"] {
+            grid-column: 2;
+        }
+
+        .sf-composition-regions-grid:not(:has(> [data-sf-region-placement="start"])) > [data-sf-region-placement="center"] {
+            grid-column: 1;
+        }
+
+        .sf-composition-regions-grid > [data-sf-region-placement="end"] {
+            grid-column: -2;
+        }
+
+        .sf-composition-regions-grid > [data-sf-region-placement="start"][data-sf-region-sticky],
+        .sf-composition-regions-grid > [data-sf-region-placement="end"][data-sf-region-sticky] {
+            align-self: start;
+            position: sticky;
+            inset-block-start: 0;
+        }
+    }
+}
+
+// A routing scope is a non-visual common parent; it must not change layout.
+@layer sf.components {
+    sf-composition-scope {
+        display: contents;
+    }
+}
+
+// Server-rendered editor field fallback (simai.composition.editor-field-kind.v1).
+// Native controls keep keyboard and assistive technology behavior; colors come
+// from theme tokens so light and dark themes stay in contrast.
+@layer sf.components {
+    .sf-editor-field {
+        display: grid;
+        gap: var(--sf-space-1, .25rem);
+        min-inline-size: 0;
+        color: var(--sf-on-surface, CanvasText);
+    }
+
+    .sf-editor-field[data-sf-field-kind="toggle"] {
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        column-gap: var(--sf-space-2, .5rem);
+    }
+
+    .sf-editor-field[data-sf-field-kind="toggle"] > .sf-editor-field-help {
+        grid-column: 1 / -1;
+    }
+
+    .sf-editor-field-control:not([type="checkbox"]) {
+        min-inline-size: 0;
+        max-inline-size: 100%;
+        padding-block: var(--sf-space-1, .25rem);
+        padding-inline: var(--sf-space-2, .5rem);
+        border: 1px solid var(--sf-outline, GrayText);
+        border-radius: var(--sf-radius-1, .25rem);
+        background: var(--sf-surface-1, Canvas);
+        color: var(--sf-on-surface, CanvasText);
+        font: inherit;
+    }
+
+    .sf-editor-field-control[type="checkbox"] {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+        margin: 0;
+        accent-color: var(--sf-primary, AccentColor);
+    }
+
+    .sf-editor-field-control:focus-visible,
+    .sf-editor-field-disclosure > summary:focus-visible {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-primary, Highlight);
+        outline-offset: 2px;
+    }
+
+    .sf-editor-field-help {
+        color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
+    }
+
+    .sf-editor-field-disclosure > summary {
+        cursor: pointer;
+    }
+}

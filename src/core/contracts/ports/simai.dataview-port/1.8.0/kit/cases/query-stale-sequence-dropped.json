@@ -1,0 +1,29 @@
+{
+  "id": "query-stale-sequence-dropped",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "An answer to an older sequence is dropped; the view keeps the newest answer.",
+  "given": {
+    "in_flight": [
+      3,
+      4
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 4,
+      "query": {
+        "page": 2,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "echo_must_include": {
+      "page": 2
+    },
+    "note": "The host answers both; the component keeps sequence 4 and drops 3."
+  }
+}

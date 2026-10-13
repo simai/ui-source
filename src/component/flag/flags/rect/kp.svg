@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="356 548 28 20" fill="none" role="img">
+<g id="Country=KP">
+<rect id="Mask_256" x="356" y="548" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask118_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="356" y="548" width="28" height="20">
+<rect id="Mask_257" x="356" y="548" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask118_8205_11341)">
+<path id="Rectangle 2_174" fill-rule="evenodd" clip-rule="evenodd" d="M356 552H384V548H356V552Z" fill="#0052B4"/>
+<path id="Rectangle 2_175" fill-rule="evenodd" clip-rule="evenodd" d="M356 568H384V564H356V568Z" fill="#0052B4"/>
+<path id="Rectangle 2_176" fill-rule="evenodd" clip-rule="evenodd" d="M356 564H384V552H356V564Z" fill="#F0F0F0"/>
+<path id="Rectangle 2 Copy 4_9" fill-rule="evenodd" clip-rule="evenodd" d="M356 562.667H384V553.333H356V562.667Z" fill="#D80027"/>
+<path id="Oval 12_5" d="M367.959 560.696C367.409 561.096 366.732 561.333 366 561.333C365.268 561.333 364.591 561.096 364.041 560.696L366 559.337L367.959 560.696ZM365.214 556.917L362.83 556.97L364.729 558.414L364.041 560.696C363.209 560.09 362.667 559.108 362.667 558C362.667 556.159 364.159 554.667 366 554.667L365.214 556.917ZM366 554.667C367.841 554.667 369.334 556.159 369.334 558C369.334 559.108 368.792 560.09 367.959 560.696L367.272 558.414L369.171 556.97L366.786 556.917L366 554.667Z" fill="#F0F0F0"/>
+</g>
+</g>
+</svg>

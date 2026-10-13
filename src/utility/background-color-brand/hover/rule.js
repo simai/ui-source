@@ -1,0 +1,1 @@
+SF.RuleLoader['background-color-brand/hover'] = new RegExp("^(?:hover:bg-(?:behance|fb(?:-messenger)?|instagram|kuaishou|linkedin|msteams|ok|pinterest|q(?:q|uora|zone)|reddit|s(?:inaweibo|kype|napchat|oundcloud)|t(?:elegram|iktok|umblr|witter)|v(?:i(?:ber|meo)|k)|w(?:echat|hatsapp)|youtube))(?![\\s\\S])");

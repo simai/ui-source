@@ -1,0 +1,29 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../gradient-color/default/scss/sf_var__gradient' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT STOPS
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $gradient-color-name, $gradient-color-value in $gradient-color-array {
+            .#{$infix}from-#{$gradient-color-name} {
+                --sf-gradient--color-1: var(--sf-#{$gradient-color-value});
+            }
+            .#{$infix}via-#{$gradient-color-name} {
+                --sf-gradient--color-2: var(--sf-#{$gradient-color-value});
+            }
+            .#{$infix}to-#{$gradient-color-name} {
+                --sf-gradient--color-3: var(--sf-#{$gradient-color-value});
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,200 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-file-upload {
+  border-bottom-width: var(--sf-file-upload--border-bottom-width, var(--sf-px));
+  border-end-end-radius: var(--sf-file-upload--border-bottom-right-radius, var(--sf-radius--surface));
+  border-end-start-radius: var(--sf-file-upload--border-bottom-left-radius, var(--sf-radius--surface));
+  border-inline-end-width: var(--sf-file-upload--border-right-width, var(--sf-px));
+  border-inline-start-width: var(--sf-file-upload--border-left-width, var(--sf-px));
+  border-start-end-radius: var(--sf-file-upload--border-top-right-radius, var(--sf-radius--surface));
+  border-start-start-radius: var(--sf-file-upload--border-top-left-radius, var(--sf-radius--surface));
+  border-top-width: var(--sf-file-upload--border-top-width, var(--sf-px));
+  gap: var(--sf-file-upload--gap);
+  padding-inline-start: var(--sf-file-upload--padding-inline-start);
+  padding-top: var(--sf-file-upload--padding-top);
+  padding-inline-end: var(--sf-file-upload--padding-inline-end);
+  padding-bottom: var(--sf-file-upload--padding-bottom);
+  background-color: var(--sf-file-upload--background-color);
+  border-color: var(--sf-file-upload--border-color, transparent);
+  box-shadow: var(--sf-file-upload--box-shadow);
+  --sf-file-upload--background-color: var(--sf-surface-0);
+  --sf-file-upload--border-color: var(--sf-outline);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-file-upload-bottom--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-file-upload .sf-file-upload-bottom {
+  --sf-file-upload-bottom--background-color: transparent;
+  --sf-file-upload-bottom--gap: var(--sf-space-1\/4);
+  background-color: var(--sf-file-upload-bottom--background-color);
+  gap: var(--sf-file-upload-bottom--gap);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-file-upload-block--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-file-upload .sf-file-upload-block {
+  --sf-file-upload-block--background-color: transparent;
+  --sf-file-upload-block--gap: var(--sf-space-1\/4);
+  background-color: var(--sf-file-upload-block--background-color);
+  gap: var(--sf-file-upload-block--gap);
+}
+
+.sf-file-upload .sf-file-upload-link {
+  --sf-file-upload-link--color: var(--sf-primary);
+  --sf-file-upload-link--font-family: var(--sf-text--family);
+  --sf-file-upload-link--font-weight: var(--sf-font-weight-medium);
+  --sf-file-upload-link--margin-bottom: var(--sf-text--margin);
+  color: var(--sf-file-upload-link--color);
+  font-family: var(--sf-file-upload-link--font-family);
+  font-size: var(--sf-file-upload-link--font-size);
+  font-weight: var(--sf-file-upload-link--font-weight);
+  line-height: var(--sf-file-upload-link--line-height);
+  margin-bottom: var(--sf-file-upload-link--margin-bottom);
+}
+
+.sf-file-upload .sf-file-upload-block-text {
+  --sf-file-upload-block-text--color: var(--sf-on-surface-variant);
+  --sf-file-upload-block-text--font-family: var(--sf-text--family);
+  --sf-file-upload-block-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-file-upload-block-text--color);
+  font-family: var(--sf-file-upload-block-text--font-family);
+  font-size: var(--sf-file-upload-block-text--font-size);
+  font-weight: var(--sf-file-upload-block-text--font-weight);
+  line-height: var(--sf-file-upload-block-text--line-height);
+}
+
+.sf-file-upload .sf-file-upload-text {
+  --sf-file-upload-text--color: var(--sf-on-surface-variant);
+  --sf-file-upload-text--font-family: var(--sf-text--family);
+  --sf-file-upload-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-file-upload-text--color);
+  font-family: var(--sf-file-upload-text--font-family);
+  font-size: var(--sf-file-upload-text--font-size);
+  font-weight: var(--sf-file-upload-text--font-weight);
+  line-height: var(--sf-file-upload-text--line-height);
+}
+
+.sf-file-upload .sf-featured-icon > .sf-icon {
+  color: var(--sf-icon-featured-icon--color);
+}
+
+.sf-file-upload--size-1 .sf-file-upload-link {
+  --sf-file-upload-link--font-size: var(--sf-text-size-1);
+  --sf-file-upload-link--line-height: var(--sf-text-height-1);
+}
+
+.sf-file-upload--size-1 .sf-file-upload-block-text {
+  --sf-file-upload-block-text--font-size: var(--sf-text-size-1);
+  --sf-file-upload-block-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-file-upload--size-1 .sf-file-upload-text {
+  --sf-file-upload-text--font-size: var(--sf-text-size-1);
+  --sf-file-upload-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-file-upload--size-2 .sf-file-upload-link {
+  --sf-file-upload-link--font-size: var(--sf-text-size-2);
+  --sf-file-upload-link--line-height: var(--sf-text-height-2);
+}
+
+.sf-file-upload--size-2 .sf-file-upload-block-text {
+  --sf-file-upload-block-text--font-size: var(--sf-text-size-2);
+  --sf-file-upload-block-text--line-height: var(--sf-text-height-2);
+}
+
+.sf-file-upload--size-2 .sf-file-upload-text {
+  --sf-file-upload-text--font-size: var(--sf-text-size-2);
+  --sf-file-upload-text--line-height: var(--sf-text-height-2);
+}
+
+.sf-file-upload--size-1\/2 .sf-file-upload-link {
+  --sf-file-upload-link--font-size: var(--sf-text-size-1\/2);
+  --sf-file-upload-link--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-file-upload--size-1\/2 .sf-file-upload-block-text {
+  --sf-file-upload-block-text--font-size: var(--sf-text-size-1\/2);
+  --sf-file-upload-block-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-file-upload--size-1\/2 .sf-file-upload-text {
+  --sf-file-upload-text--font-size: var(--sf-text-size-1\/2);
+  --sf-file-upload-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-file-upload--size-1 {
+  --sf-file-upload--gap: var(--sf-space-1\/3);
+  --sf-file-upload--padding-bottom: var(--sf-space-1);
+  --sf-file-upload--padding-inline-end: var(--sf-space-3);
+  --sf-file-upload--padding-inline-start: var(--sf-space-3);
+  --sf-file-upload--padding-top: var(--sf-space-1);
+}
+
+.sf-file-upload--size-2 {
+  --sf-file-upload--gap: var(--sf-space-1\/2);
+  --sf-file-upload--padding-bottom: var(--sf-space-2);
+  --sf-file-upload--padding-inline-end: var(--sf-space-4);
+  --sf-file-upload--padding-inline-start: var(--sf-space-4);
+  --sf-file-upload--padding-top: var(--sf-space-2);
+}
+
+.sf-file-upload--size-1\/2 {
+  --sf-file-upload--gap: var(--sf-space-1\/3);
+  --sf-file-upload--padding-bottom: var(--sf-space-1\/2);
+  --sf-file-upload--padding-inline-end: var(--sf-space-2);
+  --sf-file-upload--padding-inline-start: var(--sf-space-2);
+  --sf-file-upload--padding-top: var(--sf-space-1\/2);
+}
+
+.sf-file-upload:not([disabled]):not(.disabled):focus-visible {
+  --sf-file-upload--border-color: var(--sf-outline-variant);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-file-upload:not([disabled]):not(.disabled):focus-visible .sf-featured-icon .sf-icon, .sf-file-upload:not([disabled]):not(.disabled):hover .sf-featured-icon .sf-icon {
+  color: var(--sf-primary);
+}
+
+.sf-file-upload:not([disabled]):not(.disabled):hover {
+  --sf-file-upload--border-color: var(--sf-outline-primary);
+}
+
+/* A file held over the area: the script set .dragover and nothing drew it, so a
+   person dropping had no sign the area would take the file. */
+.sf-file-upload.dragover:not([disabled]):not(.disabled) {
+  --sf-file-upload--background-color: var(--sf-primary-transparent-select);
+  --sf-file-upload--border-color: var(--sf-outline-primary);
+}
+
+.sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon {
+  color: var(--sf-primary);
+}
+
+.sf-file-upload:is([disabled], .disabled) {
+  --sf-file-upload--background-color: var(--sf-disable);
+  --sf-file-upload--border-color: var(--sf-outline-disable);
+}
+
+.sf-file-upload:is([disabled], .disabled) .sf-featured-icon .sf-icon {
+  color: var(--sf-on-disable);
+}
+
+.sf-file-upload:is([disabled], .disabled) .sf-file-upload-link {
+  --sf-file-upload-link--color: var(--sf-on-disable);
+}
+
+.sf-file-upload:is([disabled], .disabled) .sf-file-upload-block-text {
+  --sf-file-upload-block-text--color: var(--sf-on-disable);
+}
+
+.sf-file-upload:is([disabled], .disabled) .sf-file-upload-text {
+  --sf-file-upload-text--color: var(--sf-on-disable);
+}
+
+@media (forced-colors: active) {
+  .sf-file-upload:not([disabled]):not(.disabled):focus-visible {
+    outline: var(--sf-focus-outline-width) solid Highlight;
+    outline-offset: var(--sf-focus-outline-width);
+  }
+}
+}

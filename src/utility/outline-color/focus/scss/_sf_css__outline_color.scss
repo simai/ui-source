@@ -1,0 +1,19 @@
+@use '../../default/scss/sf_var__outline_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OUTLINE
+
+
+$infix: focus;
+
+// @include layer-priority(utility,$infix) {
+    // outline Color
+    @each $outline-color-name, $outline-color-value in $outline-color-array {
+        .#{$infix}\:outline-#{$outline-color-name}:#{$infix} {
+            outline-color: var(--sf-#{$outline-color-value});
+        }
+    }
+// }
+}

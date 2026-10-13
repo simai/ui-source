@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Badges — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/badges-browser/component/badges/css/badges.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Бейджи</h1>
+
+    <section id="types" class="flex flex-wrap gap-1 items-center" aria-label="Визуальный вес">
+      <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Основной</span></span></span>
+      <span class="sf-badge sf-badge--tonal sf-badge--primary sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Тональный</span></span></span>
+      <span id="outline" class="sf-badge sf-badge--outline sf-badge--primary sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Контурный</span></span></span>
+    </section>
+
+    <section id="sizes" class="flex flex-wrap gap-1 items-center" aria-label="Размеры">
+      <span class="sf-badge sf-badge--tonal sf-badge--neutral sf-badge--size-1/3 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1/3</span></span></span>
+      <span class="sf-badge sf-badge--tonal sf-badge--neutral sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1/2</span></span></span>
+      <span class="sf-badge sf-badge--tonal sf-badge--neutral sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1</span></span></span>
+    </section>
+
+    <section id="meaning" class="flex flex-wrap gap-1 items-center" aria-label="Смысл и иконки">
+      <span id="status-badge" class="sf-badge sf-badge--tonal sf-badge--success sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-icon-container flex justify-center items-center"><i class="sf-icon" aria-hidden="true">check</i></span><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Готово</span></span></span>
+      <span id="count-badge" class="sf-badge sf-badge--main sf-badge--danger sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sr-only">Больше девяноста девяти непрочитанных сообщений</span><span class="sf-badge-text-container flex items-center" aria-hidden="true"><span class="sf-badge-text">99+</span></span></span>
+    </section>
+
+    <section id="smart" class="flex flex-wrap gap-1 items-center" aria-label="Smart Badge">
+      <sf-badge id="smart-text" type="tonal" scheme="success" size="1/2" text="Готово" icon="check"></sf-badge>
+      <sf-badge id="smart-count" type="main" scheme="danger" size="1/2" text="99+" aria-label="Больше девяноста девяти непрочитанных сообщений"></sf-badge>
+      <sf-badge id="smart-icon" type="main" scheme="success" size="1/2" icon="verified" aria-label="Подтверждено"></sf-badge>
+      <sf-badge id="smart-fallback" type="fill" scheme="unknown" size="99" text="Безопасный вариант"></sf-badge>
+    </section>
+  </main>
+
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/badges-browser/smart/badges/js/badges.js"></script>
+</body>
+</html>

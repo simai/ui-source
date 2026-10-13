@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="356 356 28 20" fill="none" role="img">
+<g id="Country=GW">
+<rect id="Mask_166" x="356" y="356" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask77_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="356" y="356" width="28" height="20">
+<rect id="Mask_167" x="356" y="356" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask77_8205_11341)">
+<path id="Rectangle 2_118" fill-rule="evenodd" clip-rule="evenodd" d="M356 376H384V365.333H356V376Z" fill="#6DA544"/>
+<path id="Rectangle 2_119" fill-rule="evenodd" clip-rule="evenodd" d="M356 365.333H384V356H356V365.333Z" fill="#FFDA44"/>
+<path id="Rectangle 2_120" fill-rule="evenodd" clip-rule="evenodd" d="M356 376H366.667V356H356V376Z" fill="#D80027"/>
+<path id="Star 53_2" fill-rule="evenodd" clip-rule="evenodd" d="M361.333 367.278L359.374 368.697L360.118 366.395L358.163 364.97L360.582 364.966L361.333 362.667L362.085 364.966L364.504 364.97L362.549 366.395L363.293 368.697L361.333 367.278Z" fill="#333333"/>
+</g>
+</g>
+</svg>

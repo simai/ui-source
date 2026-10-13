@@ -1,0 +1,17 @@
+@use '../../../opacity/default/scss/sf_var__opacity' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// PLACEHOLDER OPACITY
+
+$infix: hover;
+
+// @include layer-priority(utility,$infix) {
+    @each $opacity-name, $opacity-value in $opacity-array {
+        .#{$infix}\:placeholder-opacity-#{$opacity-name}:#{$infix}::placeholder {
+            opacity: #{$opacity-value};
+        }
+    }
+// }
+}

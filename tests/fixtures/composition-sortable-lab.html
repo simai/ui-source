@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — sortable</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    const smart = view.get('smart');
+    const source = view.get('source');
+    document.documentElement.className = view.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    document.write(`<link rel="stylesheet" href="${assets}/core/css/core.css">`);
+    window.sfPath = assets;
+    window.sfSmartPath = smart;
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, smart: {base: false}, theme: false};
+    window.lab = {intents: [], overlay: [], refused: []};
+  </script>
+  <style>
+    body { margin: 0; padding: var(--sf-space-2, .5rem); background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); display: grid; gap: 1rem; }
+    .lists { display: flex; flex-wrap: wrap; gap: 1rem; }
+    sf-sortable { min-inline-size: 10rem; padding: .5rem; border: 1px solid var(--sf-outline, GrayText); }
+    [data-sf-sortable-item] { display: flex; gap: .5rem; align-items: center; padding: .5rem; margin-block: .25rem; background: var(--sf-surface-0, Canvas); border: 1px solid var(--sf-outline-variant, GrayText); }
+    #scroller { block-size: 150px; overflow: auto; }
+    .sf-composition-region { min-block-size: 2.5rem; }
+  </style>
+</head>
+<body>
+  <a id="before" href="#start">До списков</a>
+  <div class="lists">
+    <sf-sortable id="library" group="blocks" mode="copy" label="Библиотека блоков">
+      <div data-sf-sortable-item="content.heading">Заголовок</div>
+      <div data-sf-sortable-item="content.paragraph">Абзац</div>
+    </sf-sortable>
+    <sf-sortable id="list-a" group="sections" label="Колонка А">
+      <div data-sf-sortable-item="a1"><span data-sf-sortable-handle aria-hidden="true">⠿</span>Секция A1</div>
+      <div data-sf-sortable-item="a2"><span data-sf-sortable-handle aria-hidden="true">⠿</span>Секция A2</div>
+      <div data-sf-sortable-item="a3"><span data-sf-sortable-handle aria-hidden="true">⠿</span>Секция A3 (закреплена)</div>
+    </sf-sortable>
+    <sf-sortable id="list-b" group="sections" label="Колонка Б">
+      <div data-sf-sortable-item="b1">Секция Б1</div>
+      <div data-sf-sortable-item="b2">Секция Б2</div>
+    </sf-sortable>
+  </div>
+  <div id="scroller"><sf-sortable id="list-c" group="long" label="Длинный список"></sf-sortable></div>
+  <sf-composition-overlay id="overlay" for="canvas" accepts="blocks"></sf-composition-overlay>
+  <div id="canvas"></div>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      const composition = window.SF.Composition;
+      const longList = document.getElementById('list-c');
+      for (let index = 0; index < 20; index += 1) longList.insertAdjacentHTML('beforeend', `<div data-sf-sortable-item="c${index}">Элемент ${index}</div>`);
+      // The host applies intents to its own model and may refuse them.
+      document.addEventListener('sf-sortable-intent', (event) => {
+        const detail = {...event.detail};
+        window.lab.intents.push(detail);
+        if (detail.item === 'a3') { window.lab.refused.push(detail); return; }
+        if (detail.mode !== 'move') return;
+        const item = document.querySelector(`[data-sf-sortable-item="${detail.item}"]`);
+        const list = document.getElementById(detail.to);
+        item.remove();
+        const children = [...list.querySelectorAll('[data-sf-sortable-item]')];
+        list.insertBefore(item, children[detail.index] || list.querySelector('.sf-sortable-live'));
+      });
+      let model = await fetch(`${source}/tests/fixtures/composition/regions.json`).then((response) => response.json());
+      model.root.slots.regions[4].slots.default = [];
+      // sf-sortable and sf-composition-overlay are Smart components loaded on demand.
+      await Promise.all(['sf-sortable', 'sf-composition-overlay'].map((tag) => customElements.whenDefined(tag)));
+      const overlay = document.getElementById('overlay');
+      const draw = async () => {
+        const rendered = await composition.render(model);
+        document.getElementById('canvas').innerHTML = rendered.html;
+        overlay.setDocument(model, {describe: (node) => ({label: node.id})});
+        window.lab.canvasHtml = rendered.html;
+      };
+      const find = (node, id) => node.id === id ? node : Object.values(node.slots || {}).flat().map((child) => find(child, id)).find(Boolean);
+      for (const type of ['sf-composition-overlay-insert', 'sf-composition-overlay-move']) {
+        document.addEventListener(type, async (event) => {
+          const detail = {...event.detail};
+          window.lab.overlay.push({type, detail});
+          const next = structuredClone(model);
+          if (type.endsWith('insert') && detail.item) {
+            const node = detail.item === 'content.heading'
+              ? {id: `new-${window.lab.overlay.length}`, type: 'content.heading', data: {level: 2, content: [{type: 'text', value: 'Новый заголовок'}]}}
+              : {id: `new-${window.lab.overlay.length}`, type: 'content.paragraph', data: {content: [{type: 'text', value: 'Новый абзац'}]}};
+            find(next.root, detail.parent_id).slots[detail.slot].splice(detail.index, 0, node);
+          } else if (type.endsWith('move')) {
+            const moving = find(next.root, detail.node_id);
+            const detach = (node) => { for (const children of Object.values(node.slots || {})) { const at = children.indexOf(moving); if (at >= 0) children.splice(at, 1); children.forEach(detach); } };
+            detach(next.root);
+            find(next.root, detail.parent_id).slots[detail.slot].splice(detail.index, 0, moving);
+          }
+          // A refused change leaves the page untouched.
+          if (!composition.validate(next).valid) { window.lab.refused.push(detail); return; }
+          model = next;
+          await draw();
+        });
+      }
+      overlay.attach(document.getElementById('canvas'));
+      overlay.setDropFilter((place) => place.slot === 'default');
+      await draw();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

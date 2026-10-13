@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.buttons",
+  "title": "Buttons reference",
+  "summary": "Deterministic reference fixture for sf-button.",
+  "locale": "ru",
+  "props": {
+    "text": "Продолжить",
+    "type": "default",
+    "scheme": "primary"
+  },
+  "children": [],
+  "state": "default"
+}

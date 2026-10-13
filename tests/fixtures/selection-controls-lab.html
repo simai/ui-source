@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — элементы выбора</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/switch/css/switch.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/toggle/css/toggle.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/checkbox/css/checkbox.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/radio/css/radio.css">
+</head>
+<body class="p-4">
+<main class="grid gap-4">
+<h1>Элементы выбора</h1>
+<p>Tab — переход, пробел — независимый выбор, стрелки — выбор внутри группы.</p>
+<a href="#choices">Начало проверки</a>
+<form id="choices" class="grid gap-4">
+<section id="switch" class="grid gap-2"><h2>switch</h2><label class="sf-switch sf-switch--size-1 flex">
+  <span class="sf-switch-toggler transition flex items-cross-center content-main-start"><input type="checkbox" role="switch" name="notifications" checked><span class="sf-switch-inner transition" aria-hidden="true"></span></span>
+  <span class="sf-switch-container-wrap flex flex-col"><span class="sf-switch-top flex"><span class="sf-switch-container flex items-cross-center"><span class="sf-switch-text">Уведомления</span></span></span><span class="sf-switch-description">Сообщать о важных изменениях</span></span>
+</label>
+</section>
+<section id="toggle" class="grid gap-2"><h2>toggle</h2><label class="sf-toggle sf-toggle--simple sf-toggle--size-1 flex items-center">
+  <span class="sf-toggle-control"><input type="checkbox" role="switch" name="compact-mode"><span class="sf-toggle-container transition flex items-center content-main-start"><span class="sf-toggle-inner-wrap transition flex items-center content-main-center"><span class="sf-toggle-inner transition" aria-hidden="true"></span></span></span></span>
+  <span class="sf-toggle-text">Компактный режим</span>
+</label>
+</section>
+<section id="checkbox" class="grid gap-2"><h2>checkbox</h2><label class="sf-checkbox sf-checkbox--size-1 flex">
+  <span class="sf-checkbox-box transition flex"><input name="updates" type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span>
+  <span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label">Получать обновления</span></span><span class="sf-checkbox-description">Только важные новости продукта</span></span>
+</label>
+</section>
+<section id="radio" class="grid gap-2"><h2>radio</h2><fieldset class="border-0 p-0 m-0">
+  <legend class="m-bottom-2">Способ получения</legend>
+  <div class="flex flex-col gap-2">
+    <label class="sf-radio-button sf-radio-button--size-1 flex"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input name="delivery" value="email" type="radio" checked><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-text">Электронная почта</span></span></label>
+    <label class="sf-radio-button sf-radio-button--size-1 flex"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input name="delivery" value="download" type="radio"><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-text">Скачать файл</span></span></label>
+  </div>
+</fieldset>
+</section>
+<section id="error" class="grid gap-2"><h2>Ошибка</h2><label class="sf-checkbox error sf-checkbox--size-1 flex">
+  <span class="sf-checkbox-box transition flex"><input name="consent" type="checkbox"><span class="sf-icon" aria-hidden="true"></span></span>
+  <span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label">Согласие с условиями</span></span><span class="sf-checkbox-description">Ошибка не должна скрывать клавиатурный фокус</span></span>
+</label>
+</section>
+<div class="flex gap-4">
+<button type="reset" class="text-primary">Сбросить форму</button>
+<button type="button" id="mixed" class="text-primary">Частичный выбор</button>
+<button type="button" id="theme" class="text-primary">Сменить тему</button>
+</div>
+</form>
+<form id="smart-choices" class="grid gap-4">
+  <h2>Smart: независимая форма</h2>
+  <sf-switch label="Smart уведомления" name="smart-notifications" checked></sf-switch>
+  <sf-toggle label="Smart компактный режим" name="smart-compact" checked></sf-toggle>
+  <sf-checkbox label="Smart обновления" name="smart-updates" checked></sf-checkbox>
+  <sf-radio label="Smart почта" name="delivery" value="smart-email" checked></sf-radio>
+  <sf-radio label="Smart файл" name="delivery" value="smart-download"></sf-radio>
+  <label><input type="checkbox" id="prevent-reset">Отменять сброс Smart</label>
+  <button type="reset" class="text-primary">Сбросить Smart</button>
+  <output id="change-count">Событий change: 0</output>
+  <button type="button" id="inspect-data" class="text-primary">Показать данные форм</button>
+  <output id="form-data"></output>
+</form>
+<section id="toggle-matrix" class="grid gap-2"><h2>Toggle: варианты и размеры</h2></section>
+<form id="factory-choices" class="grid gap-2">
+  <h2>Создание через конструкторы</h2>
+  <button type="button" id="create-controls">Создать элементы</button>
+  <div id="factory-controls" class="grid gap-2"></div>
+  <button type="reset">Сбросить созданные элементы</button>
+</form>
+</main>
+<script src="../../source/output/action-focus-browser/component/switch/js/switch.js"></script>
+<script src="../../source/output/action-focus-browser/component/toggle/js/toggle.js"></script>
+<script src="../../source/output/action-focus-browser/component/checkbox/js/checkbox.js"></script>
+<script src="../../source/output/action-focus-browser/component/radio/js/radio.js"></script>
+<script src="../../source/output/action-focus-browser/smart/icons/js/icons.js"></script>
+<script src="../../source/output/action-focus-browser/smart/switch/js/switch.js"></script>
+<script src="../../source/output/action-focus-browser/smart/toggle/js/toggle.js"></script>
+<script src="../../source/output/action-focus-browser/smart/checkbox/js/checkbox.js"></script>
+<script src="../../source/output/action-focus-browser/smart/radio/js/radio.js"></script>
+<script>
+// Clone source-backed markup to exercise the existing public variants.
+for (const type of ['simple', 'icon', 'short']) {
+  for (const size of ['1', '2']) {
+    const label = document.querySelector('#toggle label').cloneNode(true);
+    label.classList.remove('sf-toggle--simple', 'sf-toggle--size-1');
+    label.classList.add(`sf-toggle--${type}`, `sf-toggle--size-${size}`);
+    label.querySelector('input').name = `matrix-${type}-${size}`;
+    label.querySelector('.sf-toggle-text').textContent = `${type} ${size}`;
+    if (type === 'icon') {
+      const icon = document.createElement('i');
+      icon.className = 'sf-icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = 'check';
+      label.querySelector('.sf-toggle-inner').replaceWith(icon);
+    }
+    document.getElementById('toggle-matrix').append(label);
+  }
+}
+// A deliberately narrow test harness, not a component size or design token.
+const testModes = new URLSearchParams(location.search);
+if (testModes.has('rtl')) document.documentElement.dir = 'rtl';
+if (testModes.has('dark')) document.documentElement.className = 'theme-dark';
+if (testModes.has('disabled')) {
+  document.querySelectorAll('#choices input, #toggle-matrix input').forEach(input => { input.disabled = true; });
+}
+if (testModes.has('narrow')) {
+  document.querySelector('main').style.width = '280px';
+}
+if (testModes.has('narrow') || testModes.has('long')) {
+  for (const selector of ['.sf-switch-text', '.sf-checkbox-label', '.sf-radio-button-text', '.sf-toggle-text']) {
+    document.querySelectorAll(selector).forEach((label) => {
+      label.textContent += ' — очень длинная подпись настройки для проверки переноса текста';
+    });
+  }
+}
+let changes = 0;
+document.getElementById('create-controls').addEventListener('click', (event) => {
+  const constructors = new Map(window.SF_PENDING_COMPONENTS);
+  const definitions = [
+    ['Checkbox', 'factory-checkbox', {title: 'Factory Checkbox'}],
+    ['Switch', 'factory-switch', {label: 'Factory Switch'}],
+    ...['simple', 'icon', 'short'].map(type => ['Toggle', `factory-toggle-${type}`, {type, label: `Factory Toggle ${type}`}]),
+    ['Radio', 'factory-radio', {title: 'Factory Radio A', value: 'a'}],
+    ['Radio', 'factory-radio', {title: 'Factory Radio B', value: 'b', checked: false}],
+    ['Radio', 'factory-font-radio', {type: 'font', count: 3, checked: 1, text: 'A', value: ['small', 'medium', 'large']}],
+  ];
+  for (const [name, inputName, options] of definitions) {
+    const Constructor = constructors.get(name);
+    const component = new Constructor({param: {name: inputName, checked: true, ...options}, attrs: {class: 'flex'}});
+    document.getElementById('factory-controls').append(component.render());
+  }
+  event.currentTarget.disabled = true;
+  document.fonts.load('24px "Material Symbols Outlined"').then(() => {
+    document.querySelectorAll('#factory-controls .sf-icon').forEach(icon => icon.classList.add('sf-icon-loaded'));
+  });
+});
+document.getElementById('inspect-data').addEventListener('click', () => {
+  const data = Object.fromEntries(['choices', 'smart-choices'].map((id) => [
+    id, Array.from(new FormData(document.getElementById(id)).entries()),
+  ]));
+  document.getElementById('form-data').textContent = JSON.stringify(data);
+});
+document.getElementById('smart-choices').addEventListener('change', () => {
+  document.getElementById('change-count').textContent = `Событий change: ${++changes}`;
+});
+document.getElementById('smart-choices').addEventListener('reset', (event) => {
+  if (document.getElementById('prevent-reset').checked) event.preventDefault();
+});
+document.fonts.load('24px "Material Symbols Outlined"').then((faces) => {
+  if (faces.length) document.querySelectorAll('.sf-icon').forEach(icon => icon.classList.add('sf-icon-loaded'));
+});
+document.getElementById('mixed').addEventListener('click', () => {
+  window.SF.Checkbox.setState(document.querySelector('[name="updates"]'), {indeterminate: true});
+});
+document.getElementById('theme').addEventListener('click', () => {
+  const dark = document.documentElement.classList.toggle('theme-dark');
+  document.documentElement.classList.toggle('theme-light', !dark);
+});
+</script>
+</body>
+</html>

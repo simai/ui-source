@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — editor overlay</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    const smart = view.get('smart');
+    const source = view.get('source');
+    document.documentElement.className = view.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    for (const href of [`${assets}/core/css/core.css`, `${assets}/core/css/utility.full.css`]) document.write(`<link rel="stylesheet" href="${href}">`);
+    window.sfPath = assets;
+    window.sfSmartPath = smart;
+    window.SF_BOOT_CONFIG = {icons: {enabled: true, subsetHost: `${source}/tests/fixtures/icon-subset-service`}, preloader: {enabled: false}, smart: {base: true}, theme: false};
+    window.lab = {events: []};
+    for (const type of ['sf-composition-overlay-select', 'sf-composition-overlay-action', 'sf-composition-overlay-insert']) {
+      document.addEventListener(type, (event) => window.lab.events.push({type, detail: {...event.detail}}));
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: var(--sf-space-2, .5rem); background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); }
+    #canvas { padding-block: 3rem; }
+  </style>
+</head>
+<body>
+  <a id="before" href="#start">До холста</a>
+  <sf-composition-overlay id="overlay" for="canvas"></sf-composition-overlay>
+  <div id="canvas"></div>
+  <sf-drawer id="modal-drawer" label="Публикация">Подтверждение</sf-drawer>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      const composition = window.SF.Composition;
+      const model = await fetch(`${source}/tests/fixtures/composition/regions-lab.json`).then((response) => response.json());
+      const rendered = await composition.render(model);
+      document.getElementById('canvas').innerHTML = rendered.html;
+      window.lab.renderedHtml = rendered.html;
+      const overlay = document.getElementById('overlay');
+      const names = {'layout.regions': 'Раскладка', 'layout.region': 'Область', 'content.heading': 'Заголовок', 'content.paragraph': 'Абзац'};
+      // sf-composition-overlay is a Smart component; the loader fetches it on demand.
+      await customElements.whenDefined('sf-composition-overlay');
+      overlay.attach(document.getElementById('canvas'));
+      overlay.setDocument(model, {describe: (node) => ({label: `${names[node.type] || node.type} ${node.id}`, badges: node.id === 'shell-header' ? ['Общий'] : []})});
+      overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'move-down', label: 'Ниже'}, {id: 'remove', label: 'Удалить'}]);
+      await customElements.whenDefined('sf-drawer');
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

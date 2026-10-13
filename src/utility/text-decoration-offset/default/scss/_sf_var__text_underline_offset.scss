@@ -1,0 +1,19 @@
+// SIMAI Framework
+// https://simai.io
+
+// TEXT UNDERLINE
+
+// Text Decoraton Offset
+$text-underline-offset-array:(
+    auto : auto,
+    0 : var(--sf-a0),
+    1 : var(--sf-a1),
+    2 : var(--sf-a2),
+    3 : var(--sf-a3),
+    4 : var(--sf-a4),
+    //5 : var(--sf-a5),
+    //6 : var(--sf-a6),
+    //7 : var(--sf-a7),
+    //8 : var(--sf-a8),
+    //9 : var(--sf-a9),
+);

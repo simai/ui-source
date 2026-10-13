@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-document.v1.schema.json",
+  "title": "Simai Composition Document v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "profile", "root"],
+  "properties": {
+    "schema": {"const": "simai.composition.document.v1"},
+    "id": {"$ref": "#/$defs/id"},
+    "profile": {"enum": ["ui-layout", "structured-content"]},
+    "locale": {"type": "string", "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"},
+    "root": {"$ref": "#/$defs/node"},
+    "extensions": {"$ref": "#/$defs/extensions"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "extensions": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9.-]*:[a-z][a-z0-9._-]*$"}
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "ref", "target"],
+      "properties": {
+        "owner": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "target": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1}
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "view": {"type": "string", "minLength": 1},
+        "preset": {"type": "string", "minLength": 1},
+        "modifiers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"},
+        "data": {"type": "object"},
+        "props": {"type": "object"},
+        "slots": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"},
+          "additionalProperties": {"type": "array", "maxItems": 500, "items": {"$ref": "#/$defs/node"}}
+        },
+        "presentation": {"$ref": "#/$defs/presentation"},
+        "bindings": {"type": "array", "items": {"$ref": "#/$defs/binding"}},
+        "extensions": {"$ref": "#/$defs/extensions"}
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — семантика диапазона</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/range-slider/css/range-slider.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Имена и точность ползунка</h1>
+  <span id="volume-label">Громкость</span><span id="volume-hint">От 0 до 100 процентов</span>
+  <div id="base-named" class="sf-range-slider" data-start="25" aria-labelledby="volume-label" aria-describedby="volume-hint"></div>
+  <sf-range-slider id="smart-named" start="30" aria-label="Яркость"></sf-range-slider>
+  <sf-range-slider id="smart-pair" start="20,80" multiple aria-label="Цена" lower-label="Минимальная цена" upper-label="Максимальная цена"></sf-range-slider>
+  <div id="continuous" class="sf-range-slider" data-min="0" data-max="10" data-start="1.25" data-decimals="1" data-label="text" aria-label="Вес"></div>
+  <sf-range-slider id="smart-continuous" min="0" max="10" start="1.25" decimals="1" label="text" aria-label="Smart вес"></sf-range-slider>
+  <div id="fractional" class="sf-range-slider" data-min="0" data-max="0.01" data-start="0.002" data-step="1e-3" data-suffix=" мг" aria-label="Доза"></div>
+</main>
+<script src="../../source/output/action-focus-browser/component/range-slider/js/range-slider.js"></script>
+<script src="../../source/output/action-focus-browser/smart/range-slider/js/range-slider.js"></script>
+</body></html>

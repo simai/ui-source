@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/var__aspect_ratio' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// ASPECT RATIO
+
+$infix: lg;
+
+// @include layer-priority(utility,$infix) {
+	@include breakpoint-media($infix) {
+		$infix: breakpoint-infix($infix, $breakpoint-array);
+
+		@each $aspect-ratio-name, $aspect-ratio-value in $aspect-ratio-array {
+			.#{$infix}aspect-#{$aspect-ratio-name} {
+				aspect-ratio:#{$aspect-ratio-value};
+			}
+		}
+	}
+// }
+}

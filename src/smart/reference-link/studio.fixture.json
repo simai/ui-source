@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.reference-link",
+  "title": "Reference Link reference",
+  "summary": "Deterministic reference fixture for sf-reference-link.",
+  "locale": "ru",
+  "props": {
+    "text": "Документация",
+    "href": "#"
+  },
+  "children": [],
+  "state": "default"
+}

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hide Show method lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/buttons/css/buttons.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4 max-w-xl">
+    <h1>Показ и скрытие</h1>
+    <section id="visible" class="sf-hide-show grid gap-2">
+      <div data-content class="surface-container p-2 radius-default">Видимое содержимое</div>
+      <div class="flex gap-1 flex-wrap">
+        <button type="button" data-action="show" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Показать</span></button>
+        <button type="button" data-action="hide" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Скрыть</span></button>
+      </div>
+    </section>
+    <section id="initial-hidden" class="sf-hide-show grid gap-2" data-state="hidden">
+      <button type="button" class="sf-show sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Показать справку</span></button>
+      <button type="button" class="sf-hide sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Скрыть справку</span></button>
+      <div class="hide-show-block surface-container p-2 radius-default" hidden>Совместимая разметка</div>
+    </section>
+    <section id="toggle" class="sf-hide-show grid gap-2">
+      <button type="button" data-action="toggle" class="sf-button sf-button--tonal sf-button--secondary sf-button--size-1"><span class="sf-button-text-container">Переключить заметку</span></button>
+      <div data-content class="surface-container p-2 radius-default">Постоянная кнопка</div>
+    </section>
+    <section id="cancel" class="sf-hide-show grid gap-2">
+      <button type="button" data-action="hide" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Попытаться скрыть</span></button>
+      <div data-content class="surface-container p-2 radius-default">Это действие отменяет приложение</div>
+      <output aria-live="polite"></output>
+    </section>
+    <section id="outer" class="sf-hide-show grid gap-2">
+      <button type="button" data-action="toggle" class="sf-button sf-button--tonal sf-button--secondary sf-button--size-1"><span class="sf-button-text-container">Переключить внешний блок</span></button>
+      <div data-content class="surface-container p-2 radius-default">
+        <div id="inner" class="sf-hide-show grid gap-1" data-state="hidden">
+          <button type="button" data-action="show" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Показать внутренний блок</span></button>
+          <button type="button" data-action="hide" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Скрыть внутренний блок</span></button>
+          <div data-content hidden>Вложенное содержимое</div>
+        </div>
+      </div>
+    </section>
+    <div id="dynamic-host"></div>
+  </main>
+  <script src="../../source/output/hide-show-browser/component/hideShow/js/hideShow.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    document.documentElement.classList.toggle('theme-light', params.get('theme') !== 'dark');
+    document.documentElement.classList.toggle('theme-dark', params.get('theme') === 'dark');
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    document.querySelector('#cancel').addEventListener('sf-hide-show:change', event => {
+      event.preventDefault();
+      document.querySelector('#cancel output').value = 'Изменение отменено';
+    });
+    window.addDynamicHideShow = () => {
+      document.querySelector('#dynamic-host').innerHTML = `
+        <div id="dynamic" class="sf-hide-show grid gap-1" data-state="hidden">
+          <button type="button" data-action="show" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Показать динамический блок</span></button>
+          <button type="button" data-action="hide" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1"><span class="sf-button-text-container">Скрыть динамический блок</span></button>
+          <div data-content class="surface-container p-2 radius-default" hidden>Добавлено после загрузки</div>
+        </div>`;
+    };
+  </script>
+</body>
+</html>

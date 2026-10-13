@@ -1,0 +1,35 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__ring_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Ring Width
+        @each $width-name, $width-value in $ring-width-array {
+            .#{$infix}ring-#{$width-name} {
+                --sf-ring-width: var(--sf-#{$width-value});
+                box-shadow:
+                    var(--sf-ring-inset, ) 0 0 0
+                    calc(var(--sf-ring-width) + var(--sf-ring-offset-width, 0px))
+                    color-mix(
+                        in srgb,
+                        transparent,
+                        var(--sf-ring-color, currentColor)
+                        calc(var(--sf-ring--alfa, 1) * 100%)
+                    ),
+                    0 0 0 var(--sf-ring-offset-width, 0px)
+                    var(--sf-ring-offset-color, transparent);
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,17 @@
+// SIMAI Framework
+// https://simai.io
+
+// TEXT DECORATION
+
+// Text Decoration Color
+$text-decoration-color-array:(
+    'inherit' : 'inherit',
+    'current' : 'currentColor',
+    'transparent' : 'transparent',
+    'primary': 'outline-primary',
+    'secondary': 'outline-secondary',
+    'tertiary': 'outline-tertiary',
+    'error': 'outline-error',
+    'warning': 'outline-warning',
+    'success': 'outline-success',
+);

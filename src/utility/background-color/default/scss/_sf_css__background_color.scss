@@ -1,0 +1,56 @@
+@use 'sf_var__background_color' as *;
+@use '../../../../core/scss/vars/sf_var__color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BASE COLOR
+
+
+// @include layer-priority(utility,default) {
+    $infix: '';
+    $event: 'hover';
+
+    // Ring Color
+    @each $bg-color-name, $bg-color-value in $back-color-array {
+        .#{$infix}bg-#{$bg-color-name} {
+            background-color: var(--sf-#{$bg-color-value});
+        }
+    }
+
+    // Состояние есть не у каждой роли: у прозрачного и у текущего цвета его быть
+    // не может, у ступеней поверхности его нет в теме. Список ролей с состояниями
+    // лежит рядом и до сих пор не читался, поэтому hover:bg-transparent просил
+    // --sf-transparent-hover, которого никто не объявлял.
+    @each $event in ('active', 'hover') {
+        @each $bg-color-name, $bg-color-value in $back-color-hover-active-array {
+            .#{$event}\:bg-#{$bg-color-name}:#{$event} {
+                background-color: var(--sf-#{$bg-color-value}-#{$event});
+            }
+        }
+    }
+
+    // Palette colors (raw)
+    @each $palette-name, $palette-map in $color-array {
+        @each $shade-key, $shade-rgb in $palette-map {
+            @if $shade-key == default {
+                .#{$infix}bg-#{$palette-name} {
+                    background-color: rgb(
+                        map-get($shade-rgb, r),
+                        map-get($shade-rgb, g),
+                        map-get($shade-rgb, b)
+                    );
+                }
+            } @else {
+                .#{$infix}bg-#{$palette-name}-#{$shade-key} {
+                    background-color: rgb(
+                        map-get($shade-rgb, r),
+                        map-get($shade-rgb, g),
+                        map-get($shade-rgb, b)
+                    );
+                }
+            }
+        }
+    }
+// }
+}

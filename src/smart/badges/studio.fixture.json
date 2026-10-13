@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.badges",
+  "title": "Badges reference",
+  "summary": "Deterministic reference fixture for sf-badge.",
+  "locale": "ru",
+  "props": {
+    "text": "Новый",
+    "type": "fill",
+    "scheme": "primary"
+  },
+  "children": [],
+  "state": "default"
+}

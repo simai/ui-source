@@ -1,0 +1,28 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__container' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// CONTAINER
+
+
+// Adaptive container
+.container {
+    width: 100%;
+    padding-inline-start: var(--sf-space-1);
+    padding-inline-end: var(--sf-space-1);
+}
+
+@each $container-key, $container-value in $container-array {
+    @include breakpoint-media($container-key) {
+        .container {
+            width: 100%;
+            max-width: var(--sf-breakpoint-#{$container-key});
+            padding-inline-start: var(--sf-space-#{$container-value});
+            padding-inline-end: var(--sf-space-#{$container-value});
+        }
+    }
+}
+}

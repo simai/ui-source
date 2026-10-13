@@ -1,0 +1,29 @@
+<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control boundary lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css"><link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+<link rel="stylesheet" href="/ui/distr/component/inputs/css/inputs.css"><link rel="stylesheet" href="/ui/distr/component/textarea/css/textarea.css">
+<link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css"><link rel="stylesheet" href="/ui/distr/component/checkbox/css/checkbox.css">
+<link rel="stylesheet" href="/ui/distr/component/radio/css/radio.css"><link rel="stylesheet" href="/ui/distr/component/switch/css/switch.css">
+<link rel="stylesheet" href="/ui/distr/component/buttons/css/buttons.css"><link rel="stylesheet" href="/ui/distr/component/country-code/css/country-code.css">
+<script>window.sfPath='/ui/distr/';</script>
+<style>body{margin:0;padding:24px;display:flex;gap:24px;font-family:var(--sf-text--family)} .panel{background:var(--sf-surface-0);color:var(--sf-on-surface);padding:20px;display:flex;flex-direction:column;gap:14px;inline-size:320px}</style>
+</head><body>
+<script>
+for (const theme of ['theme-light', 'theme-dark']) document.body.insertAdjacentHTML('beforeend', `<section class="panel ${theme}" data-theme="${theme}">
+  <sf-input data-lab="input" size="1" label="Name" placeholder="Name"></sf-input>
+  <sf-textarea data-lab="textarea" size="1" label="Note" rows="2"></sf-textarea>
+  <sf-dropdown data-lab="dropdown" size="1" label="Status" placeholder="Choose"><sf-list-item text="Open" value="open"></sf-list-item></sf-dropdown>
+  <sf-country-code data-lab="country-code" size="1" label="Phone"></sf-country-code>
+  <sf-checkbox data-lab="checkbox" size="1" label="Agree"></sf-checkbox>
+  <sf-radio data-lab="radio" size="1" name="r-${theme}" label="Option"></sf-radio>
+  <sf-switch data-lab="switch" size="1" label="Alerts"></sf-switch>
+  <sf-button data-lab="outline button" size="1" appearance="outline" text="Cancel"></sf-button>
+</section>`);
+</script>
+<script src="/ui-smart/smart/list-item/js/list-item.js"></script><script src="/ui-smart/smart/inputs/js/inputs.js"></script>
+<script src="/ui-smart/smart/textarea/js/textarea.js"></script><script src="/ui-smart/smart/dropdown/js/dropdown.js"></script>
+<script src="/ui-smart/smart/country-code/js/country-code.js"></script><script src="/ui-smart/smart/checkbox/js/checkbox.js"></script>
+<script src="/ui-smart/smart/radio/js/radio.js"></script><script src="/ui-smart/smart/switch/js/switch.js"></script>
+<script src="/ui-smart/smart/buttons/js/buttons.js"></script>
+</body></html>

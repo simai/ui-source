@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../ring-width/default/scss/sf_var__ring_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING OFFSET
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Ring Offset Width
+        @each $width-name, $width-value in $ring-width-array {
+            .#{$infix}ring-offset-#{$width-name} {
+                --sf-ring-offset-width: var(--sf-#{$width-value});
+            }
+        }
+    }
+// }
+}

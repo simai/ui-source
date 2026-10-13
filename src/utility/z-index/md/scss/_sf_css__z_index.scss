@@ -1,0 +1,23 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__z_index' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// Z-INDEX
+
+
+@include breakpoint-media(md) {
+    $infix: breakpoint-infix(md, $breakpoint-array);
+
+    .#{$infix}z-auto { z-index: auto; }
+
+    // Utilities for controlling the stack order of an element.
+    @each $z-index-name, $z-index-value in $z-index-array {
+        .#{$infix}z-#{$z-index-name} {
+            z-index: var(--sf-z-index-#{$z-index-name});
+        }
+    }
+}
+}

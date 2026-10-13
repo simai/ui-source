@@ -1,0 +1,21 @@
+@use '../../../table/default/scss/sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE
+
+$prefix: --sf-table-;
+
+// @include layer-priority(utility,default) {
+    .table-border {
+        & > :not(caption) > * {
+            border-width: var(--sf-px) var(--sf-0);
+        }
+
+        & > :not(caption) > * > * {
+            border-width: var(--sf-0) var(--sf-px);
+        }
+    }
+// }
+}

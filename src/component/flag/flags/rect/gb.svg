@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="308 356 28 20" fill="none" role="img">
+<g id="Country=GB">
+<rect id="Mask_164" x="308" y="356" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask76_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="308" y="356" width="28" height="20">
+<rect id="Mask_165" x="308" y="356" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask76_8205_11341)">
+<rect id="Mask Copy_21" x="308" y="356" width="28" height="20" fill="#0052B4"/>
+<path id="Rectangle 2_117" d="M338.773 356.294L329.326 362.667H336V369.333H329.326L338.773 375.706L337.282 377.917L325.334 369.857V377.333H318.667V369.856L306.718 377.917L305.227 375.706L314.674 369.333H308V362.667H314.674L305.227 356.294L306.718 354.083L318.667 362.143V354.667H325.334V362.142L337.282 354.083L338.773 356.294Z" fill="#F0F0F0"/>
+<path id="Line_8" d="M326.668 362.332L339.333 354" stroke="#DB1F35" stroke-width="0.666667" stroke-linecap="round"/>
+<path id="Line Copy 2" d="M328.013 369.698L339.367 377.351" stroke="#DB1F35" stroke-width="0.666667" stroke-linecap="round"/>
+<path id="Line Copy" d="M316.005 362.311L304.162 354.329" stroke="#DB1F35" stroke-width="0.666667" stroke-linecap="round"/>
+<path id="Line Copy 3" d="M317.29 369.605L304.162 378.311" stroke="#DB1F35" stroke-width="0.666667" stroke-linecap="round"/>
+<path id="Rectangle 2 Copy 3" fill-rule="evenodd" clip-rule="evenodd" d="M308 368H320V376H324V368H336V364H324V356H320V364H308V368Z" fill="#D80027"/>
+</g>
+</g>
+</svg>

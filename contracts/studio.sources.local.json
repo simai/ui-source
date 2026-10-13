@@ -1,0 +1,8 @@
+{
+  "schema": "simai.smart.sources-local-map.v1",
+  "repositories": {
+    "simai/ui-source": {
+      "root": ".."
+    }
+  }
+}

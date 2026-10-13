@@ -1,0 +1,31 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__overscroll' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OVERSCROLL
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        @each $overscroll-name,$overscroll-value in $overscroll-array {
+            .#{$infix}scroll-over-#{$overscroll-name} {
+                overscroll-behavior: #{$overscroll-value};
+            }
+
+            .#{$infix}scroll-over-x-#{$overscroll-name} {
+                overscroll-behavior-x: #{$overscroll-value};
+            }
+
+            .#{$infix}scroll-over-y-#{$overscroll-name} {
+                overscroll-behavior-y: #{$overscroll-value};
+            }
+        }
+    }
+// }
+}

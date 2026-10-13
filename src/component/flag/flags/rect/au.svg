@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="404 20 28 20" fill="none" role="img">
+<g id="Country=AU">
+<rect id="Mask_21" x="404" y="20" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask9_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="404" y="20" width="28" height="20">
+<rect id="Mask_22" x="404" y="20" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask9_8205_11341)">
+<rect id="Mask Copy_4" x="404" y="20" width="28" height="20" fill="#0052B4"/>
+<path id="Rectangle 36" d="M416.333 20.4951C416.333 20.7104 416.229 20.9129 416.054 21.0381L411.667 24.1709V25.1797L415.765 28.6924C416.155 29.027 415.918 29.6667 415.404 29.667C415.289 29.667 415.176 29.6306 415.082 29.5635L410.559 26.333H409.429L404.177 29.6162L403.667 29.9346V28.4951L403.807 28.3955L408.333 25.1621V24.1523L403.783 20.2529L403.099 19.667H404.773L404.86 19.7285L409.439 23H410.571L415.823 19.7178L416.333 19.3984V20.4951Z" fill="#D80027" stroke="white" stroke-width="0.666667"/>
+<path id="Rectangle 2_15" fill-rule="evenodd" clip-rule="evenodd" d="M404 23.3333V26H408.667V29.3333C408.667 29.7015 408.965 30 409.333 30H410.667C411.035 30 411.333 29.7015 411.333 29.3333V26H416C416.368 26 416.667 25.7015 416.667 25.3333V24C416.667 23.6318 416.368 23.3333 416 23.3333H411.333V20H408.667V23.3333H404Z" fill="url(#paint1_linear_8205_11341)"/>
+<path id="Rectangle 36_2" fill-rule="evenodd" clip-rule="evenodd" d="M404 24H409.333V23.3333V20H410.667V23.3333V24H416V25.3333H410.667V26V29.3333H409.333V26V25.3333H404V24Z" fill="url(#paint2_linear_8205_11341)"/>
+<path id="Star 2" fill-rule="evenodd" clip-rule="evenodd" d="M410 36.3335L408.824 36.9515L409.049 35.6425L408.098 34.7155L409.412 34.5245L410 33.3335L410.588 34.5245L411.902 34.7155L410.951 35.6425L411.176 36.9515L410 36.3335Z" fill="#F0F0F0"/>
+<path id="Star 2_2" fill-rule="evenodd" clip-rule="evenodd" d="M424 37.3335L423.058 37.6096L423.334 36.6668L423.058 35.724L424 36.0002L424.943 35.724L424.667 36.6668L424.943 37.6096L424 37.3335Z" fill="#F0F0F0"/>
+<path id="Star 2_3" fill-rule="evenodd" clip-rule="evenodd" d="M424 24.6665L423.058 24.9426L423.334 23.9998L423.058 23.057L424 23.3332L424.943 23.057L424.667 23.9998L424.943 24.9426L424 24.6665Z" fill="#F0F0F0"/>
+<path id="Star 2_4" fill-rule="evenodd" clip-rule="evenodd" d="M428 28.6665L427.058 28.9426L427.334 27.9998L427.058 27.057L428 27.3332L428.943 27.057L428.667 27.9998L428.943 28.9426L428 28.6665Z" fill="#F0F0F0"/>
+<path id="Star 2_5" fill-rule="evenodd" clip-rule="evenodd" d="M420 30L419.058 30.2761L419.334 29.3333L419.058 28.3905L420 28.6667L420.943 28.3905L420.667 29.3333L420.943 30.2761L420 30Z" fill="#F0F0F0"/>
+<path id="Star 2_6" fill-rule="evenodd" clip-rule="evenodd" d="M426 31.6665L425.528 31.8046L425.666 31.3332L425.528 30.8618L426 30.9998L426.471 30.8618L426.333 31.3332L426.471 31.8046L426 31.6665Z" fill="#F0F0F0"/>
+</g>
+</g>
+<defs><linearGradient id="paint1_linear_8205_11341" x1="404" y1="20" x2="404" y2="30" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F0F0F0"/>
+</linearGradient><linearGradient id="paint2_linear_8205_11341" x1="404" y1="20" x2="404" y2="29.3333" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF2E3B"/>
+<stop offset="1" stop-color="#FC0D1B"/>
+</linearGradient></defs>
+</svg>

@@ -1,0 +1,22 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.pagination",
+  "title": "Pagination reference",
+  "summary": "Deterministic reference fixture for sf-pagination.",
+  "locale": "ru",
+  "props": {
+    "current": 2,
+    "total": 80,
+    "page-size": 10,
+    "selected-count": 3,
+    "show-more-text": "Показать ещё",
+    "show-page-size": true,
+    "page-sizes": "10,20,40",
+    "aria-label": "Страницы результатов",
+    "top": false,
+    "bottom": false
+  },
+  "children": [],
+  "state": "default"
+}

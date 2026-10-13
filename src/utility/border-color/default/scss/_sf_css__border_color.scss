@@ -1,0 +1,39 @@
+@use 'sf_var__border_color' as *;
+@use '../../../../core/scss/vars/sf_var__color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BORDER - BORDER COLOR
+
+$infix:'';
+
+@each $border-color-name, $border-color-var in $border-color-array {
+    .#{$infix}border-#{$border-color-name} {
+        border-color: var(--sf-#{$border-color-var});
+    }
+}
+
+// Palette colors (raw)
+@each $palette-name, $palette-map in $color-array {
+    @each $shade-key, $shade-rgb in $palette-map {
+        @if $shade-key == default {
+            .#{$infix}border-#{$palette-name} {
+                border-color: rgb(
+                    map-get($shade-rgb, r),
+                    map-get($shade-rgb, g),
+                    map-get($shade-rgb, b)
+                );
+            }
+        } @else {
+            .#{$infix}border-#{$palette-name}-#{$shade-key} {
+                border-color: rgb(
+                    map-get($shade-rgb, r),
+                    map-get($shade-rgb, g),
+                    map-get($shade-rgb, b)
+                );
+            }
+        }
+    }
+}
+}

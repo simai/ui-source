@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SF5 Input owner lab</title>
+    <link rel="stylesheet" href="/ui/distr/core/css/core.css">
+    <link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+    <link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8894/component-final/component/inputs/css/inputs.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8894/smart-final/smart/inputs/css/inputs.css">
+  </head>
+  <body class="p-4">
+    <main class="grid gap-4">
+      <h1>Однострочные поля</h1>
+      <form id="ordinary-form" class="grid grid-col-1 md:grid-col-2 gap-3">
+        <label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+          <span class="sf-input-label flex"><span class="sf-input-text">Рабочая почта</span></span>
+          <span class="sf-input-field items-cross-center transition flex"><i class="sf-icon" aria-hidden="true">mail</i><input id="ordinary-email" type="email" name="email" value="initial@example.com" autocomplete="email" inputmode="email"></span>
+          <span class="sf-input-hint-text-wrap">Используется для уведомлений</span>
+        </label>
+        <label class="sf-input sf-input--size-1 sf-input--filled flex flex-col">
+          <span class="sf-input-label flex"><span class="sf-input-text">Поиск</span></span>
+          <span class="sf-input-field items-cross-center transition flex"><i class="sf-icon" aria-hidden="true">search</i><input type="search" name="query" autocomplete="off"></span>
+        </label>
+        <label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+          <span class="sf-input-label flex"><span class="sf-input-text">Идентификатор</span></span>
+          <span class="sf-input-field items-cross-center transition flex"><input id="readonly-input" type="text" value="PRJ-204" readonly></span>
+        </label>
+        <label class="sf-input sf-input--size-1 sf-input--bordered error flex flex-col">
+          <span class="sf-input-label flex"><span class="sf-input-text">Код проекта</span></span>
+          <span class="sf-input-field items-cross-center transition flex"><input id="invalid-input" class="error" type="text" value="demo space" aria-invalid="true" aria-describedby="input-error" aria-errormessage="input-error"></span>
+          <span id="input-error" class="sf-input-hint-text-wrap" data-field-message="error">Используйте латинские буквы без пробелов</span>
+        </label>
+        <button class="sf-button sf-button--size-1 sf-button--primary" type="reset">Сбросить</button>
+      </form>
+
+      <form id="smart-form" class="grid grid-col-1 md:grid-col-2 gap-3">
+        <sf-input id="smart-email" label="Email" input-type="email" name="smart-email" value="hello@example.com" default-value="reset@example.com" autocomplete="email" inputmode="email" minlength="6" maxlength="80" pattern=".+@.+" required></sf-input>
+        <sf-input id="smart-readonly" label="Только чтение" value="Нельзя изменить" readonly type="filled"></sf-input>
+        <button class="sf-button sf-button--size-1 sf-button--secondary" type="reset">Сбросить Smart</button>
+      </form>
+      <button id="factory" class="sf-button sf-button--size-1 sf-button--neutral" type="button">Создать через API</button>
+      <div id="factory-output"></div>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      if (params.get('theme') === 'dark') document.documentElement.classList.replace('theme-light', 'theme-dark');
+      if (params.get('dir') === 'rtl') document.documentElement.dir = 'rtl';
+      document.fonts.load('24px "Material Symbols Outlined"').then(() => {
+        document.querySelectorAll('.sf-icon').forEach((icon) => icon.classList.add('sf-icon-loaded'));
+      });
+      document.querySelector('#factory').addEventListener('click', () => {
+        const Input = new Map(window.SF_PENDING_COMPONENTS || []).get('Inputs');
+        const instance = new Input({ param: { size: 'unknown', type: 'unknown', label: 'Телефон', inputType: 'tel', inputMode: 'tel', autocomplete: 'tel', minLength: 5, maxLength: 20, pattern: '[0-9+ ]+' } });
+        document.querySelector('#factory-output').replaceChildren(instance.render());
+      });
+    </script>
+    <script src="/ui/distr/core/js/smart-base.js"></script>
+    <script src="http://127.0.0.1:8894/component-final/component/inputs/js/inputs.js"></script>
+    <script src="http://127.0.0.1:8894/smart-final/smart/inputs/js/inputs.js"></script>
+  </body>
+</html>

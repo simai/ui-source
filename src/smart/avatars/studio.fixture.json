@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.avatars",
+  "title": "Avatars reference",
+  "summary": "Deterministic reference fixture for sf-avatars.",
+  "locale": "ru",
+  "props": {
+    "template": "label",
+    "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3Ctext x=\"48\" y=\"58\" text-anchor=\"middle\" font-size=\"30\" fill=\"white\"%3EAZ%3C/text%3E%3C/svg%3E",
+    "avatar-size": "2",
+    "label-text": "Команда проекта",
+    "label-second-text": "5 участников"
+  },
+  "children": [],
+  "state": "default"
+}

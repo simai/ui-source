@@ -1,0 +1,31 @@
+{
+  "id": "a-late-load-is-dropped",
+  "intent": "navigation.load",
+  "summary": "An answer to an older request than the last one sent is dropped.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "requested",
+      "site": "shop.simai.ru",
+      "sequence": 1
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "echo"
+    ],
+    "note": "The component compares the echoed sequence with the last one it sent. Switching sites twice quickly must not end on the first site's rows."
+  }
+}

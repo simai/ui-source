@@ -1,0 +1,371 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-context-menu {
+  background-color: var(--sf-context-menu--background-color, transparent);
+  box-shadow: var(--sf-context-menu--box-shadow, var(--sf-elevation-3--shadow));
+  border-end-end-radius: var(--sf-context-menu--border-end-end-radius, var(--sf-radius--surface));
+  border-end-start-radius: var(--sf-context-menu--border-end-start-radius, var(--sf-radius--surface));
+  border-start-end-radius: var(--sf-context-menu--border-start-end-radius, var(--sf-radius--surface));
+  border-start-start-radius: var(--sf-context-menu--border-start-start-radius, var(--sf-radius--surface));
+  gap: var(--sf-d4);
+}
+
+/* Markup written for the tail it used to have draws none: a menu has no tail
+   (owner, 2026-10-12). */
+.sf-context-menu .sf-context-menu-tooltip {
+  display: none;
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-context-menu .sf-context-menu-content {
+  /* The profile menu's surface is every menu's (owner, 2026-10-12): the
+     third step, as every panel that floats over the page, and a hairline
+     that keeps its edge where the shadow does not show. */
+  --sf-context-menu-content--background-color: var(--sf-elevation-3--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  --sf-context-menu-content--padding-bottom: var(--sf-space-1\/4);
+  --sf-context-menu-content--padding-inline-end: var(--sf-space-1\/4);
+  --sf-context-menu-content--padding-inline-start: var(--sf-space-1\/4);
+  --sf-context-menu-content--padding-top: var(--sf-space-1\/4);
+  --sf-context-menu-content--border-radius: var(--sf-radius--surface);
+  border-radius: var(--sf-context-menu-content--border-radius);
+  background-color: var(--sf-context-menu-content--background-color);
+  padding-bottom: var(--sf-context-menu-content--padding-bottom);
+  padding-inline-end: var(--sf-context-menu-content--padding-inline-end);
+  padding-inline-start: var(--sf-context-menu-content--padding-inline-start);
+  padding-top: var(--sf-context-menu-content--padding-top);
+  min-inline-size: 0;
+  min-block-size: 0;
+  max-inline-size: var(--sf-context-menu-available-inline-size, 100%);
+  max-block-size: var(--sf-context-menu-available-block-size, 100%);
+  overflow: auto;
+  scroll-behavior: auto;
+}
+
+/* A menu opened through openFor() is the platform's popover while open, and
+   nothing while closed. The user agent's popover box (centred, bordered,
+   padded, painted Canvas) is undone so the menu keeps its own. */
+sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
+  display: none;
+}
+
+.sf-context-menu[popover] {
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
+}
+
+/* ─── entries: the standard rows ───────────────────────────────────────── */
+
+.sf-context-menu--entries .sf-context-menu-content {
+  gap: var(--sf-px);
+  /* As wide as its longest line, from a modest floor: a row menu of three
+     short actions stood with a third of its width empty when the floor was the
+     profile menu's (owner, 2026-10-12). A menu that wants more sets the
+     variable. */
+  min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-e8));
+  max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-g2)), var(--sf-context-menu-available-inline-size, 100vw));
+  --sf-icon--font-size: var(--sf-icon-size-2);
+  --sf-icon--width: var(--sf-icon-size-2);
+  --sf-icon--height: var(--sf-icon-size-2);
+}
+
+/* The content scrolls when the window is shorter than the menu; its rows keep
+   their height and the list scrolls, instead of every row being squeezed until
+   a caption ran into the next row (a language list, 2026-10-12). */
+.sf-context-menu--entries .sf-context-menu-content > * {
+  flex-shrink: 0;
+}
+
+/* A row is as tall as a size-1/2 field -- a line and a6 above and below --
+   and its content starts where that field's does. A caption makes it taller
+   by its own line, never by padding. */
+.sf-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  padding-block: var(--sf-a2);
+  padding-inline: var(--sf-context-menu--item-inset-start-1\/2) var(--sf-context-menu--item-inset-end-1\/2);
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  background: none;
+  color: var(--sf-on-surface);
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sf-context-menu-item:not(:disabled):hover,
+.sf-context-menu-item[aria-expanded="true"] {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-context-menu-item--current {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+.sf-context-menu-item:disabled {
+  color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-context-menu-item--danger:not(:disabled) {
+  color: var(--sf-error);
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-context-menu-item-lead,
+.sf-context-menu-item-check {
+  display: flex;
+  flex: none;
+  inline-size: var(--sf-icon-size-2);
+}
+
+/* A picture in the lead: a site's logo or a person, the icon's size, with
+   its initials on the secondary tone when there is no picture. */
+.sf-context-menu-item-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-icon-size-2);
+  block-size: var(--sf-icon-size-2);
+  border-radius: var(--sf-radius--ui);
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  font-size: var(--sf-text-size-1\/4);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: 1;
+  object-fit: cover;
+}
+
+.sf-context-menu-item-icon,
+.sf-context-menu-item-chevron {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-context-menu-item--danger:not(:disabled) .sf-context-menu-item-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-context-menu-item-check {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-context-menu-item-chevron:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+.sf-context-menu-item-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-context-menu-item-label,
+.sf-context-menu-item-caption,
+.sf-context-menu-item-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-item-label {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-context-menu-item-caption,
+.sf-context-menu-item-value,
+.sf-context-menu-item-shortcut {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-context-menu-item:disabled .sf-context-menu-item-caption,
+.sf-context-menu-item:disabled .sf-context-menu-item-value,
+.sf-context-menu-item:disabled .sf-context-menu-item-shortcut {
+  color: inherit;
+}
+
+.sf-context-menu-item-value {
+  flex: none;
+  max-inline-size: 45%;
+}
+
+.sf-context-menu-item-shortcut {
+  flex: none;
+  font-family: inherit;
+}
+
+.sf-context-menu-separator {
+  flex: none;
+  block-size: var(--sf-px);
+  margin-block: var(--sf-a4);
+  background-color: var(--sf-outline-variant);
+}
+
+/* Who the menu is about: the picture and the lines beside it, on the rows'
+   axis, read rather than chosen. */
+.sf-context-menu-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a6) var(--sf-context-menu--item-inset-start-1\/2);
+}
+
+.sf-context-menu-header-avatar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-d0);
+  block-size: var(--sf-d0);
+  border-radius: 50%;
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  font-size: var(--sf-text-size-1\/3);
+  font-weight: var(--sf-font-weight-medium);
+  object-fit: cover;
+}
+
+.sf-context-menu-header-text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-context-menu-header-name,
+.sf-context-menu-header-caption {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-header-name {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-context-menu-header-caption {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+/* A few options side by side, one segment each, in a hairline frame. */
+.sf-context-menu-choice {
+  display: flex;
+  margin-inline: var(--sf-context-menu--item-inset-start-1\/2) var(--sf-context-menu--item-inset-end-1\/2);
+  margin-block: var(--sf-a2);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  overflow: hidden;
+}
+
+.sf-context-menu-choice-option.sf-context-menu-item {
+  flex: 1 1 0;
+  justify-content: center;
+  padding-inline: 0;
+  border-radius: 0;
+}
+
+.sf-context-menu-choice-option + .sf-context-menu-choice-option {
+  border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-context-menu-choice-option[aria-checked="true"] {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+.sf-context-menu-note {
+  margin: 0;
+  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a6) var(--sf-context-menu--item-inset-start-1\/2);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+  white-space: normal;
+}
+
+/* The search field is a size-1/2 field: its text starts on the rows' axis. */
+.sf-context-menu-search {
+  padding-block-end: var(--sf-a4);
+}
+
+.sf-context-menu-search-input {
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  padding-inline: var(--sf-ui-1\/2--space-x);
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+  background-color: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+}
+
+.sf-context-menu-search-input::placeholder {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-context-menu-heading {
+  padding: var(--sf-a6) var(--sf-context-menu--item-inset-end-1\/2) var(--sf-a2) var(--sf-context-menu--item-inset-start-1\/2);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* An item is one line. A menu opened from a control near the inline edge was
+   capped to the free space beside that control, and the labels wrapped to two
+   lines inside it -- which is not the menu getting smaller, it is the words
+   breaking. The menu is moved inside the viewport instead of being squeezed, so
+   the line it needs is the line it gets. */
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button,
+.sf-context-menu .sf-context-menu-content > .sf-button {
+  white-space: nowrap;
+}
+}
+
+@layer sf.states {
+  .sf-context-menu-search-input:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-context-menu-item:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-context-menu-content > .sf-button:not(:disabled):not(.disabled):focus-visible,
+  .sf-context-menu-content > sf-button > .sf-button:not(:disabled):not(.disabled):focus-visible {
+    position: relative;
+    z-index: 1;
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-context-menu .sf-context-menu-content {
+    border: var(--sf-px) solid CanvasText;
+  }
+
+  .sf-context-menu-content > .sf-button:not(:disabled):not(.disabled):focus-visible,
+  .sf-context-menu-content > sf-button > .sf-button:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline-offset: calc(var(--sf-focus-outline-width) * -1);
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__break_after' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BREAK
+
+$infix: lg;
+
+// @include layer-priority(utility,$infix) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Break After
+        @each $break-after-name, $break-after-value in $break-after-array {
+            .#{$infix}break-after-#{$break-after-name} {
+                break-after:#{$break-after-value};
+            }
+        }
+    }
+// }
+}

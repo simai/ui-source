@@ -1,0 +1,59 @@
+@use '../../default/scss/sf_var__color_base' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BASE COLOR
+
+$infix: focus\:;
+
+// @include layer-priority(utility,focus) {
+    // color main: gray-9
+    // .#{$infix}color-main:focus{ color: rgba(var(--sf-gray-9r), var(--sf-gray-9g), var(--sf-gray-9b), var(--sf-color--alfa)); }
+
+    // // color-spare: gray-6
+    // .#{$infix}color-spare:focus{ color: rgba(var(--sf-gray-6r), var(--sf-gray-6g), var(--sf-gray-6b), var(--sf-color--alfa)); }
+
+    // // color-extra: gray-5
+    // .#{$infix}color-extra:focus { color: rgba(var(--sf-gray-5r), var(--sf-gray-5g), var(--sf-gray-5b), var(--sf-color--alfa)); }
+
+    // // color-placeholder: gray-5
+    // .#{$infix}color-placeholder:focus { color: rgba(var(--sf-gray-5r), var(--sf-gray-5g), var(--sf-gray-5b), var(--sf-color--alfa)); }
+
+    // // color-disabled: gray-4
+    // .#{$infix}color-disabled:focus { color: rgba(var(--sf-gray-4r), var(--sf-gray-4g), var(--sf-gray-4b), var(--sf-color--alfa)); }        
+
+    // // color-inverse: white
+    // .#{$infix}color-inverse:focus { color: rgba(var(--sf-white-r), var(--sf-white-g), var(--sf-white-b), var(--sf-color--alfa)); }
+
+    // // color-info: blue-5
+    // .#{$infix}color-info:focus { color: rgba(var(--sf-blue-5r), var(--sf-blue-5g), var(--sf-blue-5b), var(--sf-color--alfa)); }
+
+    // // color-success: green-6
+    // .#{$infix}color-success:focus { color: rgba(var(--sf-green-6r), var(--sf-green-6g), var(--sf-green-6b), var(--sf-color--alfa)); }
+
+    // // color-warning: yellow-8
+    // .#{$infix}color-warning:focus { color: rgba(var(--sf-yellow-8r), var(--sf-yellow-8g), var(--sf-yellow-8b), var(--sf-color--alfa)); }
+
+    // // color-danger: red-6
+    // .#{$infix}color-danger:focus { color: rgba(var(--sf-red-6r), var(--sf-red-6g), var(--sf-red-6b), var(--sf-color--alfa)); }
+
+    // .#{$infix}color-white:focus { color: rgba(var(--sf-white-r), var(--sf-white-g), var(--sf-white-b), var(--sf-color--alfa)); }
+
+    // .#{$infix}color-black:focus { color: rgba(var(--sf-black-r), var(--sf-black-g), var(--sf-black-b), var(--sf-color--alfa)); }
+
+    @each $modifier-name, $var-name in $color-base-array {
+        .#{$infix}color-#{$modifier-name}:focus {
+            // Роль называется --sf-on-primary; здесь читалось --sf-color--on-primary,
+            // то есть focus:color-on-primary не красил ничего.
+            color: var(--sf-#{$var-name})
+        }
+    }
+
+    // Transparent Color
+    .#{$infix}color-transparent:focus { color: var(--sf-transparent) }
+
+    // Inherit Color
+    .#{$infix}color-inherit:focus { color: var(--sf-inherit)}
+// }
+}

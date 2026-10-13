@@ -1,0 +1,23 @@
+{
+  "id": "view-profile-unavailable-without-the-capability",
+  "intent": "view.profile",
+  "summary": "A host that does not configure views cannot switch between them either.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "view.profile",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "expert"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The component draws no chooser without the capability; this is what a host answers if one is asked for anyway."
+  }
+}

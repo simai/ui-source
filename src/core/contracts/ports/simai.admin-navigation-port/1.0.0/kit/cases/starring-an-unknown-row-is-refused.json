@@ -1,0 +1,30 @@
+{
+  "id": "starring-an-unknown-row-is-refused",
+  "intent": "favourite.toggle",
+  "capability": "favourites",
+  "summary": "A row the menu does not hold cannot be starred.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "favourite.toggle",
+    "payload": {
+      "key": "no-such-row",
+      "on": true
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

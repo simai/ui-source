@@ -1,0 +1,15 @@
+// SIMAI Framework
+// https://simai.io
+
+// FONT SMOOTHING
+
+$font-smoothing-array:(
+    antialiased: (
+        -webkit-font-smoothing: antialiased,
+        -moz-osx-font-smoothing: grayscale,
+    ),
+    smoothing: (
+        -webkit-font-smoothing: auto,
+        -moz-osx-font-smoothing: auto
+    )
+);

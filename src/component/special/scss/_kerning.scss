@@ -1,0 +1,16 @@
+@layer sf.components {
+html {
+    &.special {
+        &.special-kerning-middle {
+            * {
+                letter-spacing: calc(var(--sf-text--tracking-widest) * 1.5)!important;
+            }
+        }
+        &.special-kerning-big {
+            * {
+                letter-spacing: calc(var(--sf-text--tracking-widest) * 3)!important;
+            }
+        }
+    }
+}
+}

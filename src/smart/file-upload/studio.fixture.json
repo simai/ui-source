@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.file-upload",
+  "title": "File Upload reference",
+  "summary": "Deterministic reference fixture for sf-file-upload.",
+  "locale": "ru",
+  "props": {
+    "link-text": "Выберите файлы",
+    "text": "или перетащите их сюда",
+    "formats": "PDF, PNG или JPG",
+    "supporting-text": "Можно загрузить несколько документов",
+    "multiple": true
+  },
+  "children": [],
+  "state": "default"
+}

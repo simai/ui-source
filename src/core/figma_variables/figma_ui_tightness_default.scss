@@ -1,0 +1,24 @@
+/*
+ * Generated from src/core/contracts/adaptive-sizing.v1.json.
+ * contract-sha256: b70d02d6902345e17954eafb44f24052b7478439184286bed5a8df6c69c1fe45
+ * Do not edit semantic values in this file directly.
+ */
+@layer sf.base {
+  :root {
+    --sf-ui-1\/3--space-y-tightness-default: var(--sf-a4);
+    --sf-ui-1\/2--space-y-tightness-default: var(--sf-a6);
+    --sf-ui-1--space-y-tightness-default: var(--sf-a8);
+    --sf-ui-2--space-y-tightness-default: var(--sf-b0);
+    --sf-ui-3--space-y-tightness-default: var(--sf-b4);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-ui-1\/3--space-y-tightness-default: var(--sf-a4);
+      --sf-ui-1\/2--space-y-tightness-default: var(--sf-a6);
+      --sf-ui-1--space-y-tightness-default: var(--sf-a8);
+      --sf-ui-2--space-y-tightness-default: var(--sf-b0);
+      --sf-ui-3--space-y-tightness-default: var(--sf-b0);
+    }
+  }
+}

@@ -1,0 +1,23 @@
+@layer sf.components {
+html {
+    &.special {
+        &.special-font-mono {
+            *:not(i) {
+                font-family: 'Courier New', Courier, monospace!important;
+            }
+        }
+
+        &.special-font-serif {
+            *:not(i) {
+                font-family: 'Times New Roman', Times, serif!important;
+            }
+        }
+
+        &.special-font-sans {
+            *:not(i) {
+                font-family: Arial, Helvetica, sans-serif!important;
+            }
+        }
+    }
+}
+}

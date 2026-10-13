@@ -1,0 +1,13 @@
+// SIMAI Framework
+// https://simai.io
+
+// SIZE
+
+// Min Width Array
+$with-min-array: (
+	"min" : min-content,
+	"max" : max-content,
+    "fit" : fit-content,
+	"full" : 100%,
+	0 : 0, 
+);

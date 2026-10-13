@@ -1,0 +1,45 @@
+{
+  "id": "contract.sf5.component-evolution",
+  "kind": "knowledge",
+  "tz_role": "contract",
+  "subtype": "architecture_contract",
+  "title": "Compatible evolution of existing Framework and Smart Components",
+  "lifecycle": "accepted",
+  "semantic_digest": "sha256:190f642b9af5582845672cc90748008ecc0a415d97ee5bb89265f966564a2f75",
+  "architecture_owner_id": "human.rim-zabarov",
+  "acceptance_ref": "decision.sf5.component-evolution-accepted",
+  "source_baseline": {
+    "repository": "simai/ui-source",
+    "revision": "b47a767d49997aed1f6c3f09c8e73aed4e304465",
+    "framework_release": "5.6.1",
+    "inventory_sha256": "43af30072c86f0cf4be47c8733c6e941196b053d37c82eaaf531c0fde9a88ddf",
+    "registered_components": 63,
+    "smart_manifests": 43,
+    "additional_shipped_directories_to_classify": 14
+  },
+  "ownership": {
+    "simai/ui-source": "Authoritative Core, Component and Smart sources.",
+    "simai/ui-builder": "Existing deterministic build pipeline.",
+    "simai/ui": "Generated distribution only.",
+    "simai/ui-smart": "Generated Smart distribution only.",
+    "simai/ui-doc": "Component documentation, live examples and documentation tracking.",
+    "simai/docara": "Documentation consumer and example integration; not a CSS defect workaround.",
+    "simai/ai-codex-skill-sf5": "Canonical component design method; no global installation changes in this goal."
+  },
+  "requirements": [
+    "Review every registered component and classify all extra shipped directories without silently excluding supported first-party visual blocks.",
+    "Review all Smart dependencies; reuse the base visual contract instead of duplicating styles.",
+    "Fix proven defects in semantic tokens, typography, geometry, focus, states, indicators and public attributes without breaking existing API.",
+    "Keep native focus and accessibility semantics; use focus-visible and appropriate inset or outer geometry.",
+    "Use real scenarios, not mandatory uniform surface modifiers or dividers.",
+    "Keep live examples, source contracts and local builds synchronized; verify changed behavior in a browser."
+  ],
+  "invariants": [
+    "Preserve existing package identities, dependency graph, public compatibility and ownership.",
+    "Prefer semantic tokens; body text uses body typography; compact controls and large surfaces use their respective radius roles.",
+    "Keep existing correct implementation, third-party boundaries, unrelated dirty changes and verified published build.",
+    "No new components or dependencies; no hand edits to generated distributions."
+  ],
+  "stop_boundaries": ["breaking_changes", "ownership_changes", "new_architecture", "commit", "push", "release", "deploy", "global_federation", "data_deletion"],
+  "completion": "All corpus entries reviewed, zero unresolved required defects, tests and local builds verified, source-faithful examples and browser evidence complete."
+}

@@ -1,0 +1,29 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__overflow' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// OVERFLOW
+
+// @include layer-priority(utility,xl) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+        
+        // Utilities for controlling how an element handles content that is too large for the container.
+        .#{$infix}overflow-auto         { overflow: auto; }
+        .#{$infix}overflow-hidden       { overflow: hidden; }
+        .#{$infix}overflow-visible      { overflow: visible; }
+        .#{$infix}overflow-scroll       { overflow: scroll; }
+        .#{$infix}overflow-x-auto       { overflow-x: auto; }
+        .#{$infix}overflow-y-auto       { overflow-y: auto; }
+        .#{$infix}overflow-x-hidden     { overflow-x: hidden; }
+        .#{$infix}overflow-y-hidden     { overflow-y: hidden; }
+        .#{$infix}overflow-x-visible    { overflow-x: visible; }
+        .#{$infix}overflow-y-visible    { overflow-y: visible; }
+        .#{$infix}overflow-x-scroll     { overflow-x: scroll; }
+        .#{$infix}overflow-y-scroll     { overflow-y: scroll; }
+    }
+// }
+}

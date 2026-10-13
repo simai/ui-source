@@ -1,0 +1,39 @@
+{
+  "schema": "simai.smart-component-scenario.v1",
+  "id": "smoke",
+  "component": "smart.textarea",
+  "fixture": "reference",
+  "viewport": "desktop",
+  "actions": [],
+  "assertions": [
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "visible"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    },
+    {
+      "type": "native-attribute",
+      "target": "textarea",
+      "name": "maxlength",
+      "value": "500"
+    },
+    {
+      "type": "native-attribute",
+      "target": "textarea",
+      "name": "spellcheck",
+      "value": "true"
+    },
+    {
+      "type": "form-value",
+      "target": "textarea",
+      "value": "Текст примера"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "switching-site-without-the-capability",
+  "intent": "site.switch",
+  "capability": "site-switch",
+  "summary": "With one site there is nothing to switch to.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out"
+    ]
+  },
+  "when": {
+    "intent": "site.switch",
+    "payload": {
+      "site": "shop.simai.ru"
+    }
+  },
+  "then": {
+    "answer": "unavailable"
+  }
+}

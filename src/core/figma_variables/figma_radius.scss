@@ -1,0 +1,30 @@
+@layer sf.base {
+  /* Верхние ступени подобраны под лестницу отступов: угол ступени не превышает
+     отступ той же ступени, поэтому «p-N radius-N» читается как одно решение, а
+     не как две подогнанные величины. Прежние 20/24 и 36/48 разгонялись вдвое за
+     шаг, тогда как отступы росли ровно. */
+  :root {
+    /* Нулевая ступень: класс radius-0 просил её с самого начала. */
+    --sf-radius-0: var(--sf-a0);
+    --sf-radius-1\/3: var(--sf-a2);
+    --sf-radius-1\/2: var(--sf-a4);
+    --sf-radius-1: var(--sf-a8);
+    --sf-radius-2: var(--sf-b2);
+    --sf-radius-3: var(--sf-b6);
+    --sf-radius-4: var(--sf-c2);
+    --sf-radius-circle: 1000px;
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-radius-0: var(--sf-a0);
+      --sf-radius-1\/3: var(--sf-a2);
+      --sf-radius-1\/2: var(--sf-a4);
+      --sf-radius-1: var(--sf-a8);
+      --sf-radius-2: var(--sf-b6);
+      --sf-radius-3: var(--sf-c2);
+      --sf-radius-4: var(--sf-c6);
+      --sf-radius-circle: 1000px;
+    }
+  }
+}

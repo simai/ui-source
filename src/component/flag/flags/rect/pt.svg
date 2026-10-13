@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="164 836 28 20" fill="none" role="img">
+<g id="Country=PT">
+<rect id="Mask_368" x="164" y="836" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask170_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="164" y="836" width="28" height="20">
+<rect id="Mask_369" x="164" y="836" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask170_8205_11341)">
+<rect id="Mask Copy_41" x="164" y="836" width="28" height="20" fill="#D80027"/>
+<path id="Rectangle 2 Copy_9" fill-rule="evenodd" clip-rule="evenodd" d="M164 856H174.667V836H164V856Z" fill="#6DA544"/>
+<path id="Oval 1_6" d="M174.667 842.667C176.508 842.667 178 844.16 178 846C178 847.841 176.508 849.333 174.667 849.333C172.826 849.333 171.333 847.841 171.333 846C171.333 844.16 172.826 842.667 174.667 842.667Z" stroke="#FAF94F" stroke-width="1.33333"/>
+<path id="Rectangle 429" fill-rule="evenodd" clip-rule="evenodd" d="M173.333 844.333C173.333 844.149 173.482 844 173.666 844H175.666C175.85 844 176 844.149 176 844.333V846.667C176 847.403 175.403 848 174.666 848C173.93 848 173.333 847.403 173.333 846.667V844.333Z" fill="#F0F0F0"/>
+<path id="Oval 27" fill-rule="evenodd" clip-rule="evenodd" d="M174.667 846.667C175.035 846.667 175.333 845.701 175.333 845.333C175.333 844.965 175.035 844.667 174.667 844.667C174.298 844.667 174 844.965 174 845.333C174 845.701 174.298 846.667 174.667 846.667Z" fill="#0052B4"/>
+</g>
+</g>
+</svg>

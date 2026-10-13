@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Theme — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/theme-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/theme-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/theme-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: false},
+      preloader: {enabled: false},
+      theme: new URLSearchParams(location.search).get('disabled') !== '1',
+    };
+    window.__themeEvents = [];
+    window.addEventListener('sf-theme-change', event => window.__themeEvents.push(event.detail));
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-3 max-w-5">
+    <h1>Проверка темы</h1>
+    <button id="theme-toggle" class="sf-theme-button sf-button sf-button--default sf-button--primary sf-button--size-1" type="button" aria-label="Тёмная тема" aria-pressed="false"><span class="sf-button-text-container">Тёмная тема</span></button>
+    <button id="mount" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Добавить вторую кнопку</span></button>
+    <div id="late"></div>
+  </main>
+  <script>
+    document.getElementById('mount').addEventListener('click', () => {
+      document.getElementById('late').innerHTML = '<button id="late-toggle" class="sf-theme-button sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button" data-theme="dark" aria-label="Тёмная тема" aria-pressed="false"><span class="sf-button-text-container">Поздняя кнопка темы</span></button>';
+    }, {once: true});
+  </script>
+  <script src="../../source/output/theme-browser/core/js/core.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "schema": "simai.template-context.v1",
+  "purpose": "A Smart template reads the value its component resolved, not the raw attribute. Each component is rendered with no attribute and with each declared attribute set in turn to each value its manifest allows (an arbitrary value where it names none); every key the template reads from its context, where the component defines a getter of that name, equals that getter. Empty values (null, undefined, '', false) count as equal.",
+  "why": "Three defects in two days had one cause: a template context built from attributes rather than resolved values (sf-tag size, sf-tag line, sf-tag kind=\"checkbox\" rendering an inert box). The first run of this check found the same cause in nine more components, among them sf-list-item never drawing its checkbox, sf-input appearance=\"hidden\" not rendering a hidden input, sf-modal blur=\"false\" turning the blur on and sf-textarea maxlength=\"x\" rendering maxlength=0.",
+  "checked_by": "tests/browser/template-context.browser.mjs",
+  "exemptions": [
+    {
+      "component": "avatar",
+      "prop": "text",
+      "reason": "The template takes the text to display: the text attribute, else initials from the title or the accessible name."
+    },
+    {
+      "component": "progress-scale",
+      "prop": "value",
+      "reason": "The template takes the value clamped to a number; the getter returns the attribute as given for compatibility."
+    },
+    {
+      "component": "range-slider",
+      "prop": "start",
+      "reason": "The template takes the initial value (value, else start, else 0) as the slider's start; the getter returns the start attribute as given."
+    },
+    {
+      "component": "steps",
+      "prop": "items",
+      "reason": "The template takes the items with their index, stage and selection resolved (computedItems)."
+    },
+    {
+      "component": "tabs",
+      "prop": "items",
+      "reason": "The template takes the items with their index, slots and selection resolved."
+    }
+  ],
+  "undefined_reads_rule": "A component reads a declared prop through a getter it defines or through this.getProp(key), never off this bare: static props creates no accessor, so this.<prop> is undefined whatever the attribute says. Checked statically in the node gate (tests/undeclared-prop-reads.contract.test.mjs) and at runtime by the browser test. An exemption here is a known defect with its owner; one that no longer reads bare fails, so the list cannot go stale.",
+  "undefined_reads": []
+}

@@ -1,0 +1,21 @@
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER
+
+// Divider Color
+$divider-color-array:(
+    'transparent': 'transparent',
+    'current': 'current',
+    'outline': 'outline',
+    // Линия внутри области — та же полупрозрачная роль, которой очерчена
+    // сама область. Её здесь не было, и разделитель приходилось рисовать
+    // либо сплошной ролью контрола, либо сырым цветом палитры.
+    'outline-variant': 'outline-variant',
+    'primary': 'outline-primary',
+    'secondary': 'outline-secondary',
+    'tertiary': 'outline-tertiary',
+    'error': 'outline-error',
+    'warning': 'outline-warning',
+    'success': 'outline-success',
+);

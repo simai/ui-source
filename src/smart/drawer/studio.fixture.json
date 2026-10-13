@@ -1,0 +1,24 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.drawer",
+  "title": "Drawer reference",
+  "summary": "Deterministic reference fixture for sf-drawer.",
+  "locale": "ru",
+  "props": {
+    "open": true,
+    "title": "Параметры проекта",
+    "label": "Параметры проекта",
+    "placement": "inline-end",
+    "size": "medium"
+  },
+  "children": [
+    {
+      "element": "p",
+      "props": {},
+      "text": "Содержимое боковой панели",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

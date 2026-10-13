@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "id": "unknown-top-field",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "unknown"
+        ],
+        "value": true
+      }
+    },
+    {
+      "id": "both-node-and-ref",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "root",
+          "node"
+        ],
+        "value": {
+          "type": "layout.page"
+        }
+      }
+    },
+    {
+      "id": "input-fraction",
+      "schema": "inputs.schema.json",
+      "base": "inputs.compact",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "values",
+          "headerMode",
+          "value"
+        ],
+        "value": 0.5
+      }
+    },
+    {
+      "id": "content-missing-origin",
+      "schema": "inputs.schema.json",
+      "base": "inputs.compact",
+      "operation": {
+        "kind": "delete",
+        "path": [
+          "values",
+          "body",
+          "origin"
+        ]
+      }
+    },
+    {
+      "id": "bad-envelope-digest",
+      "schema": "inputs.schema.json",
+      "base": "inputs.compact",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "values",
+          "body",
+          "valueDigest"
+        ],
+        "value": "bad"
+      }
+    }
+  ]
+}

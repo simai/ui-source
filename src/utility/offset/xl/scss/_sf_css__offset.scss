@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__offset' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SIZE
+
+// @include layer-priority(utility,sm) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+
+        // Width Utilities
+        @each $offset-name, $offset-value in $offset-array {
+            .#{$infix}offset-#{$offset-name} {
+                margin-inline-start: #{$offset-value}
+            }
+        }
+    }
+// }
+}

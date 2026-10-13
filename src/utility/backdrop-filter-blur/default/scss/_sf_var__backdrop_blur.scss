@@ -1,0 +1,13 @@
+// SIMAI Framework
+// https://simai.io
+
+// BACKDROP FILTER
+
+// Backdrop-Filter Blur
+$backdrop-filter-blur-array:(
+    '-small': 'small',
+    '': 'medium',
+    '-medium': 'medium',
+    '-large': 'large',
+    '-none' : 'none',
+);

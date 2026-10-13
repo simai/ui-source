@@ -1,0 +1,176 @@
+@use 'var__icons' as *;
+@use 'sf_icon_rotate' as *;
+/* fallback */
+
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('../fonts/MaterialSymbols-Outlined.woff2') format('woff2');
+}
+
+.sf-icon {
+  --sf-icon--fill: 0;
+  --sf-icon--weight: var(--sf-weight--regular);
+  --sf-icon--grade: 0;
+  --sf-icon--optical-size: 24;
+  --sf-icon--line-height: 1;
+
+  font-variation-settings:
+    'FILL' var(--sf-icon--fill),
+    'wght' var(--sf-icon--weight),
+    'GRAD' var(--sf-icon--grade),
+    'opsz' var(--sf-icon--optical-size);
+
+  font-family: var(--sf-icon--font-family, 'Material Symbols Outlined');
+  font-weight: var(--sf-icon--weight);
+  font-style: normal;
+  font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+  line-height: var(--sf-icon--line-height, 1);
+  letter-spacing: normal;
+  text-transform: none;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  flex: none;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: bottom;
+  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  width: var(--sf-icon--width, var(--sf-icon-size-3));
+  &:not(.hidden) {
+    display: inline-flex;
+  }
+  // Set by the core runtime until the subset font is in place: the family it
+  // names is not declared yet, so nothing fetches the full font, and the
+  // glyph name drawn meanwhile in a system font is neither seen nor spills.
+  :root[data-sf-icons='subset-pending'] & {
+    --sf-icon--font-family: 'Material Symbols Outlined Subset';
+    -webkit-text-fill-color: transparent;
+    overflow: hidden;
+  }
+  &--size {
+    &-1\/4 {
+      --sf-icon--font-size: var(--sf-icon-size-1\/4);
+      --sf-icon--width: var(--sf-icon-size-1\/4);
+      --sf-icon--height: var(--sf-icon-size-1\/4);
+    }
+    &-1\/3 {
+      --sf-icon--font-size: var(--sf-icon-size-1\/3);
+      --sf-icon--width: var(--sf-icon-size-1\/3);
+      --sf-icon--height: var(--sf-icon-size-1\/3);
+    }
+    &-1\/2 {
+      --sf-icon--font-size: var(--sf-icon-size-1\/2);
+      --sf-icon--width: var(--sf-icon-size-1\/2);
+      --sf-icon--height: var(--sf-icon-size-1\/2);
+    }
+    &-1 {
+      --sf-icon--font-size: var(--sf-icon-size-1);
+      --sf-icon--width: var(--sf-icon-size-1);
+      --sf-icon--height: var(--sf-icon-size-1);
+    }
+    &-2 {
+      --sf-icon--font-size: var(--sf-icon-size-2);
+      --sf-icon--width: var(--sf-icon-size-2);
+      --sf-icon--height: var(--sf-icon-size-2);
+    }
+    &-3 {
+      --sf-icon--font-size: var(--sf-icon-size-3);
+      --sf-icon--width: var(--sf-icon-size-3);
+      --sf-icon--height: var(--sf-icon-size-3);
+    }
+    &-4 {
+      --sf-icon--font-size: var(--sf-icon-size-4);
+      --sf-icon--width: var(--sf-icon-size-4);
+      --sf-icon--height: var(--sf-icon-size-4);
+    }
+    &-5 {
+      --sf-icon--font-size: var(--sf-icon-size-5);
+      --sf-icon--width: var(--sf-icon-size-5);
+      --sf-icon--height: var(--sf-icon-size-5);
+    }
+    &-6 {
+      --sf-icon--font-size: var(--sf-icon-size-6);
+      --sf-icon--width: var(--sf-icon-size-6);
+      --sf-icon--height: var(--sf-icon-size-6);
+    }
+    &-7 {
+      --sf-icon--font-size: var(--sf-icon-size-7);
+      --sf-icon--width: var(--sf-icon-size-7);
+      --sf-icon--height: var(--sf-icon-size-7);
+    }
+  }
+}
+
+@each $name in (thin, extra-light, light, regular, medium, semi-bold, bold) {
+  .sf-icon--weight-#{$name},
+  .sf-icon-#{$name} {
+    --sf-icon--weight: var(--sf-weight--#{$name});
+  }
+}
+
+/* The colour of a glyph, and the only part of this file that is layered. The
+   rest of `.sf-icon` is unlayered, which puts it above every layer -- so the
+   colour was above them too, and a colour utility on a glyph did nothing at
+   all: `color-on-surface-variant` read as applied and the glyph drew in
+   currentColor regardless. In the base layer the token still answers wherever
+   nothing else speaks, and a utility or a component's own rule now wins over
+   it, which is the order the rest of the Framework is written in. */
+@layer sf.base {
+  .sf-icon {
+    color: var(--sf-icon--color, currentColor);
+  }
+}
+
+.sf-icon--filled,
+.sf-icon-filled,
+.sf-icon-solid {
+  --sf-icon--fill: 1;
+}
+
+.sf-icon--rounded,
+.sf-icon-rounded {
+  --sf-icon--font-family: 'Material Symbols Rounded';
+}
+
+.sf-icon--sharp,
+.sf-icon-shape {
+  --sf-icon--font-family: 'Material Symbols Sharp';
+}
+
+/*
+ * Reserve the final icon geometry before the Smart Component is registered.
+ * The light-DOM host is intentionally empty until JavaScript renders the
+ * internal `.sf-icon`, so without this contract controls grow after first
+ * paint. The same variables are used by the rendered icon above.
+ */
+sf-icon:not(:defined) {
+  display: inline-flex;
+  flex: none;
+  width: var(--sf-icon--width, var(--sf-icon-size-3));
+  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  vertical-align: bottom;
+}
+
+sf-icon[size="1/4"]:not(:defined) {
+  --sf-icon--width: var(--sf-icon-size-1\/4);
+  --sf-icon--height: var(--sf-icon-size-1\/4);
+}
+sf-icon[size="1/3"]:not(:defined) {
+  --sf-icon--width: var(--sf-icon-size-1\/3);
+  --sf-icon--height: var(--sf-icon-size-1\/3);
+}
+sf-icon[size="1/2"]:not(:defined) {
+  --sf-icon--width: var(--sf-icon-size-1\/2);
+  --sf-icon--height: var(--sf-icon-size-1\/2);
+}
+@each $size in (1, 2, 3, 4, 5, 6, 7) {
+  sf-icon[size="#{$size}"]:not(:defined) {
+    --sf-icon--width: var(--sf-icon-size-#{$size});
+    --sf-icon--height: var(--sf-icon-size-#{$size});
+  }
+}

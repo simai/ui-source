@@ -1,0 +1,32 @@
+// SIMAI Framework
+// https://simai.io
+
+// TABLE
+
+// Table
+
+// Роли text-primary в теме нет: цвет текста таблицы — основная роль
+// текста на поверхности.
+$table-color: var(--sf-on-surface);
+$table-bg: inherit;
+$table-border-color: var(--sf-outline-variant);
+$table-accent-bg: #0000;
+
+$table-stripe-color: var(--sf-on-surface);
+$table-stripe-bg: var(--sf-surface-transparent-select);
+
+$table-active-color: var(--sf-on-surface);
+$table-active-bg: var(--sf-surface-transparent-select);
+
+$table-hover-color: var(--sf-on-surface);
+$table-hover-bg: var(--sf-surface-transparent-hover);
+
+$table-cell-padding-y: .5rem;
+$table-cell-padding-x: .5rem;
+$table-cell-padding-y-sm: .25rem;
+$table-cell-padding-x-sm: .25rem;
+
+$table-array-layout: (
+    auto: auto,
+    fixed: fixed
+);

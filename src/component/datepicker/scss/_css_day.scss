@@ -1,0 +1,97 @@
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-datepicker-day {
+    border-end-end-radius: var(--sf-datepicker-day--border-end-end-radius, var(--sf-datepicker-day--border-bottom-right-radius, var(--sf-radius--ui)));
+    border-end-start-radius: var(--sf-datepicker-day--border-end-start-radius, var(--sf-datepicker-day--border-bottom-left-radius, var(--sf-radius--ui)));
+    border-start-end-radius: var(--sf-datepicker-day--border-start-end-radius, var(--sf-datepicker-day--border-top-right-radius, var(--sf-radius--ui)));
+    border-start-start-radius: var(--sf-datepicker-day--border-start-start-radius, var(--sf-datepicker-day--border-top-left-radius, var(--sf-radius--ui)));
+    block-size: var(--sf-datepicker-day--height, var(--sf-ui-1--control-height));
+    padding-bottom: var(--sf-datepicker-day--padding-bottom, var(--sf-ui-1--space-y));
+    padding-inline-end: var(--sf-datepicker-day--padding-right, var(--sf-ui-1\/3--space-y));
+    padding-inline-start: var(--sf-datepicker-day--padding-left, var(--sf-ui-1\/3--space-y));
+    padding-top: var(--sf-datepicker-day--padding-top, var(--sf-ui-1--space-y));
+    inline-size: var(--sf-datepicker-day--width, 100%);
+    background-color: var(--sf-datepicker-day--background-color);
+    /* A day sits on the panel's own surface (elevation 3); surface-0 drew every
+       day as a darker cell on it in the dark theme. */
+    --sf-datepicker-day--background-color: var(--sf-transparent);
+  }
+
+  .sf-datepicker-day .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-surface);
+    --sf-datepicker-day-date--font-family: var(--sf-text--family);
+    --sf-datepicker-day-date--font-size: var(--sf-text--size);
+    --sf-datepicker-day-date--font-weight: var(--sf-font-weight-regular);
+    --sf-datepicker-day-date--line-height: var(--sf-text--height);
+    color: var(--sf-datepicker-day-date--color);
+    font-family: var(--sf-datepicker-day-date--font-family);
+    font-size: var(--sf-datepicker-day-date--font-size);
+    font-weight: var(--sf-datepicker-day-date--font-weight);
+    line-height: var(--sf-datepicker-day-date--line-height);
+  }
+
+  .sf-datepicker-day .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-surface-variant);
+    --sf-datepicker-day-info--font-family: var(--sf-text--family);
+    --sf-datepicker-day-info--font-size: var(--sf-text-size-1\/4);
+    --sf-datepicker-day-info--font-weight: var(--sf-font-weight-regular);
+    --sf-datepicker-day-info--line-height: var(--sf-text-height-1\/4);
+    color: var(--sf-datepicker-day-info--color);
+    font-family: var(--sf-datepicker-day-info--font-family);
+    font-size: var(--sf-datepicker-day-info--font-size);
+    font-weight: var(--sf-datepicker-day-info--font-weight);
+    line-height: var(--sf-datepicker-day-info--line-height);
+  }
+}
+
+@layer sf.states {
+  .sf-datepicker-day:not(:disabled):not(.disabled):hover {
+    --sf-datepicker-day--background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-datepicker-day:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .sf-datepicker-day:not(:disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+    position: relative;
+    z-index: var(--sf-z-index-1);
+  }
+
+  .sf-datepicker-day:not(:disabled):not(.disabled):active .sf-datepicker-day-date, .sf-datepicker-day.active .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-primary);
+  }
+
+  .sf-datepicker-day:not(:disabled):not(.disabled):active .sf-datepicker-day-info, .sf-datepicker-day.active .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-primary);
+  }
+
+  .sf-datepicker-day:not(:disabled):not(.disabled):active, .sf-datepicker-day:not(:disabled):not(.disabled).active {
+    --sf-datepicker-day--background-color: var(--sf-primary);
+  }
+
+
+  .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-disable);
+  }
+
+  .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
+    --sf-datepicker-day-info--color: var(--sf-on-disable);
+  }
+
+  @media (forced-colors: active) {
+    .sf-datepicker-day:not(:disabled):focus-visible {
+      outline-color: Highlight;
+    }
+
+    .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-date {
+      --sf-datepicker-day-date--color: GrayText;
+    }
+
+    .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
+      --sf-datepicker-day-info--color: GrayText;
+    }
+  }
+}

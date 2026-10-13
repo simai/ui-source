@@ -1,0 +1,42 @@
+{
+  "id": "query-without-total-carries-has-next",
+  "intent": "query.change",
+  "capability": "count-on-request",
+  "summary": "A host that does not count every answer says whether a further page exists instead.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ],
+    "capabilities": [
+      "count-on-request",
+      "row-actions"
+    ],
+    "counts": false,
+    "has_next": true
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "has_next",
+      "echo"
+    ],
+    "note": "No total is sent. has_next is what moves forward and Show more; the view shows a link in place of the number and never derives a page count."
+  }
+}

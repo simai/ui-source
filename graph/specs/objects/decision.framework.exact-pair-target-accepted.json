@@ -1,0 +1,27 @@
+{
+  "id": "decision.framework.exact-pair-target-accepted",
+  "kind": "knowledge",
+  "tz_role": "decision",
+  "subtype": "architecture_baseline_acceptance",
+  "title": "Owner acceptance of exact Framework pair delivery target",
+  "lifecycle": "accepted",
+  "architecture_owner_id": "human.rim-zabarov",
+  "contract_ref": "contract.framework.exact-pair-recipe-101-table-actions",
+  "semantic_digest": "sha256:8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226",
+  "receipt": {
+    "kind": "explicit_user_confirmation",
+    "date": "2026-09-17",
+    "statement": "Принимаю этот контракт, продолжай до результата",
+    "context": "Direct answer to the question naming framework-delivery-target-review.json, its eight criteria, ownership and typed action port. Larena main/databases/sites remain protected.",
+    "accepted_document_sha256": "8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226"
+  },
+  "constraints": [
+    "Recipe is assembly input; Document is the complete validated tree; HTML is renderer output",
+    "No grammar fork, new component hierarchy, competing renderer or product storage format",
+    "Framework emits action intent; it does not execute product operations",
+    "No hand edits to generated runtime distributions",
+    "No new runtime dependency or package ownership transfer",
+    "Preserve original dirty worktrees and unfinished ui-loader",
+    "Larena original copies, main/current pins, databases and running sites are protected; independent explicitly approved isolated acceptance copies only"
+  ]
+}

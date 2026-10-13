@@ -1,0 +1,31 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.sortable",
+  "title": "sortable reference",
+  "summary": "Deterministic reference fixture for sf-sortable.",
+  "locale": "ru",
+  "props": {
+    "group": "sections",
+    "label": "Секции"
+  },
+  "children": [
+    {
+      "element": "div",
+      "props": {
+        "data-sf-sortable-item": "s1"
+      },
+      "text": "Секция 1",
+      "children": []
+    },
+    {
+      "element": "div",
+      "props": {
+        "data-sf-sortable-item": "s2"
+      },
+      "text": "Секция 2",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

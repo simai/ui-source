@@ -1,0 +1,75 @@
+@layer sf.components {
+  .sf-dot {
+    --sf-dot-item--background-color: var(--sf-primary);
+    --sf-dot-item--size: var(--sf-a8);
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    background-color: var(--sf-dot--background-color, var(--sf-transparent));
+    gap: var(--sf-dot--gap, var(--sf-space-1));
+    line-height: 0;
+    padding-bottom: var(--sf-dot--padding-bottom, var(--sf-a1));
+    padding-inline-end: var(--sf-dot--padding-right, var(--sf-a1));
+    padding-inline-start: var(--sf-dot--padding-left, var(--sf-a1));
+    padding-top: var(--sf-dot--padding-top, var(--sf-a1));
+  }
+
+  .sf-dot .sf-dot-item {
+    --sf-dot-item--border-radius: var(--sf-radius-circle);
+    display: block;
+    flex: 0 0 auto;
+    background-color: var(--sf-dot-item--background-color);
+    border-radius: var(--sf-dot-item--border-radius);
+    block-size: var(--sf-dot-item--height, var(--sf-dot-item--size));
+    inline-size: var(--sf-dot-item--width, var(--sf-dot-item--size));
+  }
+
+  .sf-dot.sf-dot--size-1 .sf-dot-item {
+    --sf-dot-item--size: var(--sf-a8);
+  }
+
+  .sf-dot.sf-dot--size-2 .sf-dot-item {
+    --sf-dot-item--size: var(--sf-b0);
+  }
+
+  .sf-dot.sf-dot--size-1\/3 .sf-dot-item {
+    --sf-dot-item--size: var(--sf-a4);
+  }
+
+  .sf-dot.sf-dot--size-1\/2 .sf-dot-item {
+    --sf-dot-item--size: var(--sf-a6);
+  }
+
+  .sf-dot.sf-dot--primary {
+    --sf-dot-item--background-color: var(--sf-primary);
+  }
+
+  .sf-dot.sf-dot--info {
+    --sf-dot-item--background-color: var(--sf-info);
+  }
+
+  .sf-dot.sf-dot--success {
+    --sf-dot-item--background-color: var(--sf-success);
+  }
+
+  .sf-dot.sf-dot--warning {
+    --sf-dot-item--background-color: var(--sf-warning);
+  }
+
+  .sf-dot.sf-dot--error {
+    --sf-dot-item--background-color: var(--sf-error);
+  }
+
+  .sf-dot.sf-dot--neutral {
+    --sf-dot-item--background-color: var(--sf-on-surface-variant);
+  }
+
+  @media (forced-colors: active) {
+    .sf-dot .sf-dot-item {
+      --sf-dot-item--background-color: CanvasText;
+      outline: var(--sf-a1) solid Canvas;
+    }
+  }
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Buttons — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/buttons-browser/component/buttons/css/buttons.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Кнопки</h1>
+
+    <section id="variants" class="flex flex-wrap gap-2 items-cross-center" aria-label="Варианты оформления">
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Основная</span></button>
+      <button type="button" class="sf-button sf-button--tonal sf-button--secondary sf-button--size-1"><span class="sf-button-text-container">Мягкая</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Контурная</span></button>
+      <button type="button" class="sf-button sf-button--link sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Текстовая</span></button>
+    </section>
+
+    <section id="sizes" class="flex flex-wrap gap-2 items-cross-center" aria-label="Размеры">
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1/3"><span class="sf-button-text-container">1/3</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1/2"><span class="sf-button-text-container">1/2</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">1</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-2"><span class="sf-button-text-container">2</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-3"><span class="sf-button-text-container">3</span></button>
+    </section>
+
+    <section id="icons" class="flex flex-wrap gap-2 items-cross-center" aria-label="Иконки">
+      <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><i class="sf-icon" aria-hidden="true">edit</i><span class="sf-button-text-container">Редактировать</span></button>
+      <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Продолжить</span><i class="sf-icon" aria-hidden="true">arrow_forward</i></button>
+    </section>
+
+    <section id="states" class="flex flex-wrap gap-2 items-cross-center" aria-label="Состояния">
+      <button id="loading-ordinary" type="button" disabled aria-busy="true" class="sf-button sf-button--default sf-button--primary sf-button--size-1 loading sf-button-state-loading"><span class="sf-button-text-container">Сохранение</span></button>
+      <button type="button" disabled class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Недоступно</span></button>
+    </section>
+
+    <form id="form" class="grid gap-2">
+      <input id="form-value" name="name" value="Начальное значение">
+      <div class="flex flex-wrap gap-2">
+        <sf-button id="smart-default" text="Обычное действие" icon="check"></sf-button>
+        <sf-button id="smart-submit" text="Отправить" native-type="submit" type="outline"></sf-button>
+        <sf-button id="smart-reset" text="Сбросить" native-type="reset" type="outline"></sf-button>
+        <sf-button id="smart-loading" text="Сохранение" icon="save" loading></sf-button>
+      </div>
+    </form>
+  </main>
+
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/buttons-browser/smart/buttons/js/buttons.js"></script>
+  <script>
+    document.querySelector('#form').addEventListener('submit', event => {
+      event.preventDefault();
+      window.__submitCount = (window.__submitCount || 0) + 1;
+    });
+  </script>
+</body>
+</html>

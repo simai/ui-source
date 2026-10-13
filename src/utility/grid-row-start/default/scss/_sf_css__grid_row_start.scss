@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__grid_row_start' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID ROW START
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Grid Row Start Utilities
+        @each $grid-row-start-name, $grid-row-start-value in $grid-row-start-array {
+            // Колонки называются col-*, строки назывались grid-row-*. Короткое
+            // имя — основное, длинное остаётся ради совместимости.
+            .#{$infix}row-start-#{$grid-row-start-name},
+            .#{$infix}grid-row-start-#{$grid-row-start-name} {
+                grid-row-start: #{$grid-row-start-value};
+            }
+        }
+    }
+// }
+}

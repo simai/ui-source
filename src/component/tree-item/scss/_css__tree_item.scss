@@ -1,0 +1,23 @@
+@layer sf.components {
+  .sf-tree-item .sf-tree-item-container {
+    gap: var(--sf-tree-item-container--gap, var(--sf-space-1\/3));
+  }
+
+
+  .sf-tree-item .sf-tree-item-name {
+    color: var(--sf-tree-item-name--color, var(--sf-primary));
+    font-size: var(--sf-tree-item-name--font-size, var(--sf-text-size-1));
+    line-height: var(--sf-tree-item-name--line-height, var(--sf-text-height-1));
+  }
+}
+
+/* A glyph in a row is content, and content takes the row's colour. It was
+   painted with a transparent overlay -- a state wash, 24% of a secondary -- so
+   every icon in every tree stood at a quarter of the strength of the name
+   beside it and read as disabled (owner, 2026-10-08). The token is here for a
+   tree that wants something else. */
+@layer sf.override {
+  .sf-tree-item .sf-icon {
+    --sf-icon--color: var(--sf-tree-item-icon--color, currentColor);
+  }
+}

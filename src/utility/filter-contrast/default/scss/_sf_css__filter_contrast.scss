@@ -1,0 +1,45 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__filter_contrast' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FILTER
+
+$filter-all: '';
+$infix: breakpoint-infix(xs, $breakpoint-array);
+
+// Contrast
+@each $contrast-name, $contrast-value in $filter-contrast-array {
+    $filter-all: '#{$filter-all}.#{$infix}contrast-#{$contrast-name},';
+}
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        #{$filter-all} {
+            --sf-blur: ;
+            --sf-brightness: ;
+            --sf-contrast: ;
+            --sf-grayscale: ;
+            --sf-hue-rotate: ;
+            --sf-invert: ;
+            --sf-saturate: ;
+            --sf-sepia: ;
+            --sf-drop-shadow: ;
+            filter: var(--sf-blur) var(--sf-brightness) var(--sf-contrast) var(--sf-grayscale) var(--sf-hue-rotate) var(--sf-invert) var(--sf-saturate) var(--sf-sepia) var(--sf-drop-shadow);
+        }
+
+        // Contrast
+        @each $contrast-name, $contrast-value in $filter-contrast-array {
+            .#{$infix}contrast-#{$contrast-name} {
+                --sf-contrast: contrast(#{$contrast-value});
+            }
+        }
+    }
+// }
+}

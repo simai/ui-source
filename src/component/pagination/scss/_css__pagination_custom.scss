@@ -1,0 +1,9 @@
+@layer sf.components {
+.sf-pagination-count .sf-dropdown-field {
+  max-width: var(--sf-pagination-count--dropdown, var(--sf-e3));
+}
+
+.sf-pagination-bottom .sf-dropdown-field {
+  max-width: var(--sf-pagination-bottom--dropdown, var(--sf-f2));
+}
+}

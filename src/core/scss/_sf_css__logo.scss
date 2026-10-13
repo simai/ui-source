@@ -1,0 +1,34 @@
+@layer sf.base {
+  .theme-light {
+    .sf-logo {
+      .sf-logo-1 {
+        color: #221F20;
+      }
+
+      .sf-logo-2 {
+        color: #969696;
+      }
+    }
+  }
+
+  .theme-dark {
+    .sf-logo {
+      .sf-logo-1 {
+        color: #F6F6F6;
+      }
+
+      .sf-logo-2 {
+        color: #969696;
+      }
+    }
+  }
+
+  .sf-logo svg {
+    width: 100%;
+    height: 100%;
+    max-height: var(--sf-c2, 26px);
+    @media (min-width: 60rem) {
+      max-height: var(--sf-c4, 32px);
+    }
+  }
+}

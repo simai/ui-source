@@ -1,0 +1,228 @@
+/* The status words are the shared vocabulary: neutral, info, success, warning,
+   error. The component renders the canonical class, and the two words this
+   component used before — default and primary — are matched beside it so
+   existing markup and project CSS keep working. `primary` was a colour inside a
+   list of statuses; here it meant info. See contracts/public-api-axes.json. */
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-toast {
+    box-sizing: border-box;
+    min-inline-size: var(--sf-0);
+    max-inline-size: 100%;
+    border: var(--sf-px) solid var(--sf-toast--border-color, var(--sf-outline-variant));
+    border-end-end-radius: var(--sf-toast--border-bottom-right-radius, var(--sf-radius--surface));
+    border-end-start-radius: var(--sf-toast--border-bottom-left-radius, var(--sf-radius--surface));
+    border-start-end-radius: var(--sf-toast--border-top-right-radius, var(--sf-radius--surface));
+    border-start-start-radius: var(--sf-toast--border-top-left-radius, var(--sf-radius--surface));
+    gap: var(--sf-toast--gap, var(--sf-space-1\/2));
+    padding-bottom: var(--sf-toast--padding-bottom, var(--sf-space-1));
+    padding-inline-end: var(--sf-toast--padding-right, var(--sf-space-1));
+    padding-inline-start: var(--sf-toast--padding-left, var(--sf-space-1));
+    padding-top: var(--sf-toast--padding-top, var(--sf-space-1));
+    /* A toast floats over the page, and the status containers are
+       translucent fills: painted alone they let the table under a toast read
+       through its text (owner, 2026-10-12). So the toast stands on the raised
+       surface of its step, with its shadow, and the status tints it. */
+    background-color: var(--sf-elevation-3--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+    background-image: linear-gradient(var(--sf-toast--background-color), var(--sf-toast--background-color));
+    box-shadow: var(--sf-elevation-3--shadow);
+    color: var(--sf-toast--content-color, var(--sf-on-surface));
+    opacity: 1;
+    transform: translateY(var(--sf-0));
+    transition: opacity var(--sf-duration-normal) var(--sf-ease-enter), transform var(--sf-duration-normal) var(--sf-ease-enter);
+  }
+
+  .sf-toast.closing {
+    transition-timing-function: var(--sf-ease-exit);
+    opacity: 0;
+    transform: translateY(var(--sf-space-1\/2));
+  }
+
+  .sf-toast .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+
+  .sf-toast .sf-icon {
+    --sf-icon--font-size: var(--sf-text-size-3);
+    --sf-icon--height: var(--sf-text-size-3);
+    --sf-icon--width: var(--sf-text-size-3);
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon--font-size);
+    height: var(--sf-icon--height);
+    width: var(--sf-icon--width);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-container--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-toast .sf-toast-container {
+    --sf-toast-container--background-color: transparent;
+    --sf-toast-container--gap: var(--sf-space-1\/2);
+    background-color: var(--sf-toast-container--background-color);
+    gap: var(--sf-toast-container--gap);
+    min-inline-size: var(--sf-0);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-toast .sf-toast-bottom {
+    --sf-toast-bottom--background-color: transparent;
+    background-color: var(--sf-toast-bottom--background-color);
+    flex-wrap: wrap;
+    gap: var(--sf-b1);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-toast .sf-toast-wrap {
+    --sf-toast-wrap--background-color: transparent;
+    --sf-toast-wrap--gap: var(--sf-space-1\/4);
+    background-color: var(--sf-toast-wrap--background-color);
+    gap: var(--sf-toast-wrap--gap);
+  }
+
+  .sf-toast .sf-toast-supporting-text {
+    --sf-toast-supporting-text--font-family: var(--sf-text--family);
+    --sf-toast-supporting-text--font-size: var(--sf-text-size-1);
+    --sf-toast-supporting-text--font-weight: var(--sf-font-weight-regular);
+    --sf-toast-supporting-text--line-height: var(--sf-text-height-1);
+    color: var(--sf-toast-supporting-text--color);
+    font-family: var(--sf-toast-supporting-text--font-family);
+    font-size: var(--sf-toast-supporting-text--font-size);
+    font-weight: var(--sf-toast-supporting-text--font-weight);
+    line-height: var(--sf-toast-supporting-text--line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-toast .sf-toast-text {
+    --sf-toast-text--font-family: var(--sf-text--family);
+    --sf-toast-text--font-size: var(--sf-text-size-1);
+    --sf-toast-text--font-weight: var(--sf-font-weight-medium);
+    --sf-toast-text--line-height: var(--sf-text-height-1);
+    color: var(--sf-toast-text--color);
+    font-family: var(--sf-toast-text--font-family);
+    font-size: var(--sf-toast-text--font-size);
+    font-weight: var(--sf-toast-text--font-weight);
+    line-height: var(--sf-toast-text--line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-supporting-text {
+    --sf-toast-supporting-text--color: var(--sf-on-surface);
+  }
+
+  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-text {
+    --sf-toast-text--color: var(--sf-on-surface);
+  }
+
+  .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-icon {
+    --sf-icon--color: var(--sf-on-primary-container-graphic);
+  }
+
+  .sf-toast:is(.sf-toast--info, .sf-toast--primary) > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-primary-container);
+  }
+
+  .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-supporting-text {
+    --sf-toast-supporting-text--color: var(--sf-on-primary-container);
+  }
+
+  .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-text {
+    --sf-toast-text--color: var(--sf-on-primary-container);
+  }
+
+  .sf-toast.sf-toast--error .sf-icon {
+    --sf-icon--color: var(--sf-on-error-container-graphic);
+  }
+
+  .sf-toast.sf-toast--error > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-error-container);
+  }
+
+  .sf-toast.sf-toast--error .sf-toast-supporting-text {
+    --sf-toast-supporting-text--color: var(--sf-on-error-container);
+  }
+
+  .sf-toast.sf-toast--error .sf-toast-text {
+    --sf-toast-text--color: var(--sf-on-error-container);
+  }
+
+  .sf-toast.sf-toast--warning .sf-icon {
+    --sf-icon--color: var(--sf-on-warning-container-graphic);
+  }
+
+  .sf-toast.sf-toast--warning > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-warning-container);
+  }
+
+  .sf-toast.sf-toast--warning .sf-toast-supporting-text {
+    --sf-toast-supporting-text--color: var(--sf-on-warning-container);
+  }
+
+  .sf-toast.sf-toast--warning .sf-toast-text {
+    --sf-toast-text--color: var(--sf-on-warning-container);
+  }
+
+  .sf-toast.sf-toast--success .sf-icon {
+    --sf-icon--color: var(--sf-on-success-container-graphic);
+  }
+
+  .sf-toast.sf-toast--success > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-success-container);
+  }
+
+  .sf-toast.sf-toast--success .sf-toast-supporting-text {
+    --sf-toast-supporting-text--color: var(--sf-on-success-container);
+  }
+
+  .sf-toast.sf-toast--success .sf-toast-text {
+    --sf-toast-text--color: var(--sf-on-success-container);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) */
+  :is(.sf-toast--neutral, .sf-toast--default) {
+    --sf-toast--background-color: var(--sf-surface-container);
+    --sf-toast--content-color: var(--sf-on-surface);
+    --sf-close-icon--background-color: var(--sf-on-surface);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) */
+  :is(.sf-toast--info, .sf-toast--primary) {
+    --sf-toast--background-color: var(--sf-primary-container);
+    --sf-toast--content-color: var(--sf-on-primary-container);
+    --sf-close-icon--background-color: var(--sf-on-primary-container);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) */
+  .sf-toast--error {
+    --sf-toast--background-color: var(--sf-error-container);
+    --sf-toast--content-color: var(--sf-on-error-container);
+    --sf-close-icon--background-color: var(--sf-on-error-container);
+  }
+
+  .sf-toast--warning {
+    --sf-toast--background-color: var(--sf-warning-container);
+    --sf-toast--content-color: var(--sf-on-warning-container);
+    --sf-close-icon--background-color: var(--sf-on-warning-container);
+  }
+
+  .sf-toast--success {
+    --sf-toast--background-color: var(--sf-success-container);
+    --sf-toast--content-color: var(--sf-on-success-container);
+    --sf-close-icon--background-color: var(--sf-on-success-container);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-toast {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-toast {
+      border-color: CanvasText;
+    }
+  }
+}

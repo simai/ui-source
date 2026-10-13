@@ -1,0 +1,19 @@
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+// Transform Translate
+$transform-translate-array: (
+    // Ноль — это примитив a0; «0px» превращался в имя токена --sf-0px.
+    0: a0,
+    1: px,
+    2: a2,
+    3: a4,
+    4: a6,
+    5: a8,
+    6: b0,
+    7: b2,
+    8: b4,
+    9: b6,
+);

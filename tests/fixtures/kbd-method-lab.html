@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kbd — component method lab</title>
+  <link rel="stylesheet" href="../../source/output/kbd-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/kbd-browser/component/kbd/css/kbd.css?sf_candidate=kbd">
+</head>
+<body>
+  <main class="p-4 grid gap-4">
+    <h1 class="m-0">Проверка Kbd</h1>
+
+    <p id="single" class="m-0">Нажмите <kbd>Enter</kbd>, чтобы продолжить.</p>
+    <p id="fallback" class="m-0">Откройте поиск клавишей <span class="sf-kbd">/</span>.</p>
+
+    <p class="m-0">
+      Сохранить:
+      <kbd id="chord" class="sf-kbd--group" dir="ltr">
+        <kbd>Ctrl</kbd><span>+</span><kbd>S</kbd>
+      </kbd>
+    </p>
+
+    <p class="m-0">
+      Нативная группа:
+      <kbd id="native-chord" dir="ltr"><kbd>⌘</kbd><span>+</span><kbd>S</kbd></kbd>
+    </p>
+
+    <p id="sequence" class="m-0">Нажмите <kbd>G</kbd>, затем <kbd>I</kbd>.</p>
+    <p id="long" class="m-0">Закрыть окно: <kbd>Backspace</kbd>.</p>
+  </main>
+</body>
+</html>

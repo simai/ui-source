@@ -1,0 +1,7 @@
+@use 'sf_profile' as profile;
+@layer sf.utilities {
+  .query-container { container-type: inline-size; }
+  @each $name in profile.$query-names {
+    .query-container\/#{$name} { container-type: inline-size; container-name: #{$name}; }
+  }
+}

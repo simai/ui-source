@@ -1,0 +1,12 @@
+// SIMAI Framework
+// https://simai.io
+
+// TRANSITION
+
+// Transition Timing Function
+$transition-timing-function-array: (
+    linear: linear,
+    in: cubic-bezier(0.4, 0, 1, 1),
+    out: cubic-bezier(0, 0, 0.2, 1),
+    in-out: cubic-bezier(0.4, 0, 0.2, 1)
+);

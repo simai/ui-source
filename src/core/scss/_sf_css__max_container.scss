@@ -1,0 +1,17 @@
+// SIMAI Framework
+// https://simai.io
+
+@use 'sass:map';
+@use 'mix/mix__breakpoint' as bpMixin;
+@use 'vars/sf_var__max_container' as maxContainerVars;
+// BORDER CSS
+@layer sf.base {
+  :root {
+    $breakpoint: 'desktop';
+    @include bpMixin.breakpoint-device-media($breakpoint) {
+      @each $m-container-var, $m-container-value in map.get(maxContainerVars.$container-max-array, $breakpoint) {
+        --sf-container-#{$m-container-var}--size-max: var(--sf-#{$m-container-value});
+      }
+    }
+  }
+}

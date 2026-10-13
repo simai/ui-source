@@ -1,0 +1,35 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.button-group",
+  "title": "Button group reference",
+  "summary": "A three-option segmented control where every option can be selected.",
+  "locale": "ru",
+  "props": {
+    "aria-label": "Режим отображения",
+    "items": [
+      {
+        "value": "list",
+        "label": "Список",
+        "icon": "list"
+      },
+      {
+        "value": "grid",
+        "label": "Сетка",
+        "icon": "grid_view"
+      },
+      {
+        "value": "map",
+        "label": "Карта",
+        "icon": "map"
+      }
+    ],
+    "value": "list",
+    "size": "1",
+    "tightness": "",
+    "scheme": "primary",
+    "orientation": "horizontal"
+  },
+  "children": [],
+  "state": "default"
+}

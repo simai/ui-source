@@ -1,0 +1,38 @@
+{
+  "id": "query-rejects-unknown-filter",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A filter the host does not support is named as rejected, not applied silently.",
+  "given": {
+    "filters_supported": [
+      "status"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 2,
+      "query": {
+        "filters": {
+          "status": [
+            "active"
+          ],
+          "secret_flag": [
+            true
+          ]
+        },
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "echo_must_include": {
+      "filters_rejected": [
+        "secret_flag"
+      ]
+    },
+    "note": "filters_chosen carries both keys, filters carries only status."
+  }
+}

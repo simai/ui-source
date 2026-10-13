@@ -1,0 +1,451 @@
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
+  .sf-input {
+    min-inline-size: 0;
+    --sf-input--radius: var(--sf-radius--ui);
+    background-color: var(--sf-input--background-color, transparent);
+    gap: var(--sf-input--gap, var(--sf-space-1\/4));
+  }
+
+  .sf-input .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-input .sf-input-field {
+    min-inline-size: 0;
+    --sf-input-field--border: var(--sf-px) solid;
+    --sf-input-field--border-end-end-radius: var(--sf-input--radius);
+    --sf-input-field--border-end-start-radius: var(--sf-input--radius);
+    --sf-input-field--border-start-end-radius: var(--sf-input--radius);
+    --sf-input-field--border-start-start-radius: var(--sf-input--radius);
+    background-color: var(--sf-input-field--background-color);
+    border: var(--sf-input-field--border, 0 solid);
+    border-color: var(--sf-input-field--border-color, transparent);
+    border-end-end-radius: var(--sf-input-field--border-end-end-radius);
+    border-end-start-radius: var(--sf-input-field--border-end-start-radius);
+    border-start-end-radius: var(--sf-input-field--border-start-end-radius);
+    border-start-start-radius: var(--sf-input-field--border-start-start-radius);
+    box-shadow: var(--sf-input-field--box-shadow);
+    padding-bottom: var(--sf-input-field--padding-bottom);
+    padding-inline-end: var(--sf-input-field--padding-inline-end);
+    padding-inline-start: var(--sf-input-field--padding-inline-start);
+    padding-top: var(--sf-input-field--padding-top);
+    transition-duration: var(--sf-duration-fast);
+    transition-property: background-color, border-color, box-shadow, color;
+    transition-timing-function: var(--sf-animation);
+  }
+
+  .sf-input .sf-input-hint {
+    --sf-input-hint--background-color: transparent;
+    background-color: var(--sf-input-hint--background-color);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) */
+  .sf-input .sf-input-field input {
+    min-inline-size: 0;
+    --sf-input-input--background-color: transparent;
+    background-color: var(--sf-input-input--background-color);
+    color: var(--sf-input-input--color);
+    font-family: var(--sf-input-input--font-family);
+    font-size: var(--sf-input-input--font-size);
+    line-height: var(--sf-input-input--line-height);
+    padding-inline-end: var(--sf-input-input--padding-inline-end);
+    padding-inline-start: var(--sf-input-input--padding-inline-start);
+  }
+
+  .sf-input .sf-input-field input::placeholder {
+    --sf-input-placeholder--color: var(--sf-on-surface-variant);
+    --sf-input-placeholder--font-family: var(--sf-text--family);
+    color: var(--sf-input-placeholder--color);
+    font-family: var(--sf-input-placeholder--font-family);
+    font-size: var(--sf-input-placeholder--font-size);
+    line-height: var(--sf-input-placeholder--line-height);
+  }
+
+  // Interactive tonal backgrounds need the stronger foreground pair, including
+  // placeholder text. The variant role is too dim on dark filled hover states.
+  .sf-input.sf-input--filled .sf-input-field input::placeholder {
+    --sf-input-placeholder--color: var(--sf-on-surface);
+  }
+
+  .sf-input .sf-input-left {
+    --sf-input-left--background-color: transparent;
+    background-color: var(--sf-input-left--background-color);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-input .sf-input-right {
+    --sf-input-right--background-color: transparent;
+    background-color: var(--sf-input-right--background-color);
+    padding-inline-end: var(--sf-input-right--padding-inline-end);
+    padding-inline-start: var(--sf-input-right--padding-inline-start);
+  }
+
+  .sf-input .sf-input-text {
+    --sf-input-text--color: var(--sf-on-surface-variant);
+    --sf-input-text--font-family: var(--sf-text--family);
+    --sf-input-text--font-weight: var(--sf-font-weight-regular);
+    color: var(--sf-input-text--color);
+    font-family: var(--sf-input-text--font-family);
+    font-size: var(--sf-input-text--font-size);
+    font-weight: var(--sf-input-text--font-weight);
+    line-height: var(--sf-input-text--line-height);
+  }
+
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-input .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--background-color: transparent;
+    background-color: var(--sf-input-hint-text-wrap--background-color);
+    color: var(--sf-input-hint-text-wrap--color);
+    font-family: var(--sf-input-hint-text-wrap--font-family);
+    font-size: var(--sf-input-hint-text-wrap--font-size);
+    font-weight: var(--sf-input-hint-text-wrap--font-weight);
+    gap: var(--sf-b0);
+    line-height: var(--sf-input-hint-text-wrap--line-height);
+  }
+
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-input-label--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-input .sf-input-label {
+    --sf-input-label--background-color: transparent;
+    --sf-input-label--gap: var(--sf-space-1\/4);
+    background-color: var(--sf-input-label--background-color);
+    gap: var(--sf-input-label--gap);
+  }
+
+  .sf-input .sf-input-required {
+    --sf-input-required--color: var(--sf-error);
+    --sf-input-required--font-family: var(--sf-text--family);
+    --sf-input-required--font-weight: var(--sf-font-weight-regular);
+    color: var(--sf-input-required--color);
+    font-family: var(--sf-input-required--font-family);
+    font-size: var(--sf-input-required--font-size);
+    font-weight: var(--sf-input-required--font-weight);
+    line-height: var(--sf-input-required--line-height);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-field .sf-input-right .sf-input-text, .sf-input.sf-input--size-2 .sf-input-label .sf-input-text {
+    --sf-input-text--font-size: var(--sf-text-size-1);
+    --sf-input-text--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--bordered > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--filled > .sf-input-field > .sf-input-hint > .sf-icon {
+    /* A glyph is non-text graphics, and WCAG 1.4.11 asks 3:1 of it.
+     --sf-on-surface-muted is 3.18:1 light and 2.92:1 dark, so it sat on the
+     line in one theme and under it in the other. --sf-on-surface-variant is
+     the Framework's own paler-than-text role, 6.47 and 5.95, and the one a
+     label already reads in (owner, 2026-10-08). */
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-1 > .sf-input-field > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-field input {
+    --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-input-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
+    --sf-input-hint-text-wrap--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-hint-text-wrap, .sf-input.sf-input--size-2 .sf-input-hint-text-wrap, .sf-input.sf-input--size-1\/2 .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--font-family: var(--sf-text--family);
+    --sf-input-hint-text-wrap--font-weight: var(--sf-font-weight-regular);
+  }
+
+  .sf-input.sf-input--bordered .sf-input-hint-text-wrap, .sf-input.sf-input--filled .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-input.sf-input--size-1 input {
+    --sf-input-input--font-size: var(--sf-text-size-1);
+    --sf-input-input--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--size-1 input, .sf-input.sf-input--size-2 input, .sf-input.sf-input--size-1\/2 input {
+    --sf-input-input--font-family: var(--sf-text--family);
+  }
+
+  .sf-input.sf-input--bordered input, .sf-input.sf-input--filled input {
+    --sf-input-input--color: var(--sf-on-surface);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-label .sf-input-text, .sf-input.sf-input--size-1\/2 .sf-input-field .sf-input-right .sf-input-text {
+    --sf-input-text--font-size: var(--sf-text-size-1\/2);
+    --sf-input-text--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-required {
+    --sf-input-required--font-size: var(--sf-text-size-1\/2);
+    --sf-input-required--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-right {
+    --sf-input-right--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-input-right--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-input.error.sf-input--bordered .sf-input-field {
+    --sf-input-field--background-color: var(--sf-transparent-for-focus);
+    --sf-input-field--border-color: var(--sf-error);
+  }
+
+  .sf-input.error.sf-input--bordered .sf-input-hint-text-wrap, .sf-input.error.sf-input--filled .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--color: var(--sf-error);
+  }
+
+  .sf-input.error.sf-input--filled .sf-input-field {
+    --sf-input-field--background-color: var(--sf-error-container);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-field input {
+    --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-input-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--font-size: var(--sf-text-size-1);
+    --sf-input-hint-text-wrap--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-required {
+    --sf-input-required--font-size: var(--sf-text-size-1);
+    --sf-input-required--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-right {
+    --sf-input-right--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-input-right--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-field .sf-input-right .sf-input-text {
+    --sf-input-text--font-size: var(--sf-text-size-2);
+    --sf-input-text--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-2 > .sf-input-field > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+
+  .sf-input.sf-input--size-2 input {
+    --sf-input-input--font-size: var(--sf-text-size-2);
+    --sf-input-input--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-label .sf-input-text {
+    --sf-input-text--font-size: var(--sf-text-size-1\/3);
+    --sf-input-text--line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-field input {
+    --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-input-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-hint-text-wrap {
+    --sf-input-hint-text-wrap--font-size: var(--sf-text-size-1\/3);
+    --sf-input-hint-text-wrap--line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-input.sf-input--size-1\/2 input {
+    --sf-input-input--font-size: var(--sf-text-size-1\/2);
+    --sf-input-input--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-required {
+    --sf-input-required--font-size: var(--sf-text-size-1\/3);
+    --sf-input-required--line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-right {
+    --sf-input-right--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-input-right--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-field {
+    block-size: var(--sf-ui-1--control-height);
+    --sf-input-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+    --sf-input-field--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-input-field--padding-inline-start: var(--sf-ui-1--space-x);
+    --sf-input-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  }
+
+  .sf-input.sf-input--size-1 .sf-input-field input::placeholder {
+    --sf-input-placeholder--font-size: var(--sf-text-size-1);
+    --sf-input-placeholder--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-field {
+    block-size: var(--sf-ui-2--control-height);
+    --sf-input-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+    --sf-input-field--padding-inline-end: var(--sf-ui-2--space-x);
+    --sf-input-field--padding-inline-start: var(--sf-ui-2--space-x);
+    --sf-input-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+  }
+
+  .sf-input.sf-input--size-2 .sf-input-field input::placeholder {
+    --sf-input-placeholder--font-size: var(--sf-text-size-2);
+    --sf-input-placeholder--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-field {
+    block-size: var(--sf-ui-1\/2--control-height);
+    --sf-input-field--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+    --sf-input-field--padding-inline-end: var(--sf-ui-1\/2--space-x);
+    --sf-input-field--padding-inline-start: var(--sf-ui-1\/2--space-x);
+    --sf-input-field--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  }
+
+  .sf-input.sf-input--size-1\/2 .sf-input-field input::placeholder {
+    --sf-input-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-input-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-input.error > .sf-input-field > .sf-input-hint > .sf-icon {
+    // Остальная ошибка — рамка, подпись, маркер обязательности и подложка —
+    // красится ролью ошибки; значок оставался приглушённо-серым и давал 2.92:1
+    // в тёмной теме.
+    --sf-icon--color: var(--sf-error);
+  }
+}
+
+@layer sf.states {
+  .sf-input:not(.error).sf-input--bordered:not(:has(input:disabled)) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-0);
+    --sf-input-field--border-color: var(--sf-outline);
+  }
+
+  .sf-input:not(.error).sf-input--bordered:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
+    --sf-input-field--border-color: var(--sf-primary);
+  }
+
+  .sf-input.sf-input--bordered:has(input:disabled) .sf-input-field {
+    --sf-input-field--border-color: var(--sf-outline-disable);
+  }
+
+  .sf-input.sf-input--bordered:has(input:disabled) input, .sf-input.sf-input--filled:has(input:disabled) input {
+    --sf-input-input--color: var(--sf-on-disable);
+  }
+
+  .sf-input.sf-input--filled:has(input:disabled) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-disable);
+  }
+
+  .sf-input:not(.error).sf-input--filled:not(:has(input:disabled)) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-container);
+    --sf-input-field--border-color: var(--sf-transparent-for-focus);
+  }
+
+  .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
+    --sf-input-field--border-color: var(--sf-primary-active);
+  }
+
+  .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+
+  .sf-input:has(input:disabled) .sf-input-field input::placeholder {
+    --sf-input-placeholder--color: var(--sf-on-disable);
+  }
+
+  .sf-input:has(input:disabled) .sf-input-text {
+    --sf-input-text--color: var(--sf-on-disable);
+  }
+
+  .sf-input:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {
+    --sf-input-field--border-color: var(--sf-primary-hover);
+  }
+
+  .sf-input:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-0);
+  }
+
+  /* The ring belongs to the field the person sees, not to the bare control
+     inside it. An outline keeps the field's own shadow free for state. */
+  .sf-input:not(.sf-input--pointer-focus):has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-input-field {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  /* The global :focus-visible rule paints the ring on whatever holds the focus.
+     Here the focus lives on the bare control while the ring belongs to the part
+     the person sees, so the control gives its own ring up: one component, one
+     ring.
+
+     Not only for keyboard focus. A text field matches :focus-visible on a mouse
+     click too -- browsers decide that deliberately, because the person is about
+     to type -- so gating this on :not(--pointer-focus) did not remove the ring,
+     it moved it: off the field, onto the bare input inside, where it drew a
+     tight square inside the rounded field. The field's border already turns to
+     the focus colour in both cases and is what marks the focus after a click. */
+  .sf-input input:focus-visible {
+    outline: none;
+  }
+
+  .sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-container);
+  }
+}
+
+@layer sf.states {
+  @media (prefers-reduced-motion: reduce) {
+    .sf-input .sf-input-field {
+      transition-duration: 0s;
+    }
+  }
+}
+
+@layer sf.states {
+  @media (forced-colors: active) {
+    .sf-input:not(.sf-input--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-input-field {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+      --sf-input-field--box-shadow: none;
+    }
+  }
+}
+
+/* A filled field reads as a field only by its fill, so while someone is typing
+   in it -- focus anywhere inside, by pointer or keyboard -- it becomes the
+   ordinary field: the surface of a bordered field and a visible boundary. The
+   fill comes back when focus leaves. Error, disabled and read-only fields keep
+   their own look. */
+@layer sf.states {
+  /* In sf.states with the filled rest and hover rules it has to follow. */
+  /* Focus anywhere within the field changes the fill, not the focus ring,
+     which stays keyboard-only (:focus-visible) under the field focus
+     contract. */
+  .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) .sf-input-field {
+    --sf-input-field--background-color: var(--sf-surface-0);
+  }
+
+  /* The boundary of the ordinary field. Without it the field was the surface
+     with a transparent border: visible while the pointer hovered it, gone as
+     soon as the pointer left, with the caret still inside -- and invisible on a
+     surface-0 panel such as the dropdown list. Lighter than the hover rule, so
+     hover still colours it. */
+  .sf-input:not(.error).sf-input--filled:has(input:focus-within) .sf-input-field {
+    --sf-input-field--border-color: var(--sf-outline);
+  }
+}

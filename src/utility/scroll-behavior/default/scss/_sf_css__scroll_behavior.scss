@@ -1,0 +1,15 @@
+@use 'sf_var__scroll_behavior' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLLBAR
+
+// @include layer-priority(utility,default) {
+	@each $scroll-behavior-name, $scroll-behavior-value in $scroll-behavior-array {
+		.scroll-#{$scroll-behavior-name} {
+			scroll-behavior: #{$scroll-behavior-value};
+		}
+	}
+// }
+}

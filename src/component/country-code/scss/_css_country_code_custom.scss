@@ -1,0 +1,142 @@
+@layer sf.components {
+.sf-country-code {
+  position: relative;
+}
+
+.sf-country-code .sf-country-code-list {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 100%;
+  inline-size: 100%;
+  z-index: 9;
+}
+.sf-country-code-left, .sf-country-code-item {
+  cursor: pointer;
+}
+
+.sf-country-code-item:hover {
+  background: var(--sf-surface-container-hover);
+}
+
+/* The field is as tall as a text field of its size, by the same rule. */
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-field {
+  block-size: var(--sf-ui-1\/2--control-height);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-field {
+  block-size: var(--sf-ui-1--control-height);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-field {
+  block-size: var(--sf-ui-2--control-height);
+}
+
+/* The chevron beside the flag takes the field line, like every icon on it. */
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-left .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-left .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-left .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
+.sf-country-code--fixed-dial-code .sf-country-code-left {
+  cursor: default;
+}
+
+.sf-country-code--fixed-dial-code .sf-country-code-left .sf-icon {
+  display: none;
+}
+
+.sf-country-code img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-country-code:not(.open) .sf-country-code-list {
+  display: none;
+}
+.sf-country-code .sf-country-code-left:focus-visible,
+.sf-country-code .sf-country-code-item:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+@media (forced-colors: active) {
+  .sf-country-code:has(input:not(:disabled):focus-visible) .sf-country-code-field {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline-offset: var(--sf-focus-outline-width);
+  }
+  .sf-country-code .sf-country-code-left:focus-visible,
+  .sf-country-code .sf-country-code-item:focus-visible {
+    outline-color: Highlight;
+  }
+}
+}
+
+@layer sf.states {
+/* The country list is the field's own list, so it follows the dropdown's
+   composition: a row as tall as the field, the flag the field's flag (three
+   quarters of the line, 1.4 times as wide) on the field flag's axis, the name
+   at the size's text step after it. The option gives back the list's inset and
+   adds the field's border. In the states layer, because the generated per-size
+   rules mixed rungs (a size 2 row took size 1 spacing) and must not win. */
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-item {
+  --sf-country-code-item--font-size: var(--sf-text-size-1\/2);
+  --sf-country-code-item--line-height: var(--sf-text-height-1\/2);
+  --sf-country-code-item--gap: var(--sf-ui-1\/2--text-space-x);
+  --sf-country-code-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-country-code-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-country-code-item--padding-inline-start: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-start, 0px));
+  --sf-country-code-item--padding-inline-end: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-end, 0px));
+}
+
+.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-item .sf-country-code-flag {
+  --sf-country-code-flag--height: calc(var(--sf-text-height-1\/2) * 3 / 4);
+  --sf-country-code-flag--width: calc(var(--sf-text-height-1\/2) * 3 / 4 * 1.4);
+  flex-shrink: 0;
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-item {
+  --sf-country-code-item--font-size: var(--sf-text-size-1);
+  --sf-country-code-item--line-height: var(--sf-text-height-1);
+  --sf-country-code-item--gap: var(--sf-ui-1--text-space-x);
+  --sf-country-code-item--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  --sf-country-code-item--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-country-code-item--padding-inline-start: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-start, 0px));
+  --sf-country-code-item--padding-inline-end: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-end, 0px));
+}
+
+.sf-country-code.sf-country-code--size-1 .sf-country-code-item .sf-country-code-flag {
+  --sf-country-code-flag--height: calc(var(--sf-text-height-1) * 3 / 4);
+  --sf-country-code-flag--width: calc(var(--sf-text-height-1) * 3 / 4 * 1.4);
+  flex-shrink: 0;
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-item {
+  --sf-country-code-item--font-size: var(--sf-text-size-2);
+  --sf-country-code-item--line-height: var(--sf-text-height-2);
+  --sf-country-code-item--gap: var(--sf-ui-2--text-space-x);
+  --sf-country-code-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  --sf-country-code-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-country-code-item--padding-inline-start: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-start, 0px));
+  --sf-country-code-item--padding-inline-end: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-end, 0px));
+}
+
+.sf-country-code.sf-country-code--size-2 .sf-country-code-item .sf-country-code-flag {
+  --sf-country-code-flag--height: calc(var(--sf-text-height-2) * 3 / 4);
+  --sf-country-code-flag--width: calc(var(--sf-text-height-2) * 3 / 4 * 1.4);
+  flex-shrink: 0;
+}
+}

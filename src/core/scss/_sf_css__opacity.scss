@@ -1,0 +1,29 @@
+@layer sf.base {
+  :root,
+  ::after,
+  ::before {
+    --sf-alfa: 1;
+    --sf-color--alfa: 1;
+    --sf-decoration--alfa: 1;
+    --sf-border--alfa: 1;
+    --sf-divider--alfa: 1;
+    --sf-outline--alfa: 1;
+    --sf-ring--alfa: 1;
+    --sf-bg--alfa: 1;
+    --sf-stripe--alfa: 1;
+    --sf-ring-color: ;
+    --sf-gradient--angle: 90deg;
+    --sf-gradient--alfa-1: 1;
+    --sf-gradient--alfa-2: 1;
+    --sf-gradient--alfa-3: 1;
+    --sf-stripe--size: var(--sf-a1, 1px);
+    --sf-accent--alfa: 1;
+    --sf-caret--alfa: 1;
+    --sf-scroll--alfa: 1;
+    --sf-scroll-thumb--alfa: 1;
+    --sf-scroll-track--alfa: 1;
+    --sf-stripe--color: var(--sf-surface-inverse);
+    --sf-drop-shadow--alfa: 1;
+    --sf-shadow--alfa: 1;
+  }
+}

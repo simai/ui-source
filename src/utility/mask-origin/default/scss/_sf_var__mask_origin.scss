@@ -1,0 +1,13 @@
+// SIMAI Framework
+// https://simai.io
+
+// Mask Mode Array
+$mask-origin-array: (
+	content: content-box,
+	padding: padding-box,
+	margin: margin-box,
+	border: border-box,
+	fill: fill-box,
+	stroke: stroke-box,
+	viewbox: view-box
+);

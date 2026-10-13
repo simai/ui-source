@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img">
+<g id="Country=PM" clip-path="url(#circle-pm)">
+<g transform="translate(-4.8 0) scale(1.2)"><g transform="scale(0.04375 0.04167) translate(-0 -0)">
+<path fill="#F0F0F0" d="M0 0h640v480H0z"/>
+  <path fill="#0052B4" d="M0 0h213.3v480H0z"/>
+  <path fill="#D80027" d="M426.7 0H640v480H426.7z"/>
+</g></g>
+</g>
+<defs><clipPath id="circle-pm"><circle cx="12" cy="12" r="12"/></clipPath></defs>
+</svg>

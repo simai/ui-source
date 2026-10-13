@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__size' as *;
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FONT SIZE
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xl) {
+        $infix: breakpoint-infix(xl, $breakpoint-array);
+
+        @each $size-range-name, $range-array in $size-array {
+            @each $size-name, $size-value in $range-array {
+                .#{$infix}text-#{$size-range-name}#{$size-name} {
+                    font-size: var(--sf-#{$size-range-name}#{$size-name});
+                    line-height: var(--sf-#{$size-range-name}#{$size-name}); 
+                }
+            }
+        }
+    }
+// }
+}

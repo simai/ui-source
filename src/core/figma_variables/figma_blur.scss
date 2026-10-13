@@ -1,0 +1,20 @@
+@layer sf.base {
+  :root {
+    /* Нулевая ступень: класс blur-none просил её с самого начала. */
+    --sf-blur-none: var(--sf-a0);
+    --sf-blur-small: var(--sf-a2);
+    --sf-blur-medium: var(--sf-a4);
+    --sf-blur-large: var(--sf-a8);
+    --sf-surface-overlay--blur: var(--sf-d6);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-blur-none: var(--sf-a0);
+      --sf-blur-small: var(--sf-a2);
+      --sf-blur-medium: var(--sf-a4);
+      --sf-blur-large: var(--sf-a8);
+      --sf-surface-overlay--blur: var(--sf-d6);
+    }
+  }
+}

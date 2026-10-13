@@ -1,0 +1,150 @@
+@layer sf.components {
+  .sf-file-preview {
+    --sf-file-preview--background-color: transparent;
+    --sf-file-preview--gap: var(--sf-space-1\/2);
+    --sf-file-preview--padding: var(--sf-space-0);
+    --sf-file-preview--radius: var(--sf-radius--ui);
+
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    gap: var(--sf-file-preview--gap);
+    padding-block-start: var(--sf-file-preview--padding);
+    padding-block-end: var(--sf-file-preview--padding);
+    padding-inline-start: var(--sf-file-preview--padding);
+    padding-inline-end: var(--sf-file-preview--padding);
+    border-start-start-radius: var(--sf-file-preview--radius);
+    border-start-end-radius: var(--sf-file-preview--radius);
+    border-end-start-radius: var(--sf-file-preview--radius);
+    border-end-end-radius: var(--sf-file-preview--radius);
+    background-color: var(--sf-file-preview--background-color);
+  }
+
+  .sf-file-preview--surface {
+    --sf-file-preview--background-color: var(--sf-surface-container);
+    --sf-file-preview--padding: var(--sf-space-1\/2);
+  }
+
+  .sf-file-preview .sf-file-preview-holder {
+    --sf-file-preview-holder--size: var(--sf-ui-2--control-height);
+    --sf-file-preview-holder--background-color: var(--sf-surface-container);
+    --sf-file-preview-holder--color: var(--sf-on-surface-variant);
+    --sf-file-preview-holder--radius: var(--sf-radius--ui);
+
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    inline-size: var(--sf-file-preview-holder--size);
+    block-size: var(--sf-file-preview-holder--size);
+    overflow: hidden;
+    border-radius: var(--sf-file-preview-holder--radius);
+    color: var(--sf-file-preview-holder--color);
+    background-color: var(--sf-file-preview-holder--background-color);
+  }
+
+  .sf-file-preview .sf-file-preview-holder > .sf-icon {
+    --sf-icon--color: currentColor;
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+
+    flex: none;
+  }
+
+  .sf-file-preview .sf-file-preview-thumbnail {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  /* Compact: the leading visual alone, as tall as a size-1/2 field, which is
+     a list row's line. */
+  .sf-file-preview.sf-file-preview--compact {
+    display: inline-flex;
+    vertical-align: middle;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .sf-file-preview.sf-file-preview--compact .sf-file-preview-holder {
+    --sf-file-preview-holder--size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  }
+
+  .sf-file-preview .sf-file-preview-extension {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .sf-file-preview .sf-file-preview-main {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sf-space-0);
+  }
+
+  .sf-file-preview .sf-file-preview-name {
+    --sf-file-preview-name--color: var(--sf-on-surface);
+    --sf-file-preview-name--font-family: var(--sf-text--family);
+    --sf-file-preview-name--font-size: var(--sf-text-size-1);
+    --sf-file-preview-name--font-weight: var(--sf-font-weight-regular);
+    --sf-file-preview-name--line-height: var(--sf-text-height-1);
+
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    color: var(--sf-file-preview-name--color);
+    font-family: var(--sf-file-preview-name--font-family);
+    font-size: var(--sf-file-preview-name--font-size);
+    font-weight: var(--sf-file-preview-name--font-weight);
+    line-height: var(--sf-file-preview-name--line-height);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-file-preview .sf-file-preview-size {
+    --sf-file-preview-size--color: var(--sf-on-surface-variant);
+    --sf-file-preview-size--font-family: var(--sf-text--family);
+    --sf-file-preview-size--font-size: var(--sf-text-size-1\/2);
+    --sf-file-preview-size--font-weight: var(--sf-font-weight-regular);
+    --sf-file-preview-size--line-height: var(--sf-text-height-1\/2);
+
+    color: var(--sf-file-preview-size--color);
+    font-family: var(--sf-file-preview-size--font-family);
+    font-size: var(--sf-file-preview-size--font-size);
+    font-weight: var(--sf-file-preview-size--font-weight);
+    line-height: var(--sf-file-preview-size--line-height);
+  }
+
+  .sf-file-preview .sf-file-preview-actions {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+  }
+}
+
+@layer sf.states {
+  .sf-file-preview.disabled,
+  .sf-file-preview[aria-disabled='true'] {
+    opacity: var(--sf-opacity-60);
+  }
+}
+
+@layer sf.system {
+  @media (forced-colors: active) {
+    .sf-file-preview--surface,
+    .sf-file-preview .sf-file-preview-holder {
+      background-color: Canvas;
+      outline: var(--sf-a1) solid CanvasText;
+      outline-offset: calc(-1 * var(--sf-a1));
+    }
+  }
+}

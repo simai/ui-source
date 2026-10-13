@@ -1,0 +1,35 @@
+{
+  "id": "search-says-what-and-where-it-searched",
+  "intent": "search.query",
+  "capability": "search",
+  "summary": "The palette answer echoes the text and where it looked.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "search.query",
+    "payload": {
+      "query": "катал",
+      "sequence": 2
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "echo",
+      "groups"
+    ],
+    "data_must_include": [
+      "search_results"
+    ],
+    "note": "The scope is drawn in the field («в simai.ru») so nobody takes the current site's records for all of them."
+  }
+}

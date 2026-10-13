@@ -1,0 +1,242 @@
+@layer sf.components {
+  .sf-upload-progress-repeat:not(:disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  @media (forced-colors: active) {
+    .sf-upload-progress-repeat:not(:disabled):focus-visible {
+      box-shadow: none;
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(var(--sf-focus-outline-width) * -1);
+    }
+  }
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-upload-progress {
+  min-inline-size: 0;
+  background-color: var(--sf-upload-progress--background-color, transparent);
+  gap: var(--sf-upload-progress--gap);
+}
+
+.sf-upload-progress-name,
+.sf-upload-progress-text,
+.sf-upload-progress-repeat {
+  overflow-wrap: anywhere;
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-upload-progress-content--gap) */
+.sf-upload-progress .sf-upload-progress-content {
+  min-inline-size: 0;
+  --sf-upload-progress-content--background-color: transparent;
+  background-color: var(--sf-upload-progress-content--background-color);
+  gap: var(--sf-upload-progress-content--gap);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-upload-progress-top--gap) */
+.sf-upload-progress .sf-upload-progress-top {
+  min-inline-size: 0;
+  --sf-upload-progress-top--background-color: transparent;
+  background-color: var(--sf-upload-progress-top--background-color);
+  gap: var(--sf-upload-progress-top--gap);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-upload-progress .sf-upload-progress-left {
+  min-inline-size: 0;
+  --sf-upload-progress-left--background-color: transparent;
+  background-color: var(--sf-upload-progress-left--background-color);
+}
+
+.sf-upload-progress .sf-upload-progress-name {
+  --sf-upload-progress-name--color: var(--sf-on-surface);
+  --sf-upload-progress-name--font-family: var(--sf-text--family);
+  --sf-upload-progress-name--font-weight: var(--sf-font-weight-medium);
+  color: var(--sf-upload-progress-name--color);
+  font-family: var(--sf-upload-progress-name--font-family);
+  font-size: var(--sf-upload-progress-name--font-size);
+  font-weight: var(--sf-upload-progress-name--font-weight);
+  line-height: var(--sf-upload-progress-name--line-height);
+}
+
+.sf-upload-progress .sf-upload-progress-text {
+  --sf-upload-progress-text--font-family: var(--sf-text--family);
+  --sf-upload-progress-text--font-weight: var(--sf-font-weight-regular);
+  color: var(--sf-upload-progress-text--color);
+  font-family: var(--sf-upload-progress-text--font-family);
+  font-size: var(--sf-upload-progress-text--font-size);
+  font-weight: var(--sf-upload-progress-text--font-weight);
+  line-height: var(--sf-upload-progress-text--line-height);
+}
+
+.sf-upload-progress .sf-icon {
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  font-size: var(--sf-icon--font-size);
+  height: var(--sf-icon--height);
+  width: var(--sf-icon--width);
+}
+
+.sf-upload-progress .sf-icon-button {
+  flex-shrink: 0;
+  padding-bottom: var(--sf-icon-button--padding-bottom);
+  padding-inline-end: var(--sf-icon-button--padding-inline-end);
+  padding-inline-start: var(--sf-icon-button--padding-inline-start);
+  padding-top: var(--sf-icon-button--padding-top);
+}
+
+.sf-upload-progress .sf-upload-progress-repeat {
+  --sf-upload-progress-repeat--radius: var(--sf-radius--ui);
+  max-inline-size: 100%;
+  border-radius: var(--sf-upload-progress-repeat--radius);
+  padding-block: max(var(--sf-upload-progress-repeat--padding-block), var(--sf-focus-outline-width));
+  padding-inline: max(var(--sf-upload-progress-repeat--padding-inline), var(--sf-focus-outline-width));
+  color: var(--sf-upload-progress-repeat--color);
+  font-family: var(--sf-upload-progress-repeat--font-family);
+  font-size: var(--sf-upload-progress-repeat--font-size);
+  font-weight: var(--sf-upload-progress-repeat--font-weight);
+  line-height: var(--sf-upload-progress-repeat--line-height);
+}
+
+.sf-upload-progress > .sf-icon,
+.sf-upload-progress-top > .sf-icon {
+  flex-shrink: 0;
+}
+
+.sf-upload-progress--size-1 .sf-upload-progress-content, .sf-upload-progress--size-1\/2 .sf-upload-progress-content {
+  --sf-upload-progress-content--gap: var(--sf-space-1\/4);
+}
+
+.sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-1\/2 .sf-upload-progress-top, .sf-upload-progress.sf-upload-progress--done.sf-upload-progress--size-1\/2 .sf-upload-progress-top, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1\/2 .sf-upload-progress-top, .sf-upload-progress--size-1 .sf-upload-progress-top {
+  --sf-upload-progress-top--gap: var(--sf-space-1\/3);
+}
+
+.sf-upload-progress--size-1 .sf-upload-progress-name {
+  --sf-upload-progress-name--font-size: var(--sf-text-size-1);
+  --sf-upload-progress-name--line-height: var(--sf-text-height-1);
+}
+
+.sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-1 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-2 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-2 .sf-button .sf-icon {
+  padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  padding-inline-end: var(--sf-ui-1\/3--space-y-tightness-default);
+  padding-inline-start: var(--sf-ui-1\/3--space-y-tightness-default);
+  padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+}
+
+.sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1 .sf-upload-progress-repeat {
+  --sf-upload-progress-repeat--padding-block: var(--sf-ui-1--space-y-tightness-default);
+  --sf-upload-progress-repeat--padding-inline: var(--sf-ui-1--space-x);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1);
+}
+
+.sf-upload-progress--size-2 .sf-upload-progress-content {
+  --sf-upload-progress-content--gap: var(--sf-space-1\/3);
+}
+
+.sf-upload-progress--size-2 .sf-upload-progress-top {
+  --sf-upload-progress-top--gap: var(--sf-space-1\/2);
+}
+
+.sf-upload-progress--size-2 .sf-upload-progress-name {
+  --sf-upload-progress-name--font-size: var(--sf-text-size-2);
+  --sf-upload-progress-name--line-height: var(--sf-text-height-2);
+}
+
+.sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-2 .sf-upload-progress-repeat {
+  --sf-upload-progress-repeat--padding-block: var(--sf-ui-2--space-y-tightness-default);
+  --sf-upload-progress-repeat--padding-inline: var(--sf-ui-2--space-x);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-2);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-2);
+}
+
+.sf-upload-progress--size-1\/2 .sf-upload-progress-name {
+  --sf-upload-progress-name--font-size: var(--sf-text-size-1\/2);
+  --sf-upload-progress-name--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-upload-progress.sf-upload-progress--process.sf-upload-progress--size-1\/2 .sf-button .sf-icon, .sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1\/2 .sf-button .sf-icon {
+  padding-inline-end: var(--sf-ui-1\/3--space-y-tightness-default);
+  padding-inline-start: var(--sf-ui-1\/3--space-y-tightness-default);
+}
+
+.sf-upload-progress.sf-upload-progress--error.sf-upload-progress--size-1\/2 .sf-upload-progress-repeat {
+  --sf-upload-progress-repeat--padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-upload-progress-repeat--padding-inline: var(--sf-ui-1\/2--space-x);
+  --sf-upload-progress-repeat--font-size: var(--sf-text-size-1\/2);
+  --sf-upload-progress-repeat--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-upload-progress--size-1 {
+  --sf-upload-progress--gap: var(--sf-space-1\/2);
+}
+
+.sf-upload-progress.sf-upload-progress--size-1 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-3);
+  --sf-icon--height: var(--sf-text-size-3);
+  --sf-icon--width: var(--sf-text-size-3);
+}
+
+.sf-upload-progress.sf-upload-progress--size-1 .sf-upload-progress-text {
+  --sf-upload-progress-text--font-size: var(--sf-text-size-1\/2);
+  --sf-upload-progress-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-upload-progress--size-2 {
+  --sf-upload-progress--gap: var(--sf-space-1);
+}
+
+.sf-upload-progress.sf-upload-progress--size-2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-4);
+  --sf-icon--height: var(--sf-text-size-4);
+  --sf-icon--width: var(--sf-text-size-4);
+}
+
+.sf-upload-progress.sf-upload-progress--size-2 .sf-upload-progress-text {
+  --sf-upload-progress-text--font-size: var(--sf-text-size-1);
+  --sf-upload-progress-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-upload-progress--size-1\/2 {
+  --sf-upload-progress--gap: var(--sf-space-1\/3);
+}
+
+.sf-upload-progress--size-1\/2 .sf-upload-progress-top {
+  --sf-upload-progress-top--gap: var(--sf-upload-progress--gap);
+}
+
+.sf-upload-progress.sf-upload-progress--size-1\/2 .sf-icon {
+  --sf-icon--font-size: var(--sf-text-size-2);
+  --sf-icon--height: var(--sf-text-size-2);
+  --sf-icon--width: var(--sf-text-size-2);
+}
+
+.sf-upload-progress.sf-upload-progress--size-1\/2 .sf-upload-progress-text {
+  --sf-upload-progress-text--font-size: var(--sf-text-size-1\/3);
+  --sf-upload-progress-text--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-upload-progress--process .sf-icon, .sf-upload-progress--done .sf-icon {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-upload-progress--process .sf-upload-progress-text, .sf-upload-progress--done .sf-upload-progress-text {
+  --sf-upload-progress-text--color: var(--sf-on-surface-variant);
+}
+
+.sf-upload-progress--process .sf-icon-button > .sf-icon, .sf-upload-progress--error .sf-icon-button > .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-upload-progress--error .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-upload-progress--error .sf-upload-progress-text {
+  --sf-upload-progress-text--color: var(--sf-on-surface);
+}
+
+.sf-upload-progress--error .sf-upload-progress-repeat {
+  --sf-upload-progress-repeat--color: var(--sf-on-surface);
+  --sf-upload-progress-repeat--font-family: var(--sf-text--family);
+  --sf-upload-progress-repeat--font-weight: var(--sf-font-weight-bold);
+}
+}

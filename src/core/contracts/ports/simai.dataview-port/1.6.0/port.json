@@ -1,0 +1,1065 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.dataview-port",
+  "version": "1.6.0",
+  "component": "smart.data-view-composite",
+  "element": "sf-data-view",
+  "summary": "The host seam for a composed data view with toolbar, content and pagination slots, including scoped saved views, a write answered with the record it changed, and the filter fields a saved view was showing.",
+  "capabilities": {
+    "saved-views": {
+      "summary": "Saved views: opening, saving and deleting a stored view.",
+      "intents": [
+        "view.open",
+        "view.save",
+        "view.delete"
+      ],
+      "data": [
+        "saved_views"
+      ]
+    },
+    "shared-column-settings": {
+      "summary": "Saving column settings for everyone, a separate permission from the personal layer.",
+      "intents": [
+        "settings.save_shared"
+      ]
+    },
+    "bulk-under-filter": {
+      "summary": "Acting on every record under the current filter, not only the checked ones.",
+      "intents": [
+        "bulk.apply_under_filter"
+      ]
+    },
+    "row-actions": {
+      "summary": "Per-record operations the host resolves; the allowed set travels with each record.",
+      "intents": [
+        "record.open",
+        "record.mutate"
+      ]
+    },
+    "shared-saved-views": {
+      "summary": "Write a shared saved view with a permission separate from personal saved views.",
+      "intents": [
+        "view.save_shared"
+      ],
+      "data": [
+        "saved_views"
+      ]
+    },
+    "count-on-request": {
+      "summary": "The host can count the records a query matches, separately from answering the query. Without it the view never offers the number and never asks for it.",
+      "intents": [
+        "query.count"
+      ],
+      "data": [
+        "has_next"
+      ]
+    }
+  },
+  "data": {
+    "columns": {
+      "summary": "Columns the host allows in this view, with their presentation vocabulary.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "min_width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "priority": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Lower survives longer when the columns do not fit."
+            },
+            "sticky": {
+              "enum": [
+                "none",
+                "start",
+                "end"
+              ]
+            },
+            "sortable": {
+              "type": "boolean"
+            },
+            "renderer": {
+              "enum": [
+                "link"
+              ]
+            },
+            "role": {
+              "enum": [
+                "title"
+              ],
+              "description": "The column that leads the record. The view pins it beside the box and the row menu, and it is the column a reader names the row by. At most one column carries it."
+            }
+          }
+        }
+      }
+    },
+    "records": {
+      "summary": "Rows of the current answer. Each carries its revision and the actions the host allows for it. In an answer to a write, `records` without `echo`, `total` or `columns` is a patch of exactly those rows, and the view rewrites only them.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "revision",
+            "actions"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "What the host allows for this record. The component offers only these."
+            }
+          }
+        }
+      }
+    },
+    "total": {
+      "summary": "How many records match the query the host applied, when the host counts them. A host that does not count leaves it out and answers has_next instead.",
+      "required": false,
+      "schema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 0
+      }
+    },
+    "has_next": {
+      "summary": "Whether a further page exists. Required when an answer carries no total: it is what moves forward and Show more, so the view never derives a page count it was not given.",
+      "required": false,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    "echo": {
+      "summary": "The request the host answered: chosen and applied filters, refused parts, search, sort and window, plus what a view switch carried over.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "filters_chosen",
+          "filters",
+          "filters_rejected",
+          "search",
+          "sort",
+          "page",
+          "per_page"
+        ],
+        "properties": {
+          "filters_chosen": {
+            "type": "object",
+            "description": "What the person chose."
+          },
+          "filters": {
+            "type": "object",
+            "description": "What the host applied."
+          },
+          "filters_rejected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Chosen filters the host refused."
+          },
+          "search": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "direction"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "direction": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "switch": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "object"
+              },
+              "dropped": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "What a view switch carried over and what it dropped."
+          }
+        }
+      }
+    },
+    "column_settings": {
+      "summary": "Column settings by layer, each with its revision, and where a save goes.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "layers",
+          "target"
+        ],
+        "properties": {
+          "layers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "package": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "shared": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "personal": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "revision"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "personal",
+                  "saved_view"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "key": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "saved_views": {
+      "summary": "Stored views as objects: query, field roles, column layout, settings and a revision. `settings.filter_fields` names the filter fields the view was showing, in order.",
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key",
+            "label",
+            "revision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "query": {
+              "type": "object"
+            },
+            "roles": {
+              "type": "object"
+            },
+            "layout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "visible": {
+                        "type": "boolean"
+                      },
+                      "order": {
+                        "type": [
+                          "number",
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "min_width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "priority": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Lower survives longer when the columns do not fit."
+                      },
+                      "sticky": {
+                        "enum": [
+                          "none",
+                          "start",
+                          "end"
+                        ]
+                      },
+                      "sortable": {
+                        "type": "boolean"
+                      },
+                      "renderer": {
+                        "enum": [
+                          "link"
+                        ]
+                      },
+                      "role": {
+                        "enum": [
+                          "title"
+                        ],
+                        "description": "The column that leads the record. The view pins it beside the box and the row menu, and it is the column a reader names the row by. At most one column carries it."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "settings": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "filter_fields": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": "Filter fields the view shows, in order. The view puts them back when it opens."
+                }
+              }
+            },
+            "level": {
+              "enum": [
+                "package",
+                "shared",
+                "personal"
+              ],
+              "description": "Optional metadata; absent on a 1.0.0 host."
+            }
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "query.change": {
+      "summary": "Answer the current search, filter, sort and window. Every request carries its sequence; an older answer is dropped.",
+      "event": "sf-table-query-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "query": {
+            "type": "object"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "record.open": {
+      "summary": "Open one record for reading.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "const": "view"
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions"
+    },
+    "record.mutate": {
+      "summary": "Create, edit, delete or restore one record. The host re-reads the stored bytes and compares the revision. An applied answer may carry `records` alone -- the records as they now are -- and the view writes those rows in place instead of re-reading the page.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions"
+    },
+    "bulk.apply_selected": {
+      "summary": "Apply one action to the checked records, each with the revision the browser last saw. Refused as a whole when any revision is stale.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids",
+          "revisions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "bulk.apply_under_filter": {
+      "summary": "Apply one action to every record under the filter the host applied, with the count the person confirmed.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "filters",
+          "confirmed_total"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "filters": {
+            "type": "object"
+          },
+          "confirmed_total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "bulk-under-filter"
+    },
+    "settings.save_personal": {
+      "summary": "Save column settings for this person, against the revision of the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "settings.save_shared": {
+      "summary": "Save column settings for everyone. A separate permission and a separate endpoint from the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision",
+          "target"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "target": {
+            "const": "shared"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "shared-column-settings"
+    },
+    "view.open": {
+      "summary": "Load a stored view.",
+      "event": "sf-table-template-select",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.save": {
+      "summary": "Store the current view, or update a stored one against its revision. `settings.filter_fields` carries the filter fields the view is showing.",
+      "event": "sf-table-template-save",
+      "payload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.delete": {
+      "summary": "Delete a stored view.",
+      "event": "sf-table-template-delete",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.create_record": {
+      "summary": "Open the host's create form, optionally for a named kind.",
+      "event": "sf-table-create-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "item"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "view.save_shared": {
+      "summary": "Write a shared saved view with a separate permission and a named target.",
+      "event": "sf-data-view-saved-view-intent",
+      "payload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "key",
+          "target"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "target": {
+            "const": "shared"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "shared-saved-views"
+    },
+    "query.count": {
+      "summary": "Count the records the current query matches. Raised when a person asks for the number, and before an action under the filter, which needs a confirmed total.",
+      "event": "sf-count-request",
+      "capability": "count-on-request",
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "search": {
+                "type": "string"
+              },
+              "filters": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          },
+          "reason": {
+            "enum": [
+              "total",
+              "last-page",
+              "action-for-all"
+            ],
+            "description": "Why the count was asked for. The view resumes that step once the number arrives."
+          }
+        }
+      }
+    },
+    "list.open": {
+      "summary": "Open the whole list this view is showing part of. Raised by the show-all action a row cap puts under a capped list; the host navigates or opens a full view. The component never builds an address -- it has none to build from, and a guessed one would send a person to a page the product does not have.",
+      "event": "sf-data-view-list-open",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "enum": [
+              "row-cap"
+            ],
+            "description": "Why the list is being opened. One value today; declared as an enum so a later reason is a declared addition rather than a free string a host has to guess at."
+          },
+          "query": {
+            "type": "object",
+            "description": "The query the capped list is showing, so the full view opens on the same records rather than on an unfiltered collection."
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "answer": {
+        "applied": {
+          "schema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "refused": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a layer is a write against its revision, never a deletion."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "saved_view"
+      ],
+      "carries_revision": true
+    },
+    "fields": {
+      "summary": "Per-column fields a layer may carry: order, width, visibility and pinning. Pinning used to be writable only in the shared layer; it is a personal setting now, like the order and the width, and a shared value still serves as the default until the person sets their own.",
+      "personal": [
+        "order",
+        "width",
+        "visible",
+        "pinned"
+      ],
+      "shared": [
+        "order",
+        "width",
+        "visible",
+        "pinned"
+      ]
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "990515941fa83301d00e89d7eafcd8154229a2a35bed9bb6c2cef89a51c318ab",
+    "cases": 27
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "records carry revision and actions",
+      "the answer echoes the applied query",
+      "a stale revision is answered with a conflict",
+      "a batch is refused as a whole",
+      "shared settings use their own permission",
+      "saved view level metadata is optional and shared view writes use their own capability and target",
+      "the column that leads a record is named by role: title, and at most one column carries it",
+      "an answer without total carries has_next, and the count is asked for separately through query.count",
+      "pinning is a personal column setting; a host that declares an earlier version may refuse a personal write carrying it",
+      "a write may be answered with records alone, and then only those rows are rewritten",
+      "a saved view carries settings.filter_fields, and opening it shows those fields again",
+      "a capped list asks the host to open the whole one rather than linking to an address it invented"
+    ]
+  }
+}

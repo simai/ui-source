@@ -1,0 +1,64 @@
+{
+  "schema": "simai.composition.document.v1",
+  "id": "regions-example",
+  "profile": "ui-layout",
+  "locale": "ru",
+  "root": {
+    "id": "shell",
+    "type": "layout.regions",
+    "slots": {
+      "regions": [
+        {
+          "id": "shell-header",
+          "type": "layout.region",
+          "props": {"name": "header", "landmark": "banner", "sticky": true, "accepts": ["content", "smart"], "max_items": 4},
+          "slots": {"default": [
+            {"id": "site-title", "type": "content.heading", "data": {"level": 1, "content": [{"type": "text", "value": "Каталог"}]}}
+          ]}
+        },
+        {
+          "id": "shell-navigation",
+          "type": "layout.region",
+          "props": {"name": "navigation", "landmark": "navigation", "placement": "start", "label": "Разделы"},
+          "slots": {"default": [
+            {"id": "navigation-text", "type": "content.paragraph", "data": {"content": [{"type": "link", "href": "/catalog/", "children": [{"type": "text", "value": "Все товары"}]}]}}
+          ]}
+        },
+        {
+          "id": "shell-main",
+          "type": "layout.region",
+          "props": {"name": "main", "landmark": "main", "placement": "center", "min_items": 1},
+          "slots": {"default": [
+            {"id": "main-lead", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Основное содержимое страницы."}]}},
+            {
+              "id": "main-inner",
+              "type": "layout.regions",
+              "slots": {"regions": [
+                {"id": "inner-summary", "type": "layout.region", "props": {"name": "summary", "landmark": "region", "label": "Сводка", "placement": "center"},
+                  "slots": {"default": [{"id": "summary-text", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Сводка раздела."}]}}]}},
+                {"id": "inner-facts", "type": "layout.region", "props": {"name": "facts", "landmark": "complementary", "label": "Факты", "placement": "end"},
+                  "slots": {"default": [{"id": "facts-text", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Дополнительные факты."}]}}]}}
+              ]}
+            }
+          ]}
+        },
+        {
+          "id": "shell-aside",
+          "type": "layout.region",
+          "props": {"name": "aside", "landmark": "complementary", "placement": "end", "label": "Подсказки"},
+          "slots": {"default": [
+            {"id": "aside-text", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Боковая колонка."}]}}
+          ]}
+        },
+        {
+          "id": "shell-footer",
+          "type": "layout.region",
+          "props": {"name": "footer", "landmark": "contentinfo"},
+          "slots": {"default": [
+            {"id": "footer-text", "type": "content.paragraph", "data": {"content": [{"type": "text", "value": "Подвал сайта."}]}}
+          ]}
+        }
+      ]
+    }
+  }
+}

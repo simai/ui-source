@@ -1,0 +1,22 @@
+{
+  "schema": "simai.smart-component-scenario.v1",
+  "id": "keyboard-selection",
+  "component": "smart.datepicker",
+  "fixture": "reference",
+  "viewport": "desktop",
+  "actions": [],
+  "assertions": [
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "visible"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    }
+  ]
+}

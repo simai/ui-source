@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — поля и счётчик</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/inputs/css/inputs.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/textarea/css/textarea.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/quantity/css/quantity.css">
+</head>
+<body class="p-4">
+<main class="grid gap-4">
+  <h1>Поля и счётчик</h1>
+  <a href="#fields">Начало проверки</a>
+  <form id="fields" class="grid gap-4">
+    <label id="email" class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+      <span class="sf-input-label flex"><span class="sf-input-text">Рабочая почта</span></span>
+      <span class="sf-input-field items-cross-center transition flex"><i class="sf-icon" aria-hidden="true">mail</i><input type="email" name="email" autocomplete="email" placeholder="name@example.com"></span>
+      <span class="sf-input-hint-text-wrap">Используем только для уведомлений</span>
+    </label>
+    <label id="invalid-email" class="sf-input error sf-input--size-1 sf-input--bordered flex flex-col">
+      <span class="sf-input-label flex"><span class="sf-input-text">Исправьте адрес</span></span>
+      <span class="sf-input-field items-cross-center transition flex"><input type="email" name="invalid-email" value="ошибка"></span>
+      <span class="sf-input-hint-text-wrap" data-field-message="error">Укажите полный адрес электронной почты</span>
+    </label>
+    <label id="comment" class="sf-textarea sf-textarea--size-1 sf-textarea--bordered flex flex-col">
+      <span class="sf-textarea-label flex"><span class="sf-textarea-text">Комментарий</span></span>
+      <textarea class="transition" name="comment" rows="4" placeholder="Опишите задачу"></textarea>
+      <span class="sf-textarea-hint-text-wrap">До 500 символов</span>
+    </label>
+    <label id="quantity" class="sf-quantity sf-quantity--size-1 flex flex-col">
+      <span class="sf-quantity-label flex"><span class="sf-quantity-text">Количество мест</span></span>
+      <span class="sf-quantity-wrap flex content-main-center items-cross-center transition">
+        <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex" aria-label="Уменьшить"><i class="sf-icon" aria-hidden="true">remove</i></button>
+        <input name="seats" type="text" value="2" inputmode="numeric" min="1" max="10" step="1">
+        <button type="button" class="sf-quantity-count sf-icon-button sf-icon-button--secondary sf-icon-button--tonal sf-icon-button--size-1/3 flex" aria-label="Увеличить"><i class="sf-icon" aria-hidden="true">add</i></button>
+      </span>
+    </label>
+    <label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+      <span class="sf-input-label flex"><span class="sf-input-text">Имя контакта</span></span>
+      <span class="sf-input-field items-cross-center transition flex"><input type="text" name="contact"></span>
+    </label>
+    <sf-input label="Smart адрес" name="smart-email" error error-message="Адрес требует исправления"></sf-input>
+    <sf-textarea label="Smart комментарий" name="smart-comment" rows="3"></sf-textarea>
+    <button type="reset">Сбросить поля</button>
+  </form>
+</main>
+<script src="../../source/output/action-focus-browser/component/inputs/js/inputs.js"></script>
+<script src="../../source/output/action-focus-browser/component/textarea/js/textarea.js"></script>
+<script src="../../source/output/action-focus-browser/component/quantity/js/quantity.js"></script>
+<script src="../../source/output/action-focus-browser/smart/icons/js/icons.js"></script>
+<script src="../../source/output/action-focus-browser/smart/inputs/js/inputs.js"></script>
+<script src="../../source/output/action-focus-browser/smart/textarea/js/textarea.js"></script>
+<script>
+const modes = new URLSearchParams(location.search);
+if (modes.has('dark')) document.documentElement.className = 'theme-dark';
+if (modes.has('rtl')) document.documentElement.dir = 'rtl';
+if (modes.has('filled')) {
+  document.querySelectorAll('sf-input, sf-textarea').forEach(e => e.setAttribute('type', 'filled'));
+  document.querySelectorAll('.sf-input').forEach(e => { e.classList.replace('sf-input--bordered', 'sf-input--filled'); });
+  document.querySelectorAll('.sf-textarea').forEach(e => { e.classList.replace('sf-textarea--bordered', 'sf-textarea--filled'); });
+}
+document.fonts.load('24px "Material Symbols Outlined"').then(faces => {
+  if (faces.length) document.querySelectorAll('.sf-icon').forEach(e => e.classList.add('sf-icon-loaded'));
+});
+</script>
+</body>
+</html>

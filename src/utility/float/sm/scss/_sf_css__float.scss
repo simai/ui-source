@@ -1,0 +1,21 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLOAT
+
+$infix: sm;
+
+// @include layer-priority(utility,$infix) {
+  @include breakpoint-media($infix) {
+    $infix: breakpoint-infix($infix, $breakpoint-array);
+        
+    // Utilities for controlling the wrapping of content around an element
+    .#{$infix}float-inline-end   { float: inline-end; }
+    .#{$infix}float-inline-start    { float: inline-start; }
+    .#{$infix}float-none    { float: none; }
+  }
+// }
+}

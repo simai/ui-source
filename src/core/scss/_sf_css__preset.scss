@@ -1,0 +1,127 @@
+// SIMAI Framework
+// https://simai.io
+
+// PRESETS
+
+// @layer base,theme,component,utility;
+
+// Set layer priority
+// @layer base.default, base.sm, base.md, base.lg, base.xl, base.xxl, base.hover, base.focus, base.active, theme.default, theme.sm, theme.md, theme.lg, theme.xl, theme.xxl, theme.hover, theme.focus, theme.active, component.base, utility.default, utility.sm, utility.md, utility.lg, utility.xl, utility.xxl, utility.hover, utility.focus, utility.active;
+
+// preset layer
+@layer sf.base {
+
+    // Default Global Variables
+    //    --sf-empty — use for set empty value in concatenate styles
+    //    --sf-alfa — use for set opacity color
+    :root {
+        --sf-empty: ;
+        --sf-alfa: 1;
+    }
+
+    .source {
+        overflow: hidden;
+        position: relative;
+        opacity: 0;
+        &.init {
+            opacity: 1;
+        }
+    }
+
+    // Default margins are removed
+    // Presets removes all of the default margins from elements like headings, blockquotes, paragraphs, etc.
+    body,
+    blockquote,
+    dl,
+    dd,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    hr,
+    figure,
+    p,
+    pre {
+        margin: 0;
+    }
+
+    // Headings are unstyled
+    // All heading elements are completely unstyled by default, and have the same font-size and font-weight as normal text.
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: inherit;
+        font-weight: inherit;
+    }
+
+    // Lists are unstyled
+    // Ordered and unordered lists are unstyled by default, with no bullets/numbers and no margin or padding.
+    ol,
+    //ul {
+    //  list-style: none;
+    //  margin: 0;
+    //  padding: 0;
+    //}
+
+    // Images are block-level
+    // Images and other replaced elements (like svg, video, canvas, and others) are display: block by default.
+    img,
+    svg,
+    video,
+    canvas,
+    audio,
+    iframe,
+    embed,
+    object {
+        display: block;
+        vertical-align: middle;
+    }
+
+    input {
+        background-color: var(--sf-surface-0);
+        color: var(--sf-on-surface);
+    }
+
+    mark {
+        position: relative;
+        white-space: pre-wrap;
+        background-color: var(--sf-mark--color);
+        font-weight: inherit;
+        font-style: inherit;
+    }
+
+    // Border styles are reset globally
+    // In order to make it easy to add a border by simply adding the border class, Tailwind overrides the default border styles for all elements with the following rules:
+    *,
+    ::before,
+    ::after {
+        border-width: 0;
+        border-style: solid;
+        // border-color: var(--sf-color--surface-inverse);
+        box-sizing: border-box;
+    }
+
+    // The hidden attribute hides, on a Smart element too. A Smart host keeps
+    // an inline `display: contents` so its rendered root takes part in the
+    // parent's layout, and an inline style outranks the user agent's
+    // `[hidden] { display: none }`: a checkbox marked hidden stayed on screen.
+    // Only an important declaration outranks a normal inline one.
+    [hidden]:not([hidden="until-found"]) {
+        display: none !important;
+    }
+
+    // Buttons have a default outline
+    // To ensure that we provide accessible styles out of the box, we made sure that buttons have a default outline. You can of course override this by applying focus:ring or similar utilities to your buttons.
+
+    body {
+        color: var(--sf-on-surface);
+        background-color: var(--sf-surface-0);
+        // border-color: var(--sf-color--surface-inverse);
+    }
+
+ }

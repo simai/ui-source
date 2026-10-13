@@ -1,0 +1,14 @@
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING INSET
+
+$infix: focus;
+
+// @include layer-priority(utility,$infix) {
+    .#{$infix}\:ring-inset:#{$infix} {
+        --sf-ring-inset: inset;
+    }
+// }
+}

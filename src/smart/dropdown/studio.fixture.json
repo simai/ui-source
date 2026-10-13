@@ -1,0 +1,33 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.dropdown",
+  "title": "Dropdown reference",
+  "summary": "Deterministic reference fixture for sf-dropdown.",
+  "locale": "ru",
+  "props": {
+    "label": "Статус",
+    "placeholder": "Выберите статус"
+  },
+  "children": [
+    {
+      "element": "sf-list-item",
+      "props": {
+        "value": "open",
+        "text": "Открыт"
+      },
+      "text": "",
+      "children": []
+    },
+    {
+      "element": "sf-list-item",
+      "props": {
+        "value": "done",
+        "text": "Готов"
+      },
+      "text": "",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

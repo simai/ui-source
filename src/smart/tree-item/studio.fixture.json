@@ -1,0 +1,25 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tree-item",
+  "title": "Tree Item reference",
+  "summary": "Deterministic reference fixture for sf-tree-item.",
+  "locale": "ru",
+  "props": {
+    "text": "Раздел",
+    "value": "section",
+    "open": true
+  },
+  "children": [
+    {
+      "element": "sf-tree-item",
+      "props": {
+        "text": "Дочерний пункт",
+        "value": "child"
+      },
+      "text": "",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

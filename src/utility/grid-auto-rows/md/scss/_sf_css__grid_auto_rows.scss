@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__grid_auto_rows' as *;
+@layer sf.utilities {
+
+// SIMAI Framework
+// https://simai.io
+
+// GRID - GRID AUTO ROWS
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+
+        // Grid Auto Rows Utilities
+        @each $grid-auto-rows-name, $grid-auto-rows-value in $grid-auto-rows-array {
+            .#{$infix}auto-rows#{$grid-auto-rows-name} {
+                grid-auto-rows: #{$grid-auto-rows-value};
+            }
+        }
+    }
+// }
+}

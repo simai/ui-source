@@ -1,0 +1,25 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__scroll_slider_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLL DECORATION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Scroll Width
+        @each $scroll-slider-width-name, $scroll-slider-width-value in $scroll-slider-width-array {
+            .#{$infix}scroll-#{$scroll-slider-width-name},
+            .#{$infix}scroll-thumb-#{$scroll-slider-width-name} {
+                --sf-scroll-thumb-inset: var(--sf-#{$scroll-slider-width-value});
+            }
+        }
+    }
+// }
+}

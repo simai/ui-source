@@ -1,0 +1,1 @@
+SF.RuleLoader['divider-color/default'] = new RegExp("^(?:divide(?:-(?:current|error|outline(?:-variant)?|primary|s(?:econdary|uccess)|t(?:ertiary|ransparent)|warning)|r-(?:current|error|outline(?:-variant)?|primary|s(?:econdary|uccess)|t(?:ertiary|ransparent)|warning)))(?![\\s\\S])");

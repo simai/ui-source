@@ -1,0 +1,64 @@
+@layer sf.components {
+// SIMAI Framework
+// https://simai.io
+
+// OVERBOX
+
+.sf-overbox- {
+
+    &pointer {
+        top: calc(-1 * var(--sf-c1));
+        height: var(--sf-c1);
+        width: var(--sf-c6);
+
+        &:before {
+            content: '';
+            /* The pointer is part of the overbox, which floats on step 4:
+               white was white in the dark theme too. */
+            background-color: var(--sf-elevation-4--surface);
+            --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
+            box-shadow: var(--sf-elevation-4--shadow);
+            width: var(--sf-b6);
+            height: var(--sf-b6);
+            position: absolute;
+            inset-inline-start: var(--sf-a8);
+            top: var(--sf-b6);
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+            -webkit-transform-origin: 50% 50%;
+            -ms-transform-origin: 50% 50%;
+            transform-origin: 50% 50%;
+        }
+    }
+
+    &right {
+        top:var(--sf-c6);
+        inset-inline-end:calc(-1 * var(--sf-c3));
+        transform:rotate(90deg);
+
+        &before {
+
+        }
+    }
+
+    &bottom {
+
+        &:before {
+            top:auto;
+            bottom:var(--sf-b6);
+        }
+    }
+
+    &left {
+        top:var(--sf-b6);
+        inset-inline-start:calc(-1 * var(--sf-c3));
+        transform:rotate(270deg);
+
+        &before {
+            
+        }
+    }
+
+}
+}

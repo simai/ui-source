@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__transition_duration' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TRANSITION
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Transition Duration
+        @each $transition-duration-name, $transition-duration-value in $transition-duration-array {
+            .#{$infix}#{$transition-duration-name} {
+                transition-duration: var(--sf-duration-#{$transition-duration-value});
+            }
+        }
+    }
+// }
+}

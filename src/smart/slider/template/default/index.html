@@ -1,0 +1,18 @@
+<%
+    slider_first_value = data.min;
+    slider_second_value = data.max;
+    if(data.first_value){
+        slider_first_value = data.first_value;
+    }
+    if(data.second_value){
+        slider_second_value = data.second_value;
+    }
+%>
+
+<div class="sf-slider">
+    <input class="sf-slider-input--first" type="range" min="<%=data.min%>" max="<%=data.max%>" value="<%=slider_first_value%>" id="slider-1">
+    <input class="sf-slider-input--second" type="range" min="<%=data.min%>" max="<%=data.max%>" value="<%=slider_second_value%>" id="slider-2">
+    <div class="sf-slider-track" style="--inset-inline-start: var(--sf-a4); --inset-inline-end: var(--sf-g3);"></div>
+    <div class="sf-slider-value sf-slider-value--first" id="slider-1-value" style="inset-inline-start: var(--sf-a4);"><%=slider_first_value%></div>
+    <div class="sf-slider-value sf-slider-value--second" id="slider-2-value" style="inset-inline-start: calc(var(--sf-g2) + var(--sf-c1));"><%=slider_second_value%></div>
+</div>

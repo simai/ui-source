@@ -1,0 +1,52 @@
+{
+  "schema": "simai.composition.document.v1",
+  "id": "catalog-page",
+  "profile": "ui-layout",
+  "locale": "ru",
+  "root": {
+    "id": "page",
+    "type": "layout.page",
+    "slots": {
+      "default": [
+        {
+          "id": "intro",
+          "type": "layout.section",
+          "presentation": {
+            "preset": "surface",
+            "modifiers": ["contained"]
+          },
+          "slots": {
+            "default": [
+              {
+                "id": "title",
+                "type": "content.heading",
+                "data": {
+                  "level": 1,
+                  "content": [{"type": "text", "value": "Каталог товаров"}]
+                }
+              },
+              {
+                "id": "lead",
+                "type": "content.paragraph",
+                "data": {
+                  "content": [
+                    {"type": "text", "value": "Framework показывает "},
+                    {"type": "text", "value": "карточки", "marks": ["strong"]},
+                    {"type": "text", "value": ", а проект получает данные."},
+                    {"type": "link", "href": "/catalog/help/", "children": [{"type": "text", "value": " Подробнее"}]}
+                  ]
+                },
+                "bindings": [
+                  {"owner": "larena/storage", "ref": "catalog.products", "target": "products", "revision": "42"}
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "extensions": {
+    "example.org:editor-note": "control fixture"
+  }
+}

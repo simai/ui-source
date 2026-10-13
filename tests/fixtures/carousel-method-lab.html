@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Carousel — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/carousel-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/carousel-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/carousel-browser';
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, theme: false};
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Carousel</h1>
+    <section id="manual" class="sf-carousel" data-label="Новости" data-slide-label="Слайд {{index}} из {{count}}">
+      <div class="sf-carousel-slider swiper"><div class="swiper-wrapper">
+        <article class="swiper-slide sf-carousel-slide surface-container p-3 radius-default"><a href="#first">Первый материал</a></article>
+        <article class="swiper-slide sf-carousel-slide surface-container p-3 radius-default"><a href="#second">Второй материал</a></article>
+        <article class="swiper-slide sf-carousel-slide surface-container p-3 radius-default"><a href="#third">Третий материал</a></article>
+      </div></div>
+      <button class="sf-carousel-switch sf-carousel-switch--left" type="button" aria-label="Предыдущий слайд">‹</button>
+      <button class="sf-carousel-switch sf-carousel-switch--right" type="button" aria-label="Следующий слайд">›</button>
+      <div class="sf-carousel-pagination" aria-label="Выбор слайда"></div>
+    </section>
+
+    <section id="automatic" class="sf-carousel" data-label="Предложения" data-autoplay="true" data-delay="1000" data-play-label="Запустить смену слайдов" data-pause-label="Остановить смену слайдов">
+      <div class="sf-carousel-slider swiper"><div class="swiper-wrapper">
+        <article class="swiper-slide sf-carousel-slide surface-container p-3 radius-default">Первое предложение</article>
+        <article class="swiper-slide sf-carousel-slide surface-container p-3 radius-default">Второе предложение</article>
+      </div></div>
+      <button class="sf-carousel-rotation" type="button">Старт / пауза</button>
+    </section>
+
+    <section id="fail-closed" class="sf-carousel" data-label="Без управления" data-autoplay="true">
+      <div class="sf-carousel-slider swiper"><div class="swiper-wrapper">
+        <article class="swiper-slide sf-carousel-slide">Один</article>
+        <article class="swiper-slide sf-carousel-slide">Два</article>
+      </div></div>
+    </section>
+
+    <button id="add-carousel" type="button">Добавить карусель</button>
+  </main>
+  <script>
+    document.getElementById('add-carousel').addEventListener('click', () => {
+      const root = document.createElement('section');
+      root.id = 'dynamic-carousel';
+      root.className = 'sf-carousel';
+      root.dataset.label = 'Поздняя карусель';
+      root.innerHTML = '<div class="sf-carousel-slider swiper"><div class="swiper-wrapper"><div class="swiper-slide sf-carousel-slide">А</div><div class="swiper-slide sf-carousel-slide">Б</div></div></div>';
+      document.querySelector('main').append(root);
+    });
+  </script>
+  <script src="../../source/output/carousel-browser/core/js/core.js"></script>
+</body>
+</html>

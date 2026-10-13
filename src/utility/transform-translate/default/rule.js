@@ -1,0 +1,1 @@
+SF.RuleLoader["transform-translate/default"] = new RegExp("^(?:(?:-translate-(?:x-(?:0|1|2|3|4|5|6|7|8|9|full|half)|y-(?:0|1|2|3|4|5|6|7|8|9|full|half))|translate-(?:x-(?:0|1|2|3|4|5|6|7|8|9|full|half)|y-(?:0|1|2|3|4|5|6|7|8|9|full|half))))(?![\\s\\S])");

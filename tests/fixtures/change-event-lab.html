@@ -1,0 +1,15 @@
+<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Change event lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css"><link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<script>window.sfPath='/ui/distr/';</script></head><body style="padding:16px;padding-bottom:600px">
+<sf-dropdown id="dd" label="D" size="1"><sf-list-item type="text" text="One" value="1"></sf-list-item><sf-list-item type="text" text="Two" value="2"></sf-list-item></sf-dropdown>
+<sf-datepicker id="dp" label="Date"></sf-datepicker>
+<sf-button-group id="bg" value="a" items='[{"value":"a","label":"A"},{"value":"b","label":"B"}]'></sf-button-group>
+<sf-tag id="tg" kind="checkbox" text="T"></sf-tag><sf-tag id="tg2" type="checkbox" text="T2"></sf-tag>
+<sf-radio id="rd" label="R" name="r" value="x"></sf-radio>
+<sf-range-slider id="rs" min="0" max="10" value="3"></sf-range-slider>
+<sf-toggle id="tq" label="T"></sf-toggle>
+<sf-country-code id="cc" label="Phone"></sf-country-code>
+<script>window.__ev={};const watch=['change','input','sf-change','sf-dropdown:change','sf-datepicker-change','sf-button-group-change','sf-range-slider-change'];document.addEventListener('DOMContentLoaded',()=>{for(const el of document.querySelectorAll('[id]'))for(const n of watch)el.addEventListener(n,e=>{const k=el.id+':'+n;(__ev[k] ||= 0);__ev[k]++;});});</script>
+<script src="/ui-smart/smart/list-item/js/list-item.js"></script><script src="/ui-smart/smart/dropdown/js/dropdown.js"></script><script src="/ui-smart/smart/inputs/js/inputs.js"></script><script src="/ui-smart/smart/datepicker/js/datepicker.js"></script><script src="/ui-smart/smart/buttons/js/buttons.js"></script><script src="/ui-smart/smart/button-group/js/button-group.js"></script><script src="/ui-smart/smart/tags/js/tags.js"></script><script src="/ui-smart/smart/radio/js/radio.js"></script><script src="/ui-smart/smart/range-slider/js/range-slider.js"></script><script src="/ui-smart/smart/toggle/js/toggle.js"></script><script src="/ui-smart/smart/country-code/js/country-code.js"></script>
+</body></html>

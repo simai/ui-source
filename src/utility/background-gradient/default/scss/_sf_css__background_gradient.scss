@@ -1,0 +1,85 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BACKGROUND GRADIENT
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        .#{$infix}bg-none {
+            background-image: none;
+        }
+
+        .#{$infix}bg-gradient-to-t {
+            background-image: linear-gradient(
+                to top,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-tr {
+            background-image: linear-gradient(
+                to top right,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-r {
+            background-image: linear-gradient(
+                to right,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-br {
+            background-image: linear-gradient(
+                to bottom right,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-b {
+            background-image: linear-gradient(
+                to bottom,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-bl {
+            background-image: linear-gradient(
+                to bottom left,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-l {
+            background-image: linear-gradient(
+                to left,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+        .#{$infix}bg-gradient-to-tl {
+            background-image: linear-gradient(
+                to top left,
+                var(--sf-gradient--color-1),
+                var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))),
+                var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
+            );
+        }
+    }
+// }
+}

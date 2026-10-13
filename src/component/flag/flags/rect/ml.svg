@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="116 644 28 20" fill="none" role="img">
+<g id="Country=ML">
+<rect id="Mask_306" x="116" y="644" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask142_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="116" y="644" width="28" height="20">
+<rect id="Mask_307" x="116" y="644" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask142_8205_11341)">
+<rect id="Mask_308" x="129.333" y="644" width="14.6667" height="20" fill="#D80027"/>
+<path id="Rectangle 2_207" fill-rule="evenodd" clip-rule="evenodd" d="M116 664H125.333V644H116V664Z" fill="#A1E367"/>
+<path id="Rectangle 2 Copy_8" fill-rule="evenodd" clip-rule="evenodd" d="M125.333 664H134.666V644H125.333V664Z" fill="#FFDA44"/>
+</g>
+</g>
+</svg>

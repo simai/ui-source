@@ -1,0 +1,35 @@
+{
+  ".sf-quantity": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/4)",
+    "justify-content/flex-start (.justify-start)"
+  ],
+  ".sf-quantity .sf-quantity-label": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-1\\/4)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/flex-start (.items-start)"
+  ],
+  ".sf-quantity .sf-quantity-wrap": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "gap/var(--sf-space-2)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-quantity .sf-quantity-count": [
+    "display/flex (.flex)",
+    "flex-direction/row (.flex-row)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/flex-start (.justify-start)",
+    "align-items/center (.items-center)"
+  ],
+  ".sf-quantity .sf-quantity-wrap input": [
+    "display/flex (.flex)"
+  ]
+}

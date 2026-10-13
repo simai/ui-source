@@ -1,0 +1,13 @@
+{
+  "schema": "simai.elevation-shadow.v1",
+  "rule": "Height is one semantic: a step N is the pair --sf-elevation-N--surface and --sf-elevation-N--shadow, and whatever floats above the page takes both. A step's shadow alone leaves a panel flat in the dark theme, where the shadow is black on a near-black page and only the lighter surface shows the height. Components therefore do not use --sf-ui-shadow-N (N 1-5) directly, and a stylesheet that uses a step's shadow also uses that step's surface. The exemptions below are not panels: they keep a colour that carries meaning, which a raised surface would overwrite.",
+  "rim": "--sf-shadow--rim is the last layer of every step's shadow, off by default (0 0 0 0 transparent). A theme may switch it on to outline raised panels in the dark.",
+  "utility": "elevation-N sets the pair; shadow-N stays a shadow alone, for an element whose own fill carries meaning.",
+  "exemptions": [
+    {"file": "src/smart/sortable/scss/_smart__sortable.scss", "token": "--sf-ui-shadow-4", "reason": "The drag ghost is a copy of the dragged element and keeps that element's own fill; a raised surface would repaint it."},
+    {"file": "src/smart/toggle/scss/styles_default.scss", "token": "--sf-ui-shadow-1", "reason": "The toggle knob sits on its track and keeps its own colour; it is a control part, not a panel."},
+    {"file": "src/component/range-slider/scss/_css__thumbs.scss", "token": "--sf-ui-shadow-1", "reason": "The value tooltip is painted by the tooltip role (inverse or surface-1), which a raised surface would overwrite."},
+    {"file": "src/component/range-slider/scss/_css__range_slider.scss", "token": "--sf-ui-shadow-2", "reason": "The track keeps its container fill; it is a control part, not a panel."},
+    {"file": "src/component/featured-icon/scss/_css_featured-icon.scss", "token": "--sf-ui-shadow-2", "reason": "The elevated featured icon keeps its container wash, which reads in both themes and carries the icon's tone."}
+  ]
+}

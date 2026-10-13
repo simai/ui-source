@@ -1,0 +1,29 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__font_weight' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FONT WEIGHT
+
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+
+        // Font Weight Named
+        @each $font-weight-named-name, $font-weight-named-value in $font-weight-named-array {
+            .#{$infix}#{$font-weight-named-name} {
+                font-weight: #{$font-weight-named-value};
+            }
+        }
+
+        // Font Weight
+        @each $font-weight-name, $font-weight-value in $font-weight-array {
+            .#{$infix}weight-#{$font-weight-name} {
+                font-weight: #{$font-weight-value};
+            }
+        }        
+    }
+// }
+}

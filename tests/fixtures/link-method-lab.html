@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Link — component method lab</title>
+  <link rel="stylesheet" href="../../source/output/link-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/link-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/link-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/link-browser/component/link/css/link.css?sf_candidate=link-final">
+</head>
+<body>
+  <main class="p-4 grid gap-4">
+    <h1 class="m-0">Проверка Link</h1>
+
+    <div>
+      <a id="plain" class="sf-link" href="#destination">Перейти к результату</a>
+    </div>
+
+    <a id="structured" class="sf-link" href="#structured-target">
+      <span class="sf-link__content">Открыть руководство</span>
+    </a>
+
+    <a id="legacy" class="sf-link" href="#legacy-target">
+      <span class="sf-link-content">Совместимая подпись</span>
+    </a>
+
+    <a id="leading" class="sf-link" href="#leading-target">
+      <i class="sf-icon sf-icon-loaded sf-link__icon" aria-hidden="true">arrow_back</i>
+      <span class="sf-link__content">Вернуться к списку</span>
+    </a>
+
+    <a id="trailing" class="sf-link" href="#trailing-target">
+      <span class="sf-link__content">Открыть руководство</span>
+      <i class="sf-icon sf-icon-loaded sf-link__icon" aria-hidden="true">arrow_forward</i>
+    </a>
+
+    <div class="w-1/3">
+      <a id="long" class="sf-link" href="#long-target">
+        <span class="sf-link__content">Перейти к подробному руководству по настройке распределённых рабочих пространств</span>
+        <i class="sf-icon sf-icon-loaded sf-link__icon" aria-hidden="true">arrow_forward</i>
+      </a>
+    </div>
+
+    <a id="external" class="sf-link" href="https://example.com/guide" target="_blank" rel="noopener">
+      <span class="sf-link__content">Внешнее руководство (откроется в новой вкладке)</span>
+      <i class="sf-icon sf-icon-loaded sf-link__icon" aria-hidden="true">open_in_new</i>
+    </a>
+
+    <a id="download" class="sf-link" href="guide.pdf" download>Скачать руководство</a>
+
+    <span id="disabled" class="sf-link disabled" aria-disabled="true">
+      <span class="sf-link__content">Материал готовится</span>
+    </span>
+
+    <section id="destination" class="p-2 bg-surface-container radius-default">Результат перехода</section>
+  </main>
+</body>
+</html>

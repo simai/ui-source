@@ -1,0 +1,276 @@
+{
+  "allowed_change_scope": [
+    {
+      "actions": [
+        "create",
+        "document",
+        "modify",
+        "test"
+      ],
+      "file_patterns": [
+        "contracts/**",
+        "distr/**"
+      ],
+      "owner_id": "framework",
+      "package_id": "simai/ui",
+      "repository_id": "simai/ui"
+    },
+    {
+      "actions": [
+        "create",
+        "document",
+        "modify",
+        "test"
+      ],
+      "file_patterns": [
+        "contracts/**",
+        "docs/**",
+        "graph/specs/**",
+        "src/component/**",
+        "src/core/**",
+        "src/smart/**",
+        "tests/**"
+      ],
+      "owner_id": "framework",
+      "package_id": "simai/ui-source",
+      "repository_id": "project.ui-source.3dcd25947162"
+    },
+    {
+      "actions": [
+        "create",
+        "document",
+        "modify",
+        "test"
+      ],
+      "file_patterns": [
+        "contracts/**",
+        "libs/**",
+        "scripts/**",
+        "tests/**"
+      ],
+      "owner_id": "ui-builder",
+      "package_id": "simai/ui-builder",
+      "repository_id": "simai/ui-builder"
+    },
+    {
+      "actions": [
+        "create",
+        "document",
+        "modify",
+        "test"
+      ],
+      "file_patterns": [
+        "contracts/**",
+        "smart/**"
+      ],
+      "owner_id": "framework",
+      "package_id": "simai/ui-smart",
+      "repository_id": "simai/ui-smart"
+    },
+    {
+      "actions": [
+        "create",
+        "document",
+        "modify",
+        "test"
+      ],
+      "file_patterns": [
+        "control/**"
+      ],
+      "owner_id": "ui-control",
+      "package_id": "simai/ui-control",
+      "repository_id": "simai/ui-control"
+    }
+  ],
+  "architecture_contract": {
+    "acceptance_ref": "decision.framework.exact-pair-target-accepted",
+    "allowed_relations": [
+      "sf5.components->sf5.core"
+    ],
+    "architecture_owner_id": "human.rim-zabarov",
+    "capability_ids": [
+      "capability.framework.loader-runtime",
+      "capability.framework.page-recipes",
+      "capability.framework.smart-components"
+    ],
+    "component_ids": [
+      "sf5.components",
+      "sf5.core",
+      "sf5.smart-components"
+    ],
+    "contract_ref": "contract.framework.exact-pair-recipe-101-table-actions",
+    "forbidden_dependencies": [],
+    "forbidden_relations": [],
+    "lifecycle": "accepted",
+    "owner_ids": [
+      "framework",
+      "larena",
+      "ui-builder",
+      "ui-control"
+    ],
+    "ownership_boundaries": [
+      {
+        "access_owner": "framework",
+        "data_owner": "framework",
+        "interface_owner": "framework",
+        "lifecycle_owner": "framework",
+        "runtime_owner": "framework",
+        "subject_ref": "simai/ui-smart"
+      },
+      {
+        "access_owner": "framework",
+        "data_owner": "framework",
+        "interface_owner": "framework",
+        "lifecycle_owner": "framework",
+        "runtime_owner": "framework",
+        "subject_ref": "simai/ui-source"
+      },
+      {
+        "access_owner": "framework",
+        "data_owner": "framework",
+        "interface_owner": "framework",
+        "lifecycle_owner": "framework",
+        "runtime_owner": "framework",
+        "subject_ref": "simai/ui"
+      },
+      {
+        "access_owner": "ui-builder",
+        "data_owner": "ui-builder",
+        "interface_owner": "ui-builder",
+        "lifecycle_owner": "ui-builder",
+        "runtime_owner": "ui-builder",
+        "subject_ref": "simai/ui-builder"
+      },
+      {
+        "access_owner": "ui-control",
+        "data_owner": "ui-control",
+        "interface_owner": "ui-control",
+        "lifecycle_owner": "ui-control",
+        "runtime_owner": "ui-control",
+        "subject_ref": "simai/ui-control"
+      }
+    ],
+    "package_ids": [
+      "simai/ui",
+      "simai/ui-builder",
+      "simai/ui-control",
+      "simai/ui-smart",
+      "simai/ui-source"
+    ],
+    "required_dependencies": [
+      "simai/ui-smart->simai/ui"
+    ],
+    "required_relations": [
+      "sf5.smart-components->sf5.components"
+    ]
+  },
+  "constraint_ids": [
+    "constraint.framework.exact-pair",
+    "constraint.framework.native-builder",
+    "constraint.framework.preserve-dirty"
+  ],
+  "decision_refs": [
+    "decision.framework.exact-pair-target-accepted"
+  ],
+  "deferred_boundary_ids": [
+    "boundary.framework.production-adoption"
+  ],
+  "execution_contract_digest": "ba1bfff4997264906e61c78889f7aec8efca55e2342aecf10fa51e31c1a4120a",
+  "goal_binding": {
+    "done_when_ids": [
+      "done.framework.exact-pair.1",
+      "done.framework.exact-pair.2",
+      "done.framework.exact-pair.3",
+      "done.framework.exact-pair.4",
+      "done.framework.exact-pair.5",
+      "done.framework.exact-pair.6",
+      "done.framework.exact-pair.7",
+      "done.framework.exact-pair.8"
+    ],
+    "goal_id": "goal.framework.exact-pair-recipe-101-table-actions"
+  },
+  "non_goal_ids": [
+    "non-goal.framework.global-federation-publication",
+    "non-goal.framework.grammar-fork",
+    "non-goal.framework.product-business-writes"
+  ],
+  "provider_graph_id": "project.ui-source.3dcd25947162",
+  "provider_revision": "02f3f7c2cb4e21d64ec4910ed916b30071ba13bd",
+  "requirement_bindings": [
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.1"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.1"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.1"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.2"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.2"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.2"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.3"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.3"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.3"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.4"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.4"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.4"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.5"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.5"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.5"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.6"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.6"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.6"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.7"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.7"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.7"
+    },
+    {
+      "acceptance_ids": [
+        "acceptance.framework.exact-pair.8"
+      ],
+      "done_when_ids": [
+        "done.framework.exact-pair.8"
+      ],
+      "requirement_id": "requirement.framework.exact-pair.8"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "semantic_digest": "sha256:8e56fb2b195b370995a0b300cfffd82d1d69c7b41f0cb02f659e41dcd897d226",
+  "target_id": "target.framework.exact-pair-recipe-101-table-actions"
+}

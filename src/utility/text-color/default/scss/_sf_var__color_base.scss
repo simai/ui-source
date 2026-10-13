@@ -1,0 +1,81 @@
+// SIMAI Framework
+// https://simai.io
+
+// BASE COLOR
+
+$color-base-array: (
+    'transparent': 'transparent',
+    'current': 'current',
+    'inherit': 'inherit',
+    'on-surface': 'on-surface',
+    'on-surface-fixed': 'on-surface-fixed',
+    'on-surface-variant': 'on-surface-variant',
+    'on-surface-inverse': 'on-surface-inverse',
+    'on-surface-inverse-fixed': 'on-surface-inverse-fixed',
+    'disable': 'disable',
+    'on-disable': 'on-disable',
+    'primary': 'primary',
+    'on-primary': 'on-primary',
+    'on-primary-container': 'on-primary-container',
+    'on-primary-container-graphic': 'on-primary-container-graphic',
+    'secondary': 'secondary',
+    'on-secondary': 'on-secondary',
+    'on-secondary-container': 'on-secondary-container',
+    'on-secondary-container-graphic': 'on-secondary-container-graphic',
+    'tertiary': 'tertiary',
+    'on-tertiary': 'on-tertiary',
+    'on-tertiary-container': 'on-tertiary-container',
+    'on-tertiary-container-graphic': 'on-tertiary-container-graphic',
+    'error': 'error',
+    'on-error': 'on-error',
+    'on-error-container': 'on-error-container',
+    'on-error-container-graphic': 'on-error-container-graphic',
+    'warning': 'warning',
+    'on-warning': 'on-warning',
+    'on-warning-container': 'on-warning-container',
+    'on-warning-container-graphic': 'on-warning-container-graphic',
+    'success': 'success',
+    'on-success': 'on-success',
+    'on-success-container': 'on-success-container',
+    'on-success-container-graphic': 'on-success-container-graphic',
+);
+
+$color-base-hover-active-array: (
+    'transparent': 'transparent',
+    'on-surface': 'on-surface',
+    'on-surface-fixed': 'on-surface-fixed',
+    'on-surface-variant': 'on-surface-variant',
+    'on-surface-inverse': 'on-surface-inverse',
+    'on-surface-inverse-fixed': 'on-surface-inverse-fixed',
+    'on-disable': 'on-disable',
+
+    'primary': 'primary',
+    'on-primary': 'on-primary',
+    'on-primary-container': 'on-primary-container',
+    'on-primary-container-graphic': 'on-primary-container-graphic',
+
+    'secondary': 'secondary',
+    'on-secondary': 'on-secondary',
+    'on-secondary-container': 'on-secondary-container',
+    'on-secondary-container-graphic': 'on-secondary-container-graphic',
+
+    'tertiary': 'tertiary',
+    'on-tertiary': 'on-tertiary',
+    'on-tertiary-container': 'on-tertiary-container',
+    'on-tertiary-container-graphic': 'on-tertiary-container-graphic',
+
+    'error': 'error',
+    'on-error': 'on-error',
+    'on-error-container': 'on-error-container',
+    'on-error-container-graphic': 'on-error-container-graphic',
+
+    'warning': 'warning',
+    'on-warning': 'on-warning',
+    'on-warning-container': 'on-warning-container',
+    'on-warning-container-graphic': 'on-warning-container-graphic',
+
+    'success': 'success',
+    'on-success': 'on-success',
+    'on-success-container': 'on-success-container',
+    'on-success-container-graphic': 'on-success-container-graphic',
+);

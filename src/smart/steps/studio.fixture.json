@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.steps",
+  "title": "Steps reference",
+  "summary": "Deterministic reference fixture for sf-steps.",
+  "locale": "ru",
+  "props": {
+    "aria-label": "Этапы публикации",
+    "completed-label": "Завершено",
+    "current": 1,
+    "error-label": "Ошибка",
+    "items": "Черновик|Проверка|Готово"
+  },
+  "children": [],
+  "state": "default"
+}

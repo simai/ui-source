@@ -1,0 +1,49 @@
+@use 'sf_var__scroll_hover' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SCROLLBAR
+
+// @include layer-priority(utility,default) {
+  .scroll-hover {
+    /* Firefox: hide by default */
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    &:hover {
+      /* Firefox: show thin scrollbar on hover */
+      scrollbar-width: thin;
+      scrollbar-color: var(--sf-scroll-bg-thumb) var(--sf-transparent);
+    }
+
+    &:hover::-webkit-scrollbar {
+      width: var(--sf-scroll-bg-width);
+      height: var(--sf-scroll-bg-width);
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+      height: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
+      border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
+      background-clip: padding-box;
+      border-radius: var(--sf-scroll-radius);
+      background-color: var(--sf-scroll-bg-thumb);
+    }
+
+    &:hover::-webkit-scrollbar-track {
+      background-color: var(--sf-scroll-bg-track);
+      border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
+      background-clip: padding-box;
+      border-radius: var(--sf-scroll-radius);
+    }
+
+    &, &::-webkit-scrollbar, &::-webkit-scrollbar-thumb, &::-webkit-scrollbar-track {
+      transition: var(--sf-duration-normal) var(--sf-animation);
+    }
+  }
+// }
+}

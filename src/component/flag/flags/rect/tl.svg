@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 980 28 20" fill="none" role="img">
+<g id="Country=TL">
+<rect id="Mask_437" x="260" y="980" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask204_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="980" width="28" height="20">
+<rect id="Mask_438" x="260" y="980" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask204_8205_11341)">
+<rect id="Mask Copy_46" x="260" y="980" width="28" height="20" fill="#D80027"/>
+<path id="Rectangle 83_13" fill-rule="evenodd" clip-rule="evenodd" d="M260 980L277.333 990L260 1000V980Z" fill="#FFDA44"/>
+<path id="Rectangle 83_14" fill-rule="evenodd" clip-rule="evenodd" d="M260 980L272 990L260 1000V980Z" fill="#333333"/>
+<path id="Star 8_16" fill-rule="evenodd" clip-rule="evenodd" d="M265.944 990.824L265.06 992.763L264.598 990.683L262.481 990.441L264.317 989.359L263.893 987.27L265.489 988.682L267.344 987.633L266.495 989.588L268.066 991.028L265.944 990.824Z" fill="#F0F0F0"/>
+</g>
+</g>
+</svg>

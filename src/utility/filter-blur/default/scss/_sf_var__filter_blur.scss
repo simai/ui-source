@@ -1,0 +1,12 @@
+// SIMAI Framework
+// https://simai.io
+
+// FILTER
+
+$filter-blur-array:(
+    '-small': 'small',
+    '': 'medium',
+    '-medium': 'medium',
+    '-large': 'large',
+    '-none' : 'none',
+);

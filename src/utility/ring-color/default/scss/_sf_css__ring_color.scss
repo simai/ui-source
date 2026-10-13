@@ -1,0 +1,24 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../border-color/default/scss/sf_var__border_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Ring Color
+        @each $ring-color-name, $ring-color-value in $border-color-array {
+            .#{$infix}ring-#{$ring-color-name} {
+                --sf-ring-color: var(--sf-#{$ring-color-value});
+            }
+        }
+    }
+// }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "load-applied-carries-the-whole-menu",
+  "intent": "navigation.load",
+  "summary": "The menu arrives whole: tree, layout applied, favourites, profiles, rights and the person.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "connected",
+      "site": null
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision",
+      "echo",
+      "site",
+      "items",
+      "favourites",
+      "profiles",
+      "rights",
+      "person"
+    ],
+    "data_must_include": [
+      "navigation"
+    ],
+    "note": "One read draws the first column, the second and the profile menu. A menu that read the person separately would draw a profile button with nobody in it."
+  }
+}

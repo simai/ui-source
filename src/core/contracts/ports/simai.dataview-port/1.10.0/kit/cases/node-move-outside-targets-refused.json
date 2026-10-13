@@ -1,0 +1,46 @@
+{
+  "id": "node-move-outside-targets-refused",
+  "intent": "node.move",
+  "capability": "tree-move",
+  "summary": "A move to a place the host did not offer is refused, whatever the component sent.",
+  "given": {
+    "records": [
+      {
+        "id": "about",
+        "parent": "site",
+        "has_children": true,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "move"
+        ]
+      },
+      {
+        "id": "team",
+        "parent": "about",
+        "has_children": false,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "move"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "node.move",
+    "payload": {
+      "id": "about",
+      "parent": "team",
+      "index": 0,
+      "revision": "r1"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "A node cannot become a child of its own descendant."
+  }
+}

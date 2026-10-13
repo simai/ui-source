@@ -1,0 +1,682 @@
+{
+  "entries": [
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.page"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 500,
+          "min": 0
+        }
+      },
+      "type": "layout.page",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [
+          "contained",
+          "spacious"
+        ],
+        "presets": [
+          "surface",
+          "contrast"
+        ],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.section"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 500,
+          "min": 0
+        }
+      },
+      "type": "layout.section",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [
+        "composition/layout"
+      ],
+      "capabilities": [
+        "html"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [
+          "equal",
+          "responsive"
+        ],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "maximum": 12,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.columns"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "columns": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 12,
+          "min": 1
+        }
+      },
+      "type": "layout.columns",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html",
+        "rich-text"
+      ],
+      "category": "content",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "text"
+                    },
+                    "value": {
+                      "maxLength": 100000,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "children": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "marks": {
+                            "items": {
+                              "enum": [
+                                "strong",
+                                "em",
+                                "code"
+                              ]
+                            },
+                            "type": "array",
+                            "uniqueItems": true
+                          },
+                          "type": {
+                            "const": "text"
+                          },
+                          "value": {
+                            "maxLength": 100000,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "type": "object"
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "href": {
+                      "maxLength": 2048,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "link"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "href",
+                    "children"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "level": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout",
+        "structured-content"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "content.heading"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {},
+      "type": "content.heading",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html",
+        "rich-text"
+      ],
+      "category": "content",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "text"
+                    },
+                    "value": {
+                      "maxLength": 100000,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "children": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "marks": {
+                            "items": {
+                              "enum": [
+                                "strong",
+                                "em",
+                                "code"
+                              ]
+                            },
+                            "type": "array",
+                            "uniqueItems": true
+                          },
+                          "type": {
+                            "const": "text"
+                          },
+                          "value": {
+                            "maxLength": 100000,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "type": "object"
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "href": {
+                      "maxLength": 2048,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "link"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "href",
+                    "children"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "type": "object"
+      },
+      "mode": "leaf",
+      "presentation": {
+        "modifiers": [
+          "lead",
+          "muted"
+        ],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout",
+        "structured-content"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "content.paragraph"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {},
+      "type": "content.paragraph",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html",
+        "regions"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.regions"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "regions": {
+          "max": 12,
+          "min": 1,
+          "types": [
+            "layout.region"
+          ]
+        }
+      },
+      "type": "layout.regions",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html",
+        "regions"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "accepts": {
+            "items": {
+              "enum": [
+                "layout",
+                "content",
+                "smart"
+              ]
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "landmark": {
+            "enum": [
+              "banner",
+              "navigation",
+              "main",
+              "complementary",
+              "contentinfo",
+              "region",
+              "none"
+            ]
+          },
+          "max_items": {
+            "maximum": 500,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "min_items": {
+            "maximum": 500,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{0,31}$",
+            "type": "string"
+          },
+          "placement": {
+            "enum": [
+              "block",
+              "start",
+              "center",
+              "end"
+            ]
+          },
+          "sticky": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "landmark"
+        ],
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.region"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 500,
+          "min": 0
+        }
+      },
+      "type": "layout.region",
+      "version": "1.0.0"
+    },
+    {
+      "assets": [],
+      "capabilities": [
+        "html",
+        "hydration",
+        "routing"
+      ],
+      "category": "layout",
+      "data_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "mode": "composite",
+      "presentation": {
+        "modifiers": [],
+        "presets": [],
+        "views": [
+          "default"
+        ]
+      },
+      "profiles": [
+        "ui-layout"
+      ],
+      "props_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "routes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "endpoint": {
+                      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                      "type": "string"
+                    },
+                    "port": {
+                      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "endpoint",
+                    "port"
+                  ],
+                  "type": "object"
+                },
+                "id": {
+                  "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                  "type": "string"
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "endpoint": {
+                      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                      "type": "string"
+                    },
+                    "port": {
+                      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "endpoint",
+                    "port"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id",
+                "from",
+                "to"
+              ],
+              "type": "object"
+            },
+            "maxItems": 32,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "routes"
+        ],
+        "type": "object"
+      },
+      "renderer": {
+        "kind": "builtin",
+        "name": "layout.scope"
+      },
+      "schema": "simai.composition.type-manifest.v1",
+      "slots": {
+        "default": {
+          "categories": [
+            "layout",
+            "content",
+            "smart"
+          ],
+          "max": 500,
+          "min": 1
+        }
+      },
+      "type": "layout.scope",
+      "version": "1.0.0"
+    }
+  ],
+  "schema": "simai.composition.type-registry.v1"
+}

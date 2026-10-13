@@ -1,0 +1,26 @@
+@layer sf.components {
+.sf-progress-bar .sf-progress-bar-progress {
+  height: 100%;
+  margin-inline-end: auto;
+  width: 0;
+  transition-property: width;
+  /* The width of a filling bar is the one thing on it that moves, and it moves
+     far: the fast step reads as a jump. This used to name --sf-duration-default,
+     which is declared nowhere -- the scale is fast, normal, slow -- so the
+     browser dropped the declaration and the bar had no transition at all. */
+  transition-duration: var(--sf-duration-normal);
+}
+
+.sf-progress-bar .sf-progress-bar-main  {
+  width: 100%;
+}
+.sf-progress-bar {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-progress-bar .sf-progress-bar-progress {
+    transition-duration: 0s;
+  }
+}
+}

@@ -1,0 +1,23 @@
+@use 'sf_var__fill' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SVG - FILL
+
+$infix: '';
+
+@each $modifier-name, $var-name in $fill-color-array {
+    .#{$infix}fill-#{$modifier-name} {
+        fill: var(--sf-#{$var-name})
+    }
+}
+
+$event: 'hover';
+
+@each $modifier-name, $var-name in $fill-color-hover-active-array {
+    .#{$event}\:fill-#{$modifier-name}:#{$event} {
+        fill: var(--sf-#{$var-name})
+    }
+}
+}

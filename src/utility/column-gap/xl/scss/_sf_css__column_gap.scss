@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../../padding/default/scss/sf_var__padding' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// COLUMN GAP
+
+// @include layer-priority(utility,xl) {
+@include breakpoint-media(xl) {
+  $infix: breakpoint-infix(xl, $breakpoint-array);
+
+  // Use space tokens for column-gap in multi-column layouts
+  @each $size in $space-size-array {
+    .#{$infix}col-gap-#{$size} {
+      column-gap: var(--sf-space-#{$size});
+    }
+  }
+}
+// }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.spinner",
+  "title": "Spinner reference",
+  "summary": "Deterministic reference fixture for sf-spinner.",
+  "locale": "ru",
+  "props": {
+    "label": "Загрузка данных",
+    "size": "2",
+    "infinite": true
+  },
+  "children": [],
+  "state": "default"
+}

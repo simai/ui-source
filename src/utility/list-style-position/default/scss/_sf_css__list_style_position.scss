@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__list_style_position' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+        
+        // List Style Position
+        @each $list-style-position-name, $list-style-position-value in $list-style-position-array {
+            .#{$infix}list-#{$list-style-position-name} {
+                list-style-position: #{$list-style-position-value};
+            }
+        }
+    }
+// }
+}

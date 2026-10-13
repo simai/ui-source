@@ -1,0 +1,13 @@
+@layer sf.components {
+  .sf-input .sf-input-field input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+  }
+
+  .sf-input .sf-input-right,
+  .sf-input .sf-input-field > .sf-icon,
+  .sf-input .sf-input-field > .sf-icon-hint {
+    flex-shrink: 0;
+  }
+}

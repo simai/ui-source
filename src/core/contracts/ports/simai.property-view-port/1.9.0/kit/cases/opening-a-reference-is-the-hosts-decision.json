@@ -1,0 +1,12 @@
+{
+  "id": "opening-a-reference-is-the-hosts-decision",
+  "intent": "record.open",
+  "summary": "Activating a reference value asks the host what to open; the component follows no link and opens no window by itself.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.open", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "section", "value": {"value": "record-0317", "label": "Платежи", "href": "/admin/cms/record-0317"}}},
+  "then": {
+    "answer": "applied",
+    "note": "The host may push another panel, route to a full page, or refuse. Two decisions it must keep: following the href would be the component routing for the consumer, and opening a window itself would be the component deciding whether a half-edited window may be covered. Each window is its own element, so one left mid-edit underneath another keeps its unsaved changes."
+  }
+}

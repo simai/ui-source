@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — Reference Link и Download File</title>
+  <link rel="stylesheet" href="../../source/output/reference-download-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/reference-download-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/reference-download-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/reference-download-browser/component/reference-link/css/reference-link.css">
+  <link rel="stylesheet" href="../../source/output/reference-download-browser/component/download-file/css/download-file.css">
+</head>
+<body class="p-4">
+  <main class="grid grid-col-1 gap-3 max-w-xl">
+    <button id="before" type="button">До компонентов</button>
+    <section id="ordinary-reference" class="grid gap-2">
+      <div id="reference" class="sf-reference-link">
+        <div class="sf-reference-link__main">
+          <i class="sf-reference-link__icon sf-icon" aria-hidden="true">arrow_forward</i>
+          <a class="sf-reference-link__link" href="#destination">Очень подробное руководство по установке и безопасному первому запуску</a>
+        </div>
+        <div class="sf-reference-link__meta">/start/installation/first-safe-launch/</div>
+      </div>
+      <div id="reference-disabled" class="sf-reference-link disabled" aria-disabled="true">
+        <div class="sf-reference-link__main"><i class="sf-icon" aria-hidden="true">link_off</i><span>Архив недоступен</span></div>
+        <div class="sf-reference-link__meta">/archive/</div>
+      </div>
+    </section>
+    <section id="ordinary-download" class="grid gap-2">
+      <a id="download" href="#file" download="report.pdf" class="sf-download-file sf-download-file--size-1">
+        <span class="sf-download-file__body"><span class="sf-download-file__main"><i class="sf-download-file__icon sf-icon" aria-hidden="true">download</i><span class="sf-download-file__name">Очень длинное локализованное название итогового аналитического отчёта.pdf</span></span><span class="sf-download-file__size">2,4 МБ</span></span>
+      </a>
+      <button id="download-action" type="button" class="sf-download-file sf-download-file--size-1" data-file-name="generated.pdf">
+        <span class="sf-download-file__body"><span class="sf-download-file__main"><i class="sf-icon" aria-hidden="true">download</i><span class="sf-download-file__name">Подготовить файл</span></span><span class="sf-download-file__size">PDF</span></span>
+      </button>
+    </section>
+    <section id="smart" class="grid gap-2"></section>
+    <span id="destination"></span><span id="file"></span>
+  </main>
+  <script src="../../source/output/reference-download-browser/component/download-file/js/download-file.js"></script>
+  <script src="../../source/output/reference-download-browser/smart/icons/js/icons.js"></script>
+  <script src="../../source/output/reference-download-browser/smart/reference-link/js/reference-link.js"></script>
+  <script src="../../source/output/reference-download-browser/smart/download-file/js/download-file.js"></script>
+</body>
+</html>

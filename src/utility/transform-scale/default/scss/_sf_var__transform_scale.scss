@@ -1,0 +1,32 @@
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+// Transform Scale
+$transform-scale-array: (
+    '0': scale(0),
+    'x-0': scaleX(0),
+    'y-0': scaleY(0),
+    '1\\/4': scale(.8),
+    'x-1\\/4': scaleX(.8),
+    'y-1\\/4': scaleY(.8),
+    '1\\/3': scale(.9),
+    'x-1\\/3': scaleX(.9),
+    'y-1\\/3': scaleY(.9),
+    '1\\/2': scale(.95),
+    'x-1\\/2': scaleX(.95),
+    'y-1\\/2': scaleY(.95),
+    '1': scale(1),
+    'x-1': scaleX(1),
+    'y-1': scaleY(1),
+    '2': scale(1.05),
+    'x-2': scaleX(1.05),
+    'y-2': scaleY(1.05),
+    '3': scale(1.1),
+    'x-3': scaleX(1.1),
+    'y-3': scaleY(1.1),
+    '4': scale(1.2),
+    'x-4': scaleX(1.2),
+    'y-4': scaleY(1.2)
+);

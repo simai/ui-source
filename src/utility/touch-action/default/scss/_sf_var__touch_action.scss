@@ -1,0 +1,17 @@
+// SIMAI Framework
+// https://simai.io
+
+// TOUCH ACTION
+
+$touch-action-array: (
+    auto: auto,
+    none: none,
+    pan-x: pan-x,
+    pan-left: pan-left,
+    pan-right: pan-right,
+    pan-y: pan-y,
+    pan-up: pan-up,
+    pan-down: pan-down,
+    pinch-zoom: pinch-zoom,
+    manipulation: manipulation,
+);

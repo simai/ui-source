@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — anchored positioning</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    document.documentElement.className = view.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    for (const href of [`${assets}/core/css/core.css`, `${assets}/core/css/utility.full.css`]) document.write(`<link rel="stylesheet" href="${href}">`);
+    window.sfPath = assets;
+    window.sfSmartPath = view.get('smart');
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, smart: {base: true}, theme: false};
+  </script>
+  <style>
+    body { margin: 0; background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); min-block-size: 200vb; }
+    #stage { position: fixed; inset-inline: 0; padding: 0 var(--sf-space-1, 1rem); display: flex; gap: 1rem; }
+    #stage > * { inline-size: 14rem; flex: none; }
+    #scroller { overflow: auto; block-size: 12rem; }
+    #scroller-inner { block-size: 40rem; padding-block-start: 4rem; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div id="base" class="sf-dropdown sf-dropdown--size-1 sf-dropdown--outlined sf-dropdown--text flex flex-col">
+      <span class="sf-dropdown-label"><span class="sf-dropdown-text">Город</span></span>
+      <div class="sf-dropdown-field cursor-pointer items-cross-center transition flex relative">
+        <input class="sf-dropdown-hidden-input" type="hidden" name="base-city">
+        <input type="text" aria-label="Город" placeholder="Выберите город">
+        <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--size-1 absolute" aria-label="Открыть список"><i class="sf-icon" aria-hidden="true">keyboard_arrow_down</i></button>
+      </div>
+      <div class="sf-list flex flex-col">
+        <div class="sf-list-container-wrap"><div class="sf-list-container flex flex-col">
+          <div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer" role="option" tabindex="0" data-value="kazan"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">Казань</div></div></div>
+          <div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer" role="option" tabindex="0" data-value="moscow"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">Москва</div></div></div>
+          <div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer" role="option" tabindex="0" data-value="ufa"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">Уфа</div></div></div>
+          <div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer" role="option" tabindex="0" data-value="perm"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">Пермь</div></div></div>
+          <div class="sf-list-item sf-list-item--text sf-list-item--size-1 transition cursor-pointer" role="option" tabindex="0" data-value="omsk"><div class="sf-list-item-wrap flex flex-1"><div class="sf-list-item-container">Омск</div></div></div>
+        </div></div>
+      </div>
+    </div>
+    <sf-dropdown id="smart" name="smart-city" label="Город" search="false">
+      <sf-list-item value="kazan" text="Казань"></sf-list-item>
+      <sf-list-item value="moscow" text="Москва"></sf-list-item>
+      <sf-list-item value="ufa" text="Уфа"></sf-list-item>
+      <sf-list-item value="perm" text="Пермь"></sf-list-item>
+      <sf-list-item value="omsk" text="Омск"></sf-list-item>
+    </sf-dropdown>
+    <sf-datepicker id="date" label="Дата" value="2026-09-03"></sf-datepicker>
+  </div>
+  <dialog id="dialog"><div id="dialog-slot"></div></dialog>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      await Promise.all(['sf-dropdown', 'sf-datepicker'].map((tag) => customElements.whenDefined(tag)));
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

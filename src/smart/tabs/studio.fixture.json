@@ -1,0 +1,31 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tabs",
+  "title": "Tabs reference",
+  "summary": "Deterministic reference fixture for sf-tabs.",
+  "locale": "ru",
+  "props": {
+    "active-index": 0,
+    "items": "Обзор|История"
+  },
+  "children": [
+    {
+      "element": "button",
+      "props": {
+        "type": "button"
+      },
+      "text": "Обзор",
+      "children": []
+    },
+    {
+      "element": "button",
+      "props": {
+        "type": "button"
+      },
+      "text": "История",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

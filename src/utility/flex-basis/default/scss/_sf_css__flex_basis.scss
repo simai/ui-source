@@ -1,0 +1,15 @@
+@use 'sf_var__flex_basis' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FLEX
+// Fixed Basic Additional Utilities
+// @include layer-priority(utility,default) {
+    @each $flex-basis-name, $flex-basis-value in $flex-basis-array {
+        .basis-#{$flex-basis-name} {
+            flex-basis: #{$flex-basis-value};
+        }
+    }
+// }
+}

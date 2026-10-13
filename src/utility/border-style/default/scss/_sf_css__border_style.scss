@@ -1,0 +1,63 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__border_style' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BORDER
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Border Style
+        @each $style in $border-style-array {
+            .#{$infix}border-#{$style} {
+                border-style: #{$style};
+            }
+        }
+
+        // Border Sides Property
+        @each $side-name in $border-side-array {
+
+            // Horizontal Borders Property
+            @if $side-name == x {
+
+                // Border Style
+                @each $style in $border-style-array {
+                    .#{$infix}border-#{$side-name}-#{$style} { 
+                        border-inline-start-style: #{$style};
+                        border-inline-end-style: #{$style};
+                    }
+                }                
+            }
+            
+            // Vertical Borders Property
+            @elseif $side-name == y {
+
+                // Border Style
+                @each $style in $border-style-array {
+                    .#{$infix}border-#{$side-name}-#{$style} { 
+                        border-top-style: #{$style};
+                        border-bottom-style: #{$style};
+                    }
+                }
+            } 
+            
+            // Sides Borders Property
+            @else {
+
+                // Border Style
+                @each $style in $border-style-array {
+                    .#{$infix}border-#{$side-name}-#{$style} {
+                        border-#{$side-name}-style: #{$style};
+                    }
+                }		
+            }
+        }
+    }
+// }
+}

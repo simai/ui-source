@@ -1,0 +1,150 @@
+@layer sf.components {
+  .sf-download-file {
+    /* The card sits on whatever surface holds it; hover and press add the
+       container overlay. --sf-surface is not a token, so this was transparent
+       already -- now it says so. */
+    --sf-download-file--background-color: transparent;
+    --sf-download-file--border-color: var(--sf-outline-variant);
+    --sf-download-file--padding: var(--sf-space-1\/3);
+    --sf-download-file--text-size: var(--sf-text-size-1);
+    --sf-download-file--text-height: var(--sf-text-height-1);
+    --sf-download-file--icon-size: var(--sf-text-size-3);
+    --sf-download-file--gap: var(--sf-space-1\/3);
+
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: var(--sf-0);
+    max-inline-size: 100%;
+    padding: var(--sf-download-file--padding);
+    color: var(--sf-primary);
+    background-color: var(--sf-download-file--background-color);
+    border: var(--sf-px) solid var(--sf-download-file--border-color);
+    border-radius: var(--sf-radius--ui);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-download-file--text-size);
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-download-file--text-height);
+    text-align: start;
+    text-decoration: none;
+  }
+
+  button.sf-download-file {
+    appearance: none;
+  }
+
+  .sf-download-file :where(.sf-download-file__body, .sf-download-file-wrap) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-download-file--gap);
+    min-inline-size: var(--sf-0);
+  }
+
+  .sf-download-file :where(.sf-download-file__main, .sf-download-file-container) {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    min-inline-size: var(--sf-0);
+    color: var(--sf-primary);
+    font: inherit;
+  }
+
+  .sf-download-file :where(.sf-download-file__name, .sf-download-file-file-name) {
+    min-inline-size: var(--sf-0);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
+    flex: none;
+    color: var(--sf-on-surface-variant);
+    font: inherit;
+    white-space: nowrap;
+  }
+
+  .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
+    flex: none;
+    block-size: var(--sf-download-file--icon-size);
+    inline-size: var(--sf-download-file--icon-size);
+    color: var(--sf-primary);
+    font-size: var(--sf-download-file--icon-size);
+  }
+
+  .sf-download-file--size-1\/3 {
+    --sf-download-file--padding: var(--sf-space-1\/4);
+    --sf-download-file--text-size: var(--sf-text-size-1\/3);
+    --sf-download-file--text-height: var(--sf-text-height-1\/3);
+    --sf-download-file--icon-size: var(--sf-text-size-1);
+    --sf-download-file--gap: var(--sf-space-1\/4);
+  }
+
+  .sf-download-file--size-1\/2 {
+    --sf-download-file--text-size: var(--sf-text-size-1\/2);
+    --sf-download-file--text-height: var(--sf-text-height-1\/2);
+    --sf-download-file--icon-size: var(--sf-text-size-2);
+    --sf-download-file--gap: var(--sf-space-1\/4);
+  }
+
+  .sf-download-file--size-2 {
+    --sf-download-file--padding: var(--sf-space-1\/2);
+    --sf-download-file--text-size: var(--sf-text-size-2);
+    --sf-download-file--text-height: var(--sf-text-height-2);
+    --sf-download-file--icon-size: var(--sf-text-size-4);
+    --sf-download-file--gap: var(--sf-space-1\/2);
+  }
+
+  .sf-download-file--size-3 {
+    --sf-download-file--padding: var(--sf-space-1);
+    --sf-download-file--text-size: var(--sf-text-size-3);
+    --sf-download-file--text-height: var(--sf-text-height-3);
+    --sf-download-file--icon-size: var(--sf-text-size-5);
+    --sf-download-file--gap: var(--sf-space-1);
+  }
+}
+
+@layer sf.states {
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+    --sf-download-file--background-color: var(--sf-surface-container-hover);
+    --sf-download-file--border-color: var(--sf-outline-primary);
+  }
+
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+    --sf-download-file--background-color: var(--sf-surface-container-active);
+  }
+
+  .sf-download-file:focus {
+    outline: none;
+  }
+
+  .sf-download-file:focus-visible {
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-focus--offset);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
+  }
+
+  .sf-download-file:is(:disabled, .disabled, [aria-disabled='true']) {
+    --sf-download-file--border-color: var(--sf-outline-disable);
+
+    color: var(--sf-on-disable);
+    cursor: default;
+  }
+
+  .sf-download-file:is(:disabled, .disabled, [aria-disabled='true'])
+    :where(.sf-download-file__main, .sf-download-file-container, .sf-download-file__size, .sf-download-file-file-size, .sf-icon) {
+    color: var(--sf-on-disable);
+  }
+
+  @media (width < 32rem) { // below sm
+    .sf-download-file :where(.sf-download-file__body, .sf-download-file-wrap) {
+      align-items: flex-start;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-download-file:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}

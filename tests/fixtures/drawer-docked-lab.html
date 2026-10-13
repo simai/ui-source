@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Simai Framework — docked drawer</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    const smart = view.get('smart');
+    const source = view.get('source');
+    document.documentElement.className = view.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = view.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+    if (view.get('motion') === 'reduce') document.documentElement.dataset.reducedMotion = 'true';
+    for (const href of [`${assets}/core/css/core.css`, `${assets}/core/css/utility.full.css`]) document.write(`<link rel="stylesheet" href="${href}">`);
+    window.sfPath = assets;
+    window.sfSmartPath = smart;
+    window.SF_BOOT_CONFIG = {icons: {enabled: true, subsetHost: `${source}/tests/fixtures/icon-subset-service`}, preloader: {enabled: false}, smart: {base: true}, theme: false};
+  </script>
+  <style>
+    body { margin: 0; background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); }
+    #page { min-block-size: 100vb; }
+    #page article { padding: var(--sf-space-2, .5rem); }
+    #page-edge-start, #page-edge-end { display: inline-block; inline-size: 1px; block-size: 1px; }
+  </style>
+</head>
+<body>
+  <div id="page" data-sf-drawer-dock-host>
+    <article>
+      <span id="page-edge-start"></span>
+      <h1>Страница</h1>
+      <button id="open-library" type="button" data-drawer="toggle" aria-controls="library">Библиотека</button>
+      <button id="open-settings" type="button" data-drawer="toggle" aria-controls="settings">Настройки</button>
+      <p id="page-text">Содержимое страницы должно оставаться видимым целиком, когда открыты боковые панели.</p>
+      <a id="page-link" href="#page">Ссылка на странице</a>
+      <input id="editor-sim" aria-label="Поле, которое само обрабатывает Escape" onkeydown="if (event.key === 'Escape') event.preventDefault()">
+      <span id="page-edge-end" style="float: inline-end"></span>
+    </article>
+  </div>
+  <sf-drawer id="library" docked placement="inline-start" size="small" label="Библиотека блоков"><button id="library-action" type="button">Блок «Заголовок»</button></sf-drawer>
+  <sf-drawer id="settings" docked placement="inline-end" label="Настройки элемента"><button id="settings-action" type="button">Параметр</button></sf-drawer>
+  <script>
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      await customElements.whenDefined('sf-drawer');
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>

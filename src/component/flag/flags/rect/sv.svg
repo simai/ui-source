@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="212 308 28 20" fill="none" role="img">
+<g id="Country=SV">
+<rect x="212" y="308" width="28" height="20" fill="#F0F0F0"/>
+<path id="Rectangle 2_97" fill-rule="evenodd" clip-rule="evenodd" d="M212 314.667H240V308H212V314.667Z" fill="#0052B4"/>
+<path id="Rectangle 2_98" fill-rule="evenodd" clip-rule="evenodd" d="M212 328H240V321.333H212V328Z" fill="#0052B4"/>
+<path id="Oval 12_4" d="M227.599 315.87C228.246 316.356 228.666 317.128 228.666 318C228.666 319.473 227.473 320.666 226 320.667C224.527 320.667 223.333 319.473 223.333 318C223.333 317.128 223.753 316.356 224.4 315.87L225.333 318.667H226.666L227.599 315.87Z" fill="url(#paint10_linear_8205_11341)"/>
+<path id="Rectangle 483_2" fill-rule="evenodd" clip-rule="evenodd" d="M226 315.333L226.666 318.667H225.333L226 315.333Z" fill="#FFDA44"/>
+</g>
+<defs><linearGradient id="paint10_linear_8205_11341" x1="223.333" y1="315.87" x2="223.333" y2="320.667" gradientUnits="userSpaceOnUse">
+<stop stop-color="#3C7839"/>
+<stop offset="1" stop-color="#31642E"/>
+</linearGradient></defs>
+</svg>

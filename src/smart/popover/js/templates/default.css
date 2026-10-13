@@ -1,0 +1,60 @@
+@layer sf.components {
+  /* The trigger keeps its own shape and stays in the flow. */
+  sf-popover > [slot='trigger'] {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* The surface is the consumer's own node, placed beside the trigger and given
+     the same treatment every other surface in the Framework has: the elevation's
+     colour, its radius and its own scroll. A width of its own, because a surface
+     left to its content takes the width of its longest line and a list of names
+     is a wide, ragged thing. */
+  sf-popover > [slot='content'] {
+    position: absolute;
+    z-index: 3;
+    box-sizing: border-box;
+    inline-size: var(--sf-popover--width, max-content);
+    max-inline-size: var(--sf-popover--max-width, 100vi);
+    max-block-size: var(--sf-popover--max-height, 60vb);
+    overflow: auto;
+    border-radius: var(--sf-radius--surface);
+    background-color: var(--sf-elevation-2--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    box-shadow: var(--sf-elevation-2--shadow);
+  }
+
+  sf-popover[data-open='false'] > [slot='content'] {
+    display: none;
+  }
+
+  sf-popover[data-placement='bottom-end'] > [slot='content'] {
+    inset-block-start: 100%;
+    inset-inline-end: 0;
+  }
+
+  sf-popover[data-placement='bottom-start'] > [slot='content'] {
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+  }
+
+  sf-popover[data-placement='top-end'] > [slot='content'] {
+    inset-block-end: 100%;
+    inset-inline-end: 0;
+  }
+
+  sf-popover[data-placement='top-start'] > [slot='content'] {
+    inset-block-end: 100%;
+    inset-inline-start: 0;
+  }
+
+  sf-popover[data-placement='inline-end'] > [slot='content'] {
+    inset-block-start: 0;
+    inset-inline-start: 100%;
+  }
+
+  sf-popover[data-placement='inline-start'] > [slot='content'] {
+    inset-block-start: 0;
+    inset-inline-end: 100%;
+  }
+}

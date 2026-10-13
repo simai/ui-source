@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="164 308 28 20" fill="none" role="img">
+<g id="Country=ER">
+<rect id="Mask_133" x="164" y="308" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask61_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="164" y="308" width="28" height="20">
+<rect id="Mask_134" x="164" y="308" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask61_8205_11341)">
+<path id="Rectangle 2_94" fill-rule="evenodd" clip-rule="evenodd" d="M192 308V318H164V308H192Z" fill="#A1E367"/>
+<path id="Rectangle 2_95" fill-rule="evenodd" clip-rule="evenodd" d="M192 318V328.667H164V318H192Z" fill="#2394E0"/>
+<path id="Rectangle 2_96" fill-rule="evenodd" clip-rule="evenodd" d="M164 328L192 318L164 308V328Z" fill="#D80027"/>
+<path id="Oval 87" d="M172.667 314C174.876 314.001 176.667 315.791 176.667 318C176.667 320.209 174.876 322 172.667 322C170.458 322 168.667 320.209 168.667 318C168.667 315.791 170.458 314 172.667 314Z" stroke="#FFC63C" stroke-width="1.33333"/>
+<path id="Oval 88" fill-rule="evenodd" clip-rule="evenodd" d="M172 317.333C172.368 317.333 172.666 317.035 172.666 316.667C172.666 316.298 172.368 316 172 316C171.631 316 171.333 316.298 171.333 316.667C171.333 317.035 171.631 317.333 172 317.333Z" fill="#FFDA44"/>
+<path id="Oval 88_2" fill-rule="evenodd" clip-rule="evenodd" d="M173.334 318C173.702 318 174 317.701 174 317.333C174 316.965 173.702 316.667 173.334 316.667C172.965 316.667 172.667 316.965 172.667 317.333C172.667 317.701 172.965 318 173.334 318Z" fill="#FFDA44"/>
+<path id="Oval 88_3" fill-rule="evenodd" clip-rule="evenodd" d="M172.667 316.667C173.035 316.667 173.333 316.368 173.333 316C173.333 315.632 173.035 315.333 172.667 315.333C172.298 315.333 172 315.632 172 316C172 316.368 172.298 316.667 172.667 316.667Z" fill="#FFDA44"/>
+<path id="Oval 88_4" fill-rule="evenodd" clip-rule="evenodd" d="M172 318.667C172.368 318.667 172.666 318.368 172.666 318C172.666 317.632 172.368 317.333 172 317.333C171.631 317.333 171.333 317.632 171.333 318C171.333 318.368 171.631 318.667 172 318.667Z" fill="#FFDA44"/>
+<path id="Oval 88_5" fill-rule="evenodd" clip-rule="evenodd" d="M173.334 319.333C173.702 319.333 174 319.035 174 318.667C174 318.298 173.702 318 173.334 318C172.965 318 172.667 318.298 172.667 318.667C172.667 319.035 172.965 319.333 173.334 319.333Z" fill="#FFDA44"/>
+<path id="Oval 88_6" fill-rule="evenodd" clip-rule="evenodd" d="M172 320C172.368 320 172.666 319.701 172.666 319.333C172.666 318.965 172.368 318.667 172 318.667C171.631 318.667 171.333 318.965 171.333 319.333C171.333 319.701 171.631 320 172 320Z" fill="#FFDA44"/>
+<path id="Oval 88_7" fill-rule="evenodd" clip-rule="evenodd" d="M173.334 320.667C173.702 320.667 174 320.368 174 320C174 319.632 173.702 319.333 173.334 319.333C172.965 319.333 172.667 319.632 172.667 320C172.667 320.368 172.965 320.667 173.334 320.667Z" fill="#FFDA44"/>
+</g>
+</g>
+</svg>

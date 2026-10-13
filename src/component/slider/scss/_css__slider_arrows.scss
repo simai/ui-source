@@ -1,0 +1,32 @@
+@use 'var__slider' as *;
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+.sf-slider-arrows {
+  background-color: var(--sf-slider-arrows--background-color, transparent);
+  box-shadow: var(--sf-slider-arrows--box-shadow);
+  backdrop-filter: var(--sf-slider-arrows--backdrop-filter);
+}
+
+.sf-slider-arrows .sf-icon-button {
+  --sf-icon-button--border-end-end-radius: var(--sf-radius-rounded);
+  --sf-icon-button--border-end-start-radius: var(--sf-radius-rounded);
+  --sf-icon-button--border-start-end-radius: var(--sf-radius-rounded);
+  --sf-icon-button--border-start-start-radius: var(--sf-radius-rounded);
+  background-color: var(--sf-icon-button--background-color);
+  border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
+  border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
+  border-start-end-radius: var(--sf-icon-button--border-start-end-radius);
+  border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
+}
+
+.sf-slider-arrows.sf-slider-arrows--light .sf-icon-button.sf-icon-button--link.sf-icon-button--icon {
+  --sf-icon-button--background-color: var(--sf-surface-0);
+}
+
+.sf-slider-arrows--light, .sf-slider-arrows--dark {
+  --sf-slider-arrows--backdrop-filter: var(--sf-ui-blur-medium);
+  --sf-slider-arrows--box-shadow: var(--sf-blur-medium);
+}
+}

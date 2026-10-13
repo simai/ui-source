@@ -1,0 +1,179 @@
+// Editor canvas overlay (sf-composition-overlay). Every part is fixed to the
+// viewport above the canvas and below drawers and modals; the canvas DOM is
+// never changed. Colors come from theme tokens.
+/* sf-focus-ring: editor — the editing canvas marks what is being edited in its
+   own colour, which is part of the editor's language rather than the product's
+   focus colour. Width and style stay the system's. */
+@layer sf.components {
+    .sf-composition-overlay {
+        --sf-composition-overlay-color: var(--sf-primary, Highlight);
+        position: fixed;
+        inset: 0;
+        z-index: var(--sf-composition-overlay-z-index, var(--sf-z-index-8, 80));
+        pointer-events: none;
+    }
+
+    .sf-composition-overlay-layer,
+    .sf-composition-overlay-insertions {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .sf-composition-overlay-frame {
+        position: fixed;
+        box-sizing: border-box;
+        border: 1px dashed var(--sf-composition-overlay-color);
+        border-radius: var(--sf-radius-1, .25rem);
+        transition: top var(--sf-duration-fast, .1s), left var(--sf-duration-fast, .1s), width var(--sf-duration-fast, .1s), height var(--sf-duration-fast, .1s);
+    }
+
+    .sf-composition-overlay-frame--selected {
+        border-style: solid;
+        border-width: 2px;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-focus] .sf-composition-overlay-frame--selected {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
+        outline-offset: 2px;
+    }
+
+    .sf-composition-overlay-frame[hidden] {
+        display: none;
+    }
+
+    .sf-composition-overlay-label {
+        position: absolute;
+        inset-block-end: 100%;
+        inset-inline-start: -1px;
+        max-inline-size: 100%;
+        overflow: hidden;
+        padding: 0 var(--sf-space-1, .25rem);
+        border-radius: var(--sf-radius-1, .25rem) var(--sf-radius-1, .25rem) 0 0;
+        background: var(--sf-composition-overlay-color);
+        color: var(--sf-on-primary, HighlightText);
+        font-size: var(--sf-text-1--size, .75rem);
+        line-height: var(--sf-text-1--height, 1.25rem);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .sf-composition-overlay-toolbar {
+        position: fixed;
+        display: flex;
+        gap: var(--sf-space-1, .25rem);
+        padding: var(--sf-space-1, .25rem);
+        border-radius: var(--sf-radius-1, .25rem);
+        /* A toolbar floats over the page: step 2's surface and shadow. */
+        background: var(--sf-elevation-2--surface, Canvas);
+        --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+        color: var(--sf-on-surface, CanvasText);
+        box-shadow: var(--sf-elevation-2--shadow);
+        pointer-events: auto;
+    }
+
+    .sf-composition-overlay-toolbar[hidden] {
+        display: none;
+    }
+
+    .sf-composition-overlay-action,
+    .sf-composition-overlay-insert {
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .sf-composition-overlay-action {
+        padding: var(--sf-space-1, .25rem) var(--sf-space-2, .5rem);
+        border: 1px solid var(--sf-outline, GrayText);
+        border-radius: var(--sf-radius-1, .25rem);
+        background: var(--sf-surface-1, Canvas);
+        color: var(--sf-on-surface, CanvasText);
+    }
+
+    // An insertion point is a thin line with a 24px round "+" target. Only the
+    // mark takes the pointer, so neighbouring blocks under the line stay
+    // clickable; the whole button still takes keyboard focus.
+    .sf-composition-overlay-insert {
+        position: fixed;
+        display: grid;
+        place-items: center;
+        box-sizing: border-box;
+        block-size: 1.5rem;
+        margin-block-start: -.75rem;
+        padding: 0;
+        border: 0;
+        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% 1px no-repeat;
+        color: var(--sf-composition-overlay-color);
+        opacity: .6;
+        pointer-events: none;
+    }
+
+    .sf-composition-overlay-insert:hover,
+    .sf-composition-overlay-insert:focus-visible {
+        opacity: 1;
+    }
+
+    .sf-composition-overlay-insert-mark {
+        display: grid;
+        place-items: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border: 1px solid var(--sf-composition-overlay-color);
+        border-radius: 50%;
+        background: var(--sf-surface-1, Canvas);
+        line-height: 1;
+        pointer-events: auto;
+    }
+
+    .sf-composition-overlay-insert[aria-pressed="true"] {
+        background-size: 100% 3px;
+        opacity: 1;
+    }
+
+    .sf-composition-overlay-insert[aria-pressed="true"] .sf-composition-overlay-insert-mark {
+        background: var(--sf-composition-overlay-color);
+        color: var(--sf-on-primary, HighlightText);
+    }
+
+    .sf-composition-overlay-action:focus-visible,
+    .sf-composition-overlay-insert:focus-visible {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
+        outline-offset: 2px;
+    }
+
+    // The navigation tree is for assistive technology and keyboard focus only.
+    .sf-composition-overlay-tree,
+    .sf-composition-overlay-live {
+        position: fixed;
+        inline-size: 1px;
+        block-size: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .sf-composition-overlay-frame {
+            transition: none;
+        }
+    }
+
+    .sf-composition-overlay-drop {
+        position: fixed;
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        border-radius: 2px;
+        background: var(--sf-primary, Highlight);
+        pointer-events: none;
+    }
+
+    .sf-composition-overlay-drop[hidden] {
+        display: none;
+    }
+
+    .sf-composition-overlay-frame--selected .sf-composition-overlay-label {
+        cursor: grab;
+        pointer-events: auto;
+        touch-action: none;
+    }
+}

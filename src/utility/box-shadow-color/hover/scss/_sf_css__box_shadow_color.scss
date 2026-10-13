@@ -1,0 +1,23 @@
+@use '../../default/scss/sf_var__box_shadow_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SHADOW
+
+// Box Shadow Color Hover
+@each $box-shadow-color-name, $box-shadow-color-value in $box-shadow-color-array {
+  .hover\:shadow-#{$box-shadow-color-name}:hover {
+    --sf-shadow--color: var(--sf-#{$box-shadow-color-value}) !important;
+    --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$box-shadow-color-value}) var(--sf-shadow--alfa-fill)) !important;
+    --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$box-shadow-color-value}) var(--sf-shadow--alfa-outline)) !important;
+    --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$box-shadow-color-value}) var(--sf-shadow--alfa-shade)) !important;
+    --sf-shadow--color-shade: var(--sf-shadow--color-shading) !important;
+    --sf-ui-shadow-1: 0 var(--sf-a2) var(--sf-a4) var(--sf-px) var(--sf-shadow--color-shading), 0 var(--sf-px) var(--sf-a3) 0 var(--sf-shadow--color-outline), 0 var(--sf-a2) var(--sf-a2) calc(-1 * var(--sf-px)) var(--sf-shadow--color-fill) !important;
+    --sf-ui-shadow-2: 0 var(--sf-a4) var(--sf-a8) var(--sf-a2) var(--sf-shadow--color-shading), 0 var(--sf-a2) var(--sf-a6) 0 var(--sf-shadow--color-outline), 0 var(--sf-a4) var(--sf-a4) calc(-1 * var(--sf-a2)) var(--sf-shadow--color-fill) !important;
+    --sf-ui-shadow-3: 0 var(--sf-a8) var(--sf-b6) var(--sf-a4) var(--sf-shadow--color-shading), 0 var(--sf-a4) var(--sf-b2) 0 var(--sf-shadow--color-outline), 0 var(--sf-a8) var(--sf-a8) calc(-1 * var(--sf-a4)) var(--sf-shadow--color-fill) !important;
+    --sf-ui-shadow-4: 0 var(--sf-b6) var(--sf-c6) var(--sf-a4) var(--sf-shadow--color-shading), 0 var(--sf-a8) var(--sf-c2) 0 var(--sf-shadow--color-outline), 0 var(--sf-b6) var(--sf-b6) calc(-1 * var(--sf-a8)) var(--sf-shadow--color-fill) !important;
+    --sf-ui-shadow-5: 0 var(--sf-c6) var(--sf-d6) var(--sf-a8) var(--sf-shadow--color-shading), 0 var(--sf-b6) var(--sf-d2) 0 var(--sf-shadow--color-outline), 0 var(--sf-c6) var(--sf-c6) calc(-1 * var(--sf-b6)) var(--sf-shadow--color-fill) !important;
+  }
+}
+}

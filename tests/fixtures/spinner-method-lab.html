@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Spinner — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/spinner-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/spinner-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/spinner-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/spinner-browser/component/spinner/css/spinner.css">
+  <script>
+    window.sfPath = '../../source/output/spinner-browser';
+    window.sfSmartPath = '../../source/output/spinner-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: false},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Spinner</h1>
+
+    <section id="busy-region" class="grid gap-2" aria-busy="true">
+      <div
+        id="ordinary-status"
+        class="sf-loader-container sf-loader--size-1"
+        data-variant="arc"
+        data-infinite="true"
+        data-announce="true"
+        data-label="Загрузка данных"
+      ></div>
+    </section>
+
+    <div class="flex gap-2 items-cross-center">
+      <div
+        id="ordinary-decorative"
+        class="sf-loader-container sf-loader--size-1/2"
+        data-variant="arc"
+        data-infinite="true"
+        data-label=""
+      ></div>
+      <span>Обновляем список</span>
+    </div>
+
+    <div
+      id="finite-dots"
+      class="sf-loader-container sf-loader--size-2"
+      data-variant="dots"
+      data-dots="12"
+      data-filled="4"
+      data-direction="counterclockwise"
+      data-label="Подготовка"
+    ></div>
+
+    <sf-spinner
+      id="smart-status"
+      size="3"
+      variant="dots"
+      dots="12"
+      filled="4"
+      infinite
+      announce
+      label="Синхронизация"
+    ></sf-spinner>
+
+    <sf-spinner
+      id="smart-normalized"
+      size="huge"
+      variant="unknown"
+      dots="999"
+      filled="999"
+      direction="reverse"
+      label="Нормализация"
+    ></sf-spinner>
+
+    <button id="add-spinner" class="sf-button sf-button--default sf-button--primary sf-button--size-2" type="button">
+      <span class="sf-button-text-container">Добавить индикатор</span>
+    </button>
+  </main>
+
+  <script>
+    document.getElementById('add-spinner').addEventListener('click', () => {
+      const spinner = document.createElement('sf-spinner');
+      spinner.id = 'dynamic-spinner';
+      spinner.setAttribute('size', '1');
+      spinner.setAttribute('infinite', '');
+      spinner.setAttribute('label', 'Поздняя загрузка');
+      document.querySelector('main').append(spinner);
+    });
+  </script>
+  <script src="../../source/output/spinner-browser/core/js/core.js"></script>
+</body>
+</html>

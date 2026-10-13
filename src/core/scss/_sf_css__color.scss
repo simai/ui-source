@@ -1,0 +1,10 @@
+// SIMAI Framework
+// https://simai.io
+
+// COLOR CSS VARIABLES
+
+@use 'sf_figma_colors_variables';
+
+body {
+    --sf-stripe--color: var(--sf-surface-inverse);
+}

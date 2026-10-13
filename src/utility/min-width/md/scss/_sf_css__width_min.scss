@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__width_min' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// SIZE
+
+// @include layer-priority(utility,md) {
+    @include breakpoint-media(md) {
+        $infix: breakpoint-infix(md, $breakpoint-array);
+
+        // Min Width Utilities
+        @each $with-name, $with-value in $with-min-array {
+            .#{$infix}min-w-#{$with-name}{
+                min-width: #{$with-value}
+            }
+        }
+    }
+// }
+}

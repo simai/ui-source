@@ -1,0 +1,180 @@
+@use 'var__spinner' as *;
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+.sf-loader-container {
+  --sf-loader-track-color: var(--sf-surface-container);
+  --sf-loader-svg-width: var(--sf-text-size-8);
+  --sf-loader-svg-height: var(--sf-text-size-8);
+  --sf-loader-stroke-width: var(--sf-a5);
+  color: var(--sf-loader--color, var(--sf-primary));
+}
+
+.sf-loader-container.sf-loader--size-1\/2 {
+  --sf-loader-svg-width: var(--sf-text-size-5);
+  --sf-loader-svg-height: var(--sf-text-size-5);
+}
+
+.sf-loader-container.sf-loader--size-1 {
+  --sf-loader-svg-width: var(--sf-text-size-8);
+  --sf-loader-svg-height: var(--sf-text-size-8);
+}
+
+.sf-loader-container.sf-loader--size-2 {
+  --sf-loader-svg-width: var(--sf-text-size-9);
+  --sf-loader-svg-height: var(--sf-text-size-9);
+}
+
+.sf-loader-container.sf-loader--size-3 {
+  --sf-loader-svg-width: var(--sf-text-size-10);
+  --sf-loader-svg-height: var(--sf-text-size-10);
+}
+
+.sf-loader-container .sf-loader--loading-indicator,
+.sf-loader-container .sf-loader--circles {
+  display: inline-flex;
+  height: var(--sf-loader-svg-height);
+  width: var(--sf-loader-svg-width);
+}
+
+.sf-loader-container .sf-loader-svg {
+  display: block;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+
+.sf-loader-container .sf-loader-ring-filled {
+  fill: none;
+  opacity: var(--sf-opacity-30);
+  stroke: var(--sf-loader-track-color, var(--sf-surface-container));
+  stroke-linecap: round;
+  stroke-width: var(--sf-loader-stroke-width);
+}
+
+.sf-loader-container .sf-loader-ring-accent {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--sf-loader-stroke-width);
+}
+
+.sf-loader-container .sf-loader--loading-indicator .sf-loader-ring-accent {
+  animation: sf-loader-ring-accent-fill var(--sf-loader-cycle-duration) linear both;
+}
+
+.sf-loader-container.sf-loader--infinite
+  .sf-loader--loading-indicator
+  .sf-loader-ring-accent {
+  animation-iteration-count: infinite;
+}
+
+.sf-loader-container .sf-loader-dot {
+  fill: currentColor;
+  opacity: var(--sf-opacity-20);
+  animation: sf-loader-dot-wave var(--sf-loader-dot-duration) linear both;
+  animation-delay: calc(
+    var(--sf-loader-dot-duration) / var(--sf-loader-dot-count) *
+      var(--sf-loader-dot-step) * -1
+  );
+}
+
+.sf-loader-container .sf-loader-dot--active {
+  opacity: var(--sf-opacity-60);
+}
+
+.sf-loader-container.sf-loader--infinite .sf-loader-dot {
+  animation-iteration-count: infinite;
+}
+
+@keyframes sf-loader-svg-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sf-loader-dot-wave {
+  0% {
+    opacity: var(--sf-opacity-20);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  40% {
+    opacity: var(--sf-opacity-60);
+  }
+
+  100% {
+    opacity: var(--sf-opacity-20);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-loader-container .sf-loader-ring-accent,
+  .sf-loader-container .sf-loader-dot {
+    animation: none !important;
+  }
+
+  .sf-loader-container .sf-loader-ring-accent {
+    opacity: 1;
+    stroke-dasharray: 24 76;
+  }
+}
+
+@keyframes sf-loader-ring-accent-fill {
+  0% {
+    opacity: 0;
+    stroke-dasharray: 0.01 100;
+    stroke-dashoffset: 0;
+  }
+
+  10% {
+    opacity: 0;
+    stroke-dasharray: 0.01 100;
+    stroke-dashoffset: 0;
+  }
+
+  18% {
+    opacity: 1;
+    stroke-dasharray: 6 94;
+    stroke-dashoffset: 0;
+  }
+
+  42% {
+    opacity: 1;
+    stroke-dasharray: 100 0;
+    stroke-dashoffset: 0;
+  }
+
+  58% {
+    opacity: 1;
+    stroke-dasharray: 100 0;
+    stroke-dashoffset: 0;
+  }
+
+  82% {
+    opacity: 1;
+    stroke-dasharray: 6 94;
+    stroke-dashoffset: -94;
+  }
+
+  90% {
+    opacity: 0;
+    stroke-dasharray: 0.01 100;
+    stroke-dashoffset: -100;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-dasharray: 0.01 100;
+    stroke-dashoffset: -100;
+  }
+}
+}

@@ -1,0 +1,702 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
+@layer sf.components {
+  .sf-admin-menu-main {
+    // A focused item must settle before its context menu is opened.
+    scroll-behavior: auto;
+  }
+  .sf-admin-menu {
+    display: flex;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+  .sf-admin-menu-panel:not(.small) {
+    inline-size: var(--sf-admin-menu-panel--inline-size, var(--sf-g0));
+  }
+
+  .sf-admin-menu-panel.small {
+    inline-size: var(--sf-admin-menu-panel-compact--inline-size, var(--sf-e1));
+  }
+
+  .sf-admin-menu-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(
+                    --sf-admin-menu-panel--background-color,
+                    var(--sf-surface-0)
+    );
+    border-color: var(
+                    --sf-admin-menu-panel--border-color,
+                    var(--sf-outline-variant)
+    );
+    border-top-width: var(--sf-admin-menu-panel--border-top-width, var(--sf-px));
+    border-inline-end-width: var(
+                    --sf-admin-menu-panel--border-inline-end-width,
+                    var(--sf-px)
+    );
+    border-bottom-width: var(--sf-admin-menu-panel--border-bottom-width, var(--sf-px));
+    border-inline-start-width: var(
+                    --sf-admin-menu-panel--border-inline-start-width,
+                    var(--sf-px)
+    );
+    border-style: var(--sf-admin-menu-panel--border-style, solid);
+  }
+
+  .sf-admin-menu-panel-sub,
+  .sf-admin-menu-panel-search {
+    transform: translateX(-100%);
+  }
+
+  .sf-admin-menu-panel-sub:dir(rtl),
+  .sf-admin-menu-panel-search:dir(rtl) {
+    transform: translateX(100%);
+  }
+
+  .sf-admin-menu-panel-sub.open {
+    transform: translateX(0);
+  }
+
+  /* Open is open, at every width. This read translateX(100%) -- a sign error
+     that put the panel one menu width to the side of the menu, where the menu's
+     own overflow clipped it away: the state said open, the field was in the DOM
+     with a box, and nothing could be seen. Only the narrow-screen block set it
+     to zero, so every screen above the small breakpoint showed nothing. A
+     submenu has always been translateX(0) when open, and the panel opens like a
+     submenu. */
+  .sf-admin-menu-panel-search.open,
+  .sf-admin-menu-panel-search.open:dir(rtl) {
+    transform: translateX(0);
+  }
+
+  .sf-admin-menu-main {
+    // Natural containers must include the navigation in their intrinsic height.
+    // A finite host can still shrink this region because min-block-size is zero.
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+
+  .sf-admin-menu-main.open {
+    overflow-y: auto;
+  }
+
+  .sf-admin-menu-item-wrap.hidden {
+    display: none;
+  }
+
+  .sf-admin-menu-bottom {
+    flex: 0 0 auto;
+  }
+
+  .sf-admin-menu-head {
+    gap: var(--sf-admin-menu-head--gap, var(--sf-space-1\/2));
+    padding-inline-start: var(
+                    --sf-admin-menu-head--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-head--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(--sf-admin-menu-head--padding-top, var(--sf-space-1));
+    padding-bottom: var(
+                    --sf-admin-menu-head--padding-bottom,
+                    var(--sf-space-1)
+    );
+    border-bottom-width: var(--sf-admin-menu-head--border-bottom-width, var(--sf-px));
+    border-color: var(
+                    --sf-admin-menu-head--border-color,
+                    var(--sf-outline-variant)
+    );
+  }
+
+  .sf-admin-menu-head-container {
+    gap: var(--sf-admin-menu-head-container--gap, var(--sf-space-1\/2));
+    color: var(--sf-admin-menu-head-container--color, var(--sf-on-surface));
+    font-family: var(
+                    --sf-admin-menu-head-container--font-family,
+                    var(--sf-text--family)
+    );
+    font-size: var(
+                    --sf-admin-menu-head-container--font-size,
+                    var(--sf-text-size-3)
+    );
+    font-weight: var(
+                    --sf-admin-menu-head-container--font-weight,
+                    var(--sf-font-weight-bold)
+    );
+    line-height: var(
+                    --sf-admin-menu-head-container--line-height,
+                    var(--sf-text-height-3)
+    );
+  }
+
+  /* A submenu or the search takes the place of the logo header, so the section
+     name reads as a title rather than as the first item: the same height, the
+     arrow in the column where the item icons are, and a line under it. */
+  .sf-admin-menu-panel-sub .sf-admin-menu-head,
+  .sf-admin-menu-panel-search .sf-admin-menu-head {
+    min-block-size: var(
+                    --sf-admin-menu-head--min-height,
+                    var(--sf-admin-menu-head--measured-height, var(--sf-d9))
+    );
+    padding-inline: var(
+                    --sf-admin-menu-head--sub-padding-inline,
+                    var(--sf-admin-menu-main--padding-inline-start, var(--sf-space-1))
+    );
+    /* The row inside brings its own vertical padding, so the header adds none:
+       together they came to more than the header this one stands in for. */
+    padding-block: 0;
+  }
+
+  /* The name of the section reads as a title: larger and heavier than the items
+     under it, in the row where an item's label would be. */
+  .sf-admin-menu-back {
+    font-size: var(--sf-admin-menu-back--font-size, var(--sf-text-size-2));
+    font-weight: var(--sf-admin-menu-back--font-weight, var(--sf-font-weight-bold));
+  }
+
+  /* The arrow is a box the size of an item's icon, so it holds the column
+     whether or not the icon font has arrived. */
+  .sf-admin-menu-back-button {
+    inline-size: var(--sf-admin-menu-item-icon--width, var(--sf-text-size-3));
+    block-size: var(--sf-admin-menu-item-icon--height, var(--sf-text-size-3));
+    flex: none;
+  }
+
+  .sf-admin-menu-panel-sub .sf-admin-menu-head-container,
+  .sf-admin-menu-panel-search .sf-admin-menu-head-container {
+    gap: var(--sf-admin-menu-head-container--sub-gap, var(--sf-space-1));
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  /* The magnifier in the header stands in the column the item arrows are in,
+     at the far end of the row. */
+  /* The magnifier stands in the column the item arrows are in. Its inset is the
+     difference between where an item's arrow sits — inside the items' padding and
+     the item's own — and where the header's padding puts things. */
+  .sf-admin-menu-search-toggle {
+    margin-inline-start: auto;
+    margin-inline-end: calc(
+                    var(--sf-admin-menu-main--padding-inline-end, var(--sf-space-1)) +
+                    var(--sf-admin-menu-item--padding-inline-end, var(--sf-space-1)) -
+                    var(--sf-admin-menu-head--sub-padding-inline, var(--sf-space-1\/2))
+    );
+  }
+
+  .sf-admin-menu-search-field {
+    padding-inline: var(--sf-admin-menu-search-field--padding-inline, var(--sf-space-1));
+    padding-block-end: var(--sf-admin-menu-search-field--padding-bottom, var(--sf-space-1\/2));
+  }
+
+  .sf-admin-menu-search-kbd {
+    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-radius--ui);
+    padding-inline: var(--sf-space-1\/3);
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-admin-menu-search-results-area {
+    padding-inline: var(--sf-admin-menu-search-results-area--padding-inline, var(--sf-space-1\/2));
+  }
+
+  .sf-admin-menu-search-group-head {
+    padding-inline: var(--sf-admin-menu-search-group-head--padding-inline, var(--sf-space-1));
+    padding-block: var(--sf-admin-menu-search-group-head--padding-block, var(--sf-space-1\/3));
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+    text-transform: uppercase;
+  }
+
+  .sf-admin-menu-search-group-head a {
+    color: var(--sf-primary);
+    text-transform: none;
+    letter-spacing: normal;
+    text-decoration: none;
+  }
+
+  /* The row the keyboard is on. It is a selection, not a hover, so it carries
+     the primary container rather than the surface one — a reader moving with
+     the arrows can tell the two apart. */
+  .sf-admin-menu-search-row.selected {
+    background-color: var(--sf-primary-container);
+  }
+
+  .sf-admin-menu-search-mark {
+    background-color: var(--sf-admin-menu-search-mark--background-color, var(--sf-warning-container));
+    color: inherit;
+    border-radius: var(--sf-radius--ui);
+  }
+
+  /* Two rows of nothing while the host is answering. The shimmer is held for a
+     person who asked not to see motion. */
+  .sf-admin-menu-search-skeleton {
+    display: block;
+    block-size: var(--sf-d0);
+    margin-inline: var(--sf-space-1\/4);
+    margin-block: var(--sf-space-1\/4);
+    border-radius: var(--sf-radius--ui);
+    background-image: linear-gradient(
+      90deg,
+      var(--sf-surface-container),
+      var(--sf-surface-container-hover),
+      var(--sf-surface-container)
+    );
+    background-size: 200% 100%;
+    animation-name: sf-admin-menu-search-shimmer;
+    animation-duration: var(--sf-duration-slow);
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  @keyframes sf-admin-menu-search-shimmer {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-admin-menu-search-skeleton {
+      animation: none;
+    }
+  }
+
+  .sf-admin-menu-search-keys {
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    padding-inline: var(--sf-admin-menu-search-keys--padding-inline, var(--sf-space-1));
+    padding-block: var(--sf-admin-menu-search-keys--padding-block, var(--sf-space-1\/2));
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-admin-menu-search {
+    padding-inline-start: var(
+                    --sf-admin-menu-search--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-search--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(--sf-admin-menu-search--padding-top, var(--sf-space-1\/3));
+    padding-bottom: var(
+                    --sf-admin-menu-search--padding-bottom,
+                    var(--sf-space-1\/3)
+    );
+  }
+
+  .sf-admin-menu-search-results {
+    padding-inline-start: var(
+                    --sf-admin-menu-search-results--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-search-results--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(
+                    --sf-admin-menu-search-results--padding-top,
+                    var(--sf-space-1\/3)
+    );
+    padding-bottom: var(
+                    --sf-admin-menu-search-results--padding-bottom,
+                    var(--sf-space-1\/3)
+    );
+  }
+
+  .sf-admin-menu-section {
+    padding-inline-start: var(
+                    --sf-admin-menu-main--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-main--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(--sf-admin-menu-main--padding-top, var(--sf-space-1\/3));
+    padding-bottom: var(
+                    --sf-admin-menu-main--padding-bottom,
+                    var(--sf-space-1\/3)
+    );
+  }
+
+  .sf-admin-menu-main.open,
+  .sf-admin-menu-main-sub.has_scroll {
+    --sf-admin-menu-main--padding-inline-end: 0;
+  }
+
+  .sf-admin-menu-item-settings {
+    opacity: 0;
+    inset-inline-end: var(
+                    --sf-admin-menu-item-settings--inset-inline-end,
+                    var(--sf-space-1)
+    );
+  }
+  .sf-admin-menu-item-settings.active {
+    opacity: 1;
+  }
+  .sf-admin-menu-item-wrap.settings-on {
+    gap: var(--sf-admin-menu-item-wrap--gap, var(--sf-space-1\/2));
+  }
+
+  .sf-admin-menu-item-wrap.settings-on:hover .sf-admin-menu-item-settings {
+    opacity: 1;
+  }
+
+  .sf-admin-menu-item-wrap.settings-on:hover .sf-admin-menu-item.settings-active, .sf-admin-menu-item-wrap.settings-on:hover .sf-admin-menu-divider.settings-active {
+    --sf-admin-menu-item--mask-size: calc(var(--sf-space-7) * 2);
+    mask-image: linear-gradient(
+                    to left,
+                    transparent 0,
+                    black var(--sf-admin-menu-item--mask-size),
+                    black 100%
+    );
+  }
+
+  //.sf-admin-menu-divider-wrap {
+  //  padding-inline-start: var(
+  //    --sf-admin-menu-divider-wrap--padding-inline-start,
+  //    var(--sf-space-1)
+  //  );
+  //  padding-inline-end: var(
+  //    --sf-admin-menu-divider-wrap--padding-inline-end,
+  //    var(--sf-space-1)
+  //  );
+  //  padding-top: var(
+  //    --sf-admin-menu-divider-wrap--padding-top,
+  //    var(--sf-space-1\/3)
+  //  );
+  //  padding-bottom: var(
+  //    --sf-admin-menu-divider-wrap--padding-bottom,
+  //    var(--sf-space-1\/3)
+  //  );
+  //}
+  .sf-admin-menu-divider {
+    padding-inline-start: var(
+                    --sf-admin-menu-divider--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-divider--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(
+                    --sf-admin-menu-divider--padding-top,
+                    var(--sf-space-1\/3)
+    );
+    padding-bottom: var(
+                    --sf-admin-menu-divider--padding-bottom,
+                    var(--sf-space-1\/3)
+    );
+  }
+
+  .sf-admin-menu-divider span {
+    height: var(--sf-admin-menu-divider--height, var(--sf-px));
+    background-color: var(
+                    --sf-admin-menu-divider--background-color,
+                    var(--sf-outline-variant)
+    );
+  }
+
+  .sf-admin-menu-item-segment {
+    border-color: var(
+                    --sf-admin-menu-item-segment--border-color,
+                    var(--sf-outline-variant)
+    );
+    border-top-width: var(--sf-admin-menu-item-segment--border-top-width, 0);
+    border-inline-end-width: var(
+                    --sf-admin-menu-item-segment--border-inline-end-width,
+                    0
+    );
+    border-bottom-width: var(
+                    --sf-admin-menu-item-segment--border-bottom-width,
+                    0
+    );
+    border-inline-start-width: var(
+                    --sf-admin-menu-item-segment--border-inline-start-width,
+                    0
+    );
+    border-style: var(--sf-admin-menu-item-segment--border-style, solid);
+    border-end-end-radius: var(
+                    --sf-admin-menu-item-segment--border-end-end-radius,
+                    var(--sf-radius--ui)
+    );
+    border-end-start-radius: var(
+                    --sf-admin-menu-item-segment--border-end-start-radius,
+                    var(--sf-radius--ui)
+    );
+    border-start-end-radius: var(
+                    --sf-admin-menu-item-segment--border-start-end-radius,
+                    var(--sf-radius--ui)
+    );
+    border-start-start-radius: var(
+                    --sf-admin-menu-item-segment--border-start-start-radius,
+                    var(--sf-radius--ui)
+    );
+    background-color: var(
+                    --sf-admin-menu-item-segment--background-color,
+                    var(--sf-transparent)
+    );
+  }
+
+  .sf-admin-menu-item-placeholder {
+    width: var(--sf-admin-menu-item-placeholder--width, var(--sf-text-size-3));
+    height: var(
+                    --sf-admin-menu-item-placeholder--height,
+                    var(--sf-text-size-3)
+    );
+    font-size: var(
+                    --sf-admin-menu-item-placeholder--font-size,
+                    var(--sf-text-size-1\/4)
+    );
+    line-height: var(
+                    --sf-admin-menu-item-placeholder--line-height,
+                    var(--sf-text-height-1\/4)
+    );
+    border-radius: var(
+                    --sf-admin-menu-item-placeholder--border-radius,
+                    var(--sf-radius-rounded)
+    );
+    background-color: var(
+                    --sf-admin-menu-item-placeholder--background-color,
+                    var(--sf-outline-variant)
+    );
+  }
+
+  .sf-admin-menu-item-icon {
+    width: var(--sf-admin-menu-item-icon--width, var(--sf-text-size-3));
+    height: var(--sf-admin-menu-item-icon--height, var(--sf-text-size-3));
+  }
+
+  .sf-admin-menu-item {
+    padding-inline-start: var(
+                    --sf-admin-menu-item--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-item--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(--sf-admin-menu-item--padding-top, var(--sf-space-1));
+    padding-bottom: var(
+                    --sf-admin-menu-item--padding-bottom,
+                    var(--sf-space-1)
+    );
+    gap: var(--sf-admin-menu-item--gap, var(--sf-space-1\/2));
+    border-end-end-radius: var(
+                    --sf-admin-menu-item--border-end-end-radius,
+                    var(--sf-radius--ui)
+    );
+    border-end-start-radius: var(
+                    --sf-admin-menu-item--border-end-start-radius,
+                    var(--sf-radius--ui)
+    );
+    border-start-end-radius: var(
+                    --sf-admin-menu-item--border-start-end-radius,
+                    var(--sf-radius--ui)
+    );
+    border-start-start-radius: var(
+                    --sf-admin-menu-item--border-start-start-radius,
+                    var(--sf-radius--ui)
+    );
+    background-color: var(
+                    --sf-admin-menu-item--background-color,
+                    var(--sf-transparent)
+    );
+    border-color: var(
+                    --sf-admin-menu-item--border-color,
+                    var(--sf-outline-variant)
+    );
+    border-top-width: var(--sf-admin-menu-item--border-top-width, 0);
+    border-inline-end-width: var(
+                    --sf-admin-menu-item--border-inline-end-width,
+                    0
+    );
+    border-bottom-width: var(--sf-admin-menu-item--border-bottom-width, 0);
+    border-inline-start-width: var(
+                    --sf-admin-menu-item--border-inline-start-width,
+                    0
+    );
+    border-style: var(--sf-admin-menu-item--border-style, solid);
+  }
+
+
+  .sf-admin-menu-item > .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-admin-menu-item.segment-start {
+    --sf-admin-menu-item--border-end-end-radius: 0;
+    --sf-admin-menu-item--border-start-end-radius: 0;
+  }
+
+  .sf-admin-menu-item.segment-middle {
+    --sf-admin-menu-item--border-end-end-radius: 0;
+    --sf-admin-menu-item--border-end-start-radius: 0;
+    --sf-admin-menu-item--border-start-end-radius: 0;
+    --sf-admin-menu-item--border-start-start-radius: 0;
+  }
+
+  .sf-admin-menu-item.segment-end {
+    --sf-admin-menu-item--border-end-start-radius: 0;
+    --sf-admin-menu-item--border-start-start-radius: 0;
+  }
+
+  .sf-admin-menu-item-container {
+    gap: var(--sf-admin-menu-item-container--gap, var(--sf-space-1\/2));
+    color: var(--sf-admin-menu-item-container--color, var(--sf-on-surface));
+    font-family: var(
+                    --sf-admin-menu-item-container--font-family,
+                    var(--sf-text--family)
+    );
+    font-size: var(
+                    --sf-admin-menu-item-container--font-size,
+                    var(--sf-text-size-1\/2)
+    );
+    font-weight: var(
+                    --sf-admin-menu-item-container--font-weight,
+                    var(--sf-font-weight-medium)
+    );
+    line-height: var(
+                    --sf-admin-menu-item-container--line-height,
+                    var(--sf-text-height-1\/2)
+    );
+  }
+
+  .sf-admin-menu-item-container .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-admin-menu-direction-icon:dir(rtl),
+  .sf-admin-menu-back-button:dir(rtl) .sf-icon {
+    transform: scaleX(-1);
+  }
+
+  .sf-admin-menu-bottom {
+    padding-inline-start: var(
+                    --sf-admin-menu-bottom--padding-inline-start,
+                    var(--sf-space-1)
+    );
+    padding-inline-end: var(
+                    --sf-admin-menu-bottom--padding-inline-end,
+                    var(--sf-space-1)
+    );
+    padding-top: var(--sf-admin-menu-bottom--padding-top, var(--sf-space-1));
+    padding-bottom: var(
+                    --sf-admin-menu-bottom--padding-bottom,
+                    var(--sf-space-1)
+    );
+    border-end-end-radius: var(
+                    --sf-admin-menu-bottom--border-end-end-radius,
+                    0
+    );
+    border-end-start-radius: var(
+                    --sf-admin-menu-bottom--border-end-start-radius,
+                    0
+    );
+    border-start-end-radius: var(
+                    --sf-admin-menu-bottom--border-start-end-radius,
+                    var(--sf-radius--surface)
+    );
+    border-start-start-radius: var(
+                    --sf-admin-menu-bottom--border-start-start-radius,
+                    var(--sf-radius--surface)
+    );
+  }
+
+  .sf-admin-menu-main.open + .sf-admin-menu-bottom {
+    box-shadow: var(--sf-ui-shadow-top);
+  }
+
+  .sf-admin-menu-panel.small
+  .sf-admin-menu-item
+  > *:not(.sf-admin-menu-item-container),
+  .sf-admin-menu-panel.small
+  .sf-admin-menu-item
+  .sf-admin-menu-item-container
+  span:not(.sf-admin-menu-item-icon) {
+    display: none;
+  }
+
+  .sf-admin-menu-panel.small .sf-admin-menu-head {
+    justify-content: center;
+  }
+
+  @media (max-width: map.get(bp.$breakpoint-array, sm)) {
+    .sf-admin-menu-panel:not(.small) {
+      inline-size: 100%;
+    }
+
+    /* The open panel is translateX(0) at every width now, so there is nothing
+       left for this breakpoint to correct. */
+  }
+}
+
+@layer sf.states {
+  .sf-admin-menu-item-segment:not(.disabled):hover {
+    --sf-admin-menu-item-segment--background-color: var(
+                    --sf-secondary-container-hover
+    );
+  }
+
+  .sf-admin-menu-item-segment:not(.disabled):hover .sf-admin-menu-item {
+    --sf-admin-menu-item--border-color: var(--sf-transparent);
+  }
+
+  .sf-admin-menu-item:not(:disabled):not(.disabled):hover {
+    --sf-admin-menu-item--background-color: var(--sf-secondary-container-hover);
+  }
+
+  .sf-admin-menu-item:not(:disabled):not(.disabled):hover
+  .sf-admin-menu-item-container
+  .sf-icon {
+    --sf-icon--color: var(--sf-on-secondary-container);
+  }
+
+  .sf-admin-menu-item:not(:disabled):not(.disabled):hover
+  .sf-admin-menu-item-container {
+    --sf-admin-menu-item-container--color: var(--sf-on-secondary-container);
+  }
+
+  .sf-admin-menu-item:not(:disabled):not(.disabled).active,
+  .sf-admin-menu-item:not(:disabled):not(.disabled):active {
+    --sf-admin-menu-item--background-color: var(
+                    --sf-secondary-container-active
+    );
+  }
+}
+
+@layer sf.overrides {
+  .sf-admin-menu-item-wrap .sf-icon-button {
+    --sf-icon-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-icon-button--padding-bottom: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-start: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-end: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+  }
+
+  .sf-admin-menu-head .sf-icon-button {
+    --sf-icon-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-icon-button--padding-bottom: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-start: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-end: var(
+                    --sf-ui-1\/2--space-y-tightness-default
+    );
+  }
+}

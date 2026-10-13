@@ -1,0 +1,42 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.dataview-port",
+  "version": "1.6.0",
+  "transport": "neutral",
+  "summary": "The 24 cases of 1, and one for opening the whole list from a capped one.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "query-echoes-applied",
+    "query-rejects-unknown-filter",
+    "query-stale-sequence-dropped",
+    "query-unavailable-is-honest",
+    "records-carry-permissions",
+    "record-mutate-conflict",
+    "record-mutate-refused",
+    "bulk-selected-all-or-nothing",
+    "bulk-under-filter-count-confirmed",
+    "settings-personal-compare-and-set",
+    "settings-shared-needs-permission",
+    "settings-shared-only-field",
+    "view-open-carries-everything",
+    "view-save-conflict",
+    "view-switch-reports-dropped",
+    "capability-absent-is-explained",
+    "create-intent-names-kind",
+    "data-states-declared",
+    "view-save-shared-needs-permission",
+    "columns-name-the-title-role",
+    "query-without-total-carries-has-next",
+    "count-on-request-answers-the-number",
+    "count-without-the-capability-is-not-offered",
+    "settings-personal-carries-pinning",
+    "record-mutate-answers-with-the-record",
+    "view-save-carries-filter-fields",
+    "opening-the-whole-list-is-the-hosts"
+  ]
+}

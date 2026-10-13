@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Icons — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/icons-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/icons-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/icons-browser/component/icons/css/icons.css">
+  <script>
+    window.sfPath = '../../source/output/icons-browser';
+    window.sfSmartPath = '../../source/output/icons-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: true, subsetHost: '/subset-unavailable'},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-3 max-w-5">
+    <h1>Проверка Smart Icons</h1>
+
+    <section class="flex flex-wrap items-center gap-2 color-primary" aria-label="Обычные иконки">
+      <span class="flex items-center gap-1">
+        <i id="ordinary-decorative" class="sf-icon sf-icon--size-3" aria-hidden="true">home</i>
+        <span>Главная</span>
+      </span>
+      <i id="ordinary-informative" class="sf-icon sf-icon--size-3" role="img" aria-label="Проверено">verified</i>
+      <i id="ordinary-rounded" class="sf-icon sf-icon--rounded sf-icon--weight-medium sf-icon--filled sf-icon--size-3" aria-hidden="true">favorite</i>
+      <i id="ordinary-sharp" class="sf-icon sf-icon--sharp sf-icon--weight-light sf-icon--size-3" aria-hidden="true">settings</i>
+      <i id="legacy-rounded" class="sf-icon sf-icon-rounded sf-icon-medium sf-icon-filled sf-icon--size-3" aria-hidden="true">favorite</i>
+      <i id="rotated" class="sf-icon sf-icon--size-3 sf-icon--rotate-90" aria-hidden="true">arrow_upward</i>
+    </section>
+
+    <section id="ordinary-sizes" class="flex flex-wrap items-center gap-1" aria-label="Размеры обычной иконки">
+      <i class="sf-icon sf-icon--size-1/4" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-1/3" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-1/2" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-1" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-2" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-3" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-4" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-5" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-6" aria-hidden="true">circle</i>
+      <i class="sf-icon sf-icon--size-7" aria-hidden="true">circle</i>
+    </section>
+
+    <section class="flex flex-wrap items-center gap-2" aria-label="Семантика">
+      <span class="flex items-center gap-1">
+        <sf-icon id="decorative" icon="home" size="3"></sf-icon>
+        <span>Главная</span>
+      </span>
+      <sf-icon id="informative" icon="verified" size="3" label="Проверено"></sf-icon>
+      <button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button" aria-label="Добавить">
+        <sf-icon id="button-icon" icon="add"></sf-icon>
+      </button>
+    </section>
+
+    <section class="flex flex-wrap items-center gap-2" aria-label="Семейства и оси">
+      <sf-icon id="outlined" icon="favorite" type="outlined" size="3"></sf-icon>
+      <sf-icon id="rounded" icon="favorite" type="rounded" filled weight="500"
+        grade="-25" optical-size="40" size="3"></sf-icon>
+      <sf-icon id="sharp" icon="settings" type="sharp" weight="300"
+        optical-size="20" size="3"></sf-icon>
+    </section>
+
+    <button id="change-icon" class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button">
+      Изменить иконку
+    </button>
+    <div id="dynamic-icon-host"></div>
+  </main>
+
+  <script>
+    window.iconLab = {
+      changed: false,
+      beforeUpgrade: Object.fromEntries(
+        [...document.querySelectorAll('sf-icon')].map(icon => {
+          const rect = icon.getBoundingClientRect();
+          return [icon.id, {width: rect.width, height: rect.height}];
+        })
+      )
+    };
+    document.getElementById('change-icon').addEventListener('click', () => {
+      const icon = document.getElementById('decorative');
+      icon.setAttribute('icon', 'search');
+      icon.setAttribute('type', 'rounded');
+      icon.setAttribute('grade', '200');
+      icon.setAttribute('optical-size', '48');
+      document.getElementById('ordinary-sharp').textContent = 'search';
+      document.getElementById('dynamic-icon-host').innerHTML = '<i id="ordinary-dynamic" class="sf-icon sf-icon--rounded sf-icon--size-3" aria-hidden="true">add</i>';
+      window.iconLab.changed = true;
+    });
+  </script>
+  <script src="../../source/output/icons-browser/core/js/core.js"></script>
+</body>
+</html>

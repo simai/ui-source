@@ -1,0 +1,40 @@
+{
+  "schema": "simai.smart-component-scenario.v1",
+  "id": "smoke",
+  "component": "smart.button-group",
+  "fixture": "reference",
+  "viewport": "desktop",
+  "actions": [
+    {
+      "type": "invoke",
+      "method": "select",
+      "arguments": [
+        "grid"
+      ]
+    },
+    {
+      "type": "keypress",
+      "value": "ArrowRight"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "event",
+      "name": "sf-button-group-change"
+    },
+    {
+      "type": "attribute",
+      "name": "value",
+      "value": "map"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    }
+  ]
+}

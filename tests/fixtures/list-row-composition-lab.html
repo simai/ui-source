@@ -1,0 +1,9 @@
+<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>List row composition lab</title>
+<link rel="stylesheet" href="/ui/distr/core/css/core.css"><link rel="stylesheet" href="/ui/distr/core/css/utility.full.css">
+<link rel="stylesheet" href="/ui/distr/component/icons/css/icons.css"><link rel="stylesheet" href="/ui/distr/component/checkbox/css/checkbox.css"><link rel="stylesheet" href="/ui/distr/component/dropdown/css/dropdown.css">
+<script>window.sfPath='/ui/distr/';</script></head><body style="padding:16px">
+<div id="w"></div><div id="h" style="display:flex;gap:8px"></div>
+<script>for (const s of ['1/2','1','2']) document.getElementById('w').insertAdjacentHTML('beforeend', `<div data-size="${s}" style="width:320px;margin-bottom:12px"><sf-list-item kind="text" size="${s}" text="Text ${s}"></sf-list-item><sf-list-item kind="checkbox" size="${s}" text="Check ${s}"></sf-list-item><sf-list-item kind="icon" icon="star" size="${s}" text="Icon ${s}"></sf-list-item><div class="sf-list"><sf-list-item kind="text" size="${s}" text="In list ${s}"></sf-list-item></div></div>`);for (const s of ['1/2','1','2']) document.getElementById('h').insertAdjacentHTML('beforeend', `<span data-height="${s}" style="display:block;inline-size:1px;block-size:var(--sf-ui-${s.replace('/','\\/')}--control-height)"></span>`);</script>
+<script src="/ui-smart/smart/list-item/js/list-item.js"></script>
+</body></html>

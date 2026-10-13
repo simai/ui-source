@@ -1,0 +1,21 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.modal",
+  "title": "Modal reference",
+  "summary": "Deterministic reference fixture for sf-modal.",
+  "locale": "ru",
+  "props": {
+    "open": true,
+    "title": "Подтверждение"
+  },
+  "children": [
+    {
+      "element": "p",
+      "props": {},
+      "text": "Сохранить внесённые изменения?",
+      "children": []
+    }
+  ],
+  "state": "default"
+}

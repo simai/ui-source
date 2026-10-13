@@ -1,0 +1,17 @@
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+// Transform Origin
+$transform-origin-array: (
+    center: center,
+    top: top,
+    top-inline-end: top right,
+    inline-end: right,
+    bottom-inline-end: bottom right,
+    bottom: bottom,
+    bottom-inline-start: bottom left,
+    inline-start: left,
+    top-inline-start: top left,
+);

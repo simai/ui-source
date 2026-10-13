@@ -1,0 +1,324 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.property-view-port",
+  "version": "1.0.0",
+  "component": "smart.property-view",
+  "element": "sf-property-view",
+  "summary": "The host seam for one object's fields shown as sections, groups and fields. The host owns the values, the arrangement and the revision; a group is saved as one revision by the button, and the component stores nothing of its own.",
+  "capabilities": {},
+  "data": {
+    "record": {
+      "summary": "The object as the host sees it now, with its arrangement. The component holds this for rendering and never writes to it.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "sections"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The revision a later write will be compared against. Reading does not require one; writing in a later port version does."
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "groups"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string"
+                },
+                "rare": {
+                  "type": "boolean"
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "fields"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "rare": {
+                        "type": "boolean"
+                      },
+                      "hidden": {
+                        "type": "boolean"
+                      },
+                      "columns": {
+                        "enum": [
+                          1,
+                          2
+                        ]
+                      },
+                      "fields": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "propertyType"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "key": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "propertyType": {
+                              "type": "string",
+                              "description": "The Larena property type the renderer set is addressed by. The host supplies the type; the Framework supplies the template."
+                            },
+                            "variant": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "value": {},
+                            "unit": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "width": {
+                              "enum": [
+                                "half",
+                                "full"
+                              ]
+                            },
+                            "required": {
+                              "type": "boolean"
+                            },
+                            "rare": {
+                              "type": "boolean"
+                            },
+                            "hidden": {
+                              "type": "boolean"
+                            },
+                            "inherited": {
+                              "type": "boolean"
+                            },
+                            "hint": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "options": {
+                              "type": [
+                                "array",
+                                "null"
+                              ]
+                            },
+                            "trueText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "falseText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "record.load": {
+      "summary": "Read one object with its arrangement. The only intent in this version.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the component is asking: connected, host-connected, record-id-changed or requested. For the host's own logging; it must not change the answer."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "group.save": {
+      "summary": "Save the fields a person changed in one group, as one revision. Sent only when the save button is pressed -- never on blur and never per field.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "section",
+          "group",
+          "values",
+          "revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "section": {
+            "type": "string",
+            "minLength": 1
+          },
+          "group": {
+            "type": "string",
+            "minLength": 1
+          },
+          "values": {
+            "type": "object",
+            "description": "Only the fields whose value the person changed, keyed by field key. A field the person did not touch is absent, so a save cannot overwrite what another save changed meanwhile.",
+            "additionalProperties": true
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The revision the read carried. The host compares and sets; a stale one is a conflict, never a silent overwrite."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ]
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a layer is a write against its revision, never a deletion. Declared here because the layer rules are already decided; no settings intent exists in this version."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "shared"
+      ],
+      "carries_revision": true
+    },
+    "fields": {
+      "summary": "Per-field view settings a layer will carry when the view can be configured: order, group, section, template variant, width, hint and visibility. Not writable in this version.",
+      "writable_in": "1.1.0"
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "7dff11825a04217797d1abb0f7a5235b7e8e878255ab380e8f1c1d372c188d44",
+    "cases": 8
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "the answer carries the object and its arrangement, not a flat list of values",
+      "a refused read is explained rather than rendered as empty",
+      "a late answer is dropped rather than drawn over the current object",
+      "rare fields arrive declared, and hiding them changes no value",
+      "the host supplies the property type and never the component to draw it with",
+      "a save carries only the fields the person changed",
+      "a stale revision is answered with a conflict rather than an overwrite",
+      "field errors come back keyed by field and are shown under their own field",
+      "nothing is saved on blur or per field"
+    ]
+  }
+}

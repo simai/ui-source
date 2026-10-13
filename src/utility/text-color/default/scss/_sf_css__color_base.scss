@@ -1,0 +1,42 @@
+@use 'sf_var__color_base' as *;
+@use '../../../../core/scss/vars/sf_var__color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// BASE COLOR
+
+// @include layer-priority(utility,default) {
+    $infix:'';
+
+    @each $modifier-name, $var-name in $color-base-array {
+        .#{$infix}color-#{$modifier-name} {
+            color: var(--sf-#{$var-name})
+        }
+    }
+
+    // Palette colors (raw)
+    @each $palette-name, $palette-map in $color-array {
+        @each $shade-key, $shade-rgb in $palette-map {
+            @if $shade-key == default {
+                .#{$infix}color-#{$palette-name} {
+                    color: rgb(
+                        map-get($shade-rgb, r),
+                        map-get($shade-rgb, g),
+                        map-get($shade-rgb, b)
+                    );
+                }
+            } @else {
+                .#{$infix}color-#{$palette-name}-#{$shade-key} {
+                    color: rgb(
+                        map-get($shade-rgb, r),
+                        map-get($shade-rgb, g),
+                        map-get($shade-rgb, b)
+                    );
+                }
+            }
+        }
+    }
+
+// }
+}

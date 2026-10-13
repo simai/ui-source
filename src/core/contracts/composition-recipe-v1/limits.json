@@ -1,0 +1,22 @@
+{
+  "schema": "simai.composition.recipe-limits.v1",
+  "policy": "defaults_are_hard_maxima_products_may_only_lower",
+  "limits": {
+    "maxRecipeBytes": 1048576,
+    "maxSourceBytes": 1048576,
+    "maxTotalSourceBytes": 8388608,
+    "maxInputBytes": 1048576,
+    "maxTotalInputBytes": 4194304,
+    "maxUniqueReferences": 128,
+    "maxInputs": 256,
+    "maxReferenceDepth": 16,
+    "maxExpansionSteps": 10000,
+    "maxIntermediateBytes": 4194304,
+    "maxOutputBytes": 1048576,
+    "maxOutputNodes": 2000,
+    "maxOutputDepth": 32,
+    "maxChildrenPerSlot": 500,
+    "maxSelectCases": 64
+  },
+  "error": "limit_exceeded"
+}

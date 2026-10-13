@@ -1,0 +1,85 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_var__transform_translate' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TRANSFORM
+
+$event: hover;
+$infix: xs;
+
+// @include layer-priority(utility,$event) {
+@include breakpoint-media($infix) {
+  $infix: breakpoint-infix($infix, $breakpoint-array);
+
+  // Transform Translate
+  @each $transform-translate-name,
+    $transform-translate-value in $transform-translate-array
+  {
+    .#{$infix}#{$event}\:translate-x-#{$transform-translate-name}:#{$event} {
+      --sf-translate-x: var(--sf-#{$transform-translate-value});
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .#{$infix}#{$event}\:translate-y-#{$transform-translate-name}:#{$event} {
+      --sf-translate-y: var(--sf-#{$transform-translate-value});
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .-#{$infix}#{$event}\:translate-x-#{$transform-translate-name}:#{$event} {
+      --sf-translate-x: calc(0rem - var(--sf-#{$transform-translate-value}));
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+
+    .-#{$infix}#{$event}\:translate-y-#{$transform-translate-name}:#{$event} {
+      --sf-translate-y: calc(0rem - var(--sf-#{$transform-translate-value}));
+      transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+    }
+  }
+
+  // Helpers for half-size shifts
+  .#{$infix}#{$event}\:translate-x-half:#{$event} {
+    --sf-translate-x: 50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .#{$infix}#{$event}\:translate-y-half:#{$event} {
+    --sf-translate-y: 50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}#{$event}\:translate-x-half:#{$event} {
+    --sf-translate-x: -50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}#{$event}\:translate-y-half:#{$event} {
+    --sf-translate-y: -50%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  // Helpers for full-size shifts
+  .#{$infix}#{$event}\:translate-x-full:#{$event} {
+    --sf-translate-x: 100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .#{$infix}#{$event}\:translate-y-full:#{$event} {
+    --sf-translate-y: 100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}#{$event}\:translate-x-full:#{$event} {
+    --sf-translate-x: -100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+
+  .-#{$infix}#{$event}\:translate-y-full:#{$event} {
+    --sf-translate-y: -100%;
+    transform: translate(var(--sf-translate-x, 0), var(--sf-translate-y, 0));
+  }
+}
+// }
+}

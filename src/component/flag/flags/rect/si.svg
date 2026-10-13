@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 884 28 20" fill="none" role="img">
+<g id="Country=SI">
+<rect x="260" y="884" width="28" height="20" fill="#F0F0F0"/>
+<path id="Combined Shape_13" d="M267.333 888.667C268.303 888.667 269.244 889.333 269.244 889.333V890.667H288V897.333H260V890.667H265.333V889.333C265.333 889.333 266.363 888.667 267.333 888.667ZM267.333 890.667C266.597 890.667 266 891.263 266 892C266 892.736 266.597 893.333 267.333 893.333C268.069 893.333 268.667 892.736 268.667 892C268.667 891.263 268.069 890.667 267.333 890.667Z" fill="#0052B4"/>
+<g id="Rectangle 2_256" filter="url(#filter20_d_8205_11341)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M260 904H288V897.333H260V904Z" fill="#D80027"/>
+</g>
+</g>
+<defs><filter id="filter20_d_8205_11341" x="260" y="897.333" width="28" height="6.6665" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8205_11341"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8205_11341" result="shape"/>
+</filter></defs>
+</svg>

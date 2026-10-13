@@ -1,0 +1,23 @@
+{
+  "id": "decision.sf5.component-evolution-accepted",
+  "kind": "knowledge",
+  "tz_role": "decision",
+  "subtype": "architecture_baseline_acceptance",
+  "title": "Owner acceptance of existing SF5 component evolution boundaries",
+  "lifecycle": "accepted",
+  "architecture_owner_id": "human.rim-zabarov",
+  "contract_ref": "contract.sf5.component-evolution",
+  "semantic_digest": "sha256:190f642b9af5582845672cc90748008ecc0a415d97ee5bb89265f966564a2f75",
+  "receipt": {
+    "kind": "explicit_user_confirmation",
+    "date": "2026-09-03",
+    "statement": "подвержда",
+    "context": "Direct reply to the request to approve the linked component target-review document.",
+    "accepted_document_sha256": "190f642b9af5582845672cc90748008ecc0a415d97ee5bb89265f966564a2f75"
+  },
+  "constraints": [
+    "Existing architecture and public compatibility remain unchanged.",
+    "No new components, dependencies or parallel source of truth.",
+    "Commit, push, tag, release, deploy and global Federation changes require separate authorization."
+  ]
+}

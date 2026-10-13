@@ -1,0 +1,1573 @@
+{
+  "schema": "simai.change-journal.v1",
+  "policy": "contracts/lifecycle-policy.json",
+  "records": [
+    {
+      "id": "attribute-type-to-appearance",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The look of a control is its appearance; type named it before the axes were split.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-button",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-input",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-textarea",
+          "from": "type",
+          "to": "appearance"
+        },
+        {
+          "component": "sf-tooltip",
+          "from": "type",
+          "to": "appearance"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-button type=\"outline\">",
+        "after": "<sf-button appearance=\"outline\">"
+      },
+      "source": "contracts/public-api-axes.json"
+    },
+    {
+      "id": "attribute-variant-to-appearance",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-alert's look is its appearance, not a variant.",
+      "items": [
+        {
+          "component": "sf-alert",
+          "from": "variant",
+          "to": "appearance"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-alert variant=\"filled\">",
+        "after": "<sf-alert appearance=\"filled\">"
+      }
+    },
+    {
+      "id": "attribute-type-to-status",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "What an alert or a toast reports is its status; type answered that question before the axes were split.",
+      "items": [
+        {
+          "component": "sf-alert",
+          "from": "type",
+          "to": "status"
+        },
+        {
+          "component": "sf-toast",
+          "from": "type",
+          "to": "status"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-alert type=\"error\">",
+        "after": "<sf-alert status=\"error\">"
+      }
+    },
+    {
+      "id": "attribute-tone-to-status",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "A progress indicator's colour role is its status.",
+      "items": [
+        {
+          "component": "sf-progress-bar",
+          "from": "tone",
+          "to": "status"
+        },
+        {
+          "component": "sf-progress-scale",
+          "from": "tone",
+          "to": "status"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-progress-bar tone=\"success\">",
+        "after": "<sf-progress-bar status=\"success\">"
+      }
+    },
+    {
+      "id": "attribute-type-to-kind",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "What a component is made of is its kind.",
+      "items": [
+        {
+          "component": "sf-file-preview",
+          "from": "type",
+          "to": "kind"
+        },
+        {
+          "component": "sf-list-item",
+          "from": "type",
+          "to": "kind"
+        },
+        {
+          "component": "sf-tree-item",
+          "from": "type",
+          "to": "kind"
+        },
+        {
+          "component": "sf-toggle",
+          "from": "type",
+          "to": "kind"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-list-item type=\"checkbox\">",
+        "after": "<sf-list-item kind=\"checkbox\">"
+      },
+      "manual": "sf-tree-item also reads type from its item data (_sourceData.type); write kind there too."
+    },
+    {
+      "id": "attribute-variant-to-kind",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "What a component is made of is its kind, not a variant.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "variant",
+          "to": "kind"
+        },
+        {
+          "component": "sf-skeleton",
+          "from": "variant",
+          "to": "kind"
+        },
+        {
+          "component": "sf-spinner",
+          "from": "variant",
+          "to": "kind"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-spinner variant=\"dots\">",
+        "after": "<sf-spinner kind=\"dots\">"
+      }
+    },
+    {
+      "id": "attribute-tag-type-split",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-tag's type answered two questions: a kind (checkbox, icon, color, avatar, default) and a status (info, success, warning, error). Each now has its own axis.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "type",
+          "to": "kind"
+        },
+        {
+          "component": "sf-tag",
+          "from": "type",
+          "to": "status"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-tag type=\"checkbox\"> / <sf-tag type=\"success\">",
+        "after": "<sf-tag kind=\"checkbox\"> / <sf-tag status=\"success\">"
+      },
+      "manual": "Write kind= when the value is checkbox, icon, color, avatar or default, and status= when it is info, success, warning or error."
+    },
+    {
+      "id": "attribute-badge-scheme-to-status",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-badge's scheme carried statuses; status is the axis now.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "scheme",
+          "to": "status"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Move a status value (info, success, warning, error) from scheme= to status=; a colour scheme value stays where it is."
+    },
+    {
+      "id": "attribute-input-size-to-size",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "Every field takes its size from one attribute, size.",
+      "items": [
+        {
+          "component": "sf-datepicker",
+          "from": "input-size",
+          "to": "size"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-datepicker input-size=\"2\">",
+        "after": "<sf-datepicker size=\"2\">"
+      },
+      "source": "contracts/public-api-axes.json size_ladder.name_aliases"
+    },
+    {
+      "id": "attribute-icon-left-right-to-start-end",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "Icon positions are logical, so they follow the writing direction.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "icon-left",
+          "to": "icon-start"
+        },
+        {
+          "component": "sf-badge",
+          "from": "icon-left",
+          "to": "icon-start"
+        },
+        {
+          "component": "sf-button",
+          "from": "icon-right",
+          "to": "icon-end"
+        },
+        {
+          "component": "sf-badge",
+          "from": "icon-right",
+          "to": "icon-end"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-button icon-left=\"add\">",
+        "after": "<sf-button icon-start=\"add\">"
+      }
+    },
+    {
+      "id": "attribute-tightness-to-spacing",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "Inner spacing is one profile, spacing, with named values.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "tightness",
+          "to": "spacing"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "tightness",
+          "to": "spacing"
+        },
+        {
+          "component": "sf-button-group",
+          "from": "tightness",
+          "to": "spacing"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "tightness=low becomes spacing=compact, default (or empty) becomes normal, high becomes comfortable, highest becomes spacious.",
+      "source": "src/core/js/control-spacing.js"
+    },
+    {
+      "id": "attribute-file-preview-size-to-file-size",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "size names the size ladder everywhere; a file's byte size is file-size.",
+      "items": [
+        {
+          "component": "sf-file-preview",
+          "from": "size",
+          "to": "file-size"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-file-preview size=\"2 MB\">",
+        "after": "<sf-file-preview file-size=\"2 MB\">"
+      }
+    },
+    {
+      "id": "attribute-gallery-class-to-lightbox-class",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "Classes for the gallery's lightbox are lightbox-class; class and root-class belong to the element itself.",
+      "items": [
+        {
+          "component": "sf-gallery",
+          "from": "root-class",
+          "to": "lightbox-class"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-gallery root-class=\"x\">",
+        "after": "<sf-gallery lightbox-class=\"x\">"
+      }
+    },
+    {
+      "id": "attribute-scrollbar-data-mode",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The scrollbar's mode is data-mode.",
+      "items": [
+        {
+          "component": "scrollbar",
+          "from": "data-sf-scrollbar",
+          "to": "data-mode"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<div class=\"sf-scrollbar\" data-sf-scrollbar=\"subtle\">",
+        "after": "<div class=\"sf-scrollbar\" data-mode=\"subtle\">"
+      }
+    },
+    {
+      "id": "value-status-danger-critical-to-error",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "One word for a failure across the Framework: error.",
+      "items": [
+        {
+          "attribute": "status",
+          "from": "danger",
+          "to": "error"
+        },
+        {
+          "attribute": "status",
+          "from": "critical",
+          "to": "error"
+        },
+        {
+          "component": "sf-alert",
+          "attribute": "status",
+          "from": "danger",
+          "to": "error"
+        },
+        {
+          "component": "sf-badge",
+          "attribute": "status",
+          "from": "danger",
+          "to": "error"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-alert status=\"danger\">",
+        "after": "<sf-alert status=\"error\">"
+      },
+      "source": "contracts/public-api-axes.json status_aliases"
+    },
+    {
+      "id": "value-status-neutral-names",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The status without a meaning is neutral; components had their own words for it.",
+      "items": [
+        {
+          "component": "sf-alert",
+          "attribute": "status",
+          "from": "clear",
+          "to": "neutral"
+        },
+        {
+          "component": "sf-progress-bar",
+          "attribute": "status",
+          "from": "primary",
+          "to": "neutral"
+        },
+        {
+          "component": "sf-progress-scale",
+          "attribute": "status",
+          "from": "primary",
+          "to": "neutral"
+        },
+        {
+          "component": "sf-toast",
+          "attribute": "status",
+          "from": "default",
+          "to": "neutral"
+        },
+        {
+          "component": "sf-toast",
+          "attribute": "status",
+          "from": "primary",
+          "to": "info"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-toast status=\"primary\">",
+        "after": "<sf-toast status=\"info\">"
+      }
+    },
+    {
+      "id": "value-file-preview-kind-default-to-auto",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "A file preview that picks its look by itself is auto.",
+      "items": [
+        {
+          "component": "sf-file-preview",
+          "attribute": "kind",
+          "from": "default",
+          "to": "auto"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value"
+    },
+    {
+      "id": "value-tag-quantity-to-default",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "A tag with a count is a default tag with count=.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "attribute": "kind",
+          "from": "quantity",
+          "to": "default"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "manual": "Keep the number in count=."
+    },
+    {
+      "id": "value-drawer-size-words-to-ladder",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The drawer is on the shared size ladder.",
+      "items": [
+        {
+          "component": "sf-drawer",
+          "attribute": "size",
+          "from": "small",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-drawer",
+          "attribute": "size",
+          "from": "medium",
+          "to": "1"
+        },
+        {
+          "component": "sf-drawer",
+          "attribute": "size",
+          "from": "large",
+          "to": "2"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-drawer size=\"large\">",
+        "after": "<sf-drawer size=\"2\">"
+      },
+      "source": "contracts/public-api-axes.json size_ladder.value_aliases"
+    },
+    {
+      "id": "value-drawer-placement-physical",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Placement is logical, so a drawer follows the writing direction.",
+      "items": [
+        {
+          "component": "sf-drawer",
+          "attribute": "placement",
+          "from": "left",
+          "to": "inline-start"
+        },
+        {
+          "component": "sf-drawer",
+          "attribute": "placement",
+          "from": "right",
+          "to": "inline-end"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "manual": "Only where the page may be right-to-left does the difference show: left stays on the left there, inline-start moves to the right."
+    },
+    {
+      "id": "value-context-menu-positions",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Context menu positions name a side and an edge in one vocabulary.",
+      "items": [
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "start",
+          "to": "inline-start"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "end",
+          "to": "inline-end"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "top-start",
+          "to": "top-inline-start"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "top-end",
+          "to": "top-inline-end"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "bottom-start",
+          "to": "bottom-inline-start"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "bottom-end",
+          "to": "bottom-inline-end"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "left-start",
+          "to": "left-top"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "left-end",
+          "to": "left-bottom"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "right-start",
+          "to": "right-top"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "right-end",
+          "to": "right-bottom"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "inline-start-start",
+          "to": "inline-start-top"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "inline-start-end",
+          "to": "inline-start-bottom"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "inline-end-start",
+          "to": "inline-end-top"
+        },
+        {
+          "component": "sf-context-menu",
+          "attribute": "position",
+          "from": "inline-end-end",
+          "to": "inline-end-bottom"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "source": "src/smart/context-menu/index.js POSITION_ALIASES"
+    },
+    {
+      "id": "value-field-size-1-3-and-3",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Form fields have three sizes: 1/2, 1 and 2.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-input",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "sf-textarea",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-textarea",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "sf-datepicker",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-datepicker",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "sf-country-code",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-country-code",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "sf-file-upload",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "sf-file-upload",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "quantity",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "quantity",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        },
+        {
+          "component": "verification",
+          "attribute": "size",
+          "from": "1/3",
+          "to": "1/2"
+        },
+        {
+          "component": "verification",
+          "attribute": "size",
+          "from": "3",
+          "to": "2"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-input size=\"3\">",
+        "after": "<sf-input size=\"2\">"
+      },
+      "source": "src/component/field-size.js RETIRED_FIELD_SIZES"
+    },
+    {
+      "id": "event-change-aliases",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "A committed value change is change on every form value control.",
+      "items": [
+        {
+          "component": "sf-button-group",
+          "from": "sf-button-group-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-datepicker",
+          "from": "sf-datepicker-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-datepicker",
+          "from": "sf-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "sf-dropdown:change",
+          "to": "change"
+        },
+        {
+          "component": "sf-range-slider",
+          "from": "sf-range-slider-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-range-slider",
+          "from": "onSliderChange",
+          "to": "change"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "el.addEventListener('sf-dropdown:change', …)",
+        "after": "el.addEventListener('change', …)"
+      },
+      "manual": "sf-range-slider-change also fired when a value was set from code; change does not. Code that relied on the event after a programmatic set calls its handler itself.",
+      "source": "contracts/public-api-axes.json change_event"
+    },
+    {
+      "id": "event-modal-window-names",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "Modal lifecycle events are modal:*.",
+      "items": [
+        {
+          "component": "modal",
+          "from": "SFModalBeforeOpenWindow",
+          "to": "modal:before-open"
+        },
+        {
+          "component": "modal",
+          "from": "SFModalBeforeCloseWindow",
+          "to": "modal:before-close"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-event"
+    },
+    {
+      "id": "option-loader-modal-callbacks",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "A modal created through the loader is listened to with modal:* events, not callback options.",
+      "items": [
+        {
+          "component": "loader",
+          "from": "onModalReady",
+          "to": "modal:ready"
+        },
+        {
+          "component": "loader",
+          "from": "onModalUpdate",
+          "to": "modal:update"
+        },
+        {
+          "component": "loader",
+          "from": "onBeforeOpen",
+          "to": "modal:before-open"
+        },
+        {
+          "component": "loader",
+          "from": "onAfterOpen",
+          "to": "modal:after-open"
+        },
+        {
+          "component": "loader",
+          "from": "onBeforeClose",
+          "to": "modal:before-close"
+        },
+        {
+          "component": "loader",
+          "from": "onAfterClose",
+          "to": "modal:after-close"
+        },
+        {
+          "component": "loader",
+          "from": "onBeforeHide",
+          "to": "modal:before-hide"
+        },
+        {
+          "component": "loader",
+          "from": "onAfterHide",
+          "to": "modal:after-hide"
+        },
+        {
+          "component": "loader",
+          "from": "onBeforeShow",
+          "to": "modal:before-show"
+        },
+        {
+          "component": "loader",
+          "from": "onAfterShow",
+          "to": "modal:after-show"
+        },
+        {
+          "component": "loader",
+          "from": "onOpen",
+          "to": "modal:after-open"
+        },
+        {
+          "component": "loader",
+          "from": "onClose",
+          "to": "modal:after-close"
+        },
+        {
+          "component": "loader",
+          "from": "onHide",
+          "to": "modal:after-hide"
+        },
+        {
+          "component": "loader",
+          "from": "onShow",
+          "to": "modal:after-show"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-option",
+      "manual": "Replace the option with an addEventListener call for the event named in to.",
+      "source": "src/core/js/loader.js createEventAliases"
+    },
+    {
+      "id": "option-loader-standalone",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "The loader's standAlone flag is accepted and ignored.",
+      "items": [
+        {
+          "component": "loader",
+          "from": "standAlone",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "none",
+      "manual": "Delete the option; it has no effect."
+    },
+    {
+      "id": "class-button-ghost-to-link",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "A button without fill or border is the link appearance.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--ghost",
+          "to": "sf-button--link"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--ghost\">",
+        "after": "<button class=\"sf-button sf-button--link\">"
+      }
+    },
+    {
+      "id": "class-scrollbar-bare",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The scrollbar's class carries the sf- prefix like every component class.",
+      "items": [
+        {
+          "component": "scrollbar",
+          "from": "scrollbar",
+          "to": "sf-scrollbar"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-class"
+    },
+    {
+      "id": "class-hide-show-legacy",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "hide-show no longer writes hidden, hidden>block and block>hidden; it still reads and removes them.",
+      "items": [
+        {
+          "component": "hide-show",
+          "from": "hidden>block",
+          "to": null
+        },
+        {
+          "component": "hide-show",
+          "from": "block>hidden",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Remove these classes from markup; hide-show manages visibility itself."
+    },
+    {
+      "id": "utility-physical-sides",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Side utilities are logical: inline-start and inline-end.",
+      "items": [
+        {
+          "component": "utilities",
+          "from": "m-left-*",
+          "to": "m-inline-start-*"
+        },
+        {
+          "component": "utilities",
+          "from": "m-right-*",
+          "to": "m-inline-end-*"
+        },
+        {
+          "component": "utilities",
+          "from": "p-left-*",
+          "to": "p-inline-start-*"
+        },
+        {
+          "component": "utilities",
+          "from": "p-right-*",
+          "to": "p-inline-end-*"
+        },
+        {
+          "component": "utilities",
+          "from": "border-left-*",
+          "to": "border-inline-start-*"
+        },
+        {
+          "component": "utilities",
+          "from": "border-right-*",
+          "to": "border-inline-end-*"
+        },
+        {
+          "component": "utilities",
+          "from": "border-l-*",
+          "to": "border-inline-start-*"
+        },
+        {
+          "component": "utilities",
+          "from": "border-r-*",
+          "to": "border-inline-end-*"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-utility",
+      "source": "src/core/js/tailwind-map.js"
+    },
+    {
+      "id": "utility-column-gap-modules",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Gap utilities live in the gap module.",
+      "items": [
+        {
+          "component": "loader",
+          "from": "column-gap/default",
+          "to": "gap/default"
+        },
+        {
+          "component": "loader",
+          "from": "column-gap/sm",
+          "to": "gap/sm"
+        },
+        {
+          "component": "loader",
+          "from": "column-gap/md",
+          "to": "gap/md"
+        },
+        {
+          "component": "loader",
+          "from": "column-gap/lg",
+          "to": "gap/lg"
+        },
+        {
+          "component": "loader",
+          "from": "column-gap/xl",
+          "to": "gap/xl"
+        },
+        {
+          "component": "loader",
+          "from": "column-gap/xxl",
+          "to": "gap/xxl"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-utility",
+      "source": "src/core/contracts/utility-module-aliases.v1.json"
+    },
+    {
+      "id": "utility-font-size-ext",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The text-a0 … text-i9 classes set font size and line height equal to raw primitives, which is no type pair; nobody used them.",
+      "items": [
+        {
+          "component": "utilities",
+          "from": "text-a0 … text-i9",
+          "to": "text-1/2, text-1, text-2 …"
+        }
+      ],
+      "deprecated_on": "2026-09-30",
+      "remove_after": "2026-11-01",
+      "rewrite": "none",
+      "manual": "Use the text scale classes, which pair a size with its line height.",
+      "source": "ui-control/control/MIGRATION-DEBT.md"
+    },
+    {
+      "id": "token-radius-round",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "Two names for one radius; rounded stays.",
+      "items": [
+        {
+          "from": "--sf-radius-round",
+          "to": "--sf-radius-rounded"
+        },
+        {
+          "from": "radius-round",
+          "to": "radius-rounded"
+        }
+      ],
+      "deprecated_on": "2026-09-30",
+      "remove_after": "2026-11-01",
+      "rewrite": "rename-token",
+      "source": "ui-control/control/MIGRATION-DEBT.md"
+    },
+    {
+      "id": "token-radius-default",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The radius names its role now: --sf-radius--ui for a control, --sf-radius--surface for a block.",
+      "items": [
+        {
+          "from": "--sf-radius-default",
+          "to": "--sf-radius--ui"
+        },
+        {
+          "from": "radius-default",
+          "to": "radius-ui"
+        }
+      ],
+      "deprecated_on": "2026-09-30",
+      "remove_after": "2026-11-01",
+      "rewrite": "manual",
+      "manual": "A control takes --sf-radius--ui (4px); a large block takes --sf-radius--surface (8px), which is not what the old 4px gave it. In the same pair as the removal: the ui-doc guide page design-tokens/index.md (section «Радиусы») drops the old name, and the generated design-tokens/all-tokens.md is regenerated with scripts/build-token-reference.mjs, or docs:check goes red in between.",
+      "source": "ui-control/control/MIGRATION-DEBT.md"
+    },
+    {
+      "id": "component-toggle-to-switch",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-toggle and sf-switch drew one control; the switch carries both looks now.",
+      "items": [
+        {
+          "from": "sf-toggle",
+          "to": "sf-switch"
+        },
+        {
+          "from": "sf-toggle--size-1",
+          "to": "sf-switch--size-1"
+        }
+      ],
+      "deprecated_on": "2026-09-30",
+      "remove_after": "2026-11-01",
+      "rewrite": "replace-component",
+      "manual": "Sizes do not map one to one: toggle size 1 was a 40×20 track, the switch is 48×24 at size 1 on desktop. sf-switch--short and sf-switch--icon give the toggle's two looks.",
+      "source": "ui-control/control/MIGRATION-DEBT.md"
+    },
+    {
+      "id": "property-legacy-getters",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "property",
+      "summary": "Components keep the old JS property names next to the new ones.",
+      "items": [
+        {
+          "from": "el.type",
+          "to": "el.appearance, el.kind or el.status (as the attribute)"
+        },
+        {
+          "from": "el.variant",
+          "to": "el.appearance or el.kind"
+        },
+        {
+          "from": "el.tone",
+          "to": "el.status"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-property",
+      "manual": "Read the property named after the attribute's new name."
+    },
+    {
+      "id": "option-field-renderers-control-names",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "A field's filter renderer is chosen by its property type. Eight control names the table used before, read at field.filter.control, are kept as aliases; field.type and field.dataType are older names for propertyType.",
+      "items": [
+        {
+          "component": "field-renderers",
+          "from": "filter.control",
+          "to": "propertyType",
+          "match": "[\"']?control[\"']?\\s*:\\s*[\"'](?:range|date-range|multi-select|single-select|choice|choices|entity-multi-select|entity-single-select)[\"']"
+        },
+        {
+          "component": "field-renderers",
+          "from": "field.type",
+          "to": "propertyType",
+          "match": "[\"']?\\b(?:type)[\"']?\\s*:\\s*[\"'](?:string|number|integer|date|datetime|record|relation|user|file|boolean|choice)[\"']"
+        },
+        {
+          "component": "field-renderers",
+          "from": "field.dataType",
+          "to": "propertyType",
+          "match": "[\"']?dataType[\"']?\\s*:"
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "owner": "SIMAI Framework session",
+      "source": "src/smart/field-renderers/index.js (field.filter?.control || field.propertyType || field.type || field.dataType)",
+      "manual": "Declare propertyType on the field instead of filter.control, type or dataType; the renderer is the same. The eight control names: range, date-range, multi-select, single-select, choice, choices, entity-multi-select, entity-single-select."
+    },
+    {
+      "id": "property-view-unplaced-hint-text",
+      "recorded_on": "2026-10-09",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The not-placed bin is the Framework's accordion now, with no hint line under its heading: the sentence described what the «+» beside every area does, under a heading that already says what the bin is. The attribute still parses and still does nothing.",
+      "items": [
+        {
+          "component": "sf-property-view",
+          "from": "unplaced-hint-text",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-10-09",
+      "remove_after": "2026-12-01",
+      "rewrite": "none",
+      "examples": {
+        "before": "<sf-property-view unplaced-hint-text=\"…\">",
+        "after": "<sf-property-view>"
+      },
+      "source": "src/smart/property-view/js/templates/default.js",
+      "manual": "Remove the attribute from the tag. Nothing replaces it: the bin's heading says what the bin is, and the «+» beside every area is what offers a field back, which is what the sentence described."
+    },
+    {
+      "id": "token-text-size-below-quarter",
+      "recorded_on": "2026-10-10",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The text-size steps 1/7, 1/6 and 1/5 leave the public scale: they have no line height and no text role, so no text can be set in them. The smallest public step is 1/4.",
+      "items": [
+        {
+          "from": "--sf-text--size-1\\/7",
+          "to": null,
+          "match": "--sf-text-{1,2}size-1\\\\?/7\\b"
+        },
+        {
+          "from": "--sf-text--size-1\\/6",
+          "to": null,
+          "match": "--sf-text-{1,2}size-1\\\\?/6\\b"
+        },
+        {
+          "from": "--sf-text--size-1\\/5",
+          "to": null,
+          "match": "--sf-text-{1,2}size-1\\\\?/5\\b"
+        },
+        {
+          "from": "sf-skeleton-text--size-1/7",
+          "to": "sf-skeleton-text--size-1/4"
+        },
+        {
+          "from": "sf-skeleton-text--size-1/6",
+          "to": "sf-skeleton-text--size-1/4"
+        },
+        {
+          "from": "sf-skeleton-text--size-1/5",
+          "to": "sf-skeleton-text--size-1/4"
+        }
+      ],
+      "deprecated_on": "2026-10-10",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<span class=\"sf-skeleton-text sf-skeleton-text--size-1/6\"></span>",
+        "after": "<span class=\"sf-skeleton-text sf-skeleton-text--size-1/4\"></span>"
+      },
+      "manual": "Set text in a role (body, label, caption) or in step 1/4 or larger. A skeleton line takes the size of the text it stands in for: use the same step that text uses, never a step below 1/4.",
+      "owner": "ui-control",
+      "source": "ui-control/control/GUIDE-REWRITE-DECISIONS-2026-10-10.md"
+    },
+    {
+      "id": "component-pro-package-move",
+      "recorded_on": "2026-10-11",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "sf-table, sf-data-view, sf-property-view and sf-admin-menu left the free Framework for the SIMAI Framework Pro package. They are not deprecated: the tags, attributes, events and ports are unchanged, but a free release no longer carries them, so a page that uses them and declares no Pro package renders nothing for those tags.",
+      "items": [
+        {
+          "component": "sf-table",
+          "from": "sf-table",
+          "to": "SF_BOOT_CONFIG.packages.pro",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-table(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-data-view",
+          "from": "sf-data-view",
+          "to": "SF_BOOT_CONFIG.packages.pro",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-data-view(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-property-view",
+          "from": "sf-property-view",
+          "to": "SF_BOOT_CONFIG.packages.pro",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-property-view(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-admin-menu",
+          "from": "sf-admin-menu",
+          "to": "SF_BOOT_CONFIG.packages.pro",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-admin-menu(?=[\\s/>'\"`])"
+        }
+      ],
+      "deprecated_on": "2026-10-11",
+      "remove_after": "2026-12-01",
+      "removed_on": "2026-10-11",
+      "removed_in_pair": "ui-09bc6b371eca",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<script>window.SF_BOOT_CONFIG = {};</script>\n<sf-table table-settings-key=\"orders\"></sf-table>",
+        "after": "<script>window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};</script>\n<sf-table table-settings-key=\"orders\"></sf-table>"
+      },
+      "manual": "Declare the Pro package before core.js loads: SF_BOOT_CONFIG.packages.pro = {base: '<ui-pro>/smart'}, where <ui-pro> is where the page serves simai/ui-pro (its smart/ directory is the package base and smart/rule.js its rule file). Pin a Pro release whose lock (simai/ui-pro contracts/releases/pro-<12>.lock.json) names, in requires.framework, the free release the page pins (ui-<12>), and serve both from those releases; ui-09bc6b371eca is the first free release without the four components, pro-1f894a46f488 the Pro release built against it. Change nothing in the markup. The record is removed, not compat, because there is no alias to sweep: the free release dropped the components at once, and the Pro package carries them unchanged. deprecated_on and remove_after are the policy's dates for the day of the move and mean nothing further here. sf-upgrade reports a use of the four tags only in a project that declares no Pro package. The package is under the SIMAI Framework Pro licence, whose terms are pending (see the source).",
+      "owner": "ui-control",
+      "source": "ui-control/control/DISTRIBUTION-AND-LICENSING-DECISION-2026-10-10.md"
+    },
+    {
+      "id": "component-larena-package-move",
+      "recorded_on": "2026-10-11",
+      "stage": "removed",
+      "kind": "component",
+      "summary": "sf-table, sf-data-view, sf-property-view and sf-admin-menu moved from the SIMAI Framework Pro package to the larena package: SIMAI Framework Pro is dropped and a component lives with its owner. The tags, attributes, events and ports are unchanged; what a page declares changes from packages.pro to packages.larena.",
+      "items": [
+        {
+          "component": "sf-table",
+          "from": "sf-table",
+          "to": "SF_BOOT_CONFIG.packages.larena",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-table(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-data-view",
+          "from": "sf-data-view",
+          "to": "SF_BOOT_CONFIG.packages.larena",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-data-view(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-property-view",
+          "from": "sf-property-view",
+          "to": "SF_BOOT_CONFIG.packages.larena",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-property-view(?=[\\s/>'\"`])"
+        },
+        {
+          "component": "sf-admin-menu",
+          "from": "sf-admin-menu",
+          "to": "SF_BOOT_CONFIG.packages.larena",
+          "match": "(?:<|createElement\\(\\s*['\"`])sf-admin-menu(?=[\\s/>'\"`])"
+        }
+      ],
+      "deprecated_on": "2026-10-11",
+      "remove_after": "2026-12-01",
+      "removed_on": "2026-10-11",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<script>window.SF_BOOT_CONFIG = {packages: {pro: {base: '/assets/ui-pro/smart'}}};</script>\n<sf-table table-settings-key=\"orders\"></sf-table>",
+        "after": "<script>window.SF_BOOT_CONFIG = {packages: {larena: {base: '/assets/larena/smart'}}};</script>\n<sf-table table-settings-key=\"orders\"></sf-table>"
+      },
+      "manual": "Declare the larena package instead of pro, before core.js loads: SF_BOOT_CONFIG.packages.larena = {base: '<package base>'}, where the base is the smart/ directory of a larena package build (its smart/rule.js registers the package). Use a build whose receipt (package-receipt.json) names, as its framework release, the free release the page pins. Change nothing in the markup. The record is removed, not compat: package pro is no longer published, so there is no alias to sweep."
+    },
+    {
+      "id": "class-status-aliases",
+      "recorded_on": "2026-10-13",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Status classes take the status vocabulary: error, neutral, info. The older colour names still draw the same.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "sf-badge--danger",
+          "to": "sf-badge--error"
+        },
+        {
+          "component": "sf-alert",
+          "from": "sf-alert--danger",
+          "to": "sf-alert--error"
+        },
+        {
+          "component": "sf-alert",
+          "from": "sf-alert--clear",
+          "to": "sf-alert--neutral"
+        },
+        {
+          "component": "sf-toast",
+          "from": "sf-toast--default",
+          "to": "sf-toast--neutral"
+        },
+        {
+          "component": "sf-toast",
+          "from": "sf-toast--primary",
+          "to": "sf-toast--info"
+        }
+      ],
+      "deprecated_on": "2026-10-13",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<span class=\"sf-badge sf-badge--danger\">",
+        "after": "<span class=\"sf-badge sf-badge--error\">"
+      },
+      "source": "contracts/public-api-axes.json"
+    },
+    {
+      "id": "class-tightness-to-spacing",
+      "recorded_on": "2026-10-13",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The spacing classes of a button follow its spacing attribute; the tightness classes are its older names.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "tightness-low",
+          "to": "spacing-compact"
+        },
+        {
+          "component": "sf-button",
+          "from": "tightness-high",
+          "to": "spacing-comfortable"
+        },
+        {
+          "component": "sf-button",
+          "from": "tightness-highest",
+          "to": "spacing-spacious"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "tightness-low",
+          "to": "spacing-compact"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "tightness-high",
+          "to": "spacing-comfortable"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "tightness-highest",
+          "to": "spacing-spacious"
+        }
+      ],
+      "deprecated_on": "2026-10-13",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--size-1 tightness-low\">",
+        "after": "<button class=\"sf-button sf-button--size-1 spacing-compact\">"
+      }
+    },
+    {
+      "id": "attribute-popover-role-to-surface-role",
+      "recorded_on": "2026-10-13",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The role a popover gives its surface is surface-role; a role attribute on the host made the host itself a menu or dialog beside the surface.",
+      "items": [
+        {
+          "component": "sf-popover",
+          "from": "role",
+          "to": "surface-role"
+        }
+      ],
+      "deprecated_on": "2026-10-13",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-popover role=\"menu\">",
+        "after": "<sf-popover surface-role=\"menu\">"
+      }
+    },
+    {
+      "id": "class-modal-positon-to-position",
+      "recorded_on": "2026-10-13",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The modal root's position class is sf-modal--position-*; the misspelt sf-modal--positon-* is still written beside it as a legacy alias.",
+      "items": [
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-center",
+          "to": "sf-modal--position-center"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-left",
+          "to": "sf-modal--position-left"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-right",
+          "to": "sf-modal--position-right"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-inline-start",
+          "to": "sf-modal--position-inline-start"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-inline-end",
+          "to": "sf-modal--position-inline-end"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-top",
+          "to": "sf-modal--position-top"
+        },
+        {
+          "component": "sf-modal",
+          "from": "sf-modal--positon-bottom",
+          "to": "sf-modal--position-bottom"
+        }
+      ],
+      "deprecated_on": "2026-10-13",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": ".sf-modal--positon-inline-end .sf-modal-panel { }",
+        "after": ".sf-modal--position-inline-end .sf-modal-panel { }"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — значения диапазона</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/range-slider/css/range-slider.css">
+</head>
+<body class="p-4"><main class="grid gap-4">
+  <h1>Значения ползунка</h1>
+  <div id="scientific" class="sf-range-slider" data-min="0" data-max="0.01" data-start="0.002" data-step="1e-3" data-label="text"></div>
+  <div id="base-multiple" class="sf-range-slider" data-multiple="true" data-start="20,80" data-step="5"></div>
+  <sf-range-slider id="smart-multiple" start="20,80" multiple step="5" label="text"></sf-range-slider>
+  <sf-range-slider id="smart-auto" start="20" step="5" label="text"></sf-range-slider>
+  <button id="after" type="button">После диапазонов</button>
+</main>
+<script src="../../source/output/action-focus-browser/component/range-slider/js/range-slider.js"></script>
+<script src="../../source/output/action-focus-browser/smart/range-slider/js/range-slider.js"></script>
+</body></html>

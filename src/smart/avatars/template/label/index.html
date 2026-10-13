@@ -1,0 +1,18 @@
+<div class="sf-avatar-label">
+    <smart
+        name="avatars"
+        sf-code="avatars"
+        property = '{"round_size": "<%= data.avatarSize %>"} '
+        template = "default"
+        data='{"imageUrl": "<%= data.avatarUrl %>"}'
+        >
+    </smart>
+    <div class="sf-avatar-label--text">
+        <span>
+            <%= data.labelText %>
+        </span>
+        <span>
+            <%= data.labelSecondText %>
+        </span>
+    </div>
+</div>

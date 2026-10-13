@@ -1,0 +1,1 @@
+SF.RuleLoader["transform-translate/hover"] = new RegExp("^(?:(?:-hover:translate-(?:x-(?:0|1|2|3|4|5|6|7|8|9|full|half)|y-(?:0|1|2|3|4|5|6|7|8|9|full|half))|hover:translate-(?:x-(?:0|1|2|3|4|5|6|7|8|9|full|half)|y-(?:0|1|2|3|4|5|6|7|8|9|full|half))))(?![\\s\\S])");

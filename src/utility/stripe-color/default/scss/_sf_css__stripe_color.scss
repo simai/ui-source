@@ -1,0 +1,20 @@
+@use 'sf_var__stripe_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// STRIPE COLOR
+
+$infix: '';
+
+// @include layer-priority(utility,default) {
+    @each $stripe-name, $stripe-range in $stripe-color-array {
+        // @each $stripe-tone, $stripe-value in $stripe-range {
+            
+            .#{$infix}stripe-#{$stripe-name}	{
+                --sf-stripe--color: var(--sf-#{$stripe-range});
+            }
+        // }
+    }
+// }
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SF5 Avatars — методическая проверка</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/avatars-browser/component/avatars/css/avatars.css">
+</head>
+<body class="surface-0 on-surface-color p-4">
+  <main class="grid gap-4 max-w-6">
+    <h1>Аватары</h1>
+
+    <section id="ordinary" class="grid gap-2">
+      <h2>Семантика и форма</h2>
+      <div class="flex flex-wrap gap-2 items-cross-center">
+        <span id="static-avatar" class="sf-avatar sf-avatar--text sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">АБ</span></span>
+        <a id="action-avatar" href="#profile" class="sf-avatar sf-avatar--placeholder sf-avatar--size-1 inline-flex items-cross-center content-main-center transition" aria-label="Открыть профиль Анны Беловой"><i class="sf-icon" aria-hidden="true">person</i></a>
+        <span id="square-avatar" class="sf-avatar sf-avatar--text sf-avatar--square sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">СМ</span></span>
+        <span id="image-avatar" class="sf-avatar sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><img class="sf-avatar-image" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw="></span>
+      </div>
+    </section>
+
+    <section id="sizes" class="flex flex-wrap gap-1 items-cross-center" aria-label="Размеры">
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-1/4 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-1/3 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-1/2 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-2 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-3 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">А</span></span>
+    </section>
+
+    <section id="status" class="flex items-cross-center gap-1">
+      <span class="sf-avatar sf-avatar--text sf-avatar--size-1 relative flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">АБ</span><span class="sf-online-indicator sf-online-indicator--online sf-online-indicator--size-1 flex absolute bottom-0 inline-end-0"></span></span>
+      <span>Анна Белова — в сети</span>
+    </section>
+
+    <section id="group" class="sf-avatar-group sf-avatar-group--size-sm flex items-start" dir="rtl">
+      <div class="sf-avatar-group-avatars flex" role="list" aria-label="Участники">
+        <span role="listitem"><span class="sf-avatar sf-avatar--text sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">АБ</span></span><span class="sr-only">Анна Белова</span></span>
+        <span role="listitem"><span class="sf-avatar sf-avatar--text sf-avatar--size-1 flex items-cross-center content-main-center" aria-hidden="true"><span class="sf-avatar-text">ИП</span></span><span class="sr-only">Иван Петров</span></span>
+      </div>
+    </section>
+
+    <section id="smart" class="grid gap-2">
+      <sf-avatar id="smart-image" image-url="data:image/gif;base64,R0lGODlhAQABAAAAACw=" shape="square" aria-label="Открыть профиль Марии Орловой"></sf-avatar>
+      <sf-avatar id="smart-label" template="label" text="АБ" title="Анна Белова" description="Дизайнер продукта" status="online" aria-label="Открыть профиль Анны Беловой, в сети"></sf-avatar>
+      <sf-avatar id="smart-card" template="card" card-variant="portrait" image-url="data:image/gif;base64,R0lGODlhAQABAAAAACw=" title="Команда SIMAI" description="Организация"></sf-avatar>
+    </section>
+  </main>
+
+  <script src="../../source/output/clipboard-browser/core/js/smart-base.js"></script>
+  <script src="../../source/output/avatars-browser/smart/avatar/js/avatar.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    document.documentElement.className = params.get('theme') === 'dark' ? 'theme-dark' : 'theme-light';
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

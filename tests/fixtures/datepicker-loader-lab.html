@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Datepicker — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/action-focus-browser';
+    window.sfSmartPath = '../../source/output/action-focus-browser';
+    window.SF_BOOT_CONFIG = {
+      icons: {enabled: true, subsetHost: '/ui-source/tests/fixtures/icon-subset-service'},
+      preloader: {enabled: false},
+      smart: {base: true},
+      theme: false
+    };
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-2 max-w-5">
+    <sf-datepicker label="Дата публикации" value="2026-09-03"
+      min-date="2026-08-15" max-date="2027-12-31"></sf-datepicker>
+    <sf-datepicker label="Период" range start-value="2026-09-03"
+      end-value="2026-09-10" close-on-select="false"></sf-datepicker>
+    <sf-datepicker input="false" value="2026-09-03" locale="ru-RU"></sf-datepicker>
+  </main>
+  <script src="../../source/output/action-focus-browser/core/js/core.js"></script>
+</body>
+</html>

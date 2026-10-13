@@ -1,0 +1,858 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.dataview-port",
+  "version": "1.0.0",
+  "component": "smart.data-view",
+  "element": "sf-table",
+  "summary": "The seam of the data view: what a host answers with, what the view asks for, and how its column settings and saved views are stored.",
+  "capabilities": {
+    "saved-views": {
+      "summary": "Saved views: opening, saving and deleting a stored view.",
+      "intents": [
+        "view.open",
+        "view.save",
+        "view.delete"
+      ],
+      "data": [
+        "saved_views"
+      ]
+    },
+    "shared-column-settings": {
+      "summary": "Saving column settings for everyone, a separate permission from the personal layer.",
+      "intents": [
+        "settings.save_shared"
+      ]
+    },
+    "bulk-under-filter": {
+      "summary": "Acting on every record under the current filter, not only the checked ones.",
+      "intents": [
+        "bulk.apply_under_filter"
+      ]
+    },
+    "row-actions": {
+      "summary": "Per-record operations the host resolves; the allowed set travels with each record.",
+      "intents": [
+        "record.open",
+        "record.mutate"
+      ]
+    }
+  },
+  "data": {
+    "columns": {
+      "summary": "Columns the host allows in this view, with their presentation vocabulary.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "min_width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "priority": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Lower survives longer when the columns do not fit."
+            },
+            "sticky": {
+              "enum": [
+                "none",
+                "start",
+                "end"
+              ]
+            },
+            "sortable": {
+              "type": "boolean"
+            },
+            "renderer": {
+              "enum": [
+                "link"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "records": {
+      "summary": "Rows of the current answer. Each carries its revision and the actions the host allows for it.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "revision",
+            "actions"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "What the host allows for this record. The component offers only these."
+            }
+          }
+        }
+      }
+    },
+    "total": {
+      "summary": "How many records match the query the host applied.",
+      "required": true,
+      "schema": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "echo": {
+      "summary": "The request the host answered: chosen and applied filters, refused parts, search, sort and window, plus what a view switch carried over.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "filters_chosen",
+          "filters",
+          "filters_rejected",
+          "search",
+          "sort",
+          "page",
+          "per_page"
+        ],
+        "properties": {
+          "filters_chosen": {
+            "type": "object",
+            "description": "What the person chose."
+          },
+          "filters": {
+            "type": "object",
+            "description": "What the host applied."
+          },
+          "filters_rejected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Chosen filters the host refused."
+          },
+          "search": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "direction"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "direction": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "switch": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "object"
+              },
+              "dropped": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "What a view switch carried over and what it dropped."
+          }
+        }
+      }
+    },
+    "column_settings": {
+      "summary": "Column settings by layer, each with its revision, and where a save goes.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "layers",
+          "target"
+        ],
+        "properties": {
+          "layers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "package": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "shared": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "personal": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "revision"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "personal",
+                  "saved_view"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "key": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "saved_views": {
+      "summary": "Stored views as objects: query, field roles, column layout, settings and a revision.",
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key",
+            "label",
+            "revision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "query": {
+              "type": "object"
+            },
+            "roles": {
+              "type": "object"
+            },
+            "layout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "visible": {
+                        "type": "boolean"
+                      },
+                      "order": {
+                        "type": [
+                          "number",
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "min_width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "priority": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Lower survives longer when the columns do not fit."
+                      },
+                      "sticky": {
+                        "enum": [
+                          "none",
+                          "start",
+                          "end"
+                        ]
+                      },
+                      "sortable": {
+                        "type": "boolean"
+                      },
+                      "renderer": {
+                        "enum": [
+                          "link"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "settings": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "query.change": {
+      "summary": "Answer the current search, filter, sort and window. Every request carries its sequence; an older answer is dropped.",
+      "event": "sf-table-query-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "query": {
+            "type": "object"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "record.open": {
+      "summary": "Open one record for reading.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "const": "view"
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions"
+    },
+    "record.mutate": {
+      "summary": "Create, edit, delete or restore one record. The host re-reads the stored bytes and compares the revision.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions"
+    },
+    "bulk.apply_selected": {
+      "summary": "Apply one action to the checked records, each with the revision the browser last saw. Refused as a whole when any revision is stale.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids",
+          "revisions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "bulk.apply_under_filter": {
+      "summary": "Apply one action to every record under the filter the host applied, with the count the person confirmed.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "filters",
+          "confirmed_total"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "filters": {
+            "type": "object"
+          },
+          "confirmed_total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "bulk-under-filter"
+    },
+    "settings.save_personal": {
+      "summary": "Save column settings for this person, against the revision of the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "settings.save_shared": {
+      "summary": "Save column settings for everyone. A separate permission and a separate endpoint from the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision",
+          "target"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "target": {
+            "const": "shared"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "shared-column-settings"
+    },
+    "view.open": {
+      "summary": "Load a stored view.",
+      "event": "sf-table-template-select",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.save": {
+      "summary": "Store the current view, or update a stored one against its revision.",
+      "event": "sf-table-template-save",
+      "payload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.delete": {
+      "summary": "Delete a stored view.",
+      "event": "sf-table-template-delete",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.create_record": {
+      "summary": "Open the host's create form, optionally for a named kind.",
+      "event": "sf-table-create-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "item"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [
+      "pinned"
+    ],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a layer is a write against its revision, never a deletion."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "saved_view"
+      ],
+      "carries_revision": true
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "9957664baa8ca516582451a1f17b9c0bb47f87bc0888d5b470d94c7d1da53f39",
+    "cases": 18
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "records carry revision and actions",
+      "the answer echoes the applied query",
+      "a stale revision is answered with a conflict",
+      "a batch is refused as a whole",
+      "shared settings use their own permission"
+    ]
+  }
+}

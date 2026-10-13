@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="260 692 28 20" fill="none" role="img">
+<g id="Country=MN">
+<rect id="Mask_302" x="260" y="692" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask140_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="260" y="692" width="28" height="20">
+<rect id="Mask_303" x="260" y="692" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask140_8205_11341)">
+<path id="Rectangle 2 Copy_7" fill-rule="evenodd" clip-rule="evenodd" d="M269.333 712H278.666V692H269.333V712Z" fill="#0052B4"/>
+<path id="Rectangle 2_205" fill-rule="evenodd" clip-rule="evenodd" d="M260 712H269.333V692H260V712Z" fill="#D80027"/>
+<path id="Rectangle 2_206" fill-rule="evenodd" clip-rule="evenodd" d="M278.667 712H288V692H278.667V712Z" fill="#D80027"/>
+<path id="Rectangle 1611" d="M264 708H262.667V704H264V708ZM264.667 708L264 706.667H265.334L264.667 708ZM266.667 708H265.334V704H266.667V708ZM264.667 705.333C265.035 705.333 265.334 705.632 265.334 706C265.334 706.368 265.035 706.667 264.667 706.667C264.299 706.667 264 706.368 264 706C264 705.632 264.299 705.333 264.667 705.333ZM264.667 705.333L264 704H265.334L264.667 705.333ZM264.667 702.667C265.035 702.667 265.334 702.965 265.334 703.333C265.334 703.701 265.035 704 264.667 704C264.299 704 264 703.701 264 703.333C264 702.965 264.299 702.667 264.667 702.667ZM265.334 702.667H264L264.667 702L265.334 702.667Z" fill="url(#paint19_linear_8205_11341)"/>
+</g>
+</g>
+<defs><linearGradient id="paint19_linear_8205_11341" x1="262.667" y1="702" x2="262.667" y2="708" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F8D246"/>
+<stop offset="1" stop-color="#F9CE2F"/>
+</linearGradient></defs>
+</svg>

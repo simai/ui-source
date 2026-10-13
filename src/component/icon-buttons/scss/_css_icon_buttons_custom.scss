@@ -1,0 +1,91 @@
+@layer sf.override {
+
+  sf-icon-button:has(.sf-icon-button--outline[class*="segment-"])
+  + sf-icon-button
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-icon-button.sf-icon-button--outline[class*="segment-"]
+  + .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline) {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+
+
+  sf-icon-button:has(.sf-icon-button--outline[class*="segment-"])
+  + sf-button
+  .sf-button[class*="segment-"]:not(.sf-button--outline),
+  .sf-icon-button.sf-icon-button--outline[class*="segment-"]
+  + .sf-button[class*="segment-"]:not(.sf-button--outline) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+
+
+  sf-icon-button:has(+ sf-icon-button .sf-icon-button--outline[class*="segment-"])
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-icon-button.sf-icon-button--outline[class*="segment-"]) {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+
+  sf-icon-button:has(+ sf-button .sf-button--outline[class*="segment-"])
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*="segment-"]:not(.sf-icon-button--outline):has(+ .sf-button.sf-button--outline[class*="segment-"]) {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+}
+
+/* An icon button sets .loading as a button does (sf-icon-button loading) and
+   had no rule for it: it went disabled with no sign of work. The same stripes
+   as .sf-button.loading, defined here so the icon-button sheet alone draws them. */
+@layer sf.components {
+  .sf-icon-button {
+    --sf-icon-button-loading-stripe: var(--sf-alpha-8);
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    &.loading {
+      pointer-events: none;
+      position: relative;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: -50%;
+        background-image: repeating-linear-gradient(
+                        135deg,
+                        var(--sf-icon-button-loading-stripe) 0,
+                        var(--sf-icon-button-loading-stripe) var(--sf-space-1\/2),
+                        transparent var(--sf-space-1\/2),
+                        transparent var(--sf-space-1)
+        );
+        animation: sf-icon-button-stripes-slide calc(var(--sf-duration-slow) * 2) linear infinite;
+        will-change: transform;
+        pointer-events: none;
+      }
+    }
+  }
+
+  @keyframes sf-icon-button-stripes-slide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(var(--sf-space-1) * 1.41421356)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-icon-button.loading::after {
+      animation: none;
+    }
+  }
+}

@@ -1,0 +1,196 @@
+@layer sf.components {
+  /* utility-hint: display/block */
+  .sf-avatar {
+    border-end-end-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-radius-circle));
+    border-end-start-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-radius-circle));
+    border-start-end-radius: var(--sf-avatar--border-top-right-radius, var(--sf-radius-circle));
+    border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-radius-circle));
+    color: var(--sf-avatar--color, var(--sf-on-surface-variant));
+    font-family: var(--sf-avatar--font-family, var(--sf-text--family));
+    font-weight: var(--sf-avatar--font-weight, var(--sf-font-weight-regular));
+    width: var(--sf-avatar--width);
+    height: var(--sf-avatar--height);
+    background-color: var(--sf-avatar--background-color);
+    font-size: var(--sf-avatar--font-size);
+    line-height: var(--sf-avatar--line-height);
+    white-space: nowrap;
+    border-color: var(--sf-avatar--border-color, transparent);
+    border-width: var(--sf-avatar--border-width, 0);
+    border-top-width: var(--sf-avatar--border-top-width, 0);
+    border-inline-end-width: var(--sf-avatar--border-inline-end-width, 0);
+    border-bottom-width: var(--sf-avatar--border-bottom-width, 0);
+    border-inline-start-width: var(--sf-avatar--border-inline-start-width, 0);
+    border-style: var(--sf-avatar--border-style, solid);
+    box-shadow: var(--sf-avatar--box-shadow);
+    --sf-avatar--background-color: transparent;
+    --sf-avatar--border-top-width: var(--sf-px);
+    --sf-avatar--border-bottom-width: var(--sf-px);
+    --sf-avatar--border-inline-start-width: var(--sf-px);
+    --sf-avatar--border-inline-end-width: var(--sf-px);
+  }
+
+  .sf-avatar .sf-avatar-badge {
+    border: var(--sf-avatar-badge--border, 0 solid);
+    border-color: var(--sf-avatar-badge--border-color, transparent);
+    border-end-end-radius: var(--sf-avatar-badge--border-end-end-radius);
+    border-end-start-radius: var(--sf-avatar-badge--border-end-start-radius);
+    border-start-end-radius: var(--sf-avatar-badge--border-start-end-radius);
+    border-start-start-radius: var(--sf-avatar-badge--border-start-start-radius);
+    border-style: var(--sf-avatar-badge--border-style, solid);
+    border-width: var(--sf-avatar-badge--border-width, 0);
+  }
+
+  .sf-avatar .sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+
+  .sf-avatar .sf-online-indicator {
+    background-color: var(--sf-online-indicator--background-color);
+  }
+
+  .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
+    --sf-avatar-badge--border: var(--sf-px) solid;
+    --sf-avatar-badge--border-end-end-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-end-start-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-start-end-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-start-start-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-style: solid;
+    --sf-avatar-badge--border-width: var(--sf-px);
+    --sf-avatar-badge--border-color: var(--sf-surface-0);
+  }
+
+  .sf-avatar.sf-avatar--size-2 .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-4);
+    --sf-icon--height: var(--sf-icon-size-4);
+    --sf-icon--width: var(--sf-icon-size-4);
+  }
+
+  .sf-avatar.sf-avatar--size-3 .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-5);
+    --sf-icon--height: var(--sf-icon-size-5);
+    --sf-icon--width: var(--sf-icon-size-5);
+  }
+
+  .sf-avatar.sf-avatar--size-1\/2 .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-2);
+    --sf-icon--height: var(--sf-icon-size-2);
+    --sf-icon--width: var(--sf-icon-size-2);
+  }
+
+  .sf-avatar.sf-avatar--size-1\/3 .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-1);
+    --sf-icon--height: var(--sf-icon-size-1);
+    --sf-icon--width: var(--sf-icon-size-1);
+  }
+
+  .sf-avatar.sf-avatar--size-1\/4 .sf-icon {
+    --sf-icon--font-size: var(--sf-icon-size-1\/3);
+    --sf-icon--height: var(--sf-icon-size-1\/3);
+    --sf-icon--width: var(--sf-icon-size-1\/3);
+  }
+
+  .sf-avatar--size-1 {
+    --sf-avatar--font-size: var(--sf-text-size-1);
+    --sf-avatar--height: var(--sf-ui-1--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-1);
+    --sf-avatar--width: var(--sf-ui-1--control-height);
+  }
+
+  .sf-avatar--size-2 {
+    --sf-avatar--font-size: var(--sf-text-size-2);
+    --sf-avatar--height: var(--sf-ui-2--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-2);
+    --sf-avatar--width: var(--sf-ui-2--control-height);
+  }
+
+  .sf-avatar--size-3 {
+    --sf-avatar--font-size: var(--sf-text-size-3);
+    --sf-avatar--height: var(--sf-ui-3--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-3);
+    --sf-avatar--width: var(--sf-ui-3--control-height);
+  }
+
+  .sf-avatar--size-1\/2 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/2);
+    --sf-avatar--height: var(--sf-ui-1\/2--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-avatar--size-1\/3 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/3);
+    --sf-avatar--height: var(--sf-ui-1\/3--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-1\/3);
+    --sf-avatar--width: var(--sf-ui-1\/3--control-height);
+  }
+
+  .sf-avatar--size-1\/4 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/4);
+    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--line-height: var(--sf-text-height-1\/4);
+    --sf-avatar--width: var(--sf-text-height-1\/2);
+  }
+
+  .sf-avatar--placeholder, .sf-avatar--text {
+    --sf-avatar--background-color: var(--sf-surface-container);
+  }
+
+  .sf-avatar--square {
+    --sf-avatar--border-bottom-right-radius: var(--sf-radius--ui);
+    --sf-avatar--border-bottom-left-radius: var(--sf-radius--ui);
+    --sf-avatar--border-top-right-radius: var(--sf-radius--ui);
+    --sf-avatar--border-top-left-radius: var(--sf-radius--ui);
+  }
+
+  .sf-avatar-image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+}
+
+@layer sf.states {
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):hover .sf-online-indicator.sf-online-indicator--online,
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):focus-visible .sf-online-indicator.sf-online-indicator--online {
+    --sf-online-indicator--background-color: var(--sf-success);
+  }
+
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):hover {
+    --sf-avatar--border-color: var(--sf-primary-hover);
+    --sf-avatar--border-style: solid;
+    --sf-avatar--border-width: var(--sf-px);
+  }
+
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+}
+
+@layer sf.components {
+  /* An avatar beside a label takes the label's line of a form size, the way an
+     icon does, and its initials half of it. Its own sizes are control heights. */
+  .sf-avatar.sf-avatar--line-1\/2 {
+    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-text-height-1\/2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-avatar.sf-avatar--line-1 {
+    --sf-avatar--height: var(--sf-text-height-1);
+    --sf-avatar--width: var(--sf-text-height-1);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1);
+  }
+
+  .sf-avatar.sf-avatar--line-2 {
+    --sf-avatar--height: var(--sf-text-height-2);
+    --sf-avatar--width: var(--sf-text-height-2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-2);
+  }
+}

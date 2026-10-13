@@ -1,0 +1,43 @@
+@layer sf.components {
+.sf-switch {
+  min-width: 0;
+}
+
+.sf-switch:not(.disabled):has(input:not(:disabled)) {
+  cursor: pointer;
+}
+
+.sf-switch.disabled,
+.sf-switch:has(input:disabled) {
+  cursor: default;
+}
+
+.sf-switch .sf-switch-toggler {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sf-switch .sf-switch-container-wrap {
+  min-width: 0;
+}
+
+.sf-switch .sf-switch-text {
+  white-space: var(--sf-switch-text--white-space, normal);
+  overflow-wrap: anywhere;
+}
+
+/* The native control is the hit area. It covers the mark and reaches at
+   least 24px on each axis (WCAG 2.2, 2.5.8) where the mark is smaller: a size
+   1/2 mark is 16px on mobile, a size 1 mark 20. The inset only goes negative,
+   evenly on both sides, so a larger mark keeps its own box and RTL needs
+   nothing. The mark itself does not change. */
+.sf-switch .sf-switch-toggler input[type='checkbox'] {
+  cursor: inherit;
+  inset: min(0px, calc((100% - var(--sf-c2)) / 2)) min(0px, calc((100% - var(--sf-c2)) / 2));
+  inline-size: max(100%, var(--sf-c2));
+  block-size: max(100%, var(--sf-c2));
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+}

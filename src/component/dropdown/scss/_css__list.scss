@@ -1,0 +1,201 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
+.sf-list {
+  background-color: var(--sf-list--background-color, var(--sf-surface-0));
+  border-width: var(--sf-list--border-width, var(--sf-px));
+  border-bottom-width: var(--sf-list--border-bottom-width, var(--sf-list--border-width, var(--sf-px)));
+  border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
+  border-end-end-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+  border-end-start-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+  border-inline-end-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+  border-inline-start-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+  border-start-end-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+  border-start-start-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+  border-style: var(--sf-list--border-style, solid);
+  border-top-width: var(--sf-list--border-top-width, var(--sf-list--border-width, var(--sf-px)));
+  gap: var(--sf-list--gap, var(--sf-space-1\/3));
+  padding-bottom: var(--sf-list--padding-bottom, var(--sf-space-1\/3));
+  padding-inline-end: var(--sf-list--padding-right, var(--sf-space-1\/3));
+  padding-inline-start: var(--sf-list--padding-left, var(--sf-space-1\/3));
+  padding-top: var(--sf-list--padding-top, var(--sf-space-1\/3));
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) */
+.sf-list .sf-list-wrap {
+  --sf-list-wrap--background-color: transparent;
+  background-color: var(--sf-list-wrap--background-color);
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-list .sf-list-container {
+  --sf-list-container--background-color: transparent;
+  background-color: var(--sf-list-container--background-color);
+}
+}
+
+/* The popup of a dropdown is a menu surface, and it now reads like the
+   context menu, which owners and users already found right. Before, its
+   options borrowed the look of a list row: a divider under every option, a
+   highlight that ran edge to edge with square corners, and a flat panel with a
+   border instead of a lift. The same surface, lift, inset and corner the
+   context menu uses are applied here, scoped to the dropdown -- in place and
+   in the portal, where the list is wrapped in an .sf-dropdown context -- so a
+   list item anywhere else keeps its row look.
+
+   The same surface is available on its own as .sf-list--menu, because a menu
+   list is not the dropdown's property: a list of options anchored to any
+   control -- a popover's content, for one -- is the same thing, and the only
+   alternative was a consumer writing these tokens again in its own stylesheet.
+
+   The option row is laid out here as well. The dropdown's own script puts
+   the check mark into a selected option, and that mark lands in line only
+   when the option is a flex row; written without the flex class, the mark
+   fell under the label and the selected option stood twice as tall. A layout
+   the component's own script depends on is the component's to set. */
+@layer sf.components {
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    --sf-list--border-width: 0;
+    --sf-list--background-color: var(--sf-elevation-2--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    --sf-list--padding-top: var(--sf-space-1\/4);
+    --sf-list--padding-bottom: var(--sf-space-1\/4);
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    /* The lift goes through the variable the dropdown stylesheet reads. Its own
+       rule set the variable only under .open, a class the script never puts
+       on the root -- it writes sf-dropdown--open, and the portal context drops
+       the open modifiers altogether -- so the list never had a shadow. */
+    --sf-list--box-shadow: var(--sf-elevation-2--shadow);
+  }
+
+  .sf-dropdown .sf-list .sf-list-item,
+  .sf-list--menu .sf-list-item {
+    --sf-list-item--border-bottom-width: 0;
+    --sf-list-item--background-color: transparent;
+    display: flex;
+    align-items: center;
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
+  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+    --sf-list-item--background-color: var(--sf-surface-transparent-hover);
+  }
+
+  .sf-dropdown .sf-list .sf-list-item.selected,
+  .sf-list--menu .sf-list-item.selected {
+    --sf-list-item--background-color: var(--sf-primary-container);
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    border: var(--sf-px) solid CanvasText;
+  }
+}
+
+/* A heading names the stretch of list under it. It is not an option: a pointer
+   passes through it, a keyboard steps over it, and a reader is told it carries
+   no choice. It stays while its stretch scrolls, because a list long enough to
+   need headings is long enough to lose which one you are inside of. */
+@layer sf.components {
+  .sf-list-heading {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    /* The surface's own colour, read from the list that sets it: `inherit`
+       would take a wrapper's transparent background and the rows would scroll
+       through the heading. */
+    background-color: var(--sf-list--background-color, var(--sf-surface-0));
+    padding-block: var(--sf-space-1\/4);
+    padding-inline: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-label-small--size);
+    line-height: var(--sf-label-small--height);
+    font-weight: var(--sf-weight-medium, 500);
+  }
+
+  .sf-list-heading:not(:first-child) {
+    margin-block-start: var(--sf-space-1\/4);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    padding-block-start: var(--sf-space-1\/2);
+  }
+
+  .sf-list-heading-container {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Several options in a row. A hundred icons in a column is a column nobody
+   scrolls to the end of; in a grid the same hundred are read at a glance, and
+   each option keeps the row's own hit area, hover and selected tint. The label
+   is the option's code, which the search reads and a pointer sees as a title --
+   drawn in the cell it would make every cell as wide as the longest name.
+
+   Keyed off the container rather than off the dropdown's root: the open list is
+   moved into a portal, which carries the root's context but not its modifiers,
+   so a rule hung off `.sf-dropdown--grid` reached the list in place and never
+   the one a person is actually looking at. */
+@layer sf.components {
+  .sf-list-container--grid {
+    display: grid;
+    grid-template-columns: repeat(var(--sf-list-container--columns, 6), minmax(0, 1fr));
+    gap: var(--sf-px);
+    /* A grid asks for the width its columns need: the list otherwise takes the
+       width of the control it hangs from, and a chooser narrow enough to hold a
+       glyph made six columns of eleven pixels each. */
+    min-inline-size: calc(
+      var(--sf-list-container--columns, 6) * var(--sf-ui-1--control-height, 2.25rem)
+    );
+  }
+
+  /* The surface holding a grid asks for the same width. The list is sized from
+     the control it hangs from, which for a chooser the width of one glyph left
+     six columns two glyphs wide. */
+  .sf-list:has(.sf-list-container--grid) {
+    min-inline-size: calc(
+      var(--sf-list-container--columns, 6) * var(--sf-ui-1--control-height, 2.25rem)
+      + var(--sf-space-1)
+    );
+  }
+
+  .sf-list-container--grid .sf-list-item {
+    justify-content: center;
+    aspect-ratio: 1;
+    padding-inline: 0;
+  }
+
+  .sf-list-container--grid .sf-list-item .sf-list-item-wrap {
+    flex: 0 0 auto;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .sf-list-container--grid .sf-list-item .sf-list-item-container {
+    display: none;
+  }
+
+  /* A grid is read at a glance, so it is as tall as a few rows and scrolls
+     rather than running the height of the screen: a hundred and twenty glyphs
+     six to a row is twenty rows, and twenty rows is a column again. */
+  .sf-list-container-wrap:has(.sf-list-container--grid) {
+    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    overflow: hidden auto;
+  }
+}
+
+/* A list that does not hang from a field takes a width of its own: sized from
+   the control it opens under -- an icon button, say -- it would be one
+   character wide, and left to its content it grows to the longest name in it,
+   which for a list of field names is most of the panel. A width it is told,
+   and names that do not fit wrap. */
+@layer sf.components {
+  .sf-list--free-width {
+    inline-size: var(--sf-dropdown--list-width, 18rem);
+  }
+}

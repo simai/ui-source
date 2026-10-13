@@ -1,0 +1,62 @@
+/*
+ * Generated from src/core/contracts/adaptive-sizing.v1.json.
+ * contract-sha256: b70d02d6902345e17954eafb44f24052b7478439184286bed5a8df6c69c1fe45
+ * Do not edit semantic values in this file directly.
+ */
+@layer sf.base {
+  :root {
+    --sf-title--height-1: var(--sf-b6);
+    --sf-title--height-2: var(--sf-b8);
+    --sf-title--height-3: var(--sf-c0);
+    --sf-title--height-4: var(--sf-c2);
+    --sf-title--height-5: var(--sf-c3);
+    --sf-title--height-6: var(--sf-c4);
+    --sf-title--height-7: var(--sf-c6);
+    --sf-title--height-8: var(--sf-c8);
+    --sf-title--height-9: var(--sf-d0);
+    --sf-title--height-10: var(--sf-d2);
+    --sf-title--height-11: var(--sf-d3);
+    --sf-title--height-12: var(--sf-d4);
+    --sf-title-height-1: var(--sf-title--height-1);
+    --sf-title-height-2: var(--sf-title--height-2);
+    --sf-title-height-3: var(--sf-title--height-3);
+    --sf-title-height-4: var(--sf-title--height-4);
+    --sf-title-height-5: var(--sf-title--height-5);
+    --sf-title-height-6: var(--sf-title--height-6);
+    --sf-title-height-7: var(--sf-title--height-7);
+    --sf-title-height-8: var(--sf-title--height-8);
+    --sf-title-height-9: var(--sf-title--height-9);
+    --sf-title-height-10: var(--sf-title--height-10);
+    --sf-title-height-11: var(--sf-title--height-11);
+    --sf-title-height-12: var(--sf-title--height-12);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-title--height-1: var(--sf-b8);
+      --sf-title--height-2: var(--sf-c2);
+      --sf-title--height-3: var(--sf-c4);
+      --sf-title--height-4: var(--sf-c6);
+      --sf-title--height-5: var(--sf-c8);
+      --sf-title--height-6: var(--sf-d0);
+      --sf-title--height-7: var(--sf-d2);
+      --sf-title--height-8: var(--sf-d4);
+      --sf-title--height-9: var(--sf-d6);
+      --sf-title--height-10: var(--sf-d9);
+      --sf-title--height-11: var(--sf-e0);
+      --sf-title--height-12: var(--sf-e2);
+      --sf-title-height-1: var(--sf-title--height-1);
+      --sf-title-height-2: var(--sf-title--height-2);
+      --sf-title-height-3: var(--sf-title--height-3);
+      --sf-title-height-4: var(--sf-title--height-4);
+      --sf-title-height-5: var(--sf-title--height-5);
+      --sf-title-height-6: var(--sf-title--height-6);
+      --sf-title-height-7: var(--sf-title--height-7);
+      --sf-title-height-8: var(--sf-title--height-8);
+      --sf-title-height-9: var(--sf-title--height-9);
+      --sf-title-height-10: var(--sf-title--height-10);
+      --sf-title-height-11: var(--sf-title--height-11);
+      --sf-title-height-12: var(--sf-title--height-12);
+    }
+  }
+}

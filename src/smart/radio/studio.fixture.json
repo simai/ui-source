@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.radio",
+  "title": "Radio reference",
+  "summary": "Deterministic reference fixture for sf-radio.",
+  "locale": "ru",
+  "props": {
+    "label": "Основной вариант",
+    "checked": true,
+    "value": "primary"
+  },
+  "children": [],
+  "state": "default"
+}

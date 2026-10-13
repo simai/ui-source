@@ -1,0 +1,16 @@
+@use '../../default/scss/sf_var__filter_drop_shadow_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DROP SHADOW COLOR HOVER
+@each $drop-shadow-color-name, $drop-shadow-color-value in $drop-shadow-color-array {
+  .hover\:drop-shadow-#{$drop-shadow-color-name}:hover {
+    --sf-shadow--color: var(--sf-#{$drop-shadow-color-value}) !important;
+    --sf-shadow--color-fill: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-fill)) !important;
+    --sf-shadow--color-outline: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-outline)) !important;
+    --sf-shadow--color-shading: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$drop-shadow-color-value}) var(--sf-shadow--alfa-shade)) !important;
+    --sf-shadow--color-shade: var(--sf-shadow--color-shading) !important;
+  }
+}
+}

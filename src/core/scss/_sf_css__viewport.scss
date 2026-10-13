@@ -1,0 +1,30 @@
+// Semantic viewport sizes. Keep legacy screen utilities unchanged.
+// Unsupported engines use the regular viewport, not an undefined token.
+@layer sf.tokens {
+    :root {
+        --sf-viewport-height-small: 100vh;
+        --sf-viewport-height-large: 100vh;
+        --sf-viewport-height-dynamic: 100vh;
+        --sf-viewport-width-small: 100vw;
+        --sf-viewport-width-large: 100vw;
+        --sf-viewport-width-dynamic: 100vw;
+    }
+    @supports (height: 100svh) and (width: 100svw) {
+        :root {
+            --sf-viewport-height-small: 100svh;
+            --sf-viewport-width-small: 100svw;
+        }
+    }
+    @supports (height: 100lvh) and (width: 100lvw) {
+        :root {
+            --sf-viewport-height-large: 100lvh;
+            --sf-viewport-width-large: 100lvw;
+        }
+    }
+    @supports (height: 100dvh) and (width: 100dvw) {
+        :root {
+            --sf-viewport-height-dynamic: 100dvh;
+            --sf-viewport-width-dynamic: 100dvw;
+        }
+    }
+}

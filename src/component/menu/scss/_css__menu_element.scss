@@ -1,0 +1,178 @@
+@layer sf.components {
+  .sf-menu-element {
+    --sf-menu-element--background-color: var(--sf-transparent);
+    --sf-menu-element--border-color: var(--sf-surface-container);
+    --sf-menu-element--border-width: var(--sf-px);
+    --sf-menu-element--color: var(--sf-on-surface);
+    --sf-menu-element--gap: var(--sf-space-1\/3);
+    --sf-menu-element--radius: var(--sf-radius--ui);
+
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-menu-element--gap);
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    width: 100%;
+    inline-size: 100%;
+    max-width: 100%;
+    max-inline-size: 100%;
+    margin: var(--sf-0);
+    /* A row is a size 1 control: the padding gives up the border, so the
+       row is 40px like a field, not 42. */
+    padding-block-start: var(
+      --sf-menu-element--padding-top,
+      var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))
+    );
+    padding-block-end: var(
+      --sf-menu-element--padding-bottom,
+      var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))
+    );
+    padding-inline-end: var(
+      --sf-menu-element--padding-right,
+      var(--sf-menu-element--padding-inline-end, var(--sf-space-1))
+    );
+    padding-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
+    border-color: var(--sf-menu-element--border-color);
+    border-style: var(--sf-menu-element--border-style, solid);
+    border-block-start-width: var(
+      --sf-menu-element--border-top-width,
+      var(--sf-menu-element--border-width)
+    );
+    border-block-end-width: var(
+      --sf-menu-element--border-bottom-width,
+      var(--sf-menu-element--border-width)
+    );
+    border-inline-start-width: var(
+      --sf-menu-element--border-left-width,
+      var(--sf-menu-element--border-width)
+    );
+    border-inline-end-width: var(
+      --sf-menu-element--border-right-width,
+      var(--sf-menu-element--border-width)
+    );
+    border-start-start-radius: var(
+      --sf-menu-element--border-top-left-radius,
+      var(--sf-menu-element--radius)
+    );
+    border-start-end-radius: var(
+      --sf-menu-element--border-top-right-radius,
+      var(--sf-menu-element--radius)
+    );
+    border-end-start-radius: var(
+      --sf-menu-element--border-bottom-left-radius,
+      var(--sf-menu-element--radius)
+    );
+    border-end-end-radius: var(
+      --sf-menu-element--border-bottom-right-radius,
+      var(--sf-menu-element--radius)
+    );
+    color: var(--sf-menu-element--color);
+    background-color: var(--sf-menu-element--background-color);
+    font-family: var(--sf-menu-element--font-family, var(--sf-text--family));
+    font-size: var(--sf-menu-element--font-size, var(--sf-text-size-1));
+    font-weight: var(--sf-menu-element--font-weight, var(--sf-font-weight-regular));
+    line-height: var(--sf-menu-element--line-height, var(--sf-text-height-1));
+    text-align: start;
+    text-decoration: none;
+  }
+
+  button.sf-menu-element,
+  a.sf-menu-element,
+  .sf-menu-element[role='button'] {
+    cursor: pointer;
+  }
+
+  button.sf-menu-element {
+    appearance: none;
+  }
+
+  .sf-menu-element .sf-menu-element-wrap {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-menu-element-wrap--gap, var(--sf-space-1\/3));
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    color: inherit;
+    font: inherit;
+  }
+
+  .sf-menu-element-text {
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-menu-element-icon,
+  .sf-menu-element > .sf-icon-button {
+    flex: none;
+  }
+
+  .sf-menu-element.disabled,
+  .sf-menu-element:disabled,
+  .sf-menu-element[aria-disabled='true'] {
+    --sf-menu-element--background-color: var(--sf-disable);
+    --sf-menu-element--border-color: var(--sf-outline-disable);
+    --sf-menu-element--color: var(--sf-on-disable);
+    cursor: default;
+  }
+
+  .sf-menu-element.disabled .sf-icon,
+  .sf-menu-element:disabled .sf-icon,
+  .sf-menu-element[aria-disabled='true'] .sf-icon {
+    --sf-icon--color: currentColor;
+  }
+
+  .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+    --sf-menu-element--background-color: var(--sf-surface-container-hover);
+    --sf-menu-element--border-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-menu-element.open,
+  .sf-menu-element[aria-expanded='true'] {
+    --sf-menu-element--background-color: var(--sf-surface-container-active);
+    --sf-menu-element--border-color: var(--sf-surface-container-active);
+  }
+
+  .sf-menu-element[aria-expanded='false']:dir(rtl) > .sf-icon-button .sf-icon {
+    transform: scaleX(-1);
+  }
+
+  .sf-menu-element:focus {
+    outline: none;
+  }
+
+  .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):focus-visible,
+  .sf-menu-element > .sf-icon-button:not(:disabled):focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  .sf-menu-element--level-1 {
+    --sf-menu-element--padding-inline-start: var(--sf-space-1);
+  }
+
+  .sf-menu-element--level-2 {
+    --sf-menu-element--padding-inline-start: var(--sf-space-3);
+  }
+
+  .sf-menu-element--level-3 {
+    --sf-menu-element--padding-inline-start: var(--sf-space-4);
+  }
+
+  .sf-menu-element--level-4 {
+    --sf-menu-element--padding-inline-start: var(--sf-space-5);
+  }
+
+  @media (forced-colors: active) {
+    .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):focus-visible,
+    .sf-menu-element > .sf-icon-button:not(:disabled):focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: calc(var(--sf-focus-outline-width) * -1);
+      box-shadow: none;
+    }
+  }
+}

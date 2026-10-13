@@ -1,0 +1,30 @@
+{
+  "id": "choosing-a-result-is-the-hosts",
+  "intent": "search.choose",
+  "capability": "search",
+  "summary": "Choosing a result opens it, or runs the host's action.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "search.choose",
+    "payload": {
+      "group": "go",
+      "key": "data.catalog"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "href"
+    ]
+  }
+}

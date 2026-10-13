@@ -1,0 +1,45 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__divider_width' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER
+
+$infix: xs;
+
+// @include layer-priority(utility,default) {
+
+    @include breakpoint-media($infix) {
+        $infix: breakpoint-infix($infix, $breakpoint-array);
+
+        // Divider Width
+        @each $divider-width-name, $divider-width-value in $divider-width-array {
+            .#{$infix}divider-x-#{$divider-width-name} > :not([hidden]) ~ :not([hidden]),
+            .#{$infix}divide-x-#{$divider-width-name} > :not([hidden]) ~ :not([hidden]) {
+                --sf-divide-x-reverse:0;
+                border-inline-end-width:calc(var(--sf-#{$divider-width-value}) * var(--sf-divide-x-reverse));
+                border-inline-start-width:calc(var(--sf-#{$divider-width-value}) * calc(1 - var(--sf-divide-x-reverse)));
+            }
+
+            .#{$infix}divider-y-#{$divider-width-name} > :not([hidden]) ~ :not([hidden]),
+            .#{$infix}divide-y-#{$divider-width-name} > :not([hidden]) ~ :not([hidden]) {
+                --sf-divide-y-reverse:0;
+                border-top-width:calc(var(--sf-#{$divider-width-value}) * calc(1 - var(--sf-divide-y-reverse)));
+                border-bottom-width:calc(var(--sf-#{$divider-width-value}) * var(--sf-divide-y-reverse));
+            }
+        }
+
+        .#{$infix}divider-y-reverse > :not([hidden]) ~ :not([hidden]),
+        .#{$infix}divide-y-reverse > :not([hidden]) ~ :not([hidden]) {
+            --sf-divide-y-reverse: 1;
+        }
+        
+        .#{$infix}divider-x-reverse > :not([hidden]) ~ :not([hidden]),
+        .#{$infix}divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
+            --sf-divide-x-reverse: 1;
+        }
+    }
+// }
+}

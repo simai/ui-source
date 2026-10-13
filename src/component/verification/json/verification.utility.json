@@ -1,0 +1,9 @@
+{
+  ".sf-verification": [
+    "display/flex (.flex)",
+    "flex-direction/column (.flex-col)",
+    "flex-wrap/nowrap (.flex-nowrap)",
+    "justify-content/center (.justify-center)",
+    "align-items/center (.items-center)"
+  ]
+}

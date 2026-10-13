@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doc presentation lab</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="../../source/output/doc-browser/component/doc.css">
+</head>
+<body class="surface-0 on-surface-color">
+  <main class="grid gap-4 p-4">
+    <h1>Поверхности документации</h1>
+    <p class="sf-doc-lead">Короткое пояснение помогает понять назначение раздела.</p>
+
+    <section class="sf-doc-pair" aria-label="Пример и исходный код">
+      <div class="sf-doc-example">
+        <button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Сохранить</span></button>
+      </div>
+      <pre class="sf-doc-source sf-code-surface"><code class="sf-doc-code">&lt;button class=&quot;sf-button sf-button--default sf-button--primary&quot;&gt;Сохранить&lt;/button&gt;</code></pre>
+    </section>
+
+    <section class="grid sm:grid-col-2 gap-2" aria-label="Декоративные подложки">
+      <figure class="sf-doc-example sf-doc-checkerboard p-4">
+        <figcaption class="surface-container p-2 radius-default">Прозрачность</figcaption>
+      </figure>
+      <figure class="sf-doc-example sf-doc-stripes p-4">
+        <figcaption class="surface-container p-2 radius-default">Измеряемая область</figcaption>
+      </figure>
+    </section>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const dark = params.get('theme') === 'dark';
+    document.documentElement.classList.toggle('theme-light', !dark);
+    document.documentElement.classList.toggle('theme-dark', dark);
+    document.documentElement.dir = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
+  </script>
+</body>
+</html>

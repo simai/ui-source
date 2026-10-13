@@ -1,0 +1,18 @@
+@use '../../../border-color/default/scss/sf_var__border_color' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// RING OFFSET
+
+$infix: focus;
+
+// @include layer-priority(utility,$infix) {
+    // Ring Offset Color
+    @each $ring-color-name, $ring-color-value in $border-color-array {
+        .#{$infix}\:ring-offset-#{$ring-color-name}:#{$infix} {
+            --sf-ring-offset-color: var(--sf-#{$ring-color-value});
+        }
+    }
+// }
+}

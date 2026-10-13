@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SF5 — фокус действий</title>
+  <script>
+    window.__sfComponentClasses = {};
+    window.registerSfComponent = (name, ComponentClass) => {
+      window.__sfComponentClasses[name] = ComponentClass;
+    };
+  </script>
+  <!-- Serve the GitHub workspace root; build candidate components into
+       ui-source/source/output/action-focus-browser before opening this fixture. -->
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/core/css/utility.full.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icons/css/icons.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="../../source/output/action-focus-browser/component/fab/css/fab.css">
+</head>
+<body class="p-4">
+  <main class="grid gap-4">
+    <h1>Фокус действий</h1>
+    <p>Клик оставляет фокус без клавиатурной рамки. Tab показывает рамку без изменения размеров.</p>
+    <a href="#actions" id="start">Начало проверки</a>
+    <section id="actions" class="flex flex-wrap gap-4" aria-label="Действия">
+      <button type="button" aria-label="Добавить" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Редактировать" class="sf-icon-button sf-icon-button--icon sf-icon-button--outline sf-icon-button--primary sf-icon-button--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">edit</i></button>
+      <button type="button" aria-label="Поделиться" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--primary sf-icon-button--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">share</i></button>
+      <button type="button" aria-label="Недоступно" disabled class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">delete</i></button>
+      <button type="button" aria-label="Создать" class="sf-fab sf-fab--default sf-fab--primary sf-fab--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+    </section>
+    <section id="sizes" class="flex flex-wrap items-center gap-4" aria-label="Пять размеров кнопки-иконки">
+      <button type="button" aria-label="Размер одна треть" data-size="1/3" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1/3 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Размер одна вторая" data-size="1/2" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1/2 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Размер один" data-size="1" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Размер два" data-size="2" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-2 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Размер три" data-size="3" class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-3 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+    </section>
+    <section class="flex flex-wrap items-center gap-4" aria-label="Состояния действий">
+      <button type="button" aria-label="Сохранение" aria-busy="true" disabled class="sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1 loading sf-icon-button-state-loading flex items-center justify-center"><i class="sf-icon" aria-hidden="true">save</i></button>
+      <button type="button" aria-label="Основной FAB" data-fab-pair="primary" class="sf-fab sf-fab--default sf-fab--primary sf-fab--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">add</i></button>
+      <button type="button" aria-label="Вторичный FAB" data-fab-pair="secondary" class="sf-fab sf-fab--tonal sf-fab--secondary sf-fab--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">edit</i></button>
+      <button type="button" aria-label="Поверхностный FAB" data-fab-pair="on-surface" class="sf-fab sf-fab--tonal sf-fab--on-surface sf-fab--size-1 flex items-center justify-center"><i class="sf-icon" aria-hidden="true">share</i></button>
+    </section>
+    <section aria-label="Состыкованные действия" class="flex">
+      <button type="button" aria-label="Предыдущий" class="sf-icon-button sf-icon-button--icon sf-icon-button--outline sf-icon-button--primary sf-icon-button--size-1 segment-start flex items-center justify-center"><i class="sf-icon" aria-hidden="true">chevron_left</i></button>
+      <button type="button" aria-label="Следующий" class="sf-icon-button sf-icon-button--icon sf-icon-button--outline sf-icon-button--primary sf-icon-button--size-1 segment-end flex items-center justify-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></button>
+    </section>
+    <button type="button" id="theme" class="text-on-surface">Сменить тему</button>
+    <section id="runtime" class="flex flex-wrap items-center gap-4" aria-label="Runtime-контракт"></section>
+  </main>
+  <script src="../../source/output/action-focus-browser/component/icon-buttons/js/icon-buttons.js"></script>
+  <script src="../../source/output/action-focus-browser/component/fab/js/fab.js"></script>
+  <script src="../../source/output/action-focus-browser/smart/icon-buttons/js/icon-buttons.js"></script>
+  <script>
+    const runtime = document.getElementById('runtime');
+    const IconButtons = window.__sfComponentClasses.IconButtons;
+    const ordinary = new IconButtons({
+      id: 'ordinary-runtime-icon',
+      param: {icon: 'settings', loading: true},
+      attrs: {'aria-label': 'Настройки', 'data-origin': 'ordinary'},
+    });
+    runtime.append(ordinary.render());
+
+    const Fab = window.__sfComponentClasses.Fab;
+    const fab = new Fab({
+      id: 'ordinary-runtime-fab',
+      param: {icon: 'arrow_upward'},
+      attrs: {'aria-label': 'Наверх', 'data-origin': 'legacy-scroll'},
+    });
+    runtime.append(fab.render());
+
+    const smart = document.createElement('sf-icon-button');
+    smart.id = 'smart-runtime-icon';
+    smart.setAttribute('icon', 'download');
+    smart.setAttribute('aria-label', 'Скачать');
+    smart.setAttribute('loading', '');
+    runtime.append(smart);
+
+    // This isolated CSS fixture has no Loader; reveal only after the local font
+    // actually loads, matching the Framework's anti-ligature-flash contract.
+    document.fonts.load('24px "Material Symbols Outlined"').then((faces) => {
+      if (faces.length) document.querySelectorAll('.sf-icon').forEach((icon) => {
+        icon.classList.add('sf-icon-loaded');
+      });
+    });
+    document.getElementById('theme').addEventListener('click', () => {
+      const dark = document.documentElement.classList.toggle('theme-dark');
+      document.documentElement.classList.toggle('theme-light', !dark);
+    });
+  </script>
+</body>
+</html>

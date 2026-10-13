@@ -1,0 +1,1640 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.property-view-port",
+  "version": "1.10.0",
+  "component": "smart.property-view",
+  "element": "sf-property-view",
+  "summary": "The host seam for one object's fields shown as sections, groups and fields. The host owns the values, the arrangement, the revision, the address, the transfer of files and what opening a reference means; a group is saved as one revision by the button. 1.10.0 adds named views: a flat list a person chooses from, each one a whole arrangement with a permanent id, with the layers resolving inside the chosen one, and the three acts that keep that list: make, rename, remove.",
+  "capabilities": {
+    "field-options": {
+      "summary": "Candidate records for a reference field, a page at a time with a search. A host without this capability is not broken: the field shows its current value read-only, which is what the component does when no editor can be built.",
+      "intents": [
+        "field.options"
+      ],
+      "data": [
+        "options_page"
+      ]
+    },
+    "field-upload": {
+      "summary": "Taking a file the person chose. A host without this capability is not broken: a file field shows what it already holds, read-only, which is the same arrangement as field-options.",
+      "intents": [
+        "field.upload"
+      ],
+      "data": []
+    },
+    "view-settings": {
+      "summary": "Configuring the arrangement: saving a layer and returning it to what lies beneath. Without it the component offers no way to configure the view, and shows no control that would lead to one. The arrangement rights arrive inside the record answer, as its `view` block, rather than as a data shape of their own -- which is why this capability names no data.",
+      "intents": [
+        "view.create",
+        "view.delete",
+        "view.profile",
+        "view.rename",
+        "view.reset",
+        "view.save"
+      ]
+    },
+    "record-open": {
+      "summary": "Opening the record as a page of its own, away from the panel. A host without this capability is not broken: the panel is the whole of the record, and the control that would lead elsewhere is not drawn. It is a capability rather than a consequence of the address, because a host may well have an address to copy and no page to open -- which is how a control that did nothing came to stand in the panel's own strip.",
+      "intents": [
+        "record.open"
+      ]
+    }
+  },
+  "data": {
+    "record": {
+      "summary": "The object as the host sees it now, with its arrangement. The component holds this for rendering and never writes to it.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "sections"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The revision a later write will be compared against. Reading does not require one; writing in a later port version does."
+          },
+          "actions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "What the host allows on the record itself, named the way a data view names a row's actions. The component offers only what is named here: a control for something the host would refuse is a control that exists to fail."
+          },
+          "unplaced": {
+            "type": "array",
+            "description": "Fields the collection has that this view does not place in any group. They are not hidden -- hiding keeps a field in its group -- they are out of the arrangement, and while the view is being arranged a person drags them in and out. A host that does not offer this sends nothing.",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "propertyType"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string"
+                },
+                "propertyType": {
+                  "type": "string",
+                  "description": "The Larena property type the renderer set is addressed by. The host supplies the type; the Framework supplies the template."
+                },
+                "variant": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "value": {},
+                "unit": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "width": {
+                  "enum": [
+                    "half",
+                    "full"
+                  ]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "rare": {
+                  "type": "boolean"
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "inherited": {
+                  "type": "boolean"
+                },
+                "hint": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "options": {
+                  "type": [
+                    "array",
+                    "null"
+                  ]
+                },
+                "trueText": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "falseText": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "readonly": {
+                  "type": "boolean",
+                  "description": "The host forbids editing this field. The control renders disabled rather than absent, so a person sees the value and sees that it is not theirs to change."
+                },
+                "multiple": {
+                  "type": "boolean",
+                  "description": "This field holds more than one value. Declared by the host, because an array arriving in value is also what a single value that happens to be a list looks like."
+                },
+                "placeholder": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "What an empty control reads before a person acts."
+                },
+                "searchPlaceholder": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "What the search box inside a record picker reads."
+                },
+                "badgeAppearance": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "How a value shown as a badge is coloured. The host knows which values mean trouble; the component has no opinion about the meaning of a code."
+                },
+                "uploadText": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The call to action in a file field. Absent, the file control shows its own default, which names image formats and is wrong for a field that takes any file."
+                },
+                "uploadHint": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The line under the call to action in a file field."
+                },
+                "uploadSupportingText": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The quiet line under the file field, for a size or a count limit."
+                },
+                "formats": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "What the field accepts, in words a person reads. Shown as written; never parsed."
+                },
+                "accept": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "What the field accepts, as the file dialog filters it. Separate from formats, because the words a person reads and the filter a dialog applies are not the same string and the host owns both."
+                },
+                "labels": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "true": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "false": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "description": "The two words a boolean reads, as an alternative shape to trueText and falseText. Both are accepted because both already arrive; trueText wins when a host sends both."
+                },
+                "constraints": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "options": {
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    }
+                  },
+                  "description": "Where a host carries the allowed values when it does not put them in options. Read only for its options; the rest belongs to the host and is not interpreted."
+                },
+                "hiddenBy": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "package",
+                    "shared",
+                    "personal",
+                    null
+                  ],
+                  "description": "The layer that hid this entry, when something did. The component disables un-hiding it from a layer below that one, so the rule \"hidden for everyone cannot be shown again in a personal view\" is a fact the host states per entry rather than a rule the component reimplements -- which would put the permission model in two places and let them drift."
+                },
+                "variantOptions": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "description": "The template variants this field may be shown with, as the host offers them. The component shows the chooser only for what is listed, because inventing a variant a host cannot render would offer a person a broken view."
+                },
+                "inheritedValue": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "What this field falls back to while it holds nothing, as the host resolves it -- a colour from the theme, a default from a package. Shown as inherited rather than drawn as the value: a view that drew it as the value would make «not set» and «set to the same thing» look identical, and only one of them follows the source when the source changes. `inherited` already says *that* a value is inherited; this says *what* it is."
+                },
+                "swatches": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "The values a product already has for this field, as the host words them -- for a colour, a space or comma separated list of #hex or #hex|Name. A person picks the brand colour rather than matching it by eye. Offered, never enforced: a field with swatches still takes any value its type allows."
+                },
+                "language": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "For a field whose value is code or markup, which language it is, so it can be shown as code rather than as a paragraph. The host names it; the component does not guess from the text."
+                }
+              }
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "groups"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string",
+                  "description": "A glyph name for the section in the list. The host names it, because which icon stands for a section is a product's decision."
+                },
+                "rare": {
+                  "type": "boolean"
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key",
+                      "fields"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "enum": [
+                          "fields",
+                          "related"
+                        ],
+                        "description": "What this group holds. «fields» is the default and what every group was before this version, so an answer that says nothing is unchanged. «related» is a list of other records belonging to this one: the component composes a data view in the group instead of fields, and that view asks for its own host port rather than being handed one through this seam -- the records, their columns and their paging are the data-view port is business, and routing them through this port would make a property view a relay for a vocabulary it does not speak."
+                      },
+                      "rowCap": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 0,
+                        "description": "For a related group: how many rows to show before offering to open the whole list. Null or absent leaves the component default. The cap is presentation -- the host paging is unaffected, and the list asks its own host for records as it always would."
+                      },
+                      "rare": {
+                        "type": "boolean"
+                      },
+                      "hidden": {
+                        "type": "boolean"
+                      },
+                      "columns": {
+                        "enum": [
+                          1,
+                          2
+                        ]
+                      },
+                      "fields": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "key",
+                            "propertyType"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "key": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "propertyType": {
+                              "type": "string",
+                              "description": "The Larena property type the renderer set is addressed by. The host supplies the type; the Framework supplies the template."
+                            },
+                            "variant": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "value": {},
+                            "unit": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "width": {
+                              "enum": [
+                                "half",
+                                "full"
+                              ]
+                            },
+                            "required": {
+                              "type": "boolean"
+                            },
+                            "rare": {
+                              "type": "boolean"
+                            },
+                            "hidden": {
+                              "type": "boolean"
+                            },
+                            "inherited": {
+                              "type": "boolean"
+                            },
+                            "hint": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "options": {
+                              "type": [
+                                "array",
+                                "null"
+                              ]
+                            },
+                            "trueText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "falseText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "readonly": {
+                              "type": "boolean",
+                              "description": "The host forbids editing this field. The control renders disabled rather than absent, so a person sees the value and sees that it is not theirs to change."
+                            },
+                            "multiple": {
+                              "type": "boolean",
+                              "description": "This field holds more than one value. Declared by the host, because an array arriving in value is also what a single value that happens to be a list looks like."
+                            },
+                            "placeholder": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "What an empty control reads before a person acts."
+                            },
+                            "searchPlaceholder": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "What the search box inside a record picker reads."
+                            },
+                            "badgeAppearance": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "How a value shown as a badge is coloured. The host knows which values mean trouble; the component has no opinion about the meaning of a code."
+                            },
+                            "uploadText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "The call to action in a file field. Absent, the file control shows its own default, which names image formats and is wrong for a field that takes any file."
+                            },
+                            "uploadHint": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "The line under the call to action in a file field."
+                            },
+                            "uploadSupportingText": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "The quiet line under the file field, for a size or a count limit."
+                            },
+                            "formats": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "What the field accepts, in words a person reads. Shown as written; never parsed."
+                            },
+                            "accept": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "What the field accepts, as the file dialog filters it. Separate from formats, because the words a person reads and the filter a dialog applies are not the same string and the host owns both."
+                            },
+                            "labels": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "additionalProperties": false,
+                              "properties": {
+                                "true": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "false": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "description": "The two words a boolean reads, as an alternative shape to trueText and falseText. Both are accepted because both already arrive; trueText wins when a host sends both."
+                            },
+                            "constraints": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "properties": {
+                                "options": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "description": "Where a host carries the allowed values when it does not put them in options. Read only for its options; the rest belongs to the host and is not interpreted."
+                            },
+                            "hiddenBy": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "enum": [
+                                "package",
+                                "shared",
+                                "personal",
+                                null
+                              ],
+                              "description": "The layer that hid this entry, when something did. The component disables un-hiding it from a layer below that one, so the rule \"hidden for everyone cannot be shown again in a personal view\" is a fact the host states per entry rather than a rule the component reimplements -- which would put the permission model in two places and let them drift."
+                            },
+                            "variantOptions": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "description": "The template variants this field may be shown with, as the host offers them. The component shows the chooser only for what is listed, because inventing a variant a host cannot render would offer a person a broken view."
+                            },
+                            "inheritedValue": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "What this field falls back to while it holds nothing, as the host resolves it -- a colour from the theme, a default from a package. Shown as inherited rather than drawn as the value: a view that drew it as the value would make «not set» and «set to the same thing» look identical, and only one of them follows the source when the source changes. `inherited` already says *that* a value is inherited; this says *what* it is."
+                            },
+                            "swatches": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "The values a product already has for this field, as the host words them -- for a colour, a space or comma separated list of #hex or #hex|Name. A person picks the brand colour rather than matching it by eye. Offered, never enforced: a field with swatches still takes any value its type allows."
+                            },
+                            "language": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "For a field whose value is code or markup, which language it is, so it can be shown as code rather than as a paragraph. The host names it; the component does not guess from the text."
+                            }
+                          }
+                        }
+                      },
+                      "hiddenBy": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "enum": [
+                          "package",
+                          "shared",
+                          "personal",
+                          null
+                        ],
+                        "description": "The layer that hid this entry, when something did. The component disables un-hiding it from a layer below that one, so the rule \"hidden for everyone cannot be shown again in a personal view\" is a fact the host states per entry rather than a rule the component reimplements -- which would put the permission model in two places and let them drift."
+                      }
+                    }
+                  }
+                },
+                "hiddenBy": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "package",
+                    "shared",
+                    "personal",
+                    null
+                  ],
+                  "description": "The layer that hid this entry, when something did. The component disables un-hiding it from a layer below that one, so the rule \"hidden for everyone cannot be shown again in a personal view\" is a fact the host states per entry rather than a rule the component reimplements -- which would put the permission model in two places and let them drift."
+                }
+              }
+            }
+          },
+          "address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Where this object lives, as the host names it. The component never constructs one: it copies this and opens this, and shows neither control when the host sends nothing. A component that invented an address would be guessing at the consumer's routing."
+          },
+          "view": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "description": "How this arrangement was resolved and what this person may change about it. Absent means the view cannot be configured at all, and the component offers nothing.",
+            "properties": {
+              "target": {
+                "enum": [
+                  "package",
+                  "shared",
+                  "personal"
+                ],
+                "description": "The layer the arrangement in this answer resolved to."
+              },
+              "layers": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Each layer this person may write, with its revision and its stored contents. The contents are here because a save writes the layer whole: a component that knew only the resolved arrangement would have to send all of it, and a personal layer restating every entry would pin the whole view and stop any later change to the shared layer from ever showing through. So the component edits the layer it was given and writes that layer back.",
+                "properties": {
+                  "personal": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "required": [
+                      "revision",
+                      "view"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "revision": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "Null when the layer does not exist yet; the first save sends null and the host creates it."
+                      },
+                      "view": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "schema_version",
+                          "sections",
+                          "groups",
+                          "fields"
+                        ],
+                        "additionalProperties": false,
+                        "description": "What this layer stores, which is not the whole arrangement: a layer carries only the entries it decides, and the rest resolves from the layers beneath it. Null means nothing is stored in this layer yet.",
+                        "properties": {
+                          "schema_version": {
+                            "const": 1
+                          },
+                          "sections": {
+                            "type": "object"
+                          },
+                          "groups": {
+                            "type": "object"
+                          },
+                          "fields": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "shared": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "required": [
+                      "revision",
+                      "view"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "revision": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "view": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "schema_version",
+                          "sections",
+                          "groups",
+                          "fields"
+                        ],
+                        "additionalProperties": false,
+                        "description": "What this layer stores, which is not the whole arrangement: a layer carries only the entries it decides, and the rest resolves from the layers beneath it. Null means nothing is stored in this layer yet.",
+                        "properties": {
+                          "schema_version": {
+                            "const": 1
+                          },
+                          "sections": {
+                            "type": "object"
+                          },
+                          "groups": {
+                            "type": "object"
+                          },
+                          "fields": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "editable": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "personal",
+                    "shared"
+                  ]
+                },
+                "description": "The layers this person may write. Empty means the view is read-only for them. This is per person and per collection, which is why it travels in the answer rather than in a capability: a capability is static for the host and could not express a permission one person has and another does not."
+              },
+              "denied": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "personal": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "shared": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "description": "Why a layer absent from editable cannot be written, as the host words it. Optional: without it a disabled control says something generic, which is honest but says less."
+              },
+              "profiles": {
+                "type": "array",
+                "description": "The views this person may choose between, in the order the host wants them shown. A view is a whole named arrangement, not a layer: the layers below still resolve inside the one that is chosen. One view and the component draws no chooser -- there is nothing to choose.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Permanent for the life of the view, which is what makes renaming possible: a rename changes the label and nothing else, and anything pointing at the view keeps pointing at it."
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "shared": {
+                      "type": "boolean",
+                      "description": "True when everyone in the scope sees this view, false when it is this person's own. Who may write a shared one is said by `editable`, as it already is for the shared layer."
+                    }
+                  }
+                }
+              },
+              "profile": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Which of `profiles` this answer resolved to. The host decides what a person gets first -- by their group, by what they chose last time, however it wants -- and the component neither stores that nor invents a default. There is no «default view» here for the same reason there is no default layer: it would be a second place for the same decision."
+              }
+            }
+          }
+        }
+      }
+    },
+    "options_page": {
+      "summary": "One page of candidates for one field, with the cursor for the next page. The component holds the page for rendering and asks again rather than caching across searches.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": [
+                    "string",
+                    "integer"
+                  ]
+                },
+                "label": {
+                  "type": "string",
+                  "description": "What a person reads. The label travels with the value so the chosen record can be shown without a second read."
+                }
+              }
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "Opaque to the component: it is sent back unchanged to ask for the next page. Absent or null means this is the last page."
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "record.load": {
+      "summary": "Read one object with its arrangement. The only intent in this version.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the component is asking: connected, host-connected, record-id-changed or requested. For the host's own logging; it must not change the answer."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "group.save": {
+      "summary": "Save the fields a person changed in one group, as one revision. Sent only when the save button is pressed -- never on blur and never per field.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "section",
+          "group",
+          "values",
+          "revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "section": {
+            "type": "string",
+            "minLength": 1
+          },
+          "group": {
+            "type": "string",
+            "minLength": 1
+          },
+          "values": {
+            "type": "object",
+            "description": "Only the fields whose value the person changed, keyed by field key. A field the person did not touch is absent, so a save cannot overwrite what another save changed meanwhile.",
+            "additionalProperties": true
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The revision the read carried. The host compares and sets; a stale one is a conflict, never a silent overwrite."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "field.options": {
+      "summary": "Read one page of candidate records for a reference field, optionally narrowed by a search. Never a write.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "field",
+          "cursor",
+          "search"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The next_cursor of the previous answer, or null for the first page. The component never constructs one."
+          },
+          "search": {
+            "type": "string",
+            "description": "What the person typed. The search belongs to the host: the component does not filter the page it was given, because the page is not the whole set."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "field-options"
+    },
+    "field.upload": {
+      "summary": "Take one file the person chose and store it. Answered with the stored file in the same shape the field reads, so the view needs no second read.",
+      "event": "sf-property-view-state",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "field",
+          "file"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "file": {
+            "description": "The File the person chose, passed as it is. Not a data URL and not base64: the host decides how it travels, and a component that encoded it would double the bytes of every upload to no purpose."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "field-upload"
+    },
+    "record.delete": {
+      "summary": "The person asked for the record to be deleted. Whether to ask first, and whether to delete at all, is the host's: the component raises the intent and closes when the host says it is done.",
+      "event": "sf-property-view-delete-record",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The revision the panel was reading, so a host can refuse a delete aimed at a record that has moved on."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "answer": {
+        "applied": "The record is gone and the panel closes.",
+        "conflict": "The record moved on since it was read, so nothing was deleted.",
+        "refused": "Nothing was deleted; `message` or `reason` is shown and the panel stays open.",
+        "unavailable": "The host does not delete records here."
+      }
+    },
+    "record.open": {
+      "summary": "The person activated a reference value. What to open, and where, is the host's: it may push another panel onto the stack, route to a full page, or refuse.",
+      "event": "sf-property-view-open-record",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "collection",
+          "field",
+          "value"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The object the person was looking at, not the one being opened."
+          },
+          "collection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "value": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "href": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "description": "The reference as the field holds it. The component passes it on and decides nothing: a composite that followed the href itself would be routing for the consumer, and a composite that opened a window itself would be deciding whether a half-edited window may be covered."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "record-open"
+    },
+    "view.save": {
+      "summary": "Save the arrangement of this collection in one layer, as one revision. Sent when a person changes it -- a drag, a width, a variant, a hint, a field taken out of an area, an area or a section made, renamed or removed -- and applied immediately, the way column settings are, rather than waiting for a button.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": true,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "target",
+          "view"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Null, because an arrangement belongs to the collection rather than to one record. Declared so a host that keeps it per record has somewhere truthful to read it from, not so the component may send one."
+          },
+          "collection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "kind",
+              "revision"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "personal",
+                  "shared"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The revision this write is against. Null writes a layer that does not exist yet."
+              }
+            }
+          },
+          "view": {
+            "type": "object",
+            "required": [
+              "schema_version",
+              "sections",
+              "groups",
+              "fields"
+            ],
+            "additionalProperties": false,
+            "description": "The whole layer, never a patch of it. A per-entry write would let two people reordering the same view interleave into an arrangement neither chose; a whole-layer compare-and-set makes them collide instead, which is the same reason a group saves as one revision.",
+            "properties": {
+              "schema_version": {
+                "const": 1
+              },
+              "sections": {
+                "type": "object",
+                "description": "Keyed by section key: label, icon, order, hidden, rare. A key the record does not carry is a section this view asks the host to keep: the component draws it at once from the layer, and it survives the next read only if the host returns it in record.load. A host that will not keep one answers refused with its reason rather than applied. `icon` is this view's glyph for the section, by the name the Framework's icon set knows it, and null takes it back to the host's."
+              },
+              "groups": {
+                "type": "object",
+                "description": "Keyed by group key: label, order, section, columns, hidden, rare. A key the record does not carry is an area this view asks the host to keep, on the same terms as a section. `label` is this view's name for the area, so resetting the layer gives the host's name back."
+              },
+              "fields": {
+                "type": "object",
+                "description": "Keyed by field key: group, order, hidden, width, variant, hint, label. A null group takes the field out of the arrangement: it joins `unplaced` and is drawn only while the view is being arranged. `label` is this view's name for the field, the same way a section and an area carry one, so resetting the layer gives the host's name back."
+              }
+            }
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "answer": {
+        "applied": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "revision"
+            ],
+            "properties": {
+              "revision": {
+                "type": "string",
+                "description": "The revision the layer now has, for the next write."
+              },
+              "view": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "The stored layer as the host normalised it, when that differs from what was sent. The component redraws from this rather than from its own optimistic copy."
+              }
+            }
+          }
+        },
+        "conflict": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "revision",
+              "view"
+            ],
+            "properties": {
+              "revision": {
+                "type": "string"
+              },
+              "view": {
+                "type": "object",
+                "description": "The layer as it is now. A conflict that carried only a revision would leave the component drawing an arrangement nobody stored."
+              }
+            }
+          }
+        },
+        "refused": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "entry_errors": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "Why entries were rejected, keyed by kind and key -- \"section:<key>\", \"group:<key>\", \"field:<key>\". Keyed by kind because a section and a field may share a key, so a bare key could name two different entries and the error would be shown under the wrong one. This differs from group.save, whose field_errors are keyed bare: there only fields can fail, so there is nothing to collide with."
+              }
+            }
+          }
+        }
+      }
+    },
+    "view.reset": {
+      "summary": "Return one layer to what lies beneath it. A write against the layer revision, never a deletion -- and never a write of the component idea of the defaults, because the host owns those and writing them would overwrite them with a guess.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": true,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "target"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "object",
+            "required": [
+              "kind",
+              "revision"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "personal",
+                  "shared"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The revision this write is against. Null writes a layer that does not exist yet."
+              }
+            }
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "answer": {
+        "applied": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "revision",
+              "view"
+            ],
+            "properties": {
+              "revision": {
+                "type": "string"
+              },
+              "view": {
+                "type": "object",
+                "description": "The arrangement that now resolves, after the reset -- the layers beneath the one cleared. The panel redraws from it instead of reading the record again, which would show the person a second load for a change they already made."
+              }
+            }
+          }
+        },
+        "conflict": {
+          "schema": {
+            "type": "object",
+            "required": [
+              "revision",
+              "view"
+            ],
+            "properties": {
+              "revision": {
+                "type": "string"
+              },
+              "view": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "view.profile": {
+      "summary": "Asks for a different view by its id. The host answers as it answers record.load -- the record and its view -- because a view is a whole arrangement and reading it is reading the record through it.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "profile"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The id of the view asked for."
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "view.create": {
+      "summary": "Makes a new named view. The host gives it an id and answers as it answers a read, with the record through the new view: a person who has just made a view is looking at it. What the new view holds is what was on screen when it was made -- the component sends the arrangement rather than leaving the host to guess at a starting point.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "label",
+          "shared",
+          "view"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "shared": {
+            "type": "boolean",
+            "description": "Whether everyone in the scope gets it. A host may refuse a shared one."
+          },
+          "view": {
+            "type": "object",
+            "description": "The arrangement to start from, which is the one on screen."
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "view.rename": {
+      "summary": "Changes a view's label and nothing else. The id is permanent, which is what makes this a rename rather than a replacement: anything pointing at the view keeps pointing at it.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "profile",
+          "label"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    },
+    "view.delete": {
+      "summary": "Removes a named view. The host refuses when it is the last shared one, because a scope with no shared view has nothing for a person who has made none of their own -- and the component does not offer the control in that case either, so the refusal is a guard rather than the way a person finds out.",
+      "event": "sf-property-view-state",
+      "capability": "view-settings",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "collection",
+          "profile"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "collection": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ]
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a layer is a write against its revision, never a deletion. view.reset carries it."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "shared"
+      ],
+      "carries_revision": true
+    },
+    "fields": {
+      "summary": "Per-field view settings a layer carries: order, group, section, template variant, width, hint and visibility.",
+      "writable_in": "1.6.0"
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "86c1335cb23c6e81ecb7079fff28957575f4cee5cffc1a8c1661efbf27599ef3",
+    "cases": 36
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "the answer carries the object and its arrangement, not a flat list of values",
+      "a refused read is explained rather than rendered as empty",
+      "a late answer is dropped rather than drawn over the current object",
+      "rare fields arrive declared, and hiding them changes no value",
+      "the host supplies the property type and never the component to draw it with",
+      "a save carries only the fields the person changed",
+      "a stale revision is answered with a conflict rather than an overwrite",
+      "field errors come back keyed by field and are shown under their own field",
+      "nothing is saved on blur or per field",
+      "candidate records are a page with a cursor, never the whole set",
+      "the search reaches the host rather than filtering the page already loaded",
+      "a chosen record the page does not hold is still shown and still written",
+      "a host without the field-options capability shows the value read-only rather than an empty control",
+      "the address of a window is the host's, and a component without one offers neither copying nor opening",
+      "a file is taken by the host, which reports its own progress; the component times nothing",
+      "removing a stored file is a value change saved by the button, never an upload intent",
+      "the stored file comes back in the shape the field reads, so no second read is needed",
+      "activating a reference asks the host what to open rather than following a link",
+      "a window left half-edited underneath another keeps its unsaved changes, because each window is its own element",
+      "every field key a renderer reads is declared, so a host that validates its own answers against this schema is not refused for sending one",
+      "a layer is written whole against its revision, so two people rearranging the same view collide rather than interleave",
+      "the layer a person may write is stated per person in the answer, not assumed from a capability",
+      "a hidden entry names the layer that hid it, so the component disables un-hiding instead of reimplementing the permission rule",
+      "a reset answers with the arrangement that now resolves, so the panel redraws without a second read",
+      "the layer a person edits arrives with its own contents, so a save writes that layer rather than restating the whole arrangement into it",
+      "a related group composes a data view that asks for its own host port, rather than records travelling through the property-view seam",
+      "a field that falls back to something says what it falls back to, so «not set» and «set to the same value» are not drawn alike",
+      "an area or a section the layer names, and the record did not carry, is kept by the host or refused with a reason",
+      "a field taken out of an area joins the unplaced rather than being hidden, and is offered back there",
+      "a control that leads out of the panel is drawn only where the host says it leads somewhere"
+    ]
+  }
+}

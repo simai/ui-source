@@ -1,0 +1,30 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__word_break' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TYPOFRAPHY
+
+// Set text utilites for breakpoints
+// For breakpoints use prefix:
+// 	sm:t-1
+// 	lg:t-bold
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        // Word Break
+        .#{$infix}text-break-normal {
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+        
+        .#{$infix}text-break-word{overflow-wrap: break-word;}
+        .#{$infix}text-break-all {word-break: break-all;}
+    }
+// }
+}

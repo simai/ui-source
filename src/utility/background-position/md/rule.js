@@ -1,0 +1,1 @@
+SF.RuleLoader['background-position/md'] = new RegExp("^(?:md:bg-(?:bottom|center(?:-(?:bottom|top))?|inline-(?:end(?:-(?:bottom|center|top))?|start(?:-(?:bottom|center|top))?)|left(?:-(?:bottom|top))?|right(?:-(?:bottom|top))?|top))(?![\\s\\S])");

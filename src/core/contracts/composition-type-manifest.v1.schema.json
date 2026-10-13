@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/composition-type-manifest.v1.schema.json",
+  "title": "Simai Composition Type Manifest v1",
+  "x-simai-version": "1.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "type",
+    "version",
+    "category",
+    "mode",
+    "profiles",
+    "data_schema",
+    "props_schema",
+    "presentation",
+    "slots",
+    "renderer",
+    "assets",
+    "capabilities"
+  ],
+  "properties": {
+    "schema": {
+      "const": "simai.composition.type-manifest.v1"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "enum": [
+        "layout",
+        "content",
+        "component",
+        "smart"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "leaf",
+        "composite"
+      ]
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "ui-layout",
+          "structured-content"
+        ]
+      }
+    },
+    "data_schema": {
+      "type": "object"
+    },
+    "props_schema": {
+      "type": "object"
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "views",
+        "presets",
+        "modifiers"
+      ],
+      "properties": {
+        "views": {
+          "$ref": "#/$defs/stringList"
+        },
+        "presets": {
+          "$ref": "#/$defs/stringList"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    },
+    "slots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "min",
+          "max"
+        ],
+        "properties": {
+          "min": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "types": {
+            "$ref": "#/$defs/stringList"
+          },
+          "categories": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "layout",
+                "content",
+                "component",
+                "smart"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "renderer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "name"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "builtin",
+            "registered",
+            "custom-element"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "assets": {
+      "$ref": "#/$defs/stringList"
+    },
+    "capabilities": {
+      "$ref": "#/$defs/stringList"
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "summary",
+          "payload"
+        ],
+        "properties": {
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payload": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "source_of_truth",
+        "network_owner"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "local-demo",
+            "external-host",
+            "hybrid"
+          ]
+        },
+        "source_of_truth": {
+          "enum": [
+            "component",
+            "browser-demo",
+            "host"
+          ]
+        },
+        "network_owner": {
+          "enum": [
+            "none",
+            "host"
+          ]
+        },
+        "settings_key_prop": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision_prop": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

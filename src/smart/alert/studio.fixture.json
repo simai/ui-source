@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.alert",
+  "title": "Alert reference",
+  "summary": "Deterministic reference fixture for sf-alert.",
+  "locale": "ru",
+  "props": {
+    "title": "Изменения сохранены",
+    "supporting-text": "Новая версия уже доступна участникам команды.",
+    "action-text": "Открыть",
+    "close-label": "Закрыть уведомление",
+    "type": "success",
+    "closable": true
+  },
+  "children": [],
+  "state": "default"
+}

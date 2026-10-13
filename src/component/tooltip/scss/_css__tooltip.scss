@@ -1,0 +1,190 @@
+@layer sf.components {
+/* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
+.sf-tooltip {
+  background-color: var(--sf-tooltip--background-color, transparent);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-tooltip .sf-tooltip-content {
+  --sf-tooltip-content--border-end-end-radius: var(--sf-radius--ui);
+  --sf-tooltip-content--border-end-start-radius: var(--sf-radius--ui);
+  --sf-tooltip-content--border-start-end-radius: var(--sf-radius--ui);
+  --sf-tooltip-content--border-start-start-radius: var(--sf-radius--ui);
+  background-color: var(--sf-tooltip-content--background-color);
+  border-end-end-radius: var(--sf-tooltip-content--border-end-end-radius);
+  border-end-start-radius: var(--sf-tooltip-content--border-end-start-radius);
+  border-start-end-radius: var(--sf-tooltip-content--border-start-end-radius);
+  border-start-start-radius: var(--sf-tooltip-content--border-start-start-radius);
+  padding-bottom: var(--sf-tooltip-content--padding-bottom);
+  padding-inline-end: var(--sf-tooltip-content--padding-inline-end);
+  padding-inline-start: var(--sf-tooltip-content--padding-inline-start);
+  padding-top: var(--sf-tooltip-content--padding-top);
+}
+
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-tooltip-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-tooltip .sf-tooltip-wrap {
+  --sf-tooltip-wrap--background-color: transparent;
+  --sf-tooltip-wrap--gap: var(--sf-space-1\/4);
+  background-color: var(--sf-tooltip-wrap--background-color);
+  gap: var(--sf-tooltip-wrap--gap);
+}
+
+.sf-tooltip .sf-tooltip-text {
+  --sf-tooltip-text--font-family: var(--sf-text--family);
+  --sf-tooltip-text--font-weight: var(--sf-font-weight-bold);
+  color: var(--sf-tooltip-text--color);
+  font-family: var(--sf-tooltip-text--font-family);
+  font-size: var(--sf-tooltip-text--font-size);
+  font-weight: var(--sf-tooltip-text--font-weight);
+  line-height: var(--sf-tooltip-text--line-height);
+}
+
+.sf-tooltip .sf-tooltip-supporting-text {
+  color: var(--sf-tooltip-supporting-text--color);
+  font-family: var(--sf-tooltip-supporting-text--font-family);
+  font-size: var(--sf-tooltip-supporting-text--font-size);
+  font-weight: var(--sf-tooltip-supporting-text--font-weight);
+  line-height: var(--sf-tooltip-supporting-text--line-height);
+  --sf-tooltip-supporting-text--font-family: var(--sf-text--family);
+  --sf-tooltip-supporting-text--font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-tooltip .sf-tooltip-tail {
+  background-color: var(--sf-tooltip-tail--background-color);
+  color: var(--sf-tooltip-tail--color);
+  font-family: var(--sf-tooltip-tail--font-family);
+  font-size: var(--sf-tooltip-tail--font-size);
+  font-weight: var(--sf-tooltip-tail--font-weight);
+  line-height: var(--sf-tooltip-tail--line-height);
+}
+
+.sf-tooltip.sf-tooltip--dark .sf-tooltip-tail {
+  --sf-tooltip-tail--background-color: var(--sf-surface-inverse-fixed);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-bottom-left.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-bottom-right.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-right.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-top-center.sf-tooltip--size-1 .sf-tooltip-tail, .sf-tooltip.sf-tooltip--dark.sf-tooltip--arrow-left.sf-tooltip--size-1 .sf-tooltip-tail {
+  --sf-tooltip-tail--color: var(--sf-on-surface-inverse-fixed);
+  --sf-tooltip-tail--font-family: var(--sf-text--family);
+  --sf-tooltip-tail--font-size: var(--sf-text-size-1);
+  --sf-tooltip-tail--font-weight: var(--sf-font-weight-regular);
+  --sf-tooltip-tail--line-height: var(--sf-text-height-1);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--size-1 .sf-tooltip-supporting-text, .sf-tooltip.sf-tooltip--light.sf-tooltip--size-1 .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--font-size: var(--sf-text-size-1);
+  --sf-tooltip-supporting-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-tooltip.sf-tooltip--dark .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--color: var(--sf-on-surface-inverse-fixed);
+}
+
+.sf-tooltip.sf-tooltip--light .sf-tooltip-tail {
+  --sf-tooltip-tail--background-color: var(--sf-surface-1);
+}
+
+.sf-tooltip.sf-tooltip--light .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--color: var(--sf-on-surface);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--size-2 .sf-tooltip-supporting-text, .sf-tooltip.sf-tooltip--light.sf-tooltip--size-2 .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--font-size: var(--sf-text-size-2);
+  --sf-tooltip-supporting-text--line-height: var(--sf-text-height-2);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--size-3 .sf-tooltip-supporting-text, .sf-tooltip.sf-tooltip--light.sf-tooltip--size-3 .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--font-size: var(--sf-text-size-3);
+  --sf-tooltip-supporting-text--line-height: var(--sf-text-height-3);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--size-1\/3 .sf-tooltip-supporting-text, .sf-tooltip.sf-tooltip--light.sf-tooltip--size-1\/3 .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--font-size: var(--sf-text-size-1\/3);
+  --sf-tooltip-supporting-text--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-tooltip.sf-tooltip--dark.sf-tooltip--size-1\/2 .sf-tooltip-supporting-text, .sf-tooltip.sf-tooltip--light.sf-tooltip--size-1\/2 .sf-tooltip-supporting-text {
+  --sf-tooltip-supporting-text--font-size: var(--sf-text-size-1\/2);
+  --sf-tooltip-supporting-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-tooltip.sf-tooltip--size-1 .sf-tooltip-content {
+  --sf-tooltip-content--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-tooltip-content--padding-inline-end: var(--sf-ui-1--space-x);
+  --sf-tooltip-content--padding-inline-start: var(--sf-ui-1--space-x);
+  --sf-tooltip-content--padding-top: var(--sf-ui-1--space-y-tightness-default);
+}
+
+.sf-tooltip.sf-tooltip--size-1 .sf-tooltip-text {
+  --sf-tooltip-text--font-size: var(--sf-text-size-1);
+  --sf-tooltip-text--line-height: var(--sf-text-height-1);
+}
+
+.sf-tooltip.sf-tooltip--size-2 .sf-tooltip-content {
+  --sf-tooltip-content--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-tooltip-content--padding-inline-end: var(--sf-ui-2--space-x);
+  --sf-tooltip-content--padding-inline-start: var(--sf-ui-2--space-x);
+  --sf-tooltip-content--padding-top: var(--sf-ui-2--space-y-tightness-default);
+}
+
+.sf-tooltip.sf-tooltip--size-2 .sf-tooltip-text {
+  --sf-tooltip-text--font-size: var(--sf-text-size-2);
+  --sf-tooltip-text--line-height: var(--sf-text-height-2);
+}
+
+.sf-tooltip.sf-tooltip--size-3 .sf-tooltip-content {
+  --sf-tooltip-content--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
+  --sf-tooltip-content--padding-inline-end: var(--sf-ui-3--space-x);
+  --sf-tooltip-content--padding-inline-start: var(--sf-ui-3--space-x);
+  --sf-tooltip-content--padding-top: var(--sf-ui-3--space-y-tightness-default);
+}
+
+.sf-tooltip.sf-tooltip--size-3 .sf-tooltip-text {
+  --sf-tooltip-text--font-size: var(--sf-text-size-3);
+  --sf-tooltip-text--line-height: var(--sf-text-height-3);
+}
+
+.sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-content {
+  --sf-tooltip-content--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-tooltip-content--padding-inline-end: var(--sf-ui-1\/3--space-x);
+  --sf-tooltip-content--padding-inline-start: var(--sf-ui-1\/3--space-x);
+  --sf-tooltip-content--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+}
+
+.sf-tooltip.sf-tooltip--size-1\/3 .sf-tooltip-text {
+  --sf-tooltip-text--font-size: var(--sf-text-size-1\/3);
+  --sf-tooltip-text--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-tooltip.sf-tooltip--size-1\/2 .sf-tooltip-content {
+  --sf-tooltip-content--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-tooltip-content--padding-inline-end: var(--sf-ui-1\/2--space-x);
+  --sf-tooltip-content--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  --sf-tooltip-content--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+}
+
+.sf-tooltip.sf-tooltip--size-1\/2 .sf-tooltip-text {
+  --sf-tooltip-text--font-size: var(--sf-text-size-1\/2);
+  --sf-tooltip-text--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-tooltip--dark .sf-tooltip-content {
+  --sf-tooltip-content--background-color: var(--sf-surface-inverse-fixed);
+}
+
+.sf-tooltip--dark .sf-tooltip-text {
+  --sf-tooltip-text--color: var(--sf-on-surface-inverse-fixed);
+}
+
+.sf-tooltip--light .sf-tooltip-content {
+  /* A light tooltip is a raised surface, like every floating one: the plain
+     surface-1 with no border or shadow vanished into a light page. */
+  --sf-tooltip-content--background-color: var(--sf-elevation-2--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+  box-shadow: var(--sf-elevation-2--shadow);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-tooltip--light .sf-tooltip-text {
+  --sf-tooltip-text--color: var(--sf-on-surface);
+}
+}

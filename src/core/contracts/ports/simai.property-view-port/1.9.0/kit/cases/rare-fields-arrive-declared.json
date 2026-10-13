@@ -1,0 +1,12 @@
+{
+  "id": "rare-fields-arrive-declared",
+  "intent": "record.load",
+  "summary": "Rare sections, groups and fields are marked by the host and sent every time; the component hides them until asked and changes no value by doing so.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "A host that filters rare fields out of the answer makes «Показать редкие поля» a second read, and a person toggling a view twice would see two different objects. Marking them is the host's job; hiding them is the component's."
+  }
+}

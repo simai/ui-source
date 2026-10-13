@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20" viewBox="308 164 28 20" fill="none" role="img">
+<g id="Country=BZ">
+<rect id="Mask_57" x="308" y="164" width="28" height="20" fill="#F0F0F0"/>
+<mask id="mask25_8205_11341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="308" y="164" width="28" height="20">
+<rect id="Mask_58" x="308" y="164" width="28" height="20" fill="#F0F0F0"/>
+</mask>
+<g mask="url(#mask25_8205_11341)">
+<path id="Rectangle 2 Copy 4" fill-rule="evenodd" clip-rule="evenodd" d="M308 181.333H336V166.667H308V181.333Z" fill="#0052B4"/>
+<path id="Rectangle 2_35" fill-rule="evenodd" clip-rule="evenodd" d="M308 166.667H336V164H308V166.667Z" fill="#D80027"/>
+<path id="Rectangle 2_36" fill-rule="evenodd" clip-rule="evenodd" d="M308 184H336V181.333H308V184Z" fill="#D80027"/>
+<path id="Oval 12" fill-rule="evenodd" clip-rule="evenodd" d="M322 180C325.314 180 328 177.314 328 174C328 170.686 325.314 168 322 168C318.686 168 316 170.686 316 174C316 177.314 318.686 180 322 180Z" fill="#F0F0F0"/>
+<path id="Oval 73" fill-rule="evenodd" clip-rule="evenodd" d="M322 178C324.209 178 326 176.209 326 174C326 171.791 324.209 170 322 170C319.791 170 318 171.791 318 174C318 176.209 319.791 178 322 178Z" stroke="#118014" stroke-width="1.33333" stroke-linecap="round" stroke-dasharray="0.67 2"/>
+</g>
+</g>
+</svg>

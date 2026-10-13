@@ -1,0 +1,22 @@
+@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sf_var__font_variant' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// FONT VARIANT
+
+// @include layer-priority(utility,default) {
+    @include breakpoint-media(xs) {
+        $infix: breakpoint-infix(xs, $breakpoint-array);
+
+        //
+        @each $variant-name, $variant-value in $font-variant-array {
+            .#{$infix}small-caps#{$variant-name} {
+                font-variant: #{$variant-value};
+            }
+        }
+    }
+// }
+}

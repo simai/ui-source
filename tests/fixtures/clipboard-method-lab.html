@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Clipboard — standalone Loader</title>
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/core.css">
+  <link rel="stylesheet" href="../../source/output/clipboard-browser/core/css/utility.full.css">
+  <script>
+    window.sfPath = '../../source/output/clipboard-browser';
+    window.SF_BOOT_CONFIG = {icons: {enabled: false}, preloader: {enabled: false}, theme: false};
+    window.copyEvents = [];
+    document.addEventListener('sf:copy-success', event => copyEvents.push({type: 'success', detail: event.detail}));
+    document.addEventListener('sf:copy-error', event => copyEvents.push({type: 'error', detail: event.detail}));
+  </script>
+</head>
+<body class="p-4">
+  <main class="grid gap-4 max-w-5">
+    <h1>Проверка Clipboard</h1>
+    <div class="relative p-3 radius-default border border-outline-variant">
+      <code id="copy-command">npm install @simai/ui</code>
+      <button id="target-copy" type="button" class="sf-clipboard sf-clipboard--overlay sf-clipboard-1 sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--outline sf-icon-button--on-surface btn-clipboard flex items-cross-center" data-target="#copy-command" data-success="Команда скопирована" data-error="Не удалось скопировать" data-duration="3000" aria-label="Копировать команду"><i class="sf-icon" aria-hidden="true">content_copy</i></button>
+    </div>
+    <button id="direct-copy" type="button" class="sf-clipboard sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" data-copy="точное значение" data-success="Значение скопировано" data-error="Не удалось скопировать">Копировать значение</button>
+    <button id="denied-copy" type="button" class="sf-clipboard sf-button sf-button--size-1 sf-button--outline sf-button--primary flex items-cross-center" data-copy="закрытое значение" data-error="Браузер запретил копирование">Проверить отказ разрешения</button>
+    <button id="ambiguous-copy" type="button" class="sf-clipboard sf-button sf-button--size-1 sf-button--outline sf-button--primary flex items-cross-center" data-copy="другое" data-target="#copy-command" data-error="Неоднозначный источник">Неоднозначный источник</button>
+    <button id="missing-copy" type="button" class="sf-clipboard sf-button sf-button--size-1 sf-button--outline sf-button--primary flex items-cross-center" data-target="#missing" data-error="Источник не найден">Отсутствующий источник</button>
+    <button id="surface-copy" type="button" class="sf-clipboard sf-clipboard--inline sf-clipboard-surface" data-copy="поверхность" data-success="Поверхность скопирована" aria-label="Копировать с поверхности"><i class="sf-icon" aria-hidden="true">content_copy</i></button>
+    <button id="add-copy" type="button" class="sf-button sf-button--size-1 sf-button--tonal sf-button--secondary">Добавить действие</button>
+  </main>
+  <script>
+    document.getElementById('add-copy').addEventListener('click', () => {
+      const button = document.createElement('button');
+      button.id = 'dynamic-copy';
+      button.type = 'button';
+      button.className = 'sf-clipboard sf-button sf-button--size-1 sf-button--outline sf-button--primary flex items-cross-center';
+      button.dataset.copy = 'позднее значение';
+      button.dataset.success = 'Позднее значение скопировано';
+      button.setAttribute('aria-label', 'Копировать позднее значение');
+      button.textContent = 'Позднее действие';
+      document.querySelector('main').append(button);
+    });
+  </script>
+  <script src="../../source/output/clipboard-browser/core/js/core.js"></script>
+</body>
+</html>
