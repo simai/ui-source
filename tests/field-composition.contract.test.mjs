@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8');
+const read = async (path) => withoutPublicVariables(await readFile(new URL(`../src/${path}`, import.meta.url), 'utf8'));
 const SIZES = ['1\\/2', '1', '2'];
 
 /* Form fields stand in one column of a form, so their parts sit on the same

@@ -3,8 +3,9 @@ import {Buffer} from 'node:buffer';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = async (path) => withoutPublicVariables(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 
 async function loadContract() {
   const source = await read('src/component/badges/js/contract.js');

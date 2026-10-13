@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = async (path) => withoutPublicVariables(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 
 const hex = (value) => [1, 3, 5].map((index) => parseInt(value.slice(index, index + 2), 16));
 const luminance = (rgb) => rgb.map((channel) => {

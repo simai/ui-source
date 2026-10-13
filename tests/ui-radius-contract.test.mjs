@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = async (path) => withoutPublicVariables(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 
 test('publishes one UI radius token backed by the 1/3 radius primitive', async () => {
   const [radius, border, compatibility] = await Promise.all([

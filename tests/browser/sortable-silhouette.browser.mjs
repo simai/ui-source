@@ -40,6 +40,7 @@ try {
     window.intents = [];
     document.addEventListener('sf-sortable-intent', (event) => window.intents.push(event.detail));
   });
+  const sourceHeight = await page.evaluate(() => Math.round(document.querySelector('[data-sf-sortable-item="r0"]').getBoundingClientRect().height));
   const handle = page.locator('[data-sf-sortable-item="r0"] [data-sf-sortable-handle]');
   const box = await handle.boundingBox();
   await page.mouse.move(box.x + 4, box.y + 4);
@@ -62,7 +63,7 @@ try {
     sourceShown: document.querySelector('[data-sf-sortable-item="r0"]').getClientRects().length > 0}));
   console.log(JSON.stringify({during, after}, null, 1));
   const outlineAt = during.order.filter((key) => key !== 'r0').indexOf('outline');
-  if (outlineAt !== 2 || during.height !== 42 || during.sourceShown || !during.ghost) {
+  if (outlineAt !== 2 || during.height !== sourceHeight || during.sourceShown || !during.ghost) {
     failures.push('while dragging, the item leaves the flow and an outline of its size opens at the place it would take');
   }
   if (after.intents.length !== 1 || after.intents[0].index !== 2 || after.left || !after.sourceShown) {

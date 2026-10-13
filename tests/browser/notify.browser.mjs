@@ -55,6 +55,10 @@ try {
       repeated: toasts().find((toast) => toast.textContent.includes('Сохранено 1'))?.dataset.count ?? null,
       label: area?.getAttribute('aria-label'), heard: heard.length,
       gap: (() => { const [a, b] = toasts(); return a && b ? Math.round(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom) : null; })()};
+    // Six messages (one counted up): four shown, «Сохранено 5» and the error
+    // waiting. Closing two brings both in, in order.
+    window.SF.Toast.dismiss(toasts()[0]);
+    await settle(600);
     window.SF.Toast.dismiss(toasts()[0]);
     await settle(800);
     const after = {count: toasts().length, error: toasts().find((toast) => toast.textContent.includes('Не удалось'))?.getAttribute('role') ?? null};

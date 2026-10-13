@@ -3,9 +3,10 @@ import {readFile} from 'node:fs/promises';
 import process from 'node:process';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const root = new URL('../', import.meta.url);
-const read = path => readFile(new URL(path, root), 'utf8');
+const read = async path => withoutPublicVariables(await readFile(new URL(path, root), 'utf8'));
 const uiDocRoot = process.env.UI_DOC_ROOT
   ? new URL(`file://${process.env.UI_DOC_ROOT.replace(/\/$/, '')}/`)
   : null;

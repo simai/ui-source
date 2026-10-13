@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const source = (file) => readFile(new globalThis.URL(`../src/${file}`, import.meta.url), 'utf8');
+const source = async (file) => withoutPublicVariables(await readFile(new globalThis.URL(`../src/${file}`, import.meta.url), 'utf8'));
 
 test('Input presentation uses semantic UI, hairline and motion tokens', async () => {
   const css = await source('component/inputs/scss/_css__inputs.scss');

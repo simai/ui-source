@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 // The neutral alpha ramp is one base per theme and a ladder of steps derived from
 // it, so a component asks for a degree of contrast instead of choosing black or
@@ -10,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 // ever hardcode a colour, the ramp stops being the single source.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const read = (path) => readFileSync(resolve(root, path), 'utf8');
+const read = (path) => withoutPublicVariables(readFileSync(resolve(root, path), 'utf8'));
 // The steps the neutral half of the alpha scale carries. It had 2 and 6, which
 // are off the scale's footing of fours, and 20 and 24, which were on it and
 // asked for by nothing; both pairs went on 2026-10-08 when the scale was

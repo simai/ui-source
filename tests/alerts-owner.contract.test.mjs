@@ -2,8 +2,9 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = async path => withoutPublicVariables(await readFile(new URL(`../${path}`, import.meta.url), 'utf8'));
 
 test('ordinary Alert uses dynamic delegated actions and shared token motion', async () => {
   const runtime = await read('src/component/alerts/js/_alerts.js');

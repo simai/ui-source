@@ -100,9 +100,13 @@ function release(entry) {
   else setTimeout(hideRegionWhenEmpty, 0);
 }
 
+// The slot is taken at once and the toast drawn when its component is there:
+// taken after the fetch, every message raised meanwhile found the area empty
+// and all of them were shown, the same one twice.
 async function display(entry) {
+  state.shown.push(entry);
   const api = await whenToast();
-  if (!api) return;
+  if (!api || !state.shown.includes(entry)) return;
   const {record, options} = entry;
   const toast = api.create({
     status: record.status,
@@ -116,8 +120,8 @@ async function display(entry) {
     role: record.status === 'error' ? 'alert' : 'status',
   });
   toast.dataset.sfNotification = record.id;
+  if (entry.count > 1) toast.dataset.count = String(entry.count);
   entry.toast = toast;
-  state.shown.push(entry);
   showRegion();
   // The newest at the edge the area grows from: nearest the edge it sits on.
   const area = region();
@@ -187,7 +191,11 @@ function close(id) {
     return true;
   }
   const entry = state.shown.find((item) => item.record.id === id);
-  if (!entry?.toast) return false;
+  if (!entry) return false;
+  if (!entry.toast) {
+    release(entry);
+    return true;
+  }
   return globalThis.SF?.Toast?.dismiss?.(entry.toast) ?? false;
 }
 
