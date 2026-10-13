@@ -14,6 +14,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# The contracts that read the shipped sheets grade the published distribution
+# beside this checkout (../ui), as on a developer's machine; a CI runner has
+# none, so the public simai/ui is cloned there.
+repository_root="$(cd "$(dirname "$0")/.." && pwd)"
+if [[ ! -d "$repository_root/../ui/distr" && -z "${UI_CORE_ROOT:-}" ]]; then
+    git clone --quiet --depth 1 "${UI_REPOSITORY:-https://github.com/simai/ui.git}" "$repository_root/../ui"
+fi
+
 ui_doc_root="$gate_root/ui-doc"
 git clone --quiet --no-checkout "$UI_DOC_REPOSITORY" "$ui_doc_root"
 if git -C "$ui_doc_root" rev-parse --verify --quiet "origin/$UI_DOC_REF" >/dev/null; then

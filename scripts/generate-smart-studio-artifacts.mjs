@@ -32,8 +32,18 @@ const serviceDirectories = new Set(['helpers', 'field-renderers']);
 const generatedRuntimeRoot = path.resolve(root, '../ui-smart');
 const uiRoot = path.resolve(root, '../ui');
 const revision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root, encoding: 'utf8'}).trim();
-const uiRevision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: uiRoot, encoding: 'utf8'}).trim();
-const smartRevision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: generatedRuntimeRoot, encoding: 'utf8'}).trim();
+// The revisions of the generated checkouts beside this one. ui-smart is
+// archived and private, and a public CI has neither it nor necessarily ui: a
+// missing checkout has no revision, and the manifests keep the ones they name.
+const revisionOf = (cwd) => {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], {cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']}).trim();
+  } catch {
+    return null;
+  }
+};
+const uiRevision = revisionOf(uiRoot);
+const smartRevision = revisionOf(generatedRuntimeRoot);
 
 const samples = {
   alert: {title: 'Изменения сохранены', 'supporting-text': 'Новая версия уже доступна участникам команды.', 'action-text': 'Открыть', 'close-label': 'Закрыть уведомление', type: 'success', closable: true},
