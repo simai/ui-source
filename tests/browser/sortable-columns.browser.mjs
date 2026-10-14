@@ -27,7 +27,7 @@ try {
     if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html', body: '<!doctype html><html lang="ru"><body></body></html>'});
     const path = join(out, url.pathname);
     if (!existsSync(path)) return route.fulfill({status: 404, body: ''});
-    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)});
+    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)});
   });
   await page.goto(`${origin}/`);
   await page.setContent('<!doctype html><html lang="ru"><body style="margin:40px">'

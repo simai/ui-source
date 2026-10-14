@@ -20,7 +20,7 @@ try {
   const page = await browser.newPage({viewport: {width: 1000, height: 700}});
   const origin = 'http://probe.test';
   const serve = (path, route) => (existsSync(path)
-    ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)})
+    ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)})
     : route.fulfill({status: 404, body: ''}));
   await page.route(`${origin}/**`, (route) => {
     const url = new URL(route.request().url());

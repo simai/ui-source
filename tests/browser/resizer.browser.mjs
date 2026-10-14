@@ -28,14 +28,14 @@ try {
     if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html', body: '<!doctype html><html lang="ru"><body></body></html>'});
     const path = join(out, url.pathname);
     if (!existsSync(path)) return route.fulfill({status: 404, body: ''});
-    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)});
+    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)});
   });
   await context.route('https://cdn.jsdelivr.net/gh/simai/ui@*/distr/**', (route) => {
     const tail = new URL(route.request().url()).pathname.replace(/^.*\/distr\//u, '');
     const [product, ...rest] = tail.split('/');
     const path = join(out, product, product, ...rest);
     if (!existsSync(path)) return route.fulfill({status: 404, body: ''});
-    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)});
+    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)});
   });
   const load = async () => {
     const page = await context.newPage();

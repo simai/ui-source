@@ -30,7 +30,7 @@ try {
   const page = await browser.newPage({viewport: {width: 1200, height: 900}});
   const origin = 'http://probe.test';
   const serve = (path, route) => (existsSync(path)
-    ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)})
+    ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)})
     : route.fulfill({status: 404, body: ''}));
   await page.route(`${origin}/**`, (route) => {
     const url = new URL(route.request().url());
@@ -50,8 +50,11 @@ try {
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-tabs'), null, {timeout: 8000});
-  await page.waitForTimeout(800);
+  // Drawn, not timed: a fixed wait was too short under a full probe run.
+  await page.waitForFunction(() => customElements.get('sf-tabs')
+    && [...document.querySelectorAll('sf-tabs.g')].every((tabs) => tabs.querySelectorAll('[role="tab"] .sf-button-text-container').length === 3),
+  null, {timeout: 8000});
+  await page.waitForTimeout(300);
 
   const geometry = await page.evaluate(() => [...document.querySelectorAll('sf-tabs.g')].map((tabs) => {
     const buttons = [...tabs.querySelectorAll('[role="tab"]')];
@@ -73,7 +76,10 @@ try {
     const tabs = document.getElementById('more');
     tabs.setItems(['Первая', 'Вторая', 'Третья', 'Четвёртая', 'Пятая', 'Шестая', 'Седьмая', 'Восьмая'].map((label, at) => ({key: `t${at}`, label, count: at === 1 ? 3 : undefined})));
     tabs.setAttribute('active-index', '6');
-    await new Promise((done) => setTimeout(done, 400));
+    for (let wait = 0; wait < 40 && !tabs.querySelector('.sf-tabs-top-container[data-sf-tabs-more]'); wait += 1) {
+      await new Promise((done) => setTimeout(done, 100));
+    }
+    await new Promise((done) => setTimeout(done, 200));
     const indexOf = (host) => Number((host.dataset.sfTabIndex ?? host.querySelector('[data-sf-tab-index]')?.dataset.sfTabIndex));
     const shown = [...tabs.querySelectorAll('.sf-tabs-top > :not(.sf-tabs-overflowed)')].map(indexOf).filter(Number.isInteger);
     const button = tabs.querySelector('.sf-tabs-more');
@@ -91,7 +97,7 @@ try {
   if (!more.trigger || more.trigger.height !== more.trigger.tab || more.trigger.lines !== 1 || more.trigger.bottom !== 0) note({case: '«Ещё» is one line on the row height', got: more.trigger});
   if (!more.more || !more.shown.includes(6) || more.shown.length >= 8 || more.count !== '3') note({case: 'overflow more', got: more});
   await page.click('#more .sf-tabs-more button');
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(600);
   const menu = await page.evaluate(() => [...document.querySelectorAll('sf-context-menu .sf-context-menu-item-label')].map((node) => node.textContent.trim()));
   const hiddenLabels = ['Первая', 'Вторая', 'Третья', 'Четвёртая', 'Пятая', 'Шестая', 'Седьмая', 'Восьмая'].filter((_, at) => !more.shown.includes(at));
   if (menu.join() !== hiddenLabels.join()) note({case: 'the «Ещё» menu lists what does not fit', got: menu, expected: hiddenLabels});
@@ -107,14 +113,14 @@ try {
     tabs.addEventListener('sf-tabs-settings-change', (event) => window.settings.push({order: event.detail.order, hidden: event.detail.hidden, reason: event.detail.reason}));
     tabs.setItems([{key: 'a', label: 'A', pinned: true}, {key: 'b', label: 'B'}, {key: 'c', label: 'C', href: '#c'}, {key: 'd', label: 'D'}]);
     tabs.setSettings({order: ['zz', 'd', 'c', 'b'], hidden: ['b', 'a']});
-    await new Promise((done) => setTimeout(done, 300));
+    await new Promise((done) => setTimeout(done, 600));
     const order = () => [...tabs.querySelectorAll('.sf-tabs-top > *')].map((host) => host.textContent.trim()).filter(Boolean);
     const first = order();
     tabs.setAttribute('active-index', '1');
-    await new Promise((done) => setTimeout(done, 300));
+    await new Promise((done) => setTimeout(done, 600));
     const activeHidden = order();
     tabs.setAttribute('active-index', '2');
-    await new Promise((done) => setTimeout(done, 300));
+    await new Promise((done) => setTimeout(done, 600));
     const linkCurrent = tabs.querySelector('[role="tab"][aria-current="page"]')?.textContent.trim() ?? null;
     return {first, activeHidden, linkCurrent, gear: tabs.querySelector('.sf-tabs-settings button')?.getAttribute('aria-label') ?? tabs.querySelector('.sf-tabs-settings')?.getAttribute('aria-label')};
   });
