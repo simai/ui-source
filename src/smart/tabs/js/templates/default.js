@@ -73,6 +73,11 @@ function renderTab(item, context) {
     `;
   }
 
+  // A count after the label, when the item has one; the tab's own slot wins.
+  const counted = tabContent === nothing && item.count !== null && item.count !== undefined && item.count !== ''
+    ? html`<span slot="text" class="sf-tabs-label">${item.label}<span class="sf-tabs-count">${String(item.count)}</span></span>`
+    : nothing;
+
   if(context.variant !== 'icons') {
       return html`
           <sf-button
@@ -88,7 +93,7 @@ function renderTab(item, context) {
                   data-tab=${String(item.index)}
                   ?disabled=${item.disabled}
           >
-              ${tabContent === nothing ? nothing : html`<span slot="text">${tabContent}</span>`}
+              ${tabContent === nothing ? counted : html`<span slot="text">${tabContent}</span>`}
           </sf-button>
       `;
   } else {
@@ -111,8 +116,11 @@ function renderTab(item, context) {
 
 export function renderTabsTemplate(context) {
   const vertical = context.type === 'vertical';
+  const sizeClass = `sf-tabs--size-${String(context.size || '1').replace('/', '-')}`;
   const rootClasses = joinClasses(
     'sf-tabs',
+    sizeClass,
+    context.overflow && context.overflow !== 'scroll' ? `sf-tabs--overflow-${context.overflow}` : '',
     context.type ? `sf-tabs--${context.type}` : '',
     vertical ? 'sf-tabs--vertical flex' : 'flex flex-col',
     context.rootClass,
@@ -126,7 +134,7 @@ export function renderTabsTemplate(context) {
       data-active-index=${String(context.activeIndex)}
       role="group"
     >
-      <div class="sf-tabs-top-container">
+      <div class=${joinClasses('sf-tabs-top-container', context.overflow === 'more' || context.configurable ? 'sf-tabs-top-container--tools' : '')}>
         <div
           class=${joinClasses(`sf-tabs-top flex content-main-${context.topPosition}`,  context.type === 'vertical' ? 'flex-col' : '', context.topClass)}
           role="tablist"
@@ -134,8 +142,17 @@ export function renderTabsTemplate(context) {
           aria-labelledby=${context.component?.getAttribute('aria-labelledby') || nothing}
           aria-orientation=${vertical ? 'vertical' : 'horizontal'}
         >
-          ${context.items.map((item) => renderTab(item, context))}
+          ${(context.displayItems ?? context.items).map((item) => renderTab(item, context))}
         </div>
+        ${context.overflow === 'more' && !vertical
+          ? html`<sf-button class="sf-tabs-more" appearance="link" scheme="on-surface" size=${context.size}
+                            icon-end="expand_more" text=${context.moreText} aria-haspopup="menu"></sf-button>`
+          : nothing}
+        ${context.configurable
+          ? html`<sf-icon-button class="sf-tabs-settings" appearance="link" scheme="on-surface" size=${context.size}
+                                 icon="tune" aria-label=${context.customizeText} title=${context.customizeText}
+                                 aria-haspopup="dialog"></sf-icon-button>`
+          : nothing}
       </div>
 
       <div class="sf-tabs-main-container">

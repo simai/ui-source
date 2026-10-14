@@ -343,3 +343,138 @@
     padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
   }
 }
+
+@layer sf.overrides {
+  // An underline tab is its label and its line: no inline padding on the tab,
+  // one gap between tabs by size, from the ladder -- c0, c2 and c6 at 1/2, 1
+  // and 2 -- and a line of two, two and three pixels (owner, 2026-10-14). The
+  // tab keeps the control's height, which is its hit area.
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
+    --sf-button--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-c0);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1 > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-c2);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-c6);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-button--border-bottom-width: calc(var(--sf-px) * 3);
+    --sf-icon-button--border-bottom-width: calc(var(--sf-px) * 3);
+  }
+
+  // The tab's own font is its size's text role: the bare button computed the
+  // browser's default under a label of the right size.
+  .sf-tabs.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    font-size: var(--sf-text-size-1\/2);
+  }
+
+  .sf-tabs.sf-tabs--size-1 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    font-size: var(--sf-text-size-1);
+  }
+
+  .sf-tabs.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    font-size: var(--sf-text-size-2);
+  }
+
+  // A tab's counter: a small count after its label, as tall as the label's
+  // letters, the same as a navigation row's.
+  .sf-tabs-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--sf-text-height-1\/3);
+    margin-inline-start: var(--sf-a6);
+    padding-inline: var(--sf-a4);
+    border-radius: var(--sf-radius-circle);
+    background-color: var(--sf-secondary-container);
+    color: var(--sf-on-secondary-container);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+    font-weight: var(--sf-font-weight-medium);
+    vertical-align: middle;
+  }
+
+  // Wrapping rows instead of scrolling one.
+  .sf-tabs--overflow-wrap:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  // Collapsing what does not fit into «Ещё»: the row does not scroll, and a tab
+  // moved into the menu takes no room.
+  .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top {
+    flex-wrap: nowrap;
+    overflow-x: clip;
+  }
+
+  .sf-tabs-top > .sf-tabs-overflowed,
+  .sf-tabs-top > .sf-tabs-overflowed > * {
+    display: none !important;
+  }
+
+  .sf-tabs-more,
+  .sf-tabs-settings {
+    flex: none;
+  }
+
+  // The tools stand beside the tabs: «Ещё» and the gear take what they need,
+  // the tabs the rest.
+  .sf-tabs-top-container.sf-tabs-top-container--tools {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-tabs-top-container--tools > .sf-tabs-top {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  // «Ещё» stands only while something is in it.
+  .sf-tabs-top-container--tools:not([data-sf-tabs-more]) > .sf-tabs-more {
+    display: none;
+  }
+
+  .sf-tabs-settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-px);
+  }
+
+  .sf-tabs-settings-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/2);
+    min-block-size: calc(var(--sf-context-menu--line, var(--sf-text-height-1\/2)) + 2 * var(--sf-context-menu--space-y, var(--sf-a6)));
+    padding-inline: var(--sf-context-menu--inset-start, var(--sf-a8)) var(--sf-context-menu--inset-end, var(--sf-a8));
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-tabs-settings-handle {
+    display: inline-flex;
+    cursor: grab;
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-tabs-settings-label {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    white-space: nowrap;
+  }
+
+  .sf-tabs-settings-pin {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+}
+
