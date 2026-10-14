@@ -18,8 +18,18 @@
      at full by default. */
   .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) {
     --sf-datepicker-another-month--opacity: 1;
-    --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
     opacity: var(--sf-datepicker-another-month--opacity);
+  }
+  /* On the number itself: the number declares its own colour, so a colour
+     set on the day never reached it, and the neighbouring month read like
+     this one in both themes. A neighbouring weekend keeps its red at the
+     ink step 80, still 4.5:1 on the panel in both themes. */
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) :is(.sf-datepicker-day-date, .sf-datepicker-day-info) {
+    --sf-datepicker-day-date--color: color-mix(in srgb, var(--sf-error) 80%, transparent);
+    --sf-datepicker-day-info--color: color-mix(in srgb, var(--sf-error) 80%, transparent);
   }
   .sf-datepicker-day.sf-datepicker-day-start .sf-datepicker-day-date, .sf-datepicker-day.sf-datepicker-day-end .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-on-primary);

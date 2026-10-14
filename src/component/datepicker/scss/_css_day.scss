@@ -42,6 +42,23 @@
     font-weight: var(--sf-datepicker-day-info--font-weight);
     line-height: var(--sf-datepicker-day-info--line-height);
   }
+
+  /* A day's number keeps the row's line whether or not it has a caption: the
+     caption stands in the height under the number instead of pushing it up
+     (owner, 2026-10-14). Centred together, a day with «3» under it lifted its
+     number above its neighbours'. */
+  .sf-datepicker-day:has(.sf-datepicker-day-info) {
+    position: relative;
+  }
+
+  .sf-datepicker-day .sf-datepicker-day-info {
+    position: absolute;
+    inset-block: calc(50% + var(--sf-datepicker-day-date--line-height, var(--sf-text--height)) / 2) 0;
+    inset-inline: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 @layer sf.states {

@@ -52,8 +52,12 @@
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-medium);
     line-height: var(--sf-text-height-1\/2);
-    padding-block: var(--sf-space-1\/4);
-    text-align: center;
+    /* The weekday is 1/2 text, so its row is a 1/2 control's height, a step
+       of the ladder; its own padding made it 28 pixels, a height of none. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    block-size: var(--sf-ui-1\/2--control-height);
   }
 
  .sf-datepicker .sf-datepicker-context {
