@@ -428,6 +428,17 @@
     flex: none;
   }
 
+  // «Ещё (n)» is one line, a control of the tabs' size like a tab.
+  .sf-tabs-more > button {
+    white-space: nowrap;
+  }
+
+  // An underline row sits on the divider; the trigger (its host is display:
+  // contents, so the button is the flex item) sits with it.
+  .sf-tabs--underline > .sf-tabs-top-container--tools > .sf-tabs-more > button {
+    margin-block-end: calc(var(--sf-tabs--border-width, var(--sf-px)) * -1);
+  }
+
   // The tools stand beside the tabs: «Ещё» and the gear take what they need,
   // the tabs the rest.
   .sf-tabs-top-container.sf-tabs-top-container--tools {

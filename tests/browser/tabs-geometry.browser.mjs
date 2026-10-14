@@ -45,7 +45,7 @@ try {
   await page.goto(`${origin}/`);
   await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><body style="margin:20px">
     ${['1/2', '1', '2'].map((size) => `<sf-tabs class="g" data-s="${size}" type="underline" size="${size}" items="Обзор|Настройки|История"></sf-tabs>`).join('<br>')}
-    <div style="width:360px"><sf-tabs id="more" type="underline" size="1/2" overflow="more"></sf-tabs></div>
+    <div style="width:360px;display:flex"><sf-tabs id="more" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
     <sf-tabs id="conf" type="underline" size="1/2" configurable></sf-tabs>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
@@ -79,8 +79,16 @@ try {
     const button = tabs.querySelector('.sf-tabs-more');
     const list = tabs.querySelector('.sf-tabs-top').getBoundingClientRect();
     const count = tabs.querySelector('.sf-tabs-count')?.textContent;
-    return {shown, more: button && !button.hidden ? button.getAttribute('text') : null, right: Math.round(list.right), count};
+    // The trigger is one line on the tab row's height.
+    const inner = button?.querySelector('button');
+    const text = inner?.querySelector('.sf-button-text-container');
+    const tab = tabs.querySelector('.sf-tabs-top [role="tab"]');
+    const trigger = inner ? {height: Math.round(inner.getBoundingClientRect().height), tab: Math.round(tab.getBoundingClientRect().height),
+      lines: text ? Math.round(text.getBoundingClientRect().height / parseFloat(getComputedStyle(text).lineHeight)) : null,
+      bottom: Math.round(inner.getBoundingClientRect().bottom - tab.getBoundingClientRect().bottom)} : null;
+    return {shown, more: button && !button.hidden ? button.getAttribute('text') : null, right: Math.round(list.right), count, trigger};
   });
+  if (!more.trigger || more.trigger.height !== more.trigger.tab || more.trigger.lines !== 1 || more.trigger.bottom !== 0) note({case: '«Ещё» is one line on the row height', got: more.trigger});
   if (!more.more || !more.shown.includes(6) || more.shown.length >= 8 || more.count !== '3') note({case: 'overflow more', got: more});
   await page.click('#more .sf-tabs-more button');
   await page.waitForTimeout(300);
