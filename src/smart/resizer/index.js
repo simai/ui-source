@@ -8,6 +8,7 @@
 // otherwise as inline-size. With `storage-key` the width is remembered in this
 // browser and restored the next time.
 import {attachResizer, setResizerValue} from './engine.mjs';
+import BundledPreferences from '../../core/js/preferences.js';
 import './scss/index.scss';
 
 const TEXT = {
@@ -34,16 +35,32 @@ function pixels(value, context) {
   return Number.isFinite(width) ? width : null;
 }
 
+// The width is a view preference (SF.Preferences, owner 2026-10-14): kept in
+// this browser, and for the person when the host keeps preferences.
+const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
+const preferenceKey = (key) => `sf-resizer/${String(key).replace(/[^\w.:-]+/gu, '-')}`;
+
 function readStored(key) {
-  try { return key ? Number(globalThis.localStorage?.getItem(`sf-resizer:${key}`)) || null : null; } catch { return null; }
+  if (!key) return null;
+  const kept = preferences()?.read(preferenceKey(key));
+  if (Number.isFinite(kept?.width)) return kept.width;
+  // A width this browser kept before the standard, taken over once.
+  try {
+    const legacy = Number(globalThis.localStorage?.getItem(`sf-resizer:${key}`)) || null;
+    if (legacy) {
+      preferences()?.write(preferenceKey(key), {v: 1, width: legacy});
+      globalThis.localStorage?.removeItem(`sf-resizer:${key}`);
+    }
+    return legacy;
+  } catch {
+    return null;
+  }
 }
 
 function writeStored(key, value) {
-  try {
-    if (!key) return;
-    if (value === null) globalThis.localStorage?.removeItem(`sf-resizer:${key}`);
-    else globalThis.localStorage?.setItem(`sf-resizer:${key}`, String(Math.round(value)));
-  } catch { /* a private window keeps no width; the drag still works */ }
+  if (!key) return;
+  if (value === null) preferences()?.remove(preferenceKey(key));
+  else preferences()?.write(preferenceKey(key), {v: 1, width: Math.round(value)});
 }
 
 export class SfResizer extends HTMLElement {

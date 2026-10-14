@@ -107,7 +107,8 @@ try {
   await again.dblclick('#handle');
   await again.waitForTimeout(100);
   const reset = await width(again);
-  const forgotten = await again.evaluate(() => localStorage.getItem('sf-resizer:probe-menu'));
+  // Kept as a view preference (SF.Preferences): gone from it on reset.
+  const forgotten = await again.evaluate(() => localStorage.getItem('sf-pref:sf-resizer/probe-menu') ?? localStorage.getItem('sf-resizer:probe-menu'));
   const resetPhase = await again.evaluate(() => window.resized.at(-1)?.phase);
   if (reset !== 256 || forgotten !== null || resetPhase !== 'reset') note({case: 'a double click restores and forgets', got: {reset, forgotten, resetPhase}});
   // A width the host keeps (value) wins over the browser's memory.

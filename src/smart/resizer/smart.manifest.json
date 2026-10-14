@@ -228,7 +228,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "7cad33b1139e2080e4ef7b846972cc912496b0bca2c836624a30c9f55b70f6a8"
+        "sha256": "3d1a86eb44891e37c30f863fe15301057f9184b5404e8b966c64f0e70016670e"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
@@ -240,7 +240,7 @@
       },
       {
         "path": "src/smart/resizer/docs.md",
-        "sha256": "deb847e3bf08096b23de2f50100cf5ab5595125c910b7ada545b85eea02707a6"
+        "sha256": "e5eb7804b2d5c649ef0173b6fd77520a1179f6f75a5d24bd5cbc651515759808"
       },
       {
         "path": "src/smart/resizer/engine.mjs",
