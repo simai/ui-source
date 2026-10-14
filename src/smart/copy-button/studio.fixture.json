@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.copy-button",
+  "title": "copy button reference",
+  "summary": "Deterministic reference fixture for sf-copy-button.",
+  "locale": "ru",
+  "props": {
+    "value": "npm i @simai/ui",
+    "label": "Скопировать команду"
+  },
+  "children": [],
+  "state": "default"
+}

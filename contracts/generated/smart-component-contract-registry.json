@@ -464,6 +464,44 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.buttons",
+          "smart.icon-buttons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-copy-button",
+      "id": "smart.copy-button",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/copy-button/smart.manifest.json",
+      "manifest_sha256": "bad8ca0077536c5ee04293fb7b3ba24d048bbf07f472cf3335b0b477fe855399",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
+      "tags": [
+        "copy",
+        "clipboard",
+        "button"
+      ],
+      "title": "Copy button"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "render",
         "theme",
         "responsive"

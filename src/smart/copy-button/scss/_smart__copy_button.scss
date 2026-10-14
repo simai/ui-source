@@ -1,0 +1,31 @@
+@layer sf.components {
+/* A button that copies, and a status a screen reader hears and nobody sees:
+   the icon says it on screen. */
+sf-copy-button {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.sf-copy-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sf-copy-button-status,
+.sf-copy-button-holder {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sf-copy-button--success {
+  --sf-icon--color: var(--sf-success);
+}
+
+.sf-copy-button--error {
+  --sf-icon--color: var(--sf-error);
+}
+}
