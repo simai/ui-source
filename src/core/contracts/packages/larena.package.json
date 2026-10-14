@@ -94,6 +94,7 @@
         "smart.buttons",
         "smart.checkbox",
         "smart.color",
+        "smart.copy-button",
         "smart.country-code",
         "smart.data-view",
         "smart.data-view-composite",
