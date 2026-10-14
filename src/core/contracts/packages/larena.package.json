@@ -29,6 +29,7 @@
         "smart.icon-buttons",
         "smart.icons",
         "smart.inputs",
+        "smart.profile-picker",
         "smart.resizer",
         "smart.sortable"
       ]
@@ -106,6 +107,7 @@
         "smart.inputs",
         "smart.list-item",
         "smart.popover",
+        "smart.profile-picker",
         "smart.progress-bar",
         "smart.progress-scale",
         "smart.range-slider",
