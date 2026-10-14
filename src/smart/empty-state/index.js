@@ -9,7 +9,9 @@ import {renderEmptyStateTemplate} from './js/templates/default';
 import './scss/index.scss';
 
 const KINDS = ['no-data', 'nothing-found', 'no-access', 'error'];
-const SIZES = ['1/2', '1', '2'];
+const SIZES = ['1/3', '1/2', '1', '2'];
+const LAYOUTS = ['block', 'inline'];
+const LIVE = ['auto', 'alert', 'off'];
 
 const EMPTY_STATE_TEXT = {
   en: {
@@ -46,6 +48,8 @@ class SfEmptyState extends SfBaseElement {
       title: {default: ''},
       text: {default: ''},
       headingLevel: {attribute: 'heading-level', default: '3'},
+      layout: {default: 'block'},
+      live: {default: 'auto'},
       rootClass: {default: ''},
     };
   }
@@ -69,6 +73,29 @@ class SfEmptyState extends SfBaseElement {
   get size() {
     const value = this.getAttribute('size');
     return SIZES.includes(value) ? value : '1';
+  }
+
+  // inline: one line for a list inside a menu, a dropdown or a search -- a
+  // small icon, the words and at most one link action, no heading. Size 1/3
+  // is always inline (owner, 2026-10-14).
+  get layout() {
+    if (this.getAttribute('size') === '1/3') return 'inline';
+    const value = this.getAttribute('layout');
+    return LAYOUTS.includes(value) ? value : 'block';
+  }
+
+  // auto: nothing-found and error are a polite status, the others say
+  // nothing; alert: an error the person caused, such as a search that failed
+  // as they typed; off: the host announces it itself.
+  get live() {
+    const value = this.getAttribute('live');
+    return LIVE.includes(value) ? value : 'auto';
+  }
+
+  liveRole() {
+    if (this.live === 'off') return null;
+    if (this.live === 'alert') return 'alert';
+    return this.kind === 'nothing-found' || this.kind === 'error' ? 'status' : null;
   }
 
   get icon() {
@@ -116,7 +143,10 @@ class SfEmptyState extends SfBaseElement {
       shownTitle: this.title || this.words(`${kind}-title`),
       shownText: this.text || this.words(`${kind}-text`),
       resolvedActions: this.resolvedActions(),
-      announces: kind === 'nothing-found' || kind === 'error',
+      layout: this.layout,
+      liveRole: this.liveRole(),
+      // The line of the inline form: the host's words, else the kind's title.
+      shownLine: this.text || this.title || this.words(`${kind}-title`),
       rootClass: this.getRootClass(),
     });
   }

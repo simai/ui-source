@@ -40,6 +40,9 @@ try {
     <sf-empty-state id="denied" kind="no-access" size="2" heading-level="2"></sf-empty-state>
     <sf-empty-state id="failed" kind="error"></sf-empty-state>
     <sf-empty-state id="custom" title="Нет заказов" text="Создайте первый заказ"></sf-empty-state>
+    <div style="width:320px"><sf-empty-state id="line" kind="nothing-found" size="1/3" text="Ничего не найдено по «зz»"></sf-empty-state></div>
+    <div style="width:320px"><sf-empty-state id="line-error" kind="error" layout="inline" live="alert"></sf-empty-state></div>
+    <sf-button id="half" size="1/2" text="x"></sf-button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -60,6 +63,21 @@ try {
       buttons: [...element.querySelectorAll('sf-button')].map((button) => `${button.getAttribute('text')}:${button.getAttribute('size')}`),
     }];
   })));
+  // The inline form: one line, no heading, at a 1/2 control's height; the
+  // first action a link; an alert when the host says the person caused it.
+  const inline = await page.evaluate(() => {
+    const line = document.querySelector('#line .sf-empty-state');
+    const failed = document.querySelector('#line-error .sf-empty-state');
+    return {
+      heading: Boolean(document.querySelector('#line :is(h1,h2,h3,h4,h5,h6), #line-error :is(h1,h2,h3,h4,h5,h6)')),
+      text: line?.textContent.replace(/\s+/gu, ' ').trim(), role: line?.getAttribute('role'),
+      height: Math.round(line?.getBoundingClientRect().height ?? 0), half: Math.round(document.querySelector('#half button').getBoundingClientRect().height),
+      errorRole: failed?.getAttribute('role'), errorLink: failed?.querySelector('sf-button')?.getAttribute('appearance'),
+      errorText: failed?.querySelector('.sf-empty-state-line')?.textContent.trim(),
+    };
+  });
+  if (inline.heading || inline.role !== 'status' || !inline.text?.startsWith('search_off Ничего не найдено по') || inline.height !== inline.half
+    || inline.errorRole !== 'alert' || inline.errorLink !== 'link' || inline.errorText !== 'Не удалось загрузить') note({case: 'inline', got: inline});
   await page.evaluate(() => { document.querySelector('#failed sf-button button')?.click(); document.querySelector('#custom sf-button button')?.click(); });
   await page.waitForTimeout(150);
   const acts = await page.evaluate(() => window.acts);
@@ -74,7 +92,7 @@ try {
   }
   if (s.none.width > 448) note({case: 'at most 28rem', got: s.none.width});
   if (acts.join() !== 'retry,create') note({case: 'actions are announced', got: acts});
-  console.log(JSON.stringify({states, acts}, null, 1));
+  console.log(JSON.stringify({states, acts, inline}, null, 1));
 } finally {
   await browser.close();
 }
