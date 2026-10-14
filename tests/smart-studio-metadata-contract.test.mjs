@@ -73,6 +73,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // free source; 46 with sf-page-header, the head of an admin page once the
   // top bar is gone; 47 with sf-resizer, a panel widened by its edge; 48 with
   // sf-profile-picker; 49 with sf-empty-state;
-  // 50 with sf-copy-button.
-  assert.equal(fixtureCount, 50);
+  // 50 with sf-copy-button; 51 with sf-help-mark.
+  assert.equal(fixtureCount, 51);
 });

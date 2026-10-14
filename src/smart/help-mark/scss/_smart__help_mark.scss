@@ -1,0 +1,55 @@
+@layer sf.components {
+/* A «?» on a label's line, and a short explanation on the menu's surface, at
+   most 20rem wide. */
+sf-help-mark {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.sf-help-mark {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sf-help-mark-panel {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-a4);
+  max-inline-size: min(var(--sf-g0), 100vw);
+  padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-elevation-3--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  box-shadow: var(--sf-elevation-3--shadow);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.sf-help-mark-panel[hidden] {
+  display: none;
+}
+
+.sf-help-mark-title {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-help-mark-body {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-help-mark-live {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+}

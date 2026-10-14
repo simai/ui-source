@@ -826,6 +826,43 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.icon-buttons",
+          "smart.icons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-help-mark",
+      "id": "smart.help-mark",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/help-mark/smart.manifest.json",
+      "manifest_sha256": "faf1ef8d6d844c3f31634fbe41a5c11aa882297567c9fc4d9b9911fad8d471de",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
+      "tags": [
+        "help",
+        "toggletip",
+        "popover"
+      ],
+      "title": "Help mark"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "render",
         "theme",
         "responsive"

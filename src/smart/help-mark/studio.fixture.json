@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.help-mark",
+  "title": "help mark reference",
+  "summary": "Deterministic reference fixture for sf-help-mark.",
+  "locale": "ru",
+  "props": {
+    "label": "Подробнее: код решения",
+    "text": "Уникальное имя модуля латиницей."
+  },
+  "children": [],
+  "state": "default"
+}

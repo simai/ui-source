@@ -759,6 +759,7 @@ import '../../smart/empty-state/rule.js';
 import '../../smart/file-upload/rule.js';
 import '../../smart/file-preview/rule.js';
 import '../../smart/gallery/rule.js';
+import '../../smart/help-mark/rule.js';
 import '../../smart/icon-buttons/rule.js';
 import '../../smart/icons/rule.js';
 import '../../smart/inline-editor/rule.js';
