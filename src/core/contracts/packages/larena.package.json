@@ -102,6 +102,7 @@
         "smart.datepicker",
         "smart.drawer",
         "smart.dropdown",
+        "smart.empty-state",
         "smart.file-preview",
         "smart.file-upload",
         "smart.icon-buttons",
