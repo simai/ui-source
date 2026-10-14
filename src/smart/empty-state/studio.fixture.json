@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.empty-state",
+  "title": "empty state reference",
+  "summary": "Deterministic reference fixture for sf-empty-state.",
+  "locale": "ru",
+  "props": {
+    "kind": "nothing-found",
+    "size": "1",
+    "heading-level": "3"
+  },
+  "children": [],
+  "state": "default"
+}

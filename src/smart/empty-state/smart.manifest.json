@@ -1,0 +1,265 @@
+{
+  "schema_version": 2,
+  "id": "smart.empty-state",
+  "version": "1.0.0",
+  "title": "Empty state",
+  "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "empty-state",
+    "feedback",
+    "placeholder"
+  ],
+  "capabilities": [
+    "interaction",
+    "keyboard",
+    "responsive"
+  ],
+  "custom_element": "sf-empty-state",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.featured-icon",
+      "smart.buttons",
+      "smart.icons"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string",
+        "enum": [
+          "no-data",
+          "nothing-found",
+          "no-access",
+          "error"
+        ],
+        "default": "no-data",
+        "description": "The reason, which picks the default icon, title and text, and for error a «Повторить» action."
+      },
+      "size": {
+        "type": "string",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ],
+        "default": "1",
+        "description": "1/2 inside a table or panel, 2 for a whole page: the icon, title role, text and gaps follow."
+      },
+      "icon": {
+        "type": "string",
+        "default": ""
+      },
+      "title": {
+        "type": "string",
+        "default": ""
+      },
+      "text": {
+        "type": "string",
+        "default": ""
+      },
+      "heading-level": {
+        "type": "string",
+        "enum": [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "default": "3",
+        "description": "The title's outline level; its look follows the size."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "template": {
+        "type": "string",
+        "default": "default"
+      }
+    },
+    "additionalProperties": false
+  },
+  "contracts": {
+    "actions": {
+      "type": "array",
+      "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead."
+    }
+  },
+  "methods": {},
+  "events": {
+    "sf-empty-state-action": {
+      "summary": "The person pressed one of the actions (retry for an error without actions of its own).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "kind": [
+        "no-data",
+        "nothing-found",
+        "no-access",
+        "error"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "saving the width on a server"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "status",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space"
+    ],
+    "focus": "The title is a heading at heading-level; nothing-found and error are announced politely (role=status), the others are not; the icon is decorative; the actions are ordinary buttons in the tab order."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl",
+      "reduced-motion"
+    ]
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_artifacts": [
+      {
+        "path": "src/smart/empty-state/index.js",
+        "sha256": "98d959cf44d9e5482ab4f88c3e8f467f82aa8d681da056d5dae4d92a8b098dd9"
+      },
+      {
+        "path": "src/smart/empty-state/js/templates/default.js",
+        "sha256": "3e50a5d3087a60702744a386350c596f9f14f94079a27470b5a76ec6c9afd044"
+      },
+      {
+        "path": "src/smart/empty-state/scss/_smart__empty_state.scss",
+        "sha256": "9ab855dffacf9a2a8406bfdefa5dd8c3fc17aaf5df3b6f273841e5a4c5fafb4a"
+      },
+      {
+        "path": "src/smart/empty-state/rule.js",
+        "sha256": "b290d959c363c4df822492bc6e9c2b44919d41682055a801b92bdaa94a4282f2"
+      },
+      {
+        "path": "src/smart/empty-state/docs.md",
+        "sha256": "a588e4a320a271cdcfd31113c7a2e2310c07281252bb473422c2b49ae5325498"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not show an empty state while data is still loading; that is the skeleton's",
+      "Do not hand-build an empty message with a paragraph"
+    ],
+    "required_reads": [
+      "inputs",
+      "contracts",
+      "events",
+      "accessibility",
+      "provenance"
+    ],
+    "minimal_example": "<sf-empty-state kind=\"nothing-found\" size=\"1/2\" heading-level=\"4\"></sf-empty-state>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

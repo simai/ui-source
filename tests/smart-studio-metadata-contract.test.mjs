@@ -72,6 +72,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // 47 until sf-table and sf-admin-menu, which carry studio fixtures, left the
   // free source; 46 with sf-page-header, the head of an admin page once the
   // top bar is gone; 47 with sf-resizer, a panel widened by its edge; 48 with
-  // sf-profile-picker.
-  assert.equal(fixtureCount, 48);
+  // sf-profile-picker; 49 with sf-empty-state.
+  assert.equal(fixtureCount, 49);
 });

@@ -64,7 +64,7 @@
           "silhouette",
           "line"
         ],
-        "description": "How a pointer drag shows where the item lands: silhouette lifts the item out of the list and opens an outline of its size at the place it would take, the list making room; line draws a thin line there and leaves the list as it is. Keyboard moves, external targets and lists that wrap into a grid always use the line."
+        "description": "How a pointer drag shows where the item lands: silhouette lifts the item out of the list and opens an outline of its size at the place it would take, the list making room; line draws a thin line there and leaves the list as it is. Keyboard moves and external targets always use the line; a list that wraps into a grid opens the outline as one of its cells, in reading order."
       }
     },
     "additionalProperties": false

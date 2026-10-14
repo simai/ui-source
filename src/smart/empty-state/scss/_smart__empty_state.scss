@@ -1,0 +1,72 @@
+@layer sf.components {
+/* A centred column, at most 28rem wide: the icon, the title at the size's
+   title role, a sentence, and the actions, wrapping when they must. */
+sf-empty-state {
+  display: block;
+}
+
+.sf-empty-state {
+  --sf-empty-state--gap: var(--sf-space-1\/2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-empty-state--gap);
+  max-inline-size: var(--sf-empty-state-max-inline-size, var(--sf-g4));
+  margin-inline: auto;
+  padding-block: var(--sf-space-1);
+  text-align: center;
+  color: var(--sf-on-surface);
+}
+
+.sf-empty-state-title {
+  margin: 0;
+  font-size: var(--sf-heading-5--size);
+  line-height: var(--sf-heading-5--height);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-empty-state-text {
+  margin: 0;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-medium--size);
+  line-height: var(--sf-text-medium--height);
+}
+
+.sf-empty-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sf-space-1\/3);
+  margin-block-start: var(--sf-a4);
+}
+
+.sf-empty-state--size-1-2 {
+  --sf-empty-state--gap: var(--sf-space-1\/3);
+  padding-block: var(--sf-space-1\/2);
+}
+
+.sf-empty-state--size-1-2 .sf-empty-state-title {
+  font-size: var(--sf-heading-6--size);
+  line-height: var(--sf-heading-6--height);
+}
+
+.sf-empty-state--size-1-2 .sf-empty-state-text {
+  font-size: var(--sf-text-small--size);
+  line-height: var(--sf-text-small--height);
+}
+
+.sf-empty-state--size-2 {
+  --sf-empty-state--gap: var(--sf-space-1);
+  padding-block: var(--sf-space-2);
+}
+
+.sf-empty-state--size-2 .sf-empty-state-title {
+  font-size: var(--sf-heading-4--size);
+  line-height: var(--sf-heading-4--height);
+}
+
+.sf-empty-state--size-2 .sf-empty-state-text {
+  font-size: var(--sf-text-large--size);
+  line-height: var(--sf-text-large--height);
+}
+}
