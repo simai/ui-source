@@ -54,6 +54,7 @@
         "smart.list-item",
         "smart.modal",
         "smart.pagination",
+        "smart.radio",
         "smart.range-slider",
         "smart.resizer",
         "smart.sortable",
