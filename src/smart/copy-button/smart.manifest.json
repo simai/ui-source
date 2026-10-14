@@ -72,6 +72,15 @@
         ],
         "default": "link"
       },
+      "icon": {
+        "type": "string",
+        "default": "content_copy",
+        "description": "The resting glyph: link, key, ..."
+      },
+      "success-icon": {
+        "type": "string",
+        "default": "check"
+      },
       "success-text": {
         "type": "string",
         "default": ""
@@ -258,11 +267,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/copy-button/index.js",
-        "sha256": "63553d94152e98383de97f05d28b06d3d634393d59ee017be76275ec8bdfb75a"
+        "sha256": "18a0ab2b88f4a98386ef6177d39499086663b76e7bdbf0a7891690db4979d710"
       },
       {
         "path": "src/smart/copy-button/js/templates/default.js",
-        "sha256": "156546373a11f5c6d2ec01cbb5f0131d78aa68e875345d7ca77e946ce9f5ba4d"
+        "sha256": "d3a090fe6266a42bafa7151398a5c4d54102669e6a328945a84a083b23e7e3ba"
       },
       {
         "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
@@ -274,7 +283,7 @@
       },
       {
         "path": "src/smart/copy-button/docs.md",
-        "sha256": "62355a599c088e5f44638acb10697dfb5277bea0ba40bf3cd5cac50ea038695d"
+        "sha256": "6f5d627d9e2474adc0e2f7966bcfdb69482e329ba99231fd1ef550d645c8164c"
       }
     ],
     "generated_runtime": []

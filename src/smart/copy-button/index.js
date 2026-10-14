@@ -59,6 +59,8 @@ class SfCopyButton extends SfBaseElement {
       label: {default: ''},
       size: {default: '1/2'},
       appearance: {default: 'link'},
+      icon: {default: 'content_copy'},
+      successIcon: {attribute: 'success-icon', default: 'check'},
       successText: {attribute: 'success-text', default: ''},
       errorText: {attribute: 'error-text', default: ''},
       duration: {default: '2000'},
@@ -72,6 +74,10 @@ class SfCopyButton extends SfBaseElement {
   get label() { return this.getAttribute('label') || ''; }
   get size() { const value = this.getAttribute('size'); return SIZES.includes(value) ? value : '1/2'; }
   get appearance() { const value = this.getAttribute('appearance'); return APPEARANCES.includes(value) ? value : 'link'; }
+  // The resting glyph says what is copied -- a link, a key -- and the success
+  // glyph what happened.
+  get icon() { return this.getAttribute('icon') || 'content_copy'; }
+  get successIcon() { return this.getAttribute('success-icon') || 'check'; }
   get successText() { return this.getAttribute('success-text') || ''; }
   get errorText() { return this.getAttribute('error-text') || ''; }
   // An absent duration is two seconds: read as Number(null) it was zero, and
@@ -191,6 +197,8 @@ class SfCopyButton extends SfBaseElement {
       size: this.size,
       appearance: this.appearance,
       text: this.text,
+      icon: this.icon,
+      successIcon: this.successIcon,
       // The name says what is copied when the host says so.
       name: this.label || this.text || this.words('copy'),
       phase: this.state.phase,

@@ -1,9 +1,7 @@
 import {html, nothing} from 'lit';
 
-const ICONS = {success: 'check', error: 'error'};
-
 export function renderCopyButtonTemplate(context) {
-  const icon = ICONS[context.phase] ?? 'content_copy';
+  const icon = {success: context.successIcon, error: 'error'}[context.phase] ?? context.icon;
   const common = {
     size: context.size, appearance: context.appearance,
     scheme: context.phase === 'error' ? 'on-surface' : 'on-surface',

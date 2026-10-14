@@ -39,6 +39,7 @@ try {
     <sf-copy-button id="by-value" value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-copy-button>
     <sf-copy-button id="missing" target="#nowhere"></sf-copy-button>
     <sf-copy-button id="refused" target="#token"></sf-copy-button>
+    <sf-copy-button id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000"></sf-copy-button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -57,6 +58,12 @@ try {
     icon: document.querySelector('#by-target .sf-icon')?.textContent.trim(),
     status: document.querySelector('#by-target .sf-copy-button-status')?.textContent.trim(),
   }));
+  // Its own glyphs: a link at rest, its own success glyph after.
+  const linkIdle = await page.evaluate(() => document.querySelector('#link .sf-icon')?.textContent.trim());
+  await page.click('#link button');
+  await page.waitForTimeout(200);
+  const linkDone = await page.evaluate(() => document.querySelector('#link .sf-icon')?.textContent.trim());
+  if (linkIdle !== 'link' || linkDone !== 'done_all') note({case: 'icon and success-icon', got: {linkIdle, linkDone}});
   await page.click('#by-value button');
   await page.waitForTimeout(200);
   const afterValue = await page.evaluate(async () => navigator.clipboard.readText());
@@ -81,7 +88,7 @@ try {
   if (missing !== 'Не удалось скопировать') note({case: 'a missing target', got: missing});
   if (refused.selection !== 'sk_test_42' || !/^Выделено — нажмите (Ctrl\+C|⌘C)$/u.test(refused.status ?? '')) note({case: 'a refused clipboard', got: refused});
   const said = events.map((entry) => entry.join(':')).join(',');
-  if (said !== 'copy:by-target:sk_test_42,copy:by-value:npm i @simai/ui,error:missing:missing_target,error:refused:denied') note({case: 'events', got: said});
+  if (said !== 'copy:by-target:sk_test_42,copy:link:https://example.test/r/1,copy:by-value:npm i @simai/ui,error:missing:missing_target,error:refused:denied') note({case: 'events', got: said});
   console.log(JSON.stringify({names, afterTarget, afterValue, missing, refused, events}, null, 1));
 } finally {
   await browser.close();
