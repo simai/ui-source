@@ -110,7 +110,52 @@ try {
   const forgotten = await again.evaluate(() => localStorage.getItem('sf-resizer:probe-menu'));
   const resetPhase = await again.evaluate(() => window.resized.at(-1)?.phase);
   if (reset !== 256 || forgotten !== null || resetPhase !== 'reset') note({case: 'a double click restores and forgets', got: {reset, forgotten, resetPhase}});
-  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset}));
+  // A width the host keeps (value) wins over the browser's memory.
+  await again.evaluate(() => document.getElementById('handle').setAttribute('value', '333'));
+  await again.waitForTimeout(50);
+  const valued = await width(again);
+  if (valued !== 333) note({case: 'value is the host-kept width', got: valued, expected: 333});
+
+  // SF.Resizer.attach: the same gesture on edges the page draws itself.
+  const attached = await again.evaluate(async () => {
+    document.body.insertAdjacentHTML('beforeend', `<table id="grid" style="table-layout:fixed;border-collapse:collapse;margin-top:20px">
+      <thead><tr><th id="a" style="width:120px;position:relative">A<button class="edge" type="button" style="position:absolute;right:-4px;top:0;width:8px;height:100%">|</button></th>
+      <th style="width:120px">B</th></tr></thead></table>`);
+    const table = document.getElementById('grid');
+    window.log = [];
+    window.SF.Resizer.attach(table, {
+      handles: '.edge',
+      session: (edge) => {
+        const th = edge.closest('th');
+        return {
+          measure: () => th.getBoundingClientRect().width,
+          limits: () => ({min: 80, max: 260}),
+          apply: (next) => { th.style.width = `${next}px`; return next; },
+          commit: (next) => window.log.push(['commit', next]),
+          reset: () => { th.style.width = '120px'; window.log.push(['reset']); },
+          direction: () => 1, step: 10,
+        };
+      },
+    });
+    const edge = table.querySelector('.edge');
+    const box = edge.getBoundingClientRect();
+    return {x: box.left + box.width / 2, y: box.top + box.height / 2};
+  });
+  await again.mouse.move(attached.x, attached.y);
+  await again.mouse.down();
+  await again.mouse.move(attached.x + 40, attached.y, {steps: 5});
+  await again.mouse.up();
+  const dragged = await again.evaluate(() => Math.round(document.getElementById('a').getBoundingClientRect().width));
+  await again.focus('#grid .edge');
+  await again.keyboard.press('End');
+  const ended = await again.evaluate(() => ({width: Math.round(document.getElementById('a').getBoundingClientRect().width),
+    role: document.querySelector('#grid .edge').getAttribute('aria-valuenow')}));
+  await again.dblclick('#grid .edge');
+  const log = await again.evaluate(() => window.log);
+  if (dragged !== 160 || ended.width !== 260 || ended.role !== '260' || JSON.stringify(log) !== JSON.stringify([['commit', 160], ['commit', 260], ['reset']])) {
+    note({case: 'SF.Resizer.attach on drawn edges', got: {dragged, ended, log}});
+  }
+  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log}));
 } finally {
   await browser.close();
 }

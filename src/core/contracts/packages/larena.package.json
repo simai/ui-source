@@ -55,6 +55,7 @@
         "smart.modal",
         "smart.pagination",
         "smart.range-slider",
+        "smart.resizer",
         "smart.sortable",
         "smart.spinner",
         "smart.tabs",

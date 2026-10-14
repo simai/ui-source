@@ -75,11 +75,21 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory."
       }
     },
     "additionalProperties": false
   },
-  "contracts": {},
+  "contracts": {
+    "attach": {
+      "type": "object",
+      "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value."
+    }
+  },
   "methods": {},
   "events": {
     "sf-resize": {
@@ -218,7 +228,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "38904fbdf504c394c108282bb8512d05402fed95b5c5c0c701d3379a4aeabfac"
+        "sha256": "7cad33b1139e2080e4ef7b846972cc912496b0bca2c836624a30c9f55b70f6a8"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
@@ -230,7 +240,11 @@
       },
       {
         "path": "src/smart/resizer/docs.md",
-        "sha256": "bccce3a3ba1fcb9becdf62039983473dedfa10892af18088a5121a8b6aa86588"
+        "sha256": "deb847e3bf08096b23de2f50100cf5ab5595125c910b7ada545b85eea02707a6"
+      },
+      {
+        "path": "src/smart/resizer/engine.mjs",
+        "sha256": "258b529502181cd1241530e7594faeea9893390571d829fe3c54ae883a138b74"
       }
     ],
     "generated_runtime": []
