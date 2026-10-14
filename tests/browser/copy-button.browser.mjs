@@ -39,7 +39,7 @@ try {
     <sf-copy-button id="by-value" value="npm i @simai/ui" text="Копировать" label="Скопировать команду"></sf-copy-button>
     <sf-copy-button id="missing" target="#nowhere"></sf-copy-button>
     <sf-copy-button id="refused" target="#token"></sf-copy-button>
-    <sf-copy-button id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000"></sf-copy-button>
+    <sf-copy-button id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000" appearance="tonal" root-style="--sf-icon-button--box-shadow: 0 0 0 3px red"></sf-copy-button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -60,6 +60,12 @@ try {
   }));
   // Its own glyphs: a link at rest, its own success glyph after.
   const linkIdle = await page.evaluate(() => document.querySelector('#link .sf-icon')?.textContent.trim());
+  // tonal, and the root style lands on the control.
+  const linkControl = await page.evaluate(() => {
+    const control = document.querySelector('#link .sf-icon-button');
+    return {tonal: control?.className.includes('tonal'), shadow: control ? getComputedStyle(control).boxShadow.includes('255, 0, 0') : false};
+  });
+  if (!linkControl.tonal || !linkControl.shadow) note({case: 'tonal and root-style on the control', got: linkControl});
   await page.click('#link button');
   await page.waitForTimeout(200);
   const linkDone = await page.evaluate(() => document.querySelector('#link .sf-icon')?.textContent.trim());

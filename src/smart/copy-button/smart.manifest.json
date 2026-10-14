@@ -68,7 +68,8 @@
         "enum": [
           "link",
           "ghost",
-          "outline"
+          "outline",
+          "tonal"
         ],
         "default": "link"
       },
@@ -267,11 +268,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/copy-button/index.js",
-        "sha256": "18a0ab2b88f4a98386ef6177d39499086663b76e7bdbf0a7891690db4979d710"
+        "sha256": "aae4f10f8a81efa99c04dd831d4abd1b390113f2de9e521daa43b04569777005"
       },
       {
         "path": "src/smart/copy-button/js/templates/default.js",
-        "sha256": "d3a090fe6266a42bafa7151398a5c4d54102669e6a328945a84a083b23e7e3ba"
+        "sha256": "58a760eef42f4016576a0252b021b0329d97a75a93ea7bb9c17460b7a831309e"
       },
       {
         "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
@@ -283,7 +284,7 @@
       },
       {
         "path": "src/smart/copy-button/docs.md",
-        "sha256": "6f5d627d9e2474adc0e2f7966bcfdb69482e329ba99231fd1ef550d645c8164c"
+        "sha256": "7edb4530fa68757ed179d56c8255c50e13e0d9592a20bcb75d6fbab4a73d08d3"
       }
     ],
     "generated_runtime": []

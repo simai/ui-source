@@ -9,7 +9,7 @@ import {renderCopyButtonTemplate} from './js/templates/default';
 import './scss/index.scss';
 
 const SIZES = ['1/3', '1/2', '1', '2'];
-const APPEARANCES = ['link', 'ghost', 'outline'];
+const APPEARANCES = ['link', 'ghost', 'outline', 'tonal'];
 
 const COPY_TEXT = {
   en: {copy: 'Copy', copied: 'Copied', failed: 'Could not copy', selected: 'Selected — press {keys}'},
