@@ -52,7 +52,12 @@ try {
     document.addEventListener('sf-empty-state-action', (event) => window.acts.push(event.detail.id));
     document.getElementById('custom').actions = [{id: 'create', text: 'Создать заказ'}];
   });
-  await page.waitForTimeout(500);
+  // Drawn, not timed: under a full probe run a fixed wait was too short.
+  await page.waitForFunction(() => [...document.querySelectorAll('sf-empty-state')].every((element) => element.querySelector('.sf-empty-state'))
+    && document.querySelector('#custom sf-button button') && document.querySelector('#failed sf-button button')
+    && document.querySelector('#line-error sf-button button') && document.querySelector('#half button')
+    && document.querySelector('#line .sf-empty-state-icon')?.getBoundingClientRect().width > 0, null, {timeout: 8000});
+  await page.waitForTimeout(150);
   const states = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('sf-empty-state')].map((element) => {
     const heading = element.querySelector('.sf-empty-state-title');
     const root = element.querySelector('.sf-empty-state');

@@ -98,7 +98,9 @@ function renderCount(context) {
 
     return context.component?.hasSlotContent?.('count')
         ? context.component.getSlotContent('count')
-        : html`<span class="sf-tag-count pointer-events-none flex">${context.count || nothing}</span>`;
+        // No count, no element: an empty one kept its padding and the gap
+        // before it, an empty band at the end of every tag (owner, 2026-10-14).
+        : context.count ? html`<span class="sf-tag-count pointer-events-none flex">${context.count}</span>` : nothing;
 }
 
 function renderClose(context) {

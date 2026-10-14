@@ -6,4 +6,16 @@
 .sf-pagination-bottom .sf-dropdown-field {
   max-width: var(--sf-pagination-bottom--dropdown, var(--sf-f2));
 }
+
+/* «Показать ещё» takes the room between the pages and the page size (owner,
+   2026-10-14): an easy target, and no hole either side of a small button.
+   sf-button's host is display: contents, so its button is the flex item. */
+.sf-pagination-more {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-pagination-more > sf-button > button {
+  flex: 1 1 auto;
+}
 }
