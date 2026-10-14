@@ -1,0 +1,305 @@
+@layer sf.components {
+/* The profile picker (owner, 2026-10-14): a field-like button, and a panel
+   with the standard menu's surface -- elevation 3, a hairline, 4px padding,
+   8px corners -- whose rows are as tall as a field of the picker's size. */
+sf-profile-picker {
+  display: block;
+  min-inline-size: 0;
+}
+
+.sf-profile-picker {
+  --sf-profile-picker--line: var(--sf-text-height-1\/2);
+  --sf-profile-picker--text: var(--sf-text-size-1\/2);
+  --sf-profile-picker--space-y: var(--sf-ui-1\/2--space-y);
+  --sf-profile-picker--space-x: var(--sf-ui-1\/2--space-x);
+  font-size: var(--sf-profile-picker--text);
+  line-height: var(--sf-profile-picker--line);
+  --sf-icon--font-size: var(--sf-profile-picker--line);
+  --sf-icon--width: var(--sf-profile-picker--line);
+  --sf-icon--height: var(--sf-profile-picker--line);
+}
+
+.sf-profile-picker.sf-profile-picker--size-1 {
+  --sf-profile-picker--line: var(--sf-text-height-1);
+  --sf-profile-picker--text: var(--sf-text-size-1);
+  --sf-profile-picker--space-y: var(--sf-ui-1--space-y);
+  --sf-profile-picker--space-x: var(--sf-ui-1--space-x);
+}
+
+.sf-profile-picker-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
+  padding-inline: var(--sf-profile-picker--space-x);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  background-color: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-profile-picker-trigger[aria-expanded="true"] {
+  border-color: var(--sf-primary);
+}
+
+.sf-profile-picker-trigger:disabled {
+  color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-profile-picker-name {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-profile-picker-name b {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-profile-picker-kind,
+.sf-profile-picker-chevron {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-profile-picker-panel {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-px);
+  max-inline-size: min(var(--sf-g2), 100vw);
+  padding: var(--sf-space-1\/4);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-elevation-3--surface);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  box-shadow: var(--sf-elevation-3--shadow);
+  color: var(--sf-on-surface);
+  overflow: auto;
+}
+
+.sf-profile-picker-panel[hidden] {
+  display: none;
+}
+
+.sf-profile-picker-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
+  padding-block: var(--sf-a2);
+  padding-inline: calc(var(--sf-profile-picker--space-x) - var(--sf-space-1\/4)) var(--sf-a4);
+  border-radius: var(--sf-radius--ui);
+  cursor: pointer;
+  outline: none;
+}
+
+.sf-profile-picker-row:hover {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-profile-picker-row[aria-checked="true"] {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+}
+
+.sf-profile-picker-check {
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--sf-profile-picker--line);
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-profile-picker-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-profile-picker-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-profile-picker-caption,
+.sf-profile-picker-hint,
+.sf-profile-picker-message {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-profile-picker-message {
+  margin: 0;
+  padding: var(--sf-a4) var(--sf-profile-picker--space-x);
+  color: var(--sf-error);
+}
+
+.sf-profile-picker-actions {
+  display: flex;
+  opacity: 0;
+}
+
+.sf-profile-picker-row:hover .sf-profile-picker-actions,
+.sf-profile-picker-row:focus-within .sf-profile-picker-actions,
+.sf-profile-picker-row:focus .sf-profile-picker-actions,
+.sf-profile-picker-row[aria-checked="true"] .sf-profile-picker-actions {
+  opacity: 1;
+}
+
+.sf-profile-picker-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sf-a2);
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-profile-picker-icon-button:hover {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-profile-picker-danger {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-profile-picker-lock {
+  display: inline-flex;
+  padding-inline: var(--sf-a4);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-profile-picker-separator {
+  block-size: var(--sf-px);
+  margin-block: var(--sf-a4);
+  background-color: var(--sf-outline-variant);
+}
+
+.sf-profile-picker-add {
+  color: var(--sf-primary);
+}
+
+.sf-profile-picker-add .sf-profile-picker-kind {
+  --sf-icon--color: var(--sf-primary);
+}
+
+.sf-profile-picker-form,
+.sf-profile-picker-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/3);
+  padding: var(--sf-space-1\/3) var(--sf-profile-picker--space-x);
+  border-radius: var(--sf-radius--ui);
+}
+
+.sf-profile-picker-form {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-profile-picker-confirm {
+  background-color: var(--sf-error-container);
+  color: var(--sf-on-error-container);
+}
+
+.sf-profile-picker-edit {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-a2);
+  padding: var(--sf-a2) var(--sf-a4);
+}
+
+.sf-profile-picker-field {
+  flex: 1 1 auto;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
+  padding-inline: var(--sf-profile-picker--space-x);
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+  background-color: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+}
+
+.sf-profile-picker-segmented {
+  display: flex;
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  overflow: hidden;
+}
+
+.sf-profile-picker-segmented > button {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-a6);
+  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-a4));
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sf-profile-picker-segmented > button + button {
+  border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-profile-picker-segmented > button[aria-pressed="true"] {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+}
+
+.sf-profile-picker-segmented > button:disabled {
+  color: var(--sf-on-disable);
+  cursor: default;
+}
+
+.sf-profile-picker-buttons {
+  display: flex;
+  gap: var(--sf-space-1\/3);
+}
+
+.sf-profile-picker-buttons > * {
+  flex: 1 1 0;
+}
+
+.sf-profile-picker-footer {
+  display: flex;
+  padding: var(--sf-space-1\/3) var(--sf-a4) var(--sf-a4);
+  margin-block-start: var(--sf-a4);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-profile-picker-footer > * {
+  flex: 1 1 auto;
+}
+}
+
+@layer sf.states {
+  .sf-profile-picker-trigger:focus-visible,
+  .sf-profile-picker-row:focus-visible,
+  .sf-profile-picker-icon-button:focus-visible,
+  .sf-profile-picker-field:focus-visible,
+  .sf-profile-picker-segmented > button:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+}

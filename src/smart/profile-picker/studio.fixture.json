@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.profile-picker",
+  "title": "profile picker reference",
+  "summary": "Deterministic reference fixture for sf-profile-picker.",
+  "locale": "ru",
+  "props": {
+    "label": "Профиль",
+    "current": "regular",
+    "resettable": true
+  },
+  "children": [],
+  "state": "default"
+}
