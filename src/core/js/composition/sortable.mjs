@@ -117,8 +117,10 @@ function showIndicator(rect) {
 // a line two pixels thick said where, but not how the list would look, and the
 // owner could not tell where a row would land before letting go (2026-10-13).
 // The item itself leaves the flow while it is dragged; its copy follows the
-// pointer. Keyboard moves, external targets, lists that wrap into a grid and a
-// list written preview="line" keep the line.
+// pointer. A list that wraps into a grid opens the place among its cells, in
+// reading order (owner, 2026-10-14: the fields of a record view arranged in two
+// columns moved with a line nobody could follow). Keyboard moves, external
+// targets and a list written preview="line" keep the line.
 function silhouetteFor(list) {
   return list.getAttribute('preview') !== 'line';
 }
@@ -140,11 +142,20 @@ function placeholder(session) {
 function placeSilhouette(session, list, x, y) {
   const horizontal = list.getAttribute('orientation') === 'horizontal';
   const visible = items(list).filter((item) => item !== session.source);
-  const boxes = visible.map((item) => {
-    const box = item.getBoundingClientRect();
-    return horizontal ? { start: box.left, end: box.right } : { start: box.top, end: box.bottom };
-  });
-  const index = sortableIndexAt(boxes, horizontal ? x : y);
+  // A grid is read row by row; the outline is one of its cells. Whether the
+  // list wraps is asked of the items left in the flow, the dragged one being
+  // out of it, or remembered from when the drag began.
+  const wrapped = !horizontal && (isWrapped(visible) || session.wrappedLists?.has(list));
+  let index;
+  if (wrapped) {
+    index = wrappedIndexAt(visible, x, y);
+  } else {
+    const boxes = visible.map((item) => {
+      const box = item.getBoundingClientRect();
+      return horizontal ? { start: box.left, end: box.right } : { start: box.top, end: box.bottom };
+    });
+    index = sortableIndexAt(boxes, horizontal ? x : y);
+  }
   const element = placeholder(session);
   const before = visible[index];
   if (before) {
@@ -369,8 +380,11 @@ export function defineSortable(registry = globalThis.customElements) {
           shared.session.ghost = this.ghost(item, moveEvent);
           // The item leaves the flow only once its copy is on screen; a copy
           // library (mode copy) keeps its item where it is.
-          if (silhouetteFor(this) && this.mode !== 'copy' && !isWrapped(items(this))) {
+          if (silhouetteFor(this) && this.mode !== 'copy') {
             shared.session.silhouette = true;
+            // Asked before the item leaves the flow: with it gone, a grid of
+            // two cells is one cell and does not look like a grid.
+            shared.session.wrappedLists = new Set(isWrapped(items(this)) ? [this] : []);
             item.setAttribute('data-sf-sortable-lifted', '');
             this.retarget(moveEvent.clientX, moveEvent.clientY);
           }
@@ -430,7 +444,7 @@ export function defineSortable(registry = globalThis.customElements) {
       }
       shared.session.external = null;
       if (list && accepts(list, shared.session.group)
-          && shared.session.silhouette && silhouetteFor(list) && !isWrapped(items(list))) {
+          && shared.session.silhouette && silhouetteFor(list)) {
         shared.session.list = list;
         shared.session.index = placeSilhouette(shared.session, list, x, y);
         showIndicator(null);

@@ -69,6 +69,40 @@ try {
   if (after.intents.length !== 1 || after.intents[0].index !== 2 || after.left || !after.sourceShown) {
     failures.push('the drop asks for that place, and the outline and the hidden item are gone after it');
   }
+
+  // A grid of two columns (owner, 2026-10-14: a record view's fields): the
+  // outline is one of the cells, in reading order.
+  await page.setContent('<!doctype html><html lang="ru"><body style="margin:40px">'
+    + '<sf-sortable id="grid" group="cells" label="Поля" style="display:grid;grid-template-columns:200px 200px;gap:8px;width:408px">'
+    + ['A', 'B', 'C', 'D', 'E', 'F'].map((text) => `<div data-sf-sortable-item="${text}" style="height:40px;border:1px solid #888">`
+      + `<span data-sf-sortable-handle>⠿</span> ${text}</div>`).join('')
+    + '</sf-sortable></body></html>');
+  for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  await page.waitForTimeout(100);
+  await page.evaluate(() => {
+    window.intents = [];
+    document.addEventListener('sf-sortable-intent', (event) => window.intents.push(event.detail));
+  });
+  const cell = await page.locator('[data-sf-sortable-item="A"] [data-sf-sortable-handle]').boundingBox();
+  const target = await page.locator('[data-sf-sortable-item="D"]').boundingBox();
+  await page.mouse.move(cell.x + 4, cell.y + 4);
+  await page.mouse.down();
+  await page.mouse.move(cell.x + 30, cell.y + 30, {steps: 4});
+  // Over the right half of D: A lands after D.
+  await page.mouse.move(target.x + target.width * 0.75, target.y + target.height / 2, {steps: 8});
+  const grid = await page.evaluate(() => {
+    const list = document.getElementById('grid');
+    const holder = list.querySelector('.sf-sortable-placeholder');
+    return {order: [...list.children].filter((node) => node === holder || (node.dataset?.sfSortableItem && node.getClientRects().length)).map((node) => (node === holder ? 'outline' : node.dataset.sfSortableItem)),
+      line: Boolean(document.querySelector('.sf-sortable-indicator:not([hidden])'))};
+  });
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  const gridIntent = await page.evaluate(() => window.intents);
+  console.log(JSON.stringify({grid, gridIntent}));
+  if (grid.order.join() !== 'B,C,D,outline,E,F' || gridIntent.length !== 1 || gridIntent[0].index !== 3) {
+    failures.push('in a grid the outline is a cell in reading order, and the drop asks for that place');
+  }
 } finally {
   await browser.close();
 }
