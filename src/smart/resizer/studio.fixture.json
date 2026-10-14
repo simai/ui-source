@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.resizer",
+  "title": "resizer reference",
+  "summary": "Deterministic reference fixture for sf-resizer.",
+  "locale": "ru",
+  "props": {
+    "min": "12rem",
+    "max": "24rem",
+    "label": "Ширина"
+  },
+  "children": [],
+  "state": "default"
+}

@@ -1260,6 +1260,40 @@
     {
       "backend_adapters": [],
       "capabilities": [
+        "interaction",
+        "keyboard",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": []
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-resizer",
+      "id": "smart.resizer",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/resizer/smart.manifest.json",
+      "manifest_sha256": "7199370f288365c42198337172fd9d2431e940adb0bf561555081bb6ff941e84",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
+      "tags": [
+        "resizer",
+        "splitter",
+        "layout"
+      ],
+      "title": "Resizer"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
         "render",
         "loading-placeholder",
         "token-geometry",

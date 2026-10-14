@@ -1,0 +1,118 @@
+#!/usr/bin/env node
+// Usage: node this-file /absolute/path/to/output
+// sf-resizer (owner, 2026-10-14): a panel widened and narrowed by its edge.
+// Measured on the built bytes: a drag changes the width the panel's
+// stylesheet reads and stops at max and min; the keys move it by a step and to
+// a limit; the width is remembered under the storage key and restored on the
+// next page; a double click returns the stylesheet's width and forgets it; the
+// handle is a separator with its value; sf-resize says move, end and reset.
+import {resolve, join} from 'node:path';
+import {existsSync, readFileSync} from 'node:fs';
+import {chromium} from 'playwright';
+
+if (!process.argv[2]) throw new Error('Build output root is required');
+const out = resolve(process.argv[2]);
+const styles = ['core/core/css/core.css', 'smart/smart/resizer/css/resizer.css'];
+const modules = ['core/core/js/core.js', 'smart/smart/resizer/js/resizer.js'];
+const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
+if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
+
+const failures = [];
+const note = (detail) => failures.push(detail);
+const browser = await chromium.launch();
+try {
+  const context = await browser.newContext({viewport: {width: 1000, height: 600}});
+  const origin = 'http://probe.test';
+  await context.route(`${origin}/**`, (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html', body: '<!doctype html><html lang="ru"><body></body></html>'});
+    const path = join(out, url.pathname);
+    if (!existsSync(path)) return route.fulfill({status: 404, body: ''});
+    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)});
+  });
+  await context.route('https://cdn.jsdelivr.net/gh/simai/ui@*/distr/**', (route) => {
+    const tail = new URL(route.request().url()).pathname.replace(/^.*\/distr\//u, '');
+    const [product, ...rest] = tail.split('/');
+    const path = join(out, product, product, ...rest);
+    if (!existsSync(path)) return route.fulfill({status: 404, body: ''});
+    return route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css' : 'text/javascript', body: readFileSync(path)});
+  });
+  const load = async () => {
+    const page = await context.newPage();
+    await page.goto(`${origin}/`);
+    await page.setContent(`<!doctype html><html lang="ru"><body style="margin:0">
+      <div style="display:flex">
+        <nav id="panel" style="inline-size: var(--menu-width, 256px); block-size: 300px; background: #eee">
+          <sf-resizer id="handle" min="200px" max="400px" property="--menu-width" storage-key="probe-menu" label="Ширина меню"></sf-resizer>
+        </nav>
+        <main style="flex:1">Страница</main>
+      </div></body></html>`);
+    for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`});
+    for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
+    await page.waitForFunction(() => customElements.get('sf-resizer'), null, {timeout: 8000});
+    await page.waitForTimeout(150);
+    await page.evaluate(() => {
+      window.resized = [];
+      document.addEventListener('sf-resize', (event) => window.resized.push(event.detail));
+    });
+    return page;
+  };
+  const width = (page) => page.evaluate(() => Math.round(document.getElementById('panel').getBoundingClientRect().width));
+
+  const page = await load();
+  const handle = await page.evaluate(() => {
+    const element = document.getElementById('handle');
+    const box = element.getBoundingClientRect();
+    return {x: box.left + box.width / 2, y: box.top + 100, role: element.getAttribute('role'),
+      now: element.getAttribute('aria-valuenow'), min: element.getAttribute('aria-valuemin'),
+      max: element.getAttribute('aria-valuemax'), label: element.getAttribute('aria-label'), tab: element.tabIndex};
+  });
+  if (handle.role !== 'separator' || handle.now !== '256' || handle.min !== '200' || handle.max !== '400'
+    || handle.label !== 'Ширина меню' || handle.tab !== 0) {
+    note({case: 'a separator with its value', got: handle});
+  }
+  if (Math.abs(handle.x - 256) > 2) note({case: 'the handle stands on the edge', got: handle.x, expected: 256});
+
+  await page.mouse.move(handle.x, handle.y);
+  await page.mouse.down();
+  await page.mouse.move(handle.x + 60, handle.y, {steps: 6});
+  const during = await width(page);
+  await page.mouse.move(handle.x + 400, handle.y, {steps: 6});
+  const capped = await width(page);
+  await page.mouse.up();
+  await page.mouse.move(400, handle.y);
+  await page.mouse.down();
+  await page.mouse.move(0, handle.y, {steps: 8});
+  await page.mouse.up();
+  const floored = await width(page);
+  if (during !== 316 || capped !== 400 || floored !== 200) note({case: 'a drag stops at the limits', got: {during, capped, floored}});
+
+  await page.focus('#handle');
+  await page.keyboard.press('ArrowRight');
+  const stepped = await width(page);
+  await page.keyboard.press('Shift+ArrowRight');
+  const shifted = await width(page);
+  await page.keyboard.press('End');
+  const end = await width(page);
+  await page.keyboard.press('Home');
+  await page.keyboard.press('ArrowRight');
+  const kept = await width(page);
+  if (stepped !== 216 || shifted !== 280 || end !== 400 || kept !== 216) note({case: 'the keys', got: {stepped, shifted, end, kept}});
+  const phases = await page.evaluate(() => [...new Set(window.resized.map((event) => event.phase))].join(','));
+  if (!phases.includes('move') || !phases.includes('end')) note({case: 'sf-resize', got: phases, expected: 'move and end'});
+
+  const again = await load();
+  const restored = await width(again);
+  if (restored !== 216) note({case: 'remembered under the storage key', got: restored, expected: 216});
+  await again.dblclick('#handle');
+  await again.waitForTimeout(100);
+  const reset = await width(again);
+  const forgotten = await again.evaluate(() => localStorage.getItem('sf-resizer:probe-menu'));
+  const resetPhase = await again.evaluate(() => window.resized.at(-1)?.phase);
+  if (reset !== 256 || forgotten !== null || resetPhase !== 'reset') note({case: 'a double click restores and forgets', got: {reset, forgotten, resetPhase}});
+  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset}));
+} finally {
+  await browser.close();
+}
+if (failures.length) { console.error(JSON.stringify({failures}, null, 1)); process.exit(1); }
+console.log('RESIZER_OK');

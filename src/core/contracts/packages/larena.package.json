@@ -29,6 +29,7 @@
         "smart.icon-buttons",
         "smart.icons",
         "smart.inputs",
+        "smart.resizer",
         "smart.sortable"
       ]
     },

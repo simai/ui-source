@@ -1,0 +1,68 @@
+@layer sf.components {
+/* A strip on the panel's edge, wider than it looks so a pointer finds it: the
+   line it draws on hover, focus and drag is a hairline in the middle. */
+sf-resizer {
+  --sf-resizer--hit: var(--sf-a8);
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(-1 * var(--sf-resizer--hit) / 2);
+  z-index: 2;
+  display: block;
+  inline-size: var(--sf-resizer--hit);
+  cursor: col-resize;
+  touch-action: none;
+  outline: 0;
+}
+
+sf-resizer[edge="inline-start"] {
+  inset-inline-start: calc(-1 * var(--sf-resizer--hit) / 2);
+  inset-inline-end: auto;
+}
+
+sf-resizer::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(50% - var(--sf-px));
+  inline-size: calc(2 * var(--sf-px));
+  background-color: transparent;
+  transition: background-color var(--sf-duration-fast, 0.15s) var(--sf-animation, ease);
+}
+
+sf-resizer[aria-disabled="true"] {
+  cursor: default;
+}
+
+html[data-sf-resizer-active],
+html[data-sf-resizer-active] * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+}
+
+@layer sf.states {
+  sf-resizer:not([aria-disabled="true"]):hover::after,
+  sf-resizer[data-sf-resizing]::after {
+    background-color: var(--sf-primary);
+  }
+
+  sf-resizer:focus-visible::after {
+    background-color: var(--sf-focus--color);
+    inline-size: var(--sf-focus--width);
+    inset-inline-start: calc(50% - var(--sf-focus--width) / 2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  sf-resizer::after {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  sf-resizer:hover::after,
+  sf-resizer:focus-visible::after,
+  sf-resizer[data-sf-resizing]::after {
+    background-color: Highlight;
+  }
+}
