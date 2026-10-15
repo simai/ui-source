@@ -83,6 +83,9 @@ function normalizeTreeItemData(item) {
   };
 }
 
+// What a list writes when its rows are dragged: {ids, source}.
+const RECORDS_TYPE = 'application/x-sf-records+json';
+
 class SfTree extends SfBaseElement {
   static get props() {
     return {
@@ -94,6 +97,8 @@ class SfTree extends SfBaseElement {
         default: 'none',
         values: ['none', 'single', 'multiple'],
       },
+      acceptRecords: { attribute: 'accept-records', type: Boolean, default: false },
+      acceptFiles: { attribute: 'accept-files', type: Boolean, default: false },
     };
   }
 
@@ -106,7 +111,66 @@ class SfTree extends SfBaseElement {
     this._typeaheadTimer = null;
   }
 
+  // A node takes what is dropped on it (owner, 2026-10-15, the file manager):
+  // records dragged from a list -- `accept-records` -- and files from the
+  // computer -- `accept-files`. The tree moves and uploads nothing itself; it
+  // says where the drop landed: sf-tree-records-drop {value, ids, source} and
+  // sf-tree-files-drop {value, files}. The records travel as
+  // application/x-sf-records+json, which sf-table writes for its rows.
+  dropKind(event) {
+    const types = [...(event.dataTransfer?.types ?? [])];
+    if (this.hasAttribute('accept-records') && types.includes(RECORDS_TYPE)) return 'records';
+    if (this.hasAttribute('accept-files') && types.includes('Files')) return 'files';
+    return null;
+  }
+
+  dropNode(event) {
+    const node = event.target?.closest?.('.sf-tree-item[data-value]');
+    return node && this.contains(node) && node.getAttribute('aria-disabled') !== 'true' ? node : null;
+  }
+
+  markDropTarget(node) {
+    if (this._dropTarget === node) return;
+    this._dropTarget?.removeAttribute('data-sf-drop-target');
+    this._dropTarget = node;
+    node?.setAttribute('data-sf-drop-target', '');
+  }
+
+  handleTreeDragOver = (event) => {
+    const kind = this.dropKind(event);
+    const node = kind ? this.dropNode(event) : null;
+    if (!node) { this.markDropTarget(null); return; }
+    event.preventDefault();
+    event.dataTransfer.dropEffect = kind === 'files' ? 'copy' : 'move';
+    this.markDropTarget(node);
+  };
+
+  handleTreeDragLeave = (event) => {
+    if (!this.contains(event.relatedTarget)) this.markDropTarget(null);
+  };
+
+  handleTreeDrop = (event) => {
+    const kind = this.dropKind(event);
+    const node = kind ? this.dropNode(event) : null;
+    this.markDropTarget(null);
+    if (!node) return;
+    event.preventDefault();
+    const value = node.dataset.value;
+    if (kind === 'files') {
+      this.dispatchEvent(new CustomEvent('sf-tree-files-drop', {bubbles: true, composed: true, detail: {value, files: [...event.dataTransfer.files]}}));
+      return;
+    }
+    let payload = {};
+    try { payload = JSON.parse(event.dataTransfer.getData(RECORDS_TYPE) || '{}'); } catch { payload = {}; }
+    const ids = Array.isArray(payload.ids) ? payload.ids.map(String) : [];
+    if (!ids.length) return;
+    this.dispatchEvent(new CustomEvent('sf-tree-records-drop', {bubbles: true, composed: true, detail: {value, ids, source: payload.source ?? null}}));
+  };
+
   connectedCallback() {
+    this.addEventListener('dragover', this.handleTreeDragOver);
+    this.addEventListener('dragleave', this.handleTreeDragLeave);
+    this.addEventListener('drop', this.handleTreeDrop);
     this.addEventListener('keydown', this.handleTreeKeydown);
     this.addEventListener('focusin', this.handleTreeFocusIn);
     this.addEventListener('click', this.handleTreeClick);
@@ -117,6 +181,10 @@ class SfTree extends SfBaseElement {
   }
 
   disconnectedCallback() {
+    this.removeEventListener('dragover', this.handleTreeDragOver);
+    this.removeEventListener('dragleave', this.handleTreeDragLeave);
+    this.removeEventListener('drop', this.handleTreeDrop);
+    this.markDropTarget(null);
     this.removeEventListener('keydown', this.handleTreeKeydown);
     this.removeEventListener('focusin', this.handleTreeFocusIn);
     this.removeEventListener('click', this.handleTreeClick);

@@ -21,3 +21,13 @@
     --sf-icon--color: var(--sf-tree-item-icon--color, currentColor);
   }
 }
+
+/* A node a drag would drop on (sf-tree accept-records / accept-files): the
+   primary container's fill and a dashed ring. */
+@layer sf.states {
+  .sf-tree-item[data-sf-drop-target] > .sf-tree-item-container {
+    background-color: var(--sf-primary-container);
+    outline: var(--sf-focus--width) dashed var(--sf-primary);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+}

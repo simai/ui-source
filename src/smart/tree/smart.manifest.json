@@ -67,6 +67,16 @@
           "type": "object"
         },
         "description": "Items given as data instead of as sf-tree-item children (set as a property, not an attribute): [{label, href?, target?, rel?, kind?, value?, open?, selected?, active?, disabled?, icon?, openIcon?, closedIcon?, chevronOpenIcon?, chevronClosedIcon?, openLabel?, closeLabel?, children?}]. text or title stand in for label. Setting it replaces the items and re-renders; sf-tree-item children are read once and removed, so a parent that re-renders changed items passes them this way."
+      },
+      "accept-records": {
+        "type": "boolean",
+        "default": false,
+        "description": "A node takes the records dragged from a list (application/x-sf-records+json) and says so with sf-tree-records-drop."
+      },
+      "accept-files": {
+        "type": "boolean",
+        "default": false,
+        "description": "A node takes files dropped from the computer and says so with sf-tree-files-drop."
       }
     },
     "additionalProperties": false
@@ -129,6 +139,18 @@
           "selected",
           "value"
         ]
+      }
+    },
+    "sf-tree-records-drop": {
+      "summary": "Records dragged from a list were dropped on a node: {value, ids, source}. The tree moves nothing.",
+      "payload": {
+        "type": "object"
+      }
+    },
+    "sf-tree-files-drop": {
+      "summary": "Files from the computer were dropped on a node: {value, files}. The tree uploads nothing.",
+      "payload": {
+        "type": "object"
       }
     }
   },
@@ -249,7 +271,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "72df19145109c82ba84c3361403ee95b5020524746b73b235b7a34217cfac0bd"
+        "sha256": "2bb3e156f8e1c0fa7d41630b73dab3af1d4727043d7d5bed4c23dac8414ca858"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",
