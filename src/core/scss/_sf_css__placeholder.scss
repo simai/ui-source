@@ -94,3 +94,29 @@
   }
 }
 }
+
+@layer sf.base {
+/* A region on its way (region navigation, 2026-10-15): the content that is
+   leaving gives up its place to the skeleton of a page -- a heading bar and
+   rows -- in that region only; the shell around it stays as it is. The
+   region keeps its size, so nothing below it moves while the answer comes. */
+[data-sf-region-loading] {
+  --sf-skeleton-base: var(--sf-neutral-60--alfa-48);
+  --sf-skeleton-row: calc(var(--sf-text-height-1) + 2 * var(--sf-space-1));
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(var(--sf-skeleton-base), var(--sf-skeleton-base)),
+    placeholder-bars(var(--sf-skeleton-row), var(--sf-text-size-1)),
+    placeholder-bars(var(--sf-skeleton-row), var(--sf-text-size-1));
+  background-size: 30% var(--sf-text-height-3), 35% 100%, 25% 100%;
+  background-position:
+    var(--sf-space-1) var(--sf-space-1),
+    var(--sf-space-1) calc(var(--sf-space-3) + var(--sf-text-height-2)),
+    55% calc(var(--sf-space-3) + var(--sf-text-height-2));
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
+}
+
+[data-sf-region-loading] > * {
+  visibility: hidden;
+}
+}
