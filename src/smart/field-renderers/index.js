@@ -855,6 +855,7 @@ function renderIncludeEdit(field, value, host) {
                 value=${scalarValue(value) ?? ''}
                 rows="8"
                 spellcheck="false"
+                ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 ?disabled=${field.readonly === true}
                 @change=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
@@ -881,6 +882,7 @@ function renderTextEdit(field, value, host) {
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
+                placeholder=${field.placeholder || nothing}
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
@@ -897,6 +899,7 @@ function renderTextAreaEdit(field, value, host) {
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
+                placeholder=${field.placeholder || nothing}
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
@@ -958,6 +961,7 @@ function renderDateEdit(field, value, host) {
                 name=${fieldName(field)}
                 value=${date ?? ''}
                 label=${field.label || ''}
+                ?required=${Boolean(field.required)}
                 @change=${(event) => {
                     const next = event.detail?.value ?? event.target?.value ?? null;
                     host.setFieldValue(field, next && suffix ? `${next}${suffix}` : next);
@@ -1030,6 +1034,7 @@ function renderChoiceEdit(field, value, host) {
                 mode="select"
                 search="false"
                 name=${fieldName(field)}
+                ?required=${Boolean(field.required)}
                 value=${value ?? ''}
                 aria-label=${field.label || field.key || ''}
                 .options=${editOptions(field, value, false)}
@@ -1047,6 +1052,7 @@ function renderChoicesEdit(field, value, host) {
                 multiple
                 search="false"
                 name=${fieldName(field)}
+                ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 .options=${editOptions(field, value, true)}
                 @change=${(event) => {
@@ -1187,6 +1193,7 @@ function renderRecordPicker(field, value, host) {
                     mode="select"
                     search="true"
                     name=${fieldName(field)}
+                    ?required=${Boolean(field.required)}
                     value=${chosen ? String(chosen.value) : ''}
                     placeholder=${field.placeholder || setText(host, 'pickRecord')}
                     search-placeholder=${field.searchPlaceholder || setText(host, 'searchRecords')}
@@ -1322,6 +1329,10 @@ const sizeOption = (options) => (options?.size === '1/2' ? '1/2' : '1');
 
 export function renderEditField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
+    // A field the person may not change is shown, not offered as a control that
+    // refuses: the same rule for every type, so `readonly` means one thing
+    // wherever the registry lists it.
+    if (field.readonly === true && VIEW_RENDERERS[asked]) return renderViewField(field, value, host, options);
     const renderer = EDIT_RENDERERS[asked];
     if (!renderer || !host?.setFieldValue) return null;
 
@@ -1582,4 +1593,6 @@ if (typeof window !== 'undefined') {
         // The universal properties, each with the modes the set draws for it.
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
     };
+    // SF.whenFieldRenderers() settles on this, whichever bundle published the set.
+    globalThis.document?.dispatchEvent?.(new CustomEvent('sf-field-renderers-ready'));
 }

@@ -4684,6 +4684,38 @@ Object.defineProperty(SF, 'smartBaseReady', {
 SF.loadSmartBase = function loadSmartBase() {
   return SF.Loader.loadSmartBase();
 };
+// The field renderer set is a module, not an element: no tag brings it, so a
+// page that renders fields without a composite that carries the set used to
+// add the script by hand and poll for SF.fieldRenderers. This asks for it once,
+// from the Smart base, and settles with the set when it has published itself
+// -- from this script or from any bundle that carries a copy of it.
+let fieldRenderersReady = null;
+SF.whenFieldRenderers = function whenFieldRenderers() {
+  if (SF.fieldRenderers?.renderEditField) return Promise.resolve(SF.fieldRenderers);
+  if (fieldRenderersReady) return fieldRenderersReady;
+  fieldRenderersReady = new Promise((resolve, reject) => {
+    const settle = () => {
+      if (!SF.fieldRenderers?.renderEditField) return false;
+      document.removeEventListener('sf-field-renderers-ready', settle);
+      resolve(SF.fieldRenderers);
+      return true;
+    };
+    document.addEventListener('sf-field-renderers-ready', settle);
+    if (settle()) return;
+    const asked = [...document.scripts].some((script) => /\/field-renderers\/js\/field-renderers(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+    if (asked) return;
+    SF.loadRuntime?.();
+    const loader = SF.Loader;
+    loader.addScript(`${loader.smartPath}/field-renderers/js/field-renderers${loader.minified ? '.min' : ''}.js`)
+      .then(() => settle())
+      .catch((error) => {
+        fieldRenderersReady = null;
+        document.removeEventListener('sf-field-renderers-ready', settle);
+        reject(error);
+      });
+  });
+  return fieldRenderersReady;
+};
 SF.create = createSmartElement;
 SF.createAsync = createSmartElementAsync;
 SF.litHtml = (tagName, props = {}) => {
