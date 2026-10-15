@@ -14,6 +14,9 @@ import * as litDirectiveHelpers from "lit/directive-helpers.js";
 import * as litRef from "lit/directives/ref.js";
 import * as litKeyed from "lit/directives/keyed.js";
 import * as litUnsafeHtml from "lit/directives/unsafe-html.js";
+// Lists that reorder -- a table's rows after a sort -- move their rows rather
+// than drawing them again (owner, 2026-10-15).
+import * as litRepeat from "lit/directives/repeat.js";
 import * as smartBase from "./smart-base";
 import * as pageLanguage from "./page-language";
 import * as position from "./position.js";
@@ -30,6 +33,7 @@ export const RUNTIME_MODULES = Object.freeze({
   "lit/directives/ref.js": asModule(litRef),
   "lit/directives/keyed.js": asModule(litKeyed),
   "lit/directives/unsafe-html.js": asModule(litUnsafeHtml),
+  "lit/directives/repeat.js": asModule(litRepeat),
   "smart-base": asModule(smartBase),
   "page-language": asModule(pageLanguage),
   "position": asModule(position),
