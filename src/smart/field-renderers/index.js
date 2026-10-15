@@ -49,7 +49,7 @@ function renderTextFilterControl(field, host) {
         <sf-input
                 size=${filterSize(host)}
                 appearance="filled"
-                placeholder="${setText(host, 'searchInList')}"
+                placeholder="${setText(host, 'containsText')}"
                 value="${value.value || ''}"
                 name="sf_filter_${field.key || 'text'}"
                 @change=${(event) => {
@@ -267,8 +267,11 @@ function renderMultiSelectFilterControl(field, host) {
     const search = host.getFilterOptionSearch(field.key);
     const selected = new Set(value.values || []);
 
+    // A list of options scrolls down, never sideways: a checkbox's ring a pixel
+    // or two past the edge drew a horizontal bar under the list (owner,
+    // 2026-10-15).
     return html`
-        <div class="flex flex-col gap-1/2">
+        <div class="flex flex-col gap-1/2 overflow-x-hidden">
             ${field.filter?.searchable && (!endpointPage || endpointPage.searchable) ? html`
                 <sf-input
                         size=${filterSize(host)}
@@ -290,7 +293,7 @@ function renderMultiSelectFilterControl(field, host) {
                         }}
                 ></sf-input>
             ` : ''}
-            <div class="flex flex-col gap-1/2" data-size="4.5">
+            <div class="flex flex-col gap-1/2 overflow-x-hidden" data-size="4.5">
                 ${options.map((option) => host.renderFilterOption(field, option, selected))}
             </div>
             ${endpointPage ? html`
@@ -1063,6 +1066,8 @@ const SET_TEXT = {
         yes: 'Yes',
         no: 'No',
         searchInList: 'Find in the list',
+        // A text filter is a text the value contains, not a list to search.
+        containsText: 'Contains…',
         operator: 'Operator',
         rangeFrom: 'From',
         rangeTo: 'To',
@@ -1080,6 +1085,7 @@ const SET_TEXT = {
         yes: 'Да',
         no: 'Нет',
         searchInList: 'Найти в списке',
+        containsText: 'Содержит…',
         operator: 'Оператор',
         rangeFrom: 'От',
         rangeTo: 'До',
