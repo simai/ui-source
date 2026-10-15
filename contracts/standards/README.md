@@ -10,6 +10,7 @@ version, in the `standard-contract` envelope:
 | `simai.composite-host-port` | 1.0.3 | the seam itself: a declared, separately versioned port, compatibility rules, a host declaring what it implements, a transport-neutral conformance kit |
 | `simai.change-lifecycle` | 1.0.0 | how a public name leaves the Framework: two stages, a dated journal, a calendar sweep, and an upgrade read from the journal |
 | `simai.component-package` | 1.0.0 | a package of Smart components owned by a product or an external author: layout, a pinned Framework revision, rule and manifest of each component, names, a reproducible build with a receipt, delivery and page declaration, licence and trust |
+| `simai.interface-fragment` | 1.0.0 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, and region navigation with a full-load fallback |
 
 A standard stays at the level of principles that survive a change of library,
 browser or view type: 15 to 20 requirements. Event names, CSS classes and

@@ -32,6 +32,29 @@ function freezeList(list) {
   return Object.freeze([...list]);
 }
 
+// The page-level value types (interface fragments, 2026-10-15) are closed
+// objects: a key a type does not name is refused, never carried through.
+function closedObject(value, required, optional, type) {
+  if (!isPlainObject(value)) throw new TypeError(`${type} value is not an object`);
+  const keys = Object.keys(value);
+  if (!required.every((key) => keys.includes(key))) throw new TypeError(`${type} value misses a required key`);
+  if (!keys.every((key) => required.includes(key) || optional.includes(key))) throw new TypeError(`${type} value has an undeclared key`);
+}
+
+const TOKEN = /^[a-z][a-z0-9._:-]{0,127}$/u;
+const isToken = (value) => typeof value === 'string' && TOKEN.test(value);
+const isCollection = (value) => typeof value === 'string' && value.length > 0 && value.length <= 128 && !CONTROL.test(value);
+const isRevision = (value) => (typeof value === 'string' && value.length > 0 && value.length <= 128 && !CONTROL.test(value)) || Number.isSafeInteger(value);
+const PREFERENCE_KEY = /^[\w.*:-]+(?:\/[\w.*:/-]+)?$/u;
+// An address inside the same site: a path, never a scheme of its own, never
+// another origin's protocol-relative form.
+const isLocalUrl = (value) => typeof value === 'string' && value.length > 0 && value.length <= 2048
+  && !CONTROL.test(value) && value.startsWith('/') && !value.startsWith('//');
+const COLLECTION_SCHEMA = { type: 'string', minLength: 1, maxLength: 128 };
+const RECORD_ID_SCHEMA = { oneOf: [{ type: 'string', minLength: 1, maxLength: 256 }, { type: 'integer', minimum: -9007199254740991, maximum: 9007199254740991 }] };
+const REVISION_SCHEMA = { oneOf: [{ type: 'string', minLength: 1, maxLength: 128 }, { type: 'integer', minimum: -9007199254740991, maximum: 9007199254740991 }] };
+const TOKEN_SCHEMA = { type: 'string', pattern: '^[a-z][a-z0-9._:-]{0,127}$' };
+
 // Closed value-type vocabulary. Each validator returns an immutable copy or
 // throws TypeError; there is no coercion between types.
 export const VALUE_TYPES = Object.freeze({
@@ -72,6 +95,92 @@ export const VALUE_TYPES = Object.freeze({
     check(value) {
       if (typeof value !== 'boolean') throw new TypeError('boolean.v1 value is invalid');
       return value;
+    },
+  }),
+  'record-changed.v1': Object.freeze({
+    summary: 'A record changed: its collection, identity and new revision, and optionally the keys of the fields that changed (up to 256). Says what changed, never the values.',
+    schema: {
+      type: 'object', additionalProperties: false, required: ['collection', 'id', 'revision'],
+      properties: {
+        collection: COLLECTION_SCHEMA, id: RECORD_ID_SCHEMA, revision: REVISION_SCHEMA,
+        fields: { type: 'array', maxItems: 256, uniqueItems: true, items: { type: 'string', minLength: 1, maxLength: 128 } },
+      },
+    },
+    check(value) {
+      closedObject(value, ['collection', 'id', 'revision'], ['fields'], 'record-changed.v1');
+      if (!isCollection(value.collection) || !checkedRecordId(value.id) || !isRevision(value.revision)) throw new TypeError('record-changed.v1 value is invalid');
+      const out = { collection: value.collection, id: value.id, revision: value.revision };
+      if (value.fields !== undefined) {
+        const fields = value.fields;
+        if (!Array.isArray(fields) || fields.length > 256 || !fields.every(isCollection) || new Set(fields).size !== fields.length) throw new TypeError('record-changed.v1 fields are invalid');
+        out.fields = freezeList(fields);
+      }
+      return Object.freeze(out);
+    },
+  }),
+  'record-removed.v1': Object.freeze({
+    summary: 'A record was removed from its collection.',
+    schema: { type: 'object', additionalProperties: false, required: ['collection', 'id'], properties: { collection: COLLECTION_SCHEMA, id: RECORD_ID_SCHEMA } },
+    check(value) {
+      closedObject(value, ['collection', 'id'], [], 'record-removed.v1');
+      if (!isCollection(value.collection) || !checkedRecordId(value.id)) throw new TypeError('record-removed.v1 value is invalid');
+      return Object.freeze({ collection: value.collection, id: value.id });
+    },
+  }),
+  'collection-changed.v1': Object.freeze({
+    summary: 'Something in a collection changed that a list should read again; reason is a short token (created, imported, reordered, settings ...).',
+    schema: { type: 'object', additionalProperties: false, required: ['collection', 'reason'], properties: { collection: COLLECTION_SCHEMA, reason: TOKEN_SCHEMA } },
+    check(value) {
+      closedObject(value, ['collection', 'reason'], [], 'collection-changed.v1');
+      if (!isCollection(value.collection) || !isToken(value.reason)) throw new TypeError('collection-changed.v1 value is invalid');
+      return Object.freeze({ collection: value.collection, reason: value.reason });
+    },
+  }),
+  'files-moved.v1': Object.freeze({
+    summary: 'Files moved between folders: their identities (1 to 1000, unique), the folder they left and the one they went to; null is the root.',
+    schema: {
+      type: 'object', additionalProperties: false, required: ['ids', 'from', 'to'],
+      properties: {
+        ids: { type: 'array', minItems: 1, maxItems: 1000, uniqueItems: true, items: RECORD_ID_SCHEMA },
+        from: { oneOf: [{ type: 'null' }, ...RECORD_ID_SCHEMA.oneOf] },
+        to: { oneOf: [{ type: 'null' }, ...RECORD_ID_SCHEMA.oneOf] },
+      },
+    },
+    check(value) {
+      closedObject(value, ['ids', 'from', 'to'], [], 'files-moved.v1');
+      const ids = value.ids;
+      if (!Array.isArray(ids) || ids.length === 0 || ids.length > 1000 || !ids.every(checkedRecordId)) throw new TypeError('files-moved.v1 ids are invalid');
+      if (new Set(ids.map((entry) => `${typeof entry}:${entry}`)).size !== ids.length) throw new TypeError('files-moved.v1 ids have duplicates');
+      const folder = (entry) => entry === null || checkedRecordId(entry);
+      if (!folder(value.from) || !folder(value.to)) throw new TypeError('files-moved.v1 folder is invalid');
+      return Object.freeze({ ids: freezeList(ids), from: value.from, to: value.to });
+    },
+  }),
+  'counter.v1': Object.freeze({
+    summary: 'A named count changed: key is a token (notifications, requests.new ...), value a non-negative safe integer.',
+    schema: { type: 'object', additionalProperties: false, required: ['key', 'value'], properties: { key: TOKEN_SCHEMA, value: { type: 'integer', minimum: 0, maximum: 9007199254740991 } } },
+    check(value) {
+      closedObject(value, ['key', 'value'], [], 'counter.v1');
+      if (!isToken(value.key) || !Number.isSafeInteger(value.value) || value.value < 0) throw new TypeError('counter.v1 value is invalid');
+      return Object.freeze({ key: value.key, value: value.value });
+    },
+  }),
+  'navigation.v1': Object.freeze({
+    summary: 'Go to an address of the same site, in a named region: url is a path (starting with one slash, up to 2048 code units), region a region name.',
+    schema: { type: 'object', additionalProperties: false, required: ['url', 'region'], properties: { url: { type: 'string', minLength: 1, maxLength: 2048, pattern: '^/(?!/)' }, region: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$' } } },
+    check(value) {
+      closedObject(value, ['url', 'region'], [], 'navigation.v1');
+      if (!isLocalUrl(value.url) || typeof value.region !== 'string' || !NAME_PATTERN.test(value.region)) throw new TypeError('navigation.v1 value is invalid');
+      return Object.freeze({ url: value.url, region: value.region });
+    },
+  }),
+  'preference-changed.v1': Object.freeze({
+    summary: 'A person changed a view preference: the SF.Preferences key (sf-table/<key>, sf-table/*, sf-admin-menu/main ...). Says which, never the value.',
+    schema: { type: 'object', additionalProperties: false, required: ['key'], properties: { key: { type: 'string', minLength: 1, maxLength: 256, pattern: '^[\\w.*:-]+(?:/[\\w.*:/-]+)?$' } } },
+    check(value) {
+      closedObject(value, ['key'], [], 'preference-changed.v1');
+      if (typeof value.key !== 'string' || value.key.length > 256 || !PREFERENCE_KEY.test(value.key)) throw new TypeError('preference-changed.v1 value is invalid');
+      return Object.freeze({ key: value.key });
     },
   }),
 });

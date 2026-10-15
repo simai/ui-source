@@ -1,0 +1,164 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.interface-fragment",
+  "version": "1.0.0",
+  "title": "SIMAI Interface Fragment",
+  "appliesTo": [
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "fragment-is-a-composite",
+      "level": "must",
+      "text": "A fragment is a Smart composite placed in a named region of a page. It has exactly one host port and the composition ports it publishes; it is not a page, a template or a server partial with behaviour of its own.",
+      "verification": "manual"
+    },
+    {
+      "id": "descriptor-published",
+      "level": "must",
+      "text": "Every fragment publishes a descriptor (simai.interface-fragment.v1): its identity, element, the regions it may stand in, its port standard and version, its outputs and inputs with their value types, the access operation needed to show it, the address keys it owns and its budget. Nothing it exchanges or needs is left undeclared.",
+      "verification": "manual"
+    },
+    {
+      "id": "descriptor-checked",
+      "level": "must",
+      "text": "A package gate checks every descriptor against the published schema (SF.Composition.checkFragmentDescriptor) before the package is released; a fragment without a valid descriptor is not placed on a page.",
+      "verification": "manual",
+      "guidance": "Framework: SF.Composition.checkFragmentDescriptor; the probe tests/interface-fragment.contract.test.mjs holds it against the pinned schema."
+    },
+    {
+      "id": "no-direct-calls",
+      "level": "must",
+      "text": "A fragment never calls another fragment's methods or host port, and never finds another fragment in the DOM. What one fragment says to another goes out on a published output and arrives on a declared input.",
+      "verification": "manual"
+    },
+    {
+      "id": "routes-on-the-page",
+      "level": "must",
+      "text": "The page is one layout.scope: its fragments are endpoints, and the routes between their ports are declared by the page, not by the fragments. A route joins two existing endpoints, and the value types of its ends are the same.",
+      "verification": "manual"
+    },
+    {
+      "id": "closed-value-types",
+      "level": "must",
+      "text": "Values that cross between fragments use the closed vocabulary of value types (record-changed.v1, record-removed.v1, collection-changed.v1, files-moved.v1, counter.v1, navigation.v1, preference-changed.v1 and the composition types). Each has a schema and a check; a value that fails its check is refused, never coerced.",
+      "verification": "manual",
+      "guidance": "Framework: VALUE_TYPES in src/core/js/composition/routing.mjs, one check per type, refused values in tests/interface-fragment.contract.test.mjs."
+    },
+    {
+      "id": "values-say-what-changed",
+      "level": "must",
+      "text": "A value says what changed and where, never the data itself: a fragment that hears record-changed reads the record again through its own port, under its own permissions.",
+      "verification": "manual"
+    },
+    {
+      "id": "host-is-an-endpoint",
+      "level": "must",
+      "text": "The page host is an endpoint of the scope. The effects a product's port answer carries are published on the host's outputs as typed values, and the declared routes deliver them; a later push channel (changes made by others) arrives on the same outputs.",
+      "verification": "manual"
+    },
+    {
+      "id": "failure-is-contained",
+      "level": "must",
+      "text": "A fragment that throws while loading or rendering is replaced in its place by the error state with a retry. The rest of the page, its fragments and their routes keep working.",
+      "verification": "manual",
+      "guidance": "Framework: the fragment error boundary (sf-empty-state error with retry), probed with a throwing fragment beside a working one whose routes still deliver."
+    },
+    {
+      "id": "five-states",
+      "level": "must",
+      "text": "A fragment shows the same five states every Smart component shows -- loading, populated, empty, no-access, error -- with loading drawn as its skeleton in its own region and never as an empty answer.",
+      "verification": "manual"
+    },
+    {
+      "id": "access-before-placement",
+      "level": "must",
+      "text": "A fragment whose operation the person may not perform is not placed, or is placed in its no-access state; it never renders controls the host will refuse.",
+      "verification": "manual"
+    },
+    {
+      "id": "shareable-state-in-the-address",
+      "level": "must",
+      "text": "State a person would share or come back to -- a folder, a filter, a selected record -- lives in the address under the keys the fragment declares in url_state; two fragments never own the same key on one page.",
+      "verification": "manual"
+    },
+    {
+      "id": "region-navigation",
+      "level": "must",
+      "text": "A link inside the shell changes the content region rather than the page: the region is asked for with the region header, swapped in place with a skeleton in that region only, the address goes into the history, Back and Forward work and scroll returns on Back, and focus moves to the new heading.",
+      "verification": "manual",
+      "guidance": "Framework: the region navigator in the core (the pair after this standard), with browser probes for Back/Forward, scroll, focus, assets once and released listeners."
+    },
+    {
+      "id": "full-load-fallback",
+      "level": "must",
+      "text": "Navigation falls back to a full page load whenever the shell revision differs from the page's own, the link asks for one, the address is on another origin, or anything in the region answer is not as declared. A partial swap is never left on screen.",
+      "verification": "manual",
+      "guidance": "Framework: the same navigator; Larena answers the region request only for a 200 JSON region answer, and a redirect to sign-in stays a redirect."
+    },
+    {
+      "id": "assets-once",
+      "level": "must",
+      "text": "A region brings the assets its fragments need; an asset already on the page is not requested again, and a fragment loads only what it brings, beyond the shared runtime.",
+      "verification": "manual"
+    },
+    {
+      "id": "release-on-leave",
+      "level": "must",
+      "text": "A fragment that leaves the page by a region swap is disconnected: its routes, listeners and timers are released, and nothing it started keeps answering.",
+      "verification": "manual"
+    },
+    {
+      "id": "budget-declared",
+      "level": "must",
+      "text": "A fragment declares its budget -- kilobytes beyond the shared runtime and milliseconds to its first answer -- and the budget is measured in the package's probes; a fragment over its budget does not pass the gate.",
+      "verification": "manual"
+    },
+    {
+      "id": "versioned-with-its-port",
+      "level": "must",
+      "text": "A fragment's descriptor follows its port's versioning: a minor version only adds optional outputs, inputs or url keys; removing or renaming one, or changing its value type, is a new major.",
+      "verification": "manual"
+    }
+  ],
+  "extends": [
+    {
+      "id": "simai.composite-host-port",
+      "version": "1.0.3",
+      "path": "../../simai.composite-host-port/1.0.3/standard.json",
+      "sha256": "e2518df716ff9934bdccbbeb22302f1ea8d7c81937c4865ddddbdc752a4657f3",
+      "description": "The seam between a composite and its host. A fragment is such a composite placed in a page region beside others."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.interface-fragment-descriptor",
+      "version": "1.0.0",
+      "path": "../../pinned/interface-fragment.v1.schema.json",
+      "sha256": "b24ff7c66e8be9f0d5500176f7c58439f1caa8852d64555f94f07879c7011733",
+      "description": "The form of a fragment descriptor: element, regions, port, outputs and inputs with value types, operation, url_state and budget."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.composite-host-port 1.0.3; the rules of the road (ui-control control/designs/2026-10-15-interaction-rules.md)",
+      "scope_note": "Pages built from fragments that update one another through declared contracts, and a shell whose content region changes without a full load. The product keeps data access, permissions and the region answers; the Framework keeps the descriptor, the value types, routing and region navigation.",
+      "origin": "Asked for by simai/larena (larena-specs docs/architecture/2026-10-15-interface-fragments.md, handoff ui-control control/handoffs/2026-10-15-interface-fragments.md), owner decision 2026-10-15, authored for publication by the Framework owner.",
+      "validated_against": [
+        "the closed value-type checks in src/core/js/composition/routing.mjs",
+        "SF.Composition.checkFragmentDescriptor against the pinned descriptor schema"
+      ]
+    }
+  }
+}

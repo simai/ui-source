@@ -23,6 +23,7 @@ import {
   resolveRoutes,
   routesAttribute,
 } from './routing.mjs';
+import { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor } from './fragments.mjs';
 
 const DOCUMENT_SCHEMA = 'simai.composition.document.v1';
 
@@ -478,6 +479,8 @@ export const Composition = Object.freeze({
   validateFieldValue,
   VALUE_TYPES,
   checkPortValue,
+  checkFragmentDescriptor,
+  FRAGMENT_DESCRIPTOR_SCHEMA,
   createPortRegistry,
   defineCompositionScope,
   startInlineEdit,
@@ -512,5 +515,6 @@ export { BUILTIN_EDITOR_MANIFESTS, projectDocumentEditorFields, projectEditorFie
 export { BUILTIN_TYPE_MANIFESTS };
 export { describeRegions, stableStringify };
 export { BUILTIN_PORT_MANIFESTS, VALUE_TYPES, checkPortValue, createPortRegistry, defineCompositionScope };
+export { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor };
 export { INLINE_MARKS, inlineText, marksIn, normalizeInline, replaceRange, setLink, startInlineEdit, toggleMark };
 export { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue };

@@ -15,7 +15,7 @@
     "inputs": {"$ref": "#/$defs/ports"}
   },
   "$defs": {
-    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1"]},
+    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1"]},
     "ports": {
       "type": "object",
       "maxProperties": 16,
