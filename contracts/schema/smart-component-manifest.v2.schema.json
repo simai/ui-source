@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "title": "SIMAI Smart Component Manifest v2",
-  "x-simai-version": "2.3.0",
+  "x-simai-version": "2.4.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -460,6 +460,35 @@
         },
         "responsive": {
           "$ref": "#/$defs/stringList"
+        },
+        "skeleton": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "shape",
+            "while_loading"
+          ],
+          "description": "The component's shape before its code and its data arrive (rules of the road, rule 5): the core placeholder shape its markup names with data-sf-skeleton before the element is defined, and whether it draws a skeleton of its own while it waits for data.",
+          "properties": {
+            "shape": {
+              "type": "string",
+              "enum": [
+                "rows",
+                "record",
+                "menu",
+                "block",
+                "line",
+                "none"
+              ]
+            },
+            "while_loading": {
+              "type": "string",
+              "enum": [
+                "template",
+                "none"
+              ]
+            }
+          }
         }
       }
     },
