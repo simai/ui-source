@@ -323,6 +323,27 @@ function renderEntityMultiSelectFilterControl(field, host) {
 // the table used are kept as aliases of the types they serve, so a host that
 // declares a control by name keeps working while a host that declares a
 // property type gets the same renderer.
+// A file is filtered by its kind, a colour by the field's palette (owner,
+// 2026-10-15): both fell back to a text search. The filter's values are the
+// kinds -- image, document, archive, other -- or the colours, with the
+// operator «in»; what a kind holds is the host's to say.
+function renderFileFilterControl(field, host) {
+    const options = field.filter?.options ?? ['image', 'document', 'archive', 'other']
+        .map((kind) => ({value: kind, label: setText(host, `fileKind_${kind}`)}));
+    return renderMultiSelectFilterControl({...field, filter: {...(field.filter || {}), options, defaultOperator: field.filter?.defaultOperator ?? 'in'}}, host);
+}
+
+function renderColorFilterControl(field, host) {
+    const palette = field.filter?.options ?? (Array.isArray(field.swatches) ? field.swatches : [])
+        .map((swatch) => (typeof swatch === 'string' ? {value: swatch, label: swatch} : swatch))
+        .filter((swatch) => swatch?.value)
+        .map((swatch) => ({value: swatch.value, label: swatch.label ?? swatch.value, color: swatch.value}));
+    // No palette, nothing to choose from: the value is searched as text.
+    if (!palette.length) return renderTextFilterControl(field, host);
+    return renderMultiSelectFilterControl({...field, filter: {...(field.filter || {}), options: palette, optionRenderer: field.filter?.optionRenderer ?? 'swatch',
+        defaultOperator: field.filter?.defaultOperator ?? 'in'}}, host);
+}
+
 export const FILTER_RENDERERS = {
     text: renderTextFilterControl,
     string: renderTextFilterControl,
@@ -342,6 +363,8 @@ export const FILTER_RENDERERS = {
     'entity-single-select': renderEntityMultiSelectFilterControl,
     record: renderEntityMultiSelectFilterControl,
     relation: renderEntityMultiSelectFilterControl,
+    file: renderFileFilterControl,
+    color: renderColorFilterControl,
 };
 
 // What a field asks to be filtered by: its own declared control if it has one,
@@ -1068,6 +1091,10 @@ const SET_TEXT = {
         searchInList: 'Find in the list',
         // A text filter is a text the value contains, not a list to search.
         containsText: 'Contains…',
+        fileKind_image: 'Images',
+        fileKind_document: 'Documents',
+        fileKind_archive: 'Archives',
+        fileKind_other: 'Other files',
         operator: 'Operator',
         rangeFrom: 'From',
         rangeTo: 'To',
@@ -1086,6 +1113,10 @@ const SET_TEXT = {
         no: 'Нет',
         searchInList: 'Найти в списке',
         containsText: 'Содержит…',
+        fileKind_image: 'Изображения',
+        fileKind_document: 'Документы',
+        fileKind_archive: 'Архивы',
+        fileKind_other: 'Прочие файлы',
         operator: 'Оператор',
         rangeFrom: 'От',
         rangeTo: 'До',
