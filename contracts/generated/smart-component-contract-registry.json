@@ -1957,5 +1957,5 @@
   "schema": "simai.smart-component-contract-registry.v2",
   "schema_id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "schema_path": "contracts/schema/smart-component-manifest.v2.schema.json",
-  "schema_sha256": "4218268a8661e8e9229533280f721123b819237e79ea1612c2115f7c5ee73d9a"
+  "schema_sha256": "cb39de233b2cf8af93daa44833b2e4d193627648426a202d6baee9938957d407"
 }

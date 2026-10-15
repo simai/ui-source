@@ -1,6 +1,7 @@
 import {html, nothing} from "lit";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageText} from "../../core/js/page-language";
+import {PROPERTY_TYPES, modesOf} from "./registry.js";
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -1501,6 +1502,12 @@ const VIEW_RENDERERS = {
 // A field shown rather than edited. `host` is optional and used for one thing
 // only -- formatFieldValue, where a consumer's own formatting of a number or a
 // date belongs. Null when the set has no view for that type.
+export function propertyModes(type) {
+    return modesOf(type, {view: VIEW_RENDERERS, edit: EDIT_RENDERERS, cell: CELL_RENDERERS, filter: FILTER_RENDERERS});
+}
+
+export {PROPERTY_TYPES};
+
 export function renderViewField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
     const renderer = VIEW_RENDERERS[asked];
@@ -1535,5 +1542,7 @@ if (typeof window !== 'undefined') {
         renderFilterField,
         renderViewField,
         FILTER_RENDERERS,
+        // The universal properties, each with the modes the set draws for it.
+        registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
     };
 }
