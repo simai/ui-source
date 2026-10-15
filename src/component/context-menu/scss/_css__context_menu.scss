@@ -373,6 +373,73 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   min-inline-size: 0;
 }
 
+/* A panel with tabs (owner, 2026-10-15): one frame for every window that
+   drops down with tabs -- a list's settings, its filter. The head (the tabs
+   and the way out) and the footer never scroll; only the body does. The
+   width is the panel's own, a step of the ladder or the host's `width`,
+   never the width of what a tab holds: ticking a box that changed a button's
+   label made the filter grow under the pointer. The scrollbar keeps its room
+   whether or not it is shown, for the same reason. */
+.sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
+  --sf-context-menu-panel--inline-size: calc(var(--sf-ui-1--control-height) * 8);
+  inline-size: var(--sf-context-menu--min-inline-size, var(--sf-context-menu-panel--inline-size));
+  max-inline-size: calc(100vi - var(--sf-space-1));
+  min-block-size: 0;
+  max-block-size: var(--sf-context-menu-panel--max-block-size, var(--sf-context-menu-available-block-size, calc(100dvh - var(--sf-space-4))));
+  overflow: hidden;
+  padding-block-start: 0;
+}
+
+.sf-context-menu-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-space-1\/4);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-context-menu-head > .sf-context-menu-tabs,
+.sf-context-menu-head > .sf-context-menu-tabs > .sf-tabs {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+/* The tabs only say which rows the body shows: their own panel area stays
+   empty, and drawn it was a hole under them. Their line sits on the head's
+   border, so the head has no padding of its own below them. */
+.sf-context-menu-head .sf-tabs-main-container {
+  display: none;
+}
+
+.sf-context-menu--panel .sf-context-menu-body {
+  padding-block: var(--sf-space-1\/4);
+  scrollbar-gutter: stable;
+  overflow-x: hidden;
+}
+
+/* A row of a panel holds anything -- a handle, a label, a checkbox, a pin --
+   on one line: what leads, the text that takes the rest and gives way with an
+   ellipsis, what ends it. A row as tall as a menu item of the panel's size. */
+.sf-context-menu-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  min-block-size: var(--sf-ui-1\/2--control-height);
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
+}
+
+.sf-context-menu--size-1 .sf-context-menu-row {
+  min-block-size: var(--sf-ui-1--control-height);
+}
+
+.sf-context-menu-row-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* An item is one line. A menu opened from a control near the inline edge was
    capped to the free space beside that control, and the labels wrapped to two
    lines inside it -- which is not the menu getting smaller, it is the words

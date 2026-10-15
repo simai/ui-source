@@ -1,6 +1,12 @@
 import SfBaseElement from "../../core/js/smart-base";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
+import { pageText } from "../../core/js/page-language";
+
+const CONTEXT_MENU_TEXT = {
+  en: { close: "Close" },
+  ru: { close: "Закрыть" },
+};
 
 // Prefer the helper Core published; a bundle loaded without core.js still
 // positions with its own copy.
@@ -540,7 +546,69 @@ class SfContextMenu extends SfBaseElement {
       // How wide the menu opens: "content" (its longest line, the default),
       // "trigger" (exactly the control that opened it) or a CSS length.
       width: { default: "content" },
+      // A panel with tabs (owner, 2026-10-15): the tabs and the way out on a
+      // head that never scrolls, the rows of the chosen tab in a body that
+      // does, the actions in a footer that stays. "A|B" or [{id, label}].
+      tabs: { default: "" },
+      // The chosen tab's id (or index); the host shows that tab's rows.
+      activeTab: { attribute: "active-tab", default: "" },
+      // A close button at the end of the head.
+      closable: { type: Boolean, default: false },
     };
+  }
+
+  // The tabs as [{id, label}]: a string list names each tab by its label.
+  get tabs() {
+    const raw = Array.isArray(this._tabs) ? this._tabs : (this.getAttribute("tabs") || "");
+    const list = Array.isArray(raw) ? raw : String(raw).split("|").map((label) => label.trim()).filter(Boolean);
+    return list.map((tab, index) => (typeof tab === "string"
+      ? {id: tab, label: tab, index}
+      : {id: String(tab.id ?? index), label: String(tab.label ?? tab.id ?? index), index}));
+  }
+
+  set tabs(value) {
+    if (Array.isArray(value)) {
+      this._tabs = value;
+      this.requestComponentUpdate("tabs");
+      return;
+    }
+    this._tabs = null;
+    this.setState({tabs: value ? String(value) : ""});
+  }
+
+  get activeTab() {
+    const tabs = this.tabs;
+    const asked = this.getAttribute("active-tab") ?? "";
+    return tabs.find((tab) => tab.id === asked) ?? tabs[Number(asked)] ?? tabs[0] ?? null;
+  }
+
+  get closable() {
+    return this.getBooleanAttr("closable", false);
+  }
+
+  get panel() {
+    return this.tabs.length > 0;
+  }
+
+  // A tab chosen: the head marks it and says so; the host puts that tab's
+  // rows in the body. The panel keeps its width -- it is fixed, never the
+  // width of what a tab holds.
+  chooseTab(index) {
+    const tab = this.tabs[index];
+    if (!tab || tab.id === this.activeTab?.id) return this;
+    this.setState({activeTab: tab.id});
+    this.dispatchEvent(new CustomEvent("sf-context-menu-tab", {
+      bubbles: true, composed: true, detail: {id: tab.id, index: tab.index},
+    }));
+    return this;
+  }
+
+  // The head's close button: an owned menu closes itself; a menu its host
+  // placed is closed by the host, which hears the same event either way.
+  requestClose() {
+    if (this._owned) return this.close();
+    this.dispatchEvent(new CustomEvent("sf-context-menu-close", {bubbles: true, composed: true}));
+    return true;
   }
 
   get templateName() {
@@ -587,6 +655,11 @@ class SfContextMenu extends SfBaseElement {
       entries: this.entries,
       search: this.search,
       query: this.query,
+      tabs: this.tabs,
+      activeTab: this.activeTab,
+      closable: this.closable,
+      closeLabel: pageText(CONTEXT_MENU_TEXT, "close", this, "sf-context-menu"),
+      panel: this.panel,
       position: this.position,
       size: this.size,
       component: this,

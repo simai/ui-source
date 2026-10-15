@@ -146,6 +146,24 @@
         "type": "string",
         "default": "content",
         "description": "How wide openFor() opens the menu: content (its longest line, between --sf-context-menu--min-inline-size and --sf-context-menu--max-inline-size), trigger (exactly the control that opened it; a long line ends in an ellipsis) or a CSS length. openFor(anchor, {width}) overrides it."
+      },
+      "tabs": {
+        "type": [
+          "string",
+          "array"
+        ],
+        "default": "",
+        "description": "A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
+      },
+      "active-tab": {
+        "type": "string",
+        "default": "",
+        "description": "The chosen tab's id or index; the host renders that tab's rows into the content slot."
+      },
+      "closable": {
+        "type": "boolean",
+        "default": false,
+        "description": "A close button at the end of the panel's head."
       }
     },
     "additionalProperties": false
@@ -311,6 +329,27 @@
         "type": "boolean",
         "description": "Whether it was open."
       }
+    },
+    "chooseTab": {
+      "summary": "Choose a tab by index and emit sf-context-menu-tab.",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "requestClose": {
+      "summary": "Close an owned menu; for a menu its host placed, emit sf-context-menu-close for the host to close it.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
     }
   },
   "events": {
@@ -366,6 +405,20 @@
         "properties": {
           "query": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "sf-context-menu-tab": {
+      "summary": "A tab of the panel was chosen; the host shows its rows.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "index": {
+            "type": "number"
           }
         }
       }
@@ -489,15 +542,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
-        "sha256": "cb3cf76ca65110ccf6109e00362e37f1e96ede747b198e8ba4629e655e28953e"
+        "sha256": "9bd28543965d1f8a3a5a738d02a1e4e8228a7194b3142352ef270e30978cc9d8"
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",
-        "sha256": "62ede1b1152c31b6dc1a3a6052c7c0956cb89630d64553dd5bc362c86d4a226d"
+        "sha256": "7609a2ab07dd0b266f75644ae62e22c9297273bbd74de22baf6cff890111f8fc"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "6aa055c4fb664b35dc199021da412b2eb7b6cffdf947834ff9ee4009d01f40a5"
+        "sha256": "224a5f5d5fe9ddf90aa80d08adf521b2e85e498e4c9a291b301f2c1fbb017d4d"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

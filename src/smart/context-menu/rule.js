@@ -3,5 +3,7 @@ SF.RuleLoader['cl-context-menu'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
-  relation: [{ name: 'context-menu' }, { name: 'cl-buttons' }],
+  // The tabs and the close button draw only a panel's head: fetched after the
+  // page is ready, not held up front for every menu.
+  relation: [{ name: 'context-menu' }, { name: 'cl-buttons' }, { name: 'cl-tabs', lazy: true }, { name: 'cl-icon-buttons', lazy: true }],
 };

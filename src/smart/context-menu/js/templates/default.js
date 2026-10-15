@@ -206,6 +206,25 @@ function renderFooter(context) {
     return html`<div class="sf-context-menu-footer">${context.component.getSlotContent("footer")}</div>`;
 }
 
+// A panel's head: the tabs, and the way out at its end. It never scrolls --
+// the body under it does (owner, 2026-10-15).
+function renderPanelHead(context) {
+    const active = context.activeTab;
+    return html`<div class="sf-context-menu-head">
+        <sf-tabs class="sf-context-menu-tabs" type="underline" size=${context.size === "1" ? "1" : "1/2"}
+                items=${context.tabs.map((tab) => tab.label).join("|")}
+                active-index=${String(active?.index ?? 0)}
+                @sf-tab-change=${(event) => {
+                    event.stopPropagation();
+                    context.component.chooseTab(Number(event.detail?.current ?? 0));
+                }}></sf-tabs>
+        ${context.closable ? html`<sf-icon-button class="sf-context-menu-close" appearance="link" scheme="on-surface"
+                size=${context.size === "1" ? "1" : "1/2"} icon="close"
+                aria-label=${context.closeLabel} title=${context.closeLabel}
+                @click=${() => context.component.requestClose()}></sf-icon-button>` : nothing}
+    </div>`;
+}
+
 // No tail (owner, 2026-10-12): it never read as one piece with the panel. The
 // position attribute is kept for its class and draws nothing.
 function renderTooltip() {
@@ -218,6 +237,7 @@ export function renderContextMenuTemplate(context) {
         context.position ? `sf-context-menu--position-${context.position}` : "",
         context.entries && context.entries.length ? "sf-context-menu--entries" : "",
         context.size === "1" ? "sf-context-menu--size-1" : "",
+        context.panel ? "sf-context-menu--panel" : "",
         "flex",
         context.rootClass,
     );
@@ -239,7 +259,13 @@ export function renderContextMenuTemplate(context) {
         >
             <div class="relative">
                 ${renderTooltip(context)}
-                <div class=${contentClasses}>${renderContent(context)}${renderFooter(context)}</div>
+                ${context.panel
+                    ? html`<div class=${contentClasses}>
+                        ${renderPanelHead(context)}
+                        <div class="sf-context-menu-body" role="tabpanel" aria-label=${context.activeTab?.label ?? nothing}>${renderContent(context)}</div>
+                        ${renderFooter(context)}
+                    </div>`
+                    : html`<div class=${contentClasses}>${renderContent(context)}${renderFooter(context)}</div>`}
             </div>
         </div>
     `;
