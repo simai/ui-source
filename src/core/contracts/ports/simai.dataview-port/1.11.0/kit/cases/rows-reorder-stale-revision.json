@@ -1,0 +1,37 @@
+{
+  "id": "rows-reorder-stale-revision",
+  "intent": "record.reorder",
+  "capability": "row-reorder",
+  "summary": "An order written against a stale revision is answered with a conflict and the current revision, so the view puts the old order back and reads the list again.",
+  "given": {
+    "records": [
+      {
+        "id": "a",
+        "revision": "s2",
+        "actions": []
+      },
+      {
+        "id": "b",
+        "revision": "s2",
+        "actions": []
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.reorder",
+    "payload": {
+      "record_ids": [
+        "b"
+      ],
+      "before": "a",
+      "revision": "s1"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "The host re-reads the stored order; it does not trust the revision in the request."
+  }
+}
