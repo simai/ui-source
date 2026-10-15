@@ -23,7 +23,7 @@ import {
   resolveRoutes,
   routesAttribute,
 } from './routing.mjs';
-import { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor } from './fragments.mjs';
+import { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor, defineFragmentBoundary, definePageHost, publishEffects } from './fragments.mjs';
 
 const DOCUMENT_SCHEMA = 'simai.composition.document.v1';
 
@@ -481,6 +481,7 @@ export const Composition = Object.freeze({
   checkPortValue,
   checkFragmentDescriptor,
   FRAGMENT_DESCRIPTOR_SCHEMA,
+  publishEffects,
   createPortRegistry,
   defineCompositionScope,
   startInlineEdit,
@@ -506,6 +507,8 @@ if (typeof globalThis !== 'undefined') {
   globalThis.SF = globalThis.SF || {};
   globalThis.SF.Composition = Composition;
   defineCompositionScope();
+  definePageHost();
+  defineFragmentBoundary();
 }
 
 export default Composition;
@@ -515,6 +518,6 @@ export { BUILTIN_EDITOR_MANIFESTS, projectDocumentEditorFields, projectEditorFie
 export { BUILTIN_TYPE_MANIFESTS };
 export { describeRegions, stableStringify };
 export { BUILTIN_PORT_MANIFESTS, VALUE_TYPES, checkPortValue, createPortRegistry, defineCompositionScope };
-export { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor };
+export { FRAGMENT_DESCRIPTOR_SCHEMA, checkFragmentDescriptor, defineFragmentBoundary, definePageHost, publishEffects };
 export { INLINE_MARKS, inlineText, marksIn, normalizeInline, replaceRange, setLink, startInlineEdit, toggleMark };
 export { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue };

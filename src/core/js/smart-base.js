@@ -944,8 +944,22 @@ class SfBaseElement extends HTMLElement {
 
       const changedAttributes = Array.from(this._changedAttributes);
       this._changedAttributes.clear();
-      void this.performComponentUpdate(changedAttributes);
+      this.performComponentUpdate(changedAttributes).catch((error) => this.reportComponentError(error, "render"));
     });
+  }
+
+  // A component that throws while it draws says so, once per failure, on an
+  // event the page can answer (simai.interface-fragment, failure-is-contained):
+  // a fragment boundary puts the error state in its place and offers a retry,
+  // and nothing else on the page goes with it. The error is still logged.
+  reportComponentError(error, phase = "render") {
+    console.error(error);
+    this.setAttribute("data-sf-error", phase);
+    this.dispatchEvent(new CustomEvent("sf-component-error", {
+      bubbles: true,
+      composed: true,
+      detail: {phase, message: String(error?.message ?? error), element: this.localName},
+    }));
   }
 
   async performComponentUpdate(changedAttributes = []) {
