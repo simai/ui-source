@@ -109,14 +109,36 @@ function renderDay(day, context) {
         </button>`;
 }
 
+function renderPresets(context) {
+    const items = context.presetItems;
+    if (!items.length) return nothing;
+    // One tab stop: the pressed range, or the first one that can be chosen.
+    const focusable = items.find((item) => item.pressed && !item.disabled) ?? items.find((item) => !item.disabled);
+    // «Свой период» is pressed for a range picked on the grid, not for no range.
+    const custom = !items.some((item) => item.pressed) && Boolean(context.startValue);
+    return html`
+        <div class="sf-datepicker-presets flex flex-col gap-1/4" role="group" aria-label=${context.labels.presets}
+            @keydown=${(event) => context.component.handlePresetKeydown(event)}>
+            ${items.map((item) => html`
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', item.pressed ? 'active' : '')}
+                    type="button" ?disabled=${item.disabled} aria-pressed=${item.pressed ? 'true' : 'false'}
+                    tabindex=${item === focusable ? '0' : '-1'} data-preset=${item.id}
+                    @click=${() => context.component.choosePreset(item)}>${item.label}</button>`)}
+            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', custom ? 'active' : '')}
+                type="button" aria-pressed=${custom ? 'true' : 'false'} tabindex=${focusable ? '-1' : '0'} data-preset=""
+                @click=${() => context.component.chooseCustomRange()}>${context.labels.customRange}</button>
+        </div>`;
+}
+
 function renderDatepickerPanel(context) {
-    const rootClasses = joinClasses('sf-datepicker inline-flex', context.rootClass);
+    const rootClasses = joinClasses('sf-datepicker inline-flex', context.presetItems.length ? 'sf-datepicker--presets' : '', context.rootClass);
 
     return html`
         <div ${ref(context.component.refs.datePickerPanel)} id=${context.panelId}
             class=${rootClasses} style=${context.rootStyle || nothing}
             role=${context.input ? 'dialog' : 'group'} aria-label=${context.calendarLabel}
             @click=${(event) => context.component.handlePanelClick(event)}>
+            ${renderPresets(context)}
             <div class="sf-datepicker-container flex flex-col">
                 ${renderTop(context)}
                 <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">

@@ -18,6 +18,26 @@ the host owns persistence, timezone policy and domain validation.
 Values are ISO dates (`YYYY-MM-DD`). `format` changes the visible field value,
 not the stored value.
 
+## Quick ranges
+
+In range mode `presets` puts a list of ready ranges beside the grid: built-in
+ids, comma separated -- `today`, `yesterday`, `last-7-days`, `last-30-days`,
+`this-week`, `this-month`, `last-month` -- or, as a property, your own list of
+`{id, label, relative}` or `{id, label, range: [from, to]}`. A relative range
+is resolved against today in the person's time zone, and weeks start where the
+grid starts them. Ranges are clamped to `min-date` and `max-date`; one with
+nothing left is disabled. «Свой период» at the end lets go of the quick range
+and moves focus to the grid.
+
+Choosing one sets the dates, shows the month the range ends in, and the
+`change` detail carries `preset: {id, relative}` (or `{id}` for a fixed range,
+`null` for a range picked on the grid), so a host can store «last 7 days»
+rather than the dates it meant today. Give that id back in `preset` to restore
+it: `preset` wins over `start-value` and `end-value`, is resolved when drawn,
+and emits nothing. Where the panel has no room for the list beside the grid,
+the list wraps above it as a row. The list is one tab stop; arrows move along
+it.
+
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.

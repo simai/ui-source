@@ -245,6 +245,34 @@ function getWeekdays(locale, weekStart = 1) {
     });
 }
 
+// Quick ranges (owner, 2026-10-15). A relative one is resolved against today
+// in the person's own time zone, every time it is drawn, so a host that stores
+// «last 7 days» gets the last seven days tomorrow too. Weeks start where the
+// grid starts them.
+const RELATIVE_PRESETS = ['today', 'yesterday', 'last-7-days', 'last-30-days', 'this-week', 'this-month', 'last-month'];
+
+function addDays(date, days) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+function resolveRelativePreset(id, today, weekStart = 1) {
+    const day = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    switch (id) {
+        case 'today': return [day, day];
+        case 'yesterday': return [addDays(day, -1), addDays(day, -1)];
+        case 'last-7-days': return [addDays(day, -6), day];
+        case 'last-30-days': return [addDays(day, -29), day];
+        case 'this-week': return [addDays(day, -((day.getDay() - weekStart + 7) % 7)), day];
+        case 'this-month': return [new Date(day.getFullYear(), day.getMonth(), 1), day];
+        case 'last-month': return [new Date(day.getFullYear(), day.getMonth() - 1, 1), new Date(day.getFullYear(), day.getMonth(), 0)];
+        default: return null;
+    }
+}
+
+function presetTextKey(id) {
+    return `preset_${String(id).replace(/-([a-z0-9])/g, (_, letter) => letter.toUpperCase())}`;
+}
+
 // Every word this picker says, in the languages it ships with. A product adds
 // any other through SF.language.register('sf-datepicker', code, words) -- which
 // an if/else on «ru» did not allow at all.
@@ -256,6 +284,15 @@ const DATEPICKER_TEXT = {
         nextYears: 'Next years',
         chooseMonth: 'Choose a month',
         chooseYear: 'Choose a year',
+        presets: 'Quick ranges',
+        customRange: 'Custom range',
+        preset_today: 'Today',
+        preset_yesterday: 'Yesterday',
+        preset_last7Days: 'Last 7 days',
+        preset_last30Days: 'Last 30 days',
+        preset_thisWeek: 'This week',
+        preset_thisMonth: 'This month',
+        preset_lastMonth: 'Last month',
     },
     ru: {
         previousMonth: 'Предыдущий месяц',
@@ -264,11 +301,20 @@ const DATEPICKER_TEXT = {
         nextYears: 'Следующие годы',
         chooseMonth: 'Выберите месяц',
         chooseYear: 'Выберите год',
+        presets: 'Быстрый выбор',
+        customRange: 'Свой период',
+        preset_today: 'Сегодня',
+        preset_yesterday: 'Вчера',
+        preset_last7Days: 'Последние 7 дней',
+        preset_last30Days: 'Последние 30 дней',
+        preset_thisWeek: 'Эта неделя',
+        preset_thisMonth: 'Этот месяц',
+        preset_lastMonth: 'Прошлый месяц',
     },
 };
 
 function getLabels(node) {
-    const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear'];
+    const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear', 'presets', 'customRange'];
     return Object.fromEntries(keys.map((key) => [key, pageText(DATEPICKER_TEXT, key, node, 'sf-datepicker')]));
 }
 
@@ -334,11 +380,18 @@ class SfDatepicker extends SfBaseElement {
             maskLazy: {attribute: 'mask-lazy', default: false},
             maskPlaceholderChar: {attribute: 'mask-placeholder-char', default: '_'},
             maskOptions: {attribute: 'mask-options', default: ''},
+            // Quick ranges, range mode only: built-in ids, comma separated, or
+            // the property as [{id, label, relative} | {id, label, range: [from, to]}].
+            presets: {default: ''},
+            // The chosen quick range. Set by a host, it wins over start-value and
+            // end-value: a stored «last-7-days» is resolved when drawn.
+            preset: {default: ''},
         };
     }
 
     connectedCallback() {
         this.upgradeProperty('value');
+        this.upgradeProperty('presets');
         super.connectedCallback();
     }
 
@@ -365,7 +418,70 @@ class SfDatepicker extends SfBaseElement {
     }
 
     get primaryDate() {
+        const preset = this.activePreset;
+        if (preset) return preset.to;
         return this.selectedDate || this.startDate;
+    }
+
+    get presets() {
+        return this._presetList ?? (this.getAttribute('presets') || '');
+    }
+
+    set presets(next) {
+        if (Array.isArray(next)) {
+            this._presetList = next;
+            this.requestComponentUpdate('presets');
+            return;
+        }
+        this._presetList = null;
+        this.setState({presets: next ? String(next) : ''});
+    }
+
+    get preset() {
+        return this.getAttribute('preset') || '';
+    }
+
+    set preset(next) {
+        this.setState({preset: next ? String(next) : ''});
+    }
+
+    // Each quick range resolved for today: its dates, clamped to min and max,
+    // and disabled when nothing of it is left.
+    get presetItems() {
+        if (!this.range) return [];
+        const raw = Array.isArray(this.presets)
+            ? this.presets
+            : String(this.presets).split(/[\s,]+/).filter(Boolean);
+        const today = new Date();
+        const min = this.setMinDate();
+        const max = this.setMaxDate();
+        return raw.map((entry) => {
+            const item = typeof entry === 'string' ? {id: entry, relative: entry} : {...entry};
+            if (!item?.id) return null;
+            let dates = null;
+            if (item.relative) dates = resolveRelativePreset(item.relative, today, this.weekStart);
+            else if (Array.isArray(item.range)) {
+                const from = parseDateValue(item.range[0], this.format);
+                const to = parseDateValue(item.range[1], this.format);
+                if (from && to) dates = compareDates(from, to) <= 0 ? [from, to] : [to, from];
+            }
+            if (!dates) return null;
+            let [from, to] = dates;
+            if (min && compareDates(from, min) < 0) from = min;
+            if (max && compareDates(to, max) > 0) to = max;
+            const disabled = compareDates(from, to) > 0;
+            const label = item.label
+                || (RELATIVE_PRESETS.includes(item.id) ? pageText(DATEPICKER_TEXT, presetTextKey(item.id), this, 'sf-datepicker') : item.id);
+            return {id: String(item.id), label, relative: item.relative || null, from, to, disabled,
+                pressed: this.preset === String(item.id)};
+        }).filter(Boolean);
+    }
+
+    get activePreset() {
+        const id = this.preset;
+        if (!id || !this.range) return null;
+        const item = this.presetItems.find((one) => one.id === id);
+        return item && !item.disabled ? item : null;
     }
 
     get startDate() {
@@ -437,6 +553,8 @@ class SfDatepicker extends SfBaseElement {
     }
 
     get startValue() {
+        const preset = this.activePreset;
+        if (preset) return formatIsoDate(preset.from);
         return this.getAttribute('start-value') || '';
     }
 
@@ -447,6 +565,8 @@ class SfDatepicker extends SfBaseElement {
     }
 
     get endValue() {
+        const preset = this.activePreset;
+        if (preset) return formatIsoDate(preset.to);
         return this.getAttribute('end-value') || '';
     }
 
@@ -1058,6 +1178,7 @@ class SfDatepicker extends SfBaseElement {
                 endValue: '',
                 date: day.value,
                 context: '',
+                preset: '',
             });
             this.set({activeDate: day.value});
             this.emitChange();
@@ -1069,6 +1190,7 @@ class SfDatepicker extends SfBaseElement {
             year: day.date.getFullYear(),
             month: day.date.getMonth(),
             context: '',
+            preset: '',
         };
 
         if (startDate && compareDates(day.date, startDate) < 0) {
@@ -1085,6 +1207,50 @@ class SfDatepicker extends SfBaseElement {
         this.emitChange();
         if (this.closeOnSelect) this.closePanel({restoreFocus: true});
         return this;
+    }
+
+    // A quick range: its dates, the grid on the month it ends in, and the change
+    // said once, by the person's choice -- never by a render.
+    choosePreset(item) {
+        if (!item || item.disabled) return this;
+        const from = formatIsoDate(item.from);
+        const to = formatIsoDate(item.to);
+        this.setState({
+            preset: item.id,
+            startValue: from,
+            endValue: to,
+            date: from,
+            year: item.to.getFullYear(),
+            month: item.to.getMonth(),
+            context: '',
+        });
+        this.set({activeDate: to});
+        this.emitChange();
+        if (this.closeOnSelect) this.closePanel({restoreFocus: true});
+        return this;
+    }
+
+    // «Свой период»: the quick range lets go and the person picks on the grid.
+    chooseCustomRange() {
+        if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
+        this._focusDateAfterRender = true;
+        this.requestComponentUpdate('custom-range');
+        return this;
+    }
+
+    // The list is one tab stop: arrows move along it, Tab goes on to the grid.
+    handlePresetKeydown(event) {
+        const keys = {ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1};
+        if (!(event.key in keys) && event.key !== 'Home' && event.key !== 'End') return;
+        const buttons = [...event.currentTarget.querySelectorAll('button:not(:disabled)')];
+        if (!buttons.length) return;
+        event.preventDefault();
+        const index = buttons.indexOf(event.target);
+        let next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : index + keys[event.key];
+        if (this.isRtl && (event.key === 'ArrowRight' || event.key === 'ArrowLeft')) next = index - keys[event.key];
+        next = (next + buttons.length) % buttons.length;
+        buttons.forEach((button, at) => button.setAttribute('tabindex', at === next ? '0' : '-1'));
+        buttons[next].focus();
     }
 
     selectMonth(month) {
@@ -1151,6 +1317,11 @@ class SfDatepicker extends SfBaseElement {
                 endIsoValue: this.endValue,
                 range: true,
                 format: this.format,
+                // The quick range chosen, so a host can store «last 7 days»
+                // rather than the dates it meant today.
+                preset: this.activePreset
+                    ? (this.activePreset.relative ? {id: this.activePreset.id, relative: this.activePreset.relative} : {id: this.activePreset.id})
+                    : null,
             }
             : {
                 value: this.date,
@@ -1213,6 +1384,7 @@ class SfDatepicker extends SfBaseElement {
             context: this.contextMode,
             locale: this.locale,
             days: this.days,
+            presetItems: this.presetItems,
             months: this.months,
             years: this.years,
             yearPageStart: this.yearPageStart,
@@ -1299,6 +1471,8 @@ class SfDatepicker extends SfBaseElement {
             mask: this.mask,
             maskPattern: this.maskPattern,
             maskOptions: this.maskOptions,
+            presets: this.presetItems.map(({id, label, relative, disabled}) => ({id, label, relative, disabled})),
+            preset: this.preset,
         };
     }
 }
