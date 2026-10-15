@@ -49,6 +49,8 @@ function harness({prepared = false, declared = {}} = {}) {
       removeItem: (key) => stored.delete(key),
     },
     safeSetItem: (key, value) => stored.set(key, value),
+    // The Loader reaches storage through page-storage.js (a sandboxed page has none).
+    pageStorage: () => context.localStorage,
     encodeCacheValue: (value) => value,
     decodeCacheValue: (value) => value,
     SF: {RuleLoader: rules},

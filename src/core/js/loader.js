@@ -1,5 +1,6 @@
 import { decodeCacheValue, encodeCacheValue } from './cacheCodec';
 import stableHash from './stableHash';
+import pageStorage from './page-storage.js';
 import { convertTailwindClasses } from './tailwind-map';
 import utilityModuleAliases from '../contracts/utility-module-aliases.v1.json';
 import { resolveUtilityModule } from './utilityModuleAliases';
@@ -853,7 +854,7 @@ function normalizeToNodes(value) {
 
 function safeSetItem(key, value) {
   try {
-    localStorage.setItem(key, value);
+    pageStorage().setItem(key, value);
   } catch (e) {
     console.warn('localStorage setItem failed', key, e);
   }
@@ -861,7 +862,7 @@ function safeSetItem(key, value) {
 
 function safeRemoveItem(key) {
   try {
-    localStorage.removeItem(key);
+    pageStorage().removeItem(key);
   } catch (e) {
     console.warn('localStorage removeItem failed', key, e);
   }
@@ -1126,14 +1127,21 @@ SFLoaderPlugin.prototype.checkCookie = function (name) {
 };
 
 SFLoaderPlugin.prototype.getApartCookie = function (name) {
-  if (document.cookie.length > 0) {
-    let start = document.cookie.indexOf(name + '=');
+  // A sandboxed document throws on reading its cookies, as getCookie knows.
+  let cookies = '';
+  try {
+    cookies = document.cookie;
+  } catch {
+    cookies = '';
+  }
+  if (cookies.length > 0) {
+    let start = cookies.indexOf(name + '=');
 
     if (start !== -1) {
       start = start + name.length + 1;
-      let end = document.cookie.indexOf(';', start);
-      if (end === -1) end = document.cookie.length;
-      return encodeURI(document.cookie.substring(start, end)).split(',');
+      let end = cookies.indexOf(';', start);
+      if (end === -1) end = cookies.length;
+      return encodeURI(cookies.substring(start, end)).split(',');
     }
   }
 
@@ -3197,7 +3205,7 @@ SFLoaderPlugin.prototype.splitPluginPoint = (plugins) => {
   return sortLayerPlugin;
 };
 SFLoaderPlugin.prototype.checkSmartCache = function () {
-  const smartCache = localStorage.getItem(`SF_SMART_LIST-${this.urlHash}`);
+  const smartCache = pageStorage().getItem(`SF_SMART_LIST-${this.urlHash}`);
   if (smartCache) {
     try {
       this.smartCache = JSON.parse(decodeCacheValue(smartCache));
@@ -3344,8 +3352,8 @@ SFLoaderPlugin.prototype.checkTheme = function (body = null) {
 };
 
 SFLoaderPlugin.prototype.checkForCache = function () {
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
+  for (let i = 0; i < pageStorage().length; i++) {
+    const key = pageStorage().key(i);
     if (key.startsWith('SF_PLUGIN_LIST-')) {
       return false;
     }
@@ -3358,8 +3366,8 @@ SFLoaderPlugin.prototype.randomId = function (length = 8) {
 };
 
 SFLoaderPlugin.prototype.clearCache = function () {
-  for (let i = localStorage.length - 1; i >= 0; i--) {
-    const key = localStorage.key(i);
+  for (let i = pageStorage().length - 1; i >= 0; i--) {
+    const key = pageStorage().key(i);
     if (key.startsWith('SF_PLUGIN_LIST-') || key.startsWith('SF_SMART_LIST-')) {
       safeRemoveItem(key);
     }
@@ -3368,8 +3376,8 @@ SFLoaderPlugin.prototype.clearCache = function () {
 };
 
 SFLoaderPlugin.prototype.clearAllSfCache = function () {
-  for (let i = localStorage.length - 1; i >= 0; i--) {
-    const key = localStorage.key(i);
+  for (let i = pageStorage().length - 1; i >= 0; i--) {
+    const key = pageStorage().key(i);
     if (key && key.startsWith('SF_')) {
       safeRemoveItem(key);
     }
@@ -3378,7 +3386,7 @@ SFLoaderPlugin.prototype.clearAllSfCache = function () {
 
 SFLoaderPlugin.prototype.ensureCacheVersion = function () {
   const versionKey = 'SF_CACHE_VERSION';
-  const storedVersion = localStorage.getItem(versionKey);
+  const storedVersion = pageStorage().getItem(versionKey);
   const currentVersion = this.cacheVersion;
   if (!currentVersion) {
     this.clearAllSfCache();
@@ -3394,7 +3402,7 @@ SFLoaderPlugin.prototype.ensureCacheVersion = function () {
 
 SFLoaderPlugin.prototype.ensurePluginListVersion = function () {
   const versionKey = 'SF_PLUGIN_LIST_VERSION';
-  const storedVersion = localStorage.getItem(versionKey);
+  const storedVersion = pageStorage().getItem(versionKey);
   const currentVersion = this.pluginListVersion;
   if (!currentVersion) {
     this.clearCache();
@@ -3410,7 +3418,7 @@ SFLoaderPlugin.prototype.ensurePluginListVersion = function () {
 
 SFLoaderPlugin.prototype.revalidateMissingPlugins = function () {
   try {
-    const stored = localStorage.getItem('SF_MISSING_PLUGINS');
+    const stored = pageStorage().getItem('SF_MISSING_PLUGINS');
     if (!stored) return;
     const parsed = JSON.parse(decodeCacheValue(stored));
     if (!parsed || typeof parsed !== 'object') return;
@@ -3430,12 +3438,12 @@ SFLoaderPlugin.prototype.revalidateMissingPlugins = function () {
       remaining[key] = parsed[key];
     });
     if (Object.keys(remaining).length) {
-      localStorage.setItem(
+      pageStorage().setItem(
           'SF_MISSING_PLUGINS',
           encodeCacheValue(JSON.stringify(remaining)),
       );
     } else {
-      localStorage.removeItem('SF_MISSING_PLUGINS');
+      pageStorage().removeItem('SF_MISSING_PLUGINS');
     }
   } catch (e) {
     console.warn('revalidateMissingPlugins failed', e);
@@ -4012,7 +4020,7 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
   this.scheduleSearchEnd();
   this.checkTheme();
   if (this.standAlone) {
-    const localMissingPlugins = localStorage.getItem('SF_MISSING_PLUGINS');
+    const localMissingPlugins = pageStorage().getItem('SF_MISSING_PLUGINS');
     try {
       this.notFoundFiles = localMissingPlugins
           ? this.getPersistentMissingFiles(
@@ -4025,11 +4033,11 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
   }
   let plugins = this.productionPlanActive
       ? null
-      : localStorage.getItem(`SF_PLUGIN_LIST-${this.urlHash}`);
+      : pageStorage().getItem(`SF_PLUGIN_LIST-${this.urlHash}`);
 
   // fallback: если есть bundle-id, пробуем его ключ даже в standAlone
   if (!this.productionPlanActive && !plugins && window.BUNDLE_ID) {
-    plugins = localStorage.getItem(`SF_PLUGIN_LIST-${window.BUNDLE_ID}`);
+    plugins = pageStorage().getItem(`SF_PLUGIN_LIST-${window.BUNDLE_ID}`);
   }
   if (!this.standAlone) {
     this.firstLoad = !window.BUNDLE_LOADED;
@@ -4149,12 +4157,31 @@ SFLoaderPlugin.prototype.getTextNodes = function (node) {
 // hidden, and the module arrived about five seconds after the window opened.
 // A timer runs in a hidden tab, so that is what a hidden tab gets. No caller
 // uses the handle either of them returns.
+//
+// A frame is not promised either: an iframe out of view (a documentation
+// example below the fold) gets none while its document is still «visible», and
+// the work waited for a frame that never came -- tags created there stayed
+// undefined until someone scrolled (DEV, 2026-10-15). So the work runs on the
+// frame or on a short timer, whichever comes first, and once.
+const LOADER_FRAME_FALLBACK_MS = 100;
+
 function scheduleLoaderWork(fn) {
   if (typeof document !== 'undefined' && document.hidden) {
     return setTimeout(fn, 0);
   }
 
-  return requestAnimationFrame(fn);
+  let done = false;
+  let timer = null;
+  const run = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    cancelAnimationFrame(frame);
+    fn();
+  };
+  const frame = requestAnimationFrame(run);
+  timer = setTimeout(run, LOADER_FRAME_FALLBACK_MS);
+  return frame;
 }
 
 SFLoaderPlugin.prototype.mutate = function (fn) {

@@ -1,3 +1,4 @@
+import pageStorage from './page-storage.js';
 export function initIconSubsetState(loader) {
   loader.iconFontReady = false;
   loader.iconSubsetPending = false;
@@ -1243,7 +1244,7 @@ export function installIconSubsetRuntime(
   };
 
   SFLoaderPlugin.prototype.getStoredIconManifest = function (type = "") {
-    const raw = localStorage.getItem(this.getIconManifestStorageKey(type));
+    const raw = pageStorage().getItem(this.getIconManifestStorageKey(type));
 
     if (!raw) return null;
 

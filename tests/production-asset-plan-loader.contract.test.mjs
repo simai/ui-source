@@ -32,7 +32,7 @@ test('SF_PRELOADED disables the previous-page plugin-list fallback', () => {
   );
   assert.match(
     loader,
-    /let plugins = this\.productionPlanActive\s*\? null\s*: localStorage\.getItem/,
+    /let plugins = this\.productionPlanActive\s*\? null\s*: pageStorage\(\)\.getItem/,
   );
   assert.match(
     loader,
