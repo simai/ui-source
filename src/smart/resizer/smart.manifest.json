@@ -132,7 +132,22 @@
     "mode": "none",
     "source_of_truth": "host",
     "network_owner": "none",
-    "revision_field": null
+    "revision_field": null,
+    "view_preference": {
+      "key": "sf-resizer/<storage-key>",
+      "general_key": null,
+      "v": 1,
+      "fields": {
+        "width": {
+          "type": "integer",
+          "description": "The width the person dragged to, in CSS pixels, clamped to min and max when it is applied.",
+          "seed": true,
+          "written_by": [
+            "sf-resizer"
+          ]
+        }
+      }
+    }
   },
   "ownership": {
     "source": "simai/ui-source",

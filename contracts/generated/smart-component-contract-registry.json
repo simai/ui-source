@@ -1426,7 +1426,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/resizer/smart.manifest.json",
-      "manifest_sha256": "484623e92e354fed575c942e67d64cbb964c899ba40d0a8e77cb02a794f59dc3",
+      "manifest_sha256": "a6db69b4797df899047bfeee861a2f8fbf20822dd8690dd0f6c300c4c00281db",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1956,5 +1956,5 @@
   "schema": "simai.smart-component-contract-registry.v2",
   "schema_id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "schema_path": "contracts/schema/smart-component-manifest.v2.schema.json",
-  "schema_sha256": "cb39de233b2cf8af93daa44833b2e4d193627648426a202d6baee9938957d407"
+  "schema_sha256": "d5b0a5b299fa4b044d8125a315458c37de76f0bb5c6cb686962cdec7922b14ce"
 }

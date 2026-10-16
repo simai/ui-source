@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "title": "SIMAI Smart Component Manifest v2",
-  "x-simai-version": "2.4.0",
+  "x-simai-version": "2.5.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -346,6 +346,63 @@
             "string",
             "null"
           ]
+        },
+        "view_preference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "v",
+            "fields"
+          ],
+          "description": "The person's view of the component kept through SF.Preferences (view preferences, owner 2026-10-14): under which key, in which versioned shape, and which fields a server may seed in the page for the first paint (SF.Preferences.preload or the inline values) so the component draws in the person's arrangement before any request.",
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "The key, with the attribute it is built from in angle brackets, e.g. sf-table/<preferences-key>."
+            },
+            "general_key": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A key for the person's preference over every component of this kind, read under the particular one, or null."
+            },
+            "v": {
+              "type": "integer",
+              "description": "The shape's version, written as the value's v field. A component reads a value of an older v it knows and ignores one it does not."
+            },
+            "fields": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "type",
+                  "description",
+                  "seed"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "seed": {
+                    "type": "boolean",
+                    "description": "Whether a server may write this field into the page for the first paint."
+                  },
+                  "written_by": {
+                    "$ref": "#/$defs/stringList"
+                  },
+                  "schema": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
