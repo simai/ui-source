@@ -296,12 +296,16 @@ function renderMultiSelectFilterControl(field, host) {
             <div class="flex flex-col gap-1/2 overflow-x-hidden" data-size="4.5">
                 ${options.map((option) => host.renderFilterOption(field, option, selected))}
             </div>
+            ${!options.length && endpointPage?.status !== 'loading' && endpointPage?.status !== 'error' ? html`
+                <!-- A list with nothing in it says why, in one line, as every
+                     list does (simai.interaction-rules, five states). -->
+                <sf-empty-state layout="inline" size="1/2" kind=${search ? 'nothing-found' : 'no-data'}></sf-empty-state>` : ''}
             ${endpointPage ? html`
                 <div role="status" aria-live="polite" class="sf-text-1">
-                    ${endpointPage.status === 'loading' ? setText(host, 'loadingOptions') : endpointPage.status === 'error' ? setText(host, 'optionsError') : ''}
+                    ${endpointPage.status === 'loading' ? setText(host, 'loadingOptions') : ''}
                 </div>
-                ${endpointPage.status === 'error' ? html`<sf-button appearance="outline" size=${filterSize(host)} text="${setText(host, 'retry')}"
-                    @click=${() => host.loadEndpointFilterPage(field, null, search)}></sf-button>` : ''}
+                ${endpointPage.status === 'error' ? html`<sf-empty-state layout="inline" size="1/2" kind="error" text=${setText(host, 'optionsError')}
+                    @sf-empty-state-action=${(event) => { if (event.detail?.id === 'retry') host.loadEndpointFilterPage(field, null, search); }}></sf-empty-state>` : ''}
                 ${endpointPage.nextCursor && endpointPage.status !== 'error' ? html`<sf-button appearance="outline" size=${filterSize(host)} text="${setText(host, 'loadMore')}"
                     ?disabled=${endpointPage.status === 'loading'}
                     @click=${() => host.loadEndpointFilterPage(field, endpointPage.nextCursor, search)}></sf-button>` : ''}
