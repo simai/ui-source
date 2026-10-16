@@ -1588,6 +1588,36 @@
       "rewrite": "manual",
       "manual": "appearance=\"ghost\" becomes appearance=\"link\".",
       "source": "src/smart/buttons/index.js"
+    },
+    {
+      "id": "token-heading-font-unused",
+      "recorded_on": "2026-10-16",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "--sf-heading--font-family, --sf-heading--font-weight and --sf-heading--font-style are read by no rule: headings take their face, weight and style from the title roles. They stay defined until remove_after and then leave.",
+      "items": [
+        {
+          "from": "--sf-heading--font-family",
+          "to": null,
+          "match": "--sf-heading--font-family\\b"
+        },
+        {
+          "from": "--sf-heading--font-weight",
+          "to": null,
+          "match": "--sf-heading--font-weight\\b"
+        },
+        {
+          "from": "--sf-heading--font-style",
+          "to": null,
+          "match": "--sf-heading--font-style\\b"
+        }
+      ],
+      "deprecated_on": "2026-10-16",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Set a heading's face, weight or style through its title role (sf-title-*), or a class on the heading.",
+      "owner": "ui-control",
+      "source": "ui-control/.artifacts/eval4/FIXES-2026-10-16.md (docs trial 4, item 12)"
     }
   ]
 }

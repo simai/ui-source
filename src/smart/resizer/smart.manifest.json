@@ -65,7 +65,7 @@
       "storage-key": {
         "type": "string",
         "default": "",
-        "description": "Remembers the width in this browser under sf-resizer:<key>; a double click forgets it."
+        "description": "Remembers the width in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
       },
       "label": {
         "type": "string",
@@ -262,7 +262,7 @@
       "accessibility",
       "provenance"
     ],
-    "minimal_example": "<nav style=\"position:relative; inline-size: var(--menu-width, 16rem)\"><sf-resizer min=\"13rem\" max=\"24rem\" property=\"--menu-width\" storage-key=\"menu\" label=\"Menu width\"></sf-resizer></nav>",
+    "minimal_example": "<nav style=\"inline-size: var(--menu-width, 16rem)\"><sf-resizer min=\"13rem\" max=\"24rem\" property=\"--menu-width\" storage-key=\"menu\" label=\"Menu width\"></sf-resizer></nav>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

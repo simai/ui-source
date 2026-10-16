@@ -291,11 +291,11 @@
         },
         "date": {
           "type": "string",
-          "description": "The ISO date; for a range, the formatted range."
+          "description": "The ISO date; for a range, the ISO 8601 interval start/end (the start alone until the end is chosen)."
         },
         "isoValue": {
           "type": "string",
-          "description": "The ISO date; for a range, the start."
+          "description": "The same as date: the ISO date, or for a range the interval start/end."
         },
         "startValue": {
           "type": "string",
@@ -564,7 +564,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "055f2d62971b342eab22e62ea46817d8ad744c3547921a7b7f26bb6243a5923e"
+        "sha256": "5092dea6ebeacb935b895b61216360eaebcd86f1d05db73fb958f1e1aec62ec2"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",

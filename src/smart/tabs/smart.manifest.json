@@ -293,6 +293,7 @@
             }
           },
           "reason": {
+            "type": "string",
             "enum": [
               "order",
               "visibility"

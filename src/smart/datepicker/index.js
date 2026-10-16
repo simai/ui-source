@@ -1315,16 +1315,21 @@ class SfDatepicker extends SfBaseElement {
     }
 
     emitChange() {
+        // date and isoValue mean one thing in both modes: the ISO value. For a
+        // range that is the ISO 8601 interval start/end (the start alone while
+        // the end is not chosen); they were the formatted range and the start
+        // (docs trial 4).
+        const interval = this.startValue && this.endValue ? `${this.startValue}/${this.endValue}` : (this.startValue || '');
         const detail = this.range
             ? {
                 value: [this.startValue, this.endValue],
-                date: this.formattedValue,
+                date: interval,
                 startValue: this.startValue,
                 endValue: this.endValue,
                 formattedValue: this.displayValue,
                 formattedStartValue: this.formattedStartValue,
                 formattedEndValue: this.formattedEndValue,
-                isoValue: this.date,
+                isoValue: interval,
                 startIsoValue: this.startValue,
                 endIsoValue: this.endValue,
                 range: true,

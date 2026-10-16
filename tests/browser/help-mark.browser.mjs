@@ -4,7 +4,9 @@
 // explanation beside the button (aria-expanded true), it is announced
 // politely, Escape closes it and focus stays on the button; a hover opens
 // nothing; an explanation with a link takes Tab after the button and closes
-// when the focus leaves both; it is at most 20rem wide.
+// when the focus leaves both; it is at most 20rem wide; a label line with a
+// mark in it is as tall as one without (docs trial 4: the 24px button made a
+// 20px line 24px).
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -38,6 +40,10 @@ try {
       text="Уникальное имя модуля латиницей, например simai.billing. Оно не меняется после установки и служит адресом модуля в обновлениях."></sf-help-mark></p>
     <p>Доступ <sf-help-mark id="linked" label="Подробнее: доступ"><span slot="content">Подробнее — в <a href="#access">руководстве</a>.</span></sf-help-mark>
       <button id="after" type="button">Дальше</button></p>
+    <div style="font-size:var(--sf-text-size-1\\/2);line-height:var(--sf-text-height-1\\/2)">
+      <span id="bare" style="display:block">Подпись</span>
+      <span id="marked" style="display:block">Подпись <sf-help-mark label="Подробнее" text="Пояснение"></sf-help-mark></span>
+    </div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -51,6 +57,12 @@ try {
       live: element.querySelector('.sf-help-mark-live')?.textContent.trim(), width: Math.round(panel?.getBoundingClientRect().width ?? 0),
       focused: document.activeElement === button};
   }, id);
+  const lines = await page.evaluate(() => ({
+    bare: document.getElementById('bare').getBoundingClientRect().height,
+    marked: document.getElementById('marked').getBoundingClientRect().height,
+    button: document.querySelector('#marked .sf-help-mark-button button')?.getBoundingClientRect().height ?? 0,
+  }));
+  if (Math.abs(lines.marked - lines.bare) > 0.5 || lines.button < 24) note({case: 'a mark does not make its line taller, and keeps its target', got: lines});
   await page.hover('#plain .sf-help-mark-button button');
   await page.waitForTimeout(200);
   const hovered = await state('plain');

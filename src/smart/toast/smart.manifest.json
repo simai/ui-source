@@ -382,7 +382,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-toast type=\"success\" title=\"Saved\" supporting-text=\"Your changes are available.\" role=\"status\" close-label=\"Close message\"></sf-toast>",
+    "minimal_example": "<sf-toast status=\"success\" title=\"Saved\" supporting-text=\"Your changes are available.\" role=\"status\" close-label=\"Close message\"></sf-toast>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

@@ -416,7 +416,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-tag type=\"default\" text=\"Documentation\"></sf-tag>",
+    "minimal_example": "<sf-tag text=\"Documentation\"></sf-tag>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

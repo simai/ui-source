@@ -228,7 +228,7 @@
       },
       {
         "path": "src/smart/help-mark/scss/_smart__help_mark.scss",
-        "sha256": "ffd1be35dc32bfa06beb3eb2cc9b280d0ea5ddc97572642481314a912e76bf7a"
+        "sha256": "806566aa7087858c753a06a215251be5625366a985ad8d978af242e5ca625f3e"
       },
       {
         "path": "src/smart/help-mark/rule.js",

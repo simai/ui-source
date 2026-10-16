@@ -42,6 +42,11 @@ async function writeText(text, documentRef) {
   return 'legacy';
 }
 
+const writeAttribute = (element, name, next) => {
+  if (next === null || next === undefined) element.removeAttribute(name);
+  else element.setAttribute(name, String(next));
+};
+
 class SfCopyButton extends SfBaseElement {
   constructor() {
     super();
@@ -87,6 +92,22 @@ class SfCopyButton extends SfBaseElement {
     const value = Number(raw);
     return raw !== null && raw !== '' && Number.isFinite(value) && value >= 0 ? value : 2000;
   }
+
+  // Every attribute is a property that can be written as well as read: the
+  // getters above alone made `button.value = …` a silent no-op (docs trial 4).
+  // Writing goes through the attribute, so the getters stay the one reading.
+  set value(next) { writeAttribute(this, 'value', next); }
+  set target(next) { writeAttribute(this, 'target', next); }
+  set text(next) { writeAttribute(this, 'text', next); }
+  set label(next) { writeAttribute(this, 'label', next); }
+  set size(next) { writeAttribute(this, 'size', next); }
+  set appearance(next) { writeAttribute(this, 'appearance', next); }
+  set icon(next) { writeAttribute(this, 'icon', next); }
+  set successIcon(next) { writeAttribute(this, 'success-icon', next); }
+  set successText(next) { writeAttribute(this, 'success-text', next); }
+  set errorText(next) { writeAttribute(this, 'error-text', next); }
+  set duration(next) { writeAttribute(this, 'duration', next); }
+
 
   words(key) {
     return pageText(COPY_TEXT, key, this, 'sf-copy-button');
