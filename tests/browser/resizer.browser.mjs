@@ -43,6 +43,7 @@ try {
     await page.setContent(`<!doctype html><html lang="ru"><body style="margin:0">
       <div style="display:flex">
         <nav id="panel" style="inline-size: var(--menu-width, 256px); block-size: 300px; background: #eee">
+          <aside id="menu-layer" style="position:relative; z-index:60; block-size:100%; background:#ddd">Меню</aside>
           <sf-resizer id="handle" min="200px" max="400px" property="--menu-width" storage-key="probe-menu" label="Ширина меню"></sf-resizer>
         </nav>
         <main style="flex:1">Страница</main>
@@ -72,6 +73,10 @@ try {
     note({case: 'a separator with its value', got: handle});
   }
   if (Math.abs(handle.x - 256) > 2) note({case: 'the handle stands on the edge', got: handle.x, expected: 256});
+  // A layer in the panel that lifts itself (the larena menu: z-6 = 60) does
+  // not cover the handle's inner half (docs trial 5).
+  const onTop = await page.evaluate(({x, y}) => document.elementFromPoint(x - 2, y)?.closest('sf-resizer')?.id ?? document.elementFromPoint(x - 2, y)?.id ?? null, handle);
+  if (onTop !== 'handle') note({case: 'the handle is above a lifted layer in its panel', got: onTop});
 
   await page.mouse.move(handle.x, handle.y);
   await page.mouse.down();

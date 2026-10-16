@@ -6,17 +6,21 @@ sf-help-mark {
   vertical-align: middle;
 }
 
-/* The mark takes the line it stands on and no more: the smallest icon button
-   is 24px and a label line 20px, so the line grew wherever a mark stood in it
-   (docs trial 4). The box is one line tall and aligned to the line's top --
-   aligned to the middle it sits off the line by half the x-height and grows it
-   all the same -- and the button keeps its target, centred, out of the line
-   box. (The host is display: contents once upgraded; this box is the one.) */
+/* The mark adds nothing to the height of the line or the label row it stands
+   in: the smallest icon button is 24px and a label line 20px, so the line grew
+   wherever a mark stood (docs trials 4 and 5). The box has no height of its
+   own and the button, which keeps its target, stands out of it, centred:
+   in running text the box sits at the middle of the line (vertical-align),
+   in a flex label row (.sf-input-label) at the row's centre (align-self). A
+   box one line tall was not enough: in a label row 1lh is the row's 24px, not
+   the 20px of the label text. (The host is display: contents once upgraded;
+   this box is the one.) */
 .sf-help-mark {
   display: inline-flex;
   align-items: center;
-  block-size: 1lh;
-  vertical-align: top;
+  block-size: 0;
+  vertical-align: middle;
+  align-self: center;
 }
 
 .sf-help-mark-panel {

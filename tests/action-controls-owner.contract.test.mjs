@@ -73,9 +73,10 @@ test('action documentation covers the complete supported public surface', async 
   for (const size of ['1/3', '1/2', '1', '2', '3']) {
     assert.match(iconSizes, new RegExp(`sf-icon-button--size-${size.replace('/', '\\/')}`));
   }
-  // Icon Button has no loading state of its own: the page tells the reader to
-  // pair native disabled with aria-busy for a running operation.
-  assert.match(iconPage, /### Недоступная[\s\S]*?`disabled` и `aria-busy="true"`[\s\S]*?:::example \{id="components\/icon-buttons\/state-disabled"/);
+  // A running operation keeps the focus on the button: the page tells the
+  // reader to use the loading class with aria-busy and aria-disabled, not native
+  // disabled, which drops the focus to body (docs trial 5).
+  assert.match(iconPage, /### Недоступная[\s\S]*?`loading`, `aria-busy="true"` и\s+`aria-disabled="true"`[\s\S]*?:::example \{id="components\/icon-buttons\/state-disabled"/);
   assert.match(iconDisabled, /<button [^>]*class="sf-icon-button [^"]*"[^>]*aria-label="[^"]+"[^>]* disabled>/);
   assert.match(iconPressed, /aria-pressed="true"/);
   assert.doesNotMatch(iconPage, /`radius-default`.*(?:норм|вариант)/i);

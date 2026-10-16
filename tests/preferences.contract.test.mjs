@@ -112,3 +112,17 @@ test('no Smart component touches localStorage itself', async () => {
   await walk(root.pathname);
   assert.deepEqual(offenders, []);
 });
+
+test('the value already kept is not sent to the host again (docs trial 5)', async () => {
+  const prefs = createPreferences();
+  const told = [];
+  prefs.preload({'sf-resizer/menu': {v: 1, width: 280}});
+  prefs.useHost({save: (key, value) => told.push(['save', key, value]), remove: (key) => told.push(['remove', key])});
+  // A resizer restoring the width the host gave it.
+  assert.equal(prefs.write('sf-resizer/menu', {v: 1, width: 280}), true);
+  await wait(450);
+  assert.deepEqual(told, []);
+  prefs.write('sf-resizer/menu', {v: 1, width: 300});
+  await wait(450);
+  assert.deepEqual(told, [['save', 'sf-resizer/menu', {v: 1, width: 300}]]);
+});

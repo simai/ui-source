@@ -224,11 +224,11 @@
       },
       {
         "path": "src/smart/help-mark/js/templates/default.js",
-        "sha256": "91973ced35456cde26c1649082978e0f666acc43737ef69266c28fd1f78227a3"
+        "sha256": "f9cc3b9e4a5f5e6554a6fa104991b1e5bca11fc541b120a61977291f898e031d"
       },
       {
         "path": "src/smart/help-mark/scss/_smart__help_mark.scss",
-        "sha256": "806566aa7087858c753a06a215251be5625366a985ad8d978af242e5ca625f3e"
+        "sha256": "f4ce5ff57016114a264d8dfd21185a80ec4717a3e7c4e1d9e791775d8ff22b1f"
       },
       {
         "path": "src/smart/help-mark/rule.js",

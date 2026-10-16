@@ -141,6 +141,10 @@ function createPreferences() {
     write(key, value) {
       if (!validKey(key)) return false;
       const next = plain(value);
+      // The value already kept is not written again: a component restoring
+      // what the host gave it (sf-resizer's value) sent it back to the host on
+      // every load (docs trial 5).
+      if (JSON.stringify(api.read(key)) === JSON.stringify(next)) return true;
       if (host.values.has(key)) host.values.set(key, next);
       writeCache(key, next);
       schedule(key);

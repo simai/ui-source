@@ -248,11 +248,12 @@ export function mapTailwindBaseClass(className) {
     return `line-${leadingMatch[1]}`;
   }
 
-  const alignItemsMatch = base.match(
-    /^items-(start|end|center|baseline|stretch)$/,
-  );
-  if (alignItemsMatch) {
-    return `items-cross-${alignItemsMatch[1]}`;
+  // items-start|end|center|stretch are the Framework's own place-items classes
+  // (utility/place-items), not Tailwind's align-items: rewriting them to
+  // items-cross-* dropped justify-items in a grid (docs trial 5). Only
+  // items-baseline, which the Framework does not name, is Tailwind's.
+  if (base === 'items-baseline') {
+    return 'items-cross-baseline';
   }
 
   const verticalAlignMatch = base.match(

@@ -1,4 +1,4 @@
-import { html, render } from 'lit';
+import { html, nothing, render } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { pageText } from '../../core/js/page-language';
 import { renderTabsTemplate } from './js/templates/default';
@@ -450,23 +450,18 @@ class SfTabs extends SfBaseElement {
   // ones -- except the active one, which is shown in place while it is active,
   // so a panel never stands without its tab.
   get displayItems() {
-    const items = this.computedItems;
-    const byKey = new Map(items.map((item) => [item.key, item]));
-    const ordered = [];
-    for (const key of this._settings.order) {
-      const item = byKey.get(key);
-      if (item && !ordered.includes(item)) ordered.push(item);
-    }
-    for (const item of items) if (!ordered.includes(item)) ordered.push(item);
     const hidden = new Set(this._settings.hidden);
-    return ordered.filter((item) => item.pinned || item.selected || !hidden.has(item.key));
+    return this.arrangedItems.filter((item) => item.pinned || item.selected || !hidden.has(item.key));
   }
 
   // The arrangement as the settings list shows it: every tab, in order.
+  // Pinned tabs stay first, in their declared order, whatever the stored
+  // order says: the person arranges the others after them (docs trial 5: a
+  // pinned tab could be dragged and overtaken).
   get arrangedItems() {
     const items = this.computedItems;
     const byKey = new Map(items.map((item) => [item.key, item]));
-    const ordered = [];
+    const ordered = items.filter((item) => item.pinned);
     for (const key of this._settings.order) {
       const item = byKey.get(key);
       if (item && !ordered.includes(item)) ordered.push(item);
@@ -651,14 +646,17 @@ class SfTabs extends SfBaseElement {
     const items = this.arrangedItems;
     const hidden = new Set(this._settings.hidden);
     const size = this.menuSize();
+    // Only the tabs that are not pinned are sortable items, so the index the
+    // list reports counts among them; the pinned ones lead.
+    const pinnedKeys = items.filter((entry) => entry.pinned).map((entry) => entry.key);
     const onIntent = (event) => {
       const {item, index} = event.detail ?? {};
-      const keys = items.map((entry) => entry.key);
+      const keys = items.filter((entry) => !entry.pinned).map((entry) => entry.key);
       const from = keys.indexOf(String(item));
       if (from < 0) return;
       keys.splice(from, 1);
       keys.splice(Math.max(0, Math.min(index, keys.length)), 0, String(item));
-      this.changeSettings({order: keys, hidden: [...hidden]}, 'order');
+      this.changeSettings({order: [...pinnedKeys, ...keys], hidden: [...hidden]}, 'order');
     };
     const toggle = (key, shown) => {
       const next = new Set(hidden);
@@ -669,8 +667,11 @@ class SfTabs extends SfBaseElement {
       <sf-sortable class="sf-tabs-settings-list" group="sf-tabs-settings" label=${this.text('customize')}
                    @sf-sortable-intent=${onIntent}>
         ${items.map((item) => html`
-          <div class="sf-tabs-settings-row" data-sf-sortable-item=${item.key}>
-            <span class="sf-tabs-settings-handle" data-sf-sortable-handle aria-hidden="true"><i class="sf-icon">drag_indicator</i></span>
+          <div class=${item.pinned ? 'sf-tabs-settings-row sf-tabs-settings-row--pinned' : 'sf-tabs-settings-row'}
+               data-sf-sortable-item=${item.pinned ? nothing : item.key}>
+            ${item.pinned
+              ? html`<span class="sf-tabs-settings-handle" aria-hidden="true"></span>`
+              : html`<span class="sf-tabs-settings-handle" data-sf-sortable-handle aria-hidden="true"><i class="sf-icon">drag_indicator</i></span>`}
             <span class="sf-tabs-settings-label">${item.label}</span>
             ${item.pinned
               ? html`<i class="sf-icon sf-tabs-settings-pin" title=${this.text('pinned')} aria-label=${this.text('pinned')}>push_pin</i>`
@@ -814,8 +815,35 @@ class SfTabs extends SfBaseElement {
     this.activate(Number(tab.dataset.sfTabIndex), event);
   };
 
+  // «Ещё», when it stands: the arrows reach it after the last tab in the row
+  // and leave it back to the tabs (docs trial 5: only Tab reached it).
+  get moreTarget() {
+    const more = this.querySelector('.sf-tabs-more');
+    if (!more || more.closest('sf-tabs') !== this || more.hidden) return null;
+    // sf-button's host is display: contents and has no box: the button is
+    // what stands, or not.
+    const button = more.querySelector('button');
+    return button && button.getClientRects().length ? button : null;
+  }
+
   handleRootKeyDown = (event) => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    const more = this.moreTarget;
+    if (more && (event.target === more || more.contains(event.target)) && this.tabList.getAttribute('aria-orientation') !== 'vertical') {
+      const rtl = getComputedStyle(this.tabList).direction === 'rtl';
+      const back = event.key === (rtl ? 'ArrowRight' : 'ArrowLeft') || event.key === 'End';
+      const forward = event.key === (rtl ? 'ArrowLeft' : 'ArrowRight') || event.key === 'Home';
+      if (!back && !forward) return;
+      const overflowed = new Set(this._overflowed ?? []);
+      const shown = this.displayItems.filter((item) => !item.disabled && !overflowed.has(item.index));
+      const target = back ? shown[shown.length - 1] : shown[0];
+      if (!target) return;
+      event.preventDefault();
+      this.goTo(target.index);
+      this.syncTabSemantics();
+      this.tabTargets[target.index]?.focus();
+      return;
+    }
     const tab = this.ownedTab(event);
     // A custom tab descriptor may contain its own input/widget. Its keys are
     // not navigation commands for this tab list.
@@ -844,6 +872,11 @@ class SfTabs extends SfBaseElement {
     const currentEnabledIndex = enabledItems.findIndex(
       (item) => item.index === Number(tab.dataset.sfTabIndex),
     );
+    // Past the last tab in the row, forward, is «Ещё» when it stands.
+    if (more && arrows.includes(event.key) && direction === 1 && currentEnabledIndex === enabledItems.length - 1) {
+      more.focus();
+      return;
+    }
     const nextEnabledIndex = event.key === 'Home' ? 0
       : event.key === 'End' ? enabledItems.length - 1
         : (currentEnabledIndex + direction + enabledItems.length) % enabledItems.length;

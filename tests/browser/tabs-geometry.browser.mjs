@@ -9,7 +9,9 @@
 // - a count is drawn after the label; a link tab is aria-current when active;
 // - configurable: setSettings orders and hides tabs (unknown keys ignored,
 //   unnamed items appended, pinned never hidden, an active hidden tab shown),
-//   the settings menu lists every tab, and a visibility change is announced.
+//   the settings menu lists every tab, and a visibility change is announced;
+// - a pinned tab stays first and its settings row cannot be dragged; the
+//   arrows reach «Ещё» after the last tab and come back (docs trial 5).
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -96,6 +98,20 @@ try {
   });
   if (!more.trigger || more.trigger.height !== more.trigger.tab || more.trigger.lines !== 1 || more.trigger.bottom !== 0) note({case: '«Ещё» is one line on the row height', got: more.trigger});
   if (!more.more || !more.shown.includes(6) || more.shown.length >= 8 || more.count !== '3') note({case: 'overflow more', got: more});
+  const keys = await page.evaluate(async () => {
+    const tabs = document.getElementById('more');
+    const visible = [...tabs.querySelectorAll('.sf-tabs-top [role="tab"]')].filter((tab) => tab.getClientRects().length && !tab.closest('.sf-tabs-overflowed'));
+    const last = visible.at(-1);
+    last.focus();
+    last.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', bubbles: true, cancelable: true}));
+    await new Promise((done) => setTimeout(done, 100));
+    const onMore = Boolean(document.activeElement?.closest('.sf-tabs-more'));
+    document.activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowLeft', bubbles: true, cancelable: true}));
+    await new Promise((done) => setTimeout(done, 100));
+    const back = document.activeElement?.getAttribute('role') === 'tab' ? document.activeElement.textContent.trim() : null;
+    return {onMore, back, last: last.textContent.trim()};
+  });
+  if (!keys.onMore || keys.back !== keys.last) note({case: 'the arrows reach «Ещё» and come back', got: keys});
   await page.click('#more .sf-tabs-more button');
   await page.waitForTimeout(600);
   const menu = await page.evaluate(() => [...document.querySelectorAll('sf-context-menu .sf-context-menu-item-label')].map((node) => node.textContent.trim()));
@@ -124,8 +140,8 @@ try {
     const linkCurrent = tabs.querySelector('[role="tab"][aria-current="page"]')?.textContent.trim() ?? null;
     return {first, activeHidden, linkCurrent, gear: tabs.querySelector('.sf-tabs-settings button')?.getAttribute('aria-label') ?? tabs.querySelector('.sf-tabs-settings')?.getAttribute('aria-label')};
   });
-  if (conf.first.join() !== 'D,C,A') note({case: 'setSettings orders and hides', got: conf.first, expected: 'D,C,A (zz ignored, b hidden, pinned a never hidden, appended)'});
-  if (conf.activeHidden.join() !== 'D,C,B,A') note({case: 'an active hidden tab is shown in place', got: conf.activeHidden});
+  if (conf.first.join() !== 'A,D,C') note({case: 'setSettings orders and hides', got: conf.first, expected: 'A,D,C (pinned a first and never hidden, zz ignored, b hidden)'});
+  if (conf.activeHidden.join() !== 'A,D,C,B') note({case: 'an active hidden tab is shown in place', got: conf.activeHidden});
   if (conf.linkCurrent !== 'C') note({case: 'a link tab is aria-current when active', got: conf.linkCurrent});
   if (conf.gear !== 'Настроить вкладки') note({case: 'the gear is named', got: conf.gear});
   await page.click('#conf .sf-tabs-settings button');
@@ -133,9 +149,10 @@ try {
   const list = await page.evaluate(() => {
     const rows = [...document.querySelectorAll('.sf-tabs-settings-row')];
     return {rows: rows.map((row) => row.textContent.trim().replace(/\s+/gu, ' ')), boxes: rows.map((row) => Boolean(row.querySelector('sf-checkbox'))),
+      movable: rows.map((row) => row.hasAttribute('data-sf-sortable-item') && Boolean(row.querySelector('[data-sf-sortable-handle]'))),
       footer: Boolean(document.querySelector('.sf-tabs-settings-body')?.closest('sf-context-menu')?.querySelector('.sf-context-menu-footer'))};
   });
-  if (list.rows.length !== 4 || list.boxes.join() !== 'true,true,true,false' || !list.footer) note({case: 'the settings list', got: list});
+  if (list.rows.length !== 4 || list.boxes.join() !== 'false,true,true,true' || list.movable.join() !== 'false,true,true,true' || !list.footer) note({case: 'the settings list', got: list});
   await page.evaluate(() => {
     const row = [...document.querySelectorAll('.sf-tabs-settings-row')].find((entry) => entry.textContent.includes('B'));
     (row?.querySelector('input[type="checkbox"]') ?? row?.querySelector('sf-checkbox'))?.click();
@@ -145,7 +162,7 @@ try {
   if (!announced.length || announced.at(-1).reason !== 'visibility' || announced.at(-1).hidden.includes('b')) {
     note({case: 'showing a tab is announced', got: announced});
   }
-  console.log(JSON.stringify({geometry, more, menu, chosen, conf, list, announced}, null, 1));
+  console.log(JSON.stringify({geometry, more, keys, menu, chosen, conf, list, announced}, null, 1));
 } finally {
   await browser.close();
 }
