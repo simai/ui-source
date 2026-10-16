@@ -1775,8 +1775,8 @@
   },
   "conformance": {
     "kit": "kit",
-    "sha256": "c9679be114889144fbe6b2c9c10c2336f24d69f5692d734bff91be32e46b3d77",
-    "cases": 43
+    "sha256": "cebc20b9db179164026376a1d1cf57c2a2b73e64a1f9ceb621d99b84307de016",
+    "cases": 44
   },
   "answer": {
     "summary": "Every intent is answered with one object: `answer` says what happened, `reason` why a write was refused or is unavailable, and `data` carries what an applied answer supplies -- the intent's answer_data. An answer to query.change or query.count names the `sequence` of the request it answers, and the view drops an answer to an older one. A conflict carries, beside `answer`, `current_revision` -- the revision the write should have been made against; a settings write's conflict also `columns`, the layer's columns as they now are, and a batch's conflict `conflicts`, one entry per stale record. (1.10.0 and 1.11.0 said a conflict carries the revision in data; their kits and every host put it beside answer, which is what this edition states.) A view given no current_revision reads the list again. A refusal that needs a confirmation carries data.confirm.",
