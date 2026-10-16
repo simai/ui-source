@@ -49,6 +49,7 @@ try {
     ${['1/2', '1', '2'].map((size) => `<sf-tabs class="g" data-s="${size}" type="underline" size="${size}" items="Обзор|Настройки|История"></sf-tabs>`).join('<br>')}
     <div style="width:360px;display:flex"><sf-tabs id="more" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
     <sf-tabs id="conf" type="underline" size="1/2" configurable></sf-tabs>
+    <div style="width:300px;display:flex"><sf-tabs id="narrow" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -122,6 +123,20 @@ try {
   const chosen = await page.evaluate(() => document.getElementById('more').getAttribute('active-index'));
   if (chosen !== '7') note({case: 'choosing in «Ещё» activates the tab', got: chosen});
 
+  // A pinned first tab and an active last one, in a row too narrow for both
+  // and the rest: both stay, the others go into «Ещё» (docs trial 5).
+  const narrow = await page.evaluate(async () => {
+    const tabs = document.getElementById('narrow');
+    tabs.setItems(['Главная вкладка', 'Вторая длинная', 'Третья длинная', 'Четвёртая длинная', 'Последняя вкладка'].map((label, at) => ({key: `n${at}`, label, pinned: at === 0})));
+    tabs.setAttribute('active-index', '4');
+    for (let wait = 0; wait < 40 && !tabs.querySelector('.sf-tabs-top-container[data-sf-tabs-more]'); wait += 1) {
+      await new Promise((done) => setTimeout(done, 100));
+    }
+    await new Promise((done) => setTimeout(done, 300));
+    return [...tabs.querySelectorAll('.sf-tabs-top > :not(.sf-tabs-overflowed)')].map((host) => host.textContent.trim()).filter(Boolean);
+  });
+  if (!narrow.includes('Главная вкладка') || !narrow.includes('Последняя вкладка')) note({case: 'a pinned tab and the active one both stay in a narrow row', got: narrow});
+
   // Settings.
   const conf = await page.evaluate(async () => {
     const tabs = document.getElementById('conf');
@@ -162,7 +177,7 @@ try {
   if (!announced.length || announced.at(-1).reason !== 'visibility' || announced.at(-1).hidden.includes('b')) {
     note({case: 'showing a tab is announced', got: announced});
   }
-  console.log(JSON.stringify({geometry, more, keys, menu, chosen, conf, list, announced}, null, 1));
+  console.log(JSON.stringify({geometry, more, keys, narrow, menu, chosen, conf, list, announced}, null, 1));
 } finally {
   await browser.close();
 }

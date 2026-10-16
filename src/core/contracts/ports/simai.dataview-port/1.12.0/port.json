@@ -1,0 +1,1892 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.dataview-port",
+  "version": "1.12.0",
+  "component": "smart.data-view-composite",
+  "element": "sf-data-view",
+  "summary": "The host seam for a composed data view with toolbar, content and pagination slots, including scoped saved views, a write answered with the record it changed, and the filter fields a saved view was showing. Since 1.8.0 the list can be a tree: the host answers one level at a time, offers the places a node may move to, and may ask for a confirmation before a write. Since 1.9.0 a node names its own icon. Since 1.10.0 the answer is described here, and creating a record and saving personal column settings are capabilities a host announces: a host that does not handle them is not offered them. Since 1.12.0 the answer names the sequence it answers and what a conflict carries beside it, column settings are required only of a host that offers them, and the reasons the view knows are listed.",
+  "capabilities": {
+    "saved-views": {
+      "summary": "Saved views: opening, saving and deleting a stored view.",
+      "intents": [
+        "view.open",
+        "view.save",
+        "view.delete"
+      ],
+      "data": [
+        "saved_views"
+      ]
+    },
+    "shared-column-settings": {
+      "summary": "Saving column settings for everyone, a separate permission from the personal layer.",
+      "intents": [
+        "settings.save_shared"
+      ]
+    },
+    "bulk-under-filter": {
+      "summary": "Acting on every record under the current filter, not only the checked ones.",
+      "intents": [
+        "bulk.apply_under_filter"
+      ]
+    },
+    "row-actions": {
+      "summary": "Per-record operations the host resolves; the allowed set travels with each record.",
+      "intents": [
+        "record.open",
+        "record.mutate"
+      ]
+    },
+    "shared-saved-views": {
+      "summary": "Write a shared saved view with a permission separate from personal saved views.",
+      "intents": [
+        "view.save_shared"
+      ],
+      "data": [
+        "saved_views"
+      ]
+    },
+    "count-on-request": {
+      "summary": "The host can count the records a query matches, separately from answering the query. Without it the view never offers the number and never asks for it.",
+      "intents": [
+        "query.count"
+      ],
+      "data": [
+        "has_next"
+      ]
+    },
+    "tree": {
+      "summary": "The list can be a tree: records carry parent and has_children, and the host answers one level at a time.",
+      "intents": [
+        "tree.expand"
+      ],
+      "data": [
+        "tree"
+      ]
+    },
+    "tree-move": {
+      "summary": "Nodes can be moved, to the places the host offers, by drag or by keyboard.",
+      "intents": [
+        "node.targets",
+        "node.move"
+      ],
+      "data": [
+        "move_targets"
+      ]
+    },
+    "create-record": {
+      "summary": "Creating a record: the view offers its create action, and the menu of kinds when create_items names several. A host on an earlier version gets it without announcing it.",
+      "intents": [
+        "view.create_record"
+      ]
+    },
+    "personal-column-settings": {
+      "summary": "Saving column settings for this person: the view offers its column settings and writes them back. A host on an earlier version gets it without announcing it.",
+      "intents": [
+        "settings.save_personal"
+      ]
+    },
+    "row-reorder": {
+      "summary": "Putting a flat list's records in order by hand: the view lets a person drag rows inside the list and raises record.reorder. A tree keeps node.move.",
+      "intents": [
+        "record.reorder"
+      ]
+    },
+    "inline-edit": {
+      "summary": "Writing a boolean field in its cell: where a record names the field in `editable`, the view draws a checkbox and raises record.set.",
+      "intents": [
+        "record.set"
+      ]
+    }
+  },
+  "data": {
+    "columns": {
+      "summary": "Columns the host allows in this view, with their presentation vocabulary.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": [
+                "number",
+                "string",
+                "null"
+              ]
+            },
+            "width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "min_width": {
+              "type": [
+                "string",
+                "number",
+                "null"
+              ]
+            },
+            "priority": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Lower survives longer when the columns do not fit."
+            },
+            "sticky": {
+              "enum": [
+                "none",
+                "start",
+                "end"
+              ]
+            },
+            "sortable": {
+              "type": "boolean"
+            },
+            "renderer": {
+              "enum": [
+                "link"
+              ]
+            },
+            "role": {
+              "enum": [
+                "title"
+              ],
+              "description": "The column that leads the record. The view pins it beside the box and the row menu, and it is the column a reader names the row by. At most one column carries it."
+            },
+            "property_type": {
+              "enum": [
+                "string",
+                "text",
+                "integer",
+                "number",
+                "date",
+                "datetime",
+                "boolean",
+                "choice",
+                "choices",
+                "user",
+                "record",
+                "relation",
+                "file",
+                "color",
+                "include"
+              ],
+              "description": "What the column holds, so the Framework's shared renderer set draws the value instead of printing it. Without it a boolean reads «true», a choice reads its code and a colour reads its hex."
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "value"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "value": {
+                    "type": [
+                      "string",
+                      "integer",
+                      "boolean"
+                    ]
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "scheme": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "The labels a choice or choices column reads. Without them a cell can only show the stored code."
+            },
+            "variant": {
+              "type": "string",
+              "description": "How the value is presented within its type -- `image`, `image-card` and `image-list` make a file column show the image, `scale` makes a number a bar. The host's to say: guessing an image from a file name is wrong for every stored file whose name does not end in familiar letters. `badges` makes a choices column a row of tonal badges coloured by each option's scheme; a value may be {value, text} to say more than the option's label in that one cell («ru · 14.10 09:00»)."
+            },
+            "language": {
+              "type": "string",
+              "description": "An include column's language. The host's, never guessed from the text."
+            },
+            "multiple": {
+              "type": "boolean",
+              "description": "Whether the column holds several values of its type."
+            }
+          }
+        }
+      }
+    },
+    "records": {
+      "summary": "Rows of the current answer. Each carries its revision and the actions the host allows for it. In an answer to a write, `records` without `echo`, `total` or `columns` is a patch of exactly those rows, and the view rewrites only them.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "revision",
+            "actions"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "actions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "What the host allows for this record. The component offers only these."
+            },
+            "parent": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ],
+              "description": "The record's parent in a tree answer; null at the root. Absent in a list."
+            },
+            "has_children": {
+              "type": "boolean",
+              "description": "Whether the node has children the host can answer with tree.expand. The component offers expanding only where this is true."
+            },
+            "level": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Depth in the tree, 0 at the root. Optional: the component counts it from parent when it is absent."
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                }
+              },
+              "description": "The ancestors from the root, in a flattened answer (a search or a filter over a tree), so the row says where it lives."
+            },
+            "icon": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The node's icon, an icon name of the Framework's set, beside its open/close button. The host's to choose -- a page with pages under it is still a page, not a folder. Without it the view draws a folder for a node with children and a document for a leaf."
+            },
+            "icon_expanded": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The icon of an open node, when it differs (folder_open beside folder). Without it an open node keeps icon."
+            },
+            "editable": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Keys of the fields this person may write in place (inline-edit). Only these cells are offered as controls; the rest stay values. Absent means none."
+            }
+          }
+        }
+      }
+    },
+    "total": {
+      "summary": "How many records match the query the host applied, when the host counts them. A host that does not count leaves it out and answers has_next instead.",
+      "required": false,
+      "schema": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 0
+      }
+    },
+    "has_next": {
+      "summary": "Whether a further page exists. Required when an answer carries no total: it is what moves forward and Show more, so the view never derives a page count it was not given.",
+      "required": false,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    "echo": {
+      "summary": "The request the host answered: chosen and applied filters, refused parts, search, sort and window, plus what a view switch carried over.",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "filters_chosen",
+          "filters",
+          "filters_rejected",
+          "search",
+          "sort",
+          "page",
+          "per_page"
+        ],
+        "properties": {
+          "filters_chosen": {
+            "type": "object",
+            "description": "What the person chose."
+          },
+          "filters": {
+            "type": "object",
+            "description": "What the host applied."
+          },
+          "filters_rejected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Chosen filters the host refused."
+          },
+          "search": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "direction"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "direction": {
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "switch": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "query": {
+                "type": "object"
+              },
+              "dropped": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "What a view switch carried over and what it dropped."
+          }
+        }
+      }
+    },
+    "column_settings": {
+      "summary": "Column settings by layer, each with its revision, and where a save goes. Required of a host that offers personal-column-settings or shared-column-settings; a host that offers neither may leave it out, and the view draws the columns as given.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "layers",
+          "target"
+        ],
+        "properties": {
+          "layers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "package": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "shared": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "personal": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "columns"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "revision": {
+                    "type": [
+                      "string",
+                      "integer"
+                    ]
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "revision"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "personal",
+                  "saved_view"
+                ]
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "key": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "saved_views": {
+      "summary": "Stored views as objects: query, field roles, column layout, settings and a revision. `settings.filter_fields` names the filter fields the view was showing, in order.",
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key",
+            "label",
+            "revision"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "query": {
+              "type": "object"
+            },
+            "roles": {
+              "type": "object"
+            },
+            "layout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "key"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "visible": {
+                        "type": "boolean"
+                      },
+                      "order": {
+                        "type": [
+                          "number",
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "min_width": {
+                        "type": [
+                          "string",
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "priority": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Lower survives longer when the columns do not fit."
+                      },
+                      "sticky": {
+                        "enum": [
+                          "none",
+                          "start",
+                          "end"
+                        ]
+                      },
+                      "sortable": {
+                        "type": "boolean"
+                      },
+                      "renderer": {
+                        "enum": [
+                          "link"
+                        ]
+                      },
+                      "role": {
+                        "enum": [
+                          "title"
+                        ],
+                        "description": "The column that leads the record. The view pins it beside the box and the row menu, and it is the column a reader names the row by. At most one column carries it."
+                      },
+                      "property_type": {
+                        "enum": [
+                          "string",
+                          "text",
+                          "integer",
+                          "number",
+                          "date",
+                          "datetime",
+                          "boolean",
+                          "choice",
+                          "choices",
+                          "user",
+                          "record",
+                          "relation",
+                          "file",
+                          "color",
+                          "include"
+                        ],
+                        "description": "What the column holds, so the Framework's shared renderer set draws the value instead of printing it. Without it a boolean reads «true», a choice reads its code and a colour reads its hex."
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "value"
+                          ],
+                          "additionalProperties": true,
+                          "properties": {
+                            "value": {
+                              "type": [
+                                "string",
+                                "integer",
+                                "boolean"
+                              ]
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "scheme": {
+                              "type": "string"
+                            },
+                            "icon": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "The labels a choice or choices column reads. Without them a cell can only show the stored code."
+                      },
+                      "variant": {
+                        "type": "string",
+                        "description": "How the value is presented within its type -- `image`, `image-card` and `image-list` make a file column show the image, `scale` makes a number a bar. The host's to say: guessing an image from a file name is wrong for every stored file whose name does not end in familiar letters."
+                      },
+                      "language": {
+                        "type": "string",
+                        "description": "An include column's language. The host's, never guessed from the text."
+                      },
+                      "multiple": {
+                        "type": "boolean",
+                        "description": "Whether the column holds several values of its type."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "settings": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "filter_fields": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": "Filter fields the view shows, in order. The view puts them back when it opens."
+                }
+              }
+            },
+            "level": {
+              "enum": [
+                "package",
+                "shared",
+                "personal"
+              ],
+              "description": "Optional metadata; absent on a 1.0.0 host."
+            }
+          }
+        }
+      }
+    },
+    "tree": {
+      "summary": "How this answer is shaped. In a tree answer `records` are one level: the roots, or the children of `parent` after tree.expand. A flat plane answers mode flat and the view is a list.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "enum": [
+              "tree",
+              "flat",
+              "flattened"
+            ],
+            "description": "tree: one level of a tree; flat: a list with no nesting; flattened: a search or filter result over a tree, each record carrying its path."
+          },
+          "parent": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "The node whose children these are; null for the roots."
+          },
+          "has_next": {
+            "type": "boolean",
+            "description": "More children of this parent follow; the next page is asked for with tree.expand and the cursor."
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "move_targets": {
+      "summary": "Where a node may go, answered to node.targets. The component offers only these places; the host decides what is legal.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "parents"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "parents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "label"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": [
+                    "string",
+                    "integer"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The labels of its ancestors, so two nodes with one name can be told apart."
+                }
+              }
+            },
+            "description": "Nodes the node may become a child of, with their labels: the person chooses among them, and most are not on screen."
+          },
+          "root": {
+            "type": "boolean",
+            "description": "Whether it may become a root."
+          },
+          "reorder": {
+            "type": "boolean",
+            "description": "Whether its place among its siblings can be chosen (an index), or only its parent."
+          }
+        }
+      }
+    },
+    "confirm": {
+      "summary": "A write the host will make only once confirmed. It is carried by a refused answer with reason confirm_required; the component shows the summary and, when the person confirms, raises the same intent again with `confirm` set to the digest. The host checks the digest against the write it described.",
+      "required": false,
+      "schema": {
+        "type": "object",
+        "required": [
+          "summary",
+          "digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "digest": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "row_actions": {
+      "summary": "Labels and groups for the host's own action ids. Which actions apply to a record is still that record's `actions` list alone; this catalogue only names them. Actions sharing a group are offered as one item with a submenu of the record's allowed members -- a page published in ru and drafted in en shows «Снять с публикации › ru» and «Опубликовать › en».",
+      "required": false,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "label"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "icon": {
+              "type": "string"
+            },
+            "group": {
+              "type": "string",
+              "description": "The key of the submenu this action belongs to."
+            },
+            "group_label": {
+              "type": "string",
+              "description": "The submenu's label, read from the first action of the group."
+            },
+            "danger": {
+              "type": "boolean",
+              "description": "Shown as a destructive action."
+            }
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "query.change": {
+      "summary": "Answer the current search, filter, sort and window. Every request carries its sequence; an older answer is dropped.",
+      "event": "sf-table-query-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "query": {
+            "type": "object"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null,
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "records",
+          "echo"
+        ],
+        "properties": {
+          "records": {
+            "type": "array"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Omitted when the host counts on request; has_next is then required."
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "echo": {
+            "type": "object",
+            "description": "The query the host applied."
+          },
+          "columns": {
+            "type": "array"
+          },
+          "row_actions": {
+            "type": "array"
+          },
+          "tree": {
+            "type": "object",
+            "description": "Tree answers: the level answered (parent) and the mode."
+          }
+        }
+      }
+    },
+    "record.open": {
+      "summary": "Open one record for reading.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "const": "view"
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions"
+    },
+    "record.mutate": {
+      "summary": "Create, edit, delete or restore one record. The host re-reads the stored bytes and compares the revision. An applied answer may carry `records` alone -- the records as they now are -- and the view writes those rows in place instead of re-reading the page.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          },
+          "confirm": {
+            "type": "string",
+            "description": "The digest of a confirmation the host asked for (refused, reason confirm_required)."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-actions",
+      "answer_data": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "description": "The rows the write changed; only those are rewritten. Without them the view refreshes."
+          },
+          "confirm": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "bulk.apply_selected": {
+      "summary": "Apply one action to the checked records, each with the revision the browser last saw. Refused as a whole when any revision is stale.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "record_ids",
+          "revisions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "revisions": {
+            "type": "object"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null
+    },
+    "bulk.apply_under_filter": {
+      "summary": "Apply one action to every record under the filter the host applied, with the count the person confirmed.",
+      "event": "sf-table-action-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "filters",
+          "confirmed_total"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "filters": {
+            "type": "object"
+          },
+          "confirmed_total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "bulk-under-filter"
+    },
+    "settings.save_personal": {
+      "summary": "Save column settings for this person, against the revision of the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "personal-column-settings"
+    },
+    "settings.save_shared": {
+      "summary": "Save column settings for everyone. A separate permission and a separate endpoint from the personal layer.",
+      "event": "sf-table-column-settings-change",
+      "payload": {
+        "type": "object",
+        "required": [
+          "columnSettings",
+          "base_revision",
+          "target"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "columnSettings": {
+            "type": "object"
+          },
+          "base_revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "target": {
+            "const": "shared"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "shared-column-settings"
+    },
+    "view.open": {
+      "summary": "Load a stored view.",
+      "event": "sf-table-template-select",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views",
+      "answer_data": {
+        "type": "object",
+        "properties": {
+          "echo": {
+            "type": "object"
+          },
+          "column_settings": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "view.save": {
+      "summary": "Store the current view, or update a stored one against its revision. `settings.filter_fields` carries the filter fields the view is showing.",
+      "event": "sf-table-template-save",
+      "payload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.delete": {
+      "summary": "Delete a stored view.",
+      "event": "sf-table-template-delete",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "saved-views"
+    },
+    "view.create_record": {
+      "summary": "Open the host's create form, optionally for a named kind.",
+      "event": "sf-table-create-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "item"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "item": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parent": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ],
+            "description": "In a tree, the node to create under; absent or null for a root."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "create-record"
+    },
+    "view.save_shared": {
+      "summary": "Write a shared saved view with a separate permission and a named target.",
+      "event": "sf-data-view-saved-view-intent",
+      "payload": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "key",
+          "target"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "target": {
+            "const": "shared"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "shared-saved-views"
+    },
+    "query.count": {
+      "summary": "Count the records the current query matches. Raised when a person asks for the number, and before an action under the filter, which needs a confirmed total.",
+      "event": "sf-count-request",
+      "capability": "count-on-request",
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "search": {
+                "type": "string"
+              },
+              "filters": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          },
+          "reason": {
+            "enum": [
+              "total",
+              "last-page",
+              "action-for-all"
+            ],
+            "description": "Why the count was asked for. The view resumes that step once the number arrives."
+          }
+        }
+      },
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "total"
+        ],
+        "properties": {
+          "total": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "list.open": {
+      "summary": "Open the whole list this view is showing part of. Raised by the show-all action a row cap puts under a capped list; the host navigates or opens a full view. The component never builds an address -- it has none to build from, and a guessed one would send a person to a page the product does not have.",
+      "event": "sf-data-view-list-open",
+      "carries_revision": false,
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "enum": [
+              "row-cap"
+            ],
+            "description": "Why the list is being opened. One value today; declared as an enum so a later reason is a declared addition rather than a free string a host has to guess at."
+          },
+          "query": {
+            "type": "object",
+            "description": "The query the capped list is showing, so the full view opens on the same records rather than on an unfiltered collection."
+          }
+        }
+      },
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "answer": {
+        "applied": {
+          "schema": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "refused": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "tree.expand": {
+      "summary": "Answer the children of one node, one page at a time. The answer is a tree answer with tree.parent set to the node.",
+      "event": "sf-table-tree-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "sequence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sequence": {
+            "type": "integer"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "tree",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "records",
+          "tree"
+        ],
+        "properties": {
+          "records": {
+            "type": "array"
+          },
+          "tree": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "node.targets": {
+      "summary": "Say where a node may move, before the person chooses. The component offers only the places listed here -- by pointer and by keyboard alike -- and never computes one itself.",
+      "event": "sf-table-tree-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "tree-move",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "move_targets"
+        ],
+        "properties": {
+          "move_targets": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "node.move": {
+      "summary": "Move a node under a new parent, at an index among its new siblings when the targets allowed reordering. A node whose records carry a revision sends it and can be answered with a conflict; a host whose records carry none gets no conflict check, and may confirm the move instead (refused with confirm_required, then applied when raised again with the digest).",
+      "event": "sf-table-tree-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "parent"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "parent": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "index": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "confirm": {
+            "type": "string",
+            "description": "The digest of a confirmation the host asked for."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "tree-move",
+      "answer_data": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array"
+          },
+          "confirm": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "record.set": {
+      "summary": "Write one field of one record in place -- a checkbox in its cell. The host re-reads the stored bytes and compares the revision. A write that changes other records (making a field required) may be confirmed first: refused with confirm_required and data.confirm, then applied when raised again with that digest. An applied answer may carry `records` -- the record as it now is -- and the view rewrites that row; otherwise it refreshes. Any other answer leaves the cell showing the value the record holds.",
+      "event": "sf-table-cell-set",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "key",
+          "value"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "boolean"
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "confirm": {
+            "type": "string",
+            "description": "The digest of a confirmation the host asked for (refused, reason confirm_required)."
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "inline-edit",
+      "answer_data": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "description": "The record as it now is; only that row is rewritten."
+          },
+          "confirm": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "record.reorder": {
+      "summary": "Put records in another order in a flat list: the records dragged, in the order they were dragged, go before `before`, or to the end when it is null. The view shows the new order at once and puts the old one back unless the answer is applied. An applied answer may carry the moved records as a patch (their new positions); otherwise the view refreshes.",
+      "event": "sf-table-rows-reorder",
+      "payload": {
+        "type": "object",
+        "required": [
+          "record_ids",
+          "before"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "record_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          },
+          "before": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "confirm": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "row-reorder",
+      "answer_data": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array"
+          },
+          "confirm": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "layers": [
+      "package",
+      "shared",
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "Resetting a layer is a write against its revision, never a deletion."
+    },
+    "target": {
+      "kinds": [
+        "personal",
+        "saved_view"
+      ],
+      "carries_revision": true
+    },
+    "fields": {
+      "summary": "Per-column fields a layer may carry: order, width, visibility and pinning. Pinning used to be writable only in the shared layer; it is a personal setting now, like the order and the width, and a shared value still serves as the default until the person sets their own.",
+      "personal": [
+        "order",
+        "width",
+        "visible",
+        "pinned"
+      ],
+      "shared": [
+        "order",
+        "width",
+        "visible",
+        "pinned"
+      ]
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "c9679be114889144fbe6b2c9c10c2336f24d69f5692d734bff91be32e46b3d77",
+    "cases": 43
+  },
+  "answer": {
+    "summary": "Every intent is answered with one object: `answer` says what happened, `reason` why a write was refused or is unavailable, and `data` carries what an applied answer supplies -- the intent's answer_data. An answer to query.change or query.count names the `sequence` of the request it answers, and the view drops an answer to an older one. A conflict carries, beside `answer`, `current_revision` -- the revision the write should have been made against; a settings write's conflict also `columns`, the layer's columns as they now are, and a batch's conflict `conflicts`, one entry per stale record. (1.10.0 and 1.11.0 said a conflict carries the revision in data; their kits and every host put it beside answer, which is what this edition states.) A view given no current_revision reads the list again. A refusal that needs a confirmation carries data.confirm.",
+    "schema": {
+      "type": "object",
+      "required": [
+        "answer"
+      ],
+      "properties": {
+        "answer": {
+          "enum": [
+            "applied",
+            "conflict",
+            "refused",
+            "unavailable"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why a write was refused, or why the intent is unavailable. Free text a host may extend; the view knows and words these: capability-not-provided, confirm_required, not-confirmed, port-not-connected, no-base-revision, record_invalid, forbidden, stale-revision.",
+          "examples": [
+            "capability-not-provided",
+            "confirm_required",
+            "not-confirmed",
+            "port-not-connected",
+            "no-base-revision",
+            "record_invalid",
+            "forbidden",
+            "stale-revision"
+          ]
+        },
+        "data": {
+          "type": "object",
+          "description": "What the answer supplies; its keys are the intent's answer_data."
+        },
+        "message": {
+          "type": "string",
+          "description": "Text the view may show beside the outcome."
+        },
+        "sequence": {
+          "type": "integer",
+          "description": "query.change and query.count: the sequence of the request this answers. An answer naming an older sequence is dropped by the view."
+        },
+        "current_revision": {
+          "type": [
+            "string",
+            "integer"
+          ],
+          "description": "On a conflict: the revision the write should have been made against."
+        },
+        "columns": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "description": "On a settings.save_personal or settings.save_shared conflict: the layer's columns as they now are."
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "current_revision"
+            ],
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "current_revision": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              }
+            }
+          },
+          "description": "On a batch conflict (bulk.apply_selected, record.mutate on several records): one entry per stale record."
+        }
+      }
+    }
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "records carry revision and actions",
+      "the answer echoes the applied query",
+      "a stale revision is answered with a conflict",
+      "a batch is refused as a whole",
+      "shared settings use their own permission",
+      "saved view level metadata is optional and shared view writes use their own capability and target",
+      "the column that leads a record is named by role: title, and at most one column carries it",
+      "an answer without total carries has_next, and the count is asked for separately through query.count",
+      "pinning is a personal column setting; a host that declares an earlier version may refuse a personal write carrying it",
+      "a write may be answered with records alone, and then only those rows are rewritten",
+      "a saved view carries settings.filter_fields, and opening it shows those fields again",
+      "a capped list asks the host to open the whole one rather than linking to an address it invented",
+      "a tree answer is one level, named by tree.parent; a flat plane answers mode flat",
+      "node.targets lists the places a node may go, and node.move is refused anywhere else",
+      "a write the host confirms is answered refused with reason confirm_required and data.confirm, and applied when raised again with that digest",
+      "view.create_record may carry a parent, and row_actions label the host's own actions",
+      "a node may name its icon (icon, icon_expanded); a host that names none gets a folder for a node with children and a document for a leaf",
+      "the answer is one object -- answer, reason, data -- and each intent names what its data carries",
+      "a host declaring 1.10.0 announces create-record and personal-column-settings, or is not offered creating a record or saving column settings",
+      "a record may name the fields this person writes in place (editable); with inline-edit the view raises record.set for those cells only, and a write that changes other records is confirmed first",
+      "with row-reorder a flat list is put in order by record.reorder {record_ids, before}; a refusal or a conflict puts the old order back"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "settings-personal-without-the-capability-is-not-offered",
+  "intent": "settings.save_personal",
+  "capability": "personal-column-settings",
+  "summary": "A host that keeps no column settings is not offered them, and says so plainly if it is asked.",
+  "given": {
+    "records": [],
+    "capabilities": [
+      "row-actions"
+    ]
+  },
+  "when": {
+    "intent": "settings.save_personal",
+    "payload": {
+      "columnSettings": {},
+      "base_revision": "r1"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Without the capability the view shows no column settings; this case is here so the refusal is still honest."
+  }
+}

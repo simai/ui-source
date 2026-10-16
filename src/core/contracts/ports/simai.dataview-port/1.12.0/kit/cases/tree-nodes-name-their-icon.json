@@ -1,0 +1,53 @@
+{
+  "id": "tree-nodes-name-their-icon",
+  "intent": "query.change",
+  "capability": "tree",
+  "summary": "A tree answer may name each node's icon, and an open node's own; the view draws them beside the open/close button.",
+  "given": {
+    "records": [
+      {
+        "id": "services",
+        "parent": null,
+        "has_children": true,
+        "icon": "library_books",
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      },
+      {
+        "id": "contacts",
+        "parent": null,
+        "has_children": false,
+        "icon": "article",
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "query": {
+        "search": "",
+        "filters": {},
+        "sort": [],
+        "window": {
+          "cursor": null,
+          "limit": 50
+        }
+      },
+      "sequence": 1
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "tree"
+    ],
+    "note": "Each record may carry icon, and icon_expanded when an open node looks different; a host that names none gets the view's default, a folder or a document."
+  }
+}

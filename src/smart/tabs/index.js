@@ -533,16 +533,25 @@ class SfTabs extends SfBaseElement {
     if (kept) {
       showMore(true);
       kept = fits(list.clientWidth) ?? hosts.map((_, at) => at);
-      // The active tab always stays: the last kept one gives way to it.
-      const active = hosts.findIndex((host) => tabIndexOf(host) === this.activeIndex);
-      if (active >= 0 && !kept.includes(active)) {
-        let used = kept.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
-        while (kept.length && used + gap + widths[active] > list.clientWidth + 0.5) {
-          const dropped = kept.pop();
-          used -= widths[dropped] + (kept.length ? gap : 0);
+      // The pinned tabs and the active one always stay in the row: the last
+      // kept tabs that are neither give way to them. (Only the active one did:
+      // at 375px a pinned first tab went into «Ещё» beside an active one,
+      // docs trial 5.)
+      const items = this.computedItems;
+      const must = hosts.map((host, at) => at).filter((at) => {
+        const index = tabIndexOf(hosts[at]);
+        return index === this.activeIndex || items[index]?.pinned === true;
+      });
+      const missing = must.filter((at) => !kept.includes(at));
+      if (missing.length) {
+        const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
+        const next = [...kept, ...missing];
+        while (span(next) > list.clientWidth + 0.5) {
+          const dropAt = next.slice().reverse().find((at) => !must.includes(at));
+          if (dropAt === undefined) break;
+          next.splice(next.indexOf(dropAt), 1);
         }
-        kept.push(active);
-        kept.sort((a, b) => a - b);
+        kept = next.sort((a, b) => a - b);
       }
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes
