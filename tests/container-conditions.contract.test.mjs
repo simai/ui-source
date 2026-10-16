@@ -17,7 +17,7 @@ test('query rules accept finite named/unnamed conditions and reject extensions',
   for (const name of ['query-container', 'query-container/sidebar']) assert.equal(container.test(name), true);
   for (const name of ['query-container/other', 'query-container-invalid', 'x-query-container']) assert.equal(container.test(name), false);
   for (const condition of ['sm', 'md', 'lg', 'xl']) for (const name of ['', '/sidebar'])
-    for (const utility of ['flex-row', 'gap-1/2', 'grid-col-subgrid', 'justify-center', 'items-cross-start'])
+    for (const utility of ['flex-row', 'gap-1/2', 'grid-col-subgrid', 'content-main-center', 'items-cross-start'])
       assert.equal(query.test(`cq-${condition}${name}:${utility}`), true);
   for (const name of ['cq-sm/other:flex-row', 'cq-xs:flex-row', 'cq-sm:hover:flex-row', 'hover:cq-sm:flex-row', 'cq-sm:gap-999', 'cq-sm:flex-row-invalid', 'xcq-sm:flex-row', 'cq-sm:flex-row\n'])
     assert.equal(query.test(name), false, name);

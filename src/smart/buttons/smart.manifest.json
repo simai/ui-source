@@ -88,7 +88,7 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "How the button looks. Surface and ghost read the neutral alpha ramp: surface keeps a faint fill and a border, ghost keeps nothing until it is hovered or focused.",
+        "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01).",
         "enum": [
           "default",
           "tonal",
@@ -505,7 +505,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/buttons/index.js",
-        "sha256": "f1bf692f4f75ee96fbf22c0b38f5128a89e52c36a4dc1f406dea3757cb3b99ff"
+        "sha256": "60f7daa26141071703a6dfdca1a9049f82e2427226e2bb6b02feaf2a462596bc"
       }
     ],
     "generated_runtime": [

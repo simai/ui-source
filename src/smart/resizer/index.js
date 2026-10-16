@@ -202,9 +202,14 @@ export class SfResizer extends HTMLElement {
     if (!target) return;
     const written = this.property ? target.style.getPropertyValue(this.property) : target.style.inlineSize;
     if (!written) return;
+    // The value written is what is clamped, not the panel as measured: in a
+    // stacked layout the panel is the window's width whatever is written, and
+    // clamping that measurement wrote the maximum over the remembered width
+    // (docs trial 4, 2026-10-15).
     const {min, max} = this.limits();
-    const now = this.width();
-    if (now > max || now < min) this.apply(now);
+    const value = Number.parseFloat(written);
+    if (!Number.isFinite(value)) return;
+    if (value > max || value < min) this.apply(value);
   }
 
   syncLabel() {

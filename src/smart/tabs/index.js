@@ -183,16 +183,21 @@ class SfTabs extends SfBaseElement {
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.syncTabSemantics();
-    if (this._resizeObserver && this.tabList && !this._observed) {
-      this._resizeObserver.observe(this);
-      this._observed = true;
+    // The box that has a size: sf-tabs is display:contents, so observing the
+    // element itself never fired and «Ещё» was laid out once, wrong after any
+    // resize (docs trial 4, 2026-10-15).
+    const container = this.tabList?.parentElement;
+    if (this._resizeObserver && container && this._observed !== container) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver.observe(container);
+      this._observed = container;
     }
     this.scheduleOverflow();
   }
 
   disconnectedCallback() {
     this._resizeObserver?.disconnect();
-    this._observed = false;
+    this._observed = null;
     this._moreMenu?.close?.({restoreFocus: false});
     this._moreMenu?.remove?.();
     this._settingsMenu?.close?.({restoreFocus: false});

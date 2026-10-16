@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {exactClassPattern} from './utility-exact-rule.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 export const profile = JSON.parse(fs.readFileSync(path.join(root, 'src/core/contracts/container-conditions.v1.json')));
-const prefixes = {'display': [''], 'flex-direction': ['flex-'], 'flex-wrap': ['flex-'], gap: ['gap-', 'row-gap-', 'col-gap-'], 'grid-template-columns': ['grid-col-'], 'justify-content': ['justify-'], 'align-items': ['items-cross-']};
+const prefixes = {'display': [''], 'flex-direction': ['flex-'], 'flex-wrap': ['flex-'], gap: ['gap-', 'row-gap-', 'col-gap-'], 'grid-template-columns': ['grid-col-'], 'justify-content': ['content-main-'], 'align-items': ['items-cross-']};
 const quote = value => `'${value.replaceAll('/', '\\\\/')}'`;
 const list = values => values.length ? `(${values.map(quote).join(', ')},)` : '()';
 export function projections(value = profile) {

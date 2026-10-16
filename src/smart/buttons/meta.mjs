@@ -30,7 +30,7 @@ const sfButtonMeta = {
       kind: 'enum',
       values: BUTTON_APPEARANCE_VALUES,
       default: 'default',
-      description: 'How the button looks. Surface and ghost read the neutral alpha ramp: surface keeps a faint fill and a border, ghost keeps nothing until it is hovered or focused.',
+      description: 'How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01).',
     },
     type: {
       kind: 'enum',

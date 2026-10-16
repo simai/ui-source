@@ -2,6 +2,7 @@ import SfBaseElement from "../../core/js/smart-base";
 import { renderButtonTemplate } from "./js/templates/default";
 import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import { noteDeprecated } from '../../core/js/deprecations.js';
 
 const COMPONENT_ATTRIBUTES = new Set([
   "template",
@@ -42,7 +43,12 @@ function applyButtonAttributes(host, button) {
   });
 }
 
-const BUTTON_APPEARANCES = ["default", "tonal", "outline", "link", "surface", "ghost"];
+// Ghost is the link appearance under its old name: the class sf-button--ghost
+// already reads as sf-button--link (journal class-button-ghost-to-link), and
+// the Smart value now says the same instead of drawing the retired class
+// (docs trial 4, 2026-10-15; journal value-button-ghost-to-link).
+const BUTTON_APPEARANCES = ["default", "tonal", "outline", "link", "surface"];
+const APPEARANCE_ALIASES = {ghost: "link"};
 
 class SfButton extends SfBaseElement {
   constructor() {
@@ -96,6 +102,10 @@ class SfButton extends SfBaseElement {
   // the class sf-button--primary twice and no fill, no border, no padding.
   get appearance() {
     const value = this.getAttribute("appearance") || this.getAttribute("type") || "default";
+    if (Object.hasOwn(APPEARANCE_ALIASES, value)) {
+      noteDeprecated({component: this.localName, kind: 'value', attribute: 'appearance', from: value, to: APPEARANCE_ALIASES[value]});
+      return APPEARANCE_ALIASES[value];
+    }
     return BUTTON_APPEARANCES.includes(value) ? value : "default";
   }
 
@@ -190,6 +200,9 @@ class SfButton extends SfBaseElement {
       iconStart: this.iconStart,
       iconEnd: this.iconEnd,
       type: this.type,
+      // A legacy appearance reaches the template under its current name, as the
+      // getter reports it (journal value-button-ghost-to-link).
+      appearance: props.appearance === 'ghost' ? 'link' : props.appearance,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
       component: this,
     });

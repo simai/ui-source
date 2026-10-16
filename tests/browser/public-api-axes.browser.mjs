@@ -10,7 +10,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
 const cases = [
-  {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'ghost', canonical: 'surface',
+  // The legacy *attribute* (type) carries a current value: ghost itself is now a
+  // legacy value of sf-button, drawn as link (journal value-button-ghost-to-link).
+  {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'tonal', canonical: 'surface',
    css: ['core/core/css/core.css', 'component/component/buttons/css/buttons.css'],
    js: 'smart/smart/buttons/js/buttons.js'},
   {tag: 'sf-icon-button', root: '.sf-icon-button', prefix: 'sf-icon-button--', legacy: 'ghost', canonical: 'surface',

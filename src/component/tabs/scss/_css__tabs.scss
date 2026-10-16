@@ -452,8 +452,11 @@
     min-inline-size: 0;
   }
 
-  // «Ещё» stands only while something is in it.
-  .sf-tabs-top-container--tools:not([data-sf-tabs-more]) > .sf-tabs-more {
+  // «Ещё» stands only while something is in it. On an sf-button host the
+  // host's own inline display:contents beat this, and an empty «Ещё» stood and
+  // did nothing (docs trial 4): the button inside is what is hidden.
+  .sf-tabs-top-container--tools:not([data-sf-tabs-more]) > .sf-tabs-more,
+  .sf-tabs-top-container--tools:not([data-sf-tabs-more]) > .sf-tabs-more > button {
     display: none;
   }
 

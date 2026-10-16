@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 import './default.css';
 
 function joinClasses(...tokens) {
@@ -142,7 +143,12 @@ export function renderTabsTemplate(context) {
           aria-labelledby=${context.component?.getAttribute('aria-labelledby') || nothing}
           aria-orientation=${vertical ? 'vertical' : 'horizontal'}
         >
-          ${(context.displayItems ?? context.items).map((item) => renderTab(item, context))}
+          ${repeat(context.displayItems ?? context.items,
+            // Keyed by the tab, so a reordered tab keeps its own button: by
+            // position, the buttons kept their old labels and counts while the
+            // hosts' text was already the new one (docs trial 4).
+            (item) => item.key ?? item.index,
+            (item) => renderTab(item, context))}
         </div>
         ${context.overflow === 'more' && !vertical
           ? html`<sf-button class="sf-tabs-more" appearance="link" scheme="on-surface" size=${context.size}

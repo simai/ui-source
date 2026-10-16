@@ -99,9 +99,15 @@ class SfTooltipController {
     this.originalRole = this.surface.getAttribute('role');
     this.originalHidden = this.surface.hidden;
 
+    // A tooltip that only repeats the trigger's name -- the usual case for an
+    // icon-only button -- is not its description too, or a screen reader says
+    // the name twice (docs trial 4, 2026-10-15).
+    const squash = (text) => String(text ?? '').replace(/\s+/gu, ' ').trim().toLowerCase();
+    const name = squash(this.trigger.getAttribute('aria-label') || this.trigger.textContent);
+    const repeatsName = name !== '' && squash(this.surface.textContent) === name;
     const descriptions = new Set(descriptionTokens(this.trigger));
-    descriptions.add(this.surface.id);
-    this.trigger.setAttribute('aria-describedby', [...descriptions].join(' '));
+    if (!repeatsName) descriptions.add(this.surface.id);
+    if (descriptions.size) this.trigger.setAttribute('aria-describedby', [...descriptions].join(' '));
     this.trigger.setAttribute('data-tooltip', this.surface.id);
     this.surface.setAttribute('role', 'tooltip');
     this.surface.hidden = true;

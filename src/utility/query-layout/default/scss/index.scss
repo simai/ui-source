@@ -34,7 +34,10 @@
         @include family($condition, 'flex-direction', 'flex-', flex-direction, direction.$flex-direction-array);
         @include family($condition, 'flex-wrap', 'flex-', flex-wrap, wrap.$flex-wrap-array);
         @include family($condition, 'grid-template-columns', 'grid-col-', grid-template-columns, columns.$grid-template-columns-array);
-        @include family($condition, 'justify-content', 'justify-', justify-content, justify.$flex-justify-content-array);
+        // The Framework's name, as the plain utility has it: the Loader rewrites
+        // a Tailwind justify-* to content-main-* with its prefix kept, so a
+        // cq-* family named justify-* was never reached (docs trial 4).
+        @include family($condition, 'justify-content', 'content-main-', justify-content, justify.$flex-justify-content-array);
         @include family($condition, 'align-items', 'items-cross-', align-items, items.$flex-align-items-array);
         @each $role in map.get(profile.$query-families, 'gap') {
           @if not map.has-key(map.get(space.$space-size-device-array, mobile), $role) { @error 'Unknown gap role: #{$role}'; }

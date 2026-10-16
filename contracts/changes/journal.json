@@ -1568,6 +1568,26 @@
         "before": ".sf-modal--positon-inline-end .sf-modal-panel { }",
         "after": ".sf-modal--position-inline-end .sf-modal-panel { }"
       }
+    },
+    {
+      "id": "value-button-ghost-to-link",
+      "recorded_on": "2026-10-16",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The Smart button's ghost appearance is the link appearance under its old name, as the class sf-button--ghost already is.",
+      "items": [
+        {
+          "component": "sf-button",
+          "attribute": "appearance",
+          "from": "ghost",
+          "to": "link"
+        }
+      ],
+      "deprecated_on": "2026-10-16",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "appearance=\"ghost\" becomes appearance=\"link\".",
+      "source": "src/smart/buttons/index.js"
     }
   ]
 }

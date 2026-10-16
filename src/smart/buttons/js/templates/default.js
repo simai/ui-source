@@ -13,7 +13,7 @@ export function renderButtonTemplate(context) {
         iconLeft,
         iconRight,
         iconPosition,
-        tightness,
+        spacing,
         radius,
         rootClass,
         textPosition,
@@ -58,7 +58,9 @@ export function renderButtonTemplate(context) {
         'flex',
         'items-cross-center',
         segment ? `segment-${segment}` : '',
-        tightness ? `tightness-${tightness}` : '',
+        // The spacing class, not its retired tightness name (journal
+        // class-tightness-to-spacing; docs trial 4).
+        spacing && spacing !== 'normal' ? `spacing-${spacing}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',

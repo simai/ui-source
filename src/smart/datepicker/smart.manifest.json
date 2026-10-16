@@ -103,8 +103,8 @@
       },
       "week-start": {
         "type": "number",
-        "default": 1,
-        "description": "The first day of the week: 1 for Monday, 0 for Sunday."
+        "description": "The first day of the week: 1 Monday, 0 Sunday. Without the attribute it follows the page's language (ru: Monday, en-US: Sunday).",
+        "default": null
       },
       "locale": {
         "type": "string",
@@ -564,7 +564,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "eb7803adc8b8c559e0125775a4c18f810b1940b34cbe19bb504ba9d10734828b"
+        "sha256": "055f2d62971b342eab22e62ea46817d8ad744c3547921a7b7f26bb6243a5923e"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",

@@ -354,7 +354,8 @@ class SfDatepicker extends SfBaseElement {
             month: {type: Number, default: null},
             year: {type: Number, default: null},
             context: {default: ''},
-            weekStart: {type: Number, default: 1},
+            // No default: the page's language says it (see get weekStart).
+            weekStart: {type: Number, default: null},
             locale: {default: ''},
             format: {default: 'DD.MM.YYYY'},
             rootClass: {default: ''},
@@ -703,10 +704,21 @@ class SfDatepicker extends SfBaseElement {
         return this.getEnumAttr('context', ['month', 'year', ''], '');
     }
 
+    // The week starts where the page's language starts it when the attribute
+    // does not say: Monday for ru, Sunday for en-US (docs trial 4: a
+    // Sunday-first locale needed a manual attribute).
     get weekStart() {
-        const value = this.getNumberAttr('week-start', 1);
-
-        return value === 0 ? 0 : 1;
+        if (this.hasAttribute('week-start')) {
+            return this.getNumberAttr('week-start', 1) === 0 ? 0 : 1;
+        }
+        try {
+            const locale = new Intl.Locale(this.locale);
+            const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
+            if (info?.firstDay) return info.firstDay === 7 ? 0 : 1;
+        } catch {
+            // An unknown locale keeps the Monday the grid always had.
+        }
+        return 1;
     }
 
     get locale() {
