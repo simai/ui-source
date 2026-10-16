@@ -11,6 +11,8 @@ version, in the `standard-contract` envelope:
 | `simai.change-lifecycle` | 1.0.0 | how a public name leaves the Framework: two stages, a dated journal, a calendar sweep, and an upgrade read from the journal |
 | `simai.component-package` | 1.0.0 | a package of Smart components owned by a product or an external author: layout, a pinned Framework revision, rule and manifest of each component, names, a reproducible build with a receipt, delivery and page declaration, licence and trust |
 | `simai.interface-fragment` | 1.0.0 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, and region navigation with a full-load fallback |
+| `simai.interaction-rules` | 1.0.0 | how every Smart component loads, talks and draws: one action one render, five states with a skeleton for loading, props down and events up, routes between neighbours, light markup for repeats, stable geometry, contained failure, each rule a check in the build |
+| `simai.effect` | 1.0.0 | an animated background: effect.json with typed, bounded settings, one module with mount/update/pause/resume/destroy, still for reduced motion, idle in a hidden tab, no network, clean destroy, foreign effects sandboxed, a kit (scripts/effect-kit.mjs) run before listing |
 
 A standard stays at the level of principles that survive a change of library,
 browser or view type: 15 to 20 requirements. Event names, CSS classes and

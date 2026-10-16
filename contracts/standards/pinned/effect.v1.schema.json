@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/effect.v1.schema.json",
+  "title": "Simai Background Effect Manifest v1",
+  "x-simai-version": "1.0.0",
+  "description": "An animated background drawn into one area of a page. A product reads only this file to list, describe and configure an effect, without running its code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "label", "entry", "surfaces", "settings", "needs"],
+  "properties": {
+    "schema": {"const": "simai.effect.v1"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,40}$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "label": {"$ref": "#/$defs/text"},
+    "author": {"type": "string", "maxLength": 200},
+    "entry": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.m?js$"},
+    "styles": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.css$"}},
+    "preview": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.(png|jpg|jpeg|webp)$"},
+    "surfaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$"}},
+    "settings": {"type": "array", "maxItems": 40, "items": {"$ref": "#/$defs/setting"}},
+    "needs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network"],
+      "properties": {"network": {"const": false}}
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z]{2}(-[A-Z]{2})?$"},
+      "additionalProperties": {"type": "string", "minLength": 1, "maxLength": 200}
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default"],
+      "properties": {
+        "key": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9]{0,40}$"},
+        "type": {"enum": ["choice", "integer", "number", "boolean", "string", "text", "color", "file"]},
+        "label": {"$ref": "#/$defs/text"},
+        "hint": {"$ref": "#/$defs/text"},
+        "default": {},
+        "min": {"type": "number"},
+        "max": {"type": "number", "description": "The upper bound of a number, or the longest a string or text may be."},
+        "step": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"type": "string", "maxLength": 16},
+        "options": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["value", "label"], "properties": {"value": {"type": ["string", "integer"]}, "label": {"$ref": "#/$defs/text"}}}},
+        "accept": {"type": "array", "items": {"type": "string", "pattern": "^(image|video)/[a-z0-9.+-]+$"}, "description": "For a file: the kinds of the site's files that may be chosen."}
+      }
+    }
+  }
+}

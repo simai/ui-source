@@ -1,0 +1,147 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.effect",
+  "version": "1.0.0",
+  "title": "SIMAI Background Effect",
+  "appliesTo": [
+    "simai.framework.component"
+  ],
+  "requirements": [
+    {
+      "id": "manifest-describes-everything",
+      "level": "must",
+      "text": "An effect is described by its manifest (effect.json, simai.effect.v1) alone: its identity, version, label, entry module, styles, preview, the surfaces it may be chosen for, its settings and what it needs. A product lists, describes and configures it without running its code.",
+      "verification": "manual",
+      "guidance": "SF.Effects.checkEffectManifest; the kit's manifest check."
+    },
+    {
+      "id": "settings-are-typed-and-bounded",
+      "level": "must",
+      "text": "Every setting has a key, a property type (choice, integer, number, boolean, string, text, color, file), a label and a valid default; numbers state their bounds, strings their longest length, choices their options, files the kinds of the site's files they accept.",
+      "verification": "manual"
+    },
+    {
+      "id": "settings-form-from-the-manifest",
+      "level": "must",
+      "text": "A product builds the settings form from the manifest's settings with its record view; it does not hand-write a form per effect.",
+      "verification": "manual"
+    },
+    {
+      "id": "values-checked-before-use",
+      "level": "must",
+      "text": "A product checks every stored value against its setting before saving it and before handing it to the effect; an invalid or missing value is replaced by the default, never passed on.",
+      "verification": "manual",
+      "guidance": "SF.Effects.effectSettings answers the checked settings and names the keys it dropped."
+    },
+    {
+      "id": "one-module-one-mount",
+      "level": "must",
+      "text": "The entry is one module exporting mount(host, settings, context), answering update, pause, resume and destroy.",
+      "verification": "manual"
+    },
+    {
+      "id": "draws-in-its-host-only",
+      "level": "must",
+      "text": "An effect draws only inside its host: it adds its own canvas or video there and touches nothing else on the page.",
+      "verification": "manual"
+    },
+    {
+      "id": "no-network",
+      "level": "must",
+      "text": "An effect makes no requests (needs.network is false in version 1): no fetch, no image or script from outside its own files and the site's files its settings name.",
+      "verification": "manual",
+      "guidance": "The kit fails an effect that asks for anything beyond its own files."
+    },
+    {
+      "id": "reduced-motion-still",
+      "level": "must",
+      "text": "With reduced motion an effect draws one still frame and stops asking for frames; a person who turns reduced motion on is given the still frame at once.",
+      "verification": "manual"
+    },
+    {
+      "id": "hidden-tab-idle",
+      "level": "must",
+      "text": "While the tab is hidden an effect draws nothing and asks for no frames.",
+      "verification": "manual"
+    },
+    {
+      "id": "pixel-density-capped",
+      "level": "must",
+      "text": "An effect caps its pixel density at 2.",
+      "verification": "manual"
+    },
+    {
+      "id": "not-in-the-way",
+      "level": "must",
+      "text": "The host is out of the accessibility tree (aria-hidden) and takes no pointer events: an effect stands under the page's controls, never over them.",
+      "verification": "manual"
+    },
+    {
+      "id": "update-without-remount",
+      "level": "must",
+      "text": "New settings reach a mounted effect through update; it redraws without being mounted again.",
+      "verification": "manual"
+    },
+    {
+      "id": "clean-destroy",
+      "level": "must",
+      "text": "After destroy an effect has left nothing behind -- no nodes, frames, observers or listeners -- and it can be mounted again.",
+      "verification": "manual"
+    },
+    {
+      "id": "failure-falls-back",
+      "level": "must",
+      "text": "An effect that fails to mount or throws is replaced by the product's default effect, and the failure is reported (sf-effect-error), never shown to the person as a broken page.",
+      "verification": "manual"
+    },
+    {
+      "id": "foreign-effects-sandboxed",
+      "level": "must",
+      "text": "An effect not shipped and reviewed with a product runs only in an iframe sandboxed without allow-same-origin, under a strict content security policy, receiving its checked settings by message: it can never reach the page, its cookies or a form on it.",
+      "verification": "manual"
+    },
+    {
+      "id": "installed-effects-checked",
+      "level": "must",
+      "text": "An effect is installed only after its package is checked -- the files it may hold, its size, its manifest, a digest of every file -- and installed switched off until a person turns it on.",
+      "verification": "manual"
+    },
+    {
+      "id": "kit-before-listing",
+      "level": "must",
+      "text": "A product runs the kit (scripts/effect-kit.mjs) on an effect before listing it: manifest, defaults, mount, no network, still motion, hidden tab, pixel ratio, update, cleanup, remount, accessibility.",
+      "verification": "manual",
+      "guidance": "The probe effect-kit runs it on a rule-keeping and a rule-breaking fixture."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.effect-manifest",
+      "version": "1.0.0",
+      "path": "../../pinned/effect.v1.schema.json",
+      "sha256": "4baa1ed9c57e2f657558eaf0c3b63605be8c406fc02493829598a6709f272209",
+      "description": "The form of effect.json: identity, entry, surfaces, typed and bounded settings, needs."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.interaction-rules 1.0.0 (motion, failure containment)",
+      "scope_note": "An animated background drawn into one area of a page -- a sign-in page's art side, later a hero block. The Framework owns the manifest, the module interface, the runtime rules, SF.Effects and the kit; a product owns its built-in effects, installing and turning effects on, and their settings.",
+      "origin": "Designed by simai/larena (larena-specs docs/architecture/2026-10-14-background-effects.md, approved by the owner 2026-10-14), the contract handed to the Framework; authored for publication on 2026-10-16.",
+      "validated_against": [
+        "the kit on a rule-keeping and a rule-breaking fixture (tests/fixtures/effect-sample, effect-bad)"
+      ]
+    }
+  }
+}

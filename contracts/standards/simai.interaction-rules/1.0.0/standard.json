@@ -1,0 +1,142 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.interaction-rules",
+  "version": "1.0.0",
+  "title": "SIMAI Interaction Rules",
+  "appliesTo": [
+    "simai.framework.component",
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "one-action-one-render",
+      "level": "must",
+      "text": "One person's action raises one host intent at most and causes one render of what it changes; the states it passes through (loading, then the answer) are the only further renders. Measurement after a render writes styles directly, never by asking for another render.",
+      "verification": "manual",
+      "guidance": "Probes count renders per action: a table sort, a search (data-view-reloads), opening a record (property-view-loading)."
+    },
+    {
+      "id": "updates-coalesce",
+      "level": "must",
+      "text": "A component batches its own updates into one frame; property changes made in one task are one render.",
+      "verification": "manual"
+    },
+    {
+      "id": "stale-answers-dropped",
+      "level": "must",
+      "text": "An answer to a request that is no longer the latest is dropped (sequence or epoch), never rendered; the newest request wins.",
+      "verification": "manual"
+    },
+    {
+      "id": "five-states",
+      "level": "must",
+      "text": "Every request a component makes has the same five states: loading, populated, empty, no-access, error -- the same words in every component and every port.",
+      "verification": "manual"
+    },
+    {
+      "id": "loading-is-a-skeleton",
+      "level": "must",
+      "text": "Loading is drawn as the component's skeleton of its final shape, never as text and never as an empty answer; a component is born loading, so its first frame is the skeleton.",
+      "verification": "manual",
+      "guidance": "Framework: data-sf-skeleton shapes in core, presentation.skeleton in the manifest; probes table-first-paint and property-view-loading."
+    },
+    {
+      "id": "empty-states-by-one-component",
+      "level": "must",
+      "text": "Empty, no-access and error are drawn by sf-empty-state, inline in lists and menus, as a block in pages, with the error offering a retry.",
+      "verification": "manual"
+    },
+    {
+      "id": "pending-not-unavailable",
+      "level": "must",
+      "text": "A host that is not ready keeps the request pending; it never answers unavailable for «not yet». Unavailable means «could not», and the person is shown an error.",
+      "verification": "manual"
+    },
+    {
+      "id": "vertical-props-events-port",
+      "level": "must",
+      "text": "A composite gives its parts data through properties and attributes and hears them through events; a part never reaches up into its composite or across into a sibling. Only the outermost composite talks to the host, through its declared port.",
+      "verification": "manual"
+    },
+    {
+      "id": "horizontal-through-routes",
+      "level": "must",
+      "text": "Components side by side talk only through declared composition ports and routes (simai.interface-fragment); they never find each other in the DOM.",
+      "verification": "manual"
+    },
+    {
+      "id": "page-state-through-preferences",
+      "level": "must",
+      "text": "State that belongs to the person and spans components -- view preferences -- goes through SF.Preferences; nothing else is shared through globals.",
+      "verification": "manual"
+    },
+    {
+      "id": "repeats-are-light-markup",
+      "level": "must",
+      "text": "What repeats many times -- cells, list rows, tags in a cell -- is drawn as markup with the Framework's component classes, not as one Smart element per value; Smart elements are for what is interactive or stateful.",
+      "verification": "manual",
+      "guidance": "Probe table-cell-weight: a page of rows holds a budget of Smart elements."
+    },
+    {
+      "id": "assets-asked-together",
+      "level": "must",
+      "text": "Styles and scripts a page will need are asked for together and once; a component's code does not discover its parts one by one as it renders, and an asset already on the page is never asked for again.",
+      "verification": "manual"
+    },
+    {
+      "id": "stable-geometry",
+      "level": "must",
+      "text": "Nothing moves under the pointer: a panel keeps its width whatever its content says, a list keeps its rows' height while it loads, and a skeleton's box is the loaded box within one ladder step.",
+      "verification": "manual",
+      "guidance": "Probes context-menu-panel (fixed width), placeholder-geometry."
+    },
+    {
+      "id": "no-flash-of-wrong-state",
+      "level": "must",
+      "text": "A component never shows a state it is not in -- no «empty» before the first answer, no «unavailable» before a record is named, no unstyled content before its sheet.",
+      "verification": "manual",
+      "guidance": "Probes watch the first frames with the sheet withheld (table-first-paint)."
+    },
+    {
+      "id": "motion-respects-the-person",
+      "level": "must",
+      "text": "Animation and pulsing stop for prefers-reduced-motion; a skeleton holds still, a transition is skipped.",
+      "verification": "manual"
+    },
+    {
+      "id": "failure-is-contained",
+      "level": "must",
+      "text": "A component that throws while drawing reports sf-component-error and its boundary shows the error state with a retry; nothing else on the page goes with it.",
+      "verification": "manual"
+    },
+    {
+      "id": "work-runs-without-a-frame",
+      "level": "must",
+      "text": "Work a component or the Loader schedules runs even where no animation frame comes (an iframe out of view, a hidden tab), by a short timer fallback.",
+      "verification": "manual"
+    },
+    {
+      "id": "enforced-by-checks",
+      "level": "must",
+      "text": "Each rule has a check in the build -- renders per action, the five states, no DOM reach across components, skeleton geometry, elements per cell, reduced motion -- and a component that does not meet them does not pass the gate.",
+      "verification": "manual"
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "builds_on": "the rules of the road (ui-control control/designs/2026-10-15-interaction-rules.md), measured on the admin polygon",
+      "scope_note": "How every Smart component -- primitive or composite -- loads, talks and draws, vertically (a composite and its parts) and horizontally (components side by side), so a new component fits in without conventions of its own. A product's admin pages build on it through their own page standard.",
+      "origin": "Owner requests of 2026-10-15 (remarks 5-8: loading looked assembled on the fly, the admin stuttered, «элемент не доступен» flashed) and 2026-10-16 (publish the rules as a standard)."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "simai.effect.v1",
+  "id": "sample-dots",
+  "version": "1.0.0",
+  "label": {"ru": "Точки", "en": "Dots"},
+  "author": "SIMAI Framework (kit fixture)",
+  "entry": "sample-dots.js",
+  "surfaces": ["sign-in"],
+  "settings": [
+    {"key": "count", "type": "integer", "label": {"ru": "Сколько точек", "en": "How many dots"}, "default": 24, "min": 4, "max": 200},
+    {"key": "speed", "type": "number", "label": {"ru": "Скорость", "en": "Speed"}, "default": 1, "min": 0.25, "max": 4, "step": 0.25},
+    {"key": "color", "type": "color", "label": {"ru": "Цвет", "en": "Colour"}, "default": "#6688ff"},
+    {"key": "shape", "type": "choice", "label": {"ru": "Форма", "en": "Shape"}, "default": "round",
+      "options": [{"value": "round", "label": {"ru": "Круг", "en": "Round"}}, {"value": "square", "label": {"ru": "Квадрат", "en": "Square"}}]}
+  ],
+  "needs": {"network": false}
+}

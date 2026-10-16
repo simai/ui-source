@@ -1,0 +1,75 @@
+{
+  "schema": "simai.effect.v1",
+  "id": "bad-dots",
+  "version": "1.0.0",
+  "label": {
+    "en": "Bad dots"
+  },
+  "author": "SIMAI Framework (kit fixture)",
+  "entry": "bad-dots.js",
+  "surfaces": [
+    "sign-in"
+  ],
+  "settings": [
+    {
+      "key": "count",
+      "type": "integer",
+      "label": {
+        "ru": "\u0421\u043a\u043e\u043b\u044c\u043a\u043e \u0442\u043e\u0447\u0435\u043a",
+        "en": "How many dots"
+      },
+      "default": 24,
+      "min": 4,
+      "max": 200
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "label": {
+        "ru": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u044c",
+        "en": "Speed"
+      },
+      "default": 1,
+      "min": 0.25,
+      "max": 4,
+      "step": 0.25
+    },
+    {
+      "key": "color",
+      "type": "color",
+      "label": {
+        "ru": "\u0426\u0432\u0435\u0442",
+        "en": "Colour"
+      },
+      "default": "#6688ff"
+    },
+    {
+      "key": "shape",
+      "type": "choice",
+      "label": {
+        "ru": "\u0424\u043e\u0440\u043c\u0430",
+        "en": "Shape"
+      },
+      "default": "round",
+      "options": [
+        {
+          "value": "round",
+          "label": {
+            "ru": "\u041a\u0440\u0443\u0433",
+            "en": "Round"
+          }
+        },
+        {
+          "value": "square",
+          "label": {
+            "ru": "\u041a\u0432\u0430\u0434\u0440\u0430\u0442",
+            "en": "Square"
+          }
+        }
+      ]
+    }
+  ],
+  "needs": {
+    "network": false
+  }
+}

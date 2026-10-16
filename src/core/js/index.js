@@ -5,6 +5,7 @@ import './composition/index.mjs';
 import './position.js';
 import './preferences.js';
 import './region-navigation.js';
+import './effects.js';
 import './notify.js';
 import {
   createPreloaderContent,
