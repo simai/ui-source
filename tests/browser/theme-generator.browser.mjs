@@ -3,7 +3,8 @@
 // sf-theme-generator (2026-10-18), measured on the built bytes. Unset, it draws
 // the Framework's own theme (primary 40 is #005bbe) and touches nothing on the
 // page. A colour chosen through its sf-color changes the preview and is
-// committed as sf-theme-apply with the 128 variables and a CSS rule. With
+// committed as sf-theme-generator-apply with the 226 variables (128 tones, 98
+// translucent steps) and a CSS rule, the first names still emitted beside. With
 // `apply` and a target, the target's --sf-primary-40 is the new tone and the
 // semantic --sf-primary follows; removing the element takes every inline
 // variable off again. A hue typed in the fine-tuning field and committed with
@@ -67,7 +68,7 @@ try {
     const keep = (event) => window.__seen.push({type: event.type, id: event.target.id, value: event.detail.value, hue: event.detail.hue,
       chroma: event.detail.chroma, variables: Object.keys(event.detail.variables ?? {}).length, primary40: event.detail.variables?.['--sf-primary-40'],
       css: typeof event.detail.css === 'string' ? event.detail.css.slice(0, 7) : null, schema: event.detail.theme?.schema});
-    for (const type of ['sf-theme-change', 'sf-theme-apply']) document.addEventListener(type, keep);
+    for (const type of ['sf-theme-generator-change', 'sf-theme-generator-apply', 'sf-theme-change', 'sf-theme-apply']) document.addEventListener(type, keep);
   });
   const settle = () => page.waitForTimeout(250);
   const taken = () => page.evaluate(() => window.__seen.splice(0));
@@ -89,11 +90,13 @@ try {
   await settle();
   const chosen = {primary40: await preview('plain'), events: await taken(), inlineOnRoot: await inline('html'),
     css: await page.evaluate(() => document.getElementById('plain').toCSS('.x').slice(0, 4))};
-  const apply = chosen.events.filter((event) => event.type === 'sf-theme-apply');
+  const apply = chosen.events.filter((event) => event.type === 'sf-theme-generator-apply');
+  const legacyApply = chosen.events.filter((event) => event.type === 'sf-theme-apply');
   if (chosen.primary40 !== greenTone || chosen.primary40 === '#005bbe') note({case: 'a chosen colour changes the preview', got: chosen.primary40, expected: greenTone});
-  if (apply.length !== 1 || apply[0].value !== GREEN || apply[0].variables !== 128 || apply[0].css !== ':root {' || apply[0].primary40 !== greenTone
-    || apply[0].schema !== 'simai.framework.theme' || !chosen.events.some((event) => event.type === 'sf-theme-change')) {
-    note({case: 'the choice fires sf-theme-change and one sf-theme-apply with 128 variables and css', got: chosen.events});
+  if (apply.length !== 1 || apply[0].value !== GREEN || apply[0].variables !== 226 || apply[0].css !== ':root {' || apply[0].primary40 !== greenTone
+    || apply[0].schema !== 'simai.framework.theme' || !chosen.events.some((event) => event.type === 'sf-theme-generator-change')
+    || legacyApply.length !== 1 || !chosen.events.some((event) => event.type === 'sf-theme-change')) {
+    note({case: 'the choice fires sf-theme-generator-change and one sf-theme-generator-apply with 226 variables and css, and the first names beside', got: chosen.events});
   }
   if (chosen.inlineOnRoot !== 0) note({case: 'without apply the page is not changed', got: chosen.inlineOnRoot});
   if (chosen.css !== '.x {') note({case: 'toCSS takes a selector', got: chosen.css});
@@ -121,7 +124,7 @@ try {
     ink: getComputedStyle(document.getElementById('ink')).color,
     scopeInline: [...document.getElementById('scope').style].filter((name) => name.startsWith('--sf-')).length}));
   await taken();
-  if (applied.tone !== greenTone || applied.ink !== rgb(greenTone) || applied.scopeInline !== 128 || applied.rootInline !== 0) {
+  if (applied.tone !== greenTone || applied.ink !== rgb(greenTone) || applied.scopeInline !== 226 || applied.rootInline !== 0) {
     note({case: 'apply: the target takes --sf-primary-40 and --sf-primary follows', got: applied, expected: {tone: greenTone, ink: rgb(greenTone)}, before});
   }
   if (removed.scopeInline !== 0 || removed.tone !== before.tone.toLowerCase() || removed.ink !== before.ink) {

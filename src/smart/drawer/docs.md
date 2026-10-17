@@ -90,6 +90,24 @@ Framework задаёт ему `padding-inline-start/end` по сумме шир�
 <sf-drawer id="settings" docked placement="inline-end" label="Настройки элемента">…</sf-drawer>
 ```
 
+Отдавать ли место странице, решает ширина хоста `data-sf-drawer-dock-host`:
+при 48rem и шире панель сдвигает страницу, уже — ложится поверх. Без хоста
+решает ширина окна.
+
+## Панель внутри блока (`data-sf-drawer-container`)
+
+Обычно панель выводится в конце `body` и стоит над всей страницей. Если
+Drawer находится внутри элемента с атрибутом `data-sf-drawer-container`,
+панель выводится внутри этого элемента и встаёт по его границам: так панель
+редактора или пример в документации держат свой Drawer без отдельной сцены.
+Высота панели — высота этого блока.
+
+```html
+<div data-sf-drawer-container style="block-size: 24rem">
+  <sf-drawer id="preview" open modal="false" title="Пример">…</sf-drawer>
+</div>
+```
+
 Логические `inline-start|inline-end` зеркалируются в RTL; физические
 `left|right` переводятся в логическую сторону по направлению документа.
 Закреплённая панель имеет `role="region"` и требует `label` или `title`.

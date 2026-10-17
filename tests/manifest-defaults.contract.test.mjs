@@ -3,6 +3,7 @@ import test from 'node:test';
 import {readFileSync, readdirSync, existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {isSchema} from '../src/core/js/schema-name.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -39,7 +40,7 @@ test('manifest defaults: meta.mjs and the manifest agree', async () => {
 
 test('manifest defaults: every exemption names a real component and a reason', () => {
   const contract = JSON.parse(read('contracts/manifest-defaults.json'));
-  assert.equal(contract.schema, 'simai.manifest-defaults.v1');
+  assert.ok(isSchema(contract, 'simai.manifest-defaults', 1), 'either form of the format name');
   assert.ok(existsSync(resolve(root, contract.checked_by)));
   for (const entry of [...contract.derived, ...contract.pending]) {
     assert.ok(existsSync(resolve(root, `src/smart/${entry.component}/index.js`)), entry.component);

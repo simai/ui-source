@@ -1618,6 +1618,243 @@
       "manual": "Set a heading's face, weight or style through its title role (sf-title-*), or a class on the heading.",
       "owner": "ui-control",
       "source": "ui-control/.artifacts/eval4/FIXES-2026-10-16.md (docs trial 4, item 12)"
+    },
+    {
+      "id": "format-names-without-version",
+      "recorded_on": "2026-10-18",
+      "stage": "compat",
+      "kind": "format",
+      "summary": "A data format names itself without a version: \"schema\": \"simai.<name>\" with \"schema_version\": <major>, an integer, beside it, in place of the older \"schema\": \"simai.<name>.v<major>\". Every Framework reader takes both forms until remove_after; the Framework's writers move to the new form in the next release.",
+      "items": [
+        {
+          "from": "simai.change-journal.v1",
+          "to": "\"schema\": \"simai.change-journal\", \"schema_version\": 1",
+          "match": "[\"']simai\\.change-journal\\.v1[\"']"
+        },
+        {
+          "from": "simai.composite.host-port.conformance.v1",
+          "to": "\"schema\": \"simai.composite.host-port.conformance\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composite\\.host-port\\.conformance\\.v1[\"']"
+        },
+        {
+          "from": "simai.composite.host-port.v1",
+          "to": "\"schema\": \"simai.composite.host-port\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composite\\.host-port\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.capability-contract-lock.v1",
+          "to": "\"schema\": \"simai.composition.capability-contract-lock\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.capability-contract-lock\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.capability-fixtures.v1",
+          "to": "\"schema\": \"simai.composition.capability-fixtures\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.capability-fixtures\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.dependencies.v1",
+          "to": "\"schema\": \"simai.composition.dependencies\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.dependencies\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.document.v1",
+          "to": "\"schema\": \"simai.composition.document\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.document\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.editor-field-kind-registry.v1",
+          "to": "\"schema\": \"simai.composition.editor-field-kind-registry\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.editor-field-kind-registry\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.editor-field-kind.v1",
+          "to": "\"schema\": \"simai.composition.editor-field-kind\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.editor-field-kind\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.editor-manifest-fixtures.v1",
+          "to": "\"schema\": \"simai.composition.editor-manifest-fixtures\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.editor-manifest-fixtures\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.editor-manifest-registry.v1",
+          "to": "\"schema\": \"simai.composition.editor-manifest-registry\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.editor-manifest-registry\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.editor-manifest.v1",
+          "to": "\"schema\": \"simai.composition.editor-manifest\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.editor-manifest\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.inputs.v1",
+          "to": "\"schema\": \"simai.composition.inputs\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.inputs\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.port-manifest.v1",
+          "to": "\"schema\": \"simai.composition.port-manifest\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.port-manifest\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.port-registry.v1",
+          "to": "\"schema\": \"simai.composition.port-registry\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.port-registry\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.recipe-contract-lock.v1",
+          "to": "\"schema\": \"simai.composition.recipe-contract-lock\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.recipe-contract-lock\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.recipe-limits.v1",
+          "to": "\"schema\": \"simai.composition.recipe-limits\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.recipe-limits\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.recipe-manifest.v1",
+          "to": "\"schema\": \"simai.composition.recipe-manifest\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.recipe-manifest\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.recipe.v1",
+          "to": "\"schema\": \"simai.composition.recipe\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.recipe\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.type-manifest.v1",
+          "to": "\"schema\": \"simai.composition.type-manifest\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.type-manifest\\.v1[\"']"
+        },
+        {
+          "from": "simai.composition.type-registry.v1",
+          "to": "\"schema\": \"simai.composition.type-registry\", \"schema_version\": 1",
+          "match": "[\"']simai\\.composition\\.type-registry\\.v1[\"']"
+        },
+        {
+          "from": "simai.effect.v1",
+          "to": "\"schema\": \"simai.effect\", \"schema_version\": 1",
+          "match": "[\"']simai\\.effect\\.v1[\"']"
+        },
+        {
+          "from": "simai.elevation-shadow.v1",
+          "to": "\"schema\": \"simai.elevation-shadow\", \"schema_version\": 1",
+          "match": "[\"']simai\\.elevation-shadow\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.delivery-target-review.v1",
+          "to": "\"schema\": \"simai.framework.delivery-target-review\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.delivery-target-review\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.flag-set.v1",
+          "to": "\"schema\": \"simai.framework.flag-set\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.flag-set\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.product-package-source-lock.v1",
+          "to": "\"schema\": \"simai.framework.product-package-source-lock\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.product-package-source-lock\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.public-api-axes.v1",
+          "to": "\"schema\": \"simai.framework.public-api-axes\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.public-api-axes\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.public-variables.v1",
+          "to": "\"schema\": \"simai.framework.public-variables\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.public-variables\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.third-party-notices.v1",
+          "to": "\"schema\": \"simai.framework.third-party-notices\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.third-party-notices\\.v1[\"']"
+        },
+        {
+          "from": "simai.framework.undeclared-tokens.v1",
+          "to": "\"schema\": \"simai.framework.undeclared-tokens\", \"schema_version\": 1",
+          "match": "[\"']simai\\.framework\\.undeclared-tokens\\.v1[\"']"
+        },
+        {
+          "from": "simai.interface-fragment.v1",
+          "to": "\"schema\": \"simai.interface-fragment\", \"schema_version\": 1",
+          "match": "[\"']simai\\.interface-fragment\\.v1[\"']"
+        },
+        {
+          "from": "simai.lifecycle-policy.v1",
+          "to": "\"schema\": \"simai.lifecycle-policy\", \"schema_version\": 1",
+          "match": "[\"']simai\\.lifecycle-policy\\.v1[\"']"
+        },
+        {
+          "from": "simai.manifest-defaults.v1",
+          "to": "\"schema\": \"simai.manifest-defaults\", \"schema_version\": 1",
+          "match": "[\"']simai\\.manifest-defaults\\.v1[\"']"
+        },
+        {
+          "from": "simai.recipe.canonicalization-vectors.v1",
+          "to": "\"schema\": \"simai.recipe.canonicalization-vectors\", \"schema_version\": 1",
+          "match": "[\"']simai\\.recipe\\.canonicalization-vectors\\.v1[\"']"
+        },
+        {
+          "from": "simai.smart-component-contract-registry.v2",
+          "to": "\"schema\": \"simai.smart-component-contract-registry\", \"schema_version\": 2",
+          "match": "[\"']simai\\.smart-component-contract-registry\\.v2[\"']"
+        },
+        {
+          "from": "simai.smart-component-fixture.v2",
+          "to": "\"schema\": \"simai.smart-component-fixture\", \"schema_version\": 2",
+          "match": "[\"']simai\\.smart-component-fixture\\.v2[\"']"
+        },
+        {
+          "from": "simai.smart-component-scenario.v1",
+          "to": "\"schema\": \"simai.smart-component-scenario\", \"schema_version\": 1",
+          "match": "[\"']simai\\.smart-component-scenario\\.v1[\"']"
+        },
+        {
+          "from": "simai.smart-component-technology-packet.v1",
+          "to": "\"schema\": \"simai.smart-component-technology-packet\", \"schema_version\": 1",
+          "match": "[\"']simai\\.smart-component-technology-packet\\.v1[\"']"
+        },
+        {
+          "from": "simai.smart.sources-local-map.v1",
+          "to": "\"schema\": \"simai.smart.sources-local-map\", \"schema_version\": 1",
+          "match": "[\"']simai\\.smart\\.sources-local-map\\.v1[\"']"
+        },
+        {
+          "from": "simai.template-context.v1",
+          "to": "\"schema\": \"simai.template-context\", \"schema_version\": 1",
+          "match": "[\"']simai\\.template-context\\.v1[\"']"
+        }
+      ],
+      "deprecated_on": "2026-10-18",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "In every file that declares a format, replace \"schema\": \"simai.<name>.v<major>\" with \"schema\": \"simai.<name>\" and add \"schema_version\": <major> (the number that followed .v) beside it. A reader of your own that compares the label reads both forms until remove_after: readSchema or isSchema in src/core/js/schema-name.mjs. sf-upgrade finds each label but does not rewrite it, because the new form is two fields.",
+      "owner": "ui-control",
+      "source": "ui-control/control/NAMES-WITHOUT-VERSIONS-DECISION-2026-10-11.md"
+    },
+    {
+      "id": "event-theme-generator-names",
+      "recorded_on": "2026-10-18",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-theme-generator's events are sf-theme-generator-change and sf-theme-generator-apply; their first names, sf-theme-change and sf-theme-apply, clash with the Loader's light/dark event and are emitted beside them until the sweep.",
+      "items": [
+        {
+          "component": "theme-generator",
+          "from": "sf-theme-change",
+          "to": "sf-theme-generator-change"
+        },
+        {
+          "component": "theme-generator",
+          "from": "sf-theme-apply",
+          "to": "sf-theme-generator-apply"
+        }
+      ],
+      "deprecated_on": "2026-10-18",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-event"
     }
   ]
 }

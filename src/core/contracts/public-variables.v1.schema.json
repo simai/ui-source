@@ -8,9 +8,30 @@
     "summary",
     "components"
   ],
+  "anyOf": [
+    {
+      "properties": {
+        "schema": {
+          "const": "simai.framework.public-variables.v1"
+        }
+      }
+    },
+    {
+      "required": [
+        "schema_version"
+      ]
+    }
+  ],
   "properties": {
     "schema": {
-      "const": "simai.framework.public-variables.v1"
+      "enum": [
+        "simai.framework.public-variables.v1",
+        "simai.framework.public-variables"
+      ],
+      "description": "The format: simai.framework.public-variables with schema_version 1. The older label simai.framework.public-variables.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."
+    },
+    "schema_version": {
+      "const": 1
     },
     "summary": {
       "type": "string"

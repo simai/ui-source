@@ -7,12 +7,19 @@ from jsonschema import Draft202012Validator
 bundle = Path(__file__).resolve().parent.parent
 contracts = bundle.parent
 load = lambda path: json.loads(path.read_text())
+# Either form of a format name: the older 'simai.<name>.v<major>', or
+# 'simai.<name>' with schema_version beside it (src/core/js/schema-name.mjs).
+def is_schema(document, name, version):
+    label = document.get('schema')
+    if label == f'{name}.v{version}':
+        return document.get('schema_version', version) == version
+    return label == name and document.get('schema_version') == version
 kind_schema = load(contracts / 'composition-editor-field-kind.v1.schema.json')
 editor_schema = load(contracts / 'composition-editor-manifest.v1.schema.json')
 for schema in (kind_schema, editor_schema):
     Draft202012Validator.check_schema(schema)
 kinds = load(contracts / 'composition-editor-field-kinds.v1.json')
-assert kinds['schema'] == 'simai.composition.editor-field-kind-registry.v1'
+assert is_schema(kinds, 'simai.composition.editor-field-kind-registry', 1)
 for entry in kinds['entries']:
     Draft202012Validator(kind_schema).validate(entry)
 editor = load(contracts / 'composition-editor-manifests.v1.json')

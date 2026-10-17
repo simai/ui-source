@@ -1,4 +1,5 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
+import { isSchema } from '../schema-name.mjs';
 
 // Generic cross-composite routing. A layout.scope node is the common parent
 // that declares typed routes between endpoint descendants. Routes name only
@@ -199,7 +200,8 @@ export function checkPortValue(valueType, value) {
 export function createPortRegistry(manifests = [], options = {}) {
   const elements = new Map();
   for (const manifest of manifests) {
-    if (!isPlainObject(manifest) || manifest.schema !== 'simai.composition.port-manifest.v1') throw new TypeError('composition_port_manifest_invalid');
+    // Either form of the format name (schema-name.mjs).
+    if (!isPlainObject(manifest) || !isSchema(manifest, 'simai.composition.port-manifest', 1)) throw new TypeError('composition_port_manifest_invalid');
     if (elements.has(manifest.element)) throw new TypeError(`composition_port_manifest_duplicate:${manifest.element}`);
     for (const port of [...Object.values(manifest.outputs || {}), ...Object.values(manifest.inputs || {})]) {
       if (!knownValueType(port.value)) throw new TypeError(`composition_port_value_type_unknown:${port.value}`);

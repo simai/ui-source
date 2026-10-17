@@ -1,5 +1,6 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
+import { isSchema } from '../schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
 import {
   BUILTIN_FIELD_KINDS,
@@ -36,7 +37,7 @@ function startInlineEdit(element, options) {
   return editor.startInlineEdit(element, options);
 }
 const PROFILES = new Set(['ui-layout', 'structured-content']);
-const DOCUMENT_FIELDS = new Set(['schema', 'id', 'profile', 'locale', 'root', 'extensions']);
+const DOCUMENT_FIELDS = new Set(['schema', 'schema_version', 'id', 'profile', 'locale', 'root', 'extensions']);
 const NODE_FIELDS = new Set(['id', 'type', 'data', 'props', 'slots', 'presentation', 'bindings', 'extensions']);
 const PRESENTATION_FIELDS = new Set(['view', 'preset', 'modifiers']);
 const BINDING_FIELDS = new Set(['owner', 'ref', 'target', 'revision']);
@@ -197,7 +198,8 @@ function normalizeRegistry(registry) {
 export function createRegistry(manifests = BUILTIN_TYPE_MANIFESTS, renderers = {}) {
   const types = new Map();
   for (const manifest of manifests) {
-    if (!isPlainObject(manifest) || manifest.schema !== 'simai.composition.type-manifest.v1') throw new TypeError('composition_manifest_invalid');
+    // Either form of the format name (schema-name.mjs).
+    if (!isPlainObject(manifest) || !isSchema(manifest, 'simai.composition.type-manifest', 1)) throw new TypeError('composition_manifest_invalid');
     if (types.has(manifest.type)) throw new TypeError(`composition_manifest_duplicate:${manifest.type}`);
     types.set(manifest.type, canonical(manifest));
   }
@@ -273,7 +275,7 @@ export function validate(document, registry = undefined, options = {}) {
   if (new globalThis.TextEncoder().encode(serialized).byteLength > limits.maxDocumentBytes) diagnostics.push(diagnostic('document_too_large', '$', 'Document exceeds the byte limit'));
   if (!isPlainObject(document)) return { valid: false, diagnostics: [diagnostic('document_invalid', '$', 'Document must be an object')] };
   pushUnknownFields(document, DOCUMENT_FIELDS, '$', diagnostics);
-  if (document.schema !== DOCUMENT_SCHEMA) diagnostics.push(diagnostic('schema_unknown', '$.schema', `Expected ${DOCUMENT_SCHEMA}`));
+  if (!isSchema(document, 'simai.composition.document', 1)) diagnostics.push(diagnostic('schema_unknown', '$.schema', `Expected ${DOCUMENT_SCHEMA}, or simai.composition.document with schema_version 1`));
   if (typeof document.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,119}$/u.test(document.id)) diagnostics.push(diagnostic('document_id_invalid', '$.id', 'Document id is invalid'));
   if (!PROFILES.has(document.profile)) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
   if (document.locale !== undefined && (typeof document.locale !== 'string' || !/^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$/u.test(document.locale))) diagnostics.push(diagnostic('locale_invalid', '$.locale', 'Locale is invalid'));

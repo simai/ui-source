@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/change-journal.v1.json",
-  "x-simai-version": "1.0.0",
+  "x-simai-version": "1.1.0",
   "title": "SIMAI Framework change journal",
   "description": "The chronology of public changes that need a consumer to change anything: every rename, retired value, removed name and behaviour change, with what to write instead and how to detect and rewrite it. Records are appended, never deleted; a removed record is a tombstone.",
   "type": "object",
@@ -11,9 +11,30 @@
     "records"
   ],
   "additionalProperties": false,
+  "anyOf": [
+    {
+      "properties": {
+        "schema": {
+          "const": "simai.change-journal.v1"
+        }
+      }
+    },
+    {
+      "required": [
+        "schema_version"
+      ]
+    }
+  ],
   "properties": {
     "schema": {
-      "const": "simai.change-journal.v1"
+      "enum": [
+        "simai.change-journal.v1",
+        "simai.change-journal"
+      ],
+      "description": "The format: simai.change-journal with schema_version 1. The older label simai.change-journal.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."
+    },
+    "schema_version": {
+      "const": 1
     },
     "policy": {
       "type": "string"
@@ -66,7 +87,8 @@
             "option",
             "property",
             "component",
-            "behaviour"
+            "behaviour",
+            "format"
           ]
         },
         "summary": {

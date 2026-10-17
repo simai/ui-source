@@ -1,8 +1,10 @@
 import { stableStringify } from './canonical.mjs';
+import { isSchema } from '../schema-name.mjs';
 
-const RECIPE_SCHEMA = 'simai.composition.recipe.v1';
+// Readers take either form of a format name (simai.composition.recipe.v1, or
+// simai.composition.recipe with schema_version 1): schema-name.mjs. The labels
+// below are what this module writes.
 const INPUTS_SCHEMA = 'simai.composition.inputs.v1';
-const MANIFEST_SCHEMA = 'simai.composition.recipe-manifest.v1';
 const DEPENDENCIES_SCHEMA = 'simai.composition.dependencies.v1';
 const CANONICALIZATION = 'simai.recipe.canonical-json.v1';
 const SAFE_INTEGER_MIN = -9007199254740991;
@@ -34,9 +36,9 @@ const ENTRY_FIELDS = {
   insertSlot: new Set(['id', 'insertSlot']),
 };
 const NODE_FIELDS = new Set(['type', 'data', 'props', 'presentation', 'slots', 'bindings', 'extensions']);
-const RECIPE_FIELDS = new Set(['schema', 'id', 'profile', 'locale', 'inputs', 'root', 'extensions']);
-const INPUT_ENVELOPE_FIELDS = new Set(['schema', 'scope', 'values', 'extensions']);
-const MANIFEST_FIELDS = new Set(['schema', 'id', 'parameters', 'slots', 'body', 'extensions']);
+const RECIPE_FIELDS = new Set(['schema', 'schema_version', 'id', 'profile', 'locale', 'inputs', 'root', 'extensions']);
+const INPUT_ENVELOPE_FIELDS = new Set(['schema', 'schema_version', 'scope', 'values', 'extensions']);
+const MANIFEST_FIELDS = new Set(['schema', 'schema_version', 'id', 'parameters', 'slots', 'body', 'extensions']);
 const INPUT_DECLARATION_FIELDS = new Set(['kind', 'schema', 'default', 'expectedOrigin', 'extensions']);
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/u;
 
@@ -317,7 +319,7 @@ export async function resolveRecipe(recipe, context = {}) {
     const limits = normalizeLimits(context.limits);
     assertCanonicalValue(recipe);
     if (utf8Size(recipe) > limits.maxRecipeBytes) throw Object.assign(new RangeError('Recipe byte limit exceeded'), { code: 'limit_exceeded', sourcePath: '$' });
-    if (!isObject(recipe) || recipe.schema !== RECIPE_SCHEMA) throw Object.assign(new TypeError('Unsupported recipe schema'), { code: 'invalid_value', sourcePath: '/schema' });
+    if (!isObject(recipe) || !isSchema(recipe, 'simai.composition.recipe', 1)) throw Object.assign(new TypeError('Unsupported recipe schema'), { code: 'invalid_value', sourcePath: '/schema' });
     assertFields(recipe, RECIPE_FIELDS, '');
     if (!ID.test(recipe.id || '') || !['ui-layout', 'structured-content'].includes(recipe.profile)) throw Object.assign(new TypeError('Recipe identity or profile is invalid'), { code: 'invalid_value', sourcePath: '/' });
     const supportedExtensions = new Set(context.supportedExtensions || []);
@@ -337,7 +339,7 @@ export async function resolveRecipe(recipe, context = {}) {
     const inputsEnvelope = context.inputs || { schema: INPUTS_SCHEMA, scope, values: {} };
     assertCanonicalValue(inputsEnvelope, '/inputs');
     assertFields(inputsEnvelope, INPUT_ENVELOPE_FIELDS, '/inputs');
-    if (inputsEnvelope.schema !== INPUTS_SCHEMA || inputsEnvelope.scope !== scope) throw Object.assign(new TypeError('Input scope mismatch'), { code: 'input_origin_mismatch', sourcePath: '/inputs' });
+    if (!isSchema(inputsEnvelope, 'simai.composition.inputs', 1) || inputsEnvelope.scope !== scope) throw Object.assign(new TypeError('Input scope mismatch'), { code: 'input_origin_mismatch', sourcePath: '/inputs' });
 
     const recipeHash = await recipeDigest(recipe);
     const limitsState = { steps: 0, sourceBytes: 0, inputBytes: 0, nodes: 0, intermediateBytes: 0 };
@@ -467,7 +469,7 @@ export async function resolveRecipe(recipe, context = {}) {
             validateEntrySyntax(resolved.source, `${sourcePath}/source`, { localIds: new Set(), maxSelectCases: limits.maxSelectCases, supportedExtensions });
             return await expand(resolved.source, { ...state, segments: [...state.segments, ['placement', entry.id]] }, `${sourcePath}/source`);
           }
-          if (resolved.source.schema !== MANIFEST_SCHEMA) throw Object.assign(new Error('Template manifest is invalid'), { code: 'invalid_value', sourcePath });
+          if (!isSchema(resolved.source, 'simai.composition.recipe-manifest', 1)) throw Object.assign(new Error('Template manifest is invalid'), { code: 'invalid_value', sourcePath });
           assertFields(resolved.source, MANIFEST_FIELDS, `${sourcePath}/source`);
           assertExtensions(resolved.source.extensions, `${sourcePath}/source/extensions`, supportedExtensions);
           validateEntrySyntax(resolved.source.body, `${sourcePath}/source/body`, { localIds: new Set(), maxSelectCases: limits.maxSelectCases, supportedExtensions });

@@ -11,6 +11,10 @@ test('the two forms of a format name are read as the same format', () => {
   assert.ok(isSchema({schema: 'simai.composition.document.v1'}, 'simai.composition.document', 1));
   assert.ok(isSchema({schema: 'simai.composition.document', schema_version: 1}, 'simai.composition.document', 1));
   assert.ok(!isSchema({schema: 'simai.composition.document', schema_version: 2}, 'simai.composition.document', 1));
+  assert.ok(!isSchema({schema: 'simai.composition.document'}, 'simai.composition.document', 1), 'the new form names its major');
+  assert.ok(isSchema({schema: 'simai.composition.document.v1', schema_version: 1}, 'simai.composition.document', 1));
+  assert.ok(!isSchema({schema: 'simai.composition.document.v1', schema_version: 2}, 'simai.composition.document', 1), 'the two places agree');
+  assert.ok(!isSchema({schema: 'simai.composition.document.v2'}, 'simai.composition.document', 1));
   assert.equal(readSchema({}), null);
 });
 

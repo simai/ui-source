@@ -10,13 +10,16 @@ const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_varia
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the
 // component would re-theme a page that asked for nothing.
-test('the default colour gives back all 128 shipped primitives exactly', () => {
+test('the default colour gives back all 128 shipped primitives and their 98 translucent steps exactly', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const variables = themeVariables(theme);
-  assert.equal(Object.keys(variables).length, THEME_PALETTES.length * THEME_TONES.length);
+  const declared = [...primitives.matchAll(/(--sf-[a-z]+-\d+--alfa-\d+):/gu)].map(([, name]) => name);
+  // Every translucent step core declares on a palette tone is one the theme writes.
+  assert.deepEqual([...new Set(declared)].filter((name) => !(name in variables)), []);
+  assert.equal(Object.keys(variables).length, THEME_PALETTES.length * THEME_TONES.length + new Set(declared).size);
   const off = [];
   for (const [name, value] of Object.entries(variables)) {
-    const shipped = primitives.match(new RegExp(`${name}: (#[0-9a-fA-F]{6});`))?.[1]?.toLowerCase();
+    const shipped = primitives.match(new RegExp(`${name}: (#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?);`))?.[1]?.toLowerCase();
     if (shipped !== value) off.push(`${name}: shipped ${shipped}, made ${value}`);
   }
   assert.deepEqual(off, []);
@@ -43,6 +46,7 @@ test('the CSS is one rule of the 128 primitives under the selector', () => {
   const css = themeToCss(themeFromColor('#005bbe'), '.site-main');
   assert.match(css, /^\.site-main \{\n/u);
   assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 128);
+  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 98);
 });
 
 // The copied HCT files are the package's own bytes: a copy that drifted would

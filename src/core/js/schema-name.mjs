@@ -21,10 +21,14 @@ export function readSchema(document) {
   return {name: label, version: Number.isInteger(version) ? version : null, form: 'name'};
 }
 
-/** Whether a document is the format `name` at major `version`, in either form. */
+/**
+ * Whether a document is the format `name` at major `version`, in either form.
+ * A schema_version beside the older label must agree with it.
+ */
 export function isSchema(document, name, version) {
   const read = readSchema(document);
-  return Boolean(read) && read.name === name && read.version === version;
+  if (!read || read.name !== name || read.version !== version) return false;
+  return document.schema_version === undefined || document.schema_version === version;
 }
 
 /** The new form of a format's fields, for a writer: {schema, schema_version}. */

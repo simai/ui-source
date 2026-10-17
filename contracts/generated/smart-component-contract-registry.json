@@ -634,7 +634,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "f249fd75dad8c4bcf7c91c4db7ee07e1ea6075d08fe9febdb194c8d8199e4803",
+      "manifest_sha256": "edd43f79a2fda2c8abb5afda7779d957ace36b3f0d48c16dccdd79843c9bca9f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1795,13 +1795,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "b12b3bf1f3cdd21c338dde3e93cd0aac9bb8c748644b36ee759f04dda5b88b62",
+      "manifest_sha256": "0a61608d253976dbc998d48bd0675a1d56433a4848d71d788d93944971d37e02",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads, with a preview, events carrying the CSS, and an optional live application to the page.",
+      "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads and the 98 translucent steps core derives from them, with a preview, events carrying the CSS, and an optional live application to the page.",
       "tags": [
         "theme",
         "color",

@@ -4,6 +4,7 @@ import {readFileSync, readdirSync, existsSync, mkdtempSync, writeFileSync, rmSyn
 import {execFileSync, spawnSync} from 'node:child_process';
 import {resolve, join} from 'node:path';
 import {tmpdir} from 'node:os';
+import {isSchema} from '../src/core/js/schema-name.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -29,7 +30,7 @@ const today = process.env.SF_TODAY || new Date().toISOString().slice(0, 10);
    the sweep day it goes, and the gate holds both stages. A record is never
    deleted: once removed it is a tombstone an older consumer upgrades by. */
 test('change journal: every record is well formed and dated by the policy', () => {
-  assert.equal(journal.schema, 'simai.change-journal.v1');
+  assert.ok(isSchema(journal, 'simai.change-journal', 1), 'either form of the format name');
   assert.equal(journal.policy, 'contracts/lifecycle-policy.json');
   const ids = new Set();
   let previous = '';
@@ -195,7 +196,7 @@ test('change journal: every declared alias table is recorded', () => {
 });
 
 test('change journal: the policy, the schema, the runtime note and the docs agree', () => {
-  assert.equal(policy.schema, 'simai.lifecycle-policy.v1');
+  assert.ok(isSchema(policy, 'simai.lifecycle-policy', 1), 'either form of the format name');
   assert.ok(policy.compat_days > 0 && policy.sweep_day_of_month >= 1 && policy.sweep_day_of_month <= 28);
   const base = read('src/core/js/smart-base.js');
   assert.match(base, /import \{ noteDeprecated \} from '\.\/deprecations\.js';/u);

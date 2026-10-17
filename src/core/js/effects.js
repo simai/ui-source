@@ -14,6 +14,10 @@
 // sandbox is the product's (an iframe without allow-same-origin); this module
 // is what runs inside it as well.
 
+import {isSchema} from './schema-name.mjs';
+
+// The label a writer emits. A reader takes either form of the format name
+// (simai.effect.v1, or simai.effect with schema_version 1): schema-name.mjs.
 export const EFFECT_SCHEMA = 'simai.effect.v1';
 const SETTING_TYPES = new Set(['choice', 'integer', 'number', 'boolean', 'string', 'text', 'color', 'file']);
 const ID = /^[a-z][a-z0-9-]{1,40}$/u;
@@ -29,9 +33,9 @@ const isText = (value) => isObject(value) && Object.keys(value).length > 0
 export function checkEffectManifest(manifest) {
   if (!isObject(manifest)) return ['manifest: not an object'];
   const problems = [];
-  const allowed = ['schema', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'settings', 'needs'];
+  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'settings', 'needs'];
   for (const key of Object.keys(manifest)) if (!allowed.includes(key)) problems.push(`${key}: undeclared`);
-  if (manifest.schema !== EFFECT_SCHEMA) problems.push('schema: not simai.effect.v1');
+  if (!isSchema(manifest, 'simai.effect', 1)) problems.push('schema: not simai.effect, schema_version 1');
   if (typeof manifest.id !== 'string' || !ID.test(manifest.id)) problems.push('id');
   if (typeof manifest.version !== 'string' || !VERSION.test(manifest.version)) problems.push('version');
   if (!isText(manifest.label)) problems.push('label');

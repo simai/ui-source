@@ -53,7 +53,16 @@ test('the code, the port-manifest schema, the descriptor schema and its pinned c
   const descriptor = json('src/core/contracts/interface-fragment.v1.schema.json');
   assert.deepEqual([...ports].sort(), vocabulary);
   assert.deepEqual([...descriptor.$defs.valueType.enum].sort(), vocabulary);
-  assert.deepEqual(json('contracts/standards/pinned/interface-fragment.v1.schema.json'), descriptor, 'the pinned copy is the published schema');
+  // The pinned copy is the published 1.0.0 schema. The live one (1.1.0) adds
+  // only the bare format name beside the older label (names carry no version,
+  // 2026-10-11); without that it is the published schema.
+  const published = json('contracts/standards/pinned/interface-fragment.v1.schema.json');
+  const {anyOf, ...live} = descriptor;
+  const {schema_version, ...properties} = live.properties;
+  assert.deepEqual(anyOf, [{properties: {schema: {const: 'simai.interface-fragment.v1'}}}, {required: ['schema_version']}]);
+  assert.deepEqual(schema_version, {const: 1});
+  assert.deepEqual(properties.schema.enum, [published.properties.schema.const, 'simai.interface-fragment']);
+  assert.deepEqual({...live, 'x-simai-version': published['x-simai-version'], properties: {...properties, schema: published.properties.schema}}, published, 'otherwise the pinned copy is the published schema');
 });
 
 const DESCRIPTOR = {

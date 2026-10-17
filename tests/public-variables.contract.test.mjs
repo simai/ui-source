@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile, readdir} from 'node:fs/promises';
 import test from 'node:test';
+import {isSchema} from '../src/core/js/schema-name.mjs';
 
 // The public variables a component offers (src/core/contracts/public-variables.v1.json):
 // each is read by the component's stylesheet, none is set by the Framework, and
@@ -26,7 +27,7 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
 
 // The pilot of four (2026-10-13) and the twelve after it (2026-10-18).
 test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
-  assert.equal(contract.schema, 'simai.framework.public-variables.v1');
+  assert.ok(isSchema(contract, 'simai.framework.public-variables', 1), 'either form of the format name');
   assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());
   for (const entry of contract.components) {
     assert.ok(entry.variables.length >= 5 && entry.variables.length <= 10, entry.component);

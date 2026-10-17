@@ -215,7 +215,12 @@ class SfThemeGenerator extends SfBaseElement {
   }
 
   _emitChange() {
-    this.emitComponentEvent('theme-change', this._detail());
+    // sf-theme-generator-change, and its first name sf-theme-change, which the
+    // Loader's own light/dark event also bears (journal
+    // event-theme-generator-names, until 2026-12-01).
+    const detail = this._detail();
+    this.emitComponentEvent('theme-generator-change', detail);
+    this.emitComponentEvent('theme-change', detail);
   }
 
   // Committed once per distinct theme: Enter and the field's own change that
@@ -224,7 +229,9 @@ class SfThemeGenerator extends SfBaseElement {
     const key = this._key();
     if (!force && key === this._committedKey) return;
     this._committedKey = key;
-    this.emitComponentEvent('theme-apply', this._detail());
+    const detail = this._detail();
+    this.emitComponentEvent('theme-generator-apply', detail);
+    this.emitComponentEvent('theme-apply', detail);
   }
 
   // Several attributes as one change: the page is re-themed once.

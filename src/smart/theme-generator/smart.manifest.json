@@ -3,7 +3,7 @@
   "id": "smart.theme-generator",
   "version": "1.0.0",
   "title": "Theme generator",
-  "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads, with a preview, events carrying the CSS, and an optional live application to the page.",
+  "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads and the 98 translucent steps core derives from them, with a preview, events carrying the CSS, and an optional live application to the page.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -74,7 +74,7 @@
       "target": {
         "type": "string",
         "default": "",
-        "description": "A CSS selector for the element the theme is applied to; empty is the document element. A target other than the root carries a theme class (theme-light or theme-dark): the semantic tokens are declared there, so without one only the 128 primitives change on it."
+        "description": "A CSS selector for the element the theme is applied to; empty is the document element. A target other than the root carries a theme class (theme-light or theme-dark): the semantic tokens are declared there, so without one only the primitives change on it."
       },
       "selector": {
         "type": "string",
@@ -95,7 +95,7 @@
   "contracts": {},
   "methods": {
     "toCSS": {
-      "summary": "The theme as one stylesheet rule of its 128 primitives, under the given selector or the `selector` attribute.",
+      "summary": "The theme as one stylesheet rule of its 128 primitives and 98 translucent steps, under the given selector or the `selector` attribute.",
       "arguments": [
         {
           "name": "selector",
@@ -126,7 +126,7 @@
     }
   },
   "events": {
-    "sf-theme-change": {
+    "sf-theme-generator-change": {
       "summary": "The choice moved: a drag across the picker, a swatch, a number typed in a field.",
       "payload": {
         "type": "object",
@@ -147,7 +147,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 128 custom properties, {name: value}."
+            "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -156,7 +156,7 @@
         }
       }
     },
-    "sf-theme-apply": {
+    "sf-theme-generator-apply": {
       "summary": "The choice was committed: the picker's change, a swatch, Enter or leaving a field, Reset.",
       "payload": {
         "type": "object",
@@ -177,7 +177,67 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 128 custom properties, {name: value}."
+            "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+          },
+          "css": {
+            "type": "string",
+            "description": "The theme as a rule under `selector`."
+          }
+        }
+      }
+    },
+    "sf-theme-change": {
+      "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-change.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The chosen colour, '' while the Framework's own one applies."
+          },
+          "hue": {
+            "type": "number"
+          },
+          "chroma": {
+            "type": "number"
+          },
+          "theme": {
+            "type": "object",
+            "description": "The theme object, as toJSON()."
+          },
+          "variables": {
+            "type": "object",
+            "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+          },
+          "css": {
+            "type": "string",
+            "description": "The theme as a rule under `selector`."
+          }
+        }
+      }
+    },
+    "sf-theme-apply": {
+      "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-apply.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The chosen colour, '' while the Framework's own one applies."
+          },
+          "hue": {
+            "type": "number"
+          },
+          "chroma": {
+            "type": "number"
+          },
+          "theme": {
+            "type": "object",
+            "description": "The theme object, as toJSON()."
+          },
+          "variables": {
+            "type": "object",
+            "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -297,7 +357,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "ba682aa90688cff27e57f916276d9060e3d7be5e8fddb4ed2002b8c4c53e7b9b"
+        "sha256": "514e405f20084aa7debee6194cb3d27f0b259870d4d5d661bcce52d5f3e8f13a"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
@@ -313,11 +373,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "ab5ef5769ccfc5f78b645ac45449f72a9317956b85078d3b3614595f9180abd5"
+        "sha256": "c4eb2570ecace352f12f417dcb5268e399daa54097098c50ff9e12eff872d2bc"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "630401f8ac96a69583a57c857d75a44369eadb24d3e38b338657431ee16949b8"
+        "sha256": "1a1eadb297a50cd0c0a89e644d366cd2ed83b9401639cd10d4bda684f4c5ffa0"
       }
     ],
     "generated_runtime": []

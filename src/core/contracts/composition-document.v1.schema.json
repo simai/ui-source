@@ -5,8 +5,10 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "id", "profile", "root"],
+  "anyOf": [{"properties": {"schema": {"const": "simai.composition.document.v1"}}}, {"required": ["schema_version"]}],
   "properties": {
-    "schema": {"const": "simai.composition.document.v1"},
+    "schema": {"enum": ["simai.composition.document.v1", "simai.composition.document"], "description": "The format: simai.composition.document with schema_version 1. The older label simai.composition.document.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."},
+    "schema_version": {"const": 1},
     "id": {"$ref": "#/$defs/id"},
     "profile": {"enum": ["ui-layout", "structured-content"]},
     "locale": {"type": "string", "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"},

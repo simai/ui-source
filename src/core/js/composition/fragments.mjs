@@ -1,4 +1,5 @@
 import { isPlainObject } from './canonical.mjs';
+import { isSchema } from '../schema-name.mjs';
 import { VALUE_TYPES } from './routing.mjs';
 
 // The interface fragment descriptor (simai.interface-fragment 1.0.0): checked
@@ -38,8 +39,10 @@ export function checkFragmentDescriptor(descriptor) {
   const problems = [];
   const keys = Object.keys(descriptor);
   for (const field of FIELDS) if (!keys.includes(field)) problems.push(`${field}: required`);
-  for (const key of keys) if (!FIELDS.includes(key)) problems.push(`${key}: undeclared`);
-  if (descriptor.schema !== FRAGMENT_DESCRIPTOR_SCHEMA) problems.push('schema: not simai.interface-fragment.v1');
+  for (const key of keys) if (!FIELDS.includes(key) && key !== 'schema_version') problems.push(`${key}: undeclared`);
+  // Either form of the format name: simai.interface-fragment.v1, or
+  // simai.interface-fragment with schema_version 1 (schema-name.mjs).
+  if (!isSchema(descriptor, 'simai.interface-fragment', 1)) problems.push('schema: not simai.interface-fragment, schema_version 1');
   if (typeof descriptor.id !== 'string' || !ID.test(descriptor.id)) problems.push('id: a dotted identity');
   if (typeof descriptor.element !== 'string' || !ELEMENT.test(descriptor.element)) problems.push('element: a custom element name');
   if (!uniqueList(descriptor.regions, 8, (region) => typeof region === 'string' && NAME.test(region)) || !descriptor.regions.length) problems.push('regions: one to eight region names');

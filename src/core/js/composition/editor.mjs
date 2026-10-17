@@ -1,7 +1,8 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
+import { isSchema } from '../schema-name.mjs';
 
 const SCHEMA = 'simai.composition.editor-manifest.v1';
-const MANIFEST_FIELDS = new Set(['schema', 'type', 'type_version', 'applies_to', 'fields']);
+const MANIFEST_FIELDS = new Set(['schema', 'schema_version', 'type', 'type_version', 'applies_to', 'fields']);
 const APPLIES_FIELDS = new Set(['views', 'presets', 'modifiers']);
 const FIELD_FIELDS = new Set([
   'key', 'plane', 'target', 'property', 'constraints', 'group', 'visibility',
@@ -101,7 +102,7 @@ export function validateEditorManifest(editorManifest, typeManifest, options = {
   if (!isPlainObject(editorManifest)) return { valid: false, diagnostics: [diagnostic('editor_manifest_invalid', '$', 'Editor manifest must be an object')] };
   unknownFields(editorManifest, MANIFEST_FIELDS, '$', diagnostics);
   scanForbidden(editorManifest, '$', diagnostics);
-  if (editorManifest.schema !== SCHEMA) diagnostics.push(diagnostic('editor_schema_unknown', '$.schema', `Expected ${SCHEMA}`));
+  if (!isSchema(editorManifest, 'simai.composition.editor-manifest', 1)) diagnostics.push(diagnostic('editor_schema_unknown', '$.schema', `Expected ${SCHEMA}, or simai.composition.editor-manifest with schema_version 1`));
   if (!componentType(editorManifest.type)) diagnostics.push(diagnostic('editor_type_invalid', '$.type', 'Component type is invalid'));
   if (!version(editorManifest.type_version)) diagnostics.push(diagnostic('editor_type_version_invalid', '$.type_version', 'Component type version is invalid'));
   if (!isPlainObject(typeManifest) || typeManifest.type !== editorManifest.type || typeManifest.version !== editorManifest.type_version) {

@@ -45,6 +45,26 @@ export const THEME_RULES = Object.freeze({
 
 export const THEME_PALETTES = Object.freeze(Object.keys(THEME_RULES));
 
+// The translucent steps core defines on a tone: --sf-<palette>-<tone>--alfa-<n>,
+// the tone with n% opacity (the alpha scale: state 4/8/12, fill 12-32, ink
+// 48/64/80). Core writes them as literal colours, so a theme that set the tones
+// alone left every container fill and hover in the old hue (DEV, 2026-10-18:
+// a tonal button stayed blue under a green theme). The theme writes them from
+// its own tones; tests/theme-palette.contract.test.mjs holds this list to the
+// one core declares.
+export const THEME_ALPHA = Object.freeze({
+  primary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  secondary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  tertiary: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  neutral: {50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48]},
+  error: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  warning: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  success: {50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
+  info: {50: [12, 16, 20, 24, 28, 32]},
+});
+
+const alphaHex = (percent) => Math.round((percent * 255) / 100).toString(16).padStart(2, '0');
+
 // The Framework's own primary: the theme every page has until one is chosen.
 export const DEFAULT_THEME_COLOR = '#005bbe';
 
@@ -115,6 +135,13 @@ export function themeVariables(theme) {
   for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
     for (const [tone, value] of Object.entries(palette.tones ?? {})) variables[`--sf-${name}-${tone}`] = value;
   }
+  for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
+    for (const [tone, steps] of Object.entries(THEME_ALPHA[name] ?? {})) {
+      const base = palette.tones?.[tone];
+      if (!base) continue;
+      for (const step of steps) variables[`--sf-${name}-${tone}--alfa-${step}`] = `${base}${alphaHex(step)}`;
+    }
+  }
   return variables;
 }
 
@@ -143,5 +170,5 @@ export function applyTheme(theme, target = globalThis.document?.documentElement)
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR});
+  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, THEME_TONES, THEME_PALETTES, THEME_ALPHA, DEFAULT_THEME_COLOR});
 }

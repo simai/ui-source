@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile, access} from 'node:fs/promises';
+import {isSchema} from '../src/core/js/schema-name.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -11,7 +12,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
    different value. */
 test('template context: every exemption names a resolving getter and a reason', async () => {
   const contract = JSON.parse(await read('contracts/template-context.json'));
-  assert.equal(contract.schema, 'simai.template-context.v1');
+  assert.ok(isSchema(contract, 'simai.template-context', 1), 'either form of the format name');
   await access(new URL(`../${contract.checked_by}`, import.meta.url));
   const seen = new Set();
   for (const {component, prop, reason} of contract.exemptions) {

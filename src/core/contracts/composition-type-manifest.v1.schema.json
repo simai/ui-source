@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composition-type-manifest.v1.schema.json",
   "title": "Simai Composition Type Manifest v1",
-  "x-simai-version": "1.1.0",
+  "x-simai-version": "1.2.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,9 +20,30 @@
     "assets",
     "capabilities"
   ],
+  "anyOf": [
+    {
+      "properties": {
+        "schema": {
+          "const": "simai.composition.type-manifest.v1"
+        }
+      }
+    },
+    {
+      "required": [
+        "schema_version"
+      ]
+    }
+  ],
   "properties": {
     "schema": {
-      "const": "simai.composition.type-manifest.v1"
+      "enum": [
+        "simai.composition.type-manifest.v1",
+        "simai.composition.type-manifest"
+      ],
+      "description": "The format: simai.composition.type-manifest with schema_version 1. The older label simai.composition.type-manifest.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."
+    },
+    "schema_version": {
+      "const": 1
     },
     "type": {
       "type": "string",
