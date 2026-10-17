@@ -517,7 +517,11 @@
       "mobile-popup",
       "inline",
       "visual-viewport-bounded-overlay"
-    ]
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

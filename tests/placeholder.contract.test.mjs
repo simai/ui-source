@@ -26,12 +26,18 @@ test('a placeholder is only for an element not defined yet, and calms down for r
   assert.match(sheet, /prefers-reduced-motion: reduce\)\s*\{\s*\[data-sf-region-loading\]\s*\{\s*animation: none/u);
 });
 
-test('every Smart manifest that declares a skeleton names a known shape', () => {
+test('every Smart manifest declares its skeleton and names a known shape', () => {
   const shapes = new Set(schema.properties.presentation.properties.skeleton.properties.shape.enum);
   for (const name of readdirSync(join(root, 'src/smart'))) {
     const path = join(root, 'src/smart', name, 'smart.manifest.json');
     if (!existsSync(path)) continue;
     const skeleton = JSON.parse(readFileSync(path, 'utf8')).presentation?.skeleton;
-    if (skeleton) assert.ok(shapes.has(skeleton.shape), `${name}: ${skeleton.shape}`);
+    // Every component says what it is before its code arrives, «none» included
+    // (owner, 2026-10-15, rules of the road rule 5; only four did until
+    // 2026-10-17). «none» is the honest answer for an inline control or an
+    // overlay: a block shape before definition would move the line it stands in.
+    assert.ok(skeleton, `${name}: presentation.skeleton is declared`);
+    assert.ok(shapes.has(skeleton.shape), `${name}: ${skeleton.shape}`);
+    assert.ok(['template', 'none'].includes(skeleton.while_loading), `${name}: while_loading`);
   }
 });

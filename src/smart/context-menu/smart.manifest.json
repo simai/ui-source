@@ -487,7 +487,11 @@
       "unclipped-tail-with-scrollable-content",
       "logical-position-aliases",
       "forced-colors-boundary"
-    ]
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

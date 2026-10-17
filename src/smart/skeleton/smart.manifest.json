@@ -184,7 +184,11 @@
       "mobile",
       "reduced motion",
       "content-matched geometry"
-    ]
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

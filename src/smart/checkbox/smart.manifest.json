@@ -345,7 +345,11 @@
     "responsive": [
       "desktop",
       "mobile"
-    ]
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

@@ -204,7 +204,11 @@
       "ltr",
       "rtl",
       "reduced-motion"
-    ]
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

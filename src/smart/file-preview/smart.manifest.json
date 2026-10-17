@@ -293,7 +293,11 @@
     "responsive": [
       "desktop",
       "mobile"
-    ]
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

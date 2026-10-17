@@ -227,7 +227,11 @@
     "responsive": [
       "desktop",
       "mobile"
-    ]
+    ],
+    "skeleton": {
+      "shape": "menu",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

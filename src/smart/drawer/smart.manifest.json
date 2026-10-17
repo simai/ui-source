@@ -511,7 +511,11 @@
       "reduced-motion",
       "semantic-surface-radius",
       "logical-placement"
-    ]
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",

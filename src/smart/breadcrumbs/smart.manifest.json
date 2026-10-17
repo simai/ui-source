@@ -250,7 +250,11 @@
     "responsive": [
       "desktop",
       "mobile"
-    ]
+    ],
+    "skeleton": {
+      "shape": "line",
+      "while_loading": "none"
+    }
   },
   "adapter": {
     "kind": "generic",
