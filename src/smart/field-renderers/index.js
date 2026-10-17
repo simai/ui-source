@@ -1447,6 +1447,13 @@ function renderChoiceView(field, value) {
     `;
 }
 
+// The values wrap, each tag as wide as its text: on one unwrapping line a
+// role's 137 rights shrank every tag to a letter and the text ran down the
+// panel (Larena, 2026-10-17). The tag's painted root is the flex item (the
+// host is display: contents), so it is told not to shrink through root-class.
+// No disclosure for a long list here: a record's
+// field in view is the button that opens its group, and a control inside a
+// button is not one.
 function renderChoicesView(field, value) {
     if (!Array.isArray(value) || !value.length) return nothing;
     const options = field.options || field.filter?.options || field.constraints?.options;
@@ -1458,8 +1465,8 @@ function renderChoicesView(field, value) {
     };
 
     return html`
-        <span class="sf-field-view flex items-cross-center gap-1/3">
-            ${value.map((item) => html`<sf-tag line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`)}
+        <span class="sf-field-view flex flex-wrap items-cross-center gap-1/3 min-w-0">
+            ${value.map((item) => html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`)}
         </span>
     `;
 }

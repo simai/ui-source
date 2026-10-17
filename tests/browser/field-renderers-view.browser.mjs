@@ -137,7 +137,24 @@ try {
       };
     };
 
+    // Many values in a narrow record panel (a role's 137 rights, Larena
+    // 2026-10-17): they wrap, and no tag shrinks below its text.
+    const many = document.createElement('div');
+    many.style.cssText = 'inline-size:320px;display:flex';
+    holder.append(many);
+    const rights = Array.from({length: 140}, (_, at) => ({value: `right-${at}`, label: `Право ${at}`}));
+    render(set.renderViewField({key: 'operations', propertyType: 'choices', constraints: {options: rights}}, rights.map((right) => right.value), host), many);
+    await new Promise((done) => setTimeout(done, 400));
+    const manyTags = [...many.querySelectorAll('.sf-tag')];
+    const wrap = {
+      count: manyTags.length,
+      rows: new Set(manyTags.map((tag) => Math.round(tag.getBoundingClientRect().top))).size,
+      squeezed: manyTags.filter((tag) => tag.scrollWidth > tag.clientWidth + 1 || tag.getBoundingClientRect().height > 40).length,
+      overflow: Math.round(many.scrollWidth - many.clientWidth),
+    };
+
     return {
+      wrap,
       rendered,
       control: Math.round(control),
       textLine: Math.round(textLine),
@@ -219,6 +236,9 @@ try {
         note({case: `the ${name} is not as tall as a control`, got: element.height,
           expected: `below the size-1 control height of ${control}`});
       }
+    }
+    if (measured.wrap?.count !== 140 || measured.wrap.rows < 10 || measured.wrap.squeezed || measured.wrap.overflow > 0) {
+      note({case: 'many values wrap and no tag shrinks below its text', got: measured.wrap});
     }
     if (measured.tags?.length !== 2 || measured.tags.some((tag) => tag.line !== '1' || tag.kind !== 'default')) {
       note({case: 'several values render as default tags on the line', got: measured.tags,
