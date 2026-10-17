@@ -2,8 +2,9 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
 test('ordinary Toast owns delegated actions, pause-safe lifetime and token dismissal', async () => {
   const runtime = await read('src/component/toast/js/_toast.js');

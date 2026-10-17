@@ -44,8 +44,16 @@
     padding-top: calc(var(--sf-button--padding-top) - var(--sf-button--border-top-width));
     padding-inline-end: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
     padding-bottom: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
+    /* The public border reaches every appearance, not only outline: a default
+       button kept its border at 0 whatever --sf-button-border-width said
+       (public-variables probe, 2026-10-18). Outline and a group's segments set
+       the side widths after this, and win. */
+    --sf-button--border-top-width: var(--sf-button-border-width, 0);
+    --sf-button--border-bottom-width: var(--sf-button-border-width, 0);
+    --sf-button--border-inline-start-width: var(--sf-button-border-width, 0);
+    --sf-button--border-inline-end-width: var(--sf-button-border-width, 0);
     background-color: var(--sf-button--background-color);
-    border-color: var(--sf-button--border-color, transparent);
+    border-color: var(--sf-button--border-color, var(--sf-button-border-color, transparent));
     border-width: var(--sf-button--border-width, 0);
     border-top-width: var(--sf-button--border-top-width, 0);
     border-inline-end-width: var(--sf-button--border-inline-end-width, 0);

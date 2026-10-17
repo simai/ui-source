@@ -1,11 +1,11 @@
 @layer sf.components {
   /* utility-hint: display/block */
   .sf-avatar {
-    border-end-end-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-radius-circle));
-    border-end-start-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-radius-circle));
-    border-start-end-radius: var(--sf-avatar--border-top-right-radius, var(--sf-radius-circle));
-    border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-radius-circle));
-    color: var(--sf-avatar--color, var(--sf-on-surface-variant));
+    border-end-end-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-end-start-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-start-end-radius: var(--sf-avatar--border-top-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    color: var(--sf-avatar--color, var(--sf-avatar-color, var(--sf-on-surface-variant)));
     font-family: var(--sf-avatar--font-family, var(--sf-text--family));
     font-weight: var(--sf-avatar--font-weight, var(--sf-font-weight-regular));
     width: var(--sf-avatar--width);
@@ -14,7 +14,7 @@
     font-size: var(--sf-avatar--font-size);
     line-height: var(--sf-avatar--line-height);
     white-space: nowrap;
-    border-color: var(--sf-avatar--border-color, transparent);
+    border-color: var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
     border-width: var(--sf-avatar--border-width, 0);
     border-top-width: var(--sf-avatar--border-top-width, 0);
     border-inline-end-width: var(--sf-avatar--border-inline-end-width, 0);
@@ -22,11 +22,11 @@
     border-inline-start-width: var(--sf-avatar--border-inline-start-width, 0);
     border-style: var(--sf-avatar--border-style, solid);
     box-shadow: var(--sf-avatar--box-shadow);
-    --sf-avatar--background-color: transparent;
-    --sf-avatar--border-top-width: var(--sf-px);
-    --sf-avatar--border-bottom-width: var(--sf-px);
-    --sf-avatar--border-inline-start-width: var(--sf-px);
-    --sf-avatar--border-inline-end-width: var(--sf-px);
+    --sf-avatar--background-color: var(--sf-avatar-background-color, transparent);
+    --sf-avatar--border-top-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-bottom-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-inline-start-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-inline-end-width: var(--sf-avatar-border-width, var(--sf-px));
   }
 
   .sf-avatar .sf-avatar-badge {
@@ -134,14 +134,14 @@
   }
 
   .sf-avatar--placeholder, .sf-avatar--text {
-    --sf-avatar--background-color: var(--sf-surface-container);
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
   }
 
   .sf-avatar--square {
-    --sf-avatar--border-bottom-right-radius: var(--sf-radius--ui);
-    --sf-avatar--border-bottom-left-radius: var(--sf-radius--ui);
-    --sf-avatar--border-top-right-radius: var(--sf-radius--ui);
-    --sf-avatar--border-top-left-radius: var(--sf-radius--ui);
+    --sf-avatar--border-bottom-right-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
+    --sf-avatar--border-bottom-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
+    --sf-avatar--border-top-right-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
+    --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
   }
 
   .sf-avatar-image {

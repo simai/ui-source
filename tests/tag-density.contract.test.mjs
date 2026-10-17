@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8');
+const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 const SIZES = ['1\\/3', '1\\/2', '1', '2', '3'];
 
 /* Tags are used on their own and inside other controls. On their own they take

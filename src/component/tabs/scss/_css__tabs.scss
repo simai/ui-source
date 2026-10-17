@@ -47,7 +47,7 @@
     border-width: var(--sf-tabs-top--border-width, 0);
     border-style: var(--sf-tabs-top--border-style, solid);
     border-color: var(--sf-tabs-top--border-color, transparent);
-    gap: var(--sf-tabs-top--gap, var(--sf-space-1));
+    gap: var(--sf-tabs-top--gap, var(--sf-tabs-gap, var(--sf-space-1)));
   }
 
   .sf-tabs-main-container {
@@ -58,9 +58,9 @@
   }
 
   .sf-tabs-top-container {
-    border-width: var(--sf-tabs-top-container--border-width, 0 0 var(--sf-tabs--border-width, var(--sf-px)) 0);
+    border-width: var(--sf-tabs-top-container--border-width, 0 0 var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) 0);
     border-style: var(--sf-tabs-top-container--border-style, solid);
-    border-color: var(--sf-tabs-top-container--border-color, var(--sf-outline-variant));
+    border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
     padding-inline-end: var(--sf-tabs-top-container--padding-inline-end, 0);
     padding-inline-start: var(--sf-tabs-top-container--padding-inline-start, 0);
     padding-top: var(--sf-tabs-top-container--padding-top, 0);
@@ -68,7 +68,7 @@
   }
 
   .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--margin: 0 0 calc(var(--sf-tabs--border-width, var(--sf-px)) * -1) 0;
+    --sf-tabs-top--margin: 0 0 calc(var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) * -1) 0;
   }
 
   .sf-tabs--pills > .sf-tabs-top-container,
@@ -116,11 +116,11 @@
   .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-button--border-top-width: 0;
     --sf-button--border-inline-start-width: 0;
-    --sf-button--border-bottom-width: calc(var(--sf-tabs--border-width, var(--sf-px)) * 2);
+    --sf-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
     --sf-button--border-inline-end-width: 0;
     --sf-icon-button--border-top-width: 0;
     --sf-icon-button--border-inline-start-width: 0;
-    --sf-icon-button--border-bottom-width: calc(var(--sf-tabs--border-width, var(--sf-px)) * 2);
+    --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
     --sf-icon-button--border-inline-end-width: 0;
   }
 
@@ -222,19 +222,19 @@
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
     --sf-button--background-color: transparent;
-    --sf-button--border-color: var(--sf-outline);
+    --sf-button--border-color: var(--sf-tabs-indicator-color, var(--sf-outline));
     --sf-icon-button--background-color: transparent;
-    --sf-icon-button--border-color: var(--sf-outline);
+    --sf-icon-button--border-color: var(--sf-tabs-indicator-color, var(--sf-outline));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container,
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
-    --sf-button-text-container--color: var(--sf-on-surface);
+    --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
@@ -247,7 +247,7 @@
 
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
@@ -356,21 +356,21 @@
   }
 
   .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-c0);
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c0));
   }
 
   .sf-tabs--underline.sf-tabs--size-1 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-c2);
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c2));
   }
 
   .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-c6);
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c6));
   }
 
   .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button,
   .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
-    --sf-button--border-bottom-width: calc(var(--sf-px) * 3);
-    --sf-icon-button--border-bottom-width: calc(var(--sf-px) * 3);
+    --sf-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-px) * 3));
+    --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-px) * 3));
   }
 
   // The tab's own font is its size's text role: the bare button computed the
@@ -436,7 +436,7 @@
   // An underline row sits on the divider; the trigger (its host is display:
   // contents, so the button is the flex item) sits with it.
   .sf-tabs--underline > .sf-tabs-top-container--tools > .sf-tabs-more > button {
-    margin-block-end: calc(var(--sf-tabs--border-width, var(--sf-px)) * -1);
+    margin-block-end: calc(var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) * -1);
   }
 
   // The tools stand beside the tabs: «Ещё» and the gear take what they need,

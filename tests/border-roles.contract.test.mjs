@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 // Two neutral roles, and a job for each. The boundary a person reads to find a
 // control has to carry 3:1 against the surface behind it — WCAG 1.4.11 — and
@@ -12,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 // nothing has to be identified.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const read = (path) => readFileSync(resolve(root, path), 'utf8');
+const read = (path) => withoutPublicVariables(readFileSync(resolve(root, path), 'utf8'));
 
 const componentStyles = (component) => {
   const directory = `src/component/${component}/scss`;

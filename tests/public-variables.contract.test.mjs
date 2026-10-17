@@ -7,7 +7,12 @@ import test from 'node:test';
 // the list keeps to the small set the docs show under «Настройка».
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const contract = JSON.parse(await read('src/core/contracts/public-variables.v1.json'));
-const FOLDERS = {badge: 'badges', button: 'buttons', input: 'inputs', alert: 'alerts'};
+const FOLDERS = {
+  badge: 'badges', button: 'buttons', input: 'inputs', alert: 'alerts',
+  tag: 'tags', 'icon-button': 'icon-buttons', checkbox: 'checkbox', 'radio-button': 'radio',
+  switch: 'switch', textarea: 'textarea', toast: 'toast', modal: 'modal',
+  tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
+};
 
 const scss = async (folder) => {
   const dir = `src/component/${folder}/scss`;
@@ -19,9 +24,10 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
   .map((entry) => (entry.isDirectory() ? walk(`${dir}/${entry.name}`) : /\.(s?css|js|mjs)$/u.test(entry.name) ? [`${dir}/${entry.name}`] : []))))
   .flat();
 
-test('the contract names a pilot of four components, five to ten variables each', () => {
+// The pilot of four (2026-10-13) and the twelve after it (2026-10-18).
+test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
   assert.equal(contract.schema, 'simai.framework.public-variables.v1');
-  assert.deepEqual(contract.components.map((entry) => entry.component).sort(), ['alert', 'badge', 'button', 'input']);
+  assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());
   for (const entry of contract.components) {
     assert.ok(entry.variables.length >= 5 && entry.variables.length <= 10, entry.component);
     for (const variable of entry.variables) {

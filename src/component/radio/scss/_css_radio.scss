@@ -25,15 +25,19 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-radio-button-box--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-radio-button .sf-radio-button-box {
-  --sf-radio-button-box--background-color: transparent;
+  /* Public variables (core/contracts/public-variables.v1.json): names with a
+     single dash after the block, never set by the Framework, read where the
+     resting ring is drawn -- here and by size -- and not by checked, hover,
+     focus, error or disabled, so states still show. */
+  --sf-radio-button-box--background-color: var(--sf-radio-button-background-color, transparent);
   --sf-radio-button-box--border: var(--sf-px) solid;
-  --sf-radio-button-box--border-color: var(--sf-outline);
+  --sf-radio-button-box--border-color: var(--sf-radio-button-border-color, var(--sf-outline));
   --sf-radio-button-box--border-end-end-radius: var(--sf-radius-circle);
   --sf-radio-button-box--border-end-start-radius: var(--sf-radius-circle);
   --sf-radio-button-box--border-start-end-radius: var(--sf-radius-circle);
   --sf-radio-button-box--border-start-start-radius: var(--sf-radius-circle);
   --sf-radio-button-box--border-style: solid;
-  --sf-radio-button-box--border-width: var(--sf-px);
+  --sf-radio-button-box--border-width: var(--sf-radio-button-border-width, var(--sf-px));
   --sf-radio-button-box--gap: var(--sf-a0);
   background-color: var(--sf-radio-button-box--background-color);
   border: var(--sf-radio-button-box--border);
@@ -83,7 +87,7 @@
   font-size: var(--sf-radio-button-text--font-size);
   font-weight: var(--sf-radio-button-text--font-weight);
   line-height: var(--sf-radio-button-text--line-height);
-  --sf-radio-button-text--color: var(--sf-on-surface);
+  --sf-radio-button-text--color: var(--sf-radio-button-color, var(--sf-on-surface));
 }
 
 .sf-radio-button .sf-radio-button-mark {
@@ -94,13 +98,13 @@
 }
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-box {
-  --sf-radio-button-box--height: var(--sf-text-height-1\/2);
-  --sf-radio-button-box--width: var(--sf-text-height-1\/2);
+  --sf-radio-button-box--height: var(--sf-radio-button-size, var(--sf-text-height-1\/2));
+  --sf-radio-button-box--width: var(--sf-radio-button-size, var(--sf-text-height-1\/2));
 }
 
 .sf-radio-button.sf-radio-button--size-1 .sf-radio-button-box {
-  --sf-radio-button-box--height: var(--sf-text-height-1);
-  --sf-radio-button-box--width: var(--sf-text-height-1);
+  --sf-radio-button-box--height: var(--sf-radio-button-size, var(--sf-text-height-1));
+  --sf-radio-button-box--width: var(--sf-radio-button-size, var(--sf-text-height-1));
 }
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-description {
@@ -164,16 +168,16 @@
 /* The mark is the picture before a label: the label follows it at the size's
    text step, as an option label follows its picture in a list. */
 .sf-radio-button--size-1\/2 {
-  --sf-radio-button--gap: var(--sf-ui-1\/2--text-space-x);
+  --sf-radio-button--gap: var(--sf-radio-button-gap, var(--sf-ui-1\/2--text-space-x));
 }
 
 .sf-radio-button--size-1 {
-  --sf-radio-button--gap: var(--sf-ui-1--text-space-x);
+  --sf-radio-button--gap: var(--sf-radio-button-gap, var(--sf-ui-1--text-space-x));
 }
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-box {
-  --sf-radio-button-box--height: var(--sf-text-height-2);
-  --sf-radio-button-box--width: var(--sf-text-height-2);
+  --sf-radio-button-box--height: var(--sf-radio-button-size, var(--sf-text-height-2));
+  --sf-radio-button-box--width: var(--sf-radio-button-size, var(--sf-text-height-2));
 }
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-description {
@@ -201,7 +205,7 @@
 }
 
 .sf-radio-button--size-2 {
-  --sf-radio-button--gap: var(--sf-ui-2--text-space-x);
+  --sf-radio-button--gap: var(--sf-radio-button-gap, var(--sf-ui-2--text-space-x));
 }
 
 

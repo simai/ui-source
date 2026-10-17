@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const source = (file) => readFile(new globalThis.URL(`../src/${file}`, import.meta.url), 'utf8');
+const source = (file) => readFile(new globalThis.URL(`../src/${file}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
 test('Textarea presentation uses UI, hairline, motion and safe resize contracts', async () => {
   const css = await source('component/textarea/scss/_css__textarea.scss');

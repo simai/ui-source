@@ -49,20 +49,20 @@
   font-weight: var(--sf-switch-container--font-weight);
   gap: var(--sf-switch-container--gap);
   line-height: var(--sf-switch-container--line-height);
-  --sf-switch-container--color: var(--sf-on-surface);
+  --sf-switch-container--color: var(--sf-switch-color, var(--sf-on-surface));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) align-items/center (.items-center) */
 .sf-switch .sf-switch-toggler {
-  --sf-switch-toggler--background-color: var(--sf-surface-0);
+  --sf-switch-toggler--background-color: var(--sf-switch-background-color, var(--sf-surface-0));
   --sf-switch-toggler--border: var(--sf-px) solid;
-  --sf-switch-toggler--border-color: var(--sf-outline);
-  --sf-switch-toggler--border-end-end-radius: var(--sf-radius-circle);
-  --sf-switch-toggler--border-end-start-radius: var(--sf-radius-circle);
-  --sf-switch-toggler--border-start-end-radius: var(--sf-radius-circle);
-  --sf-switch-toggler--border-start-start-radius: var(--sf-radius-circle);
+  --sf-switch-toggler--border-color: var(--sf-switch-border-color, var(--sf-outline));
+  --sf-switch-toggler--border-end-end-radius: var(--sf-switch-radius, var(--sf-radius-circle));
+  --sf-switch-toggler--border-end-start-radius: var(--sf-switch-radius, var(--sf-radius-circle));
+  --sf-switch-toggler--border-start-end-radius: var(--sf-switch-radius, var(--sf-radius-circle));
+  --sf-switch-toggler--border-start-start-radius: var(--sf-switch-radius, var(--sf-radius-circle));
   --sf-switch-toggler--border-style: solid;
-  --sf-switch-toggler--border-width: var(--sf-px);
+  --sf-switch-toggler--border-width: var(--sf-switch-border-width, var(--sf-px));
   background-color: var(--sf-switch-toggler--background-color);
   border: var(--sf-switch-toggler--border);
   border-color: var(--sf-switch-toggler--border-color, transparent);
@@ -275,15 +275,15 @@
 /* The mark is the picture before a label: the label follows it at the size's
    text step, as an option label follows its picture in a list. */
 .sf-switch--size-1\/2 {
-  --sf-switch--gap: var(--sf-ui-1\/2--text-space-x);
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-1\/2--text-space-x));
 }
 
 .sf-switch--size-1 {
-  --sf-switch--gap: var(--sf-ui-1--text-space-x);
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-1--text-space-x));
 }
 
 .sf-switch--size-2 {
-  --sf-switch--gap: var(--sf-ui-2--text-space-x);
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-2--text-space-x));
 }
 
 .sf-switch.disabled .sf-icon {

@@ -10,6 +10,7 @@ import {
     validateContract,
 } from "../scripts/adaptive-sizing-contract-lib.mjs";
 import { projections } from "../scripts/generate-adaptive-sizing-contract.mjs";
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const cloneContract = () => structuredClone(contract);
 
@@ -116,12 +117,12 @@ test("representative controls bind to the vertical height contract", () => {
     const dropdown = fs.readFileSync(repositoryPath(
         "src/component/dropdown/scss/_css__dropdown.scss",
     ), "utf8");
-    const textarea = fs.readFileSync(repositoryPath(
+    const textarea = withoutPublicVariables(fs.readFileSync(repositoryPath(
         "src/component/textarea/scss/_css__textarea.scss",
-    ), "utf8");
-    const iconButtons = fs.readFileSync(repositoryPath(
+    ), "utf8"));
+    const iconButtons = withoutPublicVariables(fs.readFileSync(repositoryPath(
         "src/component/icon-buttons/scss/_css_icon_buttons.scss",
-    ), "utf8");
+    ), "utf8"));
     const smartIconButtonTemplate = fs.readFileSync(repositoryPath(
         "src/smart/icon-buttons/js/templates/default.js",
     ), "utf8");

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-const read=file=>readFileSync(new URL(`../src/${file}`,import.meta.url),'utf8');
+import {withoutPublicVariables} from './support/public-variables.mjs';
+const read=file=>withoutPublicVariables(readFileSync(new URL(`../src/${file}`,import.meta.url),'utf8'));
 
 test('stripe, loading and loader motion geometry use system primitives',()=>{
   const files=['utility/stripe/default/scss/_sf_css__stripe.scss','component/buttons/scss/_css__buttons_custom.scss','core/scss/_sf_css__loader.scss'];

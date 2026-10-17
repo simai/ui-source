@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8');
+const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
 /* A checkbox, a radio and a switch put a mark before a label: the label follows
    at the size's text step, the step a dropdown option keeps after its picture,

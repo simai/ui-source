@@ -9,16 +9,16 @@
     box-sizing: border-box;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
-    border: var(--sf-px) solid var(--sf-toast--border-color, var(--sf-outline-variant));
-    border-end-end-radius: var(--sf-toast--border-bottom-right-radius, var(--sf-radius--surface));
-    border-end-start-radius: var(--sf-toast--border-bottom-left-radius, var(--sf-radius--surface));
-    border-start-end-radius: var(--sf-toast--border-top-right-radius, var(--sf-radius--surface));
-    border-start-start-radius: var(--sf-toast--border-top-left-radius, var(--sf-radius--surface));
-    gap: var(--sf-toast--gap, var(--sf-space-1\/2));
-    padding-bottom: var(--sf-toast--padding-bottom, var(--sf-space-1));
-    padding-inline-end: var(--sf-toast--padding-right, var(--sf-space-1));
-    padding-inline-start: var(--sf-toast--padding-left, var(--sf-space-1));
-    padding-top: var(--sf-toast--padding-top, var(--sf-space-1));
+    border: var(--sf-toast-border-width, var(--sf-px)) solid var(--sf-toast-border-color, var(--sf-toast--border-color, var(--sf-outline-variant)));
+    border-end-end-radius: var(--sf-toast-radius, var(--sf-toast--border-bottom-right-radius, var(--sf-radius--surface)));
+    border-end-start-radius: var(--sf-toast-radius, var(--sf-toast--border-bottom-left-radius, var(--sf-radius--surface)));
+    border-start-end-radius: var(--sf-toast-radius, var(--sf-toast--border-top-right-radius, var(--sf-radius--surface)));
+    border-start-start-radius: var(--sf-toast-radius, var(--sf-toast--border-top-left-radius, var(--sf-radius--surface)));
+    gap: var(--sf-toast-gap, var(--sf-toast--gap, var(--sf-space-1\/2)));
+    padding-bottom: var(--sf-toast-padding-block, var(--sf-toast--padding-bottom, var(--sf-space-1)));
+    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, var(--sf-space-1)));
+    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, var(--sf-space-1)));
+    padding-top: var(--sf-toast-padding-block, var(--sf-toast--padding-top, var(--sf-space-1)));
     /* A toast floats over the page, and the status containers are
        translucent fills: painted alone they let the table under a toast read
        through its text (owner, 2026-10-12). So the toast stands on the raised
@@ -110,11 +110,11 @@
   }
 
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-supporting-text {
-    --sf-toast-supporting-text--color: var(--sf-on-surface);
+    --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-surface));
   }
 
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) .sf-toast-text {
-    --sf-toast-text--color: var(--sf-on-surface);
+    --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-surface));
   }
 
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-icon {
@@ -126,11 +126,11 @@
   }
 
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-supporting-text {
-    --sf-toast-supporting-text--color: var(--sf-on-primary-container);
+    --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-primary-container));
   }
 
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-text {
-    --sf-toast-text--color: var(--sf-on-primary-container);
+    --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-primary-container));
   }
 
   .sf-toast.sf-toast--error .sf-icon {
@@ -142,11 +142,11 @@
   }
 
   .sf-toast.sf-toast--error .sf-toast-supporting-text {
-    --sf-toast-supporting-text--color: var(--sf-on-error-container);
+    --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-error-container));
   }
 
   .sf-toast.sf-toast--error .sf-toast-text {
-    --sf-toast-text--color: var(--sf-on-error-container);
+    --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-error-container));
   }
 
   .sf-toast.sf-toast--warning .sf-icon {
@@ -158,11 +158,11 @@
   }
 
   .sf-toast.sf-toast--warning .sf-toast-supporting-text {
-    --sf-toast-supporting-text--color: var(--sf-on-warning-container);
+    --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
 
   .sf-toast.sf-toast--warning .sf-toast-text {
-    --sf-toast-text--color: var(--sf-on-warning-container);
+    --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
 
   .sf-toast.sf-toast--success .sf-icon {
@@ -174,43 +174,43 @@
   }
 
   .sf-toast.sf-toast--success .sf-toast-supporting-text {
-    --sf-toast-supporting-text--color: var(--sf-on-success-container);
+    --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-success-container));
   }
 
   .sf-toast.sf-toast--success .sf-toast-text {
-    --sf-toast-text--color: var(--sf-on-success-container);
+    --sf-toast-text--color: var(--sf-toast-color, var(--sf-on-success-container));
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--neutral, .sf-toast--default) {
-    --sf-toast--background-color: var(--sf-surface-container);
-    --sf-toast--content-color: var(--sf-on-surface);
+    --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
+    --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
     --sf-close-icon--background-color: var(--sf-on-surface);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--info, .sf-toast--primary) {
-    --sf-toast--background-color: var(--sf-primary-container);
-    --sf-toast--content-color: var(--sf-on-primary-container);
+    --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-primary-container));
+    --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-primary-container));
     --sf-close-icon--background-color: var(--sf-on-primary-container);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   .sf-toast--error {
-    --sf-toast--background-color: var(--sf-error-container);
-    --sf-toast--content-color: var(--sf-on-error-container);
+    --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-error-container));
+    --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-error-container));
     --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast--warning {
-    --sf-toast--background-color: var(--sf-warning-container);
-    --sf-toast--content-color: var(--sf-on-warning-container);
+    --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-warning-container));
+    --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-warning-container));
     --sf-close-icon--background-color: var(--sf-on-warning-container);
   }
 
   .sf-toast--success {
-    --sf-toast--background-color: var(--sf-success-container);
-    --sf-toast--content-color: var(--sf-on-success-container);
+    --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
+    --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
     --sf-close-icon--background-color: var(--sf-on-success-container);
   }
 

@@ -63,7 +63,9 @@
                     "padding-inline",
                     "padding-block",
                     "gap",
-                    "size"
+                    "size",
+                    "indicator-color",
+                    "indicator-width"
                   ]
                 },
                 "summary": {

@@ -2,20 +2,25 @@
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-tag {
+    /* Public variables (core/contracts/public-variables.v1.json): names with a
+       single dash after the block, never set by the Framework, read where a
+       resting look is defined -- base, size, spacing, type, appearance -- and
+       not by hover, pressed, selected or disabled, so states still show. An
+       inline tag keeps the insets its host gives it. */
     appearance: none;
     border: 0;
-    border-end-end-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
-    border-end-start-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
-    border-start-end-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
-    border-start-start-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+    border-end-end-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
+    border-end-start-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
+    border-start-end-radius: var(--sf-tag--border-top-right-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
+    border-start-start-radius: var(--sf-tag--border-top-left-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
     box-sizing: border-box;
     color: inherit;
     font: inherit;
-    gap: var(--sf-tag--gap, var(--sf-a1));
-    padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
-    padding-top: var(--sf-tag--block, var(--sf-tag--padding-top));
-    padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
-    padding-bottom: var(--sf-tag--block, var(--sf-tag--padding-bottom));
+    gap: var(--sf-tag--gap, var(--sf-tag-gap, var(--sf-a1)));
+    padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-start)));
+    padding-top: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top)));
+    padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-end)));
+    padding-bottom: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-bottom)));
     background-color: var(--sf-tag--background-color);
     box-shadow: var(--sf-tag--box-shadow);
     margin: 0;
@@ -120,7 +125,7 @@
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar {
-    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-surface-container));
     --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
@@ -153,11 +158,11 @@
   }
 
   .sf-tag.sf-tag--color .sf-tag-container, .sf-tag.sf-tag--checkbox .sf-tag-container, .sf-tag.sf-tag--icon .sf-tag-container, .sf-tag.sf-tag--default .sf-tag-container, .sf-tag.sf-tag--avatar .sf-tag-container {
-    --sf-tag-container--color: var(--sf-on-surface);
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-on-surface));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success {
-    --sf-tag--background-color: var(--sf-success-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-success-container));
     --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
@@ -167,11 +172,11 @@
   }
 
   .sf-tag.sf-tag--success .sf-tag-container {
-    --sf-tag-container--color: var(--sf-success);
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-success));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error {
-    --sf-tag--background-color: var(--sf-error-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-error-container));
     --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
@@ -181,11 +186,11 @@
   }
 
   .sf-tag.sf-tag--error .sf-tag-container {
-    --sf-tag-container--color: var(--sf-error);
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-error));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning {
-    --sf-tag--background-color: var(--sf-warning-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-warning-container));
     --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
@@ -195,11 +200,11 @@
   }
 
   .sf-tag.sf-tag--warning .sf-tag-container {
-    --sf-tag-container--color: var(--sf-warning);
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-warning));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox {
-    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-surface-container));
     --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
@@ -239,12 +244,12 @@
 
   /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-tag.sf-tag--default .sf-tag-count {
-    --sf-tag-count--color: var(--sf-on-surface);
+    --sf-tag-count--color: var(--sf-tag-color, var(--sf-on-surface));
     --sf-tag-count--background-color: transparent;
   }
 
   .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--success {
-    --sf-tag--background-color: var(--sf-success-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-success-container));
     --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
   }
@@ -259,19 +264,19 @@
   }
 
   .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--error {
-    --sf-tag--background-color: var(--sf-error-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-error-container));
     --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
   }
 
   .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--warning {
-    --sf-tag--background-color: var(--sf-warning-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-warning-container));
     --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
   }
 
   .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--color, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--icon, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--default, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--avatar, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox {
-    --sf-tag--background-color: var(--sf-surface-container);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-surface-container));
     --sf-tag--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
     --sf-tag--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
   }
@@ -338,12 +343,12 @@
      built with `border: 0` and a real border would make every tag two pixels
      taller than the one beside it. */
   .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
-    --sf-tag--background-color: var(--sf-alpha-4);
+    --sf-tag--background-color: var(--sf-tag-background-color, var(--sf-alpha-4));
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-alpha-8);
   }
 
   .sf-tag.sf-tag--appearance-ghost:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
-    --sf-tag--background-color: transparent;
+    --sf-tag--background-color: var(--sf-tag-background-color, transparent);
   }
 }
 
@@ -518,9 +523,9 @@
   .sf-tag.sf-tag--size-1\/3 {
     --sf-tag--font-size: var(--sf-text-size-1\/3);
     --sf-tag--line-height: var(--sf-text-height-1\/3);
-    --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-default);
-    --sf-tag--inline-start: var(--sf-ui-1\/3--space-x);
-    --sf-tag--inline-end: var(--sf-ui-1\/3--space-x);
+    --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
   }
 
   .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
@@ -541,9 +546,9 @@
   .sf-tag.sf-tag--size-2 {
     --sf-tag--font-size: var(--sf-text-size-2);
     --sf-tag--line-height: var(--sf-text-height-2);
-    --sf-tag--block: var(--sf-ui-2--space-y-tightness-default);
-    --sf-tag--inline-start: var(--sf-ui-2--space-x);
-    --sf-tag--inline-end: var(--sf-ui-2--space-x);
+    --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-default));
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
@@ -554,9 +559,9 @@
   .sf-tag.sf-tag--size-3 {
     --sf-tag--font-size: var(--sf-text-size-3);
     --sf-tag--line-height: var(--sf-text-height-3);
-    --sf-tag--block: var(--sf-ui-3--space-y-tightness-default);
-    --sf-tag--inline-start: var(--sf-ui-3--space-x);
-    --sf-tag--inline-end: var(--sf-ui-3--space-x);
+    --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-default));
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
   }
 
   .sf-tag.sf-tag--size-3 .sf-tag-color-icon {
@@ -566,21 +571,21 @@
 
   /* Density, with the names the buttons use: compact, comfortable and spacious
      move the block padding of each size one step each way. */
-  .sf-tag.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
-  .sf-tag.sf-tag--size-1\/3.spacing-comfortable { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-high); }
-  .sf-tag.sf-tag--size-1\/3.spacing-spacious { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-highest); }
-  .sf-tag.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
-  .sf-tag.sf-tag--size-1\/2.spacing-comfortable { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-high); }
-  .sf-tag.sf-tag--size-1\/2.spacing-spacious { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-highest); }
-  .sf-tag.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
-  .sf-tag.sf-tag--size-1.spacing-comfortable { --sf-tag--block: var(--sf-ui-1--space-y-tightness-high); }
-  .sf-tag.sf-tag--size-1.spacing-spacious { --sf-tag--block: var(--sf-ui-1--space-y-tightness-highest); }
-  .sf-tag.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
-  .sf-tag.sf-tag--size-2.spacing-comfortable { --sf-tag--block: var(--sf-ui-2--space-y-tightness-high); }
-  .sf-tag.sf-tag--size-2.spacing-spacious { --sf-tag--block: var(--sf-ui-2--space-y-tightness-highest); }
-  .sf-tag.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
-  .sf-tag.sf-tag--size-3.spacing-comfortable { --sf-tag--block: var(--sf-ui-3--space-y-tightness-high); }
-  .sf-tag.sf-tag--size-3.spacing-spacious { --sf-tag--block: var(--sf-ui-3--space-y-tightness-highest); }
+  .sf-tag.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-highest)); }
 
   /* Inline: a tag that sits on the text line of another control -- a selected
      value in a dropdown, an input or a table cell. No block padding, one small
@@ -646,7 +651,7 @@
    a size smaller at 2 and 3. Inline tags in a field set --sf-tag--label-* and keep
    their own insets. */
 .sf-tag.sf-tag--size-1\/3 {
-  --sf-tag--gap: 0;
+  --sf-tag--gap: var(--sf-tag-gap, 0);
 }
 
 .sf-tag.sf-tag--size-1\/3 .sf-tag-container {
@@ -679,7 +684,7 @@
 }
 
 .sf-tag.sf-tag--size-1\/2 {
-  --sf-tag--gap: 0;
+  --sf-tag--gap: var(--sf-tag-gap, 0);
 }
 
 .sf-tag.sf-tag--size-1\/2 .sf-tag-container {
@@ -712,7 +717,7 @@
 }
 
 .sf-tag.sf-tag--size-1 {
-  --sf-tag--gap: 0;
+  --sf-tag--gap: var(--sf-tag-gap, 0);
 }
 
 .sf-tag.sf-tag--size-1 .sf-tag-container {
@@ -745,7 +750,7 @@
 }
 
 .sf-tag.sf-tag--size-2 {
-  --sf-tag--gap: 0;
+  --sf-tag--gap: var(--sf-tag-gap, 0);
 }
 
 .sf-tag.sf-tag--size-2 .sf-tag-container {
@@ -778,7 +783,7 @@
 }
 
 .sf-tag.sf-tag--size-3 {
-  --sf-tag--gap: 0;
+  --sf-tag--gap: var(--sf-tag-gap, 0);
 }
 
 .sf-tag.sf-tag--size-3 .sf-tag-container {

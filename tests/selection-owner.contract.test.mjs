@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const source = (file) => readFile(new URL(`../src/${file}`, import.meta.url), 'utf8');
+const source = (file) => readFile(new URL(`../src/${file}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
 test('Radio and Switch use the Framework hairline token', async () => {
   for (const [kind, file] of [

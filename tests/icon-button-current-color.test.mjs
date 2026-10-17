@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-const css=await readFile(new URL('../src/component/icon-buttons/scss/_css_icon_buttons.scss',import.meta.url),'utf8');
+import {withoutPublicVariables} from './support/public-variables.mjs';
+const css=withoutPublicVariables(await readFile(new URL('../src/component/icon-buttons/scss/_css_icon_buttons.scss',import.meta.url),'utf8'));
 test('IconButton owns its semantic foreground on the root so currentColor glyphs can inherit it',()=>{
-  assert.match(css,/\.sf-icon-button \{\s*color: var\(--sf-icon--color, var\(--sf-on-surface-variant\)\);/);
+  assert.match(css,/\.sf-icon-button \{\s*(?:\/\*[\s\S]*?\*\/\s*)?color: var\(--sf-icon--color, var\(--sf-on-surface-variant\)\);/);
   const roles=[...css.matchAll(/([^{}]+)\{\s*--sf-icon--color: ([^;]+);\s*\}/g)];
   // Sixteen role colours now: the eleven that were here -- the six that predate
   // the ramp, surface on each scheme (ghost reads as link since the variant

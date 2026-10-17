@@ -3,10 +3,10 @@
 .sf-context-menu {
   background-color: var(--sf-context-menu--background-color, transparent);
   box-shadow: var(--sf-context-menu--box-shadow, var(--sf-elevation-3--shadow));
-  border-end-end-radius: var(--sf-context-menu--border-end-end-radius, var(--sf-radius--surface));
-  border-end-start-radius: var(--sf-context-menu--border-end-start-radius, var(--sf-radius--surface));
-  border-start-end-radius: var(--sf-context-menu--border-start-end-radius, var(--sf-radius--surface));
-  border-start-start-radius: var(--sf-context-menu--border-start-start-radius, var(--sf-radius--surface));
+  border-end-end-radius: var(--sf-context-menu--border-end-end-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
+  border-end-start-radius: var(--sf-context-menu--border-end-start-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
+  border-start-end-radius: var(--sf-context-menu--border-start-end-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
+  border-start-start-radius: var(--sf-context-menu--border-start-start-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
   gap: var(--sf-d4);
 }
 
@@ -21,14 +21,14 @@
   /* The profile menu's surface is every menu's (owner, 2026-10-12): the
      third step, as every panel that floats over the page, and a hairline
      that keeps its edge where the shadow does not show. */
-  --sf-context-menu-content--background-color: var(--sf-elevation-3--surface);
+  --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-elevation-3--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
-  border: var(--sf-px) solid var(--sf-outline-variant);
-  --sf-context-menu-content--padding-bottom: var(--sf-space-1\/4);
-  --sf-context-menu-content--padding-inline-end: var(--sf-space-1\/4);
-  --sf-context-menu-content--padding-inline-start: var(--sf-space-1\/4);
-  --sf-context-menu-content--padding-top: var(--sf-space-1\/4);
-  --sf-context-menu-content--border-radius: var(--sf-radius--surface);
+  border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
+  --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
+  --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  --sf-context-menu-content--border-radius: var(--sf-context-menu-radius, var(--sf-radius--surface));
   border-radius: var(--sf-context-menu-content--border-radius);
   background-color: var(--sf-context-menu-content--background-color);
   padding-bottom: var(--sf-context-menu-content--padding-bottom);
@@ -63,7 +63,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 /* ─── entries: the standard rows ───────────────────────────────────────── */
 
 .sf-context-menu--entries .sf-context-menu-content {
-  gap: var(--sf-px);
+  gap: var(--sf-context-menu-gap, var(--sf-px));
   /* As wide as its longest line, from a modest floor: a row menu of three
      short actions stood with a third of its width empty when the floor was the
      profile menu's (owner, 2026-10-12). A menu that wants more sets the
@@ -99,7 +99,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   border: 0;
   border-radius: var(--sf-radius--ui);
   background: none;
-  color: var(--sf-on-surface);
+  color: var(--sf-context-menu-color, var(--sf-on-surface));
   font: inherit;
   text-align: start;
   text-decoration: none;
@@ -353,7 +353,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--sf-px);
+  gap: var(--sf-context-menu-gap, var(--sf-px));
   min-block-size: 0;
   overflow: auto;
 }

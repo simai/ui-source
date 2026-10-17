@@ -3,9 +3,10 @@ import test from 'node:test';
 import {readFile, readdir} from 'node:fs/promises';
 
 import {FIELD_SIZES, RETIRED_FIELD_SIZES, fieldSize, nearestFieldSize, retireFieldSizeClass} from '../src/component/field-size.js';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const ROOT = new URL('../', import.meta.url);
-const read = (path) => readFile(new URL(path, ROOT), 'utf8');
+const read = (path) => readFile(new URL(path, ROOT), 'utf8').then(withoutPublicVariables);
 
 /* Form fields come in three sizes. The two outer steps were retired because
    nothing used them and they could not hold a field's own pictures, tags and

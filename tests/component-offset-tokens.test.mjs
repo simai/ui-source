@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-const read = file => readFileSync(new URL(`../src/component/${file}`, import.meta.url), 'utf8');
+import {withoutPublicVariables} from './support/public-variables.mjs';
+const read = file => withoutPublicVariables(readFileSync(new URL(`../src/component/${file}`, import.meta.url), 'utf8'));
 
 test('overbox geometry uses existing rem primitives including negative offsets', () => {
   const source = read('overbox/scss/_css__overbox.scss');

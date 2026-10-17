@@ -84,13 +84,13 @@
 }
 
 .sf-modal-surface {
-  --sf-modal-surface-bg: var(--sf-surface-1, #fff);
-  --sf-modal-surface-border-color: var(--sf-outline-variant, transparent);
+  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-surface-1, #fff));
+  --sf-modal-surface-border-color: var(--sf-modal-border-color, var(--sf-outline-variant, transparent));
   --sf-modal-surface-border-style: solid;
-  --sf-modal-surface-border-width: var(--sf-border-width, var(--sf-px));
-  --sf-modal-surface-gap: var(--sf-space-1);
-  --sf-modal-surface-padding: var(--sf-space-2);
-  --sf-modal-surface-radius: var(--sf-radius--surface);
+  --sf-modal-surface-border-width: var(--sf-modal-border-width, var(--sf-border-width, var(--sf-px)));
+  --sf-modal-surface-gap: var(--sf-modal-gap, var(--sf-space-1));
+  --sf-modal-surface-padding: var(--sf-modal-padding-block, var(--sf-space-2)) var(--sf-modal-padding-inline, var(--sf-space-2));
+  --sf-modal-surface-radius: var(--sf-modal-radius, var(--sf-radius--surface));
   --sf-modal-surface-shadow: none;
 
   background-color: var(--sf-modal-surface-bg);
@@ -106,7 +106,7 @@
 
 .sf-modal-surface--elevated {
   /* Elevated is a step, not a shadow alone: surface and shadow of step 3. */
-  --sf-modal-surface-bg: var(--sf-elevation-3--surface);
+  --sf-modal-surface-bg: var(--sf-modal-background-color, var(--sf-elevation-3--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   --sf-modal-surface-shadow: var(--sf-elevation-3--shadow);
 }

@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import test from 'node:test';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
-const source = (file) => readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+const source = (file) => readFile(new URL(`../${file}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 const uiDoc = (file) => readFile(`${process.env.UI_DOC_ROOT}/${file}`, 'utf8');
 
 test('Checkbox retains one native input and concise mixed-state initialization', async () => {
