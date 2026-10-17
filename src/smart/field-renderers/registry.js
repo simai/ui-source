@@ -38,7 +38,11 @@ export const PROPERTY_TYPES = Object.freeze([
         variants: [],
         params: ['options', 'badgeAppearance', 'required', 'readonly']},
     {type: 'choices', label: {ru: 'Несколько из списка', en: 'Several of a list'},
-        variants: [{id: 'badges', label: {ru: 'Значками', en: 'As badges'}}],
+        // badges: the view; checklist and select: the edit control (a list of
+        // 13 or more is a checklist unless select is asked for).
+        variants: [{id: 'badges', label: {ru: 'Значками', en: 'As badges'}},
+            {id: 'checklist', label: {ru: 'Флажками', en: 'As a checklist'}},
+            {id: 'select', label: {ru: 'Выпадающим списком', en: 'As a dropdown'}}],
         params: ['options', 'badgeAppearance', 'required', 'readonly']},
     {type: 'user', label: {ru: 'Пользователь', en: 'User'},
         variants: [],

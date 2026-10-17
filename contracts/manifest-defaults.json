@@ -253,6 +253,16 @@
       "component": "color",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "theme-generator",
+      "prop": "hue",
+      "reason": "Read from the colour when not set: the hue the main colour stands for (265 and 85 for the Framework's own #005bbe)."
+    },
+    {
+      "component": "theme-generator",
+      "prop": "chroma",
+      "reason": "Read from the colour when not set: the chroma the main colour stands for (265 and 85 for the Framework's own #005bbe)."
     }
   ],
   "pending": []

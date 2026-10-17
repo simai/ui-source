@@ -1,0 +1,13 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.theme-generator",
+  "title": "theme generator reference",
+  "summary": "Deterministic reference fixture for sf-theme-generator.",
+  "locale": "ru",
+  "props": {
+    "value": "#2e7d32"
+  },
+  "children": [],
+  "state": "default"
+}

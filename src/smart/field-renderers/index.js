@@ -1047,7 +1047,40 @@ function renderChoiceEdit(field, value, host) {
     `;
 }
 
+// A long list is chosen from as a checklist, not from a dropdown: a custom
+// role's 137 rights in one dropdown were a scroll inside a scroll, and what was
+// chosen could not be seen at once (Larena, 2026-10-17). The list stands in
+// two columns where the field has the room for them and in one where it does
+// not. `variant: 'checklist'` asks for it at any length; `variant: 'select'`
+// keeps the dropdown at any length.
+const CHECKLIST_FROM = 13;
+
+function renderChoicesChecklist(field, value, host) {
+    const options = field.options || field.filter?.options || field.constraints?.options || [];
+    const chosen = new Set((Array.isArray(value) ? value : []).map((item) => String(item)));
+    const toggle = (option, on) => {
+        const next = options.filter((candidate) => (String(candidate.value) === String(option.value) ? on : chosen.has(String(candidate.value))))
+            .map((candidate) => candidate.value);
+        host.setFieldValue(field, next);
+    };
+    return html`
+        <div class="sf-field-checklist grid gap-1/3 w-full min-w-0" role="group" aria-label=${field.label || field.key || ''}
+             style="grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr))">
+            ${options.map((option) => html`<sf-checkbox size=${EDIT_SIZE}
+                    name=${fieldName(field)} value=${String(option.value)}
+                    label=${option.label ?? option.text ?? String(option.value)}
+                    .checked=${chosen.has(String(option.value))}
+                    @change=${(event) => toggle(option, Boolean(event.target?.checked ?? event.detail?.checked))}></sf-checkbox>`)}
+        </div>
+    `;
+}
+
 function renderChoicesEdit(field, value, host) {
+    const options = field.options || field.filter?.options || field.constraints?.options || [];
+    const variant = String(field.variant ?? '');
+    if (variant === 'checklist' || (variant !== 'select' && options.length >= CHECKLIST_FROM)) {
+        return renderChoicesChecklist(field, value, host);
+    }
     return html`
         <sf-dropdown
                 size=${EDIT_SIZE}

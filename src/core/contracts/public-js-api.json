@@ -1,0 +1,741 @@
+{
+  "schema": "simai.framework.public-js-api",
+  "schema_version": 1,
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Modal, SF.Input, ...) arrives with its component and is listed with it.",
+  "globals": [
+    {
+      "name": "SF.Loader",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The runtime loader: loads what a page uses, components and utilities, on demand, and the theme. Once a theme is set (setTheme, changeTheme), SF.Loader.theme and SF.Loader.themePreference read it.",
+      "members": [
+        "ready",
+        "ensurePlugin",
+        "ensureSmartElementLoaded",
+        "registerComponent",
+        "setTheme",
+        "changeTheme",
+        "theme",
+        "preloadIcons",
+        "clearCache",
+        "smartPath",
+        "minified"
+      ]
+    },
+    {
+      "name": "SF.RuleLoader",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The load rules by name: what a class, a tag or a component needs. A product package adds its own rules here (its rule.js)."
+    },
+    {
+      "name": "SF.Preferences",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The person's view preferences: kept in this browser and, when the host keeps them, for the person (simai.interaction-rules).",
+      "members": [
+        "read",
+        "readMerged",
+        "write",
+        "remove",
+        "subscribe",
+        "preload",
+        "useHost",
+        "load",
+        "hosted",
+        "flush"
+      ]
+    },
+    {
+      "name": "SF.RegionNavigation",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Moves between pages by swapping the content region, not the page (simai.interface-fragment).",
+      "members": [
+        "enable",
+        "disable",
+        "navigate",
+        "enabled"
+      ]
+    },
+    {
+      "name": "SF.Composition",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, and field kinds.",
+      "members": [
+        "checkFragmentDescriptor",
+        "publishEffects",
+        "checkPortValue",
+        "createPortRegistry",
+        "defineCompositionScope",
+        "createRegistry",
+        "extendRegistry",
+        "describeRegions",
+        "resolveFieldKind",
+        "validateFieldValue",
+        "applyFieldValue",
+        "parseFieldSubmission"
+      ]
+    },
+    {
+      "name": "SF.Effects",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Background effects (simai.effect): check a manifest, read stored settings, mount an effect under the rules.",
+      "members": [
+        "checkEffectManifest",
+        "checkSetting",
+        "effectSettings",
+        "mountEffect",
+        "EFFECT_SCHEMA"
+      ]
+    },
+    {
+      "name": "SF.Position",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Anchored positioning of a floating surface beside its anchor, flipping at the edge.",
+      "members": [
+        "anchor",
+        "logicalSide",
+        "physicalPlacement",
+        "resolveLength"
+      ]
+    },
+    {
+      "name": "SF.Mask",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Input masks: load the mask library and attach a mask to a field.",
+      "members": [
+        "load",
+        "create",
+        "pipe",
+        "destroy"
+      ]
+    },
+    {
+      "name": "SF.notify",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Shows a message in the page's one notification area."
+    },
+    {
+      "name": "SF.notifications",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The notification area: its settings, closing a message and the messages shown.",
+      "members": [
+        "configure",
+        "close",
+        "history"
+      ]
+    },
+    {
+      "name": "SF.language",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The page's language and the words registered for components.",
+      "members": [
+        "current",
+        "use",
+        "register",
+        "registerAll",
+        "known",
+        "components",
+        "onChange",
+        "forget"
+      ]
+    },
+    {
+      "name": "SF.pageLanguage",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The language that applies to a node: the nearest lang."
+    },
+    {
+      "name": "SF.pageText",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "A component's word in the language of a node, with the page's registered words first."
+    },
+    {
+      "name": "SF.ready",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Runs a function once the runtime is ready."
+    },
+    {
+      "name": "SF.whenDefined",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "A promise of a Smart element's definition, loading it when the page has not."
+    },
+    {
+      "name": "SF.whenDefine",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The older name of SF.whenDefined, kept."
+    },
+    {
+      "name": "SF.whenFieldRenderers",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "A promise of the field renderer set (SF.fieldRenderers), loading it on demand."
+    },
+    {
+      "name": "SF.create",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Creates a component element by name with attributes."
+    },
+    {
+      "name": "SF.createAsync",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "SF.create that waits for the element to be defined."
+    },
+    {
+      "name": "SF.deprecations",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Old names still accepted and what replaced them, as the change journal declares them."
+    },
+    {
+      "name": "SF.SfBaseElement",
+      "status": "public",
+      "kind": "class",
+      "loaded_by": "smart-base",
+      "summary": "The base class of every Smart element; a product's own Smart components extend it."
+    },
+    {
+      "name": "SF.html",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "smart-base",
+      "summary": "Lit's html tag, the one the Smart elements render with."
+    },
+    {
+      "name": "SF.render",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "smart-base",
+      "summary": "Lit's render."
+    },
+    {
+      "name": "SF.nothing",
+      "status": "public",
+      "kind": "value",
+      "loaded_by": "smart-base",
+      "summary": "Lit's nothing."
+    },
+    {
+      "name": "SF.fieldRenderers",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/field-renderers",
+      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter.",
+      "members": [
+        "renderCellField",
+        "renderEditField",
+        "renderViewField",
+        "renderFilterField"
+      ]
+    },
+    {
+      "name": "SF.ThemePalette",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/theme-generator",
+      "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives.",
+      "members": [
+        "themeFromColor",
+        "themeFromHct",
+        "colorToHct",
+        "themeToCss",
+        "themeVariables",
+        "applyTheme",
+        "isThemeColor",
+        "THEME_TONES",
+        "THEME_PALETTES",
+        "DEFAULT_THEME_COLOR"
+      ]
+    },
+    {
+      "name": "SF.litHtml",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The Lit module, for the runtime's own use."
+    },
+    {
+      "name": "SF.loadRuntime",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Loads a runtime module; the Loader's."
+    },
+    {
+      "name": "SF.loadSmartBase",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Loads the Smart base; the Loader's."
+    },
+    {
+      "name": "SF.send",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The runtime's internal message bus."
+    },
+    {
+      "name": "SF.receive",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The runtime's internal message bus."
+    },
+    {
+      "name": "SF.runtimeModule",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The runtime's module registry."
+    },
+    {
+      "name": "SF.runtimeModules",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The runtime's module registry."
+    },
+    {
+      "name": "SF.runtimeArrived",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The runtime's module registry."
+    },
+    {
+      "name": "SF.runtimeLoading",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The runtime's module registry."
+    },
+    {
+      "name": "SF.runtimeSettled",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The runtime's module registry."
+    },
+    {
+      "name": "SF.smart",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "smart-base",
+      "summary": "The Smart base's own state."
+    },
+    {
+      "name": "SF.smartBaseAnnounced",
+      "status": "internal",
+      "kind": "value",
+      "loaded_by": "smart-base",
+      "summary": "The Smart base's own state."
+    },
+    {
+      "name": "SF.smartBaseReady",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The Smart base's own state."
+    },
+    {
+      "name": "SF.AdminMenu",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/admin-menu",
+      "summary": "The AdminMenu component's script API, loaded with the component (component/admin-menu); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Ajax",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.AjaxLoad",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/ajaxload",
+      "summary": "The AjaxLoad component's script API, loaded with the component (component/ajaxload); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Blocks",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.ButtonGroup",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/button-group",
+      "summary": "The ButtonGroup component's script API, loaded with the component (component/button-group); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Carousel",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/carousel",
+      "summary": "The Carousel component's script API, loaded with the component (component/carousel); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Checkbox",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/checkbox",
+      "summary": "The Checkbox component's script API, loaded with the component (component/checkbox); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Clipboard",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/clipboard",
+      "summary": "The Clipboard component's script API, loaded with the component (component/clipboard); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.CompositionOverlay",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/composition-overlay",
+      "summary": "The CompositionOverlay component's script API, loaded with the component (smart/composition-overlay); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Controller",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.CountryCode",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/country-code",
+      "summary": "The CountryCode component's script API, loaded with the component (component/country-code); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.DownloadFile",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/download-file",
+      "summary": "The DownloadFile component's script API, loaded with the component (component/download-file); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Events",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.FileUpload",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/file-upload",
+      "summary": "The FileUpload component's script API, loaded with the component (component/file-upload); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Flag",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/flag",
+      "summary": "The Flag component's script API, loaded with the component (component/flag); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Gallery",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Highlight",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/highlight",
+      "summary": "The Highlight component's script API, loaded with the component (component/highlight); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.InlineEditor",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/inline-editor",
+      "summary": "The InlineEditor component's script API, loaded with the component (smart/inline-editor); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Input",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/inputs",
+      "summary": "The Input component's script API, loaded with the component (component/inputs); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.LazyLoad",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/lazy-load",
+      "summary": "The LazyLoad component's script API, loaded with the component (component/lazy-load); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Methods",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Modal",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "The Modal component's script API, loaded with the component (component/sf-system); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Overbox",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Param",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Parameters",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.ProgressBar",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/progress-bar",
+      "summary": "The ProgressBar component's script API, loaded with the component (component/progress-bar); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.ProgressScale",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/progress-scale",
+      "summary": "The ProgressScale component's script API, loaded with the component (component/progress-scale); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Provider",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Radio",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/radio",
+      "summary": "The Radio component's script API, loaded with the component (component/radio); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.RangeSlider",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/range-slider",
+      "summary": "The RangeSlider component's script API, loaded with the component (component/range-slider); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Resizer",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/resizer",
+      "summary": "The Resizer component's script API, loaded with the component (smart/resizer); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Scrollbar",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/scrollbar",
+      "summary": "The Scrollbar component's script API, loaded with the component (component/scrollbar); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Search",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Slider",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/slider",
+      "summary": "The Slider component's script API, loaded with the component (component/slider); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Sortable",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "smart/sortable",
+      "summary": "The Sortable component's script API, loaded with the component (smart/sortable); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Special",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.Spinner",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/spinner",
+      "summary": "The Spinner component's script API, loaded with the component (component/spinner); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Switch",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/switch",
+      "summary": "The Switch component's script API, loaded with the component (component/switch); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Tab",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/tab",
+      "summary": "The Tab component's script API, loaded with the component (component/tab); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Tabs",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/tabs",
+      "summary": "The Tabs component's script API, loaded with the component (component/tabs); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Textarea",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/textarea",
+      "summary": "The Textarea component's script API, loaded with the component (component/textarea); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Toast",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/toast",
+      "summary": "The Toast component's script API, loaded with the component (component/toast); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Toggle",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/toggle",
+      "summary": "The Toggle component's script API, loaded with the component (component/toggle); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Tree",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/tree",
+      "summary": "The Tree component's script API, loaded with the component (component/tree); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.Verification",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/verification",
+      "summary": "The Verification component's script API, loaded with the component (component/verification); its methods are the component's documentation."
+    },
+    {
+      "name": "SF.cloneDeep",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.curpos",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.extend",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.flag",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/flag",
+      "summary": "A helper of the legacy system scripts (component/flag); the runtime's."
+    },
+    {
+      "name": "SF.quickkey",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.topZIndex",
+      "status": "internal",
+      "kind": "function",
+      "loaded_by": "component/sf-system",
+      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+    },
+    {
+      "name": "SF.ComponentRegistry",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "component/register",
+      "summary": "A helper of the legacy system scripts (component/register); the runtime's."
+    }
+  ]
+}

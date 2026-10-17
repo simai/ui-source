@@ -1,0 +1,102 @@
+@layer sf.components {
+/* A colour and a reset on one row, the fine tuning folded below them, and the
+   palettes under that: one row each, a name and six tones. Sizes follow the
+   control ladder; the swatches are the step's control height tall, so a
+   preview at 1/2 is as dense as the fields beside it. */
+sf-theme-generator {
+  display: block;
+}
+
+.sf-theme-generator {
+  --sf-theme-generator--control-height: var(--sf-ui-1--control-height);
+  --sf-theme-generator--gap: var(--sf-space-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-theme-generator--gap);
+  color: var(--sf-on-surface);
+}
+
+.sf-theme-generator--size-1\/2 {
+  --sf-theme-generator--control-height: var(--sf-ui-1\/2--control-height);
+  --sf-theme-generator--gap: var(--sf-space-1\/2);
+}
+
+.sf-theme-generator--size-2 {
+  --sf-theme-generator--control-height: var(--sf-ui-2--control-height);
+}
+
+.sf-theme-generator-choice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sf-theme-generator--gap);
+}
+
+.sf-theme-generator-color {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-theme-generator-label,
+.sf-theme-generator-name {
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-theme-generator-summary {
+  display: list-item;
+  min-block-size: var(--sf-theme-generator--control-height);
+  align-content: center;
+  cursor: pointer;
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-theme-generator-summary:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-px);
+  border-radius: var(--sf-radius--ui);
+}
+
+.sf-theme-generator-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--sf-g0) / 2)), 1fr));
+  gap: var(--sf-theme-generator--gap);
+  padding-block-start: var(--sf-space-1\/2);
+}
+
+.sf-theme-generator-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-theme-generator-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  align-items: center;
+  gap: var(--sf-theme-generator--gap);
+}
+
+.sf-theme-generator-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-theme-generator-swatches {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  overflow: hidden;
+}
+
+.sf-theme-generator-swatch {
+  block-size: var(--sf-theme-generator--control-height);
+  background-color: var(--sf-theme-generator--swatch);
+}
+}

@@ -2,7 +2,9 @@
 // Usage: node this-file /absolute/path/to/output
 // The set's edit template, measured on the built bytes: what each type is edited
 // with, that the control writes through the host, and that an optional boolean
-// shows «не задано» as nothing chosen rather than as «Нет».
+// shows «не задано» as nothing chosen rather than as «Нет»; a long list of
+// choices is a checklist in two columns where there is room and one where there
+// is not, and a short one stays a dropdown (Larena roles, 2026-10-17).
 //
 // There is no record view yet, so the harness is the host: it holds the values
 // and takes the writes, which is exactly the interface a record view will
@@ -17,7 +19,7 @@ const styles = [
   'component/component/inputs/css/inputs.css', 'component/component/textarea/css/textarea.css',
   'component/component/dropdown/css/dropdown.css', 'component/component/switch/css/switch.css',
   'component/component/button-group/css/button-group.css', 'component/component/buttons/css/buttons.css',
-  'component/component/datepicker/css/datepicker.css',
+  'component/component/datepicker/css/datepicker.css', 'component/component/checkbox/css/checkbox.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
@@ -71,7 +73,10 @@ try {
       {key: 'status', label: 'Статус', propertyType: 'choice', options: [
         {value: 'live', label: 'Опубликовано'}, {value: 'draft', label: 'Черновик'},
       ]},
+      {key: 'rights', label: 'Права', propertyType: 'choices', options: Array.from({length: 20}, (_, at) => ({value: `r${at}`, label: `Право ${at}`}))},
+      {key: 'tags', label: 'Метки', propertyType: 'choices', options: [{value: 'a', label: 'А'}, {value: 'b', label: 'Б'}]},
     ];
+    values.rights = ['r1'];
     const holder = document.getElementById('host');
     for (const field of fields) {
       const box = document.createElement('div');
@@ -118,6 +123,28 @@ try {
       input.value = 'Новое название';
       input.dispatchEvent(new Event('change', {bubbles: true}));
     }
+    // The checklist: its columns at the field's width and at a narrow one, and a
+    // box that writes the list through the host.
+    const columnsOf = () => {
+      const tops = [...document.querySelectorAll('[data-field="rights"] .sf-field-checklist > sf-checkbox')]
+        .map((node) => node.firstElementChild?.getBoundingClientRect().left ?? null).filter((left) => left !== null);
+      return new Set(tops.map((left) => Math.round(left))).size;
+    };
+    const checklist = {
+      boxes: document.querySelectorAll('[data-field="rights"] sf-checkbox').length,
+      dropdown: Boolean(document.querySelector('[data-field="rights"] sf-dropdown')),
+      shortIsDropdown: Boolean(document.querySelector('[data-field="tags"] sf-dropdown')),
+      wide: columnsOf(),
+      checkedFirst: document.querySelectorAll('[data-field="rights"] sf-checkbox')[1]?.checked ?? null,
+    };
+    document.querySelector('[data-field="rights"]').style.width = '300px';
+    await new Promise((done) => setTimeout(done, 200));
+    checklist.narrow = columnsOf();
+    document.querySelector('[data-field="rights"]').style.width = '';
+    const third = document.querySelectorAll('[data-field="rights"] sf-checkbox')[3];
+    (third?.querySelector('input') ?? third)?.click();
+    await new Promise((done) => setTimeout(done, 300));
+    checklist.written = values.rights;
     const yes = [...document.querySelectorAll('[data-field="maybe"] button')]
       .find((button) => button.textContent.trim() === 'Да');
     yes?.click();
@@ -126,6 +153,7 @@ try {
     return {
       ...before,
       writes,
+      checklist,
       afterWrites: {title: values.title, maybe: values.maybe},
       maybeAfter: element('maybe'),
     };
@@ -176,6 +204,14 @@ try {
     if (rendered.maybeAfter?.chosen !== 1) {
       note({case: 'the pressed button shows', got: rendered.maybeAfter,
         expected: 'one of the two chosen after the press'});
+    }
+  }
+  {
+    const c = rendered.checklist ?? {};
+    if (c.boxes !== 20 || c.dropdown || !c.shortIsDropdown || c.wide !== 2 || c.narrow !== 1 || c.checkedFirst !== true
+      || JSON.stringify(c.written) !== JSON.stringify(['r1', 'r3'])) {
+      note({case: 'a long list of choices is a checklist in two columns where there is room, one where not, and writes the list', got: c,
+        expected: {boxes: 20, dropdown: false, shortIsDropdown: true, wide: 2, narrow: 1, checkedFirst: true, written: ['r1', 'r3']}});
     }
   }
 

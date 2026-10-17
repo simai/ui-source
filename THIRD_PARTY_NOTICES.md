@@ -18,6 +18,7 @@ against `yarn.lock`.
 | @material-symbols/font-400 0.47.0 | Icon faces of the icons component | Apache-2.0 |
 | flag-icons 7.5.0 | 37 flags the Figma set did not cover | MIT |
 | Inter (src/core/fonts/inter, with its OFL.txt) | The Framework's text face | OFL-1.1 |
+| @material/material-color-utilities 0.4.0 (eight HCT files under src/core/js/vendor/material-color-utilities) | A theme made from one colour (`sf-theme-generator`, core/js/theme-palette.js) | Apache-2.0 |
 
 ## Font Awesome
 
