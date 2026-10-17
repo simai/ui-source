@@ -1,0 +1,36 @@
+{
+  "id": "view-save-against-a-stale-revision-is-a-conflict",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A save against a revision someone else has moved past is a conflict carrying the layer as it now stands.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "shared",
+        "revision": "v2"
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "revision",
+      "view"
+    ],
+    "note": "The conflict carries the stored layer, not only the revision. Without it the component would be left drawing an arrangement nobody stored, and the person would go on dragging fields in a view that no longer exists."
+  }
+}
