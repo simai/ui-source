@@ -109,11 +109,11 @@ try {
   await page.waitForTimeout(400);
 
   // 4: SF.Modal, by its container and by its opener.
-  await page.waitForFunction(() => typeof window.SF?.Modal === 'function', null, {timeout: 10000});
+  await page.waitForFunction(() => typeof window.SF?.Loader?.ComponentRegistry?.Modal === 'function', null, {timeout: 10000});
   const scripted = {};
   for (const [name, make] of [
-    ['container', () => { const modal = new window.SF.Modal({id: 'js-container', container: '#js-stage', title: 'Скрипт'}); modal.open(); return 'js-stage'; }],
-    ['opener', () => { const modal = new window.SF.Modal({id: 'js-opener', title: 'От кнопки'}); document.getElementById('opener').focus(); modal.open(); return 'opener-stage'; }],
+    ['container', () => { const Modal = window.SF.Loader.ComponentRegistry.Modal; const modal = new Modal({id: 'js-container', param: {container: '#js-stage', title: 'Скрипт', html: '<p>Текст</p>'}}); modal.open(); return 'js-stage'; }],
+    ['opener', () => { const Modal = window.SF.Loader.ComponentRegistry.Modal; const modal = new Modal({id: 'js-opener', param: {title: 'От кнопки', html: '<p>Текст</p>'}}); document.getElementById('opener').focus(); modal.open(); return 'opener-stage'; }],
   ]) {
     const stageId = await page.evaluate(make);
     await page.waitForTimeout(500);
@@ -125,7 +125,7 @@ try {
     }, [rect.toString(), stageId, name === 'container' ? 'js-container' : 'js-opener']);
     if (!scripted[name].inside || !same(scripted[name].root, scripted[name].stage)) note({case: `SF.Modal covers the box of its ${name}`, got: scripted[name]});
     if (scripted[name].locked) note({case: `SF.Modal in the box of its ${name} leaves the page scrollable`});
-    await page.evaluate((id) => window.SF.Modal.registry?.get(id)?.close(), name === 'container' ? 'js-container' : 'js-opener');
+    await page.evaluate((id) => window.SF.Loader.ComponentRegistry.Modal.registry.get(id)?.close(), name === 'container' ? 'js-container' : 'js-opener');
     await page.waitForTimeout(400);
   }
   console.log(JSON.stringify({boxed, onPage, drawer, scripted}));
