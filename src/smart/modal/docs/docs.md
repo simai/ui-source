@@ -124,7 +124,8 @@ remain on the separate compact-control radius contract.
     preferred values for new interfaces.
   - `left` and `right` remain supported as physical compatibility aliases.
 - `mode="inline|ajax|iframe"`
-- `display="modal|inline"`
+- `display="modal|inline"` — an inline window stands in the page's flow and is
+  shown without `open`; `close()` puts it away and `open()` brings it back
 - `src` — URL для загрузки или DOM-селектор (`#id`)
 - `preload` — предзагрузка контента (по умолчанию `true` для `mode="ajax"`)
 - `fullscreen`

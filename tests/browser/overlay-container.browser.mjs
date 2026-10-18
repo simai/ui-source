@@ -37,6 +37,7 @@ try {
           <sf-drawer id="boxed-drawer" placement="inline-end" title="Панель в рамке"><p>Текст</p></sf-drawer>
         </div>
         <sf-modal id="page" title="На странице"><p>Текст без слота</p></sf-modal>
+        <sf-modal id="inline" title="Встроенное" display="inline"><p>В потоке страницы</p></sf-modal>
         <div id="js-stage" style="position: relative; block-size: 260px; inline-size: 440px; margin: 40px"></div>
         <div id="opener-stage" data-sf-overlay-container style="position: relative; block-size: 240px; inline-size: 400px; margin: 40px"><button id="opener" type="button">Открыть</button></div>
         <div style="block-size: 2400px">Длинная страница</div>
@@ -133,7 +134,21 @@ try {
     await page.evaluate((id) => window.SF.Loader.ComponentRegistry.Modal.registry.get(id)?.close(), name === 'container' ? 'js-container' : 'js-opener');
     await page.waitForTimeout(400);
   }
-  console.log(JSON.stringify({boxed, onPage, drawer, scripted}));
+  // An inline window shows without `open`, close() puts it away, open()
+  // brings it back (owner, 2026-10-18).
+  const inlineShown = () => page.evaluate(() => {
+    const surface = document.querySelector('[data-sf-modal-id="inline"] [data-sf-modal-surface]');
+    return Boolean(surface && surface.getBoundingClientRect().height > 0);
+  });
+  const inline = {initially: await inlineShown()};
+  await page.evaluate(() => document.getElementById('inline').close());
+  await page.waitForTimeout(300);
+  inline.closed = await inlineShown();
+  await page.evaluate(() => document.getElementById('inline').open());
+  await page.waitForTimeout(300);
+  inline.reopened = await inlineShown();
+  if (!inline.initially || inline.closed || !inline.reopened) note({case: 'an inline window shows without open; close and open work', got: inline});
+  console.log(JSON.stringify({boxed, onPage, drawer, scripted, inline}));
 } finally {
   await browser.close();
 }
