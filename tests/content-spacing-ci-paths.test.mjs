@@ -67,7 +67,13 @@ test("pinned ui-doc uses the exact accepted Docara commit in a validation-only c
     assert.match(quality, /test-migrate-legacy-content\.php/u);
     assert.match(quality, /Build twice with identical output/u);
     assert.match(quality, /verify-static-build\.php/u);
-    assert.doesNotMatch(quality, /deploy|ssh/iu);
+    // The only way out is GitHub Pages (ui-doc ee87cd11, 2026-10-18): on main,
+    // the verified site rebuilt under /ui-doc/ and published by
+    // actions/deploy-pages. No ssh, no other deployment.
+    assert.doesNotMatch(quality, /ssh/iu);
+    const outward = quality.match(/^\s*uses:\s*\S*deploy\S*/gimu) ?? [];
+    assert.ok(outward.every((line) => /actions\/deploy-pages@[0-9a-f]{40}/u.test(line)), `only a pinned actions/deploy-pages publishes: ${outward.join('; ')}`);
+    assert.doesNotMatch(quality, /rsync|scp|sftp|ftp:/iu);
     assert.equal(fs.existsSync(path.join(uiDocRoot, ".github/workflows/deploy.yml")), false);
     // ui-doc may carry one npm tool for its build -- Shiki colours the code at
     // build time (owner, 2026-10-12) -- but its package is a build step, never
