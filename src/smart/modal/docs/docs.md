@@ -187,6 +187,21 @@ The minimize action uses the standard IconButton `icon` variant and its inherite
 semantic foreground. Its decorative line uses `currentColor`, not an icon font;
 light/dark and native disabled colors follow the base IconButton role rules.
 
+## Inside a box (`data-sf-overlay-container`)
+
+A modal is rendered at the end of `body` and covers the viewport. When it
+stands inside an element with `data-sf-overlay-container`, its backdrop and
+surface are rendered inside that element and cover it alone (the box gets
+`contain: layout`); the page is not scroll-locked. An editor pane or a
+documentation example holds its own modal this way without a stage of its
+own. The same attribute frames `sf-drawer`.
+
+```html
+<div data-sf-overlay-container style="block-size: 24rem">
+  <sf-modal open title="Example">…</sf-modal>
+</div>
+```
+
 ## Slots
 
 - `header`

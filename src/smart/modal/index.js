@@ -7,6 +7,10 @@ import { trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import { lockModalScroll, unlockModalScroll } from "../../component/modal/js/_scroll";
+
+// A box that holds its own overlays (sf-modal, sf-drawer); the drawer's own
+// name came first and is read until the change journal retires it.
+const OVERLAY_CONTAINER = "[data-sf-overlay-container], [data-sf-drawer-container]";
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus } from "../../component/modal/js/_stack";
 
@@ -686,8 +690,22 @@ class SfModal extends SfBaseElement {
     return this._portalRoot;
   }
 
+  // The box the modal is rendered into: the end of the body, above the page --
+  // or, when the modal stands inside a [data-sf-overlay-container], the end of
+  // that box, which then frames its backdrop and surface (contain: layout makes
+  // it their containing block) and whose page is not locked: a documentation
+  // example or an editor pane holds its own modal (DEV, 2026-10-18).
+  get overlayHome() {
+    return this.closest(OVERLAY_CONTAINER) || document.body;
+  }
+
+  get inContainer() {
+    return this.overlayHome !== document.body;
+  }
+
   resolvePortalRoot() {
-    const existingPortal = document.body.querySelector(
+    const home = this.overlayHome;
+    const existingPortal = home.querySelector(
       `[data-sf-modal-portal="${this.modalId}"]`,
     );
 
@@ -697,13 +715,13 @@ class SfModal extends SfBaseElement {
 
     const portal = document.createElement("div");
     portal.setAttribute("data-sf-modal-portal", this.modalId);
-    document.body.append(portal);
+    home.append(portal);
     return portal;
   }
 
   dedupePortalRoots() {
     const portals = Array.from(
-      document.body.querySelectorAll(
+      document.querySelectorAll(
         `[data-sf-modal-portal="${this.modalId}"]`,
       ),
     );
@@ -719,7 +737,7 @@ class SfModal extends SfBaseElement {
 
     if (!this._portalRoot.isConnected) {
       this._portalRoot.setAttribute("data-sf-modal-portal", this.modalId);
-      document.body.append(this._portalRoot);
+      this.overlayHome.append(this._portalRoot);
     }
   }
 

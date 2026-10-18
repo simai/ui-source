@@ -7,6 +7,12 @@
   pointer-events: none;
 }
 
+/* A box that holds its own overlays: a modal inside it covers the box rather
+   than the viewport (its backdrop and surface are rendered into it). */
+[data-sf-overlay-container] {
+  contain: layout;
+}
+
 .sf-modal {
   --sf-modal-overlay-background: var(--sf-black, #000);
   --sf-modal-overlay-opacity: var(--sf-opacity-60, 0.6);

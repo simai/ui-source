@@ -94,16 +94,18 @@ Framework задаёт ему `padding-inline-start/end` по сумме шир�
 при 48rem и шире панель сдвигает страницу, уже — ложится поверх. Без хоста
 решает ширина окна.
 
-## Панель внутри блока (`data-sf-drawer-container`)
+## Панель внутри блока (`data-sf-overlay-container`)
 
 Обычно панель выводится в конце `body` и стоит над всей страницей. Если
-Drawer находится внутри элемента с атрибутом `data-sf-drawer-container`,
+Drawer находится внутри элемента с атрибутом `data-sf-overlay-container`,
 панель выводится внутри этого элемента и встаёт по его границам: так панель
 редактора или пример в документации держат свой Drawer без отдельной сцены.
-Высота панели — высота этого блока.
+Высота панели — высота этого блока, прокрутка страницы не блокируется. Тот же
+атрибут работает для `sf-modal`. Прежнее имя `data-sf-drawer-container`
+читается до 2026-12-01.
 
 ```html
-<div data-sf-drawer-container style="block-size: 24rem">
+<div data-sf-overlay-container style="block-size: 24rem">
   <sf-drawer id="preview" open modal="false" title="Пример">…</sf-drawer>
 </div>
 ```

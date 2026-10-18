@@ -1927,6 +1927,28 @@
       "rewrite": "manual",
       "manual": "Nothing a page needs is here: use the public API (core/contracts/public-js-api.json). Code of the Framework's own reads SF.__internal.<name>.",
       "source": "src/core/js/internal.js"
+    },
+    {
+      "id": "attribute-overlay-container",
+      "recorded_on": "2026-10-18",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "A box that holds its own overlays is marked data-sf-overlay-container, one name for sf-drawer and sf-modal; data-sf-drawer-container, the drawer's name of the same day, is read until remove_after.",
+      "items": [
+        {
+          "from": "data-sf-drawer-container",
+          "to": "data-sf-overlay-container",
+          "match": "(?<![\\w-])data-sf-drawer-container(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-10-18",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div data-sf-drawer-container>",
+        "after": "<div data-sf-overlay-container>"
+      },
+      "manual": "Rename the attribute on the box (and any selector that names it) to data-sf-overlay-container."
     }
   ]
 }
