@@ -52,12 +52,12 @@ try {
     return {
       width: Math.round(mark.getBoundingClientRect().width),
       fill: getComputedStyle(mark).fill, primary: role('primary'),
-      stroke: getComputedStyle(document.getElementById('shape')).stroke, error: role('error'),
+      stroke: getComputedStyle(document.getElementById('shape')).stroke, error: role('outline-error'),
       dot: getComputedStyle(document.getElementById('dot')).fill, success: role('success'),
     };
   });
   if (got.fill !== got.primary) note({case: 'fill-primary on <svg> draws the primary role', got});
-  if (got.stroke !== got.error) note({case: 'stroke-error on a path inside g draws the error role', got});
+  if (got.stroke !== got.error) note({case: 'stroke-error on a path inside g draws the outline-error role', got});
   if (got.dot !== got.success) note({case: 'fill-success on a shape draws the success role', got});
   if (!(got.width > 24)) note({case: 'svg-8 sizes the mark', got});
   console.log(JSON.stringify(got));

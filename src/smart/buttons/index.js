@@ -216,7 +216,12 @@ class SfButton extends SfBaseElement {
       // A legacy appearance reaches the template under its current name, as the
       // getter reports it (journal value-button-ghost-to-link).
       appearance: props.appearance === 'ghost' ? 'link' : props.appearance,
-      ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
+      // Through the getters, which read the legacy names and note them: the
+      // props context knows only the current values (danger and critical
+      // fell to no status there).
+      status: this.status,
+      tightness: this.tightness,
+      spacing: this.spacing,
       component: this,
     });
   }
