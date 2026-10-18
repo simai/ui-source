@@ -170,7 +170,6 @@ test('the frozen copies published standards pin keep the older label alone', () 
 // ui-source compares it, or a published artifact pins the bytes by digest.
 const KEPT = {
   'simai.composition.editor-manifest-registry.v1': 'Larena backend reads it by this label',
-  'simai.composition.dependencies.v1': "ui-doc's audit reads it by this label",
   'simai.smart-component-contract-registry.v2': 'larena-ui and ui-admin read it by this label',
   'simai.composite.host-port.v1': 'published port editions, pinned by digest',
   'simai.composite.host-port.conformance.v1': 'published port kits, pinned by digest',
@@ -239,8 +238,8 @@ test('the runtime writers emit the new form', async () => {
   assert.equal(editors.schema, 'simai.composition.editor-manifest-registry.v1', 'the registry keeps its label');
   for (const entry of editors.entries) assert.ok(isNew(entry, 'simai.composition.editor-manifest'), `its entries do not: ${entry.type}`);
 
-  // A Document resolved from a recipe takes the recipe's form: Recipe 1.0.1
-  // fixes the older one for a recipe in the older form, by published bytes.
+  // A Document and its receipt take the recipe's form: Recipe 1.0.1 fixes the
+  // older one for a recipe in the older form, by published bytes.
   const recipe = {
     schema: 'simai.composition.recipe', schema_version: 1, id: 'demo.inline', profile: 'ui-layout',
     root: {id: 'page', node: {type: 'layout.page', slots: {default: [{id: 'heading', node: {type: 'content.heading', data: {level: {literal: 1}, content: {literal: [{type: 'text', value: 'Заголовок'}]}}}}]}}},
@@ -253,10 +252,12 @@ test('the runtime writers emit the new form', async () => {
   const named = await resolve(recipe);
   assert.deepEqual(named.diagnostics, []);
   assert.ok(isNew(named.document, 'simai.composition.document'));
-  assert.equal(named.dependencyReceipt.schema, 'simai.composition.dependencies.v1', 'the receipt keeps its label');
+  assert.ok(isNew(named.dependencyReceipt, 'simai.composition.dependencies'));
   const older = await resolve(versioned(recipe, 'simai.composition.recipe'));
   assert.deepEqual(older.diagnostics, []);
   assert.equal(older.document.schema, 'simai.composition.document.v1');
   assert.equal(older.document.schema_version, undefined);
+  assert.equal(older.dependencyReceipt.schema, 'simai.composition.dependencies.v1');
+  assert.equal(older.dependencyReceipt.schema_version, undefined);
   assert.deepEqual(older.document.root, named.document.root);
 });

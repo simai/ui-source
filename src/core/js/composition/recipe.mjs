@@ -3,21 +3,20 @@ import { isSchema, readSchema, schemaFields } from './schema-name.mjs';
 
 // Readers take either form of a format name (simai.composition.recipe.v1, or
 // simai.composition.recipe with schema_version 1): schema-name.mjs. Writers
-// emit the new form, with two exceptions. The dependency receipt keeps
-// simai.composition.dependencies.v1: ui-doc's audit reads that label. The
-// resolved Document takes the form of the recipe it came from: a recipe in
-// the older form resolves to a simai.composition.document.v1 Document, as
-// Recipe 1.0.1 fixes (fixtures/header-switch.json, whose expected Document and
+// emit the new form. The resolved Document and its dependency receipt take
+// the form of the recipe they came from: a recipe in the older form resolves
+// to a simai.composition.document.v1 Document and a
+// simai.composition.dependencies.v1 receipt, as Recipe 1.0.1 fixes
+// (fixtures/header-switch.json, whose expected Document, receipt and
 // documentDigest are published bytes); a recipe named without a version
-// resolves to a Document named without one.
-const DEPENDENCIES_SCHEMA = 'simai.composition.dependencies.v1';
+// resolves to a Document and a receipt named without one.
 const CANONICALIZATION = 'simai.recipe.canonical-json.v1';
 
-function documentSchemaFor(recipe) {
-  return readSchema(recipe)?.form === 'name'
-    ? schemaFields('simai.composition.document', 1)
-    : { schema: 'simai.composition.document.v1' };
+function namedLike(recipe, name) {
+  return readSchema(recipe)?.form === 'name' ? schemaFields(name, 1) : { schema: `${name}.v1` };
 }
+
+const documentSchemaFor = (recipe) => namedLike(recipe, 'simai.composition.document');
 const SAFE_INTEGER_MIN = -9007199254740991;
 const SAFE_INTEGER_MAX = 9007199254740991;
 
@@ -564,7 +563,7 @@ export async function resolveRecipe(recipe, context = {}) {
     const executionContract = context.executionContract;
     if (!executionContract?.contractDigest || !executionContract?.registryDigest || !executionContract?.rendererDigest) throw Object.assign(new Error('Execution contract is required'), { code: 'invalid_value', sourcePath: '/executionContract' });
     const dependencyReceipt = {
-      schema: DEPENDENCIES_SCHEMA,
+      ...namedLike(recipe, 'simai.composition.dependencies'),
       scope,
       recipeDigest: recipeHash,
       documentDigest: `sha256:${normalized.digest}`,
