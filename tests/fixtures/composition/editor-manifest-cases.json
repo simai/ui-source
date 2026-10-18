@@ -1,5 +1,6 @@
 {
-  "schema": "simai.composition.editor-manifest-fixtures.v1",
+  "schema": "simai.composition.editor-manifest-fixtures",
+  "schema_version": 1,
   "positive": [
     {
       "id": "surface_full_metadata",

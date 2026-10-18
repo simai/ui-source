@@ -7,6 +7,7 @@ import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFEST
 import { VALUE_TYPES } from '../src/core/js/composition/routing.mjs';
 import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
+import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = resolve(root, 'src/core/contracts/composition-types.v1.json');
@@ -14,16 +15,18 @@ const editorOutputPath = resolve(root, 'src/core/contracts/composition-editor-ma
 const portOutputPath = resolve(root, 'src/core/contracts/composition-ports.v1.json');
 const kindOutputPath = resolve(root, 'src/core/contracts/composition-editor-field-kinds.v1.json');
 const output = `${JSON.stringify(JSON.parse(stableStringify({
-  schema: 'simai.composition.type-registry.v1',
+  ...schemaFields('simai.composition.type-registry', 1),
   entries: BUILTIN_TYPE_MANIFESTS,
 })), null, 2)}\n`;
+// The editor manifest registry keeps its versioned label: Larena's backend
+// reads it by that label (journal record format-names-without-version).
 const editorOutput = `${JSON.stringify(JSON.parse(stableStringify({
   schema: 'simai.composition.editor-manifest-registry.v1',
   entries: BUILTIN_EDITOR_MANIFESTS,
 })), null, 2)}\n`;
 
 const portOutput = `${JSON.stringify(JSON.parse(stableStringify({
-  schema: 'simai.composition.port-registry.v1',
+  ...schemaFields('simai.composition.port-registry', 1),
   value_types: Object.fromEntries(Object.entries(VALUE_TYPES).map(([name, type]) => [name, { summary: type.summary, schema: type.schema }])),
   entries: BUILTIN_PORT_MANIFESTS,
 })), null, 2)}\n`;

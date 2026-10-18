@@ -1,5 +1,6 @@
 {
-  "schema": "simai.template-context.v1",
+  "schema": "simai.template-context",
+  "schema_version": 1,
   "purpose": "A Smart template reads the value its component resolved, not the raw attribute. Each component is rendered with no attribute and with each declared attribute set in turn to each value its manifest allows (an arbitrary value where it names none); every key the template reads from its context, where the component defines a getter of that name, equals that getter. Empty values (null, undefined, '', false) count as equal.",
   "why": "Three defects in two days had one cause: a template context built from attributes rather than resolved values (sf-tag size, sf-tag line, sf-tag kind=\"checkbox\" rendering an inert box). The first run of this check found the same cause in nine more components, among them sf-list-item never drawing its checkbox, sf-input appearance=\"hidden\" not rendering a hidden input, sf-modal blur=\"false\" turning the blur on and sf-textarea maxlength=\"x\" rendering maxlength=0.",
   "checked_by": "tests/browser/template-context.browser.mjs",

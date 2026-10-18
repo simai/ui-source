@@ -1,5 +1,6 @@
 {
-  "schema": "simai.framework.public-api-axes.v1",
+  "schema": "simai.framework.public-api-axes",
+  "schema_version": 1,
   "purpose": "One name per question a public input answers. The Framework grew three different meanings under the word type, and a developer could not tell from the name which one a component meant. The axes below fix the question each name answers; the alias map records every legacy name that still works, so a rename never breaks a consumer.",
   "axes": {
     "appearance": "How the control looks: default, tonal, outline, link, surface, ghost, filled, bordered.",

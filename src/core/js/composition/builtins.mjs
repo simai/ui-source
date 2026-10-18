@@ -1,4 +1,5 @@
 import { REGION_ACCEPTS, REGION_LANDMARKS, REGION_PLACEMENTS } from './regions.mjs';
+import { schemaFields } from './schema-name.mjs';
 
 const inlineContentSchema = {
   type: 'array',
@@ -67,7 +68,7 @@ const emptyObjectSchema = {
 
 export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.page',
     version: '1.0.0',
     category: 'layout',
@@ -84,7 +85,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.section',
     version: '1.0.0',
     category: 'layout',
@@ -105,7 +106,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.columns',
     version: '1.0.0',
     category: 'layout',
@@ -128,7 +129,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.heading',
     version: '1.0.0',
     category: 'content',
@@ -151,7 +152,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html', 'rich-text'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'content.paragraph',
     version: '1.0.0',
     category: 'content',
@@ -171,7 +172,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html', 'rich-text'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.regions',
     version: '1.0.0',
     category: 'layout',
@@ -188,7 +189,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html', 'regions'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.region',
     version: '1.0.0',
     category: 'layout',
@@ -218,7 +219,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: [],
     capabilities: ['html', 'regions'],
   },  {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: 'layout.scope',
     version: '1.0.0',
     category: 'layout',
@@ -267,7 +268,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
 // their overlay of ui-source.
 export const BUILTIN_PORT_MANIFESTS = Object.freeze([
   {
-    schema: 'simai.composition.port-manifest.v1',
+    ...schemaFields('simai.composition.port-manifest', 1),
     element: 'sf-table',
     version: '1.0.0',
     component: 'smart.data-view',
@@ -294,7 +295,7 @@ export const BUILTIN_PORT_MANIFESTS = Object.freeze([
 
 export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
-    schema: 'simai.composition.editor-manifest.v1',
+    ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.section',
     type_version: '1.0.0',
     fields: [
@@ -317,7 +318,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     ],
   },
   {
-    schema: 'simai.composition.editor-manifest.v1',
+    ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.columns',
     type_version: '1.0.0',
     fields: [
@@ -339,7 +340,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     ],
   },
   {
-    schema: 'simai.composition.editor-manifest.v1',
+    ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'content.heading',
     type_version: '1.0.0',
     fields: [
@@ -360,7 +361,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
       },
     ],
   },  {
-    schema: 'simai.composition.editor-manifest.v1',
+    ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.region',
     type_version: '1.0.0',
     fields: [

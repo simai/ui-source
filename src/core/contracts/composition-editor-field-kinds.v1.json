@@ -50,7 +50,8 @@
         "stored": "value",
         "unset": "absent-field"
       },
-      "schema": "simai.composition.editor-field-kind.v1",
+      "schema": "simai.composition.editor-field-kind",
+      "schema_version": 1,
       "server_fallback": {
         "element": "select",
         "enhanced_control": "sf-dropdown",
@@ -128,7 +129,8 @@
         "stored": "safe-integer",
         "unset": "empty-text"
       },
-      "schema": "simai.composition.editor-field-kind.v1",
+      "schema": "simai.composition.editor-field-kind",
+      "schema_version": 1,
       "server_fallback": {
         "attributes": [
           "min",
@@ -214,7 +216,8 @@
         "stored": "value",
         "unset": "empty-text"
       },
-      "schema": "simai.composition.editor-field-kind.v1",
+      "schema": "simai.composition.editor-field-kind",
+      "schema_version": 1,
       "server_fallback": {
         "attributes": [
           "maxlength",
@@ -292,7 +295,8 @@
         "stored": "true only; false removes the key",
         "unset": "false"
       },
-      "schema": "simai.composition.editor-field-kind.v1",
+      "schema": "simai.composition.editor-field-kind",
+      "schema_version": 1,
       "server_fallback": {
         "attributes": [
           "role=switch",
@@ -325,5 +329,6 @@
       "version": 1
     }
   ],
-  "schema": "simai.composition.editor-field-kind-registry.v1"
+  "schema": "simai.composition.editor-field-kind-registry",
+  "schema_version": 1
 }

@@ -19,17 +19,229 @@
           "value": "record-ids.v1"
         }
       },
-      "schema": "simai.composition.port-manifest.v1",
+      "schema": "simai.composition.port-manifest",
+      "schema_version": 1,
       "version": "1.0.0"
     }
   ],
-  "schema": "simai.composition.port-registry.v1",
+  "schema": "simai.composition.port-registry",
+  "schema_version": 1,
   "value_types": {
     "boolean.v1": {
       "schema": {
         "type": "boolean"
       },
       "summary": "A strict boolean."
+    },
+    "collection-changed.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "collection": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "pattern": "^[a-z][a-z0-9._:-]{0,127}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "collection",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "summary": "Something in a collection changed that a list should read again; reason is a short token (created, imported, reordered, settings ...)."
+    },
+    "counter.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "pattern": "^[a-z][a-z0-9._:-]{0,127}$",
+            "type": "string"
+          },
+          "value": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object"
+      },
+      "summary": "A named count changed: key is a token (notifications, requests.new ...), value a non-negative safe integer."
+    },
+    "files-moved.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": -9007199254740991,
+                "type": "integer"
+              }
+            ]
+          },
+          "ids": {
+            "items": {
+              "oneOf": [
+                {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "maximum": 9007199254740991,
+                  "minimum": -9007199254740991,
+                  "type": "integer"
+                }
+              ]
+            },
+            "maxItems": 1000,
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": -9007199254740991,
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ids",
+          "from",
+          "to"
+        ],
+        "type": "object"
+      },
+      "summary": "Files moved between folders: their identities (1 to 1000, unique), the folder they left and the one they went to; null is the root."
+    },
+    "navigation.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "region": {
+            "pattern": "^[a-z][a-z0-9-]{0,31}$",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "^/(?!/)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "region"
+        ],
+        "type": "object"
+      },
+      "summary": "Go to an address of the same site, in a named region: url is a path (starting with one slash, up to 2048 code units), region a region name."
+    },
+    "preference-changed.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[\\w.*:-]+(?:/[\\w.*:/-]+)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "summary": "A person changed a view preference: the SF.Preferences key (sf-table/<key>, sf-table/*, sf-admin-menu/main ...). Says which, never the value."
+    },
+    "record-changed.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "collection": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "fields": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 256,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "id": {
+            "oneOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": -9007199254740991,
+                "type": "integer"
+              }
+            ]
+          },
+          "revision": {
+            "oneOf": [
+              {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": -9007199254740991,
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "required": [
+          "collection",
+          "id",
+          "revision"
+        ],
+        "type": "object"
+      },
+      "summary": "A record changed: its collection, identity and new revision, and optionally the keys of the fields that changed (up to 256). Says what changed, never the values."
     },
     "record-id.v1": {
       "schema": {
@@ -72,6 +284,38 @@
         "uniqueItems": true
       },
       "summary": "Ordered unique opaque record identities: nonempty strings up to 256 code units without control characters, or safe integers. Up to 1000 items; empty means no selection."
+    },
+    "record-removed.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "collection": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "oneOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "maximum": 9007199254740991,
+                "minimum": -9007199254740991,
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "required": [
+          "collection",
+          "id"
+        ],
+        "type": "object"
+      },
+      "summary": "A record was removed from its collection."
     },
     "text.v1": {
       "schema": {

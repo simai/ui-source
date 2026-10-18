@@ -1,5 +1,6 @@
 {
-  "schema": "simai.framework.delivery-target-review.v1",
+  "schema": "simai.framework.delivery-target-review",
+  "schema_version": 1,
   "status": "reviewed_not_accepted",
   "architecture_owner": "Rim Zabarov",
   "target_id": "target.framework.exact-pair-recipe-101-table-actions",

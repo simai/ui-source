@@ -2,9 +2,9 @@
   "capability": "layout.scope",
   "cases": [
     {
-      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"orders-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"order-lines\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки заказа\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"orders-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"order-lines\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки заказа\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:e3a2f3a17951934d1a28ed6be530d503ca7a15433cdb934d610f06bd65843d87",
+      "digest": "sha256:9fc2ea99214755335cfe79540cd1ebcbbfc7b883803f4fdc8128f2b29ac1b285",
       "document": {
         "id": "routing-case",
         "profile": "ui-layout",
@@ -57,7 +57,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<sf-composition-scope data-sf-composition-id=\"orders-scope\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;order-lines&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Строки заказа\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope>",
@@ -81,9 +82,9 @@
       "id": "positive.master-detail"
     },
     {
-      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"chain\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-b\",\"to\":{\"endpoint\":\"b\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"b\",\"port\":\"selection\"},\"id\":\"b-c\",\"to\":{\"endpoint\":\"c\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-d\",\"to\":{\"endpoint\":\"d\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"a\"}},\"id\":\"a\",\"props\":{\"aria-label\":\"A\",\"table-settings-key\":\"example.a\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"b\"}},\"id\":\"b\",\"props\":{\"aria-label\":\"B\",\"table-settings-key\":\"example.b\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"c\"}},\"id\":\"c\",\"props\":{\"aria-label\":\"C\",\"table-settings-key\":\"example.c\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"d\"}},\"id\":\"d\",\"props\":{\"aria-label\":\"D\",\"table-settings-key\":\"example.d\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"chain\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-b\",\"to\":{\"endpoint\":\"b\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"b\",\"port\":\"selection\"},\"id\":\"b-c\",\"to\":{\"endpoint\":\"c\",\"port\":\"context\"}},{\"from\":{\"endpoint\":\"a\",\"port\":\"selection\"},\"id\":\"a-d\",\"to\":{\"endpoint\":\"d\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"a\"}},\"id\":\"a\",\"props\":{\"aria-label\":\"A\",\"table-settings-key\":\"example.a\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"b\"}},\"id\":\"b\",\"props\":{\"aria-label\":\"B\",\"table-settings-key\":\"example.b\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"c\"}},\"id\":\"c\",\"props\":{\"aria-label\":\"C\",\"table-settings-key\":\"example.c\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"d\"}},\"id\":\"d\",\"props\":{\"aria-label\":\"D\",\"table-settings-key\":\"example.d\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:4956f3ab1ea1494f92f962334bc8f18bff782fbee4a13cef2d6b2aa2e070d8d5",
+      "digest": "sha256:a7b09b193c53c72716f3ba99cd3915327fa95dc1edd20955ca8adb478200dc8e",
       "document": {
         "id": "routing-case",
         "profile": "ui-layout",
@@ -184,7 +185,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<sf-composition-scope data-sf-composition-id=\"chain\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;a&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;a-b&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;b&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}},{&quot;from&quot;:{&quot;endpoint&quot;:&quot;b&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;b-c&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;c&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}},{&quot;from&quot;:{&quot;endpoint&quot;:&quot;a&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;a-d&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;d&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"A\" table-settings-key=\"example.a\" data-sf-endpoint=\"a\"></sf-table><sf-table aria-label=\"B\" table-settings-key=\"example.b\" data-sf-endpoint=\"b\"></sf-table><sf-table aria-label=\"C\" table-settings-key=\"example.c\" data-sf-endpoint=\"c\"></sf-table><sf-table aria-label=\"D\" table-settings-key=\"example.d\" data-sf-endpoint=\"d\"></sf-table></sf-composition-scope>",
@@ -218,9 +220,9 @@
       "id": "positive.chain-and-fan-out"
     },
     {
-      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"pick\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-list\",\"props\":{\"label\":\"Список\",\"landmark\":\"region\",\"name\":\"list\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Детали\",\"landmark\":\"complementary\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell-scope\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"pick\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-list\",\"props\":{\"label\":\"Список\",\"landmark\":\"region\",\"name\":\"list\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Детали\",\"landmark\":\"complementary\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:f28b466efe79a32e61db6ab1a45ddea650032a39262f45290f38b04858c2e687",
+      "digest": "sha256:4251c513b0c9bb01232f036e077a880ddff1be91ee843de28cab016e9f639439",
       "document": {
         "id": "routing-case",
         "profile": "ui-layout",
@@ -309,7 +311,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<sf-composition-scope data-sf-composition-id=\"shell-scope\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;pick&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><section class=\"sf-composition-region\" data-sf-composition-id=\"r-list\" data-sf-region=\"list\" data-sf-region-placement=\"center\" aria-label=\"Список\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table></section><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-detail\" data-sf-region=\"detail\" data-sf-region-placement=\"end\" aria-label=\"Детали\"><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></aside></div></div></sf-composition-scope>",
@@ -351,9 +354,9 @@
       ]
     },
     {
-      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"outer\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"outer-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"},{\"id\":\"inner\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"inner-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"inner-orders\",\"props\":{\"aria-label\":\"Внутренние заказы\",\"table-settings-key\":\"example.inner-orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"inner-lines\",\"props\":{\"aria-label\":\"Внутренние строки\",\"table-settings-key\":\"example.inner-lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"outer\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"outer-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"},{\"id\":\"inner\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"inner-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"inner-orders\",\"props\":{\"aria-label\":\"Внутренние заказы\",\"table-settings-key\":\"example.inner-orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"inner-lines\",\"props\":{\"aria-label\":\"Внутренние строки\",\"table-settings-key\":\"example.inner-lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:ee74aaea7c10b4b3f7074b1eb28a5226f3253744a26090847bc2277d6660c93b",
+      "digest": "sha256:774b7c5daa31cdb5e8b6802d4450dbbc76f3246bf7a612ab89db6f924b8f52e9",
       "document": {
         "id": "routing-case",
         "profile": "ui-layout",
@@ -455,7 +458,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<sf-composition-scope data-sf-composition-id=\"outer\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;outer-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table><sf-composition-scope data-sf-composition-id=\"inner\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;inner-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Внутренние заказы\" table-settings-key=\"example.inner-orders\" data-sf-endpoint=\"orders\"></sf-table><sf-table aria-label=\"Внутренние строки\" table-settings-key=\"example.inner-lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope></sf-composition-scope>",
@@ -494,9 +498,9 @@
       "id": "positive.nested-scopes-are-encapsulated"
     },
     {
-      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"bound\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"products\",\"port\":\"selection\"},\"id\":\"bound-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"products\"}},\"id\":\"products\",\"type\":\"example.product-list\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"routing-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"bound\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"products\",\"port\":\"selection\"},\"id\":\"bound-route\",\"to\":{\"endpoint\":\"lines\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"products\"}},\"id\":\"products\",\"type\":\"example.product-list\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"lines\"}},\"id\":\"lines\",\"props\":{\"aria-label\":\"Строки\",\"table-settings-key\":\"example.lines\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:d43b2afb9ddc511ac5b040b70210d70235b9b8c6970a21c9d9cba9d44dafd924",
+      "digest": "sha256:a4ff39121b62da86b92aeeda8d03e78d21aae8510d229a21b4a7926f21ffcb14",
       "document": {
         "id": "routing-case",
         "profile": "ui-layout",
@@ -545,7 +549,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<sf-composition-scope data-sf-composition-id=\"bound\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;products&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;bound-route&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;lines&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-table aria-label=\"Товары\" table-settings-key=\"example.products\" data-sf-endpoint=\"products\"></sf-table><sf-table aria-label=\"Строки\" table-settings-key=\"example.lines\" data-sf-endpoint=\"lines\"></sf-table></sf-composition-scope>",
@@ -619,7 +624,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-endpoint"
@@ -680,7 +686,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-port"
@@ -741,7 +748,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.wrong-direction"
@@ -802,7 +810,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.self-route"
@@ -874,7 +883,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.cycle"
@@ -959,7 +969,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.input-conflict"
@@ -1044,7 +1055,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.duplicate-route-id"
@@ -1106,7 +1118,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.duplicate-endpoint"
@@ -1169,7 +1182,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.invalid-endpoint-extension"
@@ -1266,7 +1280,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.endpoint-inside-nested-scope"
@@ -1339,7 +1354,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unported-type"
@@ -1401,7 +1417,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.arbitrary-action-field"
@@ -1463,7 +1480,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.endpoint-url-field"
@@ -1525,7 +1543,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.executable-field"
@@ -1588,7 +1607,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.query-field"
@@ -1637,7 +1657,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.empty-routes"
@@ -2467,7 +2488,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.route-limit"
@@ -2720,7 +2742,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.fan-out-limit"
@@ -2977,7 +3000,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.scope-nesting-limit"
@@ -3039,7 +3063,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-type"
@@ -3100,7 +3125,8 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.prototype-port-name"
@@ -3136,7 +3162,8 @@
           },
           "type": "layout.section"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.endpoint-extension-outside-scope"
@@ -3200,13 +3227,15 @@
           },
           "type": "layout.scope"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.endpoint-extension-on-scope"
     }
   ],
-  "schema": "simai.composition.capability-fixtures.v1",
+  "schema": "simai.composition.capability-fixtures",
+  "schema_version": 1,
   "setup": {
     "port_bindings": {
       "example.product-list": "sf-table"
@@ -3260,7 +3289,8 @@
           "kind": "custom-element",
           "name": "sf-table"
         },
-        "schema": "simai.composition.type-manifest.v1",
+        "schema": "simai.composition.type-manifest",
+        "schema_version": 1,
         "slots": {},
         "type": "example.records",
         "version": "1.0.0"
@@ -3297,7 +3327,8 @@
           "kind": "registered",
           "name": "example.product-list"
         },
-        "schema": "simai.composition.type-manifest.v1",
+        "schema": "simai.composition.type-manifest",
+        "schema_version": 1,
         "slots": {},
         "type": "example.product-list",
         "version": "1.0.0"

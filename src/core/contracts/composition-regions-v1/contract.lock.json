@@ -10,14 +10,14 @@
     "registry": "additive entries in composition-types.v1.json",
     "type_manifest": "simai.composition.type-manifest.v1 unchanged"
   },
-  "contractDigest": "sha256:a88c91a4da1a744b4bb1631786b926321e39c68a9171fcdd0f1f554c3701c5dd",
+  "contractDigest": "sha256:1a52b4ef80b46a2b27620434eade65cf62d416af85bd4b7361afa054e3319ed1",
   "manifests": {
-    "type:layout.region@1.0.0": "sha256:cf5888e3e985028432aac0fbdc2a815a75b4373cce341333db72870391f02b4f",
-    "type:layout.regions@1.0.0": "sha256:78a42ecae3cc2977e241762c5f7eec32130b8e423e04b76ceeec90a5b4a7d9d4"
+    "type:layout.region@1.0.0": "sha256:d5483f60b40ae3a0a13612dd7f68bf5f77acf7371f47a644088bea13766b4378",
+    "type:layout.regions@1.0.0": "sha256:3b105b4a51d9a46d69a915d871f9ebd9d6aa796a56ca140c793ba53982da5258"
   },
   "normativeFiles": {
     "README.md": "sha256:916532be9682fe788c5647258eda10d0f386eca9cf9752a65a2e37dfa9cd14e7",
-    "fixtures/regions.json": "sha256:08e85f03fdd36f4d12b24d84c5846d3d25b1304dd465b9fc39074d855d61b9e1"
+    "fixtures/regions.json": "sha256:d8c8ccdeb5927d28a944d706b4a6ed1ce8e8396a1a53cd3a55ad9919cfe559a4"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",

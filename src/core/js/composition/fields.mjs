@@ -1,4 +1,5 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
+import { schemaFields } from './schema-name.mjs';
 
 // Editor field kinds. A kind is derived from the exact host Property identity
 // and the presence of choices in a simai.composition.editor-manifest.v1 field;
@@ -11,7 +12,7 @@ const INTEGER_TEXT = /^-?(?:0|[1-9][0-9]*)$/u;
 
 export const BUILTIN_FIELD_KINDS = Object.freeze([
   {
-    schema: 'simai.composition.editor-field-kind.v1',
+    ...schemaFields('simai.composition.editor-field-kind', 1),
     kind: 'choice',
     version: 1,
     status: 'formalized-existing',
@@ -27,7 +28,7 @@ export const BUILTIN_FIELD_KINDS = Object.freeze([
     server_fallback: { element: 'select', value: 'option value', enhanced_control: 'sf-dropdown' },
   },
   {
-    schema: 'simai.composition.editor-field-kind.v1',
+    ...schemaFields('simai.composition.editor-field-kind', 1),
     kind: 'integer',
     version: 1,
     status: 'formalized-existing',
@@ -43,7 +44,7 @@ export const BUILTIN_FIELD_KINDS = Object.freeze([
     server_fallback: { element: 'input', type: 'number', attributes: ['min', 'max', 'step=1', 'inputmode=numeric'], enhanced_control: 'sf-input' },
   },
   {
-    schema: 'simai.composition.editor-field-kind.v1',
+    ...schemaFields('simai.composition.editor-field-kind', 1),
     kind: 'text',
     version: 1,
     status: 'new',
@@ -59,7 +60,7 @@ export const BUILTIN_FIELD_KINDS = Object.freeze([
     server_fallback: { element: 'input', type: 'text', attributes: ['maxlength', 'dir=auto'], enhanced_control: 'sf-input' },
   },
   {
-    schema: 'simai.composition.editor-field-kind.v1',
+    ...schemaFields('simai.composition.editor-field-kind', 1),
     kind: 'toggle',
     version: 1,
     status: 'new',
@@ -266,7 +267,7 @@ export function renderFieldFallback(field, { instance, messages = {} } = {}) {
 }
 
 export function fieldKindRegistry() {
-  return JSON.parse(stableStringify({ schema: 'simai.composition.editor-field-kind-registry.v1', entries: BUILTIN_FIELD_KINDS }));
+  return JSON.parse(stableStringify({ ...schemaFields('simai.composition.editor-field-kind-registry', 1), entries: BUILTIN_FIELD_KINDS }));
 }
 
 export default { BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue };

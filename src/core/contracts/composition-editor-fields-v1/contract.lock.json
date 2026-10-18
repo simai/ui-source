@@ -10,20 +10,20 @@
     "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:773a3915bc0efe5ce2e0618155b94840f5a0cf687aef024ee92338f5cbbc64ad",
+  "contractDigest": "sha256:34aa81a0353a2abafce250429f722171963ea597a1cff39763fd3e1c93145b41",
   "manifests": {
-    "editor:content.heading@1.0.0": "sha256:63c6f36a5e8f13bef0ba76148e52ebee3cccf6ed172439348bf1fbf5dd8c4a46",
-    "editor:layout.columns@1.0.0": "sha256:2ae61587cbbc03102118e0df69719ce9ac881924325f2324037e80ca7350f984",
-    "editor:layout.region@1.0.0": "sha256:a3e9b844b6a0c76b1427b69dae162db99cb0c77233d4b44fda1b857877f4ba85",
-    "editor:layout.section@1.0.0": "sha256:2ffd3221b4535d8344350082769a39e30af5005436f48566fc3dd0df41479f91",
-    "field-kind:choice@1": "sha256:79fac0379d79e1cb0b27fe226e290c24f27b959af2a4ff87f21b9c27b590e297",
-    "field-kind:integer@1": "sha256:7250dd1f0aa126424a5848766c41f4ce8122964dcaf66135cf45487cd3bb0359",
-    "field-kind:text@1": "sha256:9022864f9294f3b48457edecd8909f9eb2300b7d69947225c1a721ada23f0d2f",
-    "field-kind:toggle@1": "sha256:4d65b4741f63b3b9fbf7b22c795ea1ce226521e316702fc182f56cbcda04ddf7"
+    "editor:content.heading@1.0.0": "sha256:452bc1a0065f29c40c232d86e9e5588fd5e0c913600ab345d78dbe8e23fbf02c",
+    "editor:layout.columns@1.0.0": "sha256:24c7fa4dc173efa6bb86507aaeea8d99cfaed7a58c0f0d25643fc66d8afd956b",
+    "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
+    "editor:layout.section@1.0.0": "sha256:9cc6a6c2cde719d55de567f2474a038f5cff27adad927f261929ec7a21f96073",
+    "field-kind:choice@1": "sha256:990d5ace0ec0587d0d8c2f37fb45378f65ad338802da80a9e5ee5fef09721f72",
+    "field-kind:integer@1": "sha256:bc053b0f7eef75d6a31b3cf61ce844a7557b7b7e20cb62cf975e6b43cdfff55e",
+    "field-kind:text@1": "sha256:53f3599ca8a480f49eec4661eca856d809a433f08f9701f9591ef35b6363c83a",
+    "field-kind:toggle@1": "sha256:c44dc5e62c2f45154497a89710fcb889670feb60c1659064fb72ef9ccca04d5c"
   },
   "normativeFiles": {
     "README.md": "sha256:8d26b4a95d021a37824324cc263c5cabcaa74cbda9aa364e249dcf97e3b2d36d",
-    "fixtures/field-kinds.json": "sha256:67055aea70a776040c66a84c2183080814a4439c52b53d94db91ffa8b314972f"
+    "fixtures/field-kinds.json": "sha256:1edbb8a2307b395554c44a3573d2c948feae4f4812f47ad9dae11a5b46e9de2a"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",

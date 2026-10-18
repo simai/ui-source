@@ -4,7 +4,7 @@
 const text = (id, value) => ({ id, type: 'content.paragraph', data: { content: [{ type: 'text', value }] } });
 const region = (id, props, children = []) => ({ id, type: 'layout.region', props, slots: { default: children } });
 const regions = (id, list) => ({ id, type: 'layout.regions', slots: { regions: list } });
-const documentOf = (root, id = 'regions-case') => ({ schema: 'simai.composition.document.v1', id, profile: 'ui-layout', root });
+const documentOf = (root, id = 'regions-case') => ({ schema: 'simai.composition.document', schema_version: 1, id, profile: 'ui-layout', root });
 
 const shell = () => regions('shell', [
   region('r-header', { name: 'header', landmark: 'banner', sticky: true }, [text('t-header', 'Шапка')]),

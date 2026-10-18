@@ -1,5 +1,6 @@
 {
-    "schema": "simai.framework.flag-set.v1",
+    "schema": "simai.framework.flag-set",
+    "schema_version": 1,
     "note": "Which shape each code actually has. A code missing in one shape is served in the other rather than as a hole.",
     "attribution": [
         {

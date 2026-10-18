@@ -149,6 +149,8 @@ function buildRegistry() {
     if (seen.has(entry.id)) throw new Error(`registry_id_duplicate:${entry.id}`);
     seen.add(entry.id);
   }
+  // The registry keeps its versioned label: larena-ui and ui-admin read it by
+  // that label (journal record format-names-without-version).
   return {
     schema: "simai.smart-component-contract-registry.v2",
     schema_path: relative(root, schemaPath).split(sep).join("/"),
@@ -160,7 +162,8 @@ function buildRegistry() {
 
 function aiPacket(manifest) {
   return {
-    schema: "simai.smart-component-technology-packet.v1",
+    schema: "simai.smart-component-technology-packet",
+    schema_version: 1,
     identity: {id: manifest.id, version: manifest.version, kind: manifest.kind, lifecycle: manifest.lifecycle},
     decision: {reuse_mode: manifest.reuse_mode, guidance: manifest.ai_guidance},
     public_abi: {custom_element: manifest.custom_element, inputs: manifest.inputs, methods: manifest.methods, events: manifest.events},

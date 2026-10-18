@@ -1,5 +1,6 @@
 {
-  "schema": "simai.manifest-defaults.v1",
+  "schema": "simai.manifest-defaults",
+  "schema_version": 1,
   "rule": "A manifest default is what the component does when the attribute is absent. tests/browser/manifest-defaults.browser.mjs renders each Smart component with no attributes and compares every manifest default with the value its template receives (else its getter, else getProp). Empty values (null, undefined, '', false, []) count as equal, and a list given as JSON or comma-separated text equals the array. A default derived from the page or generated per instance is exempt with its reason; a known wrong default waits under pending with its owner. An entry that no longer differs fails, so neither list can go stale.",
   "why": "Consumers, the documentation site and the studio read the manifest. sf-dropdown rendered outlined while its manifest promised filled; sf-admin-menu's labels were Russian while its manifest said English; four other defaults were missing.",
   "checked_by": "tests/browser/manifest-defaults.browser.mjs",

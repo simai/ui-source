@@ -1,5 +1,6 @@
 {
-  "schema": "simai.effect.v1",
+  "schema": "simai.effect",
+  "schema_version": 1,
   "id": "sample-dots",
   "version": "1.0.0",
   "label": {"ru": "Точки", "en": "Dots"},

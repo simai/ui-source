@@ -1,6 +1,6 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
-import { isSchema } from './schema-name.mjs';
+import { isSchema, schemaFields } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
 import {
   BUILTIN_FIELD_KINDS,
@@ -243,7 +243,7 @@ export function compositionTypeFromSmartManifest(manifest) {
     }
     : undefined;
   return {
-    schema: 'simai.composition.type-manifest.v1',
+    ...schemaFields('simai.composition.type-manifest', 1),
     type: declaration.type,
     version: manifest.version,
     category: 'smart',

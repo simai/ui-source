@@ -1,12 +1,23 @@
 import { stableStringify } from './canonical.mjs';
-import { isSchema } from './schema-name.mjs';
+import { isSchema, readSchema, schemaFields } from './schema-name.mjs';
 
 // Readers take either form of a format name (simai.composition.recipe.v1, or
-// simai.composition.recipe with schema_version 1): schema-name.mjs. The labels
-// below are what this module writes.
-const INPUTS_SCHEMA = 'simai.composition.inputs.v1';
+// simai.composition.recipe with schema_version 1): schema-name.mjs. Writers
+// emit the new form, with two exceptions. The dependency receipt keeps
+// simai.composition.dependencies.v1: ui-doc's audit reads that label. The
+// resolved Document takes the form of the recipe it came from: a recipe in
+// the older form resolves to a simai.composition.document.v1 Document, as
+// Recipe 1.0.1 fixes (fixtures/header-switch.json, whose expected Document and
+// documentDigest are published bytes); a recipe named without a version
+// resolves to a Document named without one.
 const DEPENDENCIES_SCHEMA = 'simai.composition.dependencies.v1';
 const CANONICALIZATION = 'simai.recipe.canonical-json.v1';
+
+function documentSchemaFor(recipe) {
+  return readSchema(recipe)?.form === 'name'
+    ? schemaFields('simai.composition.document', 1)
+    : { schema: 'simai.composition.document.v1' };
+}
 const SAFE_INTEGER_MIN = -9007199254740991;
 const SAFE_INTEGER_MAX = 9007199254740991;
 
@@ -336,7 +347,7 @@ export async function resolveRecipe(recipe, context = {}) {
     if (Object.keys(recipe.inputs || {}).length > limits.maxInputs) throw Object.assign(new RangeError('Input limit exceeded'), { code: 'limit_exceeded', sourcePath: '/inputs' });
     const scope = context.trustedContext?.scope;
     if (typeof scope !== 'string' || !scope) throw Object.assign(new TypeError('Trusted scope is required'), { code: 'invalid_value', sourcePath: '/trustedContext/scope' });
-    const inputsEnvelope = context.inputs || { schema: INPUTS_SCHEMA, scope, values: {} };
+    const inputsEnvelope = context.inputs || { ...schemaFields('simai.composition.inputs', 1), scope, values: {} };
     assertCanonicalValue(inputsEnvelope, '/inputs');
     assertFields(inputsEnvelope, INPUT_ENVELOPE_FIELDS, '/inputs');
     if (!isSchema(inputsEnvelope, 'simai.composition.inputs', 1) || inputsEnvelope.scope !== scope) throw Object.assign(new TypeError('Input scope mismatch'), { code: 'input_origin_mismatch', sourcePath: '/inputs' });
@@ -542,7 +553,7 @@ export async function resolveRecipe(recipe, context = {}) {
 
     const root = await expand(recipe.root, { parameters: new Map(), callSlots: {}, slotDefaults: {}, segments: [] }, '/root');
     if (Array.isArray(root)) throw Object.assign(new Error('Root must resolve to one node'), { code: 'invalid_resolved_document', sourcePath: '/root' });
-    const document = { schema: 'simai.composition.document.v1', id: recipe.id, profile: recipe.profile, ...(recipe.locale ? { locale: recipe.locale } : {}), root };
+    const document = { ...documentSchemaFor(recipe), id: recipe.id, profile: recipe.profile, ...(recipe.locale ? { locale: recipe.locale } : {}), root };
     const outputDepth = (node) => 1 + Math.max(0, ...Object.values(node.slots || {}).flat().map(outputDepth));
     if (outputDepth(root) > limits.maxOutputDepth) throw Object.assign(new RangeError('Output depth limit exceeded'), { code: 'limit_exceeded', sourcePath: '/root' });
     const outputBytes = utf8Size(document);

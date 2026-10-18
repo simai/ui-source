@@ -24,6 +24,7 @@ import {
   validateEditorManifest,
   validateFieldKinds,
 } from '../src/core/js/composition/index.mjs';
+import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
 import { FIELD_FALLBACK_CASES, FIELD_MANIFEST_CASES, FIELD_MESSAGES, FIELD_SUBMISSION_CASES } from '../tests/fixtures/composition-capabilities/cases/fields.mjs';
 import { REGION_CASES } from '../tests/fixtures/composition-capabilities/cases/regions.mjs';
 import { ROUTING_CASES, ROUTING_PORT_BINDINGS, ROUTING_RENDERERS, ROUTING_TYPES } from '../tests/fixtures/composition-capabilities/cases/routing.mjs';
@@ -59,7 +60,7 @@ async function documentCase(entry, setup = {}) {
 async function build() {
   const outputs = {};
   outputs['composition-regions-v1/fixtures/regions.json'] = serialize({
-    schema: 'simai.composition.capability-fixtures.v1',
+    ...schemaFields('simai.composition.capability-fixtures', 1),
     capability: 'layout.regions',
     cases: await Promise.all(REGION_CASES.map(documentCase)),
   });
@@ -68,7 +69,7 @@ async function build() {
     options: { ports: { manifests: BUILTIN_PORT_MANIFESTS, bindings: ROUTING_PORT_BINDINGS } },
   };
   outputs['composition-routing-v1/fixtures/routing.json'] = serialize({
-    schema: 'simai.composition.capability-fixtures.v1',
+    ...schemaFields('simai.composition.capability-fixtures', 1),
     capability: 'layout.scope',
     setup: {
       types: ROUTING_TYPES,
@@ -116,7 +117,7 @@ async function build() {
     return { id: entry.id, instance: entry.instance, node: entry.node, messages, html: projected.fields.map((field) => renderFieldFallback(field, { instance: entry.instance, messages })).join('') };
   });
   outputs['composition-editor-fields-v1/fixtures/field-kinds.json'] = serialize({
-    schema: 'simai.composition.capability-fixtures.v1',
+    ...schemaFields('simai.composition.capability-fixtures', 1),
     capability: 'editor.field-kinds',
     setup: { host_property_types: hostPropertyTypes, messages: FIELD_MESSAGES },
     submissions,

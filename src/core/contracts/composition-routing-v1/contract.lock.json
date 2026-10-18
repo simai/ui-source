@@ -12,14 +12,14 @@
     "smart": "smart.data-view 1.2.0 additive ports and query intent",
     "type_manifest": "simai.composition.type-manifest.v1 unchanged"
   },
-  "contractDigest": "sha256:4a5d5659cad460be74808b11cbdf35d2565003795b4dc542eee008fcec5aafc4",
+  "contractDigest": "sha256:e10fda704fe35c47acb7222fc66a9c43656c3a87e901174f747b09e48508c908",
   "manifests": {
-    "port:sf-table@1.0.0": "sha256:8c523d72fa464dbbe0af81e6ad5f3bfaa042d2f36797ec0cabb011bc84113e6c",
-    "type:layout.scope@1.0.0": "sha256:eec5dd3a5ef43b41270222900638a340191da8cbc4b7d29990a67217db34790c"
+    "port:sf-table@1.0.0": "sha256:95abeff5e459ad84d3fabfe61a50c3fdad6730e6b705264badfcd2ba28fc7e50",
+    "type:layout.scope@1.0.0": "sha256:7d75a2efdd7aba65da77a362f0e6f6cfb33cd57c516569e2c58789caaca9f18d"
   },
   "normativeFiles": {
     "README.md": "sha256:d4e926f013889b5adf945144770caa1eb4493c0ae9c66628b718d423f1dad877",
-    "fixtures/routing.json": "sha256:e8bd1264620f0f918f045ecd503422000d80cf9e3cee3e8d4294790414e746ad"
+    "fixtures/routing.json": "sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",

@@ -1,5 +1,6 @@
 {
-  "schema": "simai.lifecycle-policy.v1",
+  "schema": "simai.lifecycle-policy",
+  "schema_version": 1,
   "purpose": "How a public name or behaviour leaves the Framework. One version line stays long; legacy leaves on a calendar, not on a version number.",
   "stages": {
     "compat": "Still works through an alias or a shim, recorded in contracts/changes/journal.json, noted at runtime in SF.deprecations (and in the console when the page opts in). Documented with its replacement.",

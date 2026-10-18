@@ -297,7 +297,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -341,7 +342,8 @@
             "visibility": "visible"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.section",
         "type_version": "1.0.0"
       }
@@ -381,7 +383,8 @@
             "visibility": "visible"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.columns",
         "type_version": "1.0.0"
       }
@@ -421,7 +424,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "content.heading",
         "type_version": "1.0.0"
       }
@@ -551,7 +555,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -685,7 +690,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -814,7 +820,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -945,7 +952,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -1076,7 +1084,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -1207,7 +1216,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -1337,7 +1347,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -1467,7 +1478,8 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
@@ -1597,13 +1609,15 @@
             "visibility": "collapsed"
           }
         ],
-        "schema": "simai.composition.editor-manifest.v1",
+        "schema": "simai.composition.editor-manifest",
+        "schema_version": 1,
         "type": "layout.region",
         "type_version": "1.0.0"
       }
     }
   ],
-  "schema": "simai.composition.capability-fixtures.v1",
+  "schema": "simai.composition.capability-fixtures",
+  "schema_version": 1,
   "setup": {
     "host_property_types": [
       {

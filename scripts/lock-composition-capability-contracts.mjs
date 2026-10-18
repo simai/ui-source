@@ -29,6 +29,8 @@ for (const bundle of BUNDLES) {
   const checks = Object.fromEntries(filesUnder(base, 'checks').map((relative) => [relative, sha(readFileSync(join(base, relative)))]));
   const entries = bundle.entries();
   const manifests = Object.fromEntries(entries.map((entry) => [entry.key, sha(stableStringify(entry.value))]));
+  // The lock keeps its versioned label: ui-builder reads it by that label when
+  // it packages the normative files (journal record format-names-without-version).
   const lock = {
     schema: 'simai.composition.capability-contract-lock.v1',
     capability: bundle.capability,

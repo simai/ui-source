@@ -2,9 +2,9 @@
   "capability": "layout.regions",
   "cases": [
     {
-      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:e1ce3b80d4a363c64b5a624f95383f3a8901876d9fbdf3f77039e836355c813c",
+      "digest": "sha256:c0799a266bcec07b482e55541abc6c56ab25904072c4b98909756417071a8988",
       "document": {
         "id": "regions-case",
         "profile": "ui-layout",
@@ -117,7 +117,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><header class=\"sf-composition-region\" data-sf-composition-id=\"r-header\" data-sf-region=\"header\" data-sf-region-placement=\"block\" data-sf-region-sticky=\"\"><p data-sf-composition-id=\"t-header\">Шапка</p></header><main class=\"sf-composition-region\" data-sf-composition-id=\"r-main\" data-sf-region=\"main\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"t-main\">Основное</p></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-aside\" data-sf-region=\"aside\" data-sf-region-placement=\"end\" aria-label=\"Боковая\"><p data-sf-composition-id=\"t-aside\">Сбоку</p></aside><footer class=\"sf-composition-region\" data-sf-composition-id=\"r-footer\" data-sf-region=\"footer\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-footer\">Подвал</p></footer></div></div>",
@@ -158,9 +159,9 @@
       ]
     },
     {
-      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"tool\",\"slots\":{\"regions\":[{\"id\":\"r-toolbar\",\"props\":{\"landmark\":\"none\",\"name\":\"toolbar\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Панель\"}]},\"id\":\"t-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-list\",\"props\":{\"label\":\"Записи\",\"landmark\":\"region\",\"name\":\"records\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Список\"}]},\"id\":\"t-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Подробности\",\"landmark\":\"region\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Карточка\"}]},\"id\":\"t-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"tool\",\"slots\":{\"regions\":[{\"id\":\"r-toolbar\",\"props\":{\"landmark\":\"none\",\"name\":\"toolbar\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Панель\"}]},\"id\":\"t-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-list\",\"props\":{\"label\":\"Записи\",\"landmark\":\"region\",\"name\":\"records\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Список\"}]},\"id\":\"t-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-detail\",\"props\":{\"label\":\"Подробности\",\"landmark\":\"region\",\"name\":\"detail\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Карточка\"}]},\"id\":\"t-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:0dbaceec67a7ff2b4b96cb826838b90c5c36c3421ccec8e8f73dce3e2e042d63",
+      "digest": "sha256:5662bcfc695be749378d28cfdd97c9092e2a0fcfa91228333e45cdd0f700b6ef",
       "document": {
         "id": "regions-case",
         "profile": "ui-layout",
@@ -248,7 +249,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"tool\"><div class=\"sf-composition-regions-grid\"><div class=\"sf-composition-region\" data-sf-composition-id=\"r-toolbar\" data-sf-region=\"toolbar\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-1\">Панель</p></div><section class=\"sf-composition-region\" data-sf-composition-id=\"r-list\" data-sf-region=\"records\" data-sf-region-placement=\"center\" aria-label=\"Записи\"><p data-sf-composition-id=\"t-2\">Список</p></section><section class=\"sf-composition-region\" data-sf-composition-id=\"r-detail\" data-sf-region=\"detail\" data-sf-region-placement=\"end\" aria-label=\"Подробности\"><p data-sf-composition-id=\"t-3\">Карточка</p></section></div></div>",
@@ -281,9 +283,9 @@
       ]
     },
     {
-      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"single\",\"slots\":{\"regions\":[{\"id\":\"r-only\",\"props\":{\"landmark\":\"main\",\"name\":\"content\"},\"slots\":{\"default\":[]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"single\",\"slots\":{\"regions\":[{\"id\":\"r-only\",\"props\":{\"landmark\":\"main\",\"name\":\"content\"},\"slots\":{\"default\":[]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:b347eb9ffc01f300c0086f1bd8ef083c56560091aca295a02a620e1292e527f6",
+      "digest": "sha256:b74b69562d9d507a2010fc7fdbaf2b66dfd062aa6d9bd744588fdb8eb0c9af22",
       "document": {
         "id": "regions-case",
         "profile": "ui-layout",
@@ -306,7 +308,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"single\"><div class=\"sf-composition-regions-grid\"><main class=\"sf-composition-region\" data-sf-composition-id=\"r-only\" data-sf-region=\"content\" data-sf-region-placement=\"block\"></main></div></div>",
@@ -323,9 +326,9 @@
       ]
     },
     {
-      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"},{\"id\":\"inner\",\"slots\":{\"regions\":[{\"id\":\"i-a\",\"props\":{\"label\":\"Первичное\",\"landmark\":\"region\",\"name\":\"primary\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"А\"}]},\"id\":\"i-t1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"i-b\",\"props\":{\"label\":\"Вторичное\",\"landmark\":\"complementary\",\"name\":\"secondary\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Б\"}]},\"id\":\"i-t2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"shell\",\"slots\":{\"regions\":[{\"id\":\"r-header\",\"props\":{\"landmark\":\"banner\",\"name\":\"header\",\"sticky\":true},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Шапка\"}]},\"id\":\"t-header\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-main\",\"props\":{\"landmark\":\"main\",\"min_items\":1,\"name\":\"main\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Основное\"}]},\"id\":\"t-main\",\"type\":\"content.paragraph\"},{\"id\":\"inner\",\"slots\":{\"regions\":[{\"id\":\"i-a\",\"props\":{\"label\":\"Первичное\",\"landmark\":\"region\",\"name\":\"primary\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"А\"}]},\"id\":\"i-t1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"i-b\",\"props\":{\"label\":\"Вторичное\",\"landmark\":\"complementary\",\"name\":\"secondary\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Б\"}]},\"id\":\"i-t2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"}]},\"type\":\"layout.region\"},{\"id\":\"r-aside\",\"props\":{\"label\":\"Боковая\",\"landmark\":\"complementary\",\"name\":\"aside\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Сбоку\"}]},\"id\":\"t-aside\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"r-footer\",\"props\":{\"landmark\":\"contentinfo\",\"name\":\"footer\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"Подвал\"}]},\"id\":\"t-footer\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:de7e5454ffb1da96b006656e0b86afcd36e18a89045ab8066bf7a2ad495c627d",
+      "digest": "sha256:9c801dbaeea023fc644c89a3e8e8f1baa394302fb5164e9a5dda20d65d233139",
       "document": {
         "id": "regions-case",
         "profile": "ui-layout",
@@ -498,7 +501,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"shell\"><div class=\"sf-composition-regions-grid\"><header class=\"sf-composition-region\" data-sf-composition-id=\"r-header\" data-sf-region=\"header\" data-sf-region-placement=\"block\" data-sf-region-sticky=\"\"><p data-sf-composition-id=\"t-header\">Шапка</p></header><main class=\"sf-composition-region\" data-sf-composition-id=\"r-main\" data-sf-region=\"main\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"t-main\">Основное</p><div class=\"sf-composition-regions\" data-sf-composition-id=\"inner\"><div class=\"sf-composition-regions-grid\"><section class=\"sf-composition-region\" data-sf-composition-id=\"i-a\" data-sf-region=\"primary\" data-sf-region-placement=\"center\" aria-label=\"Первичное\"><p data-sf-composition-id=\"i-t1\">А</p></section><aside class=\"sf-composition-region\" data-sf-composition-id=\"i-b\" data-sf-region=\"secondary\" data-sf-region-placement=\"end\" aria-label=\"Вторичное\"><p data-sf-composition-id=\"i-t2\">Б</p></aside></div></div></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"r-aside\" data-sf-region=\"aside\" data-sf-region-placement=\"end\" aria-label=\"Боковая\"><p data-sf-composition-id=\"t-aside\">Сбоку</p></aside><footer class=\"sf-composition-region\" data-sf-composition-id=\"r-footer\" data-sf-region=\"footer\" data-sf-region-placement=\"block\"><p data-sf-composition-id=\"t-footer\">Подвал</p></footer></div></div>",
@@ -555,9 +559,9 @@
       ]
     },
     {
-      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"band\",\"slots\":{\"regions\":[{\"id\":\"b-start\",\"props\":{\"label\":\"Навигация\",\"landmark\":\"navigation\",\"name\":\"start\",\"placement\":\"start\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"1\"}]},\"id\":\"b-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-center\",\"props\":{\"landmark\":\"main\",\"name\":\"center\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"2\"}]},\"id\":\"b-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-end\",\"props\":{\"label\":\"Дополнительно\",\"landmark\":\"complementary\",\"name\":\"end\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"3\"}]},\"id\":\"b-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document.v1\"}",
+      "canonical": "{\"id\":\"regions-case\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"band\",\"slots\":{\"regions\":[{\"id\":\"b-start\",\"props\":{\"label\":\"Навигация\",\"landmark\":\"navigation\",\"name\":\"start\",\"placement\":\"start\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"1\"}]},\"id\":\"b-1\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-center\",\"props\":{\"landmark\":\"main\",\"name\":\"center\",\"placement\":\"center\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"2\"}]},\"id\":\"b-2\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"},{\"id\":\"b-end\",\"props\":{\"label\":\"Дополнительно\",\"landmark\":\"complementary\",\"name\":\"end\",\"placement\":\"end\"},\"slots\":{\"default\":[{\"data\":{\"content\":[{\"type\":\"text\",\"value\":\"3\"}]},\"id\":\"b-3\",\"type\":\"content.paragraph\"}]},\"type\":\"layout.region\"}]},\"type\":\"layout.regions\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
       "diagnostics": [],
-      "digest": "sha256:234eb4d38b463bf0df17c9026d152fbe73fdf1219bd06fe604ecebbdda1e249d",
+      "digest": "sha256:ab2c05014d4967fa52e81432db1fddf47a717326969274245085f7745eba4045",
       "document": {
         "id": "regions-case",
         "profile": "ui-layout",
@@ -646,7 +650,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "valid",
       "html": "<div class=\"sf-composition-regions\" data-sf-composition-id=\"band\"><div class=\"sf-composition-regions-grid\"><nav class=\"sf-composition-region\" data-sf-composition-id=\"b-start\" data-sf-region=\"start\" data-sf-region-placement=\"start\" aria-label=\"Навигация\"><p data-sf-composition-id=\"b-1\">1</p></nav><main class=\"sf-composition-region\" data-sf-composition-id=\"b-center\" data-sf-region=\"center\" data-sf-region-placement=\"center\"><p data-sf-composition-id=\"b-2\">2</p></main><aside class=\"sf-composition-region\" data-sf-composition-id=\"b-end\" data-sf-region=\"end\" data-sf-region-placement=\"end\" aria-label=\"Дополнительно\"><p data-sf-composition-id=\"b-3\">3</p></aside></div></div>",
@@ -808,7 +813,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-slot"
@@ -941,7 +947,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.non-region-child"
@@ -972,7 +979,8 @@
           },
           "type": "layout.section"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.region-outside-layout"
@@ -1093,7 +1101,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.duplicate-name"
@@ -1214,7 +1223,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.invalid-name"
@@ -1335,7 +1345,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-landmark"
@@ -1457,7 +1468,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-prop"
@@ -1580,7 +1592,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.executable-prop"
@@ -1700,7 +1713,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.second-main"
@@ -1841,7 +1855,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.banner-inside-landmark"
@@ -1880,7 +1895,8 @@
           },
           "type": "layout.page"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.main-inside-page"
@@ -2000,7 +2016,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.region-landmark-without-label"
@@ -2042,7 +2059,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.two-unlabeled-region-landmarks"
@@ -2163,7 +2181,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.none-landmark-with-label"
@@ -2297,7 +2316,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.repeated-landmark-same-label"
@@ -2418,7 +2438,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.visual-order"
@@ -2526,7 +2547,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.cardinality-min"
@@ -2648,7 +2670,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.cardinality-max"
@@ -2771,7 +2794,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.bounds-inverted"
@@ -2895,7 +2919,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.category-not-accepted"
@@ -3058,7 +3083,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.too-many-regions"
@@ -3077,7 +3103,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.empty-layout"
@@ -3188,7 +3215,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.nesting-limit"
@@ -3313,7 +3341,8 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.unknown-type-in-region"
@@ -3434,11 +3463,13 @@
           },
           "type": "layout.regions"
         },
-        "schema": "simai.composition.document.v1"
+        "schema": "simai.composition.document",
+        "schema_version": 1
       },
       "expect": "invalid",
       "id": "negative.structured-content-profile"
     }
   ],
-  "schema": "simai.composition.capability-fixtures.v1"
+  "schema": "simai.composition.capability-fixtures",
+  "schema_version": 1
 }

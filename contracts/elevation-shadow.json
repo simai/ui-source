@@ -1,5 +1,6 @@
 {
-  "schema": "simai.elevation-shadow.v1",
+  "schema": "simai.elevation-shadow",
+  "schema_version": 1,
   "rule": "Height is one semantic: a step N is the pair --sf-elevation-N--surface and --sf-elevation-N--shadow, and whatever floats above the page takes both. A step's shadow alone leaves a panel flat in the dark theme, where the shadow is black on a near-black page and only the lighter surface shows the height. Components therefore do not use --sf-ui-shadow-N (N 1-5) directly, and a stylesheet that uses a step's shadow also uses that step's surface. The exemptions below are not panels: they keep a colour that carries meaning, which a raised surface would overwrite.",
   "rim": "--sf-shadow--rim is the last layer of every step's shadow, off by default (0 0 0 0 transparent). A theme may switch it on to outline raised panels in the dark.",
   "utility": "elevation-N sets the pair; shadow-N stays a shadow alone, for an element whose own fill carries meaning.",

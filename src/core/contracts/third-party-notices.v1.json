@@ -1,5 +1,6 @@
 {
-  "schema": "simai.framework.third-party-notices.v1",
+  "schema": "simai.framework.third-party-notices",
+  "schema_version": 1,
   "note": "Third-party code and fonts inside this distribution, with the notices their licences require. Generated from the dependency lock and the licence files of the exact versions built; tests/third-party-notices.contract.test.mjs keeps it honest.",
   "project": {
     "name": "SIMAI Framework",

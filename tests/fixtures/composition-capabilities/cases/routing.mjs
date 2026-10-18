@@ -3,7 +3,8 @@
 // Document never names methods, endpoints, actions or transformations.
 export const ROUTING_TYPES = [
   {
-    schema: 'simai.composition.type-manifest.v1',
+    schema: 'simai.composition.type-manifest',
+    schema_version: 1,
     type: 'example.records',
     version: '1.0.0',
     category: 'smart',
@@ -25,7 +26,8 @@ export const ROUTING_TYPES = [
     capabilities: ['html', 'hydration'],
   },
   {
-    schema: 'simai.composition.type-manifest.v1',
+    schema: 'simai.composition.type-manifest',
+    schema_version: 1,
     type: 'example.product-list',
     version: '1.0.0',
     category: 'smart',
@@ -57,7 +59,7 @@ const list = (id, endpoint, label) => ({
 });
 const route = (id, from, to, fromPort = 'selection', toPort = 'context') => ({ id, from: { endpoint: from, port: fromPort }, to: { endpoint: to, port: toPort } });
 const scope = (id, routes, children) => ({ id, type: 'layout.scope', props: { routes }, slots: { default: children } });
-const documentOf = (root) => ({ schema: 'simai.composition.document.v1', id: 'routing-case', profile: 'ui-layout', root });
+const documentOf = (root) => ({ schema: 'simai.composition.document', schema_version: 1, id: 'routing-case', profile: 'ui-layout', root });
 const master = () => scope('orders-scope', [route('order-lines', 'orders', 'lines')], [list('orders', 'orders', 'Заказы'), list('lines', 'lines', 'Строки заказа')]);
 const mutate = (update) => { const root = master(); update(root); return documentOf(root); };
 

@@ -1,5 +1,6 @@
 {
-  "schema": "simai.composition.document.v1",
+  "schema": "simai.composition.document",
+  "schema_version": 1,
   "id": "regions-example",
   "profile": "ui-layout",
   "locale": "ru",

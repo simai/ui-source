@@ -1,5 +1,6 @@
 {
-  "schema": "simai.framework.public-variables.v1",
+  "schema": "simai.framework.public-variables",
+  "schema_version": 1,
   "summary": "The CSS variables each component offers for customisation. A public variable has a single dash after the block (--sf-badge-color); the Framework never sets one, and reads it wherever a resting look is defined -- the base rule, sizes, appearances, schemes, statuses -- but not where a state is drawn (hover, focus, pressed, disabled, loading, an error), so states still show over a customised look. Set one on the component or on any ancestor. Every other --sf-<block>--* variable is internal: it may be renamed or removed in any release. A public variable is renamed or removed only through the change journal, as an attribute is.",
   "components": [
     {
