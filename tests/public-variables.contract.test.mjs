@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile, readdir} from 'node:fs/promises';
 import test from 'node:test';
-import {isSchema} from '../src/core/js/schema-name.mjs';
+import {isSchema} from '../src/core/js/composition/schema-name.mjs';
 
 // The public variables a component offers (src/core/contracts/public-variables.v1.json):
 // each is read by the component's stylesheet, none is set by the Framework, and

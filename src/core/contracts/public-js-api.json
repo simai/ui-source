@@ -291,17 +291,17 @@
     },
     {
       "name": "SF.loadRuntime",
-      "status": "internal",
+      "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Loads a runtime module; the Loader's. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
+      "summary": "Loads the shared Smart runtime (core/js/smart-base.js) and resolves with its modules."
     },
     {
       "name": "SF.loadSmartBase",
-      "status": "internal",
+      "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Loads the Smart base; the Loader's. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
+      "summary": "Loads the Smart base when the page has no Smart element yet; resolves with SF.smart. A project's own Smart component waits for it."
     },
     {
       "name": "SF.send",
@@ -319,10 +319,10 @@
     },
     {
       "name": "SF.runtimeModule",
-      "status": "internal",
+      "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
+      "summary": "A promise of one module of the shared Smart runtime by its id (lit, smart-base, page-language, ...); what a built Smart bundle imports through."
     },
     {
       "name": "SF.runtimeModules",
@@ -354,10 +354,10 @@
     },
     {
       "name": "SF.smart",
-      "status": "internal",
+      "status": "public",
       "kind": "object",
       "loaded_by": "smart-base",
-      "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
+      "summary": "The Smart base: SfBaseElement and the helpers a project's own Smart component extends."
     },
     {
       "name": "SF.smartBaseAnnounced",
@@ -368,10 +368,10 @@
     },
     {
       "name": "SF.smartBaseReady",
-      "status": "internal",
+      "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
+      "summary": "A promise of the Smart base, however it arrives (a Smart element or SF.loadSmartBase())."
     },
     {
       "name": "SF.AdminMenu",
@@ -742,7 +742,7 @@
       "status": "internal",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The runtime's own names (the message bus, the runtime module registry, the Smart base's state, litHtml); nothing a page calls."
+      "summary": "The runtime's own names (the message bus, the runtime module registry's state, the Smart base's announcement, litHtml); nothing a page calls."
     }
   ]
 }

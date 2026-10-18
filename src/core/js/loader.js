@@ -285,13 +285,13 @@ function SFLoaderPlugin(params) {
   if (this.smart.base === true) {
     this.smartBaseReady = this.loadSmartBase().finally(start);
   } else {
-    // Settles when the base arrives, however it arrives: SF.__internal.loadSmartBase() or
+    // Settles when the base arrives, however it arrives: SF.loadSmartBase() or
     // the first Smart bundle. It used to resolve at once with null, so
-    // `await SF.__internal.smartBaseReady` waited for nothing (documentation trial).
-    this.smartBaseReady = window.SF?.__internal?.smart?.SfBaseElement
-      ? Promise.resolve(window.SF.__internal.smart)
+    // `await SF.smartBaseReady` waited for nothing (documentation trial).
+    this.smartBaseReady = window.SF?.smart?.SfBaseElement
+      ? Promise.resolve(window.SF.smart)
       : new Promise((resolve) => {
-        window.addEventListener('sf-smart-base-ready', () => resolve(window.SF?.__internal?.smart || null), {once: true});
+        window.addEventListener('sf-smart-base-ready', () => resolve(window.SF?.smart || null), {once: true});
       });
     start();
   }
@@ -518,8 +518,8 @@ SFLoaderPlugin.prototype.profileEnd = function (profile, detail = {}) {
 };
 
 SFLoaderPlugin.prototype.loadSmartBase = function () {
-  if (window.SF?.__internal?.smart?.SfBaseElement) {
-    return Promise.resolve(window.SF.__internal.smart);
+  if (window.SF?.smart?.SfBaseElement) {
+    return Promise.resolve(window.SF.smart);
   }
 
   if (this.smartBaseLoadPromise) {
@@ -528,12 +528,12 @@ SFLoaderPlugin.prototype.loadSmartBase = function () {
 
   // The base arrives with the shared runtime, in one chunk with the modules the
   // Smart bundles are built against.
-  this.smartBaseLoadPromise = window.SF.__internal.loadRuntime()
+  this.smartBaseLoadPromise = window.SF.loadRuntime()
       .then(() => {
         // The base announces itself (sf-smart-base-ready) when it publishes
-        // SF.__internal.smart, once per page, so it is not announced again here.
+        // SF.smart, once per page, so it is not announced again here.
 
-        return window.SF?.__internal?.smart || null;
+        return window.SF?.smart || null;
       })
       .catch((error) => {
         console.warn('smart base load failed', error);
@@ -2497,7 +2497,7 @@ SFLoaderPlugin.prototype.pathPluginJs = function (name, smart, point, type) {
     if (base === null) return null;
     // A Smart bundle is built against the shared runtime; it is asked for now,
     // so it arrives with the first bundle rather than after it.
-    globalThis.SF?.__internal?.loadRuntime?.();
+    globalThis.SF?.loadRuntime?.();
     name = name.substring(3);
     pathPlugin = `${base}/${name}`;
   } else {
@@ -4701,14 +4701,14 @@ async function createSmartElementAsync(name, params = {}) {
 }
 
 SF.Loader = new SFLoaderPlugin(props);
-// Read live: SF.__internal.loadSmartBase() replaces the Loader's promise, and a copy taken
+// Read live: SF.loadSmartBase() replaces the Loader's promise, and a copy taken
 // here once would never see it.
 Object.defineProperty(SF, 'smartBaseReady', {
   configurable: true,
   enumerable: true,
-  get: () => SF.Loader.smartBaseReady || Promise.resolve(SF.__internal.smart || null),
+  get: () => SF.Loader.smartBaseReady || Promise.resolve(SF.smart || null),
 });
-SF.__internal.loadSmartBase = function loadSmartBase() {
+SF.loadSmartBase = function loadSmartBase() {
   return SF.Loader.loadSmartBase();
 };
 // The field renderer set is a module, not an element: no tag brings it, so a
@@ -4731,7 +4731,7 @@ SF.whenFieldRenderers = function whenFieldRenderers() {
     if (settle()) return;
     const asked = [...document.scripts].some((script) => /\/field-renderers\/js\/field-renderers(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
     if (asked) return;
-    SF.__internal.loadRuntime?.();
+    SF.loadRuntime?.();
     const loader = SF.Loader;
     loader.addScript(`${loader.smartPath}/field-renderers/js/field-renderers${loader.minified ? '.min' : ''}.js`)
       .then(() => settle())

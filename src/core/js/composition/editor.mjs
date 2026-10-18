@@ -1,5 +1,5 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
-import { isSchema } from '../schema-name.mjs';
+import { isSchema } from './schema-name.mjs';
 
 const SCHEMA = 'simai.composition.editor-manifest.v1';
 const MANIFEST_FIELDS = new Set(['schema', 'schema_version', 'type', 'type_version', 'applies_to', 'fields']);

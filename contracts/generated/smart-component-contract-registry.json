@@ -1795,7 +1795,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "0a61608d253976dbc998d48bd0675a1d56433a4848d71d788d93944971d37e02",
+      "manifest_sha256": "ce0e2fa42b411d513c9544fd21b1a629dc8d5219faed4ac65b55dc6e2955096d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -14,7 +14,7 @@
 // sandbox is the product's (an iframe without allow-same-origin); this module
 // is what runs inside it as well.
 
-import {isSchema} from './schema-name.mjs';
+import {isSchema} from './composition/schema-name.mjs';
 
 // The label a writer emits. A reader takes either form of the format name
 // (simai.effect.v1, or simai.effect with schema_version 1): schema-name.mjs.

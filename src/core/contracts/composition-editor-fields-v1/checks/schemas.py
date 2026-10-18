@@ -8,7 +8,7 @@ bundle = Path(__file__).resolve().parent.parent
 contracts = bundle.parent
 load = lambda path: json.loads(path.read_text())
 # Either form of a format name: the older 'simai.<name>.v<major>', or
-# 'simai.<name>' with schema_version beside it (src/core/js/schema-name.mjs).
+# 'simai.<name>' with schema_version beside it (src/core/js/composition/schema-name.mjs).
 def is_schema(document, name, version):
     label = document.get('schema')
     if label == f'{name}.v{version}':

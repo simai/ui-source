@@ -1,5 +1,5 @@
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
-import { isSchema } from '../schema-name.mjs';
+import { isSchema } from './schema-name.mjs';
 
 // Generic cross-composite routing. A layout.scope node is the common parent
 // that declares typed routes between endpoint descendants. Routes name only

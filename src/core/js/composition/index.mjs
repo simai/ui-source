@@ -1,6 +1,6 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from './builtins.mjs';
 import { canonical, isPlainObject, stableStringify } from './canonical.mjs';
-import { isSchema } from '../schema-name.mjs';
+import { isSchema } from './schema-name.mjs';
 import { projectDocumentEditorFields, projectEditorFields, validateEditorManifest } from './editor.mjs';
 import {
   BUILTIN_FIELD_KINDS,

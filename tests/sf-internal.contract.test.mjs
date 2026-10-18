@@ -11,8 +11,10 @@ test('the old names are accessors onto SF.__internal, a read noted, a prior valu
   const store = installInternal(root);
   assert.equal(store, root.SF.__internal);
   assert.equal(store.send, 'page-put-this-first', 'a value already there is kept');
-  root.SF.loadRuntime = () => 'loaded';
-  assert.equal(typeof store.loadRuntime, 'function', 'a write through the old name lands in SF.__internal');
+  root.SF.runtimeLoading = Promise.resolve('loaded');
+  assert.ok(store.runtimeLoading instanceof Promise, 'a write through the old name lands in SF.__internal');
+  // The documented names stay public, on SF itself.
+  for (const name of ['loadSmartBase', 'smart', 'smartBaseReady', 'loadRuntime', 'runtimeModule']) assert.ok(!INTERNAL_NAMES.includes(name), name);
   clearDeprecations();
   root.SF.__internal.litHtml = 'x';
   assert.equal(root.SF.litHtml, 'x');

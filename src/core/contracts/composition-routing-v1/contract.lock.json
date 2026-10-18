@@ -2,7 +2,7 @@
   "capability": "simai.composition.routing",
   "checks": {
     "checks/digest-parity.php": "sha256:1ec7e4b884899a25bb281d0a12225b19c382fe8740844eb47c5f67f1c04753ac",
-    "checks/schemas.py": "sha256:aae1cdd23c74d22b84bda67737fd1ca338bedca552612e32eb17457f3ac15aaf"
+    "checks/schemas.py": "sha256:6a545f09421e172b22172434b8d22498309e8eb195e268d0f932109f01a5c189"
   },
   "compatibility": {
     "document": "simai.composition.document.v1 unchanged",

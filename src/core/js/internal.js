@@ -1,9 +1,9 @@
 // The runtime's own names on window.SF moved under SF.__internal (week audit,
 // 2026-10-18; journal global-sf-internal). They were never a promise to a page
-// -- the message bus (send, receive), the runtime module registry (loadRuntime,
-// runtimeModule(s), runtimeArrived, runtimeLoading, runtimeSettled), the Smart
-// base's own state (loadSmartBase, smart, smartBaseAnnounced, smartBaseReady)
-// and litHtml -- but they stood beside the public API (core/contracts/
+// -- the message bus (send, receive), the runtime module registry's own state
+// (runtimeModules, runtimeArrived, runtimeLoading, runtimeSettled), the Smart
+// base's announcement (smartBaseAnnounced) and litHtml -- but they stood beside
+// the public API (core/contracts/
 // public-js-api.json marks them internal) and a page could lean on them.
 //
 // The old names keep working until the journal's sweep: each is an accessor on
@@ -15,10 +15,14 @@
 // rest find them in place.
 import {noteDeprecated} from './deprecations.js';
 
+// SF.loadSmartBase, SF.smart, SF.smartBaseReady, SF.loadRuntime and
+// SF.runtimeModule stay where they are: the documentation promises them to a
+// page (a project's own Smart component extends SF.smart.SfBaseElement after
+// `await SF.loadSmartBase()`), so they are public, not the runtime's.
 export const INTERNAL_NAMES = Object.freeze([
   'send', 'receive',
-  'loadRuntime', 'runtimeModule', 'runtimeModules', 'runtimeArrived', 'runtimeLoading', 'runtimeSettled',
-  'loadSmartBase', 'smart', 'smartBaseAnnounced', 'smartBaseReady',
+  'runtimeModules', 'runtimeArrived', 'runtimeLoading', 'runtimeSettled',
+  'smartBaseAnnounced',
   'litHtml',
 ]);
 

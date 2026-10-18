@@ -1,5 +1,5 @@
 import { stableStringify } from './canonical.mjs';
-import { isSchema } from '../schema-name.mjs';
+import { isSchema } from './schema-name.mjs';
 
 // Readers take either form of a format name (simai.composition.recipe.v1, or
 // simai.composition.recipe with schema_version 1): schema-name.mjs. The labels

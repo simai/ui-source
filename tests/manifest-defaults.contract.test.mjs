@@ -3,7 +3,7 @@ import test from 'node:test';
 import {readFileSync, readdirSync, existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {isSchema} from '../src/core/js/schema-name.mjs';
+import {isSchema} from '../src/core/js/composition/schema-name.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');

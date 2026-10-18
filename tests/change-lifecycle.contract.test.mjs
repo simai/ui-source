@@ -4,7 +4,7 @@ import {readFileSync, readdirSync, existsSync, mkdtempSync, writeFileSync, rmSyn
 import {execFileSync, spawnSync} from 'node:child_process';
 import {resolve, join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {isSchema} from '../src/core/js/schema-name.mjs';
+import {isSchema} from '../src/core/js/composition/schema-name.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');

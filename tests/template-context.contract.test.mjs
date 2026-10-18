@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile, access} from 'node:fs/promises';
-import {isSchema} from '../src/core/js/schema-name.mjs';
+import {isSchema} from '../src/core/js/composition/schema-name.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 

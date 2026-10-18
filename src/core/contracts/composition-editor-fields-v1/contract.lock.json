@@ -2,7 +2,7 @@
   "capability": "simai.composition.editor-fields",
   "checks": {
     "checks/normalization-parity.php": "sha256:d6ca1869abb521949632451855c381380d4d99d4d9ee7cdb7b4fe67e5590ddfe",
-    "checks/schemas.py": "sha256:76b577f7840a94e8b1ec37979f539c5e74ee43c4e03d150cc839f78f77ca65c5"
+    "checks/schemas.py": "sha256:f39dd2e7c1b86cccb45cfb9852e5102c5543821d5ee2b7f0ede54c4b113258ff"
   },
   "compatibility": {
     "editor_manifest": "simai.composition.editor-manifest.v1 unchanged",

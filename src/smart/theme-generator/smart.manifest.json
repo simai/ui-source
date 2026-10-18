@@ -117,7 +117,7 @@
       }
     },
     "reset": {
-      "summary": "Back to the Framework's own colour; fires sf-theme-change and sf-theme-apply.",
+      "summary": "Back to the Framework's own colour; fires sf-theme-generator-change and sf-theme-generator-apply (and their first names until 2026-12-01).",
       "arguments": [],
       "returns": {
         "type": "object",

@@ -8,8 +8,8 @@ import './js/internal.js';
 
 const SF = (window.SF = window.SF || {});
 SF.__internal.runtimeModules = RUNTIME_MODULES;
-if (!SF.__internal.runtimeModule) {
-  SF.__internal.runtimeModule = (id) => (RUNTIME_MODULES[id]
+if (!SF.runtimeModule) {
+  SF.runtimeModule = (id) => (RUNTIME_MODULES[id]
     ? Promise.resolve(RUNTIME_MODULES[id])
     : Promise.reject(new Error(`SF runtime: no shared module "${id}"`)));
 }

@@ -24,11 +24,11 @@ import {
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
-  if (!SF.__internal.loadRuntime) {
+  if (!SF.loadRuntime) {
     let loading = null;
     const coreScript = () => [...document.scripts]
       .find((script) => /\/core\/js\/core(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
-    SF.__internal.loadRuntime = () => {
+    SF.loadRuntime = () => {
       if (loading) return loading;
       if (SF.__internal.runtimeModules) {
         SF.__internal.runtimeSettled = true;
@@ -52,7 +52,7 @@ if (typeof window !== 'undefined') {
       SF.__internal.runtimeLoading = loading;
       return loading;
     };
-    SF.__internal.runtimeModule = (id) => SF.__internal.loadRuntime().then((modules) => {
+    SF.runtimeModule = (id) => SF.loadRuntime().then((modules) => {
       if (!modules[id]) throw new Error(`SF runtime: no shared module "${id}"`);
       return modules[id];
     });

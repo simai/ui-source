@@ -6,7 +6,7 @@
 //   - a class component's state API exists when it says it is ready;
 //   - SF.Toast.dismiss(null) answers false, and show() takes status (type still read);
 //   - SF.ProgressBar takes and reports status;
-//   - SF.__internal.smartBaseReady settles with the base a bundle brought, and is live;
+//   - SF.smartBaseReady settles with the base a bundle brought, and is live;
 //   - sf-loader-ready is stamped when it is sent;
 //   - (legacy [sf-gallery] markup: SF.Search no longer constructs an absent
 //     SF.Gallery; not driven here, because the attribute scan does not load
@@ -118,8 +118,8 @@ try {
   if (report.progress?.status !== 'error') failures.push({case: 'progress status', got: report.progress, expected: 'status error'});
 
   report.smartBase = await tab.evaluate(async () => {
-    const base = await Promise.race([window.SF.__internal.smartBaseReady, new Promise((settle) => setTimeout(() => settle('timeout'), 5000))]);
-    return {hasBase: Boolean(base?.SfBaseElement), live: window.SF.__internal.smartBaseReady === window.SF.Loader.smartBaseReady};
+    const base = await Promise.race([window.SF.smartBaseReady, new Promise((settle) => setTimeout(() => settle('timeout'), 5000))]);
+    return {hasBase: Boolean(base?.SfBaseElement), live: window.SF.smartBaseReady === window.SF.Loader.smartBaseReady};
   });
   if (!report.smartBase.hasBase || !report.smartBase.live) failures.push({case: 'smartBaseReady', got: report.smartBase, expected: 'resolves with the base once a Smart bundle brings it, and is the Loader promise'});
 

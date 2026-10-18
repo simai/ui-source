@@ -1,5 +1,5 @@
 import { isPlainObject } from './canonical.mjs';
-import { isSchema } from '../schema-name.mjs';
+import { isSchema } from './schema-name.mjs';
 import { VALUE_TYPES } from './routing.mjs';
 
 // The interface fragment descriptor (simai.interface-fragment 1.0.0): checked

@@ -1830,7 +1830,7 @@
       "deprecated_on": "2026-10-18",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "In every file that declares a format, replace \"schema\": \"simai.<name>.v<major>\" with \"schema\": \"simai.<name>\" and add \"schema_version\": <major> (the number that followed .v) beside it. A reader of your own that compares the label reads both forms until remove_after: readSchema or isSchema in src/core/js/schema-name.mjs. sf-upgrade finds each label but does not rewrite it, because the new form is two fields.",
+      "manual": "In every file that declares a format, replace \"schema\": \"simai.<name>.v<major>\" with \"schema\": \"simai.<name>\" and add \"schema_version\": <major> (the number that followed .v) beside it. A reader of your own that compares the label reads both forms until remove_after: readSchema or isSchema in src/core/js/composition/schema-name.mjs. sf-upgrade finds each label but does not rewrite it, because the new form is two fields.",
       "owner": "ui-control",
       "source": "ui-control/control/NAMES-WITHOUT-VERSIONS-DECISION-2026-10-11.md"
     },
@@ -1861,7 +1861,7 @@
       "recorded_on": "2026-10-18",
       "stage": "compat",
       "kind": "global",
-      "summary": "The runtime's own names on window.SF -- the message bus, the runtime module registry, the Smart base's state and litHtml -- live under SF.__internal; the old names read and write through to it, noted as deprecated, until the sweep. They are the runtime's and were never a page's to call.",
+      "summary": "The runtime's own names on window.SF -- the message bus, the runtime module registry's own state, the Smart base's announcement and litHtml -- live under SF.__internal; the old names read and write through to it, noted as deprecated, until the sweep. SF.loadSmartBase, SF.smart, SF.smartBaseReady, SF.loadRuntime and SF.runtimeModule are public and stay.",
       "items": [
         {
           "from": "SF.send",
@@ -1872,16 +1872,6 @@
           "from": "SF.receive",
           "to": "SF.__internal.receive",
           "match": "\\bSF\\??\\.receive\\b"
-        },
-        {
-          "from": "SF.loadRuntime",
-          "to": "SF.__internal.loadRuntime",
-          "match": "\\bSF\\??\\.loadRuntime\\b"
-        },
-        {
-          "from": "SF.runtimeModule",
-          "to": "SF.__internal.runtimeModule",
-          "match": "\\bSF\\??\\.runtimeModule\\b"
         },
         {
           "from": "SF.runtimeModules",
@@ -1904,24 +1894,9 @@
           "match": "\\bSF\\??\\.runtimeSettled\\b"
         },
         {
-          "from": "SF.loadSmartBase",
-          "to": "SF.__internal.loadSmartBase",
-          "match": "\\bSF\\??\\.loadSmartBase\\b"
-        },
-        {
-          "from": "SF.smart",
-          "to": "SF.__internal.smart",
-          "match": "\\bSF\\??\\.smart\\b"
-        },
-        {
           "from": "SF.smartBaseAnnounced",
           "to": "SF.__internal.smartBaseAnnounced",
           "match": "\\bSF\\??\\.smartBaseAnnounced\\b"
-        },
-        {
-          "from": "SF.smartBaseReady",
-          "to": "SF.__internal.smartBaseReady",
-          "match": "\\bSF\\??\\.smartBaseReady\\b"
         },
         {
           "from": "SF.litHtml",

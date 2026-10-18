@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {readSchema, isSchema, schemaFields, withUnversionedSchema} from '../src/core/js/schema-name.mjs';
+import {readSchema, isSchema, schemaFields, withUnversionedSchema} from '../src/core/js/composition/schema-name.mjs';
 
 // Both forms of a format name are read as one (names carry no version, owner
 // 2026-10-11): the older `simai.<name>.v<major>` and the new `simai.<name>`
