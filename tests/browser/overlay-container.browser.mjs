@@ -9,7 +9,9 @@
 //   2. it leaves the page scrollable; a modal outside any box still covers the
 //      viewport and locks the page;
 //   3. a modal drawer inside the box is as tall as the box and leaves the page
-//      scrollable too.
+//      scrollable too;
+//   4. a modal made by script (new SF.Modal) covers the box given as its
+//      container, or the box the element it is opened from stands in.
 import {readFileSync, existsSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -35,6 +37,8 @@ try {
           <sf-drawer id="boxed-drawer" placement="inline-end" title="Панель в рамке"><p>Текст</p></sf-drawer>
         </div>
         <sf-modal id="page" title="На странице"><p>Текст</p></sf-modal>
+        <div id="js-stage" style="position: relative; block-size: 260px; inline-size: 440px; margin: 40px"></div>
+        <div id="opener-stage" data-sf-overlay-container style="position: relative; block-size: 240px; inline-size: 400px; margin: 40px"><button id="opener" type="button">Открыть</button></div>
         <div style="block-size: 2400px">Длинная страница</div>
         <script src="/distr/core/js/core.js"></script></body></html>`});
     }
@@ -101,7 +105,30 @@ try {
   }, rect.toString());
   if (!drawer.panel || Math.abs(drawer.panel.height - drawer.stage.height) > 1 || !inside(drawer.panel, drawer.stage)) note({case: 'a drawer in an overlay container is as tall as the box', got: drawer});
   if (await locked()) note({case: 'a modal drawer in a box leaves the page scrollable'});
-  console.log(JSON.stringify({boxed, onPage, drawer}));
+  await page.evaluate(() => document.getElementById('boxed-drawer').hide?.() ?? document.getElementById('boxed-drawer').removeAttribute('open'));
+  await page.waitForTimeout(400);
+
+  // 4: SF.Modal, by its container and by its opener.
+  await page.waitForFunction(() => typeof window.SF?.Modal === 'function', null, {timeout: 10000});
+  const scripted = {};
+  for (const [name, make] of [
+    ['container', () => { const modal = new window.SF.Modal({id: 'js-container', container: '#js-stage', title: 'Скрипт'}); modal.open(); return 'js-stage'; }],
+    ['opener', () => { const modal = new window.SF.Modal({id: 'js-opener', title: 'От кнопки'}); document.getElementById('opener').focus(); modal.open(); return 'opener-stage'; }],
+  ]) {
+    const stageId = await page.evaluate(make);
+    await page.waitForTimeout(500);
+    scripted[name] = await page.evaluate(([rectSource, stageId, id]) => {
+      const rect = new Function(`return (${rectSource})`)();
+      const stage = document.getElementById(stageId);
+      const root = document.querySelector(`[data-sf-modal-id="${id}"]`);
+      return {stage: rect(stage), root: rect(root), inside: stage.contains(root), locked: getComputedStyle(document.documentElement).overflow === 'hidden' || getComputedStyle(document.body).overflow === 'hidden'};
+    }, [rect.toString(), stageId, name === 'container' ? 'js-container' : 'js-opener']);
+    if (!scripted[name].inside || !same(scripted[name].root, scripted[name].stage)) note({case: `SF.Modal covers the box of its ${name}`, got: scripted[name]});
+    if (scripted[name].locked) note({case: `SF.Modal in the box of its ${name} leaves the page scrollable`});
+    await page.evaluate((id) => window.SF.Modal.registry?.get(id)?.close(), name === 'container' ? 'js-container' : 'js-opener');
+    await page.waitForTimeout(400);
+  }
+  console.log(JSON.stringify({boxed, onPage, drawer, scripted}));
 } finally {
   await browser.close();
 }
