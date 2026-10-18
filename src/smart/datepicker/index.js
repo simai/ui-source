@@ -707,14 +707,18 @@ class SfDatepicker extends SfBaseElement {
     // The week starts where the page's language starts it when the attribute
     // does not say: Monday for ru, Sunday for en-US (docs trial 4: a
     // Sunday-first locale needed a manual attribute).
+    // Any day may open the week, 0 Sunday to 6 Saturday: the grid counts from
+    // it modulo seven. Only Sunday and Monday were kept, so a Saturday-first
+    // locale (ar-EG, fa-IR) got Monday (documentation trial 6, 2026-10-18).
     get weekStart() {
         if (this.hasAttribute('week-start')) {
-            return this.getNumberAttr('week-start', 1) === 0 ? 0 : 1;
+            const day = this.getNumberAttr('week-start', 1);
+            return Number.isInteger(day) && day >= 0 && day <= 7 ? day % 7 : 1;
         }
         try {
             const locale = new Intl.Locale(this.locale);
             const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
-            if (info?.firstDay) return info.firstDay === 7 ? 0 : 1;
+            if (info?.firstDay) return info.firstDay % 7;
         } catch {
             // An unknown locale keeps the Monday the grid always had.
         }

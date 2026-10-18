@@ -94,9 +94,7 @@
 }
 
 .sf-carousel-switch--surface-inverse:hover {
-  /* The theme has no hover role for the inverse surface; this is the same
-     five-tone step its other hover roles take. */
-  --sf-carousel-control--background-color: light-dark(var(--sf-neutral-25), var(--sf-neutral-85));
+  --sf-carousel-control--background-color: var(--sf-surface-inverse-hover);
   --sf-carousel-control--color: var(--sf-on-surface-inverse);
 }
 

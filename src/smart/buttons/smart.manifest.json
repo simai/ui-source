@@ -508,7 +508,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/buttons/index.js",
-        "sha256": "60f7daa26141071703a6dfdca1a9049f82e2427226e2bb6b02feaf2a462596bc"
+        "sha256": "61df123d278b6e0eb958f098fae162b2d1f9df98367e47a6a85859be8853d1cf"
       }
     ],
     "generated_runtime": [

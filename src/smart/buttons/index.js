@@ -49,6 +49,7 @@ function applyButtonAttributes(host, button) {
 // (docs trial 4, 2026-10-15; journal value-button-ghost-to-link).
 const BUTTON_APPEARANCES = ["default", "tonal", "outline", "link", "surface"];
 const APPEARANCE_ALIASES = {ghost: "link"};
+const STATUS_ALIASES = {danger: "error", critical: "error"};
 
 class SfButton extends SfBaseElement {
   constructor() {
@@ -118,8 +119,17 @@ class SfButton extends SfBaseElement {
     return this.getAttribute("scheme") || "primary";
   }
 
+  // danger and critical are the shared vocabulary's old names for error
+  // (journal value-status-danger-critical-to-error). The button dropped them and
+  // drew a primary button, so a destructive control written that way looked
+  // like a safe one (documentation trial 6, 2026-10-18).
   get status() {
-    return this.getAttribute("status") || "";
+    const value = this.getAttribute("status") || "";
+    if (STATUS_ALIASES[value]) {
+      noteDeprecated({component: this.localName, kind: 'value', attribute: 'status', from: value, to: STATUS_ALIASES[value]});
+      return STATUS_ALIASES[value];
+    }
+    return value;
   }
 
   get text() {
@@ -138,10 +148,12 @@ class SfButton extends SfBaseElement {
   // drew nothing at all -- the shortcut the manifest has always described has
   // never once worked (owner, 2026-10-09).
   get iconLeft() {
+    if (this.hasAttribute('icon-left')) noteDeprecated({component: this.localName, kind: 'attribute', from: 'icon-left', to: 'icon-start'});
     return this.getAttribute('icon-start') ?? this.getAttribute('icon-left');
   }
 
   get iconRight() {
+    if (this.hasAttribute('icon-right')) noteDeprecated({component: this.localName, kind: 'attribute', from: 'icon-right', to: 'icon-end'});
     return this.getAttribute('icon-end') ?? this.getAttribute('icon-right');
   }
 
@@ -158,6 +170,7 @@ class SfButton extends SfBaseElement {
   }
 
   get tightness() {
+    if (this.hasAttribute('tightness')) noteDeprecated({component: this.localName, kind: 'attribute', from: 'tightness', to: 'spacing'});
     return resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}).tightness;
   }
 

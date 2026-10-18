@@ -40,6 +40,9 @@ try {
     <sf-datepicker id="narrow" input="false" range root-style="inline-size:300px" presets="today,yesterday,last-7-days"></sf-datepicker>
     <sf-datepicker id="stored" input="false" range preset="last-7-days" presets="last-7-days,last-month" start-value="2020-01-01" end-value="2020-01-05"></sf-datepicker>
     <sf-datepicker id="capped" input="false" range presets="today,last-7-days,last-month"></sf-datepicker>
+    <sf-datepicker id="sat" input="false" week-start="6"></sf-datepicker>
+    <sf-datepicker id="eg" input="false" locale="ar-EG"></sf-datepicker>
+    <sf-datepicker id="us" input="false" locale="en-US"></sf-datepicker>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
@@ -127,6 +130,10 @@ try {
   if (got.capped.value.join() !== got.capped.expected.join() || !got.capped.todayDisabled) note({case: 'clamped by max-date; nothing left is disabled', got: got.capped});
   if (got.narrow.listBottom > got.narrow.gridTop || !got.narrow.oneLine) note({case: 'no room: the list above the grid, as a row', got: got.narrow});
   if (got.tabStops !== 1 || !got.arrow.moved || got.arrow.tabStops !== 1) note({case: 'one tab stop, arrows move along the list', got: {tabStops: got.tabStops, arrow: got.arrow}});
+  // Any day may open the week (documentation trial 6, 2026-10-18): Saturday by
+  // the attribute and by a Saturday-first language, Sunday and Monday as before.
+  const weeks = await page.evaluate(() => Object.fromEntries(['sat', 'eg', 'us', 'dp'].map((id) => [id, document.getElementById(id).weekStart])));
+  if (weeks.sat !== 6 || weeks.eg !== 6 || weeks.us !== 0 || weeks.dp !== 1) note({case: 'the week opens on the day the attribute or the language says', got: weeks, expected: {sat: 6, eg: 6, us: 0, dp: 1}});
   console.log(JSON.stringify(got));
 } finally {
   await browser.close();

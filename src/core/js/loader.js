@@ -1283,15 +1283,16 @@ SFLoaderPlugin.prototype.isLoaded = function (pluginURL, type) {
  * Поиск
  */
 
+// An inline SVG is scanned like any other markup: its classes are the
+// fill-*, stroke-* and svg-* utilities the documentation gives a brand mark
+// and an icon drawn in place, and they loaded nothing while svg, path and g
+// were skipped (documentation trial 6, 2026-10-18).
 SFLoaderPlugin.prototype.excludedTags = function (tag) {
   return (
       [
         'script',
         'style',
         'yamap',
-        'svg',
-        'path',
-        'g',
         'head',
         'meta',
         'link',

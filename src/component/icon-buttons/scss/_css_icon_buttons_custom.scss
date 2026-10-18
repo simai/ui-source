@@ -55,7 +55,8 @@
       z-index: 1;
     }
 
-    &.loading {
+    &.loading,
+    &.sf-icon-button-state-loading {
       pointer-events: none;
       position: relative;
       overflow: hidden;
@@ -84,7 +85,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sf-icon-button.loading::after {
+    .sf-icon-button.loading::after,
+    .sf-icon-button.sf-icon-button-state-loading::after {
       animation: none;
     }
   }

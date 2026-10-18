@@ -1,13 +1,13 @@
 {
   "schema": "simai.framework.public-js-api",
   "schema_version": 1,
-  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Modal, SF.Input, ...) arrives with its component and is listed with it.",
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Modal, SF.Input, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core).",
   "globals": [
     {
       "name": "SF.Loader",
       "status": "public",
       "kind": "object",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "The runtime loader: loads what a page uses, components and utilities, on demand, and the theme. Once a theme is set (setTheme, changeTheme), SF.Loader.theme and SF.Loader.themePreference read it.",
       "members": [
         "ready",
@@ -177,42 +177,42 @@
       "name": "SF.ready",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "Runs a function once the runtime is ready."
     },
     {
       "name": "SF.whenDefined",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "A promise of a Smart element's definition, loading it when the page has not."
     },
     {
       "name": "SF.whenDefine",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "The older name of SF.whenDefined, kept."
     },
     {
       "name": "SF.whenFieldRenderers",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "A promise of the field renderer set (SF.fieldRenderers), loading it on demand."
     },
     {
       "name": "SF.create",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "Creates a component element by name with attributes."
     },
     {
       "name": "SF.createAsync",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "SF.create that waits for the element to be defined."
     },
     {
@@ -300,7 +300,7 @@
       "name": "SF.loadSmartBase",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "Loads the Smart base when the page has no Smart element yet; resolves with SF.smart. A project's own Smart component waits for it."
     },
     {
@@ -370,7 +370,7 @@
       "name": "SF.smartBaseReady",
       "status": "public",
       "kind": "object",
-      "loaded_by": "core",
+      "loaded_by": "core-loader",
       "summary": "A promise of the Smart base, however it arrives (a Smart element or SF.loadSmartBase())."
     },
     {

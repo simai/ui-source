@@ -20,7 +20,10 @@
      over the label. */
   --sf-button-loading-stripe: var(--sf-alpha-8);
 
-  &.loading {
+  /* sf-button-state-loading is the documented state class; the generic
+     `loading` beside it is kept for existing markup. */
+  &.loading,
+  &.sf-button-state-loading {
     pointer-events: none;
     position: relative;
     overflow: hidden;
@@ -58,7 +61,8 @@
     transition-duration: 0s;
   }
 
-  .sf-button.loading::after {
+  .sf-button.loading::after,
+  .sf-button.sf-button-state-loading::after {
     animation: none;
   }
 }

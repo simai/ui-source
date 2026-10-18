@@ -270,7 +270,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/buttons/smart.manifest.json",
-      "manifest_sha256": "3ee83769eb6ff6903d549c2d2ef037a09b0c58666943c8c9e91e3ae9a1201774",
+      "manifest_sha256": "11453f0b96ea78751273ec77823b03351c156c8fd0e1dfd12d8f89807766dd1c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -560,7 +560,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/datepicker/smart.manifest.json",
-      "manifest_sha256": "eba71d76700bf7f15abe40120d5ee6dd8c9d551e0e99bc431dd7ba084231292a",
+      "manifest_sha256": "09fb7828b9403de99cd5f2275a87dc0c21adef685ab48fff0318f7e957f441a7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

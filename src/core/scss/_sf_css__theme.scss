@@ -153,6 +153,10 @@
        (owner, 2026-10-08). */
     --sf-surface-transparent-overlay: light-dark(var(--sf-neutral-50--alfa-32), var(--sf-neutral-90--alfa-32));
     --sf-surface-inverse: light-dark(var(--sf-neutral-20), var(--sf-neutral-90));
+    /* The inverse surface under a pointer: the same five-tone step the other
+       hover roles take. A carousel control read the primitives for it, there
+       being no role (documentation trial 6, 2026-10-18). */
+    --sf-surface-inverse-hover: light-dark(var(--sf-neutral-25), var(--sf-neutral-85));
     --sf-surface-inverse-fixed: var(--sf-neutral-20);
     /* A tinted plate on the surface, on the same neutral tone as the state
        layer above: neutral-50 in the light theme, neutral-90 in the dark. It

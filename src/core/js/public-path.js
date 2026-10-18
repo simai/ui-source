@@ -15,7 +15,8 @@
         'SIMAI Framework: window.sfPath is not set, so the runtime is loading '
         + `from ${cdnDefault} — an unpinned branch that changes without notice. `
         + 'Set window.sfPath to your own copy of distr/, before core.js, '
-        + 'or to a pinned tag.',
+        // A release is a commit of simai/ui (ui-<12 hex>); there are no tags.
+        + 'or to a released commit: https://cdn.jsdelivr.net/gh/simai/ui@<commit>/distr/ .',
       );
     } catch {
       /* A console is not something a runtime may insist on. */

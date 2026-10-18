@@ -1,6 +1,8 @@
 import {html, nothing} from 'lit';
 import './default.css';
 
+const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
+
 export function renderIconButtonTemplate(context) {
     const {
         size,
@@ -24,7 +26,10 @@ export function renderIconButtonTemplate(context) {
 
     const rootClasses = [
         'sf-icon-button',
-        `sf-icon-button--size-${size || '1'}`,
+        // The sizes the icon button draws; a close may be smaller (1/4, the
+        // closable tag's), and then sf-close sizes it alone: the class it got
+        // here had no rule (documentation trial 6, 2026-10-18).
+        ICON_BUTTON_SIZES.has(size || '1') ? `sf-icon-button--size-${size || '1'}` : '',
         `sf-icon-button--${kind ?? variant ?? 'icon'}`,
         `sf-icon-button--${appearance || type || 'default'}`,
         'flex',

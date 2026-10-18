@@ -69,6 +69,28 @@ try {
     if (!optIn && ours.length) failures.push(`by default: ${ours.length} console warning(s), expected none`);
     if (optIn && ours.length !== 1) failures.push(`opted in: ${ours.length} console warnings for two uses, expected one: ${JSON.stringify(ours)}`);
   }
+
+  // Every legacy name the button still answers to is noted, and a legacy
+  // status still paints: danger and critical drew a primary button, and
+  // icon-left, icon-right and tightness worked without a note (documentation
+  // trial 6, 2026-10-18).
+  {
+    const page = await browser.newPage();
+    await page.goto('about:blank');
+    await page.addScriptTag({path: join(out, 'core', 'core', 'js', 'smart-base.js')});
+    await page.addScriptTag({path: join(smart, 'buttons', 'js', 'buttons.js')});
+    const seen = await page.evaluate(async () => {
+      document.body.innerHTML = '<sf-button id="d" status="danger" text="A"></sf-button><sf-button id="c" status="critical" text="B"></sf-button>'
+        + '<sf-button icon-left="add" icon-right="close" tightness="low" text="C"></sf-button>';
+      await new Promise((settle) => setTimeout(settle, 200));
+      return {list: globalThis.SF?.deprecations?.list?.() ?? [], danger: document.querySelector('#d .sf-button')?.className || '', critical: document.querySelector('#c .sf-button')?.className || ''};
+    });
+    await page.close();
+    for (const [kind, from, to] of [['value', 'danger', 'error'], ['value', 'critical', 'error'], ['attribute', 'icon-left', 'icon-start'], ['attribute', 'icon-right', 'icon-end'], ['attribute', 'tightness', 'spacing']]) {
+      if (!seen.list.some((entry) => entry.component === 'sf-button' && entry.kind === kind && entry.from === from && entry.to === to)) failures.push(`sf-button ${from} is not noted as ${to} (${JSON.stringify(seen.list)})`);
+    }
+    if (!seen.danger.includes('sf-button--error') || !seen.critical.includes('sf-button--error')) failures.push(`sf-button status danger/critical does not paint error (${seen.danger} / ${seen.critical})`);
+  }
 } finally {
   await browser.close();
 }
