@@ -1,0 +1,225 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.component-package",
+  "version": "1.1.0",
+  "title": "SIMAI Framework Component Package",
+  "appliesTo": [
+    "simai.framework.component-package"
+  ],
+  "requirements": [
+    {
+      "id": "extension-points-only",
+      "level": "must",
+      "text": "A package adds to the Framework and changes nothing in it. It registers through the declared extension points (package registration, languages, themes), never replaces or shadows a Framework file, and never patches the Loader, the Smart base, a Framework component or a global the Framework owns. One core for everyone is what lets the Framework be updated centrally.",
+      "verification": "manual",
+      "guidance": "Builder: materializePackageOverlay (ui-builder libs/packageProduct.js) refuses a package file that would replace a ui-source file (\"the package would replace ui-source's ...\"). Patching at runtime is not detected by any gate; it is a review item."
+    },
+    {
+      "id": "layout-like-framework",
+      "level": "must",
+      "text": "A package is a folder laid out like the Framework's own Smart sources: framework.lock.json at its root, one folder per component under src/smart/, the package's tests under tests/ and, optionally, its documentation under docs/. Nothing outside src/, tests/ and docs/ is part of the package.",
+      "verification": "manual",
+      "guidance": "Builder: only src/, tests/ and docs/ are laid into the overlay (OVERLAY_DIRECTORIES); a package with no component under src/smart is refused."
+    },
+    {
+      "id": "package-may-be-a-folder",
+      "level": "may",
+      "text": "The package folder may be the root of a repository or any folder inside a larger one, such as the UI folder of a product repository. A folder under src/smart without a rule file is a helper: it is laid out for imports and tests, not built as a component.",
+      "verification": "manual",
+      "guidance": "Builder: verify-package-reproducibility.cjs takes any directory inside a git checkout, or --package-source with --package-path."
+    },
+    {
+      "id": "framework-lock-form",
+      "level": "must",
+      "text": "framework.lock.json declares the product-package source lock schema, so a builder and a reviewer can read the pinned Framework revision without guessing the format.",
+      "verification": "equals",
+      "property": "framework.lock.json/schema",
+      "value": "simai.framework.product-package-source-lock.v1",
+      "guidance": "Builder: readSourceLock refuses any other schema. The SIMAI Framework Pro lock (simai.framework-pro.source-lock.v1) is still read during the move of the Pro components and does not conform."
+    },
+    {
+      "id": "one-framework-revision",
+      "level": "must",
+      "text": "A package is built and tested against exactly one Framework source revision, named in its lock by repository and full commit. Moving to a newer Framework is a commit to the lock after that Framework is released, followed by the package's tests and a new build; a package never floats on a branch or a latest release.",
+      "verification": "manual",
+      "guidance": "Builder: readSourceLock refuses a revision that is not a full commit, a repository other than simai/ui-source, and a lock whose package differs from the --package being built."
+    },
+    {
+      "id": "component-complete",
+      "level": "must",
+      "text": "Each component folder holds its entry (index.js), its rule (rule.js), its manifest (smart.manifest.json) and the templates and styles its manifest declares. It imports the Framework by relative path exactly as the Framework's own components do, and every relation of its rule names a rule of the same package or of the free release the package is built on.",
+      "verification": "manual",
+      "guidance": "Builder: every component folder must have rule.js. Receipt: write-package-receipt.py --ui refuses a relation that is neither a package rule nor a rule of the free release. Entry, manifest and templates are not checked by the builder; the package's own tests hold them."
+    },
+    {
+      "id": "rule-is-own-plain-data",
+      "level": "must",
+      "text": "A component's rule file writes exactly one rule, cl-<folder>, as plain data: a Smart tag rule with at least one element, no regular expression, no function, no evaluated string and no package field. The Loader stamps the package when a page declares it.",
+      "verification": "manual",
+      "guidance": "Builder: collectPackageRules runs each rule.js in a sandbox without string code generation and refuses a file that writes another key or more than one, a value that is not plain data, a dangerous key, a type other than smart, empty tags and a package field."
+    },
+    {
+      "id": "manifest-conforms",
+      "level": "must",
+      "text": "Each component's manifest is valid against the Smart component manifest the standard pins, names the same element its rule claims, and declares a composite as a composite. A composite in a package is held to the composite standards exactly as a Framework composite is.",
+      "verification": "manual",
+      "guidance": "In the overlay, ui-source scripts/sf-contract.mjs build walks every smart.manifest.json under src, the package's included, and fails on an invalid manifest. The builder does not validate manifests. The composite, dynamic composite and host port standards are referenced, not restated."
+    },
+    {
+      "id": "package-name-grammar",
+      "level": "must",
+      "text": "A package has one name, lower-case letters, digits and hyphens, starting with a letter: the owner's product or author name. The same name is used in the lock, the build, the rule file, the receipt, the page declaration and the Loader's missing-file entries.",
+      "verification": "manual",
+      "guidance": "Loader and builder share the pattern ^[a-z][a-z0-9-]*$ (PACKAGE_NAME in ui-source src/core/js/loader.js and ui-builder libs/packageProduct.js). The receipt refuses a rule file that registers another package; the Loader keeps missing-file entries as <package>::<rule>."
+    },
+    {
+      "id": "names-do-not-collide",
+      "level": "must",
+      "text": "A package's component folders, rule names and elements collide neither with the Framework at the pinned revision nor with any other package a page declares, and no two rules of one package claim the same element.",
+      "verification": "manual",
+      "guidance": "Builder: refuses two rules claiming one element, and a folder that would replace a ui-source file. Receipt: --ui refuses an element that is also an element of the free release. Loader: a rule another package owns is not taken over and a warning is raised. A collision between two packages is found only on a page that declares both; no build gate checks it today."
+    },
+    {
+      "id": "own-element-prefix",
+      "level": "should",
+      "text": "A new element carries its owner's own prefix, not the Framework's sf- prefix, so a later Framework element can never take its name. A component that moved out of the Framework keeps its name until it is renamed through the change lifecycle.",
+      "verification": "manual",
+      "guidance": "The pinned manifest schema accepts a product's own element and composition type names; the sf- names remain an owner rule of the Framework (ui-source tests/component-naming.contract.test.mjs)."
+    },
+    {
+      "id": "tests-travel-with-package",
+      "level": "should",
+      "text": "A package carries its own tests and runs them, with its browser probes, against the pinned Framework revision and its own build before a build is used. A green test of one package proves nothing about another.",
+      "verification": "manual",
+      "guidance": "Builder: wave-1/overlay of a build is ui-source at the pinned revision with the package's src/, tests/ and docs/ laid over it; the package's tests read the same paths ui-source's tests do."
+    },
+    {
+      "id": "builds-reproducibly",
+      "level": "must",
+      "text": "A package is built by the Framework builder from committed bytes only, the package at one commit over the Framework at its pinned commit, twice in fresh workspaces, and the two builds are byte-identical. A build that is not reproduced is not used.",
+      "verification": "manual",
+      "guidance": "Builder: verify-package-reproducibility.cjs lays both trees with git archive, never from a working tree, runs two waves and fails with \"package waves are not byte-identical\"; report.json records PASS or FAIL and the output manifest digest."
+    },
+    {
+      "id": "receipt-for-every-build",
+      "level": "must",
+      "text": "Every build a consumer uses has a receipt: the package name, its source repository, revision, path and tree, the Framework revision and the free release built from it, the builder revision, the runtime, the digest of every output file, a deterministic archive and its digest, and the files a consumer must find. A receipt claims no production readiness.",
+      "verification": "manual",
+      "guidance": "Receipt: write-package-receipt.py writes simai.framework.product-package-receipt v1 and refuses a report that did not pass or was not byte-identical, an output that is not the one the report hashed, a rule file of another package or with other rules than the package's folders, and missing required files."
+    },
+    {
+      "id": "delivered-in-owners-distribution",
+      "level": "must",
+      "text": "The owner delivers the package inside the owner's own distribution, built by the owner's pipeline; no separate distribution repository and no built bytes in git are required. It is served beside the free Framework release its receipt names, each build under its own path, and a consumer pins the receipt and checks the served files against it.",
+      "verification": "manual",
+      "guidance": "Receipt: framework.release is resolved from ui contracts/releases (the lock whose build_inputs name the pinned revision) and is null when no such release exists yet. A package's files share Core's cache version, so a new build needs a new path."
+    },
+    {
+      "id": "declared-before-core",
+      "level": "must",
+      "text": "A page uses a package only by declaring it before the Framework core starts, with its name and base: SF_BOOT_CONFIG.packages.<name>.base. The Loader fetches the package's rule file itself; a package component that cannot load is reported, never fetched from the Framework's own base in its place.",
+      "verification": "manual",
+      "guidance": "Framework: ui-source src/core/js/loader.js (declarePackages, loadDeclaredPackageRules, resolveSmartBase); tests/loader-packages.contract.test.mjs and tests/browser/loader-packages.browser.mjs. The page's base wins over a base the rule file passes to registerPackage."
+    },
+    {
+      "id": "licence-is-owners",
+      "level": "must",
+      "text": "A package carries its owner's licence. The Framework's licence neither covers the package nor is replaced by it: the Framework code a package bundle contains keeps the Framework's licence and notices, and the package's own third-party code keeps its own.",
+      "verification": "manual"
+    },
+    {
+      "id": "package-code-is-trusted",
+      "level": "must",
+      "text": "Package code is trusted code: it runs on the page with the same privileges as the Framework and is not isolated by the Loader. A page declares only packages its owner trusts, from a base the owner controls, at a build pinned by its receipt; the Framework does not review, sign or sandbox packages.",
+      "verification": "manual",
+      "guidance": "The rule file is data checked at build time; the component scripts it points to are ordinary scripts. Serving the package from an origin the page does not control gives that origin the page."
+    },
+    {
+      "id": "ports-pinned-by-bytes",
+      "level": "must",
+      "text": "A package component that implements a public Framework port declares the port in its manifest by name, version and the digest of the port's bytes at the pinned Framework revision, and holds that seam to the composite host port standard. It neither copies nor alters the port; a change to a port is asked of the Framework.",
+      "verification": "manual",
+      "guidance": "The package's host-port test (today ui-source-pro tests/host-port.contract.test.mjs) checks each declared host_port against the port bytes in the overlay. The requirements of simai.composite-host-port apply as published and are referenced, not restated."
+    },
+    {
+      "id": "public-names-follow-lifecycle",
+      "level": "must",
+      "text": "A package's public names (the package name, its elements, attributes, events, rule names and the settings a page writes) leave by the change lifecycle: dated, in two stages, recorded in the owner's journal. A consumer of a package is upgraded the way a consumer of the Framework is.",
+      "verification": "manual",
+      "guidance": "simai.change-lifecycle is referenced, not restated: the owner of the package plays the role the Framework plays for its own names."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.smart-component-manifest",
+      "version": "2.5.0",
+      "path": "../../pinned/smart-component-manifest-2.5.0.schema.json",
+      "sha256": "d5b0a5b299fa4b044d8125a315458c37de76f0bb5c6cb686962cdec7922b14ce",
+      "description": "The contract of each component in a package. Since 2.2.0 a product may name its own components and a component declares its host port by exact bytes; 2.3.0 to 2.5.0 added presentation.skeleton, view preferences and the other compatible fields the Framework's own components declare."
+    }
+  ],
+  "references": [
+    {
+      "id": "simai.composite-component",
+      "version": "1.0.2",
+      "path": "../../simai.composite-component/1.0.2/standard.json",
+      "sha256": "a4cc1676dd75455baa6cc4182b409593b52b4c8d966acbfe2839e74b712809fc",
+      "description": "A composite in a package is held to this standard as published."
+    },
+    {
+      "id": "simai.dynamic-composite-component",
+      "version": "1.0.2",
+      "path": "../../simai.dynamic-composite-component/1.0.2/standard.json",
+      "sha256": "901ee98862e443d34ccef0b5c231c5808b55bf30d18fcdc063d4d72700028511",
+      "description": "A package composite that works against a host is held to this standard as published."
+    },
+    {
+      "id": "simai.composite-host-port",
+      "version": "1.0.3",
+      "path": "../../simai.composite-host-port/1.0.3/standard.json",
+      "sha256": "e2518df716ff9934bdccbbeb22302f1ea8d7c81937c4865ddddbdc752a4657f3",
+      "description": "The seam a package component implements when it implements a public Framework port."
+    },
+    {
+      "id": "simai.change-lifecycle",
+      "version": "1.0.0",
+      "path": "../../simai.change-lifecycle/1.0.0/standard.json",
+      "sha256": "e63f4550d2c967e4f65c917677be849a6640614bad33c00c31cb0c6aef7ed860",
+      "description": "How a public name of a package leaves, with the package owner in the role of the Framework."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "scope_note": "A package of Smart components, composites included, owned by a product or an external author and built on the Framework: its layout, its pin to the Framework, its build, receipt and delivery, its declaration on a page, its licence and its trust. Themes, utilities and composition types get their own package standards when they are opened.",
+      "decisions": [
+        "ui-control control/DISTRIBUTION-AND-LICENSING-DECISION-2026-10-10.md, section: product components live in the product (2026-10-11)",
+        "ui-control control/EXTENSIBILITY-DECISION-2026-10-11.md"
+      ],
+      "tools": {
+        "builder": "simai/ui-builder scripts/verify-package-reproducibility.cjs and libs/packageProduct.js",
+        "receipt": "simai/ui-builder scripts/write-package-receipt.py, schema simai.framework.product-package-receipt v1",
+        "source_lock": "simai.framework.product-package-source-lock.v1",
+        "loader": "simai/ui-source src/core/js/loader.js, SF.RuleLoader.registerPackage and SF_BOOT_CONFIG.packages"
+      },
+      "validated_against": [
+        "package larena from ui-source-pro c5f57400 over ui-source d96e8c8b, built by ui-builder d2127db3: two waves identical, component bytes identical to pro-57f4aa1b9da1"
+      ],
+      "not_yet_checked": [
+        "a collision between two packages declared on one page is found only by the Loader at runtime",
+        "manifests, entries and templates are held by the package's own tests and sf-contract in the overlay, not by the builder",
+        "a package has no cache version of its own; each build is served under its own path"
+      ],
+      "reissue": "Issued as 1.1.0 after documentation trial 6 (2026-10-18): 1.0.0 pinned the manifest schema 2.2.0 while the Framework's components, and therefore a package built on it, declare fields added up to 2.5.0. Requirements are unchanged since 1.0.0; 1.0.0 keeps its published bytes under contracts/standards/history."
+    }
+  }
+}
