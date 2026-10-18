@@ -18,4 +18,4 @@ export async function send (event, element) {
     })
 }
 
-SF.send = send
+SF.__internal.send = send

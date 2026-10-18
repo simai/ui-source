@@ -1,4 +1,4 @@
-SF.send = async function (event, element) {
+SF.__internal.send = async function (event, element) {
     return new Promise(resolve => {
         let e;
         if (document.createEvent) {

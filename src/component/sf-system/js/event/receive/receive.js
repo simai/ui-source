@@ -5,4 +5,4 @@ export function receive(event, el, handler) {
         el.attachEvent(event, handler);
 }
 
-SF.receive = receive;
+SF.__internal.receive = receive;

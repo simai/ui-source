@@ -550,7 +550,7 @@
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",
-        "sha256": "7609a2ab07dd0b266f75644ae62e22c9297273bbd74de22baf6cff890111f8fc"
+        "sha256": "8a828417d54fa993641434e9086f240bc8d24505ee54ef4e093019aa437c09fb"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",

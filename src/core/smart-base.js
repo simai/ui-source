@@ -4,15 +4,16 @@
 // publishes the modules the Smart bundles are built against, and the runtime's
 // lookup when Core has not (a page that runs Smart elements without Core).
 import { RUNTIME_MODULES } from './js/runtime';
+import './js/internal.js';
 
 const SF = (window.SF = window.SF || {});
-SF.runtimeModules = RUNTIME_MODULES;
-if (!SF.runtimeModule) {
-  SF.runtimeModule = (id) => (RUNTIME_MODULES[id]
+SF.__internal.runtimeModules = RUNTIME_MODULES;
+if (!SF.__internal.runtimeModule) {
+  SF.__internal.runtimeModule = (id) => (RUNTIME_MODULES[id]
     ? Promise.resolve(RUNTIME_MODULES[id])
     : Promise.reject(new Error(`SF runtime: no shared module "${id}"`)));
 }
-if (typeof SF.runtimeArrived === 'function') SF.runtimeArrived(RUNTIME_MODULES);
+if (typeof SF.__internal.runtimeArrived === 'function') SF.__internal.runtimeArrived(RUNTIME_MODULES);
 try {
   window.dispatchEvent(new CustomEvent('sf-runtime-ready', {detail: {modules: Object.keys(RUNTIME_MODULES)}}));
 } catch (error) {

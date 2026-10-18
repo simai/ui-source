@@ -53,8 +53,13 @@ try {
         if (value === null || value === undefined || !(member in Object(value))) missing.push(`${entry.name}.${member}`);
       }
     }
-    return {keys, missing};
+    // The Framework itself reads its runtime's names from SF.__internal: a
+    // page that only loads it notes no old global name (journal
+    // global-sf-internal).
+    const globals = (window.SF.deprecations?.list?.() ?? []).filter((note) => note.kind === 'global').map((note) => note.from);
+    return {keys, missing, globals};
   }, contract.globals);
+  if (runtime.globals.length) note({case: 'the Framework reads none of its old global names itself', got: runtime.globals});
   const listed = new Set(contract.globals.map((entry) => entry.name));
   const unlisted = runtime.keys.filter((key) => !listed.has(key));
   if (unlisted.length) note({case: 'every name on window.SF is in the contract', unlisted});

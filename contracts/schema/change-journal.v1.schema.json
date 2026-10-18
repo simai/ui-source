@@ -88,7 +88,8 @@
             "property",
             "component",
             "behaviour",
-            "format"
+            "format",
+            "global"
           ]
         },
         "summary": {

@@ -1855,6 +1855,85 @@
       "deprecated_on": "2026-10-18",
       "remove_after": "2026-12-01",
       "rewrite": "rename-event"
+    },
+    {
+      "id": "global-sf-internal",
+      "recorded_on": "2026-10-18",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "The runtime's own names on window.SF -- the message bus, the runtime module registry, the Smart base's state and litHtml -- live under SF.__internal; the old names read and write through to it, noted as deprecated, until the sweep. They are the runtime's and were never a page's to call.",
+      "items": [
+        {
+          "from": "SF.send",
+          "to": "SF.__internal.send",
+          "match": "\\bSF\\??\\.send\\b"
+        },
+        {
+          "from": "SF.receive",
+          "to": "SF.__internal.receive",
+          "match": "\\bSF\\??\\.receive\\b"
+        },
+        {
+          "from": "SF.loadRuntime",
+          "to": "SF.__internal.loadRuntime",
+          "match": "\\bSF\\??\\.loadRuntime\\b"
+        },
+        {
+          "from": "SF.runtimeModule",
+          "to": "SF.__internal.runtimeModule",
+          "match": "\\bSF\\??\\.runtimeModule\\b"
+        },
+        {
+          "from": "SF.runtimeModules",
+          "to": "SF.__internal.runtimeModules",
+          "match": "\\bSF\\??\\.runtimeModules\\b"
+        },
+        {
+          "from": "SF.runtimeArrived",
+          "to": "SF.__internal.runtimeArrived",
+          "match": "\\bSF\\??\\.runtimeArrived\\b"
+        },
+        {
+          "from": "SF.runtimeLoading",
+          "to": "SF.__internal.runtimeLoading",
+          "match": "\\bSF\\??\\.runtimeLoading\\b"
+        },
+        {
+          "from": "SF.runtimeSettled",
+          "to": "SF.__internal.runtimeSettled",
+          "match": "\\bSF\\??\\.runtimeSettled\\b"
+        },
+        {
+          "from": "SF.loadSmartBase",
+          "to": "SF.__internal.loadSmartBase",
+          "match": "\\bSF\\??\\.loadSmartBase\\b"
+        },
+        {
+          "from": "SF.smart",
+          "to": "SF.__internal.smart",
+          "match": "\\bSF\\??\\.smart\\b"
+        },
+        {
+          "from": "SF.smartBaseAnnounced",
+          "to": "SF.__internal.smartBaseAnnounced",
+          "match": "\\bSF\\??\\.smartBaseAnnounced\\b"
+        },
+        {
+          "from": "SF.smartBaseReady",
+          "to": "SF.__internal.smartBaseReady",
+          "match": "\\bSF\\??\\.smartBaseReady\\b"
+        },
+        {
+          "from": "SF.litHtml",
+          "to": "SF.__internal.litHtml",
+          "match": "\\bSF\\??\\.litHtml\\b"
+        }
+      ],
+      "deprecated_on": "2026-10-18",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Nothing a page needs is here: use the public API (core/contracts/public-js-api.json). Code of the Framework's own reads SF.__internal.<name>.",
+      "source": "src/core/js/internal.js"
     }
   ]
 }

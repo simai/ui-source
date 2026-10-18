@@ -1,4 +1,5 @@
 import { noteDeprecated } from './deprecations.js';
+import './internal.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
@@ -2430,8 +2431,8 @@ if (typeof window !== "undefined") {
   window.SF.html = html;
   window.SF.nothing = nothing;
   window.SF.render = render;
-  window.SF.smart = {
-    ...(window.SF.smart || {}),
+  window.SF.__internal.smart = {
+    ...(window.SF.__internal.smart || {}),
     SfBaseElement,
     html,
     nothing,
@@ -2443,13 +2444,13 @@ if (typeof window !== "undefined") {
     parseJsonAttribute,
   };
   // Announced once per page, by whichever copy of the base arrives first --
-  // SF.loadSmartBase() or the first Smart bundle, each of which carries one --
-  // so SF.smartBaseReady settles however the base came.
-  if (!window.SF.smartBaseAnnounced) {
-    window.SF.smartBaseAnnounced = true;
+  // SF.__internal.loadSmartBase() or the first Smart bundle, each of which carries one --
+  // so SF.__internal.smartBaseReady settles however the base came.
+  if (!window.SF.__internal.smartBaseAnnounced) {
+    window.SF.__internal.smartBaseAnnounced = true;
     try {
       window.dispatchEvent(new CustomEvent("sf-smart-base-ready", {
-        detail: { smart: window.SF.smart, loader: window.SF.Loader || null, timestamp: Date.now() },
+        detail: { smart: window.SF.__internal.smart, loader: window.SF.Loader || null, timestamp: Date.now() },
       }));
     } catch (error) {
       console.warn("sf-smart-base-ready dispatch failed", error);

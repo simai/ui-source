@@ -83,9 +83,9 @@ try {
   await tab.waitForFunction(() => customElements.get('sf-page-host') && customElements.get('sf-fragment') && window.SF?.Composition?.publishEffects, null, {timeout: 10000});
   // A Smart element that throws while it draws -- the first time only, so a
   // retry can show it working.
-  await tab.waitForFunction(() => window.SF?.SfBaseElement || (window.SF?.loadRuntime && window.SF.loadRuntime() && false), null, {timeout: 10000}).catch(() => {});
+  await tab.waitForFunction(() => window.SF?.SfBaseElement || (window.SF?.__internal?.loadRuntime && window.SF.__internal.loadRuntime() && false), null, {timeout: 10000}).catch(() => {});
   await tab.evaluate(async () => {
-    await window.SF.loadSmartBase?.();
+    await window.SF.__internal?.loadSmartBase?.();
     const Base = window.SF.SfBaseElement;
     window.breaks = 1;
     customElements.define('probe-broken', class extends Base {

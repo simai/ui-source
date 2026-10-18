@@ -67,7 +67,7 @@ try {
     if (!seen.appearance.includes('sf-button--outline')) failures.push(`${where}: the legacy name stopped working (${seen.appearance})`);
     const ours = warnings.filter((text) => text.includes('legacy name'));
     if (!optIn && ours.length) failures.push(`by default: ${ours.length} console warning(s), expected none`);
-    if (optIn && ours.length !== 1) failures.push(`opted in: ${ours.length} console warnings for two uses, expected one`);
+    if (optIn && ours.length !== 1) failures.push(`opted in: ${ours.length} console warnings for two uses, expected one: ${JSON.stringify(ours)}`);
   }
 } finally {
   await browser.close();

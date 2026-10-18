@@ -113,7 +113,7 @@ export function Modal(e, param) {
 
       constructor.area.hide.addEventListener(
         'click',
-        SF.send.bind(_m, _m.param.event.beforeHideWindow, constructor),
+        SF.__internal.send.bind(_m, _m.param.event.beforeHideWindow, constructor),
       );
 
       constructor.area.appendChild(constructor.area.hide);
@@ -166,11 +166,11 @@ export function Modal(e, param) {
       _m.float = float.message;
 
       float.message.container.close.addEventListener('click', function () {
-        SF.send(_m.param.event.beforeCloseWindow, constructor);
+        SF.__internal.send(_m.param.event.beforeCloseWindow, constructor);
       });
 
       float.message.container.show.addEventListener('click', function () {
-        SF.send(_m.param.event.beforeShowWindow, constructor);
+        SF.__internal.send(_m.param.event.beforeShowWindow, constructor);
       });
     }
 
@@ -184,7 +184,7 @@ export function Modal(e, param) {
 
       constructor.area.close.addEventListener(
         'click',
-        SF.send.bind(_m, _m.param.event.beforeCloseWindow, constructor),
+        SF.__internal.send.bind(_m, _m.param.event.beforeCloseWindow, constructor),
       );
     }
 
@@ -202,7 +202,7 @@ export function Modal(e, param) {
 
       constructor.container.appendChild(constructor.load);
 
-      SF.receive(
+      SF.__internal.receive(
         _m.param.event.animationLoadHidden,
         constructor.load,
         function (e) {
@@ -210,7 +210,7 @@ export function Modal(e, param) {
         },
       );
 
-      SF.receive(
+      SF.__internal.receive(
         _m.param.event.animationLoadShow,
         constructor.load,
         function (e) {
@@ -233,45 +233,45 @@ export function Modal(e, param) {
       });
     }
 
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.beforeContentUpload,
       constructor.container,
       _m.beforeContentUpload,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.afterContentUpload,
       constructor.container,
       _m.afterContentUpload,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.beforeCloseWindow,
       constructor.container,
       _m.beforeCloseWindow,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.beforeOpenWindow,
       constructor.container,
       _m.beforeOpenWindow,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.afterOpenWindow,
       constructor.container,
       _m.afterOpenWindow,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.beforeHideWindow,
       constructor.container,
       _m.beforeHideWindow,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.beforeShowWindow,
       constructor.container,
       _m.beforeShowWindow,
     );
-    SF.receive(
+    SF.__internal.receive(
       _m.param.event.close,
       constructor.container,
-      SF.send.bind(_m, _m.param.event.beforeCloseWindow, constructor.container),
+      SF.__internal.send.bind(_m, _m.param.event.beforeCloseWindow, constructor.container),
     );
 
     return constructor;
@@ -428,7 +428,7 @@ export function Modal(e, param) {
     if (!_m.isOpening) return;
     _m.isOpening = false;
     _m.param.afterOpenWindow(_m);
-    SF.send(_m.param.event.afterOpenWindow, _m.modal.container);
+    SF.__internal.send(_m.param.event.afterOpenWindow, _m.modal.container);
   };
 
   _m.beforeHideWindow = function () {
@@ -456,7 +456,7 @@ export function Modal(e, param) {
     } else {
       _m.modal.area.content.innerHTML = data;
     }
-    SF.send(_m.param.event.afterContentUpload, _m.modal.container);
+    SF.__internal.send(_m.param.event.afterContentUpload, _m.modal.container);
     _m.beforeShowWindow();
     requestAnimationFrame(_m.afterShowWindow);
   };
@@ -502,14 +502,14 @@ export function Modal(e, param) {
         _m.allowOpenEvent = true;
         break;
       case 'show':
-        SF.send(_m.param.event.beforeContentUpload, _m.modal.container);
+        SF.__internal.send(_m.param.event.beforeContentUpload, _m.modal.container);
         _m.allowOpenEvent = true;
         break;
       case 'collapsed':
         _m.status = 'open';
         _m.status = 'collapsed';
-        SF.send(_m.param.event.beforeContentUpload, _m.modal.container);
-        SF.send(_m.param.event.beforeHideWindow, _m.modal.container);
+        SF.__internal.send(_m.param.event.beforeContentUpload, _m.modal.container);
+        SF.__internal.send(_m.param.event.beforeHideWindow, _m.modal.container);
         _m.allowOpenEvent = false;
         break;
       default:
@@ -528,7 +528,7 @@ export function Modal(e, param) {
         _m.ajaxLoad();
       });
     } else {
-      const send = SF.send(
+      const send = SF.__internal.send(
         _m.param.event.beforeContentUpload,
         _m.modal.container,
       );
@@ -568,9 +568,9 @@ export function Modal(e, param) {
           copy.style.display = 'block';
 
           const appendAndShow = () => {
-            SF.send(_m.param.event.beforeContentUpload, _m.modal.container);
+            SF.__internal.send(_m.param.event.beforeContentUpload, _m.modal.container);
             _m.modal.area.content.appendChild(copy);
-            SF.send(_m.param.event.afterContentUpload, _m.modal.container);
+            SF.__internal.send(_m.param.event.afterContentUpload, _m.modal.container);
             _m.beforeShowWindow();
             requestAnimationFrame(_m.afterShowWindow);
           };
@@ -584,23 +584,23 @@ export function Modal(e, param) {
         break;
       }
       case 'image':
-        SF.send(_m.param.event.beforeContentUpload, _m.modal.container);
+        SF.__internal.send(_m.param.event.beforeContentUpload, _m.modal.container);
         setTimeout(function () {
           if (typeof _m.param.html === 'object') {
             _m.modal.area.content.append(_m.param.html);
           } else {
             _m.modal.area.content.innerHTML = _m.param.html;
           }
-          SF.send(_m.param.event.afterContentUpload, _m.modal.container);
+          SF.__internal.send(_m.param.event.afterContentUpload, _m.modal.container);
 
           // _m.modal.area.content.appendChild(copy);
           // _m.modal.load.style.display      = 'none';
-          // SF.send(_m.param.event.animationLoadHidden, _m.modal.load);
+          // SF.__internal.send(_m.param.event.animationLoadHidden, _m.modal.load);
           if (_m.param.load.active) {
             _m.modal.load.style.display = 'none';
           }
           _m.modal.area.style.opacity = '1';
-          SF.send(_m.param.event.beforeOpenWindow, _m.modal.container);
+          SF.__internal.send(_m.param.event.beforeOpenWindow, _m.modal.container);
         }, _m.loadtimeout);
         break;
       case 'video':
@@ -617,7 +617,7 @@ export function Modal(e, param) {
     _m.service = _m.service || _m.getElement(_m.param.service);
 
     if (!_m.service) {
-      SF.ready(SF.send.bind(_m, 'onSFServiceAvailability', window));
+      SF.ready(SF.__internal.send.bind(_m, 'onSFServiceAvailability', window));
     }
   };
 
@@ -629,7 +629,7 @@ export function Modal(e, param) {
       _m.modeLoad();
     } else {
       _m.allowOpenEvent = true;
-      SF.send(_m.param.event.beforeShowWindow, _m.modal.container);
+      SF.__internal.send(_m.param.event.beforeShowWindow, _m.modal.container);
     }
   };
 
@@ -824,14 +824,14 @@ export function Modal(e, param) {
 
         _m.el.addEventListener('mouseout', function (e) {
           e.preventDefault();
-          SF.send(_m.param.event.beforeCloseWindow, _m.modal.container);
+          SF.__internal.send(_m.param.event.beforeCloseWindow, _m.modal.container);
         });
       } else {
         _m.el.addEventListener('click', (e) => {
           e.preventDefault();
 
           if (_m.status == 'open') {
-            SF.send(_m.param.event.beforeCloseWindow, _m.modal.container);
+            SF.__internal.send(_m.param.event.beforeCloseWindow, _m.modal.container);
           } else {
             _m.contentUpload();
           }
@@ -847,7 +847,7 @@ export function Modal(e, param) {
       if (e.key == 'Escape') {
         if (_m.status == 'open') {
           if (getComputedStyle(_m.modal.overlay).display == 'flex') {
-            SF.send(_m.param.event.beforeCloseWindow, _m.modal.container);
+            SF.__internal.send(_m.param.event.beforeCloseWindow, _m.modal.container);
           }
         }
       }

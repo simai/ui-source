@@ -287,91 +287,91 @@
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The Lit module, for the runtime's own use."
+      "summary": "The Lit module, for the runtime's own use. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.loadRuntime",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Loads a runtime module; the Loader's."
+      "summary": "Loads a runtime module; the Loader's. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.loadSmartBase",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Loads the Smart base; the Loader's."
+      "summary": "Loads the Smart base; the Loader's. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.send",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's internal message bus."
+      "summary": "The runtime's internal message bus. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.receive",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's internal message bus."
+      "summary": "The runtime's internal message bus. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.runtimeModule",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's module registry."
+      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.runtimeModules",
       "status": "internal",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The runtime's module registry."
+      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.runtimeArrived",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's module registry."
+      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.runtimeLoading",
       "status": "internal",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The runtime's module registry."
+      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.runtimeSettled",
       "status": "internal",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "The runtime's module registry."
+      "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.smart",
       "status": "internal",
       "kind": "object",
       "loaded_by": "smart-base",
-      "summary": "The Smart base's own state."
+      "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.smartBaseAnnounced",
       "status": "internal",
       "kind": "value",
       "loaded_by": "smart-base",
-      "summary": "The Smart base's own state."
+      "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.smartBaseReady",
       "status": "internal",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The Smart base's own state."
+      "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
     },
     {
       "name": "SF.AdminMenu",
@@ -736,6 +736,13 @@
       "kind": "object",
       "loaded_by": "component/register",
       "summary": "A helper of the legacy system scripts (component/register); the runtime's."
+    },
+    {
+      "name": "SF.__internal",
+      "status": "internal",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The runtime's own names (the message bus, the runtime module registry, the Smart base's state, litHtml); nothing a page calls."
     }
   ]
 }

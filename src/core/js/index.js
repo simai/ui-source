@@ -1,4 +1,5 @@
 import './public-path';
+import './internal.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';
@@ -23,19 +24,19 @@ import {
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
-  if (!SF.loadRuntime) {
+  if (!SF.__internal.loadRuntime) {
     let loading = null;
     const coreScript = () => [...document.scripts]
       .find((script) => /\/core\/js\/core(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
-    SF.loadRuntime = () => {
+    SF.__internal.loadRuntime = () => {
       if (loading) return loading;
-      if (SF.runtimeModules) {
-        SF.runtimeSettled = true;
-        loading = Promise.resolve(SF.runtimeModules);
+      if (SF.__internal.runtimeModules) {
+        SF.__internal.runtimeSettled = true;
+        loading = Promise.resolve(SF.__internal.runtimeModules);
       } else {
         loading = new Promise((resolve, reject) => {
-          SF.runtimeArrived = (modules) => {
-            SF.runtimeSettled = true;
+          SF.__internal.runtimeArrived = (modules) => {
+            SF.__internal.runtimeSettled = true;
             resolve(modules);
           };
           const core = coreScript();
@@ -48,10 +49,10 @@ if (typeof window !== 'undefined') {
           document.head.append(script);
         });
       }
-      SF.runtimeLoading = loading;
+      SF.__internal.runtimeLoading = loading;
       return loading;
     };
-    SF.runtimeModule = (id) => SF.loadRuntime().then((modules) => {
+    SF.__internal.runtimeModule = (id) => SF.__internal.loadRuntime().then((modules) => {
       if (!modules[id]) throw new Error(`SF runtime: no shared module "${id}"`);
       return modules[id];
     });

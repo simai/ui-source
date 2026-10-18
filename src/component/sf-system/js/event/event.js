@@ -20,10 +20,10 @@ export async function send (event, element) {
     })
 }
 
-SF.send = send
+SF.__internal.send = send
 
 export function receive (event, el, handler) {
     if (window.addEventListener) { el.addEventListener(event, handler, false) } else if (window.attachEvent) { el.attachEvent(event, handler) }
 }
 
-SF.receive = receive
+SF.__internal.receive = receive
