@@ -1625,7 +1625,7 @@
       "recorded_on": "2026-10-18",
       "stage": "compat",
       "kind": "format",
-      "summary": "A data format names itself without a version: \"schema\": \"simai.<name>\" with \"schema_version\": <major>, an integer, beside it, in place of the older \"schema\": \"simai.<name>.v<major>\". Every Framework reader takes both forms until remove_after; the Framework's writers move to the new form in the next release. As of 2026-10-18 the Framework's writers emit the new form (the Composition builtins, field kinds, type and port registries, capability fixtures, the technology packet, a Document and its dependency receipt resolved from a recipe named without a version) and its own data files carry it; the editor manifest registry followed once Larena's backend read both forms (larena b7b751891). Left in the older form on purpose, each read by that label or pinned by digest outside ui-source: simai.smart-component-contract-registry.v2 (ui-studio, frozen; Larena's readers take both since larena b7b751891 and larena-ui 937776a), simai.composite.host-port.v1 and simai.composite.host-port.conformance.v1 (published port editions and kits, pinned by digest), simai.composition.capability-contract-lock.v1 and simai.composition.recipe-contract-lock.v1 (ui-builder packages the normative files by them), Recipe 1.0.1 and its files, simai.composition.recipe.v1, recipe-manifest.v1, inputs.v1, recipe-limits.v1 and recipe.canonicalization-vectors.v1 (a published contract whose lock pins their bytes; a recipe in the older form still resolves to a simai.composition.document.v1 Document and a simai.composition.dependencies.v1 receipt, as its fixture fixes), simai.smart-component-fixture.v2, simai.smart-component-scenario.v1 and simai.smart.sources-local-map.v1 (ui-studio validates them by const), and the frozen copies under contracts/standards.",
+      "summary": "A data format names itself without a version: \"schema\": \"simai.<name>\" with \"schema_version\": <major>, an integer, beside it, in place of the older \"schema\": \"simai.<name>.v<major>\". Every Framework reader takes both forms until remove_after; the Framework's writers move to the new form in the next release, and sf-upgrade rewrites a project's declarations (rewrite rename-format; an item marked held stays as it is). As of 2026-10-18 the Framework's writers emit the new form (the Composition builtins, field kinds, type and port registries, capability fixtures, the technology packet, a Document and its dependency receipt resolved from a recipe named without a version) and its own data files carry it; the editor manifest registry followed once Larena's backend read both forms (larena b7b751891). Left in the older form on purpose, each read by that label or pinned by digest outside ui-source: simai.smart-component-contract-registry.v2 (ui-studio, frozen, reads it by this label), simai.composite.host-port.v1 and simai.composite.host-port.conformance.v1 (published port editions and kits, pinned by digest), simai.composition.capability-contract-lock.v1 and simai.composition.recipe-contract-lock.v1 (ui-builder packages the normative files by them), Recipe 1.0.1 and its files, simai.composition.recipe.v1, recipe-manifest.v1, inputs.v1, recipe-limits.v1 and recipe.canonicalization-vectors.v1 (a published contract whose lock pins their bytes; a recipe in the older form still resolves to a simai.composition.document.v1 Document and a simai.composition.dependencies.v1 receipt, as its fixture fixes), simai.smart-component-fixture.v2, simai.smart-component-scenario.v1 and simai.smart.sources-local-map.v1 (ui-studio validates them by const), and the frozen copies under contracts/standards.",
       "items": [
         {
           "from": "simai.change-journal.v1",
@@ -1635,17 +1635,20 @@
         {
           "from": "simai.composite.host-port.conformance.v1",
           "to": "\"schema\": \"simai.composite.host-port.conformance\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composite\\.host-port\\.conformance\\.v1[\"']"
+          "match": "[\"']simai\\.composite\\.host-port\\.conformance\\.v1[\"']",
+          "held": "published port kits are pinned by digest"
         },
         {
           "from": "simai.composite.host-port.v1",
           "to": "\"schema\": \"simai.composite.host-port\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composite\\.host-port\\.v1[\"']"
+          "match": "[\"']simai\\.composite\\.host-port\\.v1[\"']",
+          "held": "published port editions are pinned by digest"
         },
         {
           "from": "simai.composition.capability-contract-lock.v1",
           "to": "\"schema\": \"simai.composition.capability-contract-lock\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.capability-contract-lock\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.capability-contract-lock\\.v1[\"']",
+          "held": "ui-builder packages the normative files by this label"
         },
         {
           "from": "simai.composition.capability-fixtures.v1",
@@ -1690,7 +1693,8 @@
         {
           "from": "simai.composition.inputs.v1",
           "to": "\"schema\": \"simai.composition.inputs\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.inputs\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.inputs\\.v1[\"']",
+          "held": "Recipe 1.0.1 pins it by digest"
         },
         {
           "from": "simai.composition.port-manifest.v1",
@@ -1705,22 +1709,26 @@
         {
           "from": "simai.composition.recipe-contract-lock.v1",
           "to": "\"schema\": \"simai.composition.recipe-contract-lock\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe-contract-lock\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe-contract-lock\\.v1[\"']",
+          "held": "ui-builder packages the normative files by this label"
         },
         {
           "from": "simai.composition.recipe-limits.v1",
           "to": "\"schema\": \"simai.composition.recipe-limits\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe-limits\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe-limits\\.v1[\"']",
+          "held": "Recipe 1.0.1 pins it by digest"
         },
         {
           "from": "simai.composition.recipe-manifest.v1",
           "to": "\"schema\": \"simai.composition.recipe-manifest\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe-manifest\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe-manifest\\.v1[\"']",
+          "held": "Recipe 1.0.1 pins it by digest"
         },
         {
           "from": "simai.composition.recipe.v1",
           "to": "\"schema\": \"simai.composition.recipe\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe\\.v1[\"']",
+          "held": "Recipe 1.0.1: a recipe in the older form resolves to the documents and digests its contract fixes"
         },
         {
           "from": "simai.composition.type-manifest.v1",
@@ -1795,22 +1803,26 @@
         {
           "from": "simai.recipe.canonicalization-vectors.v1",
           "to": "\"schema\": \"simai.recipe.canonicalization-vectors\", \"schema_version\": 1",
-          "match": "[\"']simai\\.recipe\\.canonicalization-vectors\\.v1[\"']"
+          "match": "[\"']simai\\.recipe\\.canonicalization-vectors\\.v1[\"']",
+          "held": "Recipe 1.0.1 pins it by digest"
         },
         {
           "from": "simai.smart-component-contract-registry.v2",
           "to": "\"schema\": \"simai.smart-component-contract-registry\", \"schema_version\": 2",
-          "match": "[\"']simai\\.smart-component-contract-registry\\.v2[\"']"
+          "match": "[\"']simai\\.smart-component-contract-registry\\.v2[\"']",
+          "held": "ui-studio (frozen) reads it by this label"
         },
         {
           "from": "simai.smart-component-fixture.v2",
           "to": "\"schema\": \"simai.smart-component-fixture\", \"schema_version\": 2",
-          "match": "[\"']simai\\.smart-component-fixture\\.v2[\"']"
+          "match": "[\"']simai\\.smart-component-fixture\\.v2[\"']",
+          "held": "ui-studio (frozen) validates it by const"
         },
         {
           "from": "simai.smart-component-scenario.v1",
           "to": "\"schema\": \"simai.smart-component-scenario\", \"schema_version\": 1",
-          "match": "[\"']simai\\.smart-component-scenario\\.v1[\"']"
+          "match": "[\"']simai\\.smart-component-scenario\\.v1[\"']",
+          "held": "ui-studio (frozen) validates it by const"
         },
         {
           "from": "simai.smart-component-technology-packet.v1",
@@ -1820,7 +1832,8 @@
         {
           "from": "simai.smart.sources-local-map.v1",
           "to": "\"schema\": \"simai.smart.sources-local-map\", \"schema_version\": 1",
-          "match": "[\"']simai\\.smart\\.sources-local-map\\.v1[\"']"
+          "match": "[\"']simai\\.smart\\.sources-local-map\\.v1[\"']",
+          "held": "ui-studio (frozen) reads it by this label"
         },
         {
           "from": "simai.template-context.v1",
@@ -1830,10 +1843,14 @@
       ],
       "deprecated_on": "2026-10-18",
       "remove_after": "2026-12-01",
-      "rewrite": "manual",
-      "manual": "In every file that declares a format, replace \"schema\": \"simai.<name>.v<major>\" with \"schema\": \"simai.<name>\" and add \"schema_version\": <major> (the number that followed .v) beside it. A reader of your own that compares the label reads both forms until remove_after: readSchema or isSchema in src/core/js/composition/schema-name.mjs. sf-upgrade finds each label but does not rewrite it, because the new form is two fields.",
+      "rewrite": "rename-format",
+      "manual": "sf-upgrade --apply rewrites a declaration of a format: in a JSON file that keeps the standard layout (JSON.stringify with two or four spaces, or tabs), every \"schema\": \"simai.<name>.v<major>\" becomes \"schema\": \"simai.<name>\" with \"schema_version\": <major> right after it; in a script, a literal schema: 'simai.<name>.v<major>' (or 'schema' => '...' in PHP) gains schema_version beside it when the file names schema_version nowhere else. What it reports and leaves: a comparison against the label (a reader of your own: read both forms until remove_after with readSchema or isSchema from core/js/composition/schema-name.mjs), a JSON file in another layout, and every format an item marks held -- the Framework itself keeps those in the older form for the reason given, so leave them until the item is released.",
       "owner": "ui-control",
-      "source": "ui-control/control/NAMES-WITHOUT-VERSIONS-DECISION-2026-10-11.md"
+      "source": "ui-control/control/NAMES-WITHOUT-VERSIONS-DECISION-2026-10-11.md",
+      "examples": {
+        "before": "{\"schema\": \"simai.composition.document.v1\", \"root\": {...}}",
+        "after": "{\"schema\": \"simai.composition.document\", \"schema_version\": 1, \"root\": {...}}"
+      }
     },
     {
       "id": "event-theme-generator-names",

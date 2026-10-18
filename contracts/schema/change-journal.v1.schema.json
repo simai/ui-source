@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/change-journal.v1.json",
-  "x-simai-version": "1.1.0",
+  "x-simai-version": "1.2.0",
   "title": "SIMAI Framework change journal",
   "description": "The chronology of public changes that need a consumer to change anything: every rename, retired value, removed name and behaviour change, with what to write instead and how to detect and rewrite it. Records are appended, never deleted; a removed record is a tombstone.",
   "type": "object",
@@ -124,6 +124,10 @@
               "match": {
                 "type": "string",
                 "description": "A regular expression that finds the old form where the name alone is too common to search for."
+              },
+              "held": {
+                "type": "string",
+                "description": "Why the Framework keeps this item in its older form for now; sf-upgrade reports it and does not rewrite it."
               }
             }
           }
@@ -161,6 +165,7 @@
             "rename-option",
             "rename-property",
             "replace-component",
+            "rename-format",
             "manual",
             "none"
           ]

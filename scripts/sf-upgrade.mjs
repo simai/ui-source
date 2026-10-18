@@ -25,6 +25,17 @@
 // only the last move is what a project owes. The earlier record stays in the
 // journal as history; it is not reported, or a project already on `larena`
 // would be told to declare `pro`.
+//
+// A format named with its version (`rewrite: "rename-format"`, owner decision
+// 2026-10-11: names carry no version) moves to two fields, `"schema":
+// "simai.<name>"` and `"schema_version": <major>`. That is mechanical where the
+// label is a declaration: in a JSON file that keeps the standard layout, every
+// object's "schema" (the file is parsed, changed and written back in the same
+// layout, schema_version right after schema), and in a script a literal
+// `schema: '...'` or `'schema' => '...'` when the file names schema_version
+// nowhere else. A comparison against the label, a JSON file in another layout
+// and an item the journal marks `held` (the Framework itself keeps that format
+// in its older form for now) are reported and left.
 import {readFileSync, writeFileSync, readdirSync, statSync, existsSync} from 'node:fs';
 import {resolve, join, extname, relative, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -43,11 +54,16 @@ const here = dirname(fileURLToPath(import.meta.url));
 const journal = JSON.parse(readFileSync(option('--journal') || resolve(here, '..', 'contracts', 'changes', 'journal.json'), 'utf8'));
 
 const EXTENSIONS = new Set(['.html', '.htm', '.php', '.twig', '.vue', '.js', '.mjs', '.ts', '.jsx', '.tsx', '.css', '.scss', '.md', '.json']);
-const SKIP = new Set(['node_modules', 'vendor', '.git', 'dist', 'build', 'build_production', 'storage', '.artifacts']);
+// A project's copies of the Framework itself -- a distribution, a package
+// build's overlay, a site build, the pinned standards -- are the Framework's
+// bytes, often pinned by digest; they change by taking another pair, never by
+// an edit.
+const SKIP = new Set(['node_modules', 'vendor', '.git', 'dist', 'distr', 'build', 'build_production', 'storage', '.artifacts', '.overlay', '.package-build', '.probe-output']);
 const files = [];
 const walk = (dir) => {
   for (const name of readdirSync(dir)) {
-    if (SKIP.has(name)) continue;
+    if (SKIP.has(name) || name.startsWith('build_')) continue;
+    if (name === 'pinned' && dir.endsWith('standards')) continue;
     const path = join(dir, name);
     const stat = statSync(path);
     if (stat.isDirectory()) walk(path);
@@ -136,12 +152,106 @@ function rulesFor(record) {
   return rules;
 }
 
+const VERSIONED = /^(.+)\.v([0-9]+)$/u;
+const JSON_LAYOUTS = [2, 4, '\t'];
+
+// A JSON text's layout when it is what JSON.stringify writes, or null.
+function jsonLayout(source, value) {
+  const tail = source.endsWith('\n') ? '\n' : '';
+  return JSON_LAYOUTS.find((indent) => JSON.stringify(value, null, indent) + tail === source) ?? null;
+}
+
+// Every object whose "schema" is one of `labels` ({label: {name, version}}),
+// in place: schema becomes the name and schema_version follows it. Returns the
+// number moved, or -1 when an object already says another schema_version.
+function moveSchemas(value, labels) {
+  let moved = 0;
+  let conflict = false;
+  const visit = (node) => {
+    if (Array.isArray(node)) return node.map(visit);
+    if (!node || typeof node !== 'object') return node;
+    const out = {};
+    const label = typeof node.schema === 'string' ? labels[node.schema] : null;
+    if (label && node.schema_version !== undefined && node.schema_version !== label.version) conflict = true;
+    for (const [key, child] of Object.entries(node)) {
+      if (label && key === 'schema_version') continue;
+      if (label && key === 'schema') {
+        out.schema = label.name;
+        out.schema_version = label.version;
+        moved += 1;
+        continue;
+      }
+      out[key] = visit(child);
+    }
+    return out;
+  };
+  const next = visit(value);
+  return conflict ? {moved: -1, value} : {moved, value: next};
+}
+
+// The findings of a rename-format record in one file, and the file rewritten
+// where that is mechanical.
+function formatFindings(record, file, source) {
+  const findings = [];
+  const labels = {};
+  for (const item of record.items) {
+    const versioned = VERSIONED.exec(item.from);
+    if (versioned && !item.held) labels[item.from] = {name: versioned[1], version: Number(versioned[2])};
+  }
+  const declaration = (label) => new RegExp(`((?:\\bschema|["']schema["'])\\s*(?::|=>)\\s*)(["'])${escape(label)}\\2`, 'gu');
+  let next = source;
+  let jsonMoves = false;
+  if (extname(file) === '.json') {
+    try {
+      const value = JSON.parse(source);
+      const layout = jsonLayout(source, value);
+      if (layout !== null) {
+        const result = moveSchemas(value, labels);
+        if (result.moved > 0) {
+          jsonMoves = true;
+          next = JSON.stringify(result.value, null, layout) + (source.endsWith('\n') ? '\n' : '');
+        }
+      }
+    } catch {
+      // Not JSON after all: every label stays a finding for a person.
+    }
+  }
+  // A file that carries a format the Framework holds is pinned as a whole --
+  // a Recipe 1.0.1 fixture holds the Document and receipt an older-form
+  // recipe resolves to -- so nothing in it moves.
+  const holds = record.items.some((item) => item.held && source.includes(item.from));
+  if (holds) jsonMoves = false;
+  const scriptMoves = !holds && extname(file) !== '.json' && !/schema_version/u.test(source);
+  for (const item of record.items) {
+    const pattern = new RegExp(item.match || `["']${escape(item.from)}["']`, 'gu');
+    const declared = new Set([...source.matchAll(declaration(item.from))].map((match) => match.index + match[1].length));
+    for (const match of source.matchAll(pattern)) {
+      const line = source.slice(0, match.index).split('\n').length;
+      const mechanical = Boolean(labels[item.from]) && declared.has(match.index) && (jsonMoves || scriptMoves);
+      findings.push({file: relative(resolve(project), file), line, record: record.id, stage: record.stage, from: item.from, to: item.to ?? null, mechanical, held: item.held || null});
+    }
+    if (scriptMoves && labels[item.from]) {
+      const {name, version} = labels[item.from];
+      next = next.replace(declaration(item.from), (whole, head, quote) => (/=>\s*$/u.test(head)
+        ? `${head}${quote}${name}${quote}, ${quote}schema_version${quote} => ${version}`
+        : `${head}${quote}${name}${quote}, schema_version: ${version}`));
+    }
+  }
+  return {findings, source: next};
+}
+
 const records = journal.records.filter((record) => !since || record.deprecated_on >= since);
 const report = [];
 for (const file of files) {
   let source = readFileSync(file, 'utf8');
   let changed = false;
   for (const record of records) {
+    if (record.kind === 'format' && record.rewrite === 'rename-format') {
+      const result = formatFindings(record, file, source);
+      report.push(...result.findings);
+      if (apply && result.source !== source && result.findings.some((row) => row.mechanical)) { source = result.source; changed = true; }
+      continue;
+    }
     for (const rule of rulesFor(record)) {
       for (const match of source.matchAll(rule.pattern)) {
         const line = source.slice(0, match.index).split('\n').length;
@@ -159,14 +269,14 @@ for (const file of files) {
 const manual = [...new Set(report.filter((row) => !row.mechanical).map((row) => row.record))]
   .map((id) => journal.records.find((record) => record.id === id))
   .map((record) => ({id: record.id, summary: record.summary, manual: record.manual || null, examples: record.examples || null,
-    places: report.filter((row) => row.record === record.id && !row.mechanical).map((row) => `${row.file}:${row.line} ${row.from}`)}));
+    places: report.filter((row) => row.record === record.id && !row.mechanical).map((row) => `${row.file}:${row.line} ${row.from}${row.held ? ` (held: ${row.held})` : ''}`)}));
 const summary = {project: resolve(project), files: files.length, findings: report.length, mechanical: report.filter((row) => row.mechanical).length,
   applied: apply, manual: manual.length};
 if (asJson) {
   console.log(JSON.stringify({summary, findings: report, manual}, null, 1));
 } else {
   console.log(`${summary.findings} legacy uses in ${summary.files} files: ${summary.mechanical} mechanical${apply ? ' (rewritten)' : ' (run with --apply to rewrite)'}, ${report.length - summary.mechanical} for a person or an AI.`);
-  for (const row of report) console.log(`  ${row.mechanical ? (apply ? 'fixed ' : 'auto  ') : 'manual'} ${row.file}:${row.line}  ${row.from} → ${row.to ?? '—'}  [${row.record}]`);
+  for (const row of report) console.log(`  ${row.mechanical ? (apply ? 'fixed ' : 'auto  ') : 'manual'} ${row.file}:${row.line}  ${row.from} → ${row.to ?? '—'}  [${row.record}]${row.held ? ` held: ${row.held}` : ''}`);
   for (const entry of manual) {
     console.log(`\n${entry.id}: ${entry.summary}`);
     if (entry.manual) console.log(`  do: ${entry.manual}`);

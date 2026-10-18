@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {readFileSync, readdirSync, existsSync, mkdtempSync, writeFileSync, rmSync} from 'node:fs';
+import {readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
 import {execFileSync, spawnSync} from 'node:child_process';
 import {resolve, join} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -120,6 +120,43 @@ test('sf-upgrade: a class shared by two components is reported once per use', ()
     const findings = JSON.parse(result.stdout).findings.filter((row) => row.from === 'tightness-low');
     assert.equal(findings.length, 1);
     assert.equal(findings[0].to, 'spacing-compact');
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});
+
+/* Format names without versions, step 3: sf-upgrade moves a project's
+   declarations of a format to two fields -- a JSON file in the standard
+   layout, a literal in a script -- and reports what it must not touch: a
+   comparison, a JSON file in another layout, a format the Framework holds. */
+test('sf-upgrade: a format declaration moves to a name and schema_version', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  const run = (...flags) => JSON.parse(spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json', ...flags], {encoding: 'utf8'}).stdout);
+  try {
+    writeFileSync(join(project, 'doc.json'), `${JSON.stringify({schema: 'simai.composition.document.v1', root: {effect: {schema: 'simai.effect.v1', schema_version: 1}}}, null, 2)}\n`);
+    writeFileSync(join(project, 'ports.json'), `${JSON.stringify({ports: [{schema: 'simai.composite.host-port.v1'}]}, null, 2)}\n`);
+    writeFileSync(join(project, 'odd.json'), '{"schema":   "simai.effect.v1"}\n');
+    writeFileSync(join(project, 'page.js'), "const doc = {schema: 'simai.composition.document.v1'};\nif (doc.schema === 'simai.composition.document.v1') go();\n");
+    writeFileSync(join(project, 'reader.php'), "<?php $d = ['schema' => 'simai.effect.v1'];\n");
+    // A file holding a held format is pinned as a whole; a copy of the
+    // Framework is not the project's to edit.
+    const fixture = `${JSON.stringify({recipe: {schema: 'simai.composition.recipe.v1'}, expected: {schema: 'simai.composition.document.v1'}}, null, 2)}\n`;
+    writeFileSync(join(project, 'fixture.json'), fixture);
+    mkdirSync(join(project, 'public/ui/distr/core'), {recursive: true});
+    writeFileSync(join(project, 'public/ui/distr/core/flags.json'), `${JSON.stringify({schema: 'simai.framework.flag-set.v1'}, null, 2)}\n`);
+    const before = run().findings.filter((row) => row.record === 'format-names-without-version');
+    assert.equal(before.length, 9);
+    assert.ok(!before.some((row) => row.file.includes('distr')), 'a distribution copy is not searched');
+    assert.equal(before.find((row) => row.from === 'simai.composite.host-port.v1')?.held, 'published port editions are pinned by digest');
+    run('--apply');
+    assert.deepEqual(JSON.parse(readFileSync(join(project, 'doc.json'), 'utf8')), {schema: 'simai.composition.document', schema_version: 1, root: {effect: {schema: 'simai.effect', schema_version: 1}}});
+    assert.match(readFileSync(join(project, 'doc.json'), 'utf8'), /^\{\n {2}"schema": "simai\.composition\.document",\n {2}"schema_version": 1,/u, 'the layout is kept, schema_version right after schema');
+    assert.equal(readFileSync(join(project, 'odd.json'), 'utf8'), '{"schema":   "simai.effect.v1"}\n', 'another layout is left');
+    assert.equal(readFileSync(join(project, 'page.js'), 'utf8'), "const doc = {schema: 'simai.composition.document', schema_version: 1};\nif (doc.schema === 'simai.composition.document.v1') go();\n");
+    assert.equal(readFileSync(join(project, 'reader.php'), 'utf8'), "<?php $d = ['schema' => 'simai.effect', 'schema_version' => 1];\n");
+    assert.equal(readFileSync(join(project, 'fixture.json'), 'utf8'), fixture, 'a file with a held format is left whole');
+    const after = run().findings.filter((row) => row.record === 'format-names-without-version');
+    assert.deepEqual(after.map((row) => `${row.file}:${row.mechanical}`).sort(), ['fixture.json:false', 'fixture.json:false', 'odd.json:false', 'page.js:false', 'ports.json:false']);
   } finally {
     rmSync(project, {recursive: true, force: true});
   }
