@@ -1,0 +1,407 @@
+{
+  "cl-alert": [
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "flex/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-avatar": [
+    "align-items/default",
+    "background-color/default",
+    "display/default",
+    "element-position/default",
+    "flex-direction/default",
+    "flex/default",
+    "height/default",
+    "justify-content/default",
+    "overflow/default",
+    "place-items/default",
+    "position/default",
+    "text-overflow/default",
+    "transition-property/default",
+    "white-space/default",
+    "width/default"
+  ],
+  "cl-avatars": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default"
+  ],
+  "cl-badges": [
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default",
+    "sr-only/default"
+  ],
+  "cl-breadcrumbs": [
+    "align-items/default",
+    "container/default",
+    "display/default",
+    "position/default",
+    "visibility/default"
+  ],
+  "cl-button-group": [
+    "position/default"
+  ],
+  "cl-buttons": [
+    "align-items/default",
+    "display/default",
+    "flex/default",
+    "pointer-events/default",
+    "position/default"
+  ],
+  "cl-checkbox": [
+    "cursor/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-close": [
+    "display/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-color": [
+    "display/default",
+    "position/default"
+  ],
+  "cl-context-menu": [
+    "display/default",
+    "flex-direction/default",
+    "flex/default",
+    "position/default",
+    "text-decoration/default"
+  ],
+  "cl-copy-button": [
+    "display/default",
+    "position/default"
+  ],
+  "cl-country-code": [
+    "display/default",
+    "flex-direction/default",
+    "place-items/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-datepicker": [
+    "align-content/default",
+    "align-items/default",
+    "display/default",
+    "element-position/default",
+    "flex-direction/default",
+    "font-transform/default",
+    "gap/default",
+    "grid-template-columns/default",
+    "isolate/default",
+    "justify-content/default",
+    "overflow/default",
+    "position/default",
+    "resize/default"
+  ],
+  "cl-download-file": [
+    "cursor/default",
+    "display/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-drawer": [
+    "display/default",
+    "justify-content/default",
+    "margin/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-dropdown": [
+    "align-items/default",
+    "background-color/default",
+    "background-size/default",
+    "cursor/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "flex/default",
+    "place-items/default",
+    "position/default",
+    "resize/default",
+    "transition-property/default",
+    "visibility/default"
+  ],
+  "cl-empty-state": [
+    "display/default",
+    "isolate/default",
+    "position/default"
+  ],
+  "cl-file-preview": [
+    "isolate/default",
+    "position/default"
+  ],
+  "cl-file-upload": [
+    "align-items/default",
+    "align-self/default",
+    "cursor/default",
+    "display/default",
+    "flex-direction/default",
+    "flex/default",
+    "gap/default",
+    "grid-template-columns/default",
+    "justify-content/default",
+    "justify-items/default",
+    "position/default",
+    "width/default"
+  ],
+  "cl-gallery": [
+    "align-items/default",
+    "background-color/default",
+    "border-radius/default",
+    "border-width/default",
+    "box-shadow/default",
+    "display/default",
+    "filter-blur/default",
+    "flex-direction/default",
+    "gap/default",
+    "height/default",
+    "justify-content/default",
+    "margin/default",
+    "max-width/default",
+    "min-height/default",
+    "min-width/default",
+    "padding/default",
+    "position/default",
+    "text-color/default",
+    "width/default"
+  ],
+  "cl-help-mark": [
+    "display/default",
+    "isolate/default",
+    "position/default"
+  ],
+  "cl-icon-buttons": [
+    "align-items/default",
+    "display/default",
+    "pointer-events/default",
+    "position/default"
+  ],
+  "cl-icons": [
+    "font-weight/default",
+    "position/default"
+  ],
+  "cl-inputs": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "text-align/default",
+    "transition-property/default"
+  ],
+  "cl-list-item": [
+    "align-items/default",
+    "background-color/default",
+    "background-size/default",
+    "cursor/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "flex/default",
+    "gap/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-modal": [
+    "align-items/default",
+    "backdrop-filter-blur/default",
+    "border-color/default",
+    "border-radius/default",
+    "border-width/default",
+    "display/default",
+    "element-position/default",
+    "filter-blur/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "font-size/default",
+    "gap/default",
+    "height/default",
+    "justify-content/default",
+    "margin/default",
+    "min-width/default",
+    "overflow/default",
+    "padding/default",
+    "place-items/default",
+    "position/default",
+    "text-color/default",
+    "title/default",
+    "width-ext/default",
+    "width/default",
+    "z-index/default"
+  ],
+  "cl-page-header": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-grow/default",
+    "flex-wrap/default",
+    "gap/default",
+    "margin/default",
+    "min-width/default",
+    "position/default",
+    "text-overflow/default"
+  ],
+  "cl-pagination": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "justify-content/default",
+    "position/default"
+  ],
+  "cl-popover": [
+    "display/default",
+    "position/default"
+  ],
+  "cl-profile-picker": [
+    "display/default",
+    "position/default"
+  ],
+  "cl-progress-bar": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-progress-scale": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "grid-template-columns/default",
+    "overflow/default",
+    "position/default"
+  ],
+  "cl-radio": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "justify-content/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-range-slider": [
+    "flex/default",
+    "isolate/default",
+    "position/default"
+  ],
+  "cl-reference-link": [
+    "align-items/default",
+    "display/default",
+    "position/default"
+  ],
+  "cl-resizer": [
+    "display/default",
+    "position/default",
+    "resize/default",
+    "text-max-width/default"
+  ],
+  "cl-skeleton": [
+    "animation/default",
+    "display/default",
+    "flex/default",
+    "position/default"
+  ],
+  "cl-slider": [
+    "background-color/default",
+    "border-radius/default",
+    "display/default",
+    "padding/default",
+    "position/default",
+    "text-color/default"
+  ],
+  "cl-spinner": [
+    "animation/default",
+    "position/default",
+    "stroke-color/default"
+  ],
+  "cl-steps": [
+    "cursor/default",
+    "display/default",
+    "flex-direction/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-switch": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "justify-content/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-tabs": [
+    "container/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "resize/default",
+    "visibility/default"
+  ],
+  "cl-tags": [
+    "background-size/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "min-width/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-textarea": [
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-theme-generator": [
+    "position/default"
+  ],
+  "cl-toast": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "flex/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default"
+  ],
+  "cl-toggle": [
+    "display/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default",
+    "transition-property/default"
+  ],
+  "cl-tooltip": [
+    "display/default",
+    "flex-direction/default",
+    "position/default"
+  ],
+  "cl-tree": [
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "visibility/default"
+  ],
+  "cl-tree-item": [
+    "align-items/default",
+    "container/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default"
+  ]
+}

@@ -3,6 +3,7 @@ import stableHash from './stableHash';
 import pageStorage from './page-storage.js';
 import { convertTailwindClasses } from './tailwind-map';
 import utilityModuleAliases from '../contracts/utility-module-aliases.v1.json';
+import templateUtilities from './template-utilities.generated.json';
 import { resolveUtilityModule } from './utilityModuleAliases';
 import {
   initIconSubsetState,
@@ -2388,8 +2389,17 @@ SFLoaderPlugin.prototype.setExistCookie = function (
   if (output) {
     output[mode][name] = {};
   }
-  if (param && param.relation) {
-    this.setRelation(param.relation, name, output);
+  // A Smart component's templates draw with utility classes; they are its
+  // relations too, so they are asked for in the wave that asks for the
+  // component instead of after it has rendered (scripts/
+  // generate-template-utilities.mjs; simai.interaction-rules,
+  // assets-asked-together).
+  const drawnWith = mode === 'smart'
+      ? (templateUtilities[name] || []).map((key) => ({name: key}))
+      : [];
+  const relations = [...(param && Array.isArray(param.relation) ? param.relation : []), ...drawnWith];
+  if (relations.length) {
+    this.setRelation(relations, name, output);
   }
   if (output) {
     if (param) {
