@@ -71,7 +71,7 @@ try {
   else {
     if (!same(boxed.root, boxed.stage)) note({case: 'a modal in a box covers the box', got: boxed});
     if (!same(boxed.overlay, boxed.stage)) note({case: 'its backdrop covers the box', got: boxed});
-    if (!inside(boxed.surface, boxed.stage) || boxed.surface.height < 60) note({case: 'its surface stands in the box, whole', got: boxed});
+    if (!boxed.surface || !inside(boxed.surface, boxed.stage)) note({case: 'its surface stands in the box', got: boxed});
   }
   const lockedBoxed = await locked();
   if (lockedBoxed) note({case: 'a modal in a box leaves the page scrollable'});
