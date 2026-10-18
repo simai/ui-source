@@ -27,16 +27,16 @@ try {
   await page.route('http://probe.test/**', (route) => {
     const url = new URL(route.request().url());
     if (url.pathname === '/') {
-      return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
+      return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"><link rel="stylesheet" href="/distr/core/css/core.css">
         <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'overlay-box', pluginListVersion: 'overlay-box', preloader: {enabled: false}, icons: {enabled: false}, theme: false};</script></head>
         <body style="margin:0">
         <div id="stage" data-sf-overlay-container style="position: relative; block-size: 320px; inline-size: 560px; margin: 40px">
-          <sf-modal id="boxed" title="В рамке"><p>Текст</p></sf-modal>
+          <sf-modal id="boxed" title="В рамке"><p slot="content">Текст</p></sf-modal>
         </div>
         <div id="drawer-stage" data-sf-overlay-container style="position: relative; block-size: 280px; inline-size: 480px; margin: 40px">
           <sf-drawer id="boxed-drawer" placement="inline-end" title="Панель в рамке"><p>Текст</p></sf-drawer>
         </div>
-        <sf-modal id="page" title="На странице"><p>Текст</p></sf-modal>
+        <sf-modal id="page" title="На странице"><p slot="content">Текст</p></sf-modal>
         <div id="js-stage" style="position: relative; block-size: 260px; inline-size: 440px; margin: 40px"></div>
         <div id="opener-stage" data-sf-overlay-container style="position: relative; block-size: 240px; inline-size: 400px; margin: 40px"><button id="opener" type="button">Открыть</button></div>
         <div style="block-size: 2400px">Длинная страница</div>
@@ -75,7 +75,9 @@ try {
   else {
     if (!same(boxed.root, boxed.stage)) note({case: 'a modal in a box covers the box', got: boxed});
     if (!same(boxed.overlay, boxed.stage)) note({case: 'its backdrop covers the box', got: boxed});
-    if (!boxed.surface || !inside(boxed.surface, boxed.stage)) note({case: 'its surface stands in the box', got: boxed});
+    // The page links core.css as a page does: without its tokens the surface
+    // has no padding or width and draws as a sliver of its title.
+    if (!boxed.surface || !inside(boxed.surface, boxed.stage) || boxed.surface.width < 150 || boxed.surface.height < 80) note({case: 'its surface stands in the box, whole', got: boxed});
   }
   const lockedBoxed = await locked();
   if (lockedBoxed) note({case: 'a modal in a box leaves the page scrollable'});
