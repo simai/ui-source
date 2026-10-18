@@ -268,7 +268,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "smart/theme-generator",
-      "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives.",
+      "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives and the 98 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 226 variables in all.",
       "members": [
         "themeFromColor",
         "themeFromHct",
@@ -279,6 +279,7 @@
         "isThemeColor",
         "THEME_TONES",
         "THEME_PALETTES",
+        "THEME_ALPHA",
         "DEFAULT_THEME_COLOR"
       ]
     },
@@ -525,7 +526,7 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "component/sf-system",
-      "summary": "The Modal component's script API, loaded with the component (component/sf-system); its methods are the component's documentation."
+      "summary": "The sf-system modal's script API, loaded with component/sf-system; its methods are that component's documentation. It is not the Modal component's class: a page that loads only component/modal (sf-modal, the modal examples) has no SF.Modal, and finds the class at SF.Loader.ComponentRegistry.Modal (new Modal({id, param})), as the documentation's examples do."
     },
     {
       "name": "SF.Overbox",

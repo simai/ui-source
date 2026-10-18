@@ -169,8 +169,13 @@ class SfButton extends SfBaseElement {
     return this.getAttribute("icon-position") || "start";
   }
 
-  get tightness() {
+  // Notes the legacy attribute names the template reads without a getter.
+  noteLegacyNames() {
     if (this.hasAttribute('tightness')) noteDeprecated({component: this.localName, kind: 'attribute', from: 'tightness', to: 'spacing'});
+    return {};
+  }
+
+  get tightness() {
     return resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}).tightness;
   }
 
@@ -216,12 +221,12 @@ class SfButton extends SfBaseElement {
       // A legacy appearance reaches the template under its current name, as the
       // getter reports it (journal value-button-ghost-to-link).
       appearance: props.appearance === 'ghost' ? 'link' : props.appearance,
-      // Through the getters, which read the legacy names and note them: the
+      // Through the getter, which reads the legacy names and notes them: the
       // props context knows only the current values (danger and critical
       // fell to no status there).
       status: this.status,
-      tightness: this.tightness,
-      spacing: this.spacing,
+      ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
+      ...this.noteLegacyNames?.(),
       component: this,
     });
   }
