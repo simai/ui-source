@@ -36,7 +36,7 @@ try {
         <div id="drawer-stage" data-sf-overlay-container style="position: relative; block-size: 280px; inline-size: 480px; margin: 40px">
           <sf-drawer id="boxed-drawer" placement="inline-end" title="Панель в рамке"><p>Текст</p></sf-drawer>
         </div>
-        <sf-modal id="page" title="На странице"><p slot="content">Текст</p></sf-modal>
+        <sf-modal id="page" title="На странице"><p>Текст без слота</p></sf-modal>
         <div id="js-stage" style="position: relative; block-size: 260px; inline-size: 440px; margin: 40px"></div>
         <div id="opener-stage" data-sf-overlay-container style="position: relative; block-size: 240px; inline-size: 400px; margin: 40px"><button id="opener" type="button">Открыть</button></div>
         <div style="block-size: 2400px">Длинная страница</div>
@@ -89,9 +89,12 @@ try {
   await page.waitForTimeout(500);
   const onPage = await page.evaluate((rectSource) => {
     const rect = new Function(`return (${rectSource})`)();
-    return {root: rect(document.querySelector('body > [data-sf-modal-portal="page"] [data-sf-modal-id]') || document.querySelector('[data-sf-modal-id="page"]')), viewport: {left: 0, top: 0, width: innerWidth, height: innerHeight}};
+    const root = document.querySelector('[data-sf-modal-id="page"]');
+    return {root: rect(root), viewport: {left: 0, top: 0, width: innerWidth, height: innerHeight}, text: root?.querySelector('[data-sf-modal-surface]')?.innerText || ''};
   }, rect.toString());
   if (!same(onPage.root, onPage.viewport)) note({case: 'a modal outside a box covers the viewport', got: onPage});
+  // Content written without a slot is the window's content (owner, 2026-10-18).
+  if (!onPage.text.includes('Текст без слота')) note({case: 'unslotted content shows in the window', got: onPage.text});
   if (!(await locked())) note({case: 'a modal outside a box locks the page'});
   await page.evaluate(() => document.getElementById('page').close());
   await page.waitForTimeout(400);

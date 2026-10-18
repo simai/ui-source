@@ -205,7 +205,8 @@ own. The same attribute frames `sf-drawer`.
 ## Slots
 
 - `header`
-- `content`
+- `content` — also whatever is written inside `<sf-modal>` without a slot,
+  placed after the slotted content
 - `footer`
 
 ## Methods

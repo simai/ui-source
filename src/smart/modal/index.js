@@ -209,6 +209,24 @@ class SfModal extends SfBaseElement {
     SfModal.bindGlobalEvents();
   }
 
+  // What the author writes inside <sf-modal> without a slot is the window's
+  // content, after anything slotted as content -- as sf-drawer takes it. It
+  // used to be dropped without a word: an unslotted paragraph gave an empty
+  // window (owner, 2026-10-18).
+  captureSlotTemplates() {
+    const first = !this._slotTemplatesCaptured;
+    super.captureSlotTemplates();
+    if (!first) return;
+    const loose = Array.from(this.childNodes).filter((node) =>
+      node.nodeType === Node.ELEMENT_NODE
+        ? node.tagName.toLowerCase() !== "template"
+        : node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
+    if (!loose.length) return;
+    if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
+    this._liveSlotNodes.get("content").push(...loose);
+    loose.forEach((node) => node.remove());
+  }
+
   disconnectedCallback() {
     this.teardownModal();
     SfModal.registry.delete(this.modalId);
