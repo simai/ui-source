@@ -222,5 +222,6 @@
       "type_version": "1.0.0"
     }
   ],
-  "schema": "simai.composition.editor-manifest-registry.v1"
+  "schema": "simai.composition.editor-manifest-registry",
+  "schema_version": 1
 }

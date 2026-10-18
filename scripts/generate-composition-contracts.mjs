@@ -18,10 +18,8 @@ const output = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.type-registry', 1),
   entries: BUILTIN_TYPE_MANIFESTS,
 })), null, 2)}\n`;
-// The editor manifest registry keeps its versioned label: Larena's backend
-// reads it by that label (journal record format-names-without-version).
 const editorOutput = `${JSON.stringify(JSON.parse(stableStringify({
-  schema: 'simai.composition.editor-manifest-registry.v1',
+  ...schemaFields('simai.composition.editor-manifest-registry', 1),
   entries: BUILTIN_EDITOR_MANIFESTS,
 })), null, 2)}\n`;
 

@@ -169,8 +169,7 @@ test('the frozen copies published standards pin keep the older label alone', () 
 // The formats below keep the older label on purpose: a reader outside
 // ui-source compares it, or a published artifact pins the bytes by digest.
 const KEPT = {
-  'simai.composition.editor-manifest-registry.v1': 'Larena backend reads it by this label',
-  'simai.smart-component-contract-registry.v2': 'larena-ui and ui-admin read it by this label',
+  'simai.smart-component-contract-registry.v2': 'ui-studio reads it by this label',
   'simai.composite.host-port.v1': 'published port editions, pinned by digest',
   'simai.composite.host-port.conformance.v1': 'published port kits, pinned by digest',
   'simai.composition.capability-contract-lock.v1': 'ui-builder packages the normative files by this label',
@@ -235,8 +234,8 @@ test('the runtime writers emit the new form', async () => {
     ['src/core/contracts/composition-editor-field-kinds.v1.json', 'simai.composition.editor-field-kind-registry'],
   ]) assert.ok(isNew(json(path), name), path);
   const editors = json('src/core/contracts/composition-editor-manifests.v1.json');
-  assert.equal(editors.schema, 'simai.composition.editor-manifest-registry.v1', 'the registry keeps its label');
-  for (const entry of editors.entries) assert.ok(isNew(entry, 'simai.composition.editor-manifest'), `its entries do not: ${entry.type}`);
+  assert.ok(isNew(editors, 'simai.composition.editor-manifest-registry'), 'the editor manifest registry');
+  for (const entry of editors.entries) assert.ok(isNew(entry, 'simai.composition.editor-manifest'), `its entries: ${entry.type}`);
 
   // A Document and its receipt take the recipe's form: Recipe 1.0.1 fixes the
   // older one for a recipe in the older form, by published bytes.
