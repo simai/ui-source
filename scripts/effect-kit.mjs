@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Usage: node scripts/effect-kit.mjs <effect directory> <built output root>
 //
-// The conformance kit of simai.effect 1.0.0: what a product runs on an effect
+// The conformance kit of simai.effect 1.1.0: what a product runs on an effect
 // before it lists or installs it. The effect directory holds effect.json and
 // the files it names; the built output is a Framework build (core.js serves
 // SF.Effects). Each check is printed with its result; the exit code is 1 when
@@ -18,6 +18,25 @@
 //   cleanup        after destroy() the host is empty and no frames are asked for
 //   remount        it mounts again after destroy()
 //   accessibility  the host is out of the accessibility tree and out of the pointer's way
+//
+// simai.effect 1.1, run when the manifest declares them (a 1.0 manifest gets the
+// eleven checks above and nothing more):
+//
+//   scheme-<s>     for each declared scheme: drawn in a .theme-<s> area, every
+//                  sampled frame has that scheme's polarity (mean relative
+//                  luminance below 0.18 for dark, at or above it for light)
+//   contrast-<s>   over the worst of five frames, text in the area's roles
+//                  (--sf-on-surface, --sf-on-surface-variant) measures at least
+//                  4.5:1 against 95 % of the pixels (the 5th percentile)
+//   scheme-switch  a two-scheme effect switches through update(settings,
+//                  {scheme}) without a remount, and the frame changes polarity
+//   windows        capability windows: drawn once behind a group of three window
+//                  cards under a mask, nothing shows outside the windows, the
+//                  scene spans the whole group, and all of it holds after the
+//                  group narrows and the mask is rebuilt
+//   pair           a pair given as a URL is outside the catalogue: noted as
+//                  needing the sandbox runner, never run inline; an id is noted
+//                  as resolved against the catalogue and its index digest
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync, readFileSync} from 'node:fs';
@@ -31,6 +50,7 @@ export async function runEffectKit(effectDirectory, outputRoot) {
   const manifest = JSON.parse(readFileSync(join(effectRoot, 'effect.json'), 'utf8'));
   const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>effect kit</title>
 <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'effect-kit', pluginListVersion: 'effect-kit', preloader: {enabled: false}, icons: {enabled: false}, theme: false};</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
 </head><body style="margin:0"><div id="host" style="position:relative;inline-size:400px;block-size:300px"></div>
 <script src="/distr/core/js/core.js"></script></body></html>`;
   const requests = [];
@@ -147,11 +167,197 @@ export async function runEffectKit(effectDirectory, outputRoot) {
     const stillNodes = await still.tab.evaluate(() => document.getElementById('host').children.length);
     check('still-motion', stillNodes > 0 && stillTo - stillFrom === 0, {frames: stillTo - stillFrom, nodes: stillNodes});
     await still.context.close();
+
+    // simai.effect 1.1: only what the manifest declares is checked.
+    await checkSchemes({manifest, run, check, wait});
+    if ((manifest.capabilities ?? []).includes('windows')) await checkWindows({manifest, run, check, wait});
+    if (typeof manifest.pair === 'string') {
+      const foreign = /^https:\/\//u.test(manifest.pair);
+      check('pair', true, foreign
+        ? {pair: manifest.pair, foreign: true, note: 'outside the pinned catalogue: runs only in the sandbox runner, refused until one is available, never inline'}
+        : {pair: manifest.pair, foreign: false, note: 'resolved against the catalogue base and checked against its index digest'});
+    }
   } finally {
     await browser.close();
     server.close();
   }
   return {ok: results.every((result) => result.ok), results};
+}
+
+// simai.effect 1.1: schemes, contrast, windows --------------------------------
+
+const POLARITY = 0.18; // mean relative luminance between a dark and a light frame
+const CONTRAST = 4.5;
+const TEXT_ROLES = ['--sf-on-surface', '--sf-on-surface-variant'];
+const MAGENTA = [255, 0, 255]; // the page behind a windows group: no effect draws it
+
+// A screenshot decoded in the page: its luminance mean, the 5th percentile of
+// contrast for each named colour, and -- given window rectangles -- how many
+// sampled pixels outside them are not the page colour and what share inside
+// them is drawn.
+const measure = (tab, png, {colors = {}, rects = null} = {}) => tab.evaluate(async ({data, colors, rects, magenta}) => {
+  const image = new Image();
+  image.src = `data:image/png;base64,${data}`;
+  await image.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = image.width;
+  canvas.height = image.height;
+  const context = canvas.getContext('2d', {willReadFrequently: true});
+  context.drawImage(image, 0, 0);
+  const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+  const channel = (value) => { const c = value / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const luminance = (r, g, b) => 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  const parse = (color) => {
+    const probe = document.createElement('canvas').getContext('2d', {willReadFrequently: true});
+    probe.fillStyle = color;
+    probe.fillRect(0, 0, 1, 1);
+    const [r, g, b] = probe.getImageData(0, 0, 1, 1).data;
+    return luminance(r, g, b);
+  };
+  if (rects) {
+    const within = (x, y, inset) => rects.some((rect) => x >= rect.x + inset && x < rect.x + rect.w - inset && y >= rect.y + inset && y < rect.y + rect.h - inset);
+    let leaked = 0;
+    let inside = 0;
+    let drawn = 0;
+    for (let y = 0; y < image.height; y += 2) {
+      for (let x = 0; x < image.width; x += 2) {
+        const index = (y * image.width + x) * 4;
+        const page = Math.abs(pixels[index] - magenta[0]) + Math.abs(pixels[index + 1] - magenta[1]) + Math.abs(pixels[index + 2] - magenta[2]) <= 6;
+        // Edges (a window's corners and antialiasing) count as neither.
+        if (within(x, y, 14)) { inside += 1; if (!page) drawn += 1; } else if (!within(x, y, -2) && !page) leaked += 1;
+      }
+    }
+    return {leaked, drawn: Number((drawn / Math.max(inside, 1)).toFixed(3))};
+  }
+  const lums = [];
+  for (let index = 0; index < pixels.length; index += 4) lums.push(luminance(pixels[index], pixels[index + 1], pixels[index + 2]));
+  const mean = lums.reduce((sum, value) => sum + value, 0) / lums.length;
+  const contrast = {};
+  for (const [name, color] of Object.entries(colors)) {
+    const text = parse(color);
+    const ratios = lums.map((value) => (Math.max(value, text) + 0.05) / (Math.min(value, text) + 0.05)).sort((a, b) => a - b);
+    contrast[name] = Number(ratios[Math.floor(ratios.length * 0.05)].toFixed(2));
+  }
+  return {mean: Number(mean.toFixed(3)), contrast};
+}, {data: png.toString('base64'), colors, rects, magenta: MAGENTA});
+
+const mountWith = (tab, manifest, hostId, scheme) => tab.evaluate(async ({manifest, hostId, scheme}) => {
+  const module = await import(`/effect/${manifest.entry}`);
+  window.__handle = window.SF.Effects.mountEffect(document.getElementById(hostId), {manifest, module, scheme});
+}, {manifest, hostId, scheme});
+
+const defaults = (manifest) => Object.fromEntries(manifest.settings.map((setting) => [setting.key, setting.default]));
+
+// The area of a scheme: the host takes .theme-<scheme> and that theme's surface.
+async function areaOf({run, manifest, scheme}) {
+  const {context, tab} = await run();
+  await tab.evaluate((scheme) => {
+    const host = document.getElementById('host');
+    host.className = `theme-${scheme}`;
+    host.style.background = 'var(--sf-surface-0)';
+  }, scheme);
+  await mountWith(tab, manifest, 'host', scheme);
+  return {context, tab};
+}
+
+async function checkSchemes({manifest, run, check, wait}) {
+  if (!Array.isArray(manifest.schemes)) return;
+  const shot = (tab) => tab.locator('#host').screenshot();
+  const polar = (scheme, mean) => (scheme === 'dark' ? mean < POLARITY : mean >= POLARITY);
+  for (const scheme of manifest.schemes) {
+    const {context, tab} = await areaOf({run, manifest, scheme});
+    await wait(tab, 400);
+    // A role resolved as text in the area would be: a probe element there, so
+    // var() chains and light-dark() settle in the area's scheme.
+    const colors = await tab.evaluate((roles) => {
+      const host = document.getElementById('host');
+      const style = getComputedStyle(host);
+      const probe = document.createElement('span');
+      host.append(probe);
+      const resolved = Object.fromEntries(roles.filter((role) => style.getPropertyValue(role).trim()).map((role) => {
+        probe.style.color = `var(${role})`;
+        return [role, getComputedStyle(probe).color];
+      }));
+      probe.remove();
+      return resolved;
+    }, TEXT_ROLES);
+    const frames = [];
+    for (let index = 0; index < 5; index += 1) {
+      frames.push(await measure(tab, await shot(tab), {colors}));
+      await wait(tab, 450);
+    }
+    const means = frames.map((frame) => frame.mean);
+    check(`scheme-${scheme}`, means.every((mean) => polar(scheme, mean)), {mean: means, threshold: POLARITY});
+    const worst = Object.fromEntries(Object.keys(colors).map((role) => [role, Math.min(...frames.map((frame) => frame.contrast[role]))]));
+    check(`contrast-${scheme}`, Object.keys(worst).length === TEXT_ROLES.length && Object.values(worst).every((ratio) => ratio >= CONTRAST), {p5: worst, needs: CONTRAST});
+    await tab.evaluate(() => window.__handle.destroy());
+    await context.close();
+  }
+  if (manifest.schemes.length !== 2) return;
+  const [home, other] = manifest.schemes;
+  const {context, tab} = await areaOf({run, manifest, scheme: home});
+  await wait(tab, 400);
+  const before = await measure(tab, await shot(tab));
+  const kept = await tab.evaluate(({settings, other}) => {
+    const host = document.getElementById('host');
+    const first = host.firstElementChild;
+    host.className = `theme-${other}`;
+    window.__handle.update(settings, {scheme: other});
+    return Boolean(first) && host.firstElementChild === first && window.__handle.scheme === other;
+  }, {settings: defaults(manifest), other});
+  await wait(tab, 500);
+  const after = await measure(tab, await shot(tab));
+  check('scheme-switch', kept && polar(other, after.mean), {kept, from: before.mean, to: after.mean});
+  await tab.evaluate(() => window.__handle.destroy());
+  await context.close();
+}
+
+// One scene behind a group of window cards, seen only through them.
+async function checkWindows({manifest, run, check, wait}) {
+  const {context, tab} = await run();
+  const scheme = (manifest.schemes ?? ['dark'])[0];
+  await tab.evaluate(({scheme, magenta}) => {
+    document.getElementById('host').remove();
+    document.body.style.background = `rgb(${magenta.join(',')})`;
+    const card = '<div class="window" style="position:relative;flex:1;border-radius:12px"></div>';
+    document.body.insertAdjacentHTML('beforeend', `<div id="group" class="theme-${scheme}" style="position:relative;display:flex;gap:24px;padding:24px;box-sizing:border-box;block-size:300px"><div id="windows-host" style="position:absolute;inset:0"></div>${card}${card}${card}</div>`);
+  }, {scheme, magenta: MAGENTA});
+  // Lays the group out at a width and rebuilds the mask: one opaque layer per window.
+  const layout = (width) => tab.evaluate((width) => {
+    const group = document.getElementById('group');
+    group.style.inlineSize = `${width}px`;
+    const box = group.getBoundingClientRect();
+    const rects = [...group.querySelectorAll('.window')].map((card) => {
+      const rect = card.getBoundingClientRect();
+      return {x: rect.left - box.left, y: rect.top - box.top, w: rect.width, h: rect.height};
+    });
+    const host = document.getElementById('windows-host');
+    for (const prefix of ['', '-webkit-']) {
+      host.style.setProperty(`${prefix}mask-image`, rects.map(() => 'linear-gradient(#000, #000)').join(', '));
+      host.style.setProperty(`${prefix}mask-size`, rects.map((rect) => `${rect.w}px ${rect.h}px`).join(', '));
+      host.style.setProperty(`${prefix}mask-position`, rects.map((rect) => `${rect.x}px ${rect.y}px`).join(', '));
+      host.style.setProperty(`${prefix}mask-repeat`, 'no-repeat');
+    }
+    return rects;
+  }, width);
+  const scene = () => tab.evaluate(() => {
+    const host = document.getElementById('windows-host');
+    const box = host.getBoundingClientRect();
+    const child = host.firstElementChild?.getBoundingClientRect();
+    return {nodes: host.children.length, spans: Boolean(child) && Math.abs(child.width - box.width) <= 1 && Math.abs(child.height - box.height) <= 1};
+  });
+  const shot = () => tab.locator('#group').screenshot();
+  let rects = await layout(720);
+  await mountWith(tab, manifest, 'windows-host', scheme);
+  await wait(tab, 500);
+  const wide = {...await measure(tab, await shot(), {rects}), ...await scene()};
+  rects = await layout(480);
+  await wait(tab, 500);
+  const narrow = {...await measure(tab, await shot(), {rects}), ...await scene()};
+  const holds = (state) => state.leaked === 0 && state.drawn > 0.5 && state.nodes > 0 && state.spans;
+  check('windows', holds(wide) && holds(narrow), {wide, narrow});
+  await tab.evaluate(() => window.__handle.destroy());
+  await context.close();
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {

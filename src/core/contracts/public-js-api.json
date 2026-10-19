@@ -93,6 +93,8 @@
         "checkEffectManifest",
         "checkSetting",
         "effectSettings",
+        "effectSchemes",
+        "pairIsForeign",
         "mountEffect",
         "EFFECT_SCHEMA"
       ]
