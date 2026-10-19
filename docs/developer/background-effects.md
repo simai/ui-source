@@ -17,6 +17,17 @@ and the kit (`scripts/effect-kit.mjs`).
 | `effectSchemes(manifest)` | the schemes it draws (`['dark', 'light']` when it declares none) |
 | `pairIsForeign(manifest)` | `true` when the pair is an address, not a catalogue id |
 
+## Drawing deterministically
+
+The kit's contrast and polarity checks sample frames of the effect at its
+default settings. An effect therefore draws deterministically at its
+defaults: no unseeded `Math.random`. Seed any randomness (a fixed seed, or one
+derived from the settings) so every run draws the same scene; the catalogue
+found a randomly placed template that failed contrast about one run in two.
+This is guidance for `area-takes-the-drawn-theme`, not a new requirement;
+simai.effect 1.1.0's published bytes stay as they are, so the note lives here
+and in the kit's header until the next edition.
+
 ## Theme policy
 
 A placement has a theme mode: `auto` (as the page, the default), `dark` or

@@ -38,6 +38,14 @@
 //   pair           a pair given as a URL is outside the catalogue: noted as
 //                  needing the sandbox runner, never run inline; an id is noted
 //                  as resolved against the catalogue and its index digest
+//
+// The contrast and polarity checks sample frames, so an effect draws
+// deterministically at its defaults: no unseeded Math.random -- seed any
+// randomness (a fixed seed, or one derived from the settings) so every run
+// draws the same scene. The catalogue found a randomly placed template that
+// failed contrast about one run in two. (Guidance for area-takes-the-drawn-
+// theme; simai.effect 1.1.0's published bytes do not change, so it is stated
+// here and in docs/developer/background-effects.md until the next edition.)
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync, readFileSync} from 'node:fs';
