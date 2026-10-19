@@ -12,7 +12,10 @@
    sf-button's host is display: contents, so its button is the flex item. */
 .sf-pagination-more {
   flex: 1 1 auto;
-  min-inline-size: 0;
+  /* Never narrower than its button: the row wraps instead (see
+     .sf-pagination-main). A zero floor let the box shrink under the button,
+     which then overlapped the arrows beside it. */
+  min-inline-size: max-content;
 }
 
 .sf-pagination-more > sf-button > button {

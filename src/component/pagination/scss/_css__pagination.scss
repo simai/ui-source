@@ -44,8 +44,15 @@
   padding-bottom: var(--sf-pagination-top--padding-bottom);
 }
 
-/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1) justify-content/space-between (.justify-between) align-items/center (.items-center) */
+/* The page row wraps. It used to hold every part on one line whatever its
+   width, and in a column narrower than the parts -- a side column on a wide
+   screen, where the screen-width query below never applies -- «Показать
+   ещё» shrank to nothing and its button spilled over «Последняя», taking its
+   clicks. Wrapped, a part that does not fit starts a new line at its own size:
+   tap targets keep their height and width, and nothing overlaps.
+   utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/wrap (.flex-wrap) gap/var(--sf-space-1) justify-content/space-between (.justify-between) align-items/center (.items-center) */
 .sf-pagination .sf-pagination-main {
+  flex-wrap: wrap;
   --sf-pagination-main--background-color: transparent;
   --sf-pagination-main--border-bottom-width: var(--sf-px);
   --sf-pagination-main--border-color: var(--sf-outline-variant);
@@ -110,8 +117,11 @@
   line-height: var(--sf-pagination-total--line-height, var(--sf-text-height-1));
 }
 
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+/* The label and the row of arrows wrap too: in a column too narrow for both,
+   the label takes a line of its own and the arrows stay a whole row below it.
+   utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/wrap (.flex-wrap) gap/var(--sf-pagination-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-pagination .sf-pagination-container {
+  flex-wrap: wrap;
   --sf-pagination-container--background-color: transparent;
   --sf-pagination-container--gap: var(--sf-space-1\/3);
   background-color: var(--sf-pagination-container--background-color);
