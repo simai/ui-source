@@ -9,7 +9,9 @@
 // catalogue with the real index format), after the page has loaded, each file
 // once and verified, drawn under the content that stays in place. A pair by
 // catalogue id is loaded the same way; an address outside the catalogue is
-// refused without being asked for; content added later is found too.
+// refused without being asked for (this page sets SF_BOOT_CONFIG.effects.
+// foreign = 'refuse'; by default it runs in the sandbox -- the probe
+// effect-sandbox); content added later is found too.
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 import {BASE, openPage} from '../fixtures/effect-catalogue/catalogue.mjs';
@@ -34,7 +36,7 @@ const body = `
 
 const browser = await chromium.launch();
 try {
-  const {page, requests, errors} = await openPage(browser, out, {theme: 'theme-light', body});
+  const {page, requests, errors} = await openPage(browser, out, {theme: 'theme-light', body, effects: {foreign: 'refuse'}});
   await page.waitForFunction(() => ['by-id', 'by-url', 'foreign', 'unknown', 'win', 'win-refused']
     .every((id) => !['loading', null].includes(document.getElementById(id).getAttribute('data-sf-effect-state'))), null, {timeout: 15000});
   await page.waitForTimeout(200);

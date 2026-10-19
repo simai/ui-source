@@ -1,0 +1,13 @@
+{
+  "schema": "simai.effect",
+  "schema_version": 1,
+  "id": "hostile-effect",
+  "version": "1.0.0",
+  "label": {"ru": "Враждебный", "en": "Hostile"},
+  "author": "SIMAI Framework (sandbox probe fixture)",
+  "entry": "index.js",
+  "surfaces": ["hero"],
+  "schemes": ["dark"],
+  "settings": [],
+  "needs": {"network": false}
+}

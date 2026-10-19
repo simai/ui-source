@@ -1,0 +1,16 @@
+{
+  "schema": "simai.effect",
+  "schema_version": 1,
+  "id": "foreign-bands",
+  "version": "1.0.0",
+  "label": {"ru": "Чужие полосы", "en": "Foreign bands"},
+  "author": "SIMAI Framework (sandbox probe fixture)",
+  "entry": "index.js",
+  "surfaces": ["hero"],
+  "schemes": ["dark", "light"],
+  "capabilities": ["windows"],
+  "settings": [
+    {"key": "bands", "type": "integer", "label": {"ru": "Сколько полос", "en": "How many bands"}, "default": 5, "min": 2, "max": 12}
+  ],
+  "needs": {"network": false}
+}

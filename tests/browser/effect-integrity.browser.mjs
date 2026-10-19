@@ -11,7 +11,10 @@
 // pulls an untrusted pair inline: a catalogue effect whose pair is a foreign
 // address, needed on a light page, is hidden with the reason
 // foreign-pair-needs-sandbox, and that address is never asked for -- not by
-// the declarative mount, not when the JS API is handed the pair.
+// the declarative mount, not when the JS API is handed the pair. Foreign
+// effects are refused on this page (SF_BOOT_CONFIG.effects.foreign =
+// 'refuse'); with the default they run in the sandbox, which the probe
+// effect-sandbox holds.
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 import {BASE, EFFECTS, FOREIGN_PAIR, moduleUrl, openPage} from '../fixtures/effect-catalogue/catalogue.mjs';
@@ -34,7 +37,7 @@ const browser = await chromium.launch();
 try {
   const warnings = [];
   const listen = (page) => page.on('console', (message) => { if (message.type() === 'warning') warnings.push(message.text()); });
-  const {page, requests, errors} = await openPage(browser, out, {theme: 'theme-light', body, listen});
+  const {page, requests, errors} = await openPage(browser, out, {theme: 'theme-light', body, listen, effects: {foreign: 'refuse'}});
   await page.waitForFunction(() => ['module', 'manifest', 'dusk', 'good']
     .every((id) => !['loading', null].includes(document.getElementById(id).getAttribute('data-sf-effect-state'))), null, {timeout: 15000});
   await page.waitForTimeout(200);

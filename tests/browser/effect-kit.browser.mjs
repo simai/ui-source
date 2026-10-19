@@ -6,6 +6,8 @@
 // its node behind -- fails exactly those. A two-scheme, windows-capable effect
 // passes each scheme, its contrast, the switch and the windows mode; the same
 // effect made mask-unsafe (it rewrites its host's style) fails windows alone.
+// With the sandbox option the kit also runs the effect as a foreign one, in
+// the sandboxed frame.
 import {cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve, dirname, join} from 'node:path';
@@ -33,6 +35,10 @@ const declared = ['contrast-dark', 'contrast-light', 'scheme-dark', 'scheme-ligh
 if (!schemes.ok) failures.push({case: 'a two-scheme, windows-capable effect passes', got: schemes.results.filter((result) => !result.ok)});
 if (!declared.every((id) => ids(schemes).includes(id))) failures.push({case: 'the 1.1 checks run for what the manifest declares', got: ids(schemes), expected: declared});
 
+const sandboxed = await runEffectKit(join(fixtures, 'effect-schemes'), out, {sandbox: true});
+const inFrame = sandboxed.results.find((result) => result.id === 'sandbox');
+if (!inFrame?.ok) failures.push({case: 'with the sandbox option the effect runs in the sandboxed frame', got: inFrame ?? 'no sandbox check'});
+
 // Mask-unsafe: the same scene, but the effect rewrites its host's style and so
 // drops the mask the windows mode laid on it.
 const unsafe = mkdtempSync(join(tmpdir(), 'effect-windows-unsafe-'));
@@ -49,6 +55,6 @@ try {
   rmSync(unsafe, {recursive: true, force: true});
 }
 
-console.log(JSON.stringify({good: good.results, bad: bad.results, schemes: schemes.results}));
+console.log(JSON.stringify({good: good.results, bad: bad.results, schemes: schemes.results, sandbox: inFrame}));
 if (failures.length) { console.error(JSON.stringify(failures, null, 2)); process.exit(1); }
 console.log('EFFECT_KIT_OK');

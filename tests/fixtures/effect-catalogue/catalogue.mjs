@@ -20,7 +20,7 @@ export const FOREIGN_PAIR = 'https://foreign.test/effects/dawn-bands/effect.json
 
 // The module, marked: its top level and its mount each leave a trace on the
 // page, so a probe can tell whether it was ever executed.
-const marked = (id) => `globalThis.__effectRan = [...(globalThis.__effectRan ?? []), ${JSON.stringify(id)}];\n`
+export const marked = (id) => `globalThis.__effectRan = [...(globalThis.__effectRan ?? []), ${JSON.stringify(id)}];\n`
   + source.replace('export function mount(host, settings, context) {\n', `export function mount(host, settings, context) {\n  globalThis.__effectMounted = [...(globalThis.__effectMounted ?? []), ${JSON.stringify(id)}];\n`);
 
 const manifest = (id, fields) => {
@@ -95,26 +95,35 @@ export function buildCatalogue() {
 }
 
 // A page with the built core, the catalogue configured, `body` in <body>, the
-// <html> in `theme`; `listen(page)` is called before it loads. Answers the
-// page and the list of every address asked for.
-export async function openPage(browser, out, {body = '', theme = 'theme-light', head = '', reducedMotion = 'no-preference', listen = null} = {}) {
+// <html> in `theme`; `listen(page)` is called before it loads. `effects` adds
+// to SF_BOOT_CONFIG.effects (foreign: 'refuse', say); `serve` maps absolute
+// addresses outside probe.test to {body, type} answered with CORS, standing
+// for a foreign effect's host. Answers the page, the list of every address
+// asked for, and `routed`: the addresses that reached the router (a request
+// the browser blocked, by a content security policy say, is asked for but
+// never routed).
+export async function openPage(browser, out, {body = '', theme = 'theme-light', head = '', reducedMotion = 'no-preference', listen = null, effects = {}, serve = new Map()} = {}) {
   const coreRoot = join(resolve(out), 'core', 'core');
   const catalogue = buildCatalogue();
   const context = await browser.newContext({reducedMotion});
   const page = await context.newPage();
   const requests = [];
+  const routed = [];
   const errors = [];
   page.on('request', (request) => requests.push(request.url()));
   page.on('pageerror', (error) => errors.push(error.message));
   listen?.(page);
   const html = `<!doctype html><html lang="en" class="${theme}"><head><meta charset="utf-8"><title>effects probe</title>
-<script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'effects', pluginListVersion: 'effects', preloader: {enabled: false}, icons: {enabled: false}, theme: false, effects: {catalogue: '${BASE}'}};
+<script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'effects', pluginListVersion: 'effects', preloader: {enabled: false}, icons: {enabled: false}, theme: false, effects: ${JSON.stringify({catalogue: BASE, ...effects})}};
 window.__loadAt = null; window.addEventListener('load', () => { window.__loadAt = performance.now(); });
 window.__refused = []; document.addEventListener('sf-effect-refused', (event) => window.__refused.push({target: event.target.id, ...event.detail}));</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">${head}
 </head><body style="margin:0">${body}<script src="/distr/core/js/core.js"></script></body></html>`;
   await context.route('**/*', (route) => {
     const url = new URL(route.request().url());
+    routed.push(url.href);
+    const served = serve.get(`${url.origin}${url.pathname}`);
+    if (served) return route.fulfill({status: 200, contentType: `${served.type}; charset=utf-8`, headers: {'access-control-allow-origin': '*'}, body: served.body});
     if (url.origin !== ORIGIN) return route.fulfill({status: 404, body: ''});
     if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: html});
     if (catalogue.has(url.pathname)) {
@@ -134,7 +143,7 @@ window.__refused = []; document.addEventListener('sf-effect-refused', (event) =>
   await page.waitForFunction(() => window.SF?.Effects && window.__loadAt !== null, null, {timeout: 15000});
   // The core shows the body once the Loader is ready.
   await page.waitForFunction(() => document.body.style.opacity !== '0', null, {timeout: 15000}).catch(() => {});
-  return {context, page, requests, errors};
+  return {context, page, requests, routed, errors};
 }
 
 // The manifests and the module source, for probes that mount through the JS API.

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node scripts/effect-kit.mjs <effect directory> <built output root>
+// Usage: node scripts/effect-kit.mjs <effect directory> <built output root> [--sandbox]
 //
 // The conformance kit of simai.effect 1.1.0: what a product runs on an effect
 // before it lists or installs it. The effect directory holds effect.json and
@@ -36,8 +36,15 @@
 //                  scene spans the whole group, and all of it holds after the
 //                  group narrows and the mask is rebuilt
 //   pair           a pair given as a URL is outside the catalogue: noted as
-//                  needing the sandbox runner, never run inline; an id is noted
-//                  as resolved against the catalogue and its index digest
+//                  running only in the sandbox runner, never inline; an id is
+//                  noted as resolved against the catalogue and its index digest
+//
+// With --sandbox (runEffectKit(..., {sandbox: true})), as a foreign effect:
+//
+//   sandbox        loaded by its effect.json address, it runs in the sandboxed
+//                  frame (handle.sandboxed), mounts there without an error,
+//                  draws (the host's pixels change), and destroy leaves the
+//                  host empty
 //
 // The contrast and polarity checks sample frames, so an effect draws
 // deterministically at its defaults: no unseeded Math.random -- seed any
@@ -53,7 +60,7 @@ import {join, resolve, sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {chromium} from 'playwright';
 
-export async function runEffectKit(effectDirectory, outputRoot) {
+export async function runEffectKit(effectDirectory, outputRoot, {sandbox = false} = {}) {
   const effectRoot = resolve(effectDirectory);
   const out = resolve(outputRoot);
   const manifest = JSON.parse(readFileSync(join(effectRoot, 'effect.json'), 'utf8'));
@@ -180,10 +187,11 @@ export async function runEffectKit(effectDirectory, outputRoot) {
     // simai.effect 1.1: only what the manifest declares is checked.
     await checkSchemes({manifest, run, check, wait});
     if ((manifest.capabilities ?? []).includes('windows')) await checkWindows({manifest, run, check, wait});
+    if (sandbox) await checkSandbox({run, check, wait});
     if (typeof manifest.pair === 'string') {
       const foreign = /^https:\/\//u.test(manifest.pair);
       check('pair', true, foreign
-        ? {pair: manifest.pair, foreign: true, note: 'outside the pinned catalogue: runs only in the sandbox runner, refused until one is available, never inline'}
+        ? {pair: manifest.pair, foreign: true, note: 'outside the pinned catalogue: runs only in the sandbox runner (refused with effects.foreign = refuse), never inline'}
         : {pair: manifest.pair, foreign: false, note: 'resolved against the catalogue base and checked against its index digest'});
     }
   } finally {
@@ -191,6 +199,35 @@ export async function runEffectKit(effectDirectory, outputRoot) {
     server.close();
   }
   return {ok: results.every((result) => result.ok), results};
+}
+
+// As a foreign effect, in the sandbox: loaded by address, drawn in the frame.
+async function checkSandbox({run, check, wait}) {
+  const {context, tab} = await run();
+  const shot = () => tab.locator('#host').screenshot().then((png) => png.toString('base64'));
+  const blank = await shot();
+  const mounted = await tab.evaluate(async () => {
+    window.__sandboxErrors = [];
+    document.addEventListener('sf-effect-error', (event) => window.__sandboxErrors.push(event.detail));
+    try {
+      const effect = await window.SF.Effects.loadEffect(`${location.origin}/effect/effect.json`);
+      window.__handle = window.SF.Effects.mountEffect(document.getElementById('host'), {manifest: effect.manifest, module: effect.module});
+      return {loaded: effect.sandboxed, handle: window.__handle.sandboxed};
+    } catch (error) {
+      return {refused: error.reason ?? String(error)};
+    }
+  });
+  await wait(tab, 800);
+  const drawn = await shot();
+  const state = await tab.evaluate(() => ({
+    frame: document.querySelector('#host iframe')?.getAttribute('data-sf-effect-sandbox') ?? null,
+    errors: window.__sandboxErrors,
+  }));
+  if (mounted.handle) await tab.evaluate(() => window.__handle.destroy());
+  const left = await tab.evaluate(() => document.getElementById('host').childNodes.length);
+  await context.close();
+  check('sandbox', mounted.loaded === true && mounted.handle === true && state.frame === 'mounted' && !state.errors.length && drawn !== blank && left === 0,
+    {...mounted, frame: state.frame, errors: state.errors, draws: drawn !== blank, nodesAfterDestroy: left});
 }
 
 // simai.effect 1.1: schemes, contrast, windows --------------------------------
@@ -374,12 +411,12 @@ async function checkWindows({manifest, run, check, wait}) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  const [effectDirectory, outputRoot] = process.argv.slice(2);
-  if (!effectDirectory || !outputRoot) {
-    console.error('Usage: node scripts/effect-kit.mjs <effect directory> <built output root>');
+  const [effectDirectory, outputRoot, flag] = process.argv.slice(2);
+  if (!effectDirectory || !outputRoot || (flag !== undefined && flag !== '--sandbox')) {
+    console.error('Usage: node scripts/effect-kit.mjs <effect directory> <built output root> [--sandbox]');
     process.exit(2);
   }
-  const {ok, results} = await runEffectKit(effectDirectory, outputRoot);
+  const {ok, results} = await runEffectKit(effectDirectory, outputRoot, {sandbox: flag === '--sandbox'});
   for (const result of results) console.log(`${result.ok ? 'ok  ' : 'FAIL'} ${result.id}${result.detail ? ` ${JSON.stringify(result.detail)}` : ''}`);
   process.exit(ok ? 0 : 1);
 }

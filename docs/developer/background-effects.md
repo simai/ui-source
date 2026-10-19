@@ -16,6 +16,8 @@ and the kit (`scripts/effect-kit.mjs`).
 | `effectSettings(manifest, stored)` | `{settings, invalid}`: every key, defaults where a value is missing or invalid |
 | `effectSchemes(manifest)` | the schemes it draws (`['dark', 'light']` when it declares none) |
 | `pairIsForeign(manifest)` | `true` when the pair is an address, not a catalogue id |
+| `SANDBOX_RUNNER_SHA256` | the base64 SHA-256 of the sandbox frame's runner script |
+| `foreignMode(value?)` | `'sandbox'` or `'refuse'`: how foreign effects are treated (`SF_BOOT_CONFIG.effects.foreign` without an argument) |
 
 ## Drawing deterministically
 
@@ -35,17 +37,21 @@ A placement has a theme mode: `auto` (as the page, the default), `dark` or
 
 - `pageScheme(document?)` -> `'dark' | 'light'`: the theme class the Loader
   sets on `<html>`, or the system preference without one.
-- `allowedModes(manifest, {pair?})` -> the modes an editor may offer:
-  `'auto'` always, a fixed mode only when the effect or its catalogue pair
+- `allowedModes(manifest, {pair?, foreign?})` -> the modes an editor may
+  offer: `'auto'` always, a fixed mode only when the effect or its pair
   draws that scheme. `pair` is the pair's manifest when known; without it a
-  catalogue pair counts as drawing the other scheme. A foreign pair adds
-  nothing.
-- `resolveTheme(manifest, {pageScheme?, themeMode = 'auto', pair?})` ->
-  `{effect: 'self' | 'pair', scheme[, pair]}` or `{hidden: true, reason}`.
+  pair counts as drawing the other scheme. A foreign pair counts while
+  foreign effects run in the sandbox, and adds nothing when they are refused
+  (`foreign`, default `SF_BOOT_CONFIG.effects.foreign`).
+- `resolveTheme(manifest, {pageScheme?, themeMode = 'auto', pair?, foreign?})`
+  -> `{effect: 'self' | 'pair', scheme[, pair][, sandboxed: true]}` or
+  `{hidden: true, reason}`.
   The order: the effect in the target scheme; its pair in the target scheme;
   in `auto`, a dark-only effect kept dark on a light page; otherwise hidden.
+  A pair given as an address resolves with `sandboxed: true`.
   Reasons: `light-only-on-dark`, `mode-not-drawable`,
-  `foreign-pair-needs-sandbox`, `unknown-theme-mode`.
+  `foreign-pair-needs-sandbox` (only when foreign effects are refused),
+  `unknown-theme-mode`.
 
 ## Mounting
 
@@ -66,6 +72,7 @@ handle.effect;      // 'self' | 'pair' | null (hidden)
 handle.resolution;  // what resolveTheme answered
 handle.scheme;      // the drawn scheme, null when hidden
 handle.themeMode;
+handle.sandboxed;   // true while what is drawn runs in the sandbox
 handle.pause(); handle.resume(); handle.destroy();
 ```
 
@@ -77,8 +84,12 @@ handle.pause(); handle.resume(); handle.destroy();
   through `update(settings, {scheme})` without a remount; the pair, or
   nothing, takes its place when the policy says so.
 - The pair receives the stored values valid for its own settings.
-- A pair given as an address is never run, even when a module is handed in:
-  the placement is hidden with `foreign-pair-needs-sandbox`.
+- A pair given as an address runs only in the sandbox: as the record
+  `loadEffect(address)` answers (`sandboxed: true`). A module handed in for
+  it any other way is never run, and the placement is hidden with
+  `foreign-pair-needs-sandbox`; so it is when foreign effects are refused.
+- `mountEffect` runs the module it is handed in the page. Foreign code
+  reaches the sandbox only through `loadEffect` or `placeEffect`.
 - Every mount keeps the 1.0 rules: one still frame for reduced motion,
   paused in a hidden tab, and (since this release) paused off screen.
 
@@ -113,25 +124,113 @@ window.SF_BOOT_CONFIG = {
 };
 ```
 
-- `loadEffect(reference, {catalogue?})` -> `{id, url, manifest, module,
-  styles}`. `reference` is a catalogue id or the address of an `effect.json`
-  under the catalogue base. Each file (`effect.json`, the entry module, the
-  declared `styles`) is fetched once and its SHA-256 compared with the
-  catalogue index (`effects[].files[].sha256`) before anything runs. The
-  module is imported from the verified bytes (a Blob URL), never fetched
-  again. It rejects with an error whose `reason` is one of `integrity`
-  (`detail.file`), `foreign-effect-needs-sandbox`, `no-catalogue`,
-  `not-in-catalogue`, `file-not-in-index`, `invalid-index`,
-  `invalid-manifest`, `manifest-mismatch`, `fetch-failed`, `module-failed`,
-  `no-integrity-check` (no `crypto.subtle`, which needs a secure context).
+- `loadEffect(reference, {catalogue?, foreign?})` -> `{id, url, manifest,
+  module, styles, sandboxed}`. `reference` is a catalogue id or the address
+  of an `effect.json` under the catalogue base. Each file (`effect.json`,
+  the entry module, the declared `styles`) is fetched once and its SHA-256
+  compared with the catalogue index (`effects[].files[].sha256`) before
+  anything runs. The module is imported from the verified bytes (a Blob
+  URL), never fetched again; `sandboxed` is `false`. Any other address of an
+  `effect.json` is a foreign effect: see below. It rejects with an error
+  whose `reason` is one of `integrity` (`detail.file`),
+  `foreign-effect-needs-sandbox` (foreign effects refused),
+  `invalid-reference` (a foreign address that is not https, or the page's
+  own origin, ending in `/effect.json`), `no-catalogue`, `not-in-catalogue`,
+  `file-not-in-index`, `invalid-index`, `invalid-manifest`,
+  `manifest-mismatch`, `fetch-failed`, `module-failed`, `no-integrity-check`
+  (no `crypto.subtle`, which needs a secure context).
 - `placeEffect(element, {effect, settings, themeMode, windows, catalogue,
-  locale})` -> a handle or `null`: loads the effect (and its pair, when the
-  pair is a catalogue id) and draws it in a layer under the element's
-  content, or with `windows` (`true` or a selector) behind its window cards.
+  locale, foreign})` -> a handle or `null`: loads the effect and its pair (a
+  catalogue id with integrity; an address for the sandbox) and draws it in a
+  layer under the element's content, or with `windows` (`true` or a
+  selector) behind its window cards. The handle has `sandboxed`.
 
-The pin is the commit in the base address: pin it, never a branch. An effect
-outside the catalogue runs only in a sandbox runner, which is not shipped
-yet; until then it is refused.
+The pin is the commit in the base address: pin it, never a branch.
+
+## Foreign effects run in a sandbox
+
+An effect that is not in the pinned catalogue -- the address of any other
+`effect.json`, or a pair a catalogue effect names by address -- never runs in
+the page (`foreign-effects-sandboxed`, `pair-under-the-same-trust`). It runs
+in a frame of its own:
+
+```js
+window.SF_BOOT_CONFIG = {
+  effects: {
+    foreign: 'sandbox',   // the default; 'refuse' refuses foreign effects
+  },
+};
+const effect = await SF.Effects.loadEffect('https://example.com/fx/aurora/effect.json');
+effect.sandboxed;         // true
+const handle = await SF.Effects.placeEffect(section, {effect: 'https://example.com/fx/aurora/effect.json'});
+handle.sandboxed;         // true
+```
+
+- **No index, so the sandbox is the trust boundary.** The page fetches the
+  manifest and the files it names once (`credentials: 'omit'`, no referrer),
+  with no digest to compare them with. The manifest must still pass
+  `checkEffectManifest`. The module text is never imported in the page.
+  The foreign host must answer with CORS, and the page's own
+  `connect-src` must allow it.
+- **A page with its own policy.** A `srcdoc` frame inherits the page's
+  content security policy on top of its own. A page that sets `script-src`
+  admits `'sha256-<SF.Effects.SANDBOX_RUNNER_SHA256>'` and `blob:` there,
+  or the frame's runner and the effect do not run.
+- **The frame.** An `<iframe sandbox="allow-scripts">` filling the effect's
+  host, with no `allow-same-origin`: its origin is opaque, so it has no
+  cookies, storage or IndexedDB, and cannot reach the page's document. No
+  `allow-top-navigation`, `allow-popups`, `allow-forms` or `allow-modals`:
+  top navigation throws, `window.open` answers `null`, dialogs and forms are
+  ignored. `referrerpolicy="no-referrer"`, `aria-hidden`, no pointer events.
+- **The policy** of the frame's document (`srcdoc`, a meta tag):
+  `default-src 'none'; script-src 'sha256-<runner>' blob:;
+  style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:;
+  font-src data:; connect-src 'none'; worker-src 'none'; frame-src 'none';
+  child-src 'none'; object-src 'none'; manifest-src 'none';
+  form-action 'none'; base-uri 'none'`. The one inline script is the core's
+  runner, admitted by its hash. A nonce would not do: a module imported by
+  a nonced script inherits the nonce for its own `import()`. The effect's
+  module is imported from a Blob URL made inside the frame. No fetch, XHR,
+  WebSocket, EventSource, beacon, outside image, script, sheet or frame.
+- **Messages.** The page hands the frame one `MessagePort`. Over it go
+  `mount` (the module text, the effect's styles, the settings already checked
+  with `effectSettings`, the context, the size and the palette tones),
+  `update` (settings, context, tones), `size`, `pause`, `resume` and
+  `destroy`. The frame answers only `mounted` and `error`; the page treats
+  both as data.
+- **The rules hold as inline.** It is mounted like any module: still frame
+  for reduced motion, paused while the tab is hidden or the host is off
+  screen, gone after `destroy`.
+- **Theme.** The frame's `<html>` takes `theme-dark` or `theme-light` and
+  `color-scheme` for the drawn scheme. The area outside takes the drawn
+  theme as for any placement. The frame has no Framework sheet: the page
+  sends the palette tones (`--sf-<palette>-<tone>`) resolved at the host,
+  set on the frame's root, so an effect drawn with tones looks as it does
+  inline.
+- **Windows.** A foreign effect is drawn behind window cards only when it
+  declares `capabilities: ["windows"]` (else `windows-not-declared`). The
+  frame covers the group's box, and the layer is clipped to the windows as
+  for an inline effect.
+- **Pairs.** A catalogue effect's pair given as an address is loaded for the
+  sandbox and never runs inline. A foreign effect's pair given as a
+  catalogue id names nothing in this catalogue: it is not loaded
+  (`sf-effect-refused` with `pair-of-foreign-effect`; the placement hides
+  with `pair-refused` when it needs the pair).
+- **What the sandbox cannot close.**
+  - A frame can always navigate itself, and no policy stops that. The core
+    removes a frame whose document changes and reports `sf-effect-error`
+    with `phase: 'sandbox'`. The one request that leaves can carry only
+    what the frame was given: settings, size, scheme and tones.
+  - A frame can post messages to the page (`parent.postMessage`). A page
+    that listens for `message` checks `event.source` and `event.origin`, as
+    it should anyway.
+  - A frame shares the page's process unless the browser isolates sandboxed
+    frames, so it can spend the page's CPU.
+- **`foreign: 'refuse'`** gives back the refusal: a foreign effect is
+  refused with `foreign-effect-needs-sandbox`, a foreign pair hides its
+  placement with `foreign-pair-needs-sandbox`, and no foreign address is
+  asked for. Any value other than `'sandbox'` (or none) refuses, so a
+  mistyped switch fails closed.
 
 ## Declarative mount
 
@@ -148,6 +247,9 @@ yet; until then it is refused.
 
 Core finds these once the page has loaded (and in content added later),
 places them with `placeEffect`, and destroys a placement taken off the page.
+A page that configures no catalogue and declares no effect when it loads is
+not watched for later content; it places a foreign effect it adds later
+with `placeEffect`.
 The element carries `data-sf-effect-state` (`loading`, `running`, `hidden`,
 `refused`, `failed`) and, when hidden or refused, `data-sf-effect-reason`.
 The effect draws in a layer (`[data-sf-effect-layer]`) prepended to the
@@ -161,3 +263,7 @@ element; the element becomes `position: relative` (when static) and
   placement hidden because its pair is foreign or was refused.
 - `sf-effect-error` (bubbles): an effect threw (`detail: {effect, phase,
   message}`), or a declared placement failed to mount (`phase: 'mount'`).
+  From a sandboxed effect, `detail.sandboxed` is `true`. The phase is
+  `module` when its module failed to load or has no `mount`, `mount` or a
+  method name when it threw, and `sandbox` when its frame navigated away and
+  was removed.

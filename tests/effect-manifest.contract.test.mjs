@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-import {allowedModes, checkEffectManifest, effectSchemes, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
+import {createHash} from 'node:crypto';
+import {FRAME_RUNNER, FRAME_RUNNER_SHA256, allowedModes, checkEffectManifest, effectSchemes, foreignMode, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
 
 // simai.effect 1.1 (2026-10-19): the manifest gains schemes, pair and
 // capabilities, each optional, so every 1.0 manifest stays valid. The live
@@ -92,14 +93,28 @@ test('the theme policy: allowed modes and the resolution order', () => {
   assert.deepEqual(allowedModes(dark), ['auto', 'dark']);
   assert.deepEqual(allowedModes(light), ['auto', 'light']);
   assert.deepEqual(allowedModes(paired), ['auto', 'dark', 'light']);
-  assert.deepEqual(allowedModes(foreign), ['auto', 'dark']);
+  // A foreign pair is drawn in the sandbox by default; refused, it adds nothing.
+  assert.deepEqual(allowedModes(foreign), ['auto', 'dark', 'light']);
+  assert.deepEqual(allowedModes(foreign, {foreign: 'refuse'}), ['auto', 'dark']);
   const r = (manifest, pageScheme, themeMode) => resolveTheme(manifest, {pageScheme, themeMode});
   assert.deepEqual(r(sample, 'light', 'auto'), {effect: 'self', scheme: 'light'});
   assert.deepEqual(r(paired, 'light', 'auto'), {effect: 'pair', scheme: 'light', pair: 'mist-gradient'});
   assert.deepEqual(r(dark, 'light', 'auto'), {effect: 'self', scheme: 'dark'});
   assert.deepEqual(r(light, 'dark', 'auto'), {hidden: true, reason: 'light-only-on-dark'});
   assert.deepEqual(r(dark, 'dark', 'light'), {hidden: true, reason: 'mode-not-drawable'});
-  assert.deepEqual(r(foreign, 'light', 'auto'), {hidden: true, reason: 'foreign-pair-needs-sandbox'});
+  assert.deepEqual(r(foreign, 'light', 'auto'), {effect: 'pair', scheme: 'light', pair: CATALOGUE_URL, sandboxed: true});
+  assert.deepEqual(resolveTheme(foreign, {pageScheme: 'light', themeMode: 'auto', foreign: 'refuse'}), {hidden: true, reason: 'foreign-pair-needs-sandbox'});
   assert.deepEqual(r(foreign, 'dark', 'auto'), {effect: 'self', scheme: 'dark'});
   assert.deepEqual(r(sample, 'light', 'sepia'), {hidden: true, reason: 'unknown-theme-mode'});
+});
+
+// foreign-effects-sandboxed: the switch fails closed, and the frame's policy
+// admits its runner by the hash of the very text the frame is given.
+test('the sandbox switch and the runner the frame policy admits', () => {
+  assert.equal(foreignMode(undefined), 'sandbox');
+  assert.equal(foreignMode('sandbox'), 'sandbox');
+  assert.equal(foreignMode('refuse'), 'refuse');
+  for (const value of ['inline', 'Sandbox', true, 1, null]) assert.equal(foreignMode(value), 'refuse', String(value));
+  assert.equal(createHash('sha256').update(FRAME_RUNNER, 'utf8').digest('base64'), FRAME_RUNNER_SHA256);
+  assert.doesNotMatch(FRAME_RUNNER, /<\/script/iu);
 });

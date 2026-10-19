@@ -4,7 +4,8 @@
 // on the built core: SF.Effects.allowedModes offers an editor only the fixed
 // modes the effect or its trusted pair draws; resolveTheme takes every branch
 // of the order (the effect, its pair, a dark-only effect kept dark, nothing;
-// a foreign pair refused); mountEffect with a themeMode draws what it
+// a foreign pair drawn in the sandbox, or refused with foreign effects
+// refused); mountEffect with a themeMode draws what it
 // resolved, gives the area the drawn theme's class, and in auto follows a
 // switch of the page's theme -- the same effect without a remount, the pair
 // in its place, or nothing.
@@ -46,6 +47,7 @@ try {
         pairedById: allowedModes(night),
         pairedByIdKnown: allowedModes(night, {pair: day}),
         pairedForeign: allowedModes(dusk),
+        pairedForeignRefused: allowedModes(dusk, {foreign: 'refuse'}),
       },
       dual: [r(dual, 'light', 'auto'), r(dual, 'dark', 'auto'), r(dual, 'light', 'dark')],
       pairedLightPage: r(night, 'light', 'auto'),
@@ -59,6 +61,7 @@ try {
       lightOnLight: r(lone, 'light', 'auto'),
       lightFixedDark: r(lone, 'light', 'dark'),
       foreignPair: r(dusk, 'light', 'auto'),
+      foreignPairRefused: resolveTheme(dusk, {pageScheme: 'light', themeMode: 'auto', foreign: 'refuse'}),
       foreignPairOwnScheme: r(dusk, 'dark', 'auto'),
       unknownMode: r(dual, 'light', 'sepia'),
       foreignIsUrl: FOREIGN_PAIR === dusk.pair,
@@ -70,7 +73,8 @@ try {
   expect('allowedModes: a light-only effect offers no dark mode', policy.modes.lone, ['auto', 'light']);
   expect('allowedModes: a catalogue pair adds the other scheme', policy.modes.pairedById, ['auto', 'dark', 'light']);
   expect('allowedModes: with the pair known, its schemes', policy.modes.pairedByIdKnown, ['auto', 'dark', 'light']);
-  expect('allowedModes: a foreign pair adds nothing', policy.modes.pairedForeign, ['auto', 'dark']);
+  expect('allowedModes: a foreign pair, run in the sandbox, adds its scheme', policy.modes.pairedForeign, ['auto', 'dark', 'light']);
+  expect('allowedModes: a foreign pair adds nothing when foreign effects are refused', policy.modes.pairedForeignRefused, ['auto', 'dark']);
   expect('a two-scheme effect draws the page scheme, or the fixed one', policy.dual, [{effect: 'self', scheme: 'light'}, {effect: 'self', scheme: 'dark'}, {effect: 'self', scheme: 'dark'}]);
   expect('a dark effect on a light page: its pair', policy.pairedLightPage, {effect: 'pair', scheme: 'light', pair: 'day-bands'});
   expect('a dark effect on a light page, pair known: its pair', policy.pairedLightPageKnown, {effect: 'pair', scheme: 'light', pair: 'day-bands'});
@@ -82,7 +86,8 @@ try {
   expect('a light-only effect on a dark page: hidden', policy.lightOnDark, {hidden: true, reason: 'light-only-on-dark'});
   expect('a light-only effect on a light page: itself', policy.lightOnLight, {effect: 'self', scheme: 'light'});
   expect('fixed dark on a light-only effect: hidden', policy.lightFixedDark, {hidden: true, reason: 'mode-not-drawable'});
-  expect('a foreign pair is refused', policy.foreignPair, {hidden: true, reason: 'foreign-pair-needs-sandbox'});
+  expect('a foreign pair is drawn in the sandbox', policy.foreignPair, {effect: 'pair', scheme: 'light', pair: FOREIGN_PAIR, sandboxed: true});
+  expect('a foreign pair is refused when foreign effects are', policy.foreignPairRefused, {hidden: true, reason: 'foreign-pair-needs-sandbox'});
   expect('a foreign pair is not needed in the effect\'s own scheme', policy.foreignPairOwnScheme, {effect: 'self', scheme: 'dark'});
   expect('an unknown mode: hidden', policy.unknownMode, {hidden: true, reason: 'unknown-theme-mode'});
   expect('the fixture pair is an address', policy.foreignIsUrl, true);
