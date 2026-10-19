@@ -136,12 +136,13 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
   assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
   assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
-  // The track's radius; the plate's is the track's minus the padding, never
-  // below square, so the corners stay concentric whatever radius is named.
+  // The plate is a button-sized segment with a button's radius; the track is
+  // that radius plus the padding, so the corners stay concentric.
   assert.match(styles, /border-radius: var\(--sf-button-group--radius\);/);
-  assert.match(styles, /--sf-button-group--plate-radius: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-button-group--radius\) - var\(--sf-button-group--padding\)\)\)/);
-  for (const [radius, token] of [['default', '--sf-radius--surface'], ['square', '--sf-radius-square'], ['rounded', '--sf-radius-rounded']]) {
-    assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--radius-${radius} {\n    --sf-button-group--radius: var(${token});`), radius);
+  assert.match(styles, /--sf-button-group--plate-radius: var\(--sf-button-group-radius, var\(--sf-button-radius, var\(--sf-radius--ui\)\)\)/);
+  assert.match(styles, /--sf-button-group--radius: calc\(var\(--sf-button-group--plate-radius\) \+ var\(--sf-button-group--padding\)\)/);
+  for (const [radius, value] of [['default', 'var(--sf-radius-default)'], ['square', 'calc(var(--sf-px) * 0)'], ['rounded', 'var(--sf-radius-rounded)']]) {
+    assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--radius-${radius} {\n    --sf-button-group--plate-radius: ${value};`), radius);
   }
   for (const size of ['1\\/3', '1\\/2', '2', '3']) assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--size-${size} {`), size);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);

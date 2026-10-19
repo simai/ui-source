@@ -88,7 +88,7 @@ const sfButtonGroupMeta = {
       kind: 'enum',
       values: BUTTON_GROUP_RADIUS_VALUES,
       default: '',
-      description: "Corner radius, as on sf-button: empty is the UI radius, default the surface radius. In the segmented appearance it is the track's, and the plate's is the track's minus the padding (rounded: both pills).",
+      description: "Corner radius, as on sf-button: empty is the UI radius. In the segmented appearance the plate, a button-sized segment, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills).",
     },
     orientation: {
       kind: 'enum',

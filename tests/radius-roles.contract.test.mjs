@@ -26,7 +26,11 @@ test('radius: components read a role, not the old name', async () => {
   for (const url of files.filter((u) => u.pathname.endsWith('.scss'))) {
     const [name, source] = await read(url);
     if (!source.includes('var(--sf-radius-default)')) continue;
-    const excused = /\.(sf-button|sf-icon-button)\.radius-default\s*\{[^}]*var\(--sf-radius-default\)/.test(source);
+    // sf-button-group is excused beside them: its segments are buttons and
+    // the segmented plate is a button-sized control, so radius="default"
+    // means there what it means on sf-button.
+    const excused = /\.(sf-button|sf-icon-button)\.radius-default\s*\{[^}]*var\(--sf-radius-default\)/.test(source)
+      || /\.sf-button-group--radius-default[^{]*\{[^}]*var\(--sf-radius-default\)/.test(source);
     if (!excused) offenders.push(name);
   }
   assert.deepEqual(offenders, [], 'these still read --sf-radius-default');

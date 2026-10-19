@@ -18,10 +18,10 @@
 //     disabled items skipped, change on the host; the ring is visible;
 //   - no join border reaches a segment, a narrow page does not scroll sideways,
 //     reduced motion stops the transitions and forced colours keep the plate;
-//   - radius, as on sf-button: the track takes the named radius and the plate
-//     the track's minus the padding (rounded: both pills, square: both square),
-//     --sf-button-group-radius sets the track's, and a joined group rounds its
-//     outer corners;
+//   - radius, as on sf-button: the plate, a button-sized segment, takes the
+//     radius a button of that value has and the track is it plus the padding
+//     (rounded: both pills, square: a square plate), --sf-button-group-radius
+//     sets the plate's, and a joined group rounds its outer corners;
 //   - with a name the group is a form field: the submitted FormData holds
 //     name=value, a reset brings back the written value, a disabled group is
 //     left out, and a group without a name adds nothing.
@@ -302,7 +302,7 @@ try {
         };
       };
       const probe = document.createElement('div');
-      probe.style.borderTopLeftRadius = 'var(--sf-radius--surface)';
+      probe.style.borderTopLeftRadius = 'var(--sf-radius-default)';
       document.body.append(probe);
       const named = parseFloat(getComputedStyle(probe).borderTopLeftRadius);
       probe.remove();
@@ -317,16 +317,16 @@ try {
       };
     });
     evidence.radius = rows;
-    const concentric = (row) => Math.abs(row.plate - Math.max(0, row.track - row.padding)) < 0.01;
+    const concentric = (row) => Math.abs(row.track - row.plate - row.padding) < 0.01;
     for (const row of rows.rows) {
-      check(`radius ${row.radius} size ${row.size}: the plate is the track's radius minus the padding`, concentric(row), row);
-      if (row.radius === 'none') check(`radius none size ${row.size}: the track adds the padding to the button's radius`, row.plate > 0 && Math.abs(row.track - row.plate - row.padding) < 0.01, row);
-      if (row.radius === 'default') check(`radius default size ${row.size}: the track takes the surface radius`, Math.abs(row.track - rows.named) < 0.01, {row, named: rows.named});
-      if (row.radius === 'square') check(`radius square size ${row.size}: track and plate are square`, row.track === 0 && row.plate === 0, row);
-      if (row.radius === 'rounded') check(`radius rounded size ${row.size}: track and plate are pills`, row.track >= row.trackHeight / 2 && row.plate >= row.plateHeight / 2, row);
+      check(`radius ${row.radius} size ${row.size}: the track is the plate's radius plus the padding`, concentric(row), row);
+      if (row.radius === 'none') check(`radius none size ${row.size}: the plate has the button's UI radius`, row.plate > 0, row);
+      if (row.radius === 'default') check(`radius default size ${row.size}: the plate takes --sf-radius-default, as sf-button`, Math.abs(row.plate - rows.named) < 0.01 && row.plate > 0, {row, named: rows.named});
+      if (row.radius === 'square') check(`radius square size ${row.size}: the plate is square, the track rounded by the padding`, row.plate === 0 && row.track === row.padding, row);
+      if (row.radius === 'rounded') check(`radius rounded size ${row.size}: plate and track are pills`, row.track >= row.trackHeight / 2 && row.plate >= row.plateHeight / 2, row);
     }
-    check('--sf-button-group-radius sets the track, the plate follows', rows.variable.track === 10 && concentric(rows.variable), rows.variable);
-    check('the radius attribute wins over --sf-button-group-radius', rows.variableSquare.track === 0 && rows.variableSquare.plate === 0, rows.variableSquare);
+    check('--sf-button-group-radius sets the plate, the track follows', rows.variable.plate === 10 && concentric(rows.variable), rows.variable);
+    check('the radius attribute wins over --sf-button-group-radius', rows.variableSquare.plate === 0 && concentric(rows.variableSquare), rows.variableSquare);
     const [first, middle, last] = rows.joined;
     check('a joined group with radius rounded rounds its outer corners, not its joins',
       first.start >= first.height / 2 && first.end === 0 && middle.start === 0 && middle.end === 0 && last.start === 0 && last.end >= last.height / 2, rows.joined);
