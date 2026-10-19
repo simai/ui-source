@@ -2022,6 +2022,30 @@
       },
       "manual": "Name each value type without its version: in a host's port answers (effects[].type), port manifests (outputs/inputs value), fragment descriptors, an element's static sfPorts and a page's data-sf-routes. Both forms are read until remove_after, so a host, a component and a page may move one at a time; a route between a bare name and its older label already works.",
       "source": "src/core/js/composition/routing.mjs valueTypeName"
+    },
+    {
+      "id": "global-effect-schema-constant",
+      "recorded_on": "2026-10-19",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "SF.Effects.EFFECT_SCHEMA held the older label of the effect format, simai.effect.v1, and was described as the label a writer emits, against format-names-without-version. A writer now spreads SF.Effects.EFFECT_FORMAT, {schema: 'simai.effect', schema_version: 1}, into an effect.json. EFFECT_SCHEMA keeps its value until remove_after, so a writer that put it alone in \"schema\" still writes a manifest every reader takes; reading it through SF.Effects is noted in SF.deprecations. Readers take both forms of the format name either way.",
+      "items": [
+        {
+          "from": "SF.Effects.EFFECT_SCHEMA",
+          "to": "SF.Effects.EFFECT_FORMAT",
+          "match": "\\bEFFECT_SCHEMA\\b"
+        }
+      ],
+      "deprecated_on": "2026-10-19",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Where code writes {schema: SF.Effects.EFFECT_SCHEMA, ...} (or imports EFFECT_SCHEMA from core/js/effects.js), write {...SF.Effects.EFFECT_FORMAT, ...}. A comparison against the label is a reader: use isSchema(manifest, 'simai.effect', 1) from core/js/composition/schema-name.mjs, or SF.Effects.checkEffectManifest.",
+      "owner": "ui-source",
+      "source": "src/core/js/effects.js",
+      "examples": {
+        "before": "{schema: SF.Effects.EFFECT_SCHEMA, id: 'aurora', ...}",
+        "after": "{...SF.Effects.EFFECT_FORMAT, id: 'aurora', ...}"
+      }
     }
   ]
 }

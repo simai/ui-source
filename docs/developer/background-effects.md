@@ -17,6 +17,8 @@ and the kit (`scripts/effect-kit.mjs`).
 | `effectSchemes(manifest)` | the schemes it draws (`['dark', 'light']` when it declares none) |
 | `pairIsForeign(manifest)` | `true` when the pair is an address, not a catalogue id |
 | `SANDBOX_RUNNER_SHA256` | the base64 SHA-256 of the sandbox frame's runner script |
+| `EFFECT_FORMAT` | `{schema: 'simai.effect', schema_version: 1}`: the fields a writer of an `effect.json` spreads into it |
+| `EFFECT_SCHEMA` | `'simai.effect.v1'`, the older label of the format; legacy until 2026-12-01 (journal `global-effect-schema-constant`), use `EFFECT_FORMAT` |
 | `foreignMode(value?)` | `'sandbox'` or `'refuse'`: how foreign effects are treated (`SF_BOOT_CONFIG.effects.foreign` without an argument) |
 
 ## Drawing deterministically
@@ -26,9 +28,9 @@ default settings. An effect therefore draws deterministically at its
 defaults: no unseeded `Math.random`. Seed any randomness (a fixed seed, or one
 derived from the settings) so every run draws the same scene; the catalogue
 found a randomly placed template that failed contrast about one run in two.
-This is guidance for `area-takes-the-drawn-theme`, not a new requirement;
-simai.effect 1.1.0's published bytes stay as they are, so the note lives here
-and in the kit's header until the next edition.
+This is guidance for `area-takes-the-drawn-theme`, not a new requirement:
+simai.effect 1.1.0's published bytes stay as they are, and the note lives here
+and in the kit's header.
 
 ## Theme policy
 
@@ -77,8 +79,12 @@ handle.pause(); handle.resume(); handle.destroy();
 ```
 
 - The area takes the class of the scheme actually drawn (`theme-dark` or
-  `theme-light`); when hidden, the target scheme's class. Destroy gives the
-  area its classes back.
+  `theme-light`); when hidden, the target scheme's class. It also takes
+  `sf-effect-area`, which core's sheet gives that theme's text colour
+  (`color: var(--sf-on-surface)`, in `sf.base`), so text over the effect is
+  drawn in the effect's theme rather than the ink inherited from the page; a
+  colour utility on the area still wins. Destroy gives the area its classes
+  back.
 - In `auto` the placement follows the page: the `<html>` class, the
   `sf-theme-change` event and `prefers-color-scheme`. The same effect switches
   through `update(settings, {scheme})` without a remount; the pair, or
@@ -91,7 +97,7 @@ handle.pause(); handle.resume(); handle.destroy();
 - `mountEffect` runs the module it is handed in the page. Foreign code
   reaches the sandbox only through `loadEffect` or `placeEffect`.
 - Every mount keeps the 1.0 rules: one still frame for reduced motion,
-  paused in a hidden tab, and (since this release) paused off screen.
+  paused in a hidden tab, and paused off screen.
 
 ## Windows mode
 
@@ -139,11 +145,28 @@ window.SF_BOOT_CONFIG = {
   `file-not-in-index`, `invalid-index`, `invalid-manifest`,
   `manifest-mismatch`, `fetch-failed`, `module-failed`, `no-integrity-check`
   (no `crypto.subtle`, which needs a secure context).
+  An empty reference rejects with `no-effect`.
 - `placeEffect(element, {effect, settings, themeMode, windows, catalogue,
   locale, foreign})` -> a handle or `null`: loads the effect and its pair (a
   catalogue id with integrity; an address for the sandbox) and draws it in a
   layer under the element's content, or with `windows` (`true` or a
-  selector) behind its window cards. The handle has `sandboxed`.
+  selector) behind its window cards. The handle has `sandboxed`. A refusal
+  answers `null`, sets `data-sf-effect-state="refused"` and
+  `data-sf-effect-reason` to one of `loadEffect`'s reasons, or to
+  `windows-not-declared` when `windows` is asked of an effect without
+  `capabilities: ["windows"]`.
+- The pair. When the pair cannot be loaded, `sf-effect-refused` is sent for
+  it with the reason of its load (any of `loadEffect`'s), `pair-of-foreign-effect`
+  (a foreign effect naming a catalogue id) or `pair-failed` (a load that
+  failed without a reason), and the effect itself is still placed. When the
+  theme policy then needs the pair, the placement is hidden
+  (`data-sf-effect-state="hidden"`) with one of: `pair-refused` (its load was
+  refused, as above), `pair-not-loaded` (no usable pair was handed in: none,
+  an invalid manifest, or one whose id is not the pair the effect names),
+  `pair-without-windows` (a windows placement whose pair does not declare
+  `capabilities: ["windows"]`) or `foreign-pair-needs-sandbox`. A hidden
+  placement also carries the theme policy's own reasons:
+  `light-only-on-dark`, `mode-not-drawable`, `unknown-theme-mode`.
 
 The pin is the commit in the base address: pin it, never a branch.
 
@@ -245,11 +268,14 @@ handle.sandboxed;         // true
 </div>
 ```
 
-Core finds these once the page has loaded (and in content added later),
-places them with `placeEffect`, and destroys a placement taken off the page.
-A page that configures no catalogue and declares no effect when it loads is
-not watched for later content; it places a foreign effect it adds later
-with `placeEffect`.
+Core finds these once the page has loaded, places them with `placeEffect`,
+and destroys a placement taken off the page. Whether content added later is
+watched is decided once, at that scan: the page is watched when
+`SF_BOOT_CONFIG.effects.catalogue` is set by then, or when it declared an
+effect at load. A catalogue set after the page has loaded does not start the
+watch, so a page that adds its declared effects later sets the catalogue in
+its boot config (before `core.js` scans) or places them with `placeEffect`.
+A catalogue id declared without a catalogue is refused with `no-catalogue`.
 The element carries `data-sf-effect-state` (`loading`, `running`, `hidden`,
 `refused`, `failed`) and, when hidden or refused, `data-sf-effect-reason`.
 The effect draws in a layer (`[data-sf-effect-layer]`) prepended to the

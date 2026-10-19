@@ -52,7 +52,7 @@
 // draws the same scene. The catalogue found a randomly placed template that
 // failed contrast about one run in two. (Guidance for area-takes-the-drawn-
 // theme; simai.effect 1.1.0's published bytes do not change, so it is stated
-// here and in docs/developer/background-effects.md until the next edition.)
+// here and in docs/developer/background-effects.md.)
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync, readFileSync} from 'node:fs';

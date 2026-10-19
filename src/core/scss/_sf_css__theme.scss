@@ -14,6 +14,15 @@
     color-scheme: dark;
   }
 
+  /* An effect area or window card takes the theme its effect is drawn in
+     (SF.Effects, area-takes-the-drawn-theme). The class changes the tokens,
+     but the text keeps the colour it inherited from the page, so a light page
+     left dark text over a dark scene; the area takes its theme's ink. In
+     sf.base, so a colour utility on the area still wins. */
+  .sf-effect-area:is(.theme-dark, .theme-light) {
+    color: var(--sf-on-surface);
+  }
+
   .theme-light,
   .theme-dark {
     --sf-neutral: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));

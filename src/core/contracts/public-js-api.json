@@ -103,6 +103,7 @@
         "mountWindows",
         "loadEffect",
         "placeEffect",
+        "EFFECT_FORMAT",
         "EFFECT_SCHEMA",
         "SANDBOX_RUNNER_SHA256"
       ]

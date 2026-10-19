@@ -8,7 +8,9 @@
 // refused); mountEffect with a themeMode draws what it
 // resolved, gives the area the drawn theme's class, and in auto follows a
 // switch of the page's theme -- the same effect without a remount, the pair
-// in its place, or nothing.
+// in its place, or nothing. Text over an area or a window card takes the
+// drawn theme's ink rather than the page's (simai/ui-source#7), a colour the
+// author set on the area still wins, and destroy gives both back.
 import {resolve} from 'node:path';
 import {chromium} from 'playwright';
 import {EFFECTS, FOREIGN_PAIR, moduleUrl, openPage} from '../fixtures/effect-catalogue/catalogue.mjs';
@@ -182,6 +184,47 @@ try {
   await mount('sample-bands', {scheme: 'dark'});
   expect('without a themeMode nothing changes the host\'s theme', (await state()).classes, []);
   await page.evaluate(() => window.__handle.destroy());
+
+  // The ink: a dark-only effect on a light page, an area and a window card.
+  await setPage('light');
+  const ink = await page.evaluate(async ({EFFECTS, urls}) => {
+    window.__handle?.destroy();
+    document.body.insertAdjacentHTML('beforeend', `
+      <span id="ink-dark" class="theme-dark" style="color:var(--sf-on-surface)"></span>
+      <span id="ink-light" class="theme-light" style="color:var(--sf-on-surface)"></span>
+      <section id="zone" style="position:relative;inline-size:320px;block-size:120px"><div id="fx" style="position:absolute;inset:0"></div><span id="zone-text">Текст</span><p id="zone-p">Абзац</p></section>
+      <section id="own" style="position:relative;color:rgb(1, 2, 3)"><div id="fx-own" style="position:absolute;inset:0"></div><span id="own-text">Текст</span></section>
+      <div id="windows" style="display:flex;gap:16px;inline-size:600px;block-size:120px"><div data-sf-effect-window style="flex:1"><span id="window-text">Окно</span></div><div style="flex:1"><span id="card-text">Карточка</span></div></div>`);
+    const color = (id) => getComputedStyle(document.getElementById(id)).color;
+    const read = () => ({
+      zone: color('zone-text'), paragraph: color('zone-p'), own: color('own-text'), window: color('window-text'), card: color('card-text'),
+      zoneClasses: [...document.getElementById('zone').classList], ownStyle: document.getElementById('own').getAttribute('style'),
+      windowClasses: [...document.querySelector('[data-sf-effect-window]').classList],
+    });
+    const darkOnly = {...EFFECTS['night-bands']};
+    delete darkOnly.pair;
+    const module = await import(urls['night-bands']);
+    const sample = await import(urls['sample-bands']);
+    const {mountEffect, mountWindows} = window.SF.Effects;
+    const handles = [
+      mountEffect(document.getElementById('fx'), {manifest: darkOnly, module, themeMode: 'auto', area: document.getElementById('zone')}),
+      mountEffect(document.getElementById('fx-own'), {manifest: darkOnly, module, themeMode: 'auto', area: document.getElementById('own')}),
+      mountWindows(document.getElementById('windows'), {manifest: EFFECTS['sample-bands'], module: sample, themeMode: 'dark'}),
+    ];
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const during = read();
+    for (const handle of handles) handle.destroy();
+    const after = read();
+    return {dark: color('ink-dark'), light: color('ink-light'), page: getComputedStyle(document.body).color, schemes: handles.map((handle) => handle.scheme), during, after};
+  }, {EFFECTS, urls: Object.fromEntries(Object.keys(EFFECTS).map((key) => [key, moduleUrl(key)]))});
+  expect('the two inks differ, and the page is light', ink.dark !== ink.light && ink.page === ink.light, true);
+  expect('a dark-only effect on a light page: the area is dark and so is its text',
+    {zone: ink.during.zone, paragraph: ink.during.paragraph, classes: ink.during.zoneClasses}, {zone: ink.dark, paragraph: ink.dark, classes: ['sf-effect-area', 'theme-dark']});
+  expect('a window card\'s text takes the drawn theme, a plain card keeps the page\'s', {window: ink.during.window, card: ink.during.card}, {window: ink.dark, card: ink.light});
+  expect('a colour the author set on the area still wins', {own: ink.during.own, style: ink.during.ownStyle}, {own: 'rgb(1, 2, 3)', style: 'position:relative;color:rgb(1, 2, 3)'});
+  expect('destroy gives the text its page ink and the area its classes back',
+    {zone: ink.after.zone, paragraph: ink.after.paragraph, window: ink.after.window, classes: ink.after.zoneClasses, windowClasses: ink.after.windowClasses, own: ink.after.own, style: ink.after.ownStyle},
+    {zone: ink.light, paragraph: ink.light, window: ink.light, classes: [], windowClasses: [], own: 'rgb(1, 2, 3)', style: 'position:relative;color:rgb(1, 2, 3)'});
 
   if (errors.length) failures.push({case: 'no page errors', got: errors});
 } finally {

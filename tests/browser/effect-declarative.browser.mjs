@@ -79,7 +79,7 @@ try {
     };
   });
   expect('a windows group by id: one canvas, a path mask, light windows', windows,
-    {state: 'running', canvases: 1, windows: [['theme-light'], ['theme-light']], plain: ['plain'], clip: true});
+    {state: 'running', canvases: 1, windows: [['sf-effect-area', 'theme-light'], ['sf-effect-area', 'theme-light']], plain: ['plain'], clip: true});
   expect('a windows group for an effect without the capability is refused', (await read('win-refused')).reason, 'windows-not-declared');
 
   const refusals = await page.evaluate(() => window.__refused.map(({target, reason}) => `${target}:${reason}`).sort());

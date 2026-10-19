@@ -27,10 +27,17 @@
 // content security policy, its checked settings sent by message), or, with
 // SF_BOOT_CONFIG.effects.foreign = 'refuse', not at all.
 
-import {isSchema} from './composition/schema-name.mjs';
+import {isSchema, schemaFields} from './composition/schema-name.mjs';
+import {noteDeprecated} from './deprecations.js';
 
-// The label a writer emits. A reader takes either form of the format name
-// (simai.effect.v1, or simai.effect with schema_version 1): schema-name.mjs.
+// The fields a writer of an effect.json emits: the format named without a
+// version, with schema_version beside it (format-names-without-version). A
+// reader takes either form: schema-name.mjs.
+export const EFFECT_FORMAT = Object.freeze(schemaFields('simai.effect', 1));
+// The older label of the same format, which readers still take until the
+// journal retires it (global-effect-schema-constant). Its value stays: a
+// writer that put it alone in "schema" would otherwise emit a name with no
+// schema_version.
 export const EFFECT_SCHEMA = 'simai.effect.v1';
 const SETTING_TYPES = new Set(['choice', 'integer', 'number', 'boolean', 'string', 'text', 'color', 'file']);
 const ID = /^[a-z][a-z0-9-]{1,40}$/u;
@@ -566,18 +573,24 @@ export function resolveTheme(manifest, {pageScheme: page, themeMode = 'auto', pa
 }
 
 // The areas a placement draws under take the theme it is drawn in
-// (area-takes-the-drawn-theme); what they had before comes back after.
+// (area-takes-the-drawn-theme); what they had before comes back after. A
+// theme class changes the tokens but not the ink the area inherited from the
+// page, so an area also takes AREA_CLASS, which core's sheet gives the drawn
+// theme's text colour (color: var(--sf-on-surface), in sf.base, so an
+// author's colour utility on the area still wins).
+const AREA_CLASS = 'sf-effect-area';
 function themeAreas() {
   const before = new Map();
   const restore = (element, had) => {
-    element.classList.remove(...THEME_CLASSES);
+    element.classList.remove(...THEME_CLASSES, AREA_CLASS);
     if (had.length) element.classList.add(...had);
   };
   return {
     set(elements, scheme) {
       const wanted = `theme-${scheme}`;
       for (const element of elements) {
-        if (!before.has(element)) before.set(element, THEME_CLASSES.filter((name) => element.classList.contains(name)));
+        if (!before.has(element)) before.set(element, [...THEME_CLASSES, AREA_CLASS].filter((name) => element.classList.contains(name)));
+        if (!element.classList.contains(AREA_CLASS)) element.classList.add(AREA_CLASS);
         // Touched only when it changes, so an observer of the class sees no churn.
         const other = THEME_CLASSES.find((name) => name !== wanted);
         if (element.classList.contains(other)) element.classList.remove(other);
@@ -1297,7 +1310,11 @@ if (typeof window !== 'undefined') {
     checkEffectManifest, checkSetting, effectSettings, effectSchemes, pairIsForeign, foreignMode,
     allowedModes, resolveTheme, pageScheme,
     mountEffect, mountWindows, loadEffect, placeEffect,
-    EFFECT_SCHEMA, SANDBOX_RUNNER_SHA256: FRAME_RUNNER_SHA256,
+    EFFECT_FORMAT, SANDBOX_RUNNER_SHA256: FRAME_RUNNER_SHA256,
+    get EFFECT_SCHEMA() {
+      noteDeprecated({kind: 'global', from: 'SF.Effects.EFFECT_SCHEMA', to: 'SF.Effects.EFFECT_FORMAT'});
+      return EFFECT_SCHEMA;
+    },
   });
   if (typeof document !== 'undefined' && document.documentElement) {
     // After the page has loaded: an effect is never what the page waits for.
