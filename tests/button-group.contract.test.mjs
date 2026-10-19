@@ -136,8 +136,8 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
   assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
   assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
-  // The plate is a button-sized segment with a button's radius; the track is
-  // that radius plus the padding, so the corners stay concentric.
+  // The plate takes a button's radius; the track is that radius plus the
+  // padding, so the corners stay concentric.
   assert.match(styles, /border-radius: var\(--sf-button-group--radius\);/);
   assert.match(styles, /--sf-button-group--plate-radius: var\(--sf-button-group-radius, var\(--sf-button-radius, var\(--sf-radius--ui\)\)\)/);
   assert.match(styles, /--sf-button-group--radius: calc\(var\(--sf-button-group--plate-radius\) \+ var\(--sf-button-group--padding\)\)/);
@@ -145,6 +145,17 @@ test('button group offers a segmented appearance with the same semantics', async
     assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--radius-${radius} {\n    --sf-button-group--plate-radius: ${value};`), radius);
   }
   for (const size of ['1\\/3', '1\\/2', '2', '3']) assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--size-${size} {`), size);
+  // The ladder (simai/ui-source#9): the track is as tall as the button; its
+  // padding is the button's default block padding less the compact one (a2 at
+  // 1/3, which has no smaller compact step), and a segment takes the button's
+  // block padding less the track's.
+  for (const size of ['1', '1\\/2', '2', '3']) {
+    assert.ok(styles.includes(`calc(var(--sf-ui-${size}--space-y-tightness-default) - var(--sf-ui-${size}--space-y-tightness-low))`), size);
+  }
+  assert.ok(styles.includes('.sf-button-group--segmented.sf-button-group--size-1\\/3 {\n    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a2));'));
+  assert.match(styles, /--sf-button-group--segment-padding-block: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-button--padding-top\) - var\(--sf-button-group--padding\)\)\);/);
+  assert.match(styles, /padding-block: var\(--sf-button-group--segment-padding-block\);/);
+  assert.match(styles, /\.sf-button-group-icon-only \{\s*padding-inline: var\(--sf-button-group--segment-padding-block\);/);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-12\)/);
   assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-elevation-1--surface[^}]*--sf-elevation-1--shadow/);

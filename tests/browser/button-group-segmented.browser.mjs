@@ -3,9 +3,10 @@
 //
 // The segmented appearance of sf-button-group (simai/ui-source#4), measured on
 // the built bytes:
-//   - a segment is exactly as tall as a button of the same size, at every step
-//     of the ladder and on both sides of the 60rem breakpoint, and the track adds
-//     only its padding on each side;
+//   - the track is exactly as tall as a button of the same size and spacing, at
+//     every step of the ladder and on both sides of the 60rem breakpoint, and
+//     the segments inside take the compact step (simai/ui-source#9) -- text,
+//     icon-only, spacing="compact" and the theme switch alike;
 //   - the plate sits under the selected segment, moves with the selection, and
 //     never changes a segment's width;
 //   - the dimmed ink of a segment that is not selected, and its count, reach
@@ -18,8 +19,8 @@
 //     disabled items skipped, change on the host; the ring is visible;
 //   - no join border reaches a segment, a narrow page does not scroll sideways,
 //     reduced motion stops the transitions and forced colours keep the plate;
-//   - radius, as on sf-button: the plate, a button-sized segment, takes the
-//     radius a button of that value has and the track is it plus the padding
+//   - radius, as on sf-button: the plate takes the radius a button of that
+//     value has and the track is it plus the padding
 //     (rounded: both pills, square: a square plate), --sf-button-group-radius
 //     sets the plate's, and a joined group rounds its outer corners;
 //   - with a name the group is a form field: the submitted FormData holds
@@ -60,43 +61,61 @@ const THREE = [{value: 'all', label: 'Все', count: 24}, {value: 'light', labe
 const ICONS = [{value: 'list', label: 'Список', icon: 'list', 'icon-only': true}, {value: 'grid', label: 'Сетка', icon: 'grid_view', 'icon-only': true}];
 
 try {
-  // 1. The ladder: a segment is a button of the same size; the track adds its padding.
+  // 1. The ladder (simai/ui-source#9): the track is as tall as a button of the
+  //    same size and spacing; a segment takes the compact step, and at 1/3, where
+  //    compact is no smaller, it is the button less a2 on each side. The same
+  //    holds for an icon-only group, a compact group and the theme switch.
   for (const width of [1000, 390]) {
     const body = SIZES.map((size) => `<div data-row="${size}" style="display:flex;gap:16px;align-items:flex-start;margin-block-end:8px">
-      <sf-button size="${size}" text="Кнопка"></sf-button>
+      <sf-button size="${size}" text="Кнопка" class="normal"></sf-button>
+      <sf-button size="${size}" spacing="compact" text="Кнопка" class="compact"></sf-button>
       <sf-button-group appearance="segmented" size="${size}" aria-label="Период" value="all" class="text" ${items(THREE)}></sf-button-group>
       <sf-button-group appearance="segmented" size="${size}" aria-label="Вид" value="list" class="icons" ${items(ICONS)}></sf-button-group>
+      <sf-button-group appearance="segmented" size="${size}" spacing="compact" aria-label="Период" value="all" class="dense" ${items(THREE)}></sf-button-group>
+      <sf-button-group appearance="segmented" size="${size}" theme-switch class="theme"></sf-button-group>
     </div>`).join('');
     const page = await open({width, body});
+    await page.waitForFunction(() => document.querySelectorAll('sf-button-group.theme .sf-button-group > button').length === 15);
     const ladder = await page.evaluate((sizes) => sizes.map((size) => {
       const row = document.querySelector(`[data-row="${size}"]`);
-      const button = row.querySelector('sf-button > button').getBoundingClientRect();
-      const group = row.querySelector('sf-button-group.text .sf-button-group');
-      const segments = [...group.querySelectorAll(':scope > button')].map((node) => node.getBoundingClientRect());
-      const iconNodes = [...row.querySelectorAll('sf-button-group.icons .sf-button-group > button')];
-      const icons = iconNodes.map((node) => node.getBoundingClientRect());
-      // No join border reaches a segment, of either kind.
-      const borders = [...group.children, ...iconNodes].flatMap((node) => {
-        const style = getComputedStyle(node);
-        return [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth];
-      });
-      const style = getComputedStyle(group);
-      const padding = parseFloat(style.paddingTop);
+      const height = (node) => node.getBoundingClientRect().height;
+      const measure = (name) => {
+        const group = row.querySelector(`sf-button-group.${name} .sf-button-group`);
+        const style = getComputedStyle(group);
+        const nodes = [...group.querySelectorAll(':scope > button')];
+        return {
+          track: height(group), padding: parseFloat(style.paddingTop), gap: parseFloat(style.columnGap),
+          segments: nodes.map(height), widths: nodes.map((node) => node.getBoundingClientRect().width),
+          borders: nodes.flatMap((node) => {
+            const own = getComputedStyle(node);
+            return [own.borderTopWidth, own.borderRightWidth, own.borderBottomWidth, own.borderLeftWidth];
+          }),
+          radius: parseFloat(style.borderTopLeftRadius), plateRadius: parseFloat(getComputedStyle(nodes[0]).borderTopLeftRadius),
+        };
+      };
       return {
-        size, button: button.height, segments: segments.map((rect) => rect.height), icons: icons.map((rect) => [rect.width, rect.height]), borders,
-        track: group.getBoundingClientRect().height, padding, gap: parseFloat(style.columnGap),
-        radius: parseFloat(style.borderTopLeftRadius), plateRadius: parseFloat(getComputedStyle(group.firstElementChild).borderTopLeftRadius),
+        size, button: height(row.querySelector('sf-button.normal > button')), compact: height(row.querySelector('sf-button.compact > button')),
+        text: measure('text'), icons: measure('icons'), dense: measure('dense'), theme: measure('theme'),
       };
     }), SIZES);
-    evidence[`ladder@${width}`] = ladder.map(({size, button, track, padding}) => ({size, button, track, padding}));
+    evidence[`ladder@${width}`] = ladder.map(({size, button, compact, text, dense, theme}) => ({
+      size, button, compact, track: text.track, segment: text.segments[0], padding: text.padding, denseTrack: dense.track, themeTrack: theme.track,
+    }));
+    const near = (a, b) => Math.abs(a - b) < 0.01;
     for (const row of ladder) {
-      check(`size ${row.size} at ${width}px: a segment is as tall as the button`, row.segments.every((height) => Math.abs(height - row.button) < 0.01), row);
-      check(`size ${row.size} at ${width}px: an icon-only segment is as tall as the button and square`,
-        row.icons.every(([w, h]) => Math.abs(h - row.button) < 0.01 && Math.abs(w - h) < 0.01), row);
-      check(`size ${row.size} at ${width}px: no segment has a border`, row.borders.every((value) => value === '0px'), row);
-      check(`size ${row.size} at ${width}px: the track adds only its padding`, Math.abs(row.track - (row.button + 2 * row.padding)) < 0.01 && row.padding > 0, row);
-      check(`size ${row.size} at ${width}px: the gap is the padding`, Math.abs(row.gap - row.padding) < 0.01, row);
-      check(`size ${row.size} at ${width}px: the corners are concentric`, Math.abs(row.radius - row.plateRadius - row.padding) < 0.01, row);
+      const at = `size ${row.size} at ${width}px`;
+      // The compact step, or at 1/3 (no smaller compact button) the button less a2 on each side.
+      const segment = row.compact < row.button ? row.compact : row.button - 2 * row.text.padding;
+      for (const kind of ['text', 'icons', 'theme']) {
+        const group = row[kind];
+        check(`${at} ${kind}: the track is as tall as the button`, near(group.track, row.button), {size: row.size, button: row.button, ...group});
+        check(`${at} ${kind}: a segment takes the compact step`, group.segments.every((value) => near(value, segment)) && segment < row.button, {size: row.size, segment, ...group});
+        check(`${at} ${kind}: the gap is the padding`, near(group.gap, group.padding) && group.padding > 0, group);
+        check(`${at} ${kind}: the corners are concentric`, near(group.radius - group.plateRadius, group.padding), group);
+        check(`${at} ${kind}: no segment has a border`, group.borders.every((value) => value === '0px'), group);
+      }
+      check(`${at}: an icon-only segment is square`, row.icons.segments.every((value, index) => near(value, row.icons.widths[index])), row.icons);
+      check(`${at}: a compact group is as tall as a compact button`, near(row.dense.track, row.compact) && row.dense.segments.every((value) => value < row.compact), {compact: row.compact, ...row.dense});
     }
     await page.close();
   }
