@@ -37,12 +37,16 @@ test('a page being debugged loads the readable files', () => {
   assert.equal(plugin.pathPluginJs('buttons', false, 'default', 'component'), '/distr/component/buttons/js/buttons.js');
 });
 
-test('either form of a file counts as loaded, and a missing minified twin falls back once', () => {
+test('either form of a file counts as loaded, and a missing form falls back to the other once', () => {
   const {context} = loader({minified: true});
-  vm.runInContext('globalThis.forms = [otherForm("/a/x.min.js?sf_v=1"), otherForm("/a/x.css"), minifiedToReadable("/a/x.min.css"), minifiedToReadable("/a/x.css")]', context);
-  assert.equal(JSON.stringify(context.globalThis.forms), JSON.stringify(['/a/x.js?sf_v=1', '/a/x.min.css', '/a/x.css', null]));
+  vm.runInContext('globalThis.forms = [otherForm("/a/x.min.js?sf_v=1"), otherForm("/a/x.css"), otherForm("/a/x.js"), otherForm("/a/x.json")]', context);
+  assert.equal(JSON.stringify(context.globalThis.forms), JSON.stringify(['/a/x.js?sf_v=1', '/a/x.min.css', '/a/x.min.js', null]));
   assert.match(source, /const min = otherForm\(cssFile\);/u, 'the CSS fallback tries the other form, not x.min.min.css');
-  assert.match(slice('SFLoaderPlugin.prototype.addScript =', 'SFLoaderPlugin.prototype.setPreloaderParams'), /minifiedToReadable\(pluginURL\)/u);
+  const addScript = slice('SFLoaderPlugin.prototype.addScript =', 'SFLoaderPlugin.prototype.setPreloaderParams');
+  // Both ways (simai/ui-source#8): ?sf-debug over the minified-only npm package
+  // asks for readable scripts that are not there, and must take the minified.
+  assert.match(addScript, /otherForm\(pluginURL\)/u, 'a script falls back to its other form, either way');
+  assert.match(addScript, /otherFormTried/u, 'once: a file missing in both forms does not loop');
 });
 
 test('the minified default is switched off by config, address or attribute', () => {

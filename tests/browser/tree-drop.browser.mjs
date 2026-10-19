@@ -38,6 +38,10 @@ try {
     <sf-tree id="plain" aria-label="Другое"><sf-tree-item value="x" label="x"></sf-tree-item></sf-tree>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  // Core takes its distr from its own script URL when sfPath is unset
+  // (simai/ui-source#8); here that is the build output's core/ root, not a
+  // distr, so the page names the distr this probe routes.
+  await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-tree') && document.querySelector('#t .sf-tree-item[data-value="images"]'), null, {timeout: 8000});
   await page.waitForTimeout(300);

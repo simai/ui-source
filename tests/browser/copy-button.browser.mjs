@@ -42,6 +42,10 @@ try {
     <sf-copy-button id="link" value="https://example.test/r/1" icon="link" success-icon="done_all" duration="5000" appearance="tonal" root-style="--sf-icon-button--box-shadow: 0 0 0 3px red"></sf-copy-button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  // Core takes its distr from its own script URL when sfPath is unset
+  // (simai/ui-source#8); here that is the build output's core/ root, not a
+  // distr, so the page names the distr this probe routes.
+  await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-copy-button'), null, {timeout: 8000});
   await page.waitForTimeout(400);

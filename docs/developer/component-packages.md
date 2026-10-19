@@ -26,6 +26,20 @@ The `ui` distribution carries Smart in `distr/smart`, beside `distr/core`
 repository from its own root, and an empty value counts as not set.
 `tests/loader-packages.contract.test.mjs`.
 
+A page that sets no `sfPath` gets the `distr/` its `core.js` (or
+`core.min.js`) was loaded from: Core reads its own script URL, so
+`https://cdn.jsdelivr.net/npm/@simai-studio/ui@<version>/distr/core/js/core.js`
+loads its siblings from the same package version. Only when no Core script
+can be found does it fall back to an unpinned default, with a console warning
+that recommends the npm form (simai/ui-source#8,
+`tests/public-path-resolution.contract.test.mjs`).
+
+Debug mode (`?sf-debug`, `data-sf-debug`, `SF_BOOT_CONFIG.minified = false`)
+asks for the readable files and takes the minified twin of any that is
+missing, scripts and sheets alike, so it works over the npm package, which
+ships components, utilities and Smart files minified only
+(`tests/browser/debug-minified-only.browser.mjs`).
+
 ## Declaring a package
 
 The page declares where each package is served, in the boot configuration,

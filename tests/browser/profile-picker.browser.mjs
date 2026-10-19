@@ -39,6 +39,10 @@ try {
   await page.goto(`${origin}/`);
   await page.setContent('<!doctype html><html lang="ru" class="theme-light"><body style="margin:40px"><div style="width:260px"><sf-profile-picker id="p" label="Профиль" resettable></sf-profile-picker></div></body></html>');
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  // Core takes its distr from its own script URL when sfPath is unset
+  // (simai/ui-source#8); here that is the build output's core/ root, not a
+  // distr, so the page names the distr this probe routes.
+  await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-profile-picker'), null, {timeout: 8000});
   await page.evaluate(() => {

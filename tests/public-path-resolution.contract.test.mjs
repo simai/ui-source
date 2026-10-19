@@ -14,9 +14,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = readFileSync(resolve(root, 'src/core/js/public-path.js'), 'utf8');
 
-const run = ({ sfPath, href, baseURI, scripts = [] }) => {
+const run = ({ sfPath, href, baseURI, scripts = [], currentScript = null }) => {
   const window = { sfPath, location: href === null ? undefined : { href } };
-  const document = { baseURI, scripts };
+  const document = { baseURI, scripts, currentScript };
   const warnings = [];
   const console = { warn: (message) => warnings.push(String(message)) };
   const body = `
@@ -96,7 +96,60 @@ test('falling back to the published branch is said out loud', () => {
   assert.match(warnings[0], /sfPath/u, 'it names the thing that was not set');
   assert.match(warnings[0], /cdn\.jsdelivr\.net\/gh\/simai\/ui@main/u, 'and where it went instead');
   assert.match(warnings[0], /unpinned/u, 'and why that is worth knowing');
+  assert.match(
+    warnings[0],
+    /https:\/\/cdn\.jsdelivr\.net\/npm\/@simai-studio\/ui@<version>\/distr\//u,
+    'and it recommends the npm form, pinned to a version (simai/ui-source#8)',
+  );
+  assert.doesNotMatch(warnings[0], /gh\/simai\/ui@<commit>/u, 'not the gh form that trips the size limit');
   assert.equal(sfPath, 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/', 'the page still runs');
+});
+
+const NPM_DISTR = 'https://cdn.jsdelivr.net/npm/@simai-studio/ui@5.20261019.1559/distr/';
+
+test('without sfPath, Core loads its siblings from the distr it came from (simai/ui-source#8)', () => {
+  const { warnings, sfPath, publicPath } = run({
+    sfPath: undefined,
+    href: 'https://example.test/page/',
+    baseURI: 'https://example.test/page/',
+    scripts: [{ src: `${NPM_DISTR}core/js/core.js` }],
+  });
+  assert.equal(sfPath, NPM_DISTR, 'the npm package version Core came from');
+  assert.equal(publicPath, `${NPM_DISTR}core/`);
+  assert.deepEqual(warnings, [], 'nothing to warn about: the runtime is pinned by its own URL');
+});
+
+test('the running script names the distr root even among other Core scripts', () => {
+  const { sfPath } = run({
+    sfPath: undefined,
+    href: 'https://example.test/page/',
+    baseURI: 'https://example.test/page/',
+    currentScript: { src: `${NPM_DISTR}core/js/core.min.js?sf_v=1` },
+    scripts: [{ src: '/other/distr/core/js/core.js' }],
+  });
+  assert.equal(sfPath, NPM_DISTR);
+});
+
+test('a relative Core script resolves against the document base', () => {
+  const { sfPath, warnings } = run({
+    sfPath: undefined,
+    href: 'about:srcdoc',
+    baseURI: SRCDOC_BASE,
+    scripts: [{ src: '/vendor/ui/distr/core/js/core.js' }],
+  });
+  assert.equal(sfPath, 'https://ui-doc.test/vendor/ui/distr/');
+  assert.deepEqual(warnings, []);
+});
+
+test('a running script that is not Core is not taken for the distr root', () => {
+  const { sfPath, warnings } = run({
+    sfPath: undefined,
+    href: 'https://example.test/page/',
+    baseURI: 'https://example.test/page/',
+    currentScript: { src: 'https://example.test/assets/app.bundle.js' },
+  });
+  assert.equal(sfPath, 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/');
+  assert.equal(warnings.length, 1);
 });
 
 test('a configured path says nothing', () => {

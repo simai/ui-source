@@ -52,6 +52,10 @@ try {
     <div style="width:300px;display:flex"><sf-tabs id="narrow" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  // Core takes its distr from its own script URL when sfPath is unset
+  // (simai/ui-source#8); here that is the build output's core/ root, not a
+  // distr, so the page names the distr this probe routes.
+  await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   // Drawn, not timed: a fixed wait was too short under a full probe run.
   await page.waitForFunction(() => customElements.get('sf-tabs')
