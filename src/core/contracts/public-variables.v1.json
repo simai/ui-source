@@ -1043,6 +1043,75 @@
           "since": "2026-10-18"
         }
       ]
+    },
+    {
+      "component": "button-group",
+      "selector": ".sf-button-group",
+      "variables": [
+        {
+          "name": "--sf-button-group-background-color",
+          "role": "background",
+          "summary": "The segmented track's fill at rest.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-button-group-padding",
+          "role": "padding-inline",
+          "summary": "The segmented track's padding on every side, which is also the gap between segments; the plate's radius stays concentric.",
+          "default": "var(--sf-a4)",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance",
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-button-group-color",
+          "role": "color",
+          "summary": "The label and icon colour of a segment that is not selected, at rest; hover, pressed and disabled keep their own.",
+          "default": "var(--sf-on-surface-container--variant)",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-button-group-plate-background-color",
+          "role": "background",
+          "summary": "The fill of the plate under the selected segment; disabled keeps its own.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance",
+            "scheme"
+          ]
+        },
+        {
+          "name": "--sf-button-group-plate-color",
+          "role": "color",
+          "summary": "The label, icon and count colour on the selected plate.",
+          "default": "var(--sf-on-primary)",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance",
+            "scheme"
+          ]
+        },
+        {
+          "name": "--sf-button-group-count-color",
+          "role": "color",
+          "summary": "The count's colour in a segment that is not selected; the selected one takes the plate's ink.",
+          "default": "currentColor",
+          "since": "2026-10-19",
+          "varies_with": [
+            "appearance"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -3,5 +3,5 @@ SF.RuleLoader['cl-button-group'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
-  relation: [{ name: 'button-group' }, { name: 'cl-buttons' }],
+  relation: [{ name: 'button-group' }, { name: 'cl-buttons' }, { name: 'cl-icons' }],
 };

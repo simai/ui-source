@@ -13,6 +13,7 @@ const FOLDERS = {
   tag: 'tags', 'icon-button': 'icon-buttons', checkbox: 'checkbox', 'radio-button': 'radio',
   switch: 'switch', textarea: 'textarea', toast: 'toast', modal: 'modal',
   tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
+  'button-group': 'button-group',
 };
 
 const scss = async (folder) => {
@@ -25,7 +26,8 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
   .map((entry) => (entry.isDirectory() ? walk(`${dir}/${entry.name}`) : /\.(s?css|js|mjs)$/u.test(entry.name) ? [`${dir}/${entry.name}`] : []))))
   .flat();
 
-// The pilot of four (2026-10-13) and the twelve after it (2026-10-18).
+// The pilot of four (2026-10-13), the twelve after it (2026-10-18) and the
+// segmented button group (2026-10-19).
 test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
   assert.ok(isSchema(contract, 'simai.framework.public-variables', 1), 'either form of the format name');
   assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());

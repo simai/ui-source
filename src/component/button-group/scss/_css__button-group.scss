@@ -162,3 +162,210 @@
     }
   }
 }
+
+/* The segmented appearance (simai/ui-source#4): one sunken track on a
+   container fill, borderless segments on it, and a plate under the selected
+   one. The selection model is the group's own -- a radiogroup, arrow keys,
+   change -- only the look differs. Segments are native buttons sized by the
+   button sheet's own size, spacing and text classes, so a segment is exactly
+   as tall as a button of the same size and the track adds only its padding.
+   The track pads by the gap between segments, and the plate's radius is the
+   track's minus that padding, so the corners are concentric.
+
+   In a narrow container the track scrolls inside itself, as every button group
+   does; it never widens the page. full-width shares the width equally instead.
+
+   Public variables (core/contracts/public-variables.v1.json), read here and
+   never set by the Framework: --sf-button-group-background-color (the track),
+   --sf-button-group-padding, --sf-button-group-color (a segment's ink),
+   --sf-button-group-plate-background-color, --sf-button-group-plate-color and
+   --sf-button-group-count-color. */
+@layer sf.components {
+  .sf-button-group.sf-button-group--segmented {
+    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a4));
+    --sf-button-group--plate-radius: var(--sf-button-radius, var(--sf-radius--ui));
+    --sf-button-group--count-gap: var(--sf-ui-1--text-space-x);
+    --sf-button-group--text-size: var(--sf-text-size-1);
+    --sf-button-group--text-height: var(--sf-text-height-1);
+    box-sizing: border-box;
+    gap: var(--sf-button-group--padding);
+    padding: var(--sf-button-group--padding);
+    border-radius: calc(var(--sf-button-group--plate-radius) + var(--sf-button-group--padding));
+    /* The track is a translucent container fill, so the dimmed ink on it is the
+       container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
+    background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  }
+
+  /* The size ladder: the segment takes the button's height, the track its
+     padding, the count the label's step. */
+  .sf-button-group--segmented.sf-button-group--size-1\/3 {
+    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a2));
+    --sf-button-group--count-gap: var(--sf-ui-1\/3--text-space-x);
+    --sf-button-group--text-size: var(--sf-text-size-1\/3);
+    --sf-button-group--text-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-button-group--segmented.sf-button-group--size-1\/2 {
+    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a2));
+    --sf-button-group--count-gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-button-group--text-size: var(--sf-text-size-1\/2);
+    --sf-button-group--text-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-button-group--segmented.sf-button-group--size-2 {
+    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a4));
+    --sf-button-group--count-gap: var(--sf-ui-2--text-space-x);
+    --sf-button-group--text-size: var(--sf-text-size-2);
+    --sf-button-group--text-height: var(--sf-text-height-2);
+  }
+
+  .sf-button-group--segmented.sf-button-group--size-3 {
+    --sf-button-group--padding: var(--sf-button-group-padding, var(--sf-a6));
+    --sf-button-group--count-gap: var(--sf-ui-3--text-space-x);
+    --sf-button-group--text-size: var(--sf-text-size-3);
+    --sf-button-group--text-height: var(--sf-text-height-3);
+  }
+
+  .sf-button-group--segmented.sf-button-group--full-width {
+    display: flex;
+    inline-size: 100%;
+  }
+}
+
+@layer sf.override {
+  /* A segment draws every state itself: the button sheet's link look and its
+     states would otherwise paint a link over the track. */
+  .sf-button-group--segmented > .sf-button-group-segment {
+    --sf-button--border-top-width: 0;
+    --sf-button--border-bottom-width: 0;
+    --sf-button--border-inline-start-width: 0;
+    --sf-button--border-inline-end-width: 0;
+    --sf-button--background-color: transparent;
+    --sf-button--box-shadow: none;
+    position: relative;
+    justify-content: center;
+    border-width: 0;
+    border-radius: var(--sf-button-group--plate-radius);
+    color: var(--sf-button-group-color, var(--sf-on-surface-variant));
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment .sf-button-text-container,
+  .sf-button-group--segmented > .sf-button-group-segment .sf-icon {
+    color: inherit;
+  }
+
+  .sf-button-group--segmented.sf-button-group--full-width > .sf-button-group-segment {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+
+  /* An icon-only segment is square: its inline padding is its block padding.
+     The class carries no "segment-" in it: the join rules match that substring. */
+  .sf-button-group--segmented > .sf-button-group-icon-only {
+    --sf-button--padding-inline-start: var(--sf-button--padding-top);
+    --sf-button--padding-inline-end: var(--sf-button--padding-top);
+  }
+
+  .sf-button-group--segmented .sf-button-group-label--hidden {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(var(--sf-px) * -1);
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sf-button-group--segmented .sf-button-group-count {
+    margin-inline-start: var(--sf-button-group--count-gap);
+    color: var(--sf-button-group-count-color, currentColor);
+    font-size: var(--sf-button-group--text-size);
+    line-height: var(--sf-button-group--text-height);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The plate. A scheme plate is the scheme's fill; a raised one is the first
+     raised surface with its shadow, for a neutral look. Its ink and the count
+     inside it follow the plate. */
+  .sf-button-group--segmented.sf-button-group--primary > .sf-button-group-segment.active {
+    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-primary));
+    --sf-button--focus-ink: var(--sf-on-primary);
+    color: var(--sf-button-group-plate-color, var(--sf-on-primary));
+  }
+
+  .sf-button-group--segmented.sf-button-group--secondary > .sf-button-group-segment.active {
+    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-secondary));
+    --sf-button--focus-ink: var(--sf-on-secondary);
+    color: var(--sf-button-group-plate-color, var(--sf-on-secondary));
+  }
+
+  .sf-button-group--segmented.sf-button-group--on-surface > .sf-button-group-segment.active {
+    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-on-surface));
+    --sf-button--focus-ink: var(--sf-on-surface-inverse);
+    color: var(--sf-button-group-plate-color, var(--sf-on-surface-inverse));
+  }
+
+  .sf-button-group--segmented.sf-button-group--plate-raised > .sf-button-group-segment.active {
+    --sf-button--background-color: var(--sf-button-group-plate-background-color, var(--sf-elevation-1--surface));
+    --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
+    --sf-button--box-shadow: var(--sf-elevation-1--shadow);
+    --sf-button--focus-ink: transparent;
+    color: var(--sf-button-group-plate-color, var(--sf-on-surface));
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment.active .sf-button-group-count {
+    color: currentColor;
+  }
+
+  /* States, from the neutral alpha ramp: a segment that is not selected darkens
+     one step on hover and another when pressed, and its ink comes up to the
+     primary text role. The selected plate does not react to a hover. */
+  .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):hover {
+    --sf-button--background-color: var(--sf-alpha-8);
+    color: var(--sf-on-surface);
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):active {
+    --sf-button--background-color: var(--sf-alpha-12);
+    color: var(--sf-on-surface);
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment:disabled {
+    color: var(--sf-on-disable);
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment.active:disabled {
+    --sf-button--background-color: var(--sf-disable);
+    --sf-button--box-shadow: none;
+  }
+
+  /* The ring stands around the segment, on the track's padding, rather than
+     inside a plate it could share a colour with. */
+  .sf-button-group--segmented > .sf-button-group-segment:focus-visible {
+    outline-offset: 0;
+  }
+
+  @media (forced-colors: active) {
+    .sf-button-group--segmented {
+      border: var(--sf-px) solid CanvasText;
+    }
+
+    .sf-button-group--segmented > .sf-button-group-segment.active {
+      forced-color-adjust: none;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .sf-button-group--segmented > .sf-button-group-segment:disabled {
+      color: GrayText;
+    }
+
+    .sf-button-group--segmented > .sf-button-group-segment:focus-visible {
+      outline: var(--sf-focus-outline-width) solid CanvasText;
+      outline-offset: 0;
+    }
+  }
+}

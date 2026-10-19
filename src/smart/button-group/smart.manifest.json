@@ -42,7 +42,7 @@
       "items": {
         "type": "array",
         "default": "[]",
-        "description": "Selectable items with stable value, label, icon and disabled fields.",
+        "description": "Selectable items with stable value, label, icon, count, icon-only and disabled fields.",
         "items": {
           "type": "object",
           "properties": {
@@ -58,11 +58,22 @@
             "icon": {
               "type": "string"
             },
+            "icon-only": {
+              "type": "boolean",
+              "description": "Segmented appearance: show only the icon; the label stays as the visually hidden accessible name. Needs an icon."
+            },
             "aria-label": {
               "type": "string"
             },
             "disabled": {
               "type": "boolean"
+            },
+            "count": {
+              "type": [
+                "string",
+                "number"
+              ],
+              "description": "Segmented appearance: a number after the label, in tabular numerals; it is part of the segment's accessible name."
             }
           },
           "required": [
@@ -82,6 +93,23 @@
               "value": "grid",
               "label": "Grid",
               "icon": "grid_view"
+            }
+          ],
+          [
+            {
+              "value": "all",
+              "label": "Все",
+              "count": 24
+            },
+            {
+              "value": "light",
+              "label": "Светлые",
+              "count": 17
+            },
+            {
+              "value": "dark",
+              "label": "Тёмные",
+              "count": 7
             }
           ]
         ]
@@ -133,7 +161,30 @@
           "secondary",
           "on-surface"
         ],
-        "description": "Color scheme for the selected button."
+        "description": "Color scheme for the selected button, and for the selected plate in the segmented appearance."
+      },
+      "appearance": {
+        "type": "string",
+        "default": "default",
+        "enum": [
+          "default",
+          "segmented"
+        ],
+        "description": "How the group looks. default joins outlined buttons into one perimeter; segmented draws a sunken track with borderless segments and a plate under the selected one. The selection model, keyboard and events are the same."
+      },
+      "plate": {
+        "type": "string",
+        "default": "scheme",
+        "enum": [
+          "scheme",
+          "raised"
+        ],
+        "description": "The selected segment's plate in the segmented appearance: the scheme's fill, or a raised neutral surface with its shadow."
+      },
+      "full-width": {
+        "type": "boolean",
+        "default": false,
+        "description": "In the segmented appearance, the track fills its container and the segments share the width equally."
       },
       "orientation": {
         "type": "string",
@@ -373,13 +424,13 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-group/index.js",
-        "sha256": "587362665c8f5db011a240a06797a2e12f9c012079d8d310e52d14f8b25223e2"
+        "sha256": "a93050b14e18a71f6b6061c32e5fab9fa7272e1e56cccd4497c824282838d4ca"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-button-group for one compact mutually exclusive choice.",
+    "use_when": "Use sf-button-group for one compact mutually exclusive choice; appearance=\"segmented\" for a filter, period, view or theme switch drawn as a segmented control (not tabs: no panels).",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not persist selection inside the component",

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "purpose": "One name per question a public input answers. The Framework grew three different meanings under the word type, and a developer could not tell from the name which one a component meant. The axes below fix the question each name answers; the alias map records every legacy name that still works, so a rename never breaks a consumer.",
   "axes": {
-    "appearance": "How the control looks: default, tonal, outline, link, surface, ghost, filled, bordered.",
+    "appearance": "How the control looks: default, tonal, outline, link, surface, ghost, filled, bordered, segmented.",
     "status": "What the control reports about the world: success, warning, error, info, neutral.",
     "kind": "What the control carries or is: an icon, an avatar, a checkbox, a folder, a file."
   },
@@ -60,6 +60,13 @@
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start"
+    },
+    {
+      "component": "button-group",
+      "axis": "appearance",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "segmented draws the same radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); default keeps the joined outlined buttons."
     },
     {
       "component": "badges",

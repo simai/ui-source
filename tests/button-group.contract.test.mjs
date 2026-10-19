@@ -90,6 +90,68 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.doesNotMatch(styles, /\b1px\b|0\.01ms/);
 });
 
+// The segmented appearance (simai/ui-source#4): a look, not a component and
+// not tabs. The browser probe tests/browser/button-group-segmented.browser.mjs
+// measures it on the built bytes; this holds the source to the same shape.
+test('button group offers a segmented appearance with the same semantics', async () => {
+  const [manifest, smart, template, component, styles, variables, axes] = await Promise.all([
+    json('src/smart/button-group/smart.manifest.json'),
+    source('src/smart/button-group/index.js'),
+    source('src/smart/button-group/js/templates/default.js'),
+    source('src/component/button-group/js/_button-group.js'),
+    source('src/component/button-group/scss/_css__button-group.scss'),
+    json('src/core/contracts/public-variables.v1.json'),
+    json('contracts/public-api-axes.json'),
+  ]);
+  const inputs = manifest.inputs.properties;
+  assert.deepEqual(inputs.appearance.enum, ['default', 'segmented']);
+  assert.equal(inputs.appearance.default, 'default');
+  assert.deepEqual(inputs.plate.enum, ['scheme', 'raised']);
+  assert.equal(inputs['full-width'].type, 'boolean');
+  assert.deepEqual(inputs.size.enum, ['1/3', '1/2', '1', '2', '3']);
+  const item = inputs.items.items.properties;
+  for (const field of ['value', 'label', 'icon', 'icon-only', 'count', 'aria-label', 'disabled']) assert.ok(item[field], `item.${field}`);
+  assert.deepEqual(item.count.type, ['string', 'number']);
+  // The same group: role, keyboard and events do not depend on the look.
+  assert.equal(manifest.accessibility.role, 'radiogroup');
+  assert.ok(manifest.events.change.canonical);
+  assert.doesNotMatch(template, /role="tab|tablist|aria-selected/);
+  assert.match(smart, /appearance: \{ default: 'default', values: \['default', 'segmented'\] \}/);
+  assert.match(smart, /plate: \{ default: 'scheme', values: \['scheme', 'raised'\] \}/);
+  assert.match(smart, /attribute: 'full-width', type: Boolean/);
+  assert.match(smart, /:scope > sf-button, :scope > button/);
+  assert.ok(axes.components.some((entry) => entry.component === 'button-group' && entry.axis === 'appearance'));
+  // Segments are buttons of the same size and text classes, all of one look, so
+  // the plate never changes a width; an icon-only label stays the name.
+  assert.match(template, /`sf-button--size-\$\{context\.size\}`/);
+  assert.match(template, /'sf-button--link',\s*'sf-button--on-surface'/);
+  assert.match(template, /sf-button-group-label--hidden/);
+  assert.match(template, /sf-button-group-count/);
+  assert.match(template, /\[item\.ariaLabel \|\| item\.label, item\.count\]/);
+  assert.doesNotMatch(template, /segment-[a-z]+(?=['"` ])|sf-button-group-segment-/u, 'no segment class carries the join substring');
+  // A segmented group takes no join positions.
+  assert.match(component, /sf-button-group--segmented/);
+  // The track: container fill with its own dimmed ink, padding equal to the gap,
+  // concentric corners, a size ladder, states from the alpha ramp.
+  assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
+  assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
+  assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
+  assert.match(styles, /border-radius: calc\(var\(--sf-button-group--plate-radius\) \+ var\(--sf-button-group--padding\)\)/);
+  for (const size of ['1\\/3', '1\\/2', '2', '3']) assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--size-${size} {`), size);
+  assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);
+  assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-12\)/);
+  assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-elevation-1--surface[^}]*--sf-elevation-1--shadow/);
+  assert.match(styles, /font-variant-numeric: tabular-nums/);
+  assert.match(styles, /\.sf-button-group-segment:focus-visible \{\s*outline-offset: 0;/);
+  assert.match(styles, /forced-colors: active[\s\S]*sf-button-group--segmented[\s\S]*Highlight/);
+  assert.doesNotMatch(styles, /\b(?:left|right|margin-left|margin-right|padding-left|padding-right)\s*:/u, 'logical properties only');
+  const entry = variables.components.find((candidate) => candidate.component === 'button-group');
+  assert.deepEqual(entry.variables.map((variable) => variable.name), [
+    '--sf-button-group-background-color', '--sf-button-group-padding', '--sf-button-group-color',
+    '--sf-button-group-plate-background-color', '--sf-button-group-plate-color', '--sf-button-group-count-color',
+  ]);
+});
+
 test('button group Studio artifacts expose a meaningful selectable fixture', async () => {
   const [manifest, fixture, scenario] = await Promise.all([
     json('src/smart/button-group/smart.manifest.json'),

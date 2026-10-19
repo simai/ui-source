@@ -47,7 +47,11 @@
     "visibility/default"
   ],
   "cl-button-group": [
-    "position/default"
+    "align-items/default",
+    "display/default",
+    "pointer-events/default",
+    "position/default",
+    "text-align/default"
   ],
   "cl-buttons": [
     "align-items/default",

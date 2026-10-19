@@ -41,6 +41,10 @@ const DRAW = {
   avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
   'context-menu': {css: ['context-menu', 'buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>',
     open: 'const m = document.getElementById("menu"); m.entries = [{id: "a", text: "Открыть"}, {id: "b", text: "Удалить"}]; m.toggleFor(document.getElementById("anchor"))'},
+  // The variables belong to the segmented appearance; a count is drawn on a
+  // segment that is not selected, so the count's own colour has a part to reach.
+  'button-group': {css: ['button-group', 'buttons'], js: 'button-group',
+    html: `<sf-button-group appearance="segmented" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>`},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

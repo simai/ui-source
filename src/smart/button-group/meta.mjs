@@ -4,6 +4,8 @@ const BUTTON_GROUP_SPACING_VALUES = ['compact', 'normal', 'comfortable', 'spacio
 const BUTTON_GROUP_TIGHTNESS_VALUES = ['', 'low', 'high', 'highest'];
 const BUTTON_GROUP_SCHEME_VALUES = ['primary', 'secondary', 'on-surface'];
 const BUTTON_GROUP_ORIENTATION_VALUES = ['horizontal', 'vertical'];
+const BUTTON_GROUP_APPEARANCE_VALUES = ['default', 'segmented'];
+const BUTTON_GROUP_PLATE_VALUES = ['scheme', 'raised'];
 
 const sfButtonGroupMeta = {
   tag: 'sf-button-group',
@@ -19,7 +21,7 @@ const sfButtonGroupMeta = {
       kind: 'json',
       valueType: 'array',
       default: '[]',
-      description: 'Selectable items with stable value, label, icon and disabled fields.',
+      description: 'Selectable items with stable value, label, icon, count, icon-only and disabled fields.',
     },
     value: {
       kind: 'custom',
@@ -49,7 +51,25 @@ const sfButtonGroupMeta = {
       kind: 'enum',
       values: BUTTON_GROUP_SCHEME_VALUES,
       default: 'primary',
-      description: 'Color scheme for the selected button.',
+      description: 'Color scheme for the selected button, and for the selected plate in the segmented appearance.',
+    },
+    appearance: {
+      kind: 'enum',
+      values: BUTTON_GROUP_APPEARANCE_VALUES,
+      default: 'default',
+      description: 'How the group looks. default joins outlined buttons into one perimeter; segmented draws a sunken track with borderless segments and a plate under the selected one. The selection model, keyboard and events are the same.',
+    },
+    plate: {
+      kind: 'enum',
+      values: BUTTON_GROUP_PLATE_VALUES,
+      default: 'scheme',
+      description: "The selected segment's plate in the segmented appearance: the scheme's fill, or a raised neutral surface with its shadow.",
+    },
+    'full-width': {
+      kind: 'boolean',
+      values: BOOLEAN_VALUES,
+      default: 'false',
+      description: 'In the segmented appearance, the track fills its container and the segments share the width equally.',
     },
     orientation: {
       kind: 'enum',
@@ -85,6 +105,8 @@ export {
   BUTTON_GROUP_TIGHTNESS_VALUES,
   BUTTON_GROUP_SCHEME_VALUES,
   BUTTON_GROUP_ORIENTATION_VALUES,
+  BUTTON_GROUP_APPEARANCE_VALUES,
+  BUTTON_GROUP_PLATE_VALUES,
   sfButtonGroupMeta,
 };
 

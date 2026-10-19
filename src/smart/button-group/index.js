@@ -49,6 +49,11 @@ function normalizeItems(items = []) {
         label: String(source.label ?? source.text ?? value),
         icon: String(source.icon || ''),
         ariaLabel: String(source.ariaLabel || source['aria-label'] || ''),
+        // A number shown after the label in the segmented appearance; 0 is a
+        // count, an absent or empty one is not.
+        count: source.count === null || typeof source.count === 'undefined' ? '' : String(source.count).trim(),
+        // Only an icon can stand alone; the label stays as the accessible name.
+        iconOnly: Boolean((source.iconOnly ?? source['icon-only']) && source.icon),
         disabled: Boolean(source.disabled),
       };
     })
@@ -65,6 +70,13 @@ class SfButtonGroup extends SfBaseElement {
       spacing: {type: String, default: null},
       tightness: { default: '', values: ['', 'low', 'high', 'highest'] },
       scheme: { default: 'primary', values: ['primary', 'secondary', 'on-surface'] },
+      // How the group looks. segmented: a sunken track with borderless segments
+      // and a plate under the selected one; the selection model is the same.
+      appearance: { default: 'default', values: ['default', 'segmented'] },
+      // The selected segment's plate in the segmented appearance: the scheme's
+      // fill, or a raised neutral surface.
+      plate: { default: 'scheme', values: ['scheme', 'raised'] },
+      fullWidth: { attribute: 'full-width', type: Boolean, default: false },
       orientation: { default: 'horizontal', values: ['horizontal', 'vertical'] },
       disabled: { type: Boolean, default: false },
       ariaLabel: { attribute: 'aria-label', default: '' },
@@ -165,8 +177,9 @@ class SfButtonGroup extends SfBaseElement {
     const items = this.normalizedItems;
     const available = this.disabled ? [] : items.filter(item => !item.disabled);
     const tabStop = available.find(item => item.value === this.value) || available[0];
-    root.querySelectorAll(':scope > sf-button').forEach((host, index) => {
-      const button = host.querySelector('button'), item = items[index];
+    // A segmented group draws native buttons; the default one draws Smart buttons.
+    root.querySelectorAll(':scope > sf-button, :scope > button').forEach((host, index) => {
+      const button = host.matches('button') ? host : host.querySelector('button'), item = items[index];
       if (!button || !item) return;
       const selected = item.value === this.value;
       button.setAttribute('role', 'radio');
