@@ -90,9 +90,9 @@
     {
       "id": "area-takes-the-drawn-theme",
       "level": "must",
-      "text": "The area of an effect takes the theme it is actually drawn in (theme-dark or theme-light), whatever the page's theme, so text and controls over it use that theme's roles and measure at least 4.5:1 against the effect on its brightest frame at the manifest's default settings. A person who raises a setting past its default owns the contrast that results; the defaults are what an effect promises.",
+      "text": "The area of an effect takes the theme it is actually drawn in (theme-dark or theme-light), whatever the page's theme, so text and controls over it use that theme's roles. At the manifest's default settings, on the effect's brightest frame, the primary text role measures at least 4.5:1 and the dimmed text role at least 3:1. Dimmed text over an effect is therefore large text (24px, or 18.66px bold), as WCAG allows at 3:1; small text over an effect takes the primary role. A person who raises a setting past its default owns the contrast that results; the defaults are what an effect promises.",
       "verification": "manual",
-      "guidance": "The kit's contrast check: --sf-on-surface and --sf-on-surface-variant over the worst of five frames, at the 5th percentile of the pixels. The effect runs with every setting at its default."
+      "guidance": "The kit's contrast check: --sf-on-surface at 4.5:1 and --sf-on-surface-variant at 3:1, over the worst of five frames, at the 5th percentile of the pixels, with every setting at its default (owner decision, 2026-10-19)."
     },
     {
       "id": "drawn-with-palette-tones",

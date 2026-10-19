@@ -26,8 +26,9 @@
 //                  sampled frame has that scheme's polarity (mean relative
 //                  luminance below 0.18 for dark, at or above it for light)
 //   contrast-<s>   over the worst of five frames, text in the area's roles
-//                  (--sf-on-surface, --sf-on-surface-variant) measures at least
-//                  4.5:1 against 95 % of the pixels (the 5th percentile)
+//                  measures, against 95 % of the pixels (the 5th percentile),
+//                  at least 4.5:1 for --sf-on-surface and 3:1 for
+//                  --sf-on-surface-variant (dimmed text over an effect is large)
 //   scheme-switch  a two-scheme effect switches through update(settings,
 //                  {scheme}) without a remount, and the frame changes polarity
 //   windows        capability windows: drawn once behind a group of three window
@@ -187,8 +188,12 @@ export async function runEffectKit(effectDirectory, outputRoot) {
 // simai.effect 1.1: schemes, contrast, windows --------------------------------
 
 const POLARITY = 0.18; // mean relative luminance between a dark and a light frame
-const CONTRAST = 4.5;
-const TEXT_ROLES = ['--sf-on-surface', '--sf-on-surface-variant'];
+// Text over an effect (owner, 2026-10-19, variant 1): the primary role at
+// 4.5:1, the text WCAG calls normal; the dimmed role at 3:1, which WCAG allows
+// for large text (24px, or 18.66px bold) -- so dimmed text over an effect is
+// large, and small text there takes the primary role.
+const CONTRAST = Object.freeze({'--sf-on-surface': 4.5, '--sf-on-surface-variant': 3});
+const TEXT_ROLES = Object.keys(CONTRAST);
 const MAGENTA = [255, 0, 255]; // the page behind a windows group: no effect draws it
 
 // A screenshot decoded in the page: its luminance mean, the 5th percentile of
@@ -289,7 +294,7 @@ async function checkSchemes({manifest, run, check, wait}) {
     const means = frames.map((frame) => frame.mean);
     check(`scheme-${scheme}`, means.every((mean) => polar(scheme, mean)), {mean: means, threshold: POLARITY});
     const worst = Object.fromEntries(Object.keys(colors).map((role) => [role, Math.min(...frames.map((frame) => frame.contrast[role]))]));
-    check(`contrast-${scheme}`, Object.keys(worst).length === TEXT_ROLES.length && Object.values(worst).every((ratio) => ratio >= CONTRAST), {p5: worst, needs: CONTRAST});
+    check(`contrast-${scheme}`, Object.keys(worst).length === TEXT_ROLES.length && Object.entries(worst).every(([role, ratio]) => ratio >= CONTRAST[role]), {p5: worst, needs: CONTRAST});
     await tab.evaluate(() => window.__handle.destroy());
     await context.close();
   }
