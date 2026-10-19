@@ -17,7 +17,7 @@
     "inputs": {"$ref": "#/$defs/ports"}
   },
   "$defs": {
-    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1"]},
+    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1", "record-ids", "record-id", "text", "boolean", "record-changed", "record-removed", "collection-changed", "files-moved", "counter", "navigation", "preference-changed"], "description": "A value type by its name (record-removed) or by the older label with the version (record-removed.v1); both are read until the change journal retires the older one (value-types-without-version, names carry no version, 2026-10-19)."},
     "ports": {
       "type": "object",
       "maxProperties": 16,

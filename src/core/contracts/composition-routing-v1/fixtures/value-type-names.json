@@ -1,0 +1,700 @@
+{
+  "capability": "layout.scope",
+  "cases": [
+    {
+      "canonical": "{\"id\":\"value-type-names\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"picked\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"picker\",\"port\":\"picked\"},\"id\":\"picked-orders\",\"to\":{\"endpoint\":\"orders\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"picker\"}},\"id\":\"picker\",\"props\":{\"aria-label\":\"Выбор\"},\"type\":\"example.picker\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
+      "diagnostics": [],
+      "digest": "sha256:865d91f0fcfcebdbd93ef942c524a48446adaad3456aec6fd491361533d05b2c",
+      "document": {
+        "id": "value-type-names",
+        "profile": "ui-layout",
+        "root": {
+          "id": "picked",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "picker",
+                  "port": "picked"
+                },
+                "id": "picked-orders",
+                "to": {
+                  "endpoint": "orders",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "picker"
+                  }
+                },
+                "id": "picker",
+                "props": {
+                  "aria-label": "Выбор"
+                },
+                "type": "example.picker"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"picked\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;picker&quot;,&quot;port&quot;:&quot;picked&quot;,&quot;value&quot;:&quot;record-ids&quot;},&quot;id&quot;:&quot;picked-orders&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;}}]\"><sf-example-picker aria-label=\"Выбор\" data-sf-endpoint=\"picker\"></sf-example-picker><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-example-picker",
+          "id": "picker",
+          "type": "example.picker"
+        },
+        {
+          "element": "sf-table",
+          "id": "orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "picked",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.bare-output-feeds-older-input"
+    },
+    {
+      "canonical": "{\"id\":\"value-type-names\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"selected\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"orders\",\"port\":\"selection\"},\"id\":\"orders-picker\",\"to\":{\"endpoint\":\"picker\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"orders\"}},\"id\":\"orders\",\"props\":{\"aria-label\":\"Заказы\",\"table-settings-key\":\"example.orders\"},\"type\":\"example.records\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"picker\"}},\"id\":\"picker\",\"props\":{\"aria-label\":\"Выбор\"},\"type\":\"example.picker\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
+      "diagnostics": [],
+      "digest": "sha256:8c0079b2bbb79c60c0a8bb84cf81efa723236ee46d8995de306526cff753f0b7",
+      "document": {
+        "id": "value-type-names",
+        "profile": "ui-layout",
+        "root": {
+          "id": "selected",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "orders",
+                  "port": "selection"
+                },
+                "id": "orders-picker",
+                "to": {
+                  "endpoint": "picker",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "picker"
+                  }
+                },
+                "id": "picker",
+                "props": {
+                  "aria-label": "Выбор"
+                },
+                "type": "example.picker"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"selected\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;orders&quot;,&quot;port&quot;:&quot;selection&quot;,&quot;value&quot;:&quot;record-ids.v1&quot;},&quot;id&quot;:&quot;orders-picker&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;picker&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids&quot;}}]\"><sf-table aria-label=\"Заказы\" table-settings-key=\"example.orders\" data-sf-endpoint=\"orders\"></sf-table><sf-example-picker aria-label=\"Выбор\" data-sf-endpoint=\"picker\"></sf-example-picker></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-table",
+          "id": "orders",
+          "type": "example.records"
+        },
+        {
+          "element": "sf-example-picker",
+          "id": "picker",
+          "type": "example.picker"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "selected",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.older-output-feeds-bare-input"
+    },
+    {
+      "canonical": "{\"id\":\"value-type-names\",\"profile\":\"ui-layout\",\"root\":{\"id\":\"chain\",\"props\":{\"routes\":[{\"from\":{\"endpoint\":\"first\",\"port\":\"picked\"},\"id\":\"first-second\",\"to\":{\"endpoint\":\"second\",\"port\":\"context\"}}]},\"slots\":{\"default\":[{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"first\"}},\"id\":\"first\",\"props\":{\"aria-label\":\"Первый\"},\"type\":\"example.picker\"},{\"extensions\":{\"simai.composition:endpoint\":{\"name\":\"second\"}},\"id\":\"second\",\"props\":{\"aria-label\":\"Второй\"},\"type\":\"example.picker\"}]},\"type\":\"layout.scope\"},\"schema\":\"simai.composition.document\",\"schema_version\":1}",
+      "diagnostics": [],
+      "digest": "sha256:38efea65872313624a9865934ad95157e7d6dad51a07f3ec133410da0ac53b7b",
+      "document": {
+        "id": "value-type-names",
+        "profile": "ui-layout",
+        "root": {
+          "id": "chain",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "first",
+                  "port": "picked"
+                },
+                "id": "first-second",
+                "to": {
+                  "endpoint": "second",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "first"
+                  }
+                },
+                "id": "first",
+                "props": {
+                  "aria-label": "Первый"
+                },
+                "type": "example.picker"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "second"
+                  }
+                },
+                "id": "second",
+                "props": {
+                  "aria-label": "Второй"
+                },
+                "type": "example.picker"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "expect": "valid",
+      "html": "<sf-composition-scope data-sf-composition-id=\"chain\" data-sf-routes=\"[{&quot;from&quot;:{&quot;endpoint&quot;:&quot;first&quot;,&quot;port&quot;:&quot;picked&quot;,&quot;value&quot;:&quot;record-ids&quot;},&quot;id&quot;:&quot;first-second&quot;,&quot;to&quot;:{&quot;endpoint&quot;:&quot;second&quot;,&quot;port&quot;:&quot;context&quot;,&quot;value&quot;:&quot;record-ids&quot;}}]\"><sf-example-picker aria-label=\"Первый\" data-sf-endpoint=\"first\"></sf-example-picker><sf-example-picker aria-label=\"Второй\" data-sf-endpoint=\"second\"></sf-example-picker></sf-composition-scope>",
+      "hydration": [
+        {
+          "element": "sf-example-picker",
+          "id": "first",
+          "type": "example.picker"
+        },
+        {
+          "element": "sf-example-picker",
+          "id": "second",
+          "type": "example.picker"
+        },
+        {
+          "element": "sf-composition-scope",
+          "id": "chain",
+          "type": "layout.scope"
+        }
+      ],
+      "id": "positive.bare-output-feeds-bare-input"
+    },
+    {
+      "diagnostics": [
+        "route_type_mismatch"
+      ],
+      "document": {
+        "id": "value-type-names",
+        "profile": "ui-layout",
+        "root": {
+          "id": "mismatch",
+          "props": {
+            "routes": [
+              {
+                "from": {
+                  "endpoint": "picker",
+                  "port": "query"
+                },
+                "id": "query-orders",
+                "to": {
+                  "endpoint": "orders",
+                  "port": "context"
+                }
+              }
+            ]
+          },
+          "slots": {
+            "default": [
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "picker"
+                  }
+                },
+                "id": "picker",
+                "props": {
+                  "aria-label": "Выбор"
+                },
+                "type": "example.picker"
+              },
+              {
+                "extensions": {
+                  "simai.composition:endpoint": {
+                    "name": "orders"
+                  }
+                },
+                "id": "orders",
+                "props": {
+                  "aria-label": "Заказы",
+                  "table-settings-key": "example.orders"
+                },
+                "type": "example.records"
+              }
+            ]
+          },
+          "type": "layout.scope"
+        },
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "expect": "invalid",
+      "id": "negative.bare-names-still-type-routes"
+    }
+  ],
+  "effects": [
+    {
+      "port": "record-changed",
+      "types": [
+        "record-changed",
+        "record-changed.v1"
+      ],
+      "value": {
+        "collection": "news",
+        "fields": [
+          "title"
+        ],
+        "id": 5,
+        "revision": "r2"
+      }
+    },
+    {
+      "port": "record-removed",
+      "types": [
+        "record-removed",
+        "record-removed.v1"
+      ],
+      "value": {
+        "collection": "news",
+        "id": "a-1"
+      }
+    },
+    {
+      "port": "collection-changed",
+      "types": [
+        "collection-changed",
+        "collection-changed.v1"
+      ],
+      "value": {
+        "collection": "files",
+        "reason": "imported"
+      }
+    },
+    {
+      "port": "files-moved",
+      "types": [
+        "files-moved",
+        "files-moved.v1"
+      ],
+      "value": {
+        "from": null,
+        "ids": [
+          1,
+          "b"
+        ],
+        "to": "f-2"
+      }
+    },
+    {
+      "port": "counter",
+      "types": [
+        "counter",
+        "counter.v1"
+      ],
+      "value": {
+        "key": "notifications",
+        "value": 3
+      }
+    },
+    {
+      "port": "navigation",
+      "types": [
+        "navigation",
+        "navigation.v1"
+      ],
+      "value": {
+        "region": "content",
+        "url": "/admin/files?folder=2"
+      }
+    },
+    {
+      "port": "preference-changed",
+      "types": [
+        "preference-changed",
+        "preference-changed.v1"
+      ],
+      "value": {
+        "key": "sf-table/news"
+      }
+    }
+  ],
+  "schema": "simai.composition.capability-fixtures",
+  "schema_cases": [
+    {
+      "document": {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {
+          "context": {
+            "summary": "Restricts the picker to records related to these identities.",
+            "value": "record-ids"
+          }
+        },
+        "outputs": {
+          "picked": {
+            "summary": "The records the person picked.",
+            "value": "record-ids"
+          },
+          "query": {
+            "summary": "The words the person searches by.",
+            "value": "text"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      },
+      "expect": "valid",
+      "id": "port-manifest.bare-names",
+      "schema": "composition-port-manifest.v1.schema.json"
+    },
+    {
+      "document": {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {},
+        "outputs": {
+          "picked": {
+            "summary": "x",
+            "value": "record-ids.v1"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      },
+      "expect": "valid",
+      "id": "port-manifest.older-label",
+      "schema": "composition-port-manifest.v1.schema.json"
+    },
+    {
+      "document": {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {},
+        "outputs": {
+          "picked": {
+            "summary": "x",
+            "value": "record-ids.v2"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      },
+      "expect": "invalid",
+      "id": "port-manifest.another-version",
+      "schema": "composition-port-manifest.v1.schema.json"
+    },
+    {
+      "document": {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {},
+        "outputs": {
+          "picked": {
+            "summary": "x",
+            "value": "records"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      },
+      "expect": "invalid",
+      "id": "port-manifest.unknown-name",
+      "schema": "composition-port-manifest.v1.schema.json"
+    },
+    {
+      "document": {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {},
+        "outputs": {
+          "picked": {
+            "summary": "x",
+            "value": "Record-ids"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      },
+      "expect": "invalid",
+      "id": "port-manifest.capital",
+      "schema": "composition-port-manifest.v1.schema.json"
+    },
+    {
+      "document": {
+        "budget": {
+          "first_answer_ms": 300,
+          "kb": 40
+        },
+        "element": "sf-example-files",
+        "id": "example.files",
+        "inputs": {
+          "changed": {
+            "summary": "Read the folder again.",
+            "value": "collection-changed"
+          }
+        },
+        "operation": "files.read",
+        "outputs": {
+          "moved": {
+            "summary": "Files the person moved.",
+            "value": "files-moved"
+          }
+        },
+        "port": {
+          "standard": "simai.composite-host-port",
+          "version": "1.0.4"
+        },
+        "regions": [
+          "content"
+        ],
+        "schema": "simai.interface-fragment",
+        "schema_version": 1,
+        "url_state": [
+          "folder"
+        ]
+      },
+      "expect": "valid",
+      "id": "descriptor.bare-names",
+      "schema": "interface-fragment.v1.schema.json"
+    },
+    {
+      "document": {
+        "budget": {
+          "first_answer_ms": 300,
+          "kb": 40
+        },
+        "element": "sf-example-files",
+        "id": "example.files",
+        "inputs": {
+          "removed": {
+            "summary": "Drop the record.",
+            "value": "record-removed"
+          }
+        },
+        "operation": "files.read",
+        "outputs": {
+          "moved": {
+            "summary": "Files the person moved.",
+            "value": "files-moved.v1"
+          }
+        },
+        "port": {
+          "standard": "simai.composite-host-port",
+          "version": "1.0.4"
+        },
+        "regions": [
+          "content"
+        ],
+        "schema": "simai.interface-fragment",
+        "schema_version": 1,
+        "url_state": [
+          "folder"
+        ]
+      },
+      "expect": "valid",
+      "id": "descriptor.both-forms",
+      "schema": "interface-fragment.v1.schema.json"
+    },
+    {
+      "document": {
+        "budget": {
+          "first_answer_ms": 300,
+          "kb": 40
+        },
+        "element": "sf-example-files",
+        "id": "example.files",
+        "inputs": {},
+        "operation": "files.read",
+        "outputs": {
+          "moved": {
+            "summary": "Files the person moved.",
+            "value": "files-moved.v2"
+          }
+        },
+        "port": {
+          "standard": "simai.composite-host-port",
+          "version": "1.0.4"
+        },
+        "regions": [
+          "content"
+        ],
+        "schema": "simai.interface-fragment",
+        "schema_version": 1,
+        "url_state": [
+          "folder"
+        ]
+      },
+      "expect": "invalid",
+      "id": "descriptor.another-version",
+      "schema": "interface-fragment.v1.schema.json"
+    }
+  ],
+  "schema_version": 1,
+  "setup": {
+    "port_bindings": {
+      "example.product-list": "sf-table"
+    },
+    "port_manifests": [
+      {
+        "component": "example.picker",
+        "component_version": "1.0.0",
+        "element": "sf-example-picker",
+        "inputs": {
+          "context": {
+            "summary": "Restricts the picker to records related to these identities.",
+            "value": "record-ids"
+          }
+        },
+        "outputs": {
+          "picked": {
+            "summary": "The records the person picked.",
+            "value": "record-ids"
+          },
+          "query": {
+            "summary": "The words the person searches by.",
+            "value": "text"
+          }
+        },
+        "schema": "simai.composition.port-manifest",
+        "schema_version": 1,
+        "version": "1.0.0"
+      }
+    ],
+    "types": [
+      {
+        "assets": [],
+        "capabilities": [
+          "html",
+          "hydration"
+        ],
+        "category": "smart",
+        "data_schema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "mode": "leaf",
+        "presentation": {
+          "modifiers": [],
+          "presets": [],
+          "views": [
+            "default"
+          ]
+        },
+        "profiles": [
+          "ui-layout"
+        ],
+        "props_schema": {
+          "additionalProperties": false,
+          "properties": {
+            "aria-label": {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "renderer": {
+          "kind": "custom-element",
+          "name": "sf-example-picker"
+        },
+        "schema": "simai.composition.type-manifest",
+        "schema_version": 1,
+        "slots": {},
+        "type": "example.picker",
+        "version": "1.0.0"
+      }
+    ]
+  },
+  "value_type_names": {
+    "boolean": "boolean.v1",
+    "collection-changed": "collection-changed.v1",
+    "counter": "counter.v1",
+    "files-moved": "files-moved.v1",
+    "navigation": "navigation.v1",
+    "preference-changed": "preference-changed.v1",
+    "record-changed": "record-changed.v1",
+    "record-id": "record-id.v1",
+    "record-ids": "record-ids.v1",
+    "record-removed": "record-removed.v1",
+    "text": "text.v1"
+  }
+}

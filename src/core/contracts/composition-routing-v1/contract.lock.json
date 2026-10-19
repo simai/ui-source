@@ -2,7 +2,7 @@
   "capability": "simai.composition.routing",
   "checks": {
     "checks/digest-parity.php": "sha256:1ec7e4b884899a25bb281d0a12225b19c382fe8740844eb47c5f67f1c04753ac",
-    "checks/schemas.py": "sha256:6a545f09421e172b22172434b8d22498309e8eb195e268d0f932109f01a5c189"
+    "checks/schemas.py": "sha256:849b22d6d4ff9b85aaa2fdb191a6fdd431e93b284f6585e651c472b49a4f20fa"
   },
   "compatibility": {
     "document": "simai.composition.document.v1 unchanged",
@@ -10,18 +10,20 @@
     "recipe": "simai.composition.recipe.v1@1.0.1 unchanged",
     "registry": "additive layout.scope entry in composition-types.v1.json",
     "smart": "smart.data-view 1.2.0 additive ports and query intent",
-    "type_manifest": "simai.composition.type-manifest.v1 unchanged"
+    "type_manifest": "simai.composition.type-manifest.v1 unchanged",
+    "value_types": "bare names read beside the older .v1 labels (value-types-without-version); fixtures/routing.json and the sf-table manifest unchanged"
   },
-  "contractDigest": "sha256:e10fda704fe35c47acb7222fc66a9c43656c3a87e901174f747b09e48508c908",
+  "contractDigest": "sha256:18f8a11ba48453a92bc69750385326a7262c845177eab5e6c424520bacc9a6b1",
   "manifests": {
     "port:sf-table@1.0.0": "sha256:95abeff5e459ad84d3fabfe61a50c3fdad6730e6b705264badfcd2ba28fc7e50",
     "type:layout.scope@1.0.0": "sha256:7d75a2efdd7aba65da77a362f0e6f6cfb33cd57c516569e2c58789caaca9f18d"
   },
   "normativeFiles": {
-    "README.md": "sha256:d4e926f013889b5adf945144770caa1eb4493c0ae9c66628b718d423f1dad877",
-    "fixtures/routing.json": "sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0"
+    "README.md": "sha256:40605dd01a06892bf577c272cb589c007e43736fb204d2b6954d28cbfaeb110e",
+    "fixtures/routing.json": "sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0",
+    "fixtures/value-type-names.json": "sha256:e7367315bb5405e904f32b2d3a6c3fb7fff433cd53882bb31e4c2f750853eb4d"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

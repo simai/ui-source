@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/interface-fragment.v1.schema.json",
+  "title": "Simai Interface Fragment Descriptor v1",
+  "x-simai-version": "1.2.0",
+  "description": "A fragment is a Smart composite placed in a page region: one host port, published composition ports, nothing reached directly. The descriptor says where it may stand, what it exchanges, what a person needs to see it, which address keys it owns and what it may cost.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "element", "regions", "port", "outputs", "inputs", "operation", "url_state", "budget"],
+  "anyOf": [{"properties": {"schema": {"const": "simai.interface-fragment.v1"}}}, {"required": ["schema_version"]}],
+  "properties": {
+    "schema": {"enum": ["simai.interface-fragment.v1", "simai.interface-fragment"], "description": "The format: simai.interface-fragment with schema_version 1. The older label simai.interface-fragment.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."},
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"},
+    "element": {"type": "string", "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"},
+    "regions": {"type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$"}},
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standard", "version"],
+      "properties": {
+        "standard": {"type": "string", "pattern": "^[a-z][a-z0-9.-]*$"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      }
+    },
+    "outputs": {"$ref": "#/$defs/ports"},
+    "inputs": {"$ref": "#/$defs/ports"},
+    "operation": {"type": "string", "pattern": "^[a-z][a-z0-9._:-]{0,127}$"},
+    "url_state": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"}},
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kb", "first_answer_ms"],
+      "properties": {
+        "kb": {"type": "integer", "minimum": 0, "maximum": 2048},
+        "first_answer_ms": {"type": "integer", "minimum": 0, "maximum": 10000}
+      }
+    }
+  },
+  "$defs": {
+    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1", "record-ids", "record-id", "text", "boolean", "record-changed", "record-removed", "collection-changed", "files-moved", "counter", "navigation", "preference-changed"], "description": "A value type by its name (record-removed) or by the older label with the version (record-removed.v1); both are read until the change journal retires the older one (value-types-without-version, names carry no version, 2026-10-19)."},
+    "ports": {
+      "type": "object",
+      "maxProperties": 16,
+      "propertyNames": {"pattern": "^[a-z][a-z0-9-]{0,31}$"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["value", "summary"],
+        "properties": {
+          "value": {"$ref": "#/$defs/valueType"},
+          "summary": {"type": "string", "minLength": 1, "maxLength": 1000}
+        }
+      }
+    }
+  }
+}

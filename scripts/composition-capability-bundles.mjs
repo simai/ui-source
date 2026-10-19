@@ -39,7 +39,7 @@ export const BUNDLES = Object.freeze([
   {
     directory: 'composition-routing-v1',
     capability: 'simai.composition.routing',
-    version: '1.0.0',
+    version: '1.1.0',
     status: 'owner-accepted-candidate',
     compatibility: {
       recipe: 'simai.composition.recipe.v1@1.0.1 unchanged',
@@ -48,6 +48,7 @@ export const BUNDLES = Object.freeze([
       registry: 'additive layout.scope entry in composition-types.v1.json',
       ports: 'new simai.composition.port-registry.v1 in composition-ports.v1.json',
       smart: 'smart.data-view 1.2.0 additive ports and query intent',
+      value_types: 'bare names read beside the older .v1 labels (value-types-without-version); fixtures/routing.json and the sf-table manifest unchanged',
     },
     schemas: [],
     entries: () => [...types('layout.scope'), ...ports('sf-table')],

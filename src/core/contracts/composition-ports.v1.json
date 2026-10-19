@@ -26,6 +26,19 @@
   ],
   "schema": "simai.composition.port-registry",
   "schema_version": 1,
+  "value_type_names": {
+    "boolean": "boolean.v1",
+    "collection-changed": "collection-changed.v1",
+    "counter": "counter.v1",
+    "files-moved": "files-moved.v1",
+    "navigation": "navigation.v1",
+    "preference-changed": "preference-changed.v1",
+    "record-changed": "record-changed.v1",
+    "record-id": "record-id.v1",
+    "record-ids": "record-ids.v1",
+    "record-removed": "record-removed.v1",
+    "text": "text.v1"
+  },
   "value_types": {
     "boolean.v1": {
       "schema": {

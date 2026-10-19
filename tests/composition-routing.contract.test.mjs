@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
@@ -10,11 +11,15 @@ import {
   CompositionRouteController,
   PORT_OUTPUT_EVENT,
   ROUTING_LIMITS,
+  VALUE_TYPES,
   checkPortValue,
   createPortRegistry,
   parseRoutesAttribute,
+  sameValueType,
+  valueTypeName,
 } from '../src/core/js/composition/routing.mjs';
 import { ROUTING_PORT_BINDINGS, ROUTING_RENDERERS, ROUTING_TYPES } from './fixtures/composition-capabilities/cases/routing.mjs';
+import { VALUE_TYPE_NAME_ALL_TYPES, VALUE_TYPE_NAME_PORT_MANIFESTS } from './fixtures/composition-capabilities/cases/value-type-names.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = async (path) => JSON.parse(await readFile(resolve(root, path), 'utf8'));
@@ -281,4 +286,100 @@ test('prototype names are never ports, value types or route ids', () => {
   assert.throws(() => createPortRegistry([{ ...BUILTIN_PORT_MANIFESTS[0], element: 'sf-x', outputs: { a: { value: 'toString', summary: 'x' } } }]), /value_type_unknown/u);
   assert.equal(parseRoutesAttribute(JSON.stringify([{ ...typedRoute('r', 'a', 'b'), from: { endpoint: 'a', port: 'selection', value: 'constructor' }, to: { endpoint: 'b', port: 'context', value: 'constructor' } }])), null);
   assert.equal(parseRoutesAttribute(JSON.stringify([typedRoute('r', 'a', 'b'), typedRoute('r', 'a', 'c')])), null);
+});
+
+// Value types named without a version (owner, 2026-10-19; journal record
+// value-types-without-version): the Routing 1.1.0 corpus, and proof that the
+// older form keeps the bytes and digests 1.0.0 fixed.
+const ROUTING_1_0_0 = Object.freeze({
+  contractDigest: 'sha256:e10fda704fe35c47acb7222fc66a9c43656c3a87e901174f747b09e48508c908',
+  routing: 'sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0',
+  sfTable: 'sha256:95abeff5e459ad84d3fabfe61a50c3fdad6730e6b705264badfcd2ba28fc7e50',
+  layoutScope: 'sha256:7d75a2efdd7aba65da77a362f0e6f6cfb33cd57c516569e2c58789caaca9f18d',
+});
+
+test('Routing 1.1.0 keeps the older-form corpus, the sf-table manifest and its port registry keys as 1.0.0 fixed them', async () => {
+  const { createHash } = await import('node:crypto');
+  const sha = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
+  const lock = await readJson('src/core/contracts/composition-routing-v1/contract.lock.json');
+  assert.equal(lock.version, '1.1.0');
+  assert.notEqual(lock.contractDigest, ROUTING_1_0_0.contractDigest);
+  assert.equal(sha(await readFile(resolve(root, 'src/core/contracts/composition-routing-v1/fixtures/routing.json'))), ROUTING_1_0_0.routing, 'fixtures/routing.json is byte for byte the 1.0.0 corpus');
+  assert.equal(lock.normativeFiles['fixtures/routing.json'], ROUTING_1_0_0.routing);
+  assert.equal(lock.manifests['port:sf-table@1.0.0'], ROUTING_1_0_0.sfTable);
+  assert.equal(lock.manifests['type:layout.scope@1.0.0'], ROUTING_1_0_0.layoutScope);
+  assert.equal(sha(stableStringify(BUILTIN_PORT_MANIFESTS.find(({ element }) => element === 'sf-table'))), ROUTING_1_0_0.sfTable);
+  const registry = await readJson('src/core/contracts/composition-ports.v1.json');
+  assert.deepEqual(Object.keys(registry.value_types).sort(), Object.keys(VALUE_TYPES).sort(), 'the registry keys stay the older labels');
+  assert.deepEqual(registry.value_type_names, Object.fromEntries(Object.keys(VALUE_TYPES).map((label) => [valueTypeName(label), label])));
+  execFileSync(process.execPath, ['scripts/lock-composition-capability-contracts.mjs', '--check'], { cwd: root });
+  execFileSync(process.execPath, ['scripts/generate-composition-capability-fixtures.mjs', '--check'], { cwd: root });
+});
+
+const namesRegistry = createRegistry([...BUILTIN_TYPE_MANIFESTS, ...VALUE_TYPE_NAME_ALL_TYPES], ROUTING_RENDERERS);
+const namesOptions = { ports: { manifests: [...BUILTIN_PORT_MANIFESTS, ...VALUE_TYPE_NAME_PORT_MANIFESTS], bindings: ROUTING_PORT_BINDINGS } };
+
+test('value-type name conformance fixtures reproduce exact outcomes', async () => {
+  const fixture = await readJson('src/core/contracts/composition-routing-v1/fixtures/value-type-names.json');
+  assert.ok(fixture.cases.filter(({ expect }) => expect === 'valid').length >= 3);
+  for (const entry of fixture.cases) {
+    const checked = validate(entry.document, namesRegistry, namesOptions);
+    assert.deepEqual([...new Set(checked.diagnostics.map(({ code }) => code))].sort(), entry.diagnostics, entry.id);
+    if (entry.expect !== 'valid') continue;
+    const normalized = await normalize(entry.document, namesRegistry, namesOptions);
+    assert.equal(`sha256:${normalized.digest}`, entry.digest, entry.id);
+    assert.equal(stableStringify(normalized.document), entry.canonical, entry.id);
+    const { html } = await render(entry.document, { registry: namesRegistry, options: namesOptions });
+    assert.equal(html, entry.html, entry.id);
+    for (const match of html.matchAll(/data-sf-routes="([^"]*)"/gu)) {
+      assert.notEqual(parseRoutesAttribute(match[1].replaceAll('&quot;', '"')), null, `${entry.id}: the runtime takes the rendered routes`);
+    }
+  }
+  const mixed = fixture.cases.find(({ id }) => id === 'positive.bare-output-feeds-older-input');
+  assert.match(mixed.html, /&quot;value&quot;:&quot;record-ids&quot;\}.*&quot;value&quot;:&quot;record-ids.v1&quot;/u, 'each side carries the form its manifest declares');
+});
+
+// The schema cases differ only in the value types they name; the Draft
+// 2020-12 validation of the whole documents is checks/schemas.py (Python
+// jsonschema), since the repository carries no 2020-12 validator for Node.
+test('the published schemas take either form of a value type and nothing else', async () => {
+  const fixture = await readJson('src/core/contracts/composition-routing-v1/fixtures/value-type-names.json');
+  const enums = {
+    'composition-port-manifest.v1.schema.json': (await readJson('src/core/contracts/composition-port-manifest.v1.schema.json')).$defs.valueType.enum,
+    'interface-fragment.v1.schema.json': (await readJson('src/core/contracts/interface-fragment.v1.schema.json')).$defs.valueType.enum,
+  };
+  assert.ok(fixture.schema_cases.length >= 6);
+  for (const entry of fixture.schema_cases) {
+    const values = [...Object.values(entry.document.outputs), ...Object.values(entry.document.inputs)].map(({ value }) => value);
+    assert.equal(values.every((value) => enums[entry.schema].includes(value)), entry.expect === 'valid', entry.id);
+    assert.equal(values.every((value) => valueTypeName(value) !== null), entry.expect === 'valid', `${entry.id}: the runtime agrees`);
+  }
+});
+
+test('a route joins a bare value type and its older label in both directions', () => {
+  const ports = createPortRegistry([...BUILTIN_PORT_MANIFESTS, ...VALUE_TYPE_NAME_PORT_MANIFESTS]);
+  assert.equal(ports.elements.get('sf-example-picker').outputs.picked.value, 'record-ids', 'a manifest is kept as declared');
+  assert.throws(() => createPortRegistry([{ ...VALUE_TYPE_NAME_PORT_MANIFESTS[0], outputs: { picked: { value: 'record-ids.v2', summary: 'x' } } }]), /value_type_unknown:record-ids.v2/u);
+  const mixed = { id: 'r', from: { endpoint: 'orders', port: 'selection', value: 'record-ids' }, to: { endpoint: 'lines', port: 'context', value: 'record-ids.v1' } };
+  assert.deepEqual(parseRoutesAttribute(JSON.stringify([mixed])), [mixed]);
+  assert.equal(parseRoutesAttribute(JSON.stringify([{ ...mixed, to: { ...mixed.to, value: 'text' } }])), null, 'a bare name still types the route');
+  assert.equal(parseRoutesAttribute(JSON.stringify([{ ...mixed, from: { ...mixed.from, value: 'record-ids.v2' } }])), null);
+  assert.ok(sameValueType('record-ids', 'record-ids.v1') && sameValueType('record-ids.v1', 'record-ids') && !sameValueType('record-ids', 'record-id.v1') && !sameValueType('nothing', 'nothing'));
+  // The controller: an endpoint declaring the older label takes a route named
+  // bare, and one declaring the bare name takes the older label.
+  for (const [routeValue, declared] of [['record-ids', 'record-ids.v1'], ['record-ids.v1', 'record-ids'], ['record-ids', 'record-ids']]) {
+    const { endpoints, controller } = harness([{ id: 'r', from: { endpoint: 'orders', port: 'selection', value: routeValue }, to: { endpoint: 'lines', port: 'context', value: routeValue } }]);
+    endpoints.get('lines').constructor = { sfPorts: { outputs: {}, inputs: { context: declared } } };
+    controller.connect();
+    endpoints.get('orders').emit(['a', 1]);
+    assert.deepEqual(endpoints.get('lines').received.map(({ value }) => value), [['a', 1]], `${routeValue} → ${declared}`);
+    assert.equal(controller.getState('r').status, 'settled');
+    endpoints.get('orders').emit(['dup', 'dup']);
+    assert.equal(controller.getState('r').error, 'value_invalid', 'the bare name checks the value as the older label does');
+  }
+  const { endpoints, controller } = harness([{ id: 'r', from: { endpoint: 'orders', port: 'selection', value: 'record-ids' }, to: { endpoint: 'lines', port: 'context', value: 'record-ids' } }]);
+  endpoints.get('lines').constructor = { sfPorts: { outputs: {}, inputs: { context: 'record-id' } } };
+  controller.connect();
+  endpoints.get('orders').emit(['a']);
+  assert.equal(controller.getState('r').error, 'port_mismatch');
 });

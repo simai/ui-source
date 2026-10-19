@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
-import { VALUE_TYPES } from '../src/core/js/composition/routing.mjs';
+import { VALUE_TYPES, valueTypeName } from '../src/core/js/composition/routing.mjs';
 import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
 import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
@@ -26,6 +26,9 @@ const editorOutput = `${JSON.stringify(JSON.parse(stableStringify({
 const portOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.port-registry', 1),
   value_types: Object.fromEntries(Object.entries(VALUE_TYPES).map(([name, type]) => [name, { summary: type.summary, schema: type.schema }])),
+  // The bare name each type is read by (value-types-without-version): the
+  // keys above keep the older labels so a reader keyed by them still finds them.
+  value_type_names: Object.fromEntries(Object.keys(VALUE_TYPES).map((label) => [valueTypeName(label), label])),
   entries: BUILTIN_PORT_MANIFESTS,
 })), null, 2)}\n`;
 const kindOutput = `${JSON.stringify(fieldKindRegistry(), null, 2)}\n`;

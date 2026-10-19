@@ -1949,6 +1949,79 @@
         "after": "<div data-sf-overlay-container>"
       },
       "manual": "Rename the attribute on the box (and any selector that names it) to data-sf-overlay-container."
+    },
+    {
+      "id": "value-types-without-version",
+      "recorded_on": "2026-10-19",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "A composition value type is named without a version: record-changed, record-removed, collection-changed, files-moved, counter, navigation, preference-changed, record-id, record-ids, text and boolean, in place of the older labels record-changed.v1 and the rest. The Framework reads both forms everywhere it reads a value type until remove_after: a page effect's type in a port answer (sf-page-host, SF.Composition.publishEffects), a port manifest, a fragment descriptor, a declared or rendered route and an element's static sfPorts; a route joins a bare name and its older label as one type. The published schemas take both (composition-port-manifest.v1.schema.json, the fragment descriptor schema 1.2.0), the port registry composition-ports.v1.json keeps the older labels as its value_types keys and maps each bare name to its key in value_type_names, and the routing contract 1.1.0 records both forms in fixtures/value-type-names.json. Left in the older form on purpose until remove_after, so published bytes and digests do not move: VALUE_TYPES keys, the built-in sf-table port manifest (pinned in the routing contract lock), the outputs sf-page-host declares, and fixtures/routing.json.",
+      "items": [
+        {
+          "from": "record-changed.v1",
+          "to": "record-changed",
+          "match": "(?<![\\w.:/-])record-changed\\.v1(?![\\w-])"
+        },
+        {
+          "from": "record-removed.v1",
+          "to": "record-removed",
+          "match": "(?<![\\w.:/-])record-removed\\.v1(?![\\w-])"
+        },
+        {
+          "from": "collection-changed.v1",
+          "to": "collection-changed",
+          "match": "(?<![\\w.:/-])collection-changed\\.v1(?![\\w-])"
+        },
+        {
+          "from": "files-moved.v1",
+          "to": "files-moved",
+          "match": "(?<![\\w.:/-])files-moved\\.v1(?![\\w-])"
+        },
+        {
+          "from": "counter.v1",
+          "to": "counter",
+          "match": "(?<![\\w.:/-])counter\\.v1(?![\\w-])"
+        },
+        {
+          "from": "navigation.v1",
+          "to": "navigation",
+          "match": "(?<![\\w.:/-])navigation\\.v1(?![\\w-])"
+        },
+        {
+          "from": "preference-changed.v1",
+          "to": "preference-changed",
+          "match": "(?<![\\w.:/-])preference-changed\\.v1(?![\\w-])"
+        },
+        {
+          "from": "record-id.v1",
+          "to": "record-id",
+          "match": "(?<![\\w.:/-])record-id\\.v1(?![\\w-])"
+        },
+        {
+          "from": "record-ids.v1",
+          "to": "record-ids",
+          "match": "(?<![\\w.:/-])record-ids\\.v1(?![\\w-])"
+        },
+        {
+          "from": "text.v1",
+          "to": "text",
+          "match": "(?<![\\w.:/-])text\\.v1(?![\\w-])"
+        },
+        {
+          "from": "boolean.v1",
+          "to": "boolean",
+          "match": "(?<![\\w.:/-])boolean\\.v1(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-10-19",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "effects: [{type: 'record-removed.v1', value: {collection: 'news', id: 5}}]",
+        "after": "effects: [{type: 'record-removed', value: {collection: 'news', id: 5}}]"
+      },
+      "manual": "Name each value type without its version: in a host's port answers (effects[].type), port manifests (outputs/inputs value), fragment descriptors, an element's static sfPorts and a page's data-sf-routes. Both forms are read until remove_after, so a host, a component and a page may move one at a time; a route between a bare name and its older label already works.",
+      "source": "src/core/js/composition/routing.mjs valueTypeName"
     }
   ]
 }

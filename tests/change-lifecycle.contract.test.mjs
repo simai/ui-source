@@ -245,3 +245,26 @@ test('change journal: the policy, the schema, the runtime note and the docs agre
   assert.ok(read('docs/developer/change-lifecycle.md').includes('contracts/changes/journal.json'));
   assert.ok(existsSync(resolve(root, 'scripts/sf-upgrade.mjs')));
 });
+
+/* Value types named without a version (2026-10-19): sf-upgrade reports each
+   older label where a project names one -- an effect type, a port manifest, a
+   rendered route -- and rewrites nothing, since both forms are read. Names
+   that merely contain a label (context.v1, simai.text.v1) are not reported. */
+test('sf-upgrade: an older value-type label is reported, never rewritten', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  try {
+    const page = "answer({effects: [{type: 'record-removed.v1', value}, {type: 'record-removed', value}]});\nconst other = 'context.v1 simai.text.v1';\n";
+    const ports = '{"outputs": {"picked": {"value": "record-ids.v1"}}, "inputs": {"query": {"value": "text.v1"}}}\n';
+    writeFileSync(join(project, 'page.js'), page);
+    writeFileSync(join(project, 'ports.json'), ports);
+    const result = spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json', '--apply'], {encoding: 'utf8'});
+    assert.equal(result.stderr, '');
+    const rows = JSON.parse(result.stdout).findings.filter(({record}) => record === 'value-types-without-version');
+    assert.deepEqual(rows.map(({file, line, from, to, mechanical}) => `${file}:${line} ${from}→${to} ${mechanical}`).sort(),
+      ['page.js:1 record-removed.v1→record-removed false', 'ports.json:1 record-ids.v1→record-ids false', 'ports.json:1 text.v1→text false']);
+    assert.equal(readFileSync(join(project, 'page.js'), 'utf8'), page, 'nothing is rewritten');
+    assert.equal(readFileSync(join(project, 'ports.json'), 'utf8'), ports);
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});

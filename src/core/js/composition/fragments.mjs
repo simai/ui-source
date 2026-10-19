@@ -1,6 +1,6 @@
 import { isPlainObject } from './canonical.mjs';
 import { isSchema } from './schema-name.mjs';
-import { VALUE_TYPES } from './routing.mjs';
+import { valueTypeEntry, valueTypeName } from './routing.mjs';
 
 // The interface fragment descriptor (simai.interface-fragment 1.0.0): checked
 // here so a package gate, a page and a test read one rule. Returns the list of
@@ -28,7 +28,7 @@ function portProblems(ports, where) {
     const port = ports[name];
     if (!NAME.test(name)) problems.push(`${where}.${name}: name`);
     if (!closed(port, ['value', 'summary'])) { problems.push(`${where}.${name}: undeclared keys`); continue; }
-    if (!Object.hasOwn(VALUE_TYPES, port.value)) problems.push(`${where}.${name}: unknown value type ${port.value}`);
+    if (valueTypeName(port.value) === null) problems.push(`${where}.${name}: unknown value type ${port.value}`);
     if (typeof port.summary !== 'string' || !port.summary.trim() || port.summary.length > 1000) problems.push(`${where}.${name}: summary`);
   }
   return problems;
@@ -60,11 +60,15 @@ export function checkFragmentDescriptor(descriptor) {
 }
 
 // The page host as an endpoint (simai.interface-fragment, host-is-an-endpoint).
-// A product's port answers carry `effects` -- [{type: 'record-changed.v1',
+// A product's port answers carry `effects` -- [{type: 'record-changed',
 // value}, ...] -- and the page publishes them on this element's outputs, one
 // output per value type, named by the type without its version
 // (record-changed, files-moved ...). The routes the page declares deliver them
-// to the fragments that listen; the host never calls a fragment itself.
+// to the fragments that listen; the host never calls a fragment itself. An
+// effect's type is read in either form, the bare name or the older label with
+// the version (record-changed.v1), until the change journal retires the older
+// one (value-types-without-version); both publish the same value on the same
+// output. The host's own declared outputs keep the older labels.
 //
 //   <sf-composition-scope data-sf-routes='[{"id": "files-refresh",
 //       "from": {"endpoint": "host", "port": "collection-changed", "value": "collection-changed.v1"},
@@ -73,7 +77,8 @@ export function checkFragmentDescriptor(descriptor) {
 //     ...
 //   </sf-composition-scope>
 const PAGE_EFFECT_TYPES = ['record-changed.v1', 'record-removed.v1', 'collection-changed.v1', 'files-moved.v1', 'counter.v1', 'navigation.v1', 'preference-changed.v1'];
-const effectPort = (type) => type.replace(/\.v\d+$/u, '');
+const effectPort = (type) => valueTypeName(type);
+const PAGE_EFFECT_PORTS = PAGE_EFFECT_TYPES.map(effectPort);
 
 export function definePageHost(registry = globalThis.customElements) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
@@ -102,13 +107,13 @@ export function definePageHost(registry = globalThis.customElements) {
       const refused = [];
       for (const effect of Array.isArray(effects) ? effects : []) {
         const type = effect?.type;
-        if (!PAGE_EFFECT_TYPES.includes(type)) {
+        if (!PAGE_EFFECT_PORTS.includes(valueTypeName(type))) {
           refused.push({type: type ?? null, reason: 'type_not_published'});
           continue;
         }
         let value;
         try {
-          value = VALUE_TYPES[type].check(effect.value);
+          value = valueTypeEntry(type).check(effect.value);
         } catch (error) {
           refused.push({type, reason: 'value_invalid', message: String(error?.message ?? error)});
           continue;

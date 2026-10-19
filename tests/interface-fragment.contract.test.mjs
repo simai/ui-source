@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-import {VALUE_TYPES, checkPortValue} from '../src/core/js/composition/routing.mjs';
-import {checkFragmentDescriptor} from '../src/core/js/composition/fragments.mjs';
+import {VALUE_TYPES, checkPortValue, valueTypeEntry, valueTypeName} from '../src/core/js/composition/routing.mjs';
+import {checkFragmentDescriptor, definePageHost} from '../src/core/js/composition/fragments.mjs';
+import {VALUE_TYPE_NAME_EFFECTS} from './fixtures/composition-capabilities/cases/value-type-names.mjs';
 
 // simai.interface-fragment 1.0.0 (Larena handoff, owner decision 2026-10-15):
 // the page-level value types, each with a schema and a check, and the
@@ -48,21 +49,51 @@ test('every page value type has a summary, a schema and a check that accepts wha
 });
 
 test('the code, the port-manifest schema, the descriptor schema and its pinned copy name one vocabulary', () => {
-  const vocabulary = Object.keys(VALUE_TYPES).sort();
+  // Either form of each name (value-types-without-version, 2026-10-19): the
+  // older label VALUE_TYPES is keyed by, and the bare name.
+  const labels = Object.keys(VALUE_TYPES);
+  const vocabulary = [...labels, ...labels.map(valueTypeName)].sort();
+  assert.deepEqual(labels.map(valueTypeName), labels.map((label) => label.replace(/\.v1$/u, '')));
   const ports = json('src/core/contracts/composition-port-manifest.v1.schema.json').$defs.valueType.enum;
   const descriptor = json('src/core/contracts/interface-fragment.v1.schema.json');
   assert.deepEqual([...ports].sort(), vocabulary);
   assert.deepEqual([...descriptor.$defs.valueType.enum].sort(), vocabulary);
-  // The pinned copy is the published 1.0.0 schema. The live one (1.1.0) adds
-  // only the bare format name beside the older label (names carry no version,
-  // 2026-10-11); without that it is the published schema.
+  // simai.interface-fragment 1.0.2 pins the live schema 1.2.0 as a frozen copy,
+  // byte for byte.
+  const pinned = readFileSync(new URL('../contracts/standards/pinned/interface-fragment-1.2.0.schema.json', import.meta.url));
+  assert.ok(pinned.equals(readFileSync(new URL('../src/core/contracts/interface-fragment.v1.schema.json', import.meta.url))), 'the frozen 1.2.0 copy is the live schema');
+  assert.equal(descriptor['x-simai-version'], '1.2.0');
+  // The first published schema, 1.0.0, is the live one without what 1.1.0
+  // (the bare format name beside the older label, 2026-10-11) and 1.2.0 (the
+  // bare value-type names, 2026-10-19) added.
   const published = json('contracts/standards/pinned/interface-fragment.v1.schema.json');
   const {anyOf, ...live} = descriptor;
   const {schema_version, ...properties} = live.properties;
   assert.deepEqual(anyOf, [{properties: {schema: {const: 'simai.interface-fragment.v1'}}}, {required: ['schema_version']}]);
   assert.deepEqual(schema_version, {const: 1});
   assert.deepEqual(properties.schema.enum, [published.properties.schema.const, 'simai.interface-fragment']);
-  assert.deepEqual({...live, 'x-simai-version': published['x-simai-version'], properties: {...properties, schema: published.properties.schema}}, published, 'otherwise the pinned copy is the published schema');
+  assert.deepEqual(live.$defs.valueType.enum.slice(0, labels.length), published.$defs.valueType.enum, 'the older labels come first, as published');
+  assert.match(live.$defs.valueType.description, /value-types-without-version/u);
+  const valueType = {enum: published.$defs.valueType.enum};
+  assert.deepEqual({...live, 'x-simai-version': published['x-simai-version'], properties: {...properties, schema: published.properties.schema}, $defs: {...live.$defs, valueType}}, published, 'otherwise the pinned copy is the published schema');
+});
+
+test('a value type named without its version is the same type as its older label', () => {
+  for (const label of Object.keys(VALUE_TYPES)) {
+    const bare = label.replace(/\.v1$/u, '');
+    assert.equal(valueTypeName(bare), bare);
+    assert.equal(valueTypeName(label), bare);
+    assert.equal(valueTypeEntry(bare), VALUE_TYPES[label]);
+  }
+  for (const type of PAGE_TYPES) {
+    const bare = valueTypeName(type);
+    for (const value of GOOD[type]) assert.deepEqual(checkPortValue(bare, value), checkPortValue(type, value), `${bare} keeps what ${type} keeps`);
+    for (const value of BAD[type]) assert.throws(() => checkPortValue(bare, value), TypeError, `${bare} refuses what ${type} refuses`);
+  }
+  for (const unknown of ['record-ids.v2', 'record-ids.v1.v1', 'Record-ids', 'records', 'constructor', '__proto__', 'toString', '', null, undefined, 1]) {
+    assert.equal(valueTypeName(unknown), null, String(unknown));
+    assert.throws(() => checkPortValue(unknown, []), TypeError, String(unknown));
+  }
 });
 
 const DESCRIPTOR = {
@@ -89,4 +120,60 @@ test('a fragment descriptor that holds has no problems, and each broken part is 
   assert.match(broken({budget: {kb: 40}}).join(), /budget/);
   assert.match(broken({port: {standard: 'simai.composite-host-port'}}).join(), /port/);
   assert.match(checkFragmentDescriptor({...DESCRIPTOR, script: 'x'}).join(), /script: undeclared/);
+});
+
+test('a descriptor names its value types in either form', () => {
+  const bare = {...DESCRIPTOR, schema: 'simai.interface-fragment', schema_version: 1,
+    outputs: {moved: {value: 'files-moved', summary: 'Files the person moved.'}},
+    inputs: {changed: {value: 'collection-changed', summary: 'Read the folder again.'}, removed: {value: 'record-removed.v1', summary: 'Drop the record.'}}};
+  assert.deepEqual(checkFragmentDescriptor(bare), []);
+  assert.match(checkFragmentDescriptor({...bare, outputs: {moved: {value: 'files-moved.v2', summary: 'x'}}}).join(), /unknown value type files-moved\.v2/u);
+});
+
+// The page host without a browser: a custom-element registry and HTMLElement
+// stand-ins, enough for sf-page-host's publish. A host that answers an effect
+// {type: 'record-removed'} gets what {type: 'record-removed.v1'} gives: the
+// same output, the same checked value, nothing refused.
+function pageHost() {
+  const saved = globalThis.HTMLElement;
+  globalThis.HTMLElement = class extends EventTarget {};
+  const registry = {defined: null, get: () => undefined, define(name, element) { this.defined = element; }};
+  try {
+    definePageHost(registry);
+    const host = new registry.defined();
+    const outputs = [];
+    host.addEventListener('sf-port-output', (event) => outputs.push(event.detail));
+    return {host, outputs, ports: registry.defined.sfPorts};
+  } finally {
+    globalThis.HTMLElement = saved;
+  }
+}
+
+test('a page effect named without its version publishes what its older label publishes', () => {
+  const fixture = json('src/core/contracts/composition-routing-v1/fixtures/value-type-names.json');
+  for (const {type, value} of VALUE_TYPE_NAME_EFFECTS) {
+    const label = `${type}.v1`;
+    const bare = pageHost();
+    const older = pageHost();
+    const answer = bare.host.publish([{type, value}]);
+    assert.deepEqual(answer, {published: [type], refused: []}, type);
+    assert.deepEqual(older.host.publish([{type: label, value}]), {published: [label], refused: []}, label);
+    assert.deepEqual(bare.outputs, older.outputs, `${type} and ${label} publish the same`);
+    assert.equal(bare.outputs.length, 1);
+    assert.equal(bare.outputs[0].port, type);
+    assert.ok(Object.isFrozen(bare.outputs[0].value));
+    assert.equal(bare.ports.outputs[type], label, 'the host declares its outputs by the older label');
+    const recorded = fixture.effects.find((entry) => entry.port === type);
+    assert.deepEqual(recorded, {types: [type, label], port: type, value: bare.outputs[0].value}, `${type} is recorded in the routing contract`);
+  }
+  const {host, outputs} = pageHost();
+  const answer = host.publish([
+    {type: 'record-removed', value: {collection: 'news', id: 5}},
+    {type: 'record-removed.v2', value: {collection: 'news', id: 5}},
+    {type: 'record-ids', value: [1]},
+    {type: 'counter', value: {key: 'n', value: -1}},
+  ]);
+  assert.deepEqual(answer.published, ['record-removed']);
+  assert.deepEqual(answer.refused.map(({type, reason}) => `${type}:${reason}`), ['record-removed.v2:type_not_published', 'record-ids:type_not_published', 'counter:value_invalid']);
+  assert.deepEqual(outputs, [{port: 'record-removed', value: {collection: 'news', id: 5}}]);
 });

@@ -187,11 +187,41 @@ export const VALUE_TYPES = Object.freeze({
 });
 
 const own = (object, key) => isPlainObject(object) && typeof key === 'string' && Object.hasOwn(object, key);
-const knownValueType = (name) => own(VALUE_TYPES, name);
+
+// Names carry no version (owner, 2026-10-19; journal record
+// value-types-without-version). A value type is read by its bare name
+// (record-removed) or by the older label with the version (record-removed.v1)
+// until the change journal retires the older one. VALUE_TYPES and the
+// registries keep the older labels as keys, so published bytes and digests do
+// not move; this is the one place that reads either form.
+const VALUE_TYPE_LABELS = Object.freeze(Object.assign(Object.create(null),
+  Object.fromEntries(Object.keys(VALUE_TYPES).map((label) => [label.replace(/\.v1$/u, ''), label]))));
+
+/** The bare name of a value type given in either form, or null when the vocabulary has no such type. */
+export function valueTypeName(name) {
+  if (typeof name !== 'string') return null;
+  if (Object.hasOwn(VALUE_TYPE_LABELS, name)) return name;
+  if (Object.hasOwn(VALUE_TYPES, name)) return name.replace(/\.v1$/u, '');
+  return null;
+}
+
+/** Whether two value types are the same type, whichever form each is named in. */
+export function sameValueType(left, right) {
+  const name = valueTypeName(left);
+  return name !== null && name === valueTypeName(right);
+}
+
+/** The vocabulary entry {summary, schema, check} of a value type named in either form, or null. */
+export function valueTypeEntry(name) {
+  const bare = valueTypeName(name);
+  return bare === null ? null : VALUE_TYPES[VALUE_TYPE_LABELS[bare]];
+}
+
+const knownValueType = (name) => valueTypeName(name) !== null;
 
 export function checkPortValue(valueType, value) {
   if (!knownValueType(valueType)) throw new TypeError(`Unknown value type ${valueType}`);
-  const type = VALUE_TYPES[valueType];
+  const type = valueTypeEntry(valueType);
   const checked = type.check(value);
   if (new globalThis.TextEncoder().encode(JSON.stringify(checked)).byteLength > ROUTING_LIMITS.maxValueBytes) throw new TypeError('Port value is too large');
   return checked;
@@ -336,7 +366,7 @@ export function resolveRoutes(root, registry, ports, diagnostics = []) {
         if (fanOut.get(outputKey) > ROUTING_LIMITS.maxFanOut) diagnostics.push(diagnostic('route_fanout_limit', `${routePath}.from`, `Output ${outputKey} feeds too many routes`));
         edges.push([route.from.endpoint, route.to.endpoint]);
         if (ends.from && ends.to) {
-          if (ends.from.value !== ends.to.value) diagnostics.push(diagnostic('route_type_mismatch', routePath, `${ends.from.value} cannot feed ${ends.to.value}`));
+          if (!sameValueType(ends.from.value, ends.to.value)) diagnostics.push(diagnostic('route_type_mismatch', routePath, `${ends.from.value} cannot feed ${ends.to.value}`));
           else typed.push({ id: route.id, from: ends.from, to: ends.to });
         }
       });
@@ -454,7 +484,7 @@ export class CompositionRouteController {
         return;
       }
       const declared = target.constructor?.sfPorts?.inputs?.[route.to.port];
-      if (declared !== route.to.value) {
+      if (!sameValueType(declared, route.to.value)) {
         this.counters.rejected += 1;
         this.setState(route.id, { status: 'error', error: 'port_mismatch', sequence });
         return;
@@ -528,7 +558,7 @@ export function parseRoutesAttribute(value) {
       if (!isPlainObject(end) || typeof end.endpoint !== 'string' || typeof end.port !== 'string'
         || !NAME_PATTERN.test(end.endpoint) || !NAME_PATTERN.test(end.port) || !knownValueType(end.value)) return null;
     }
-    if (route.from.value !== route.to.value || ids.has(route.id)) return null;
+    if (!sameValueType(route.from.value, route.to.value) || ids.has(route.id)) return null;
     ids.add(route.id);
   }
   return parsed;

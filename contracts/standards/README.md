@@ -10,7 +10,7 @@ version, in the `standard-contract` envelope:
 | `simai.composite-host-port` | 1.0.4 | the seam itself: a declared, separately versioned port, compatibility rules, a host declaring what it implements, a transport-neutral conformance kit |
 | `simai.change-lifecycle` | 1.0.0 | how a public name leaves the Framework: two stages, a dated journal, a calendar sweep, and an upgrade read from the journal |
 | `simai.component-package` | 1.1.1 | a package of Smart components owned by a product or an external author: layout, a pinned Framework revision, rule and manifest of each component, names, a reproducible build with a receipt, delivery and page declaration, licence and trust |
-| `simai.interface-fragment` | 1.0.1 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, and region navigation with a full-load fallback |
+| `simai.interface-fragment` | 1.0.2 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, and region navigation with a full-load fallback |
 | `simai.interaction-rules` | 1.0.0 | how every Smart component loads, talks and draws: one action one render, five states with a skeleton for loading, props down and events up, routes between neighbours, light markup for repeats, stable geometry, contained failure, each rule a check in the build |
 | `simai.effect` | 1.0.0 | an animated background: effect.json with typed, bounded settings, one module with mount/update/pause/resume/destroy, still for reduced motion, idle in a hidden tab, no network, clean destroy, foreign effects sandboxed, a kit (scripts/effect-kit.mjs) run before listing |
 | `simai.ai-development` | 1.0.0 | how an AI agent develops on and with the Framework: the contracts read first, the public surface only, generated output never edited, exact pins, upgrades by the journal, names without versions, ports by their kit, what a person sees measured in a browser, evidence over report, one writer per repository, the owner's decisions asked, content as data |
@@ -38,6 +38,14 @@ standard pinned the new frozen lock as 1.0.3; the dynamic composite (1.0.3), the
 host port (1.0.4) and the interface fragment (1.0.1) were re-issued because each
 `extends` its parent by digest, and the component package (1.1.1) because its
 `references` name those editions by digest. Requirements did not change.
+
+When value types lost their version in the name (2026-10-19: `record-removed`
+beside the older `record-removed.v1`, change journal record
+`value-types-without-version`), the fragment descriptor schema became 1.2.0 and
+`simai.interface-fragment` 1.0.2 pins its frozen copy
+`pinned/interface-fragment-1.2.0.schema.json`; its closed-value-types
+requirement names the types without the version. No other standard pins the
+interface fragment or the routing contract by digest, so none was re-issued.
 
 A pinned reference also names the version the target itself declares: a
 contract carries `x-simai-version` (schemas) or `version` (locks), and the gate

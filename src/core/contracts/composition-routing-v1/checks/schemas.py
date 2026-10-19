@@ -23,8 +23,13 @@ types = {entry['type']: entry for entry in load(contracts / 'composition-types.v
 Draft202012Validator(type_schema).validate(types['layout.scope'])
 registry = load(contracts / 'composition-ports.v1.json')
 assert is_schema(registry, 'simai.composition.port-registry', 1)
+# A value type is read by its bare name or by the older label with the
+# version (value-types-without-version); the registry keys keep the older labels
+# and value_type_names maps each bare name to its key.
 value_types = set(registry['value_types'])
-assert value_types == set(port_schema['$defs']['valueType']['enum']), 'value type vocabulary drift'
+names = registry['value_type_names']
+assert {f'{name}.v1' for name in names} == value_types and all(names[name] == f'{name}.v1' for name in names), 'value type names drift'
+assert value_types | set(names) == set(port_schema['$defs']['valueType']['enum']), 'value type vocabulary drift'
 for entry in registry['entries']:
     Draft202012Validator(port_schema).validate(entry)
 fixture = load(bundle / 'fixtures/routing.json')
@@ -35,4 +40,23 @@ for case in fixture['cases']:
     if case['expect'] == 'valid':
         Draft202012Validator(document_schema).validate(case['document'])
         documents += 1
-print(json.dumps({'status': 'pass', 'ports': len(registry['entries']), 'documents': documents}))
+names_fixture = load(bundle / 'fixtures/value-type-names.json')
+assert names_fixture['value_type_names'] == names, 'fixture names drift'
+fragment_schema = load(contracts / 'interface-fragment.v1.schema.json')
+Draft202012Validator.check_schema(fragment_schema)
+assert set(fragment_schema['$defs']['valueType']['enum']) == set(port_schema['$defs']['valueType']['enum']), 'descriptor vocabulary drift'
+for manifest in names_fixture['setup']['types']:
+    Draft202012Validator(type_schema).validate(manifest)
+for manifest in names_fixture['setup']['port_manifests']:
+    Draft202012Validator(port_schema).validate(manifest)
+schemas = {'composition-port-manifest.v1.schema.json': port_schema, 'interface-fragment.v1.schema.json': fragment_schema}
+schema_cases = 0
+for case in names_fixture['schema_cases']:
+    valid = Draft202012Validator(schemas[case['schema']]).is_valid(case['document'])
+    assert valid == (case['expect'] == 'valid'), case['id']
+    schema_cases += 1
+for case in names_fixture['cases']:
+    if case['expect'] == 'valid':
+        Draft202012Validator(document_schema).validate(case['document'])
+        documents += 1
+print(json.dumps({'status': 'pass', 'ports': len(registry['entries']), 'documents': documents, 'schema_cases': schema_cases}))

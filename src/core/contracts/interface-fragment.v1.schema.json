@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/interface-fragment.v1.schema.json",
   "title": "Simai Interface Fragment Descriptor v1",
-  "x-simai-version": "1.1.0",
+  "x-simai-version": "1.2.0",
   "description": "A fragment is a Smart composite placed in a page region: one host port, published composition ports, nothing reached directly. The descriptor says where it may stand, what it exchanges, what a person needs to see it, which address keys it owns and what it may cost.",
   "type": "object",
   "additionalProperties": false,
@@ -38,7 +38,7 @@
     }
   },
   "$defs": {
-    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1"]},
+    "valueType": {"enum": ["record-ids.v1", "record-id.v1", "text.v1", "boolean.v1", "record-changed.v1", "record-removed.v1", "collection-changed.v1", "files-moved.v1", "counter.v1", "navigation.v1", "preference-changed.v1", "record-ids", "record-id", "text", "boolean", "record-changed", "record-removed", "collection-changed", "files-moved", "counter", "navigation", "preference-changed"], "description": "A value type by its name (record-removed) or by the older label with the version (record-removed.v1); both are read until the change journal retires the older one (value-types-without-version, names carry no version, 2026-10-19)."},
     "ports": {
       "type": "object",
       "maxProperties": 16,
