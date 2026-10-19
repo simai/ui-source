@@ -84,7 +84,11 @@ for (const file of files) {
     results.passed.push(name);
   } catch (error) {
     const said = String(error.stderr ?? '').trim().split('\n').slice(-3).join(' ');
-    results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), said: said.slice(0, 300)});
+    // The whole report too: the last three lines of a failure's JSON were all
+    // brackets, and a probe that fails once in a long run could not be read
+    // (context-menu-panel, 2026-10-18 and -19).
+    const detail = `${String(error.stdout ?? '').trim()}\n${String(error.stderr ?? '').trim()}`.trim().slice(0, 4000);
+    results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), said: said.slice(0, 300), detail});
   }
 }
 
