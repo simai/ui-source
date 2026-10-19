@@ -90,9 +90,9 @@
     {
       "id": "area-takes-the-drawn-theme",
       "level": "must",
-      "text": "The area of an effect takes the theme it is actually drawn in (theme-dark or theme-light), whatever the page's theme, so text and controls over it use that theme's roles and measure at least 4.5:1 against the effect on its brightest frame.",
+      "text": "The area of an effect takes the theme it is actually drawn in (theme-dark or theme-light), whatever the page's theme, so text and controls over it use that theme's roles and measure at least 4.5:1 against the effect on its brightest frame at the manifest's default settings. A person who raises a setting past its default owns the contrast that results; the defaults are what an effect promises.",
       "verification": "manual",
-      "guidance": "The kit's contrast check: --sf-on-surface and --sf-on-surface-variant over the worst of five frames, at the 5th percentile of the pixels."
+      "guidance": "The kit's contrast check: --sf-on-surface and --sf-on-surface-variant over the worst of five frames, at the 5th percentile of the pixels. The effect runs with every setting at its default."
     },
     {
       "id": "drawn-with-palette-tones",
