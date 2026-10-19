@@ -40,6 +40,12 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
 - `plate="scheme|raised"` — плашка выбранного сегмента: заливка `scheme`
   (`primary`, `secondary`, `on-surface`) или приподнятая нейтральная поверхность.
 - `full-width` — дорожка занимает ширину контейнера, сегменты делят её поровну.
+- `radius="default|square|rounded"` — как у `sf-button`; пустое значение —
+  обычный радиус элементов, `default` — радиус поверхности
+  (`--sf-radius--surface`). Радиус задаёт дорожка, у плашки он меньше на
+  отступ дорожки, поэтому углы концентричны: при `rounded` и дорожка, и плашка —
+  «таблетки», при `square` обе прямоугольные. В обычном виде радиус получают
+  внешние углы группы.
 - `size` — та же лестница, что у кнопок: сегмент равен по высоте кнопке того же
   размера, дорожка добавляет только свой отступ.
 - Пункт: `value`, `label`, `icon`, `count`, `icon-only`, `aria-label`,
@@ -48,6 +54,48 @@ Home и End, `change`, `select()` и `clear()`. Это не вкладки — �
   скрытым доступным именем; без `icon` флаг не действует.
 - В узком контейнере дорожка прокручивается внутри себя и не расширяет страницу.
 - Публичные переменные: `--sf-button-group-background-color` (дорожка),
-  `--sf-button-group-padding`, `--sf-button-group-color` (сегмент),
+  `--sf-button-group-padding`, `--sf-button-group-radius` (углы дорожки;
+  атрибут `radius` важнее), `--sf-button-group-color` (сегмент),
   `--sf-button-group-plate-background-color`, `--sf-button-group-plate-color`,
   `--sf-button-group-count-color`.
+
+## В форме
+
+С атрибутом `name` группа участвует в форме, как другие Smart-поля: при
+отправке форма получает `name=value` выбранного пункта, сброс формы
+(`reset`) возвращает значение, с которым группа была написана, а
+`disabled` исключает группу из отправки. Значение несёт скрытое поле
+`<input type="hidden">` рядом с группой.
+
+```html
+<form>
+  <sf-button-group appearance="segmented" name="period" value="w" aria-label="Период"
+    items='[{"value":"d","label":"День"},{"value":"w","label":"Неделя"},{"value":"m","label":"Месяц"}]'></sf-button-group>
+</form>
+```
+
+## Переключатель темы
+
+Готовый переключатель темы — сегментированная группа с атрибутом
+`theme-switch`:
+
+```html
+<sf-button-group appearance="segmented" theme-switch></sf-button-group>
+```
+
+- Группа сама рисует три пункта только с иконками: `system` («Как в системе»,
+  `brightness_auto`), `light` («Светлая», `light_mode`) и `dark` («Тёмная»,
+  `dark_mode`). Подписи и имя группы («Тема») берутся на языке страницы;
+  `aria-label` на группе заменяет имя группы. `items` не используется.
+- Выбран пункт **предпочтения** темы (`SF.Loader.themePreference`), а не
+  нарисованной темы: «Как в системе» остаётся выбранным, когда система
+  тёмная.
+- Выбор вызывает `SF.Loader.setTheme('system' | 'light' | 'dark')`; Loader
+  сохраняет выбор и ставит `theme-dark` или `theme-light` на `<html>`.
+  `change` приходит, когда тема уже сменилась.
+- Переключатель следует за темой, изменённой в другом месте: он слушает
+  событие `sf-theme-change` (другой переключатель, `.sf-theme-button`,
+  прямой вызов `SF.Loader.setTheme`).
+- Клавиатура та же, что у группы: стрелки, Home и End, один tab stop.
+- Без Loader или при `SF_BOOT_CONFIG.theme === false` выбор не меняется.
+- Остальные атрибуты группы работают: `size`, `plate`, `radius`, `scheme`.

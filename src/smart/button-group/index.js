@@ -1,6 +1,24 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import { bindFormReset } from '../../component/form-reset-helper';
+import { pageText } from '../../core/js/page-language';
+
+// The theme switch's own words: the three Loader preferences, and the group's
+// name when the page gives none.
+const THEME_SWITCH_TEXT = {
+  en: { group: 'Theme', system: 'System', light: 'Light', dark: 'Dark' },
+  ru: { group: 'Тема', system: 'Как в системе', light: 'Светлая', dark: 'Тёмная' },
+};
+const THEME_PREFERENCES = ['system', 'light', 'dark'];
+const THEME_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
+
+// The Loader's theme preference: what the person chose, not the theme drawn,
+// so system stays selected while the system is dark.
+function themePreference() {
+  const preference = globalThis.SF?.Loader?.themePreference;
+  return THEME_PREFERENCES.includes(preference) ? preference : 'system';
+}
 
 function parseItems(value = []) {
   if (Array.isArray(value)) return value;
@@ -66,6 +84,11 @@ class SfButtonGroup extends SfBaseElement {
       templateName: { attribute: 'template', default: 'default' },
       items: { type: Array, default: [], parser: parseItems },
       value: { default: '' },
+      // A form field name: the group submits its value with its form.
+      name: { default: '' },
+      // The theme switch: the group draws its own three items (system, light,
+      // dark), selects the Loader's theme preference and sets it on change.
+      themeSwitch: { attribute: 'theme-switch', type: Boolean, default: false },
       size: { default: '1', values: ['1/3', '1/2', '1', '2', '3'] },
       spacing: {type: String, default: null},
       tightness: { default: '', values: ['', 'low', 'high', 'highest'] },
@@ -77,6 +100,8 @@ class SfButtonGroup extends SfBaseElement {
       // fill, or a raised neutral surface.
       plate: { default: 'scheme', values: ['scheme', 'raised'] },
       fullWidth: { attribute: 'full-width', type: Boolean, default: false },
+      // The corner radius, as on sf-button: empty is the UI radius.
+      radius: { default: '', values: ['', 'default', 'square', 'rounded'] },
       orientation: { default: 'horizontal', values: ['horizontal', 'vertical'] },
       disabled: { type: Boolean, default: false },
       ariaLabel: { attribute: 'aria-label', default: '' },
@@ -96,8 +121,21 @@ class SfButtonGroup extends SfBaseElement {
     });
   }
 
+  get themeSwitch() {
+    return this.getBooleanAttr('theme-switch', false);
+  }
+
+  get themeItems() {
+    return THEME_PREFERENCES.map((value) => ({
+      value,
+      label: pageText(THEME_SWITCH_TEXT, value, this),
+      icon: THEME_ICONS[value],
+      iconOnly: true,
+    }));
+  }
+
   get normalizedItems() {
-    const items = normalizeItems(this.getProp('items'));
+    const items = normalizeItems(this.themeSwitch ? this.themeItems : this.getProp('items'));
     const firstEnabledIndex = items.findIndex((item) => !item.disabled);
 
     return items.map((item, index) => ({
@@ -122,9 +160,48 @@ class SfButtonGroup extends SfBaseElement {
     return this.getBooleanAttr('disabled', false);
   }
 
+  get name() {
+    return this.getAttribute('name') || '';
+  }
+
+  connectedCallback() {
+    // The value a form reset returns to: the one the group was written with.
+    if (!Object.prototype.hasOwnProperty.call(this, '_resetValue')) this._resetValue = this.value;
+    super.connectedCallback();
+  }
+
+  onConnected() {
+    window.addEventListener('sf-theme-change', this.handleThemeChange);
+    this.syncThemePreference();
+  }
+
+  onDisconnected() {
+    window.removeEventListener('sf-theme-change', this.handleThemeChange);
+    this._releaseReset?.();
+    this._releaseReset = null;
+    this._resetInput = null;
+    super.onDisconnected();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (name === 'theme-switch' && oldValue !== newValue && this._isMounted) this.syncThemePreference();
+  }
+
+  // A theme switch shows the preference wherever it was set: here, another
+  // switch, a Theme component button or SF.Loader.setTheme itself.
+  syncThemePreference() {
+    if (!this.themeSwitch) return;
+    const preference = themePreference();
+    if (this.value !== preference) this.value = preference;
+  }
+
+  handleThemeChange = () => this.syncThemePreference();
+
   templateContext() {
     return this.createTemplateContext({
       ...this.getPropsContext(),
+      ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? pageText(THEME_SWITCH_TEXT, 'group', this) : ''),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
       component: this,
       items: this.normalizedItems,
@@ -156,8 +233,13 @@ class SfButtonGroup extends SfBaseElement {
     if (!item || item.disabled || this.disabled || value === this.value) {
       return this;
     }
-
     const previous = this.value;
+    // A theme switch sets the Loader's preference first, so a listener of
+    // change already finds the page in the theme it chose; a Loader that cannot
+    // change the theme (absent, or SF_BOOT_CONFIG.theme false) selects nothing.
+    if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) {
+      return this;
+    }
     this.value = value;
     this.emitValueChange({
       previous,
@@ -169,6 +251,21 @@ class SfButtonGroup extends SfBaseElement {
 
   afterRender() {
     this.syncButtonSemantics();
+    this.bindReset();
+  }
+
+  // Form participation as every Smart field does it: a hidden input carries
+  // the name and value (and is disabled with the group), and a form reset
+  // brings back the value the group was written with.
+  bindReset() {
+    const input = this.querySelector(':scope > .sf-button-group-input');
+    if (this._resetInput === input) return;
+    this._releaseReset?.();
+    this._resetInput = input;
+    this._releaseReset = input ? bindFormReset(input, () => {
+      if (this.themeSwitch) return;
+      this.value = this._resetValue;
+    }) : null;
   }
 
   syncButtonSemantics() {
@@ -189,7 +286,8 @@ class SfButtonGroup extends SfBaseElement {
   }
 
   clear() {
-    if (!this.value || this.disabled) return this;
+    // A theme preference is never empty.
+    if (!this.value || this.disabled || this.themeSwitch) return this;
 
     const previous = this.value;
     this.value = '';

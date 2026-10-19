@@ -86,6 +86,7 @@ export function renderButtonGroupTemplate(context) {
     segmented && context.plate === 'raised' ? 'sf-button-group--plate-raised' : '',
     segmented ? `sf-button-group--${context.scheme}` : '',
     segmented && context.fullWidth ? 'sf-button-group--full-width' : '',
+    context.radius ? `sf-button-group--radius-${context.radius}` : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
 
@@ -100,5 +101,8 @@ export function renderButtonGroupTemplate(context) {
     >
       ${context.items.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
     </div>
+    ${context.name
+      ? html`<input class="sf-button-group-input" type="hidden" name=${context.name} value=${context.value || ''} ?disabled=${context.disabled}>`
+      : nothing}
   `;
 }

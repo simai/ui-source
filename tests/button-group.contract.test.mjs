@@ -136,7 +136,13 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
   assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
   assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
-  assert.match(styles, /border-radius: calc\(var\(--sf-button-group--plate-radius\) \+ var\(--sf-button-group--padding\)\)/);
+  // The track's radius; the plate's is the track's minus the padding, never
+  // below square, so the corners stay concentric whatever radius is named.
+  assert.match(styles, /border-radius: var\(--sf-button-group--radius\);/);
+  assert.match(styles, /--sf-button-group--plate-radius: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-button-group--radius\) - var\(--sf-button-group--padding\)\)\)/);
+  for (const [radius, token] of [['default', '--sf-radius--surface'], ['square', '--sf-radius-square'], ['rounded', '--sf-radius-rounded']]) {
+    assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--radius-${radius} {\n    --sf-button-group--radius: var(${token});`), radius);
+  }
   for (const size of ['1\\/3', '1\\/2', '2', '3']) assert.ok(styles.includes(`.sf-button-group--segmented.sf-button-group--size-${size} {`), size);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);
   assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-12\)/);
@@ -147,9 +153,44 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.doesNotMatch(styles, /\b(?:left|right|margin-left|margin-right|padding-left|padding-right)\s*:/u, 'logical properties only');
   const entry = variables.components.find((candidate) => candidate.component === 'button-group');
   assert.deepEqual(entry.variables.map((variable) => variable.name), [
-    '--sf-button-group-background-color', '--sf-button-group-padding', '--sf-button-group-color',
+    '--sf-button-group-background-color', '--sf-button-group-padding', '--sf-button-group-radius', '--sf-button-group-color',
     '--sf-button-group-plate-background-color', '--sf-button-group-plate-color', '--sf-button-group-count-color',
   ]);
+});
+
+// radius as on sf-button, form participation as the other Smart fields do it
+// (a hidden input and bindFormReset, as sf-dropdown), and the ready theme
+// switch (theme-switch). Measured in the browser by button-group-segmented and
+// button-group-theme-switch.
+test('button group takes a radius, a form name and a theme switch', async () => {
+  const [manifest, smart, template, docs] = await Promise.all([
+    json('src/smart/button-group/smart.manifest.json'),
+    source('src/smart/button-group/index.js'),
+    source('src/smart/button-group/js/templates/default.js'),
+    source('src/smart/button-group/docs/docs.md'),
+  ]);
+  const inputs = manifest.inputs.properties;
+  assert.deepEqual(inputs.radius.enum, ['', 'default', 'square', 'rounded']);
+  assert.equal(inputs.name.type, 'string');
+  assert.equal(inputs['theme-switch'].type, 'boolean');
+  assert.match(smart, /radius: \{ default: '', values: \['', 'default', 'square', 'rounded'\] \}/);
+  assert.match(template, /sf-button-group--radius-\$\{context\.radius\}/);
+  // The same mechanism as sf-dropdown: a hidden input outside the radiogroup,
+  // disabled with the group, and the shared reset helper.
+  assert.match(template, /<input class="sf-button-group-input" type="hidden" name=\$\{context\.name\} value=\$\{context\.value \|\| ''\} \?disabled=\$\{context\.disabled\}>/);
+  assert.match(smart, /import \{ bindFormReset \} from '\.\.\/\.\.\/component\/form-reset-helper'/);
+  assert.doesNotMatch(smart, /attachInternals|formAssociated/);
+  // The theme switch reads the preference, sets it through the Loader and
+  // follows sf-theme-change; it never drives .sf-theme-button.
+  assert.match(smart, /SF\?\.Loader\?\.themePreference/);
+  assert.match(smart, /SF\?\.Loader\?\.setTheme\?\.\(value\)/);
+  assert.match(smart, /addEventListener\('sf-theme-change'/);
+  assert.match(smart, /removeEventListener\('sf-theme-change'/);
+  assert.doesNotMatch(smart, /sf-theme-button/);
+  for (const word of ['Как в системе', 'Светлая', 'Тёмная', 'brightness_auto', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
+  assert.match(docs, /## Переключатель темы/);
+  assert.match(docs, /theme-switch/);
+  assert.match(docs, /## В форме/);
 });
 
 test('button group Studio artifacts expose a meaningful selectable fixture', async () => {

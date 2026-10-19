@@ -17,7 +17,14 @@
 //   - the keyboard is the group's own: arrows, Home and End, one tab stop,
 //     disabled items skipped, change on the host; the ring is visible;
 //   - no join border reaches a segment, a narrow page does not scroll sideways,
-//     reduced motion stops the transitions and forced colours keep the plate.
+//     reduced motion stops the transitions and forced colours keep the plate;
+//   - radius, as on sf-button: the track takes the named radius and the plate
+//     the track's minus the padding (rounded: both pills, square: both square),
+//     --sf-button-group-radius sets the track's, and a joined group rounds its
+//     outer corners;
+//   - with a name the group is a form field: the submitted FormData holds
+//     name=value, a reset brings back the written value, a disabled group is
+//     left out, and a group without a name adds nothing.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -272,6 +279,97 @@ try {
     evidence.forcedColors = colors;
     check('forced colours: the selected plate still differs', colors[0] !== colors[1], {colors});
     await forced.close();
+  }
+
+  // 7. radius: the track takes it, the plate stays concentric.
+  {
+    const RADII = ['', 'default', 'square', 'rounded'];
+    const body = ['1', '3'].flatMap((size) => RADII.map((radius) => `<div style="margin-block-end:8px"><sf-button-group appearance="segmented" size="${size}" ${radius ? `radius="${radius}"` : ''} data-size="${size}" data-radius="${radius || 'none'}" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`)).join('')
+      + `<div style="--sf-button-group-radius:10px"><sf-button-group id="var" appearance="segmented" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`
+      + `<div style="--sf-button-group-radius:10px"><sf-button-group id="var-square" appearance="segmented" radius="square" aria-label="Период" value="all" ${items(THREE)}></sf-button-group></div>`
+      + `<sf-button-group id="joined" radius="rounded" aria-label="Период" value="all" ${items(THREE)}></sf-button-group>`;
+    const page = await open({body});
+    const rows = await page.evaluate(() => {
+      const read = (host) => {
+        const root = host.querySelector('.sf-button-group');
+        const plate = root.querySelector('button.active');
+        const style = getComputedStyle(root);
+        return {
+          size: host.dataset.size, radius: host.dataset.radius ?? host.id,
+          track: parseFloat(style.borderTopLeftRadius), trackHeight: root.getBoundingClientRect().height,
+          plate: parseFloat(getComputedStyle(plate).borderTopLeftRadius), plateHeight: plate.getBoundingClientRect().height,
+          padding: parseFloat(style.paddingTop),
+        };
+      };
+      const probe = document.createElement('div');
+      probe.style.borderTopLeftRadius = 'var(--sf-radius--surface)';
+      document.body.append(probe);
+      const named = parseFloat(getComputedStyle(probe).borderTopLeftRadius);
+      probe.remove();
+      const joined = [...document.querySelectorAll('#joined .sf-button-group > sf-button > .sf-button')].map((node) => {
+        const style = getComputedStyle(node);
+        return {start: parseFloat(style.borderStartStartRadius), end: parseFloat(style.borderStartEndRadius), height: node.getBoundingClientRect().height};
+      });
+      return {
+        rows: [...document.querySelectorAll('sf-button-group[data-radius]')].map(read),
+        variable: read(document.getElementById('var')), variableSquare: read(document.getElementById('var-square')),
+        named, joined,
+      };
+    });
+    evidence.radius = rows;
+    const concentric = (row) => Math.abs(row.plate - Math.max(0, row.track - row.padding)) < 0.01;
+    for (const row of rows.rows) {
+      check(`radius ${row.radius} size ${row.size}: the plate is the track's radius minus the padding`, concentric(row), row);
+      if (row.radius === 'none') check(`radius none size ${row.size}: the track adds the padding to the button's radius`, row.plate > 0 && Math.abs(row.track - row.plate - row.padding) < 0.01, row);
+      if (row.radius === 'default') check(`radius default size ${row.size}: the track takes the surface radius`, Math.abs(row.track - rows.named) < 0.01, {row, named: rows.named});
+      if (row.radius === 'square') check(`radius square size ${row.size}: track and plate are square`, row.track === 0 && row.plate === 0, row);
+      if (row.radius === 'rounded') check(`radius rounded size ${row.size}: track and plate are pills`, row.track >= row.trackHeight / 2 && row.plate >= row.plateHeight / 2, row);
+    }
+    check('--sf-button-group-radius sets the track, the plate follows', rows.variable.track === 10 && concentric(rows.variable), rows.variable);
+    check('the radius attribute wins over --sf-button-group-radius', rows.variableSquare.track === 0 && rows.variableSquare.plate === 0, rows.variableSquare);
+    const [first, middle, last] = rows.joined;
+    check('a joined group with radius rounded rounds its outer corners, not its joins',
+      first.start >= first.height / 2 && first.end === 0 && middle.start === 0 && middle.end === 0 && last.start === 0 && last.end >= last.height / 2, rows.joined);
+    await page.close();
+  }
+
+  // 8. A named group is a form field.
+  {
+    const PERIOD = [{value: 'd', label: 'День'}, {value: 'w', label: 'Неделя'}, {value: 'm', label: 'Месяц'}];
+    const page = await open({body: `<form id="form">
+      <sf-button-group id="period" appearance="segmented" name="period" value="w" aria-label="Период" ${items(PERIOD)}></sf-button-group>
+      <sf-button-group id="off" appearance="segmented" name="off" value="d" disabled aria-label="Выключено" ${items(PERIOD)}></sf-button-group>
+      <sf-button-group id="nameless" appearance="segmented" value="d" aria-label="Без имени" ${items(PERIOD)}></sf-button-group>
+      <button id="send" type="submit">Отправить</button>
+    </form>`});
+    await page.evaluate(() => {
+      window.__payloads = [];
+      document.getElementById('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        window.__payloads.push([...new FormData(event.target)]);
+      });
+    });
+    const submit = async () => {
+      await page.click('#send');
+      return page.evaluate(() => window.__payloads.at(-1));
+    };
+    const initial = await submit();
+    await page.locator('#period').getByRole('radio', {name: 'Месяц', exact: true}).click();
+    await page.waitForTimeout(150);
+    const chosen = await submit();
+    await page.evaluate(() => document.getElementById('form').reset());
+    await page.waitForTimeout(150);
+    const reset = await page.evaluate(() => ({value: document.getElementById('period').value, checked: document.querySelector('#period button[aria-checked="true"]')?.dataset.sfButtonGroupValue}));
+    const afterReset = await submit();
+    await page.evaluate(() => document.getElementById('off').removeAttribute('disabled'));
+    await page.waitForTimeout(150);
+    const enabled = await submit();
+    evidence.form = {initial, chosen, reset, afterReset, enabled};
+    check('the form submits name=value', JSON.stringify(initial) === JSON.stringify([['period', 'w']]), {initial});
+    check('a choice is submitted', JSON.stringify(chosen) === JSON.stringify([['period', 'm']]), {chosen});
+    check('a reset brings back the written value', reset.value === 'w' && reset.checked === 'w' && JSON.stringify(afterReset) === JSON.stringify([['period', 'w']]), {reset, afterReset});
+    check('a disabled group is left out, and joins once enabled', JSON.stringify(enabled) === JSON.stringify([['period', 'w'], ['off', 'd']]), {enabled});
+    await page.close();
   }
 } finally {
   await browser.close();

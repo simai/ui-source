@@ -119,6 +119,16 @@
         "default": "",
         "description": "Currently selected item value."
       },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "Native form field name: the group submits its value with its form, a form reset restores the initial value, and a disabled group is left out."
+      },
+      "theme-switch": {
+        "type": "boolean",
+        "default": false,
+        "description": "A ready theme switch: the group draws its own three icon-only items (system, light, dark) named in the page language, selects SF.Loader's theme preference and follows sf-theme-change, and a choice calls SF.Loader.setTheme. items is ignored."
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -185,6 +195,17 @@
         "type": "boolean",
         "default": false,
         "description": "In the segmented appearance, the track fills its container and the segments share the width equally."
+      },
+      "radius": {
+        "type": "string",
+        "default": "",
+        "enum": [
+          "",
+          "default",
+          "square",
+          "rounded"
+        ],
+        "description": "Corner radius, as on sf-button: empty is the UI radius, default the surface radius. In the segmented appearance it is the track's, and the plate's is the track's minus the padding (rounded: both pills)."
       },
       "orientation": {
         "type": "string",
@@ -424,7 +445,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-group/index.js",
-        "sha256": "a93050b14e18a71f6b6061c32e5fab9fa7272e1e56cccd4497c824282838d4ca"
+        "sha256": "2719a65441300ff8c0c5f515cf951906856b19b4e73844e2fbc61b61b8d9719d"
       }
     ],
     "generated_runtime": []

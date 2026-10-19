@@ -49,6 +49,7 @@
   "cl-button-group": [
     "align-items/default",
     "display/default",
+    "isolate/default",
     "pointer-events/default",
     "position/default",
     "text-align/default"
