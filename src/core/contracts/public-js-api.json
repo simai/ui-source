@@ -88,14 +88,20 @@
       "status": "public",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "Background effects (simai.effect): check a manifest, read stored settings, mount an effect under the rules.",
+      "summary": "Background effects (simai.effect): check a manifest, read stored settings, resolve a placement's theme, mount an effect or a windows group under the rules, load one from the pinned catalogue with integrity.",
       "members": [
         "checkEffectManifest",
         "checkSetting",
         "effectSettings",
         "effectSchemes",
         "pairIsForeign",
+        "allowedModes",
+        "resolveTheme",
+        "pageScheme",
         "mountEffect",
+        "mountWindows",
+        "loadEffect",
+        "placeEffect",
         "EFFECT_SCHEMA"
       ]
     },

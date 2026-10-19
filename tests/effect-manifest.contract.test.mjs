@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-import {checkEffectManifest, effectSchemes, pairIsForeign} from '../src/core/js/effects.js';
+import {allowedModes, checkEffectManifest, effectSchemes, pairIsForeign, resolveTheme} from '../src/core/js/effects.js';
 
 // simai.effect 1.1 (2026-10-19): the manifest gains schemes, pair and
 // capabilities, each optional, so every 1.0 manifest stays valid. The live
@@ -77,4 +77,29 @@ test('the live schema states the same fields as the reader', () => {
     assert.ok(!schemaTakesPair(value), value);
     assert.match(checkEffectManifest(with_({schemes: ['dark'], pair: value})).join(), /pair/u, value);
   }
+});
+
+// The theme policy is pure: what an editor may offer and what a placement
+// draws follow from the manifest, the page's scheme and the mode alone
+// (theme-follows-the-placement). The browser probe effect-theme holds the
+// same order on the built core, mounted.
+test('the theme policy: allowed modes and the resolution order', () => {
+  const dark = with_({schemes: ['dark']});
+  const light = with_({schemes: ['light']});
+  const paired = with_({schemes: ['dark'], pair: 'mist-gradient'});
+  const foreign = with_({schemes: ['dark'], pair: CATALOGUE_URL});
+  assert.deepEqual(allowedModes(sample), ['auto', 'dark', 'light']);
+  assert.deepEqual(allowedModes(dark), ['auto', 'dark']);
+  assert.deepEqual(allowedModes(light), ['auto', 'light']);
+  assert.deepEqual(allowedModes(paired), ['auto', 'dark', 'light']);
+  assert.deepEqual(allowedModes(foreign), ['auto', 'dark']);
+  const r = (manifest, pageScheme, themeMode) => resolveTheme(manifest, {pageScheme, themeMode});
+  assert.deepEqual(r(sample, 'light', 'auto'), {effect: 'self', scheme: 'light'});
+  assert.deepEqual(r(paired, 'light', 'auto'), {effect: 'pair', scheme: 'light', pair: 'mist-gradient'});
+  assert.deepEqual(r(dark, 'light', 'auto'), {effect: 'self', scheme: 'dark'});
+  assert.deepEqual(r(light, 'dark', 'auto'), {hidden: true, reason: 'light-only-on-dark'});
+  assert.deepEqual(r(dark, 'dark', 'light'), {hidden: true, reason: 'mode-not-drawable'});
+  assert.deepEqual(r(foreign, 'light', 'auto'), {hidden: true, reason: 'foreign-pair-needs-sandbox'});
+  assert.deepEqual(r(foreign, 'dark', 'auto'), {effect: 'self', scheme: 'dark'});
+  assert.deepEqual(r(sample, 'light', 'sepia'), {hidden: true, reason: 'unknown-theme-mode'});
 });
