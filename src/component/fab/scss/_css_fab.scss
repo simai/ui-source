@@ -39,6 +39,7 @@
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface {
   --sf-fab--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface .sf-icon {

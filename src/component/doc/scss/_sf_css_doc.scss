@@ -28,6 +28,7 @@
     padding: var(--sf-space-3);
     overflow-wrap: anywhere;
     background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     border: var(--sf-px) solid var(--sf-outline-variant);
     border-radius: var(--sf-radius--surface);
     color: var(--sf-on-surface);

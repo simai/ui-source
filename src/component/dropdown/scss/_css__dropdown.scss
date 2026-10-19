@@ -172,6 +172,7 @@
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
   --sf-dropdown-field--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-dropdown-field--border-color: var(--sf-transparent-for-focus);
 }
 

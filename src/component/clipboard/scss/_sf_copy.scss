@@ -15,6 +15,7 @@
     align-items: center;
     appearance: none;
     background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     border: 0;
     border-radius: var(--sf-radius--ui);
     color: var(--sf-on-surface);

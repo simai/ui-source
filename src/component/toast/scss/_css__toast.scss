@@ -184,6 +184,7 @@
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--neutral, .sf-toast--default) {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
     --sf-close-icon--background-color: var(--sf-on-surface);
   }

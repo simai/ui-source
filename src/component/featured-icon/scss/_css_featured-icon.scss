@@ -146,6 +146,7 @@
   .sf-featured-icon--elevated,
   .sf-featured-icon--modern {
     --sf-featured-icon--background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     --sf-featured-icon--foreground-color: var(--sf-featured-icon--tone);
     --sf-featured-icon--box-shadow: var(--sf-ui-shadow-2);
   }

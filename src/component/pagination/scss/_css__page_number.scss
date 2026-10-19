@@ -66,6 +66,7 @@
 
 .sf-page-number:not(:disabled):not(.disabled):hover {
   --sf-page-number--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-page-number--color: var(--sf-on-surface);
 }
 

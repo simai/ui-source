@@ -177,6 +177,13 @@
     --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
     --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
     --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-60));
+    /* Dimmed text on a container fill (--sf-surface-container over the page or
+       the first surface). The fill is a translucent near-white in the dark
+       theme, and neutral-60 on it measured 4.0:1 over the page and 3.5:1 over
+       surface-1, short of the 4.5:1 text asks; neutral-70 holds 5.6 and 4.9
+       (effects-gallery theme audit, 2026-10-19). As for the raised surfaces,
+       the dimmed role follows what it lies on. */
+    --sf-on-surface-container--variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
     --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);

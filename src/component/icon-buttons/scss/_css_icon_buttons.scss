@@ -122,6 +122,7 @@
 
   .sf-icon-button.sf-icon-button--tonal.sf-icon-button--on-surface.sf-icon-button--icon, .sf-icon-button.sf-icon-button--tonal.sf-icon-button--on-surface.sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
   .sf-icon-button.sf-icon-button--default.sf-icon-button--on-surface.sf-icon-button--icon, .sf-icon-button.sf-icon-button--default.sf-icon-button--on-surface.sf-icon-button--close {

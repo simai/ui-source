@@ -164,6 +164,7 @@
 
 .sf-textarea.sf-textarea--filled textarea {
   --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
@@ -302,6 +303,7 @@
 
 .sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
 }
 }
 

@@ -164,6 +164,7 @@
 
   .sf-button.sf-button--tonal.sf-button--on-surface {
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
   .sf-button.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--outline.sf-button--on-surface .sf-button-text-container, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--on-surface .sf-button-text-container {

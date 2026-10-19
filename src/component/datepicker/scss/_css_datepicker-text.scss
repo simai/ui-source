@@ -23,6 +23,7 @@
 @layer sf.states {
   .sf-datepicker-text:not(:disabled):not(.disabled):hover {
     --sf-datepicker-text--background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
   .sf-datepicker-text:focus:not(:focus-visible) {

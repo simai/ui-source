@@ -106,6 +106,7 @@
 
 .sf-badge.sf-badge--tonal.sf-badge--neutral {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
 }
 

@@ -107,6 +107,7 @@
 
 .sf-step:is(button, a, [role="button"]):not(:disabled):not(.disabled):hover {
   --sf-step--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
 }
 
 .sf-step.selected {

@@ -101,6 +101,7 @@
 
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
 }
 
@@ -174,6 +175,7 @@
 
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--flat {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
 }
 
 .sf-alert.sf-alert--info.sf-alert--flat {

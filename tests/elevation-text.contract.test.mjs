@@ -88,6 +88,39 @@ test('dimmed text stays dimmer than the primary role', () => {
   assert.deepEqual(offenders, [], 'a dimmed role that reads like the primary one is not dimmed');
 });
 
+// A container fill is translucent: it lies over the page or the first
+// surface, and the dimmed text on it has to read over both, at rest, in either
+// theme (effects-gallery theme audit, 2026-10-19: neutral-60 measured 4.0:1).
+const ALPHA = /^--sf-([a-z]+-\d+)--alfa-(\d+)$/u;
+const over = (top, alpha, bottom) => {
+  const [t, b] = [channels(top), channels(bottom)];
+  return `#${t.map((value, index) => Math.round(value * alpha + b[index] * (1 - alpha)).toString(16).padStart(2, '0')).join('')}`;
+};
+const containerOver = (roles, hexes, mode, surface) => {
+  const fill = roles['--sf-surface-container']?.[mode];
+  const match = fill?.match(ALPHA);
+  assert.ok(match, `--sf-surface-container is a translucent step in the ${mode} theme`);
+  return over(hexes[`--sf-${match[1]}`], Number(match[2]) / 100, resolve2(roles, hexes, surface, mode));
+};
+
+test('dimmed text keeps 4.5:1 on a container fill over the page and the first surface', () => {
+  const hexes = primitives();
+  const roles = themeRoles();
+  const failures = [];
+  for (const mode of ['light', 'dark']) {
+    for (const surface of ['--sf-surface-0', '--sf-surface-1']) {
+      const fill = containerOver(roles, hexes, mode, surface);
+      const text = resolve2(roles, hexes, '--sf-on-surface-container--variant', mode);
+      assert.ok(text, `--sf-on-surface-container--variant in the ${mode} theme`);
+      const measured = contrast(text, fill);
+      if (measured < 4.5) failures.push(`${mode} over ${surface}: ${measured.toFixed(2)}:1`);
+      const primary = contrast(resolve2(roles, hexes, '--sf-on-surface', mode), fill);
+      if (primary / measured < 1.2) failures.push(`${mode} over ${surface}: dimmed reads like primary (${(primary / measured).toFixed(2)}x)`);
+    }
+  }
+  assert.deepEqual(failures, []);
+});
+
 const styleFiles = () => {
   const found = [];
   const walk = (directory) => {
@@ -119,3 +152,24 @@ test('whatever paints itself with a raised surface carries the matching text rol
   assert.deepEqual(offenders, [],
     'a surface without its text role leaves the dimmed text at the page value');
 });
+
+// The same rule for a container fill: what lays --sf-surface-container under
+// its content redefines the dimmed text role for that content (2026-10-19,
+// dark theme 4.0:1). Tracks of indicators carry no text and keep the role of
+// the page their labels stand on.
+const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/'];
+
+test('whatever lays a container fill under text carries the container text role', () => {
+  const offenders = [];
+  for (const path of styleFiles()) {
+    if (CONTAINER_TRACKS.some((track) => path.includes(track))) continue;
+    const lines = read(path).split('\n');
+    lines.forEach((line, index) => {
+      if (!/var\(--sf-surface-container\)/u.test(line) || /border|outline|fill:|stroke|--container:/iu.test(line)) return;
+      const near = lines.slice(Math.max(0, index - 3), index + 4).join('\n');
+      if (!near.includes('--sf-on-surface-variant: var(--sf-on-surface-container--variant)')) offenders.push(`${path}:${index + 1}`);
+    });
+  }
+  assert.deepEqual(offenders, [], 'dimmed text on a container fill reads the container role');
+});
+

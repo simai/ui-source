@@ -135,6 +135,7 @@
 
   .sf-avatar--placeholder, .sf-avatar--text {
     --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
   .sf-avatar--square {
