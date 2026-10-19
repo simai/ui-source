@@ -299,6 +299,18 @@
 }
 }
 
+/* The steppers are drawn by the script before the icon-button sheet may have
+   arrived; until it does they were the browser's grey button, fading out over
+   the button's transition (simai/ui-source#2). No weight here: the icon
+   button's own rules win the moment they apply. */
+@layer sf.components {
+  :where(.sf-quantity .sf-quantity-count) {
+    appearance: none;
+    background-color: transparent;
+    border: 0;
+  }
+}
+
 @layer sf.states {
   .sf-quantity.sf-quantity--pointer-focus .sf-quantity-wrap {
     --sf-quantity-wrap--box-shadow: none;

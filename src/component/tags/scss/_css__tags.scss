@@ -63,6 +63,13 @@
     opacity: 1;
   }
 
+  /* An avatar in a tag lays its container fill over the tag's: two fills,
+     and the dimmed role measured 3.6:1 there in the dark theme
+     (simai/ui-source#1). Its initials take the primary role. */
+  .sf-tag :is(.sf-avatar--text, .sf-avatar--placeholder) {
+    --sf-avatar--color: var(--sf-on-surface);
+  }
+
   .sf-tag .sf-avatar {
     height: var(--sf-avatar--height);
     opacity: var(--sf-avatar--opacity);

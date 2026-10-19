@@ -103,12 +103,12 @@ const containerOver = (roles, hexes, mode, surface) => {
   return over(hexes[`--sf-${match[1]}`], Number(match[2]) / 100, resolve2(roles, hexes, surface, mode));
 };
 
-test('dimmed text keeps 4.5:1 on a container fill over the page and the first surface', () => {
+test('dimmed text keeps 4.5:1 on a container fill over the surfaces 0 to 3', () => {
   const hexes = primitives();
   const roles = themeRoles();
   const failures = [];
   for (const mode of ['light', 'dark']) {
-    for (const surface of ['--sf-surface-0', '--sf-surface-1']) {
+    for (const surface of ['--sf-surface-0', '--sf-surface-1', '--sf-surface-2', '--sf-surface-3']) {
       const fill = containerOver(roles, hexes, mode, surface);
       const text = resolve2(roles, hexes, '--sf-on-surface-container--variant', mode);
       assert.ok(text, `--sf-on-surface-container--variant in the ${mode} theme`);

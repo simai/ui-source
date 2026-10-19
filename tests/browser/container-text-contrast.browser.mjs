@@ -14,13 +14,17 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', ...['avatars', 'tags', 'alerts', 'accordion', 'kbd', 'file-preview']
-  .map((name) => `component/component/${name}/css/${name}.css`)];
+  .map((name) => `component/component/${name}/css/${name}.css`),
+  'utility/utility/background-color/default/css/default.css', 'utility/utility/text-color/default/css/default.css'];
 const MARKUP = `
   <span class="sf-avatar sf-avatar--text sf-avatar--size-2">АБ</span>
   <span class="sf-tag sf-tag--size-1 sf-tag--default"><span class="sf-tag-text">Метка</span></span>
   <div class="sf-alert sf-alert--neutral sf-alert--default"><div class="sf-alert-wrap"><p class="sf-alert-text" style="color: var(--sf-on-surface-variant)">Вторичный текст сообщения</p></div></div>
   <div class="sf-accordion"><div class="sf-accordion-content" style="color: var(--sf-on-surface-variant)">Содержимое аккордеона</div></div>
-  <kbd class="sf-kbd" style="color: var(--sf-on-surface-variant)">Ctrl</kbd>`;
+  <kbd class="sf-kbd" style="color: var(--sf-on-surface-variant)">Ctrl</kbd>
+  <span class="sf-tag sf-tag--size-1 sf-tag--avatar"><span class="sf-avatar sf-avatar--text sf-avatar--size-1/3">ВГ</span><span class="sf-tag-text">Тег с аватаром</span></span>
+  <div class="bg-surface-2" style="padding:12px"><span class="bg-surface-container color-on-surface-variant">Утилита на поверхности 2</span>
+    <span class="sf-tag sf-tag--size-1 sf-tag--default"><span class="sf-tag-text">Тег на поверхности 2</span></span></div>`;
 
 const failures = [];
 const browser = await chromium.launch();

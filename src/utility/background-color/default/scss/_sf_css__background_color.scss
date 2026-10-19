@@ -18,6 +18,12 @@
         }
     }
 
+    // A container fill switches the dimmed text over it, as elevation-N does
+    // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
+    .#{$infix}bg-surface-container {
+        --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    }
+
     // Состояние есть не у каждой роли: у прозрачного и у текущего цвета его быть
     // не может, у ступеней поверхности его нет в теме. Список ролей с состояниями
     // лежит рядом и до сих пор не читался, поэтому hover:bg-transparent просил
