@@ -14,7 +14,12 @@
 
 export const PROPERTY_TYPES = Object.freeze([
     {type: 'string', label: {ru: 'Строка', en: 'String'},
-        variants: [{id: 'phone', label: {ru: 'Телефон', en: 'Phone'}}],
+        // password: write-only. The host never sends the password; the value it
+        // sends is {set: true} or {set: false} (null reads as not set), and the
+        // set shows only «задан»/«не задан». An edit writes the typed text through
+        // setFieldValue and writes nothing for a field nobody typed in.
+        variants: [{id: 'phone', label: {ru: 'Телефон', en: 'Phone'}},
+            {id: 'password', label: {ru: 'Пароль', en: 'Password'}, writeOnly: true}],
         params: ['placeholder', 'required', 'readonly']},
     {type: 'text', label: {ru: 'Текст', en: 'Text'},
         variants: [],
