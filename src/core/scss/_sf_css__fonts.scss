@@ -71,9 +71,24 @@
 
 // Arial with metrics bent towards Inter, so text set before Inter arrives
 // takes the same room.
+// Two faces, regular and bold: one face held 400 only, and a cold visit set
+// every bold Latin word at 400 -- a heading's «Larena» measured the same at 400
+// and 700 until Inter arrived (simai.io hub, 2026-10-19). The browser does not
+// thicken a local() face it was given at one weight; it needs the bold one.
 @font-face {
   font-family: "Inter Fallback";
-  src: local("Arial");
+  font-weight: 100 549;
+  src: local("Arial"), local("ArialMT");
+  ascent-override: 90.2%;
+  descent-override: 22.48%;
+  line-gap-override: 0%;
+  size-adjust: 107.4%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  font-weight: 550 1000;
+  src: local("Arial Bold"), local("Arial-BoldMT");
   ascent-override: 90.2%;
   descent-override: 22.48%;
   line-gap-override: 0%;
