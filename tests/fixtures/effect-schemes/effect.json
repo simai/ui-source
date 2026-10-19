@@ -1,0 +1,17 @@
+{
+  "schema": "simai.effect",
+  "schema_version": 1,
+  "id": "sample-bands",
+  "version": "1.0.0",
+  "label": {"ru": "Полосы", "en": "Bands"},
+  "author": "SIMAI Framework (kit fixture)",
+  "entry": "sample-bands.js",
+  "surfaces": ["sign-in", "hero"],
+  "schemes": ["dark", "light"],
+  "capabilities": ["windows"],
+  "settings": [
+    {"key": "bands", "type": "integer", "label": {"ru": "Сколько полос", "en": "How many bands"}, "default": 5, "min": 2, "max": 12},
+    {"key": "speed", "type": "number", "label": {"ru": "Скорость", "en": "Speed"}, "default": 1, "min": 0.25, "max": 4, "step": 0.25}
+  ],
+  "needs": {"network": false}
+}

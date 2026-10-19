@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/effect.v1.schema.json",
+  "title": "Simai Background Effect Manifest v1",
+  "x-simai-version": "1.2.0",
+  "description": "An animated background drawn into one area of a page. A product reads only this file to list, describe and configure an effect, without running its code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "label", "entry", "surfaces", "settings", "needs"],
+  "anyOf": [{"properties": {"schema": {"const": "simai.effect.v1"}}}, {"required": ["schema_version"]}],
+  "dependentSchemas": {
+    "pair": {"required": ["schemes"], "properties": {"schemes": {"maxItems": 1}}}
+  },
+  "properties": {
+    "schema": {"enum": ["simai.effect.v1", "simai.effect"], "description": "The format: simai.effect with schema_version 1. The older label simai.effect.v1 is read until the change journal retires it (names carry no version, 2026-10-11)."},
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,40}$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "label": {"$ref": "#/$defs/text"},
+    "author": {"type": "string", "maxLength": 200},
+    "entry": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.m?js$"},
+    "styles": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.css$"}},
+    "preview": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*\\.(png|jpg|jpeg|webp)$"},
+    "surfaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$"}},
+    "settings": {"type": "array", "maxItems": 40, "items": {"$ref": "#/$defs/setting"}},
+    "schemes": {
+      "type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true,
+      "items": {"enum": ["dark", "light"]},
+      "description": "The themes the effect is drawn for (simai.effect 1.1). The first is its home scheme: the default and the one its preview shows. Absent means both, as in 1.0. The host gives the effect the scheme it draws in as context.scheme, and a change of it through update(settings, context)."
+    },
+    "pair": {
+      "anyOf": [
+        {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,40}$"},
+        {"type": "string", "format": "uri", "pattern": "^https://[^\\s?#]+/effect\\.json$", "maxLength": 2048}
+      ],
+      "description": "The effect of the other scheme that plays the same role (simai.effect 1.1): the id of an effect in the same catalogue, or the https URL of another effect's effect.json. Only a single-scheme effect names one, and the pair must draw the scheme this one lacks. A pair is resolved and loaded under the same trust as any effect: an id resolves against the catalogue base and is checked against that catalogue index's SHA-256 before it runs inline; a URL outside the pinned catalogue is foreign and runs only in the sandbox runner, refused until one is available; a trusted effect never pulls an untrusted pair inline."
+    },
+    "capabilities": {
+      "type": "array", "uniqueItems": true, "maxItems": 8,
+      "items": {"enum": ["windows"]},
+      "description": "What the effect is safe to be drawn for beyond one area (simai.effect 1.1). windows: it is mask-safe, so one scene may be drawn behind a group of cards and seen only through them, continuous across them."
+    },
+    "needs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network"],
+      "properties": {"network": {"const": false}}
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z]{2}(-[A-Z]{2})?$"},
+      "additionalProperties": {"type": "string", "minLength": 1, "maxLength": 200}
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label", "default"],
+      "properties": {
+        "key": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9]{0,40}$"},
+        "type": {"enum": ["choice", "integer", "number", "boolean", "string", "text", "color", "file"]},
+        "label": {"$ref": "#/$defs/text"},
+        "hint": {"$ref": "#/$defs/text"},
+        "default": {},
+        "min": {"type": "number"},
+        "max": {"type": "number", "description": "The upper bound of a number, or the longest a string or text may be."},
+        "step": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"type": "string", "maxLength": 16},
+        "options": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["value", "label"], "properties": {"value": {"type": ["string", "integer"]}, "label": {"$ref": "#/$defs/text"}}}},
+        "accept": {"type": "array", "items": {"type": "string", "pattern": "^(image|video)/[a-z0-9.+-]+$"}, "description": "For a file: the kinds of the site's files that may be chosen."}
+      }
+    }
+  }
+}

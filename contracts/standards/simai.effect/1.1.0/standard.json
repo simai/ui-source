@@ -1,0 +1,176 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.effect",
+  "version": "1.1.0",
+  "title": "SIMAI Background Effect",
+  "appliesTo": [
+    "simai.framework.component"
+  ],
+  "requirements": [
+    {
+      "id": "manifest-describes-everything",
+      "level": "must",
+      "text": "An effect is described by its manifest (effect.json) alone: its identity, version, label, entry module, styles, preview, the surfaces it may be chosen for, the schemes it draws, its pair, its capabilities, its settings and what it needs. A product lists, describes and configures it -- building the settings form from the manifest's settings with its record view, never a form per effect -- without running its code.",
+      "verification": "manual",
+      "guidance": "SF.Effects.checkEffectManifest; the kit's manifest check. Since 1.1 this requirement also holds what 1.0 stated as settings-form-from-the-manifest."
+    },
+    {
+      "id": "settings-are-typed-and-bounded",
+      "level": "must",
+      "text": "Every setting has a key, a property type (choice, integer, number, boolean, string, text, color, file), a label and a valid default; numbers state their bounds, strings their longest length, choices their options, files the kinds of the site's files they accept.",
+      "verification": "manual"
+    },
+    {
+      "id": "values-checked-before-use",
+      "level": "must",
+      "text": "A product checks every stored value against its setting before saving it and before handing it to the effect; an invalid or missing value is replaced by the default, never passed on.",
+      "verification": "manual",
+      "guidance": "SF.Effects.effectSettings answers the checked settings and names the keys it dropped."
+    },
+    {
+      "id": "one-module-one-mount",
+      "level": "must",
+      "text": "The entry is one module exporting mount(host, settings, context), answering update, pause, resume and destroy. New settings, and a change of the scheme it draws in, reach a mounted effect through update(settings, context); it redraws without being mounted again.",
+      "verification": "manual",
+      "guidance": "context carries reducedMotion, locale and, since 1.1, scheme. Since 1.1 this requirement also holds what 1.0 stated as update-without-remount."
+    },
+    {
+      "id": "draws-in-its-host-only",
+      "level": "must",
+      "text": "An effect draws only inside its host, at a pixel density of at most 2: it adds its own canvas or video there and touches nothing else on the page.",
+      "verification": "manual",
+      "guidance": "Since 1.1 this requirement also holds what 1.0 stated as pixel-density-capped."
+    },
+    {
+      "id": "no-network",
+      "level": "must",
+      "text": "An effect makes no requests (needs.network is false in version 1): no fetch, no image or script from outside its own files and the site's files its settings name.",
+      "verification": "manual",
+      "guidance": "The kit fails an effect that asks for anything beyond its own files."
+    },
+    {
+      "id": "reduced-motion-still",
+      "level": "must",
+      "text": "With reduced motion an effect draws one still frame and stops asking for frames; a person who turns reduced motion on is given the still frame at once.",
+      "verification": "manual"
+    },
+    {
+      "id": "hidden-tab-idle",
+      "level": "must",
+      "text": "While the tab is hidden an effect draws nothing and asks for no frames.",
+      "verification": "manual"
+    },
+    {
+      "id": "not-in-the-way",
+      "level": "must",
+      "text": "The host is out of the accessibility tree (aria-hidden) and takes no pointer events: an effect stands under the page's controls, never over them.",
+      "verification": "manual"
+    },
+    {
+      "id": "clean-destroy",
+      "level": "must",
+      "text": "After destroy an effect has left nothing behind -- no nodes, frames, observers or listeners -- and it can be mounted again.",
+      "verification": "manual"
+    },
+    {
+      "id": "schemes-and-pair-declared",
+      "level": "must",
+      "text": "An effect declares the schemes it is drawn for -- dark, light or both, its home scheme first -- and each scheme is designed for its own ground, not an inverted picture; no schemes means both, as in 1.0. A single-scheme effect may name a pair: the effect of the other scheme that plays the same role, given as a catalogue id or the https address of its effect.json.",
+      "verification": "manual",
+      "guidance": "Manifest fields schemes and pair (effect manifest schema 1.2.0). Declare a pair for every single-scheme effect meant for public pages, unless no effect of the other scheme can play its role."
+    },
+    {
+      "id": "theme-follows-the-placement",
+      "level": "must",
+      "text": "A placement has a theme mode: as the page (auto, the default), always dark or always light. When the effect cannot draw the target scheme, its pair is shown; failing a pair, a dark-only effect stays dark on a light page, and a light-only effect is not shown on a dark target -- a plain surface of that theme instead, since a reader who chose dark did so to avoid glare. An editor offers only the fixed modes the effect, or its pair, can draw.",
+      "verification": "manual",
+      "guidance": "The resolution order: the effect in the target scheme; its pair in the target scheme; a dark-only effect kept dark; nothing. SF.Effects carries it from the next pair (themeMode)."
+    },
+    {
+      "id": "area-takes-the-drawn-theme",
+      "level": "must",
+      "text": "The area of an effect takes the theme it is actually drawn in (theme-dark or theme-light), whatever the page's theme, so text and controls over it use that theme's roles and measure at least 4.5:1 against the effect on its brightest frame.",
+      "verification": "manual",
+      "guidance": "The kit's contrast check: --sf-on-surface and --sf-on-surface-variant over the worst of five frames, at the 5th percentile of the pixels."
+    },
+    {
+      "id": "drawn-with-palette-tones",
+      "level": "must",
+      "text": "An effect draws with palette tones (--sf-<palette>-<tone>, such as --sf-primary-40 or --sf-neutral-98), which stay the same across themes and carry the project's colours, chosen per scheme by the effect itself; it does not draw with theme roles, which change under it with the area's theme and may not exist at all.",
+      "verification": "manual",
+      "guidance": "The effects lab found every one of its first twenty effects reading --sf-surface, a role core does not define. Read a tone through a short-lived probe element so var() chains and light-dark() settle; keep a fallback colour for a page without the Framework's sheets; read the tones again when the theme or project colours change."
+    },
+    {
+      "id": "windows-are-mask-safe",
+      "level": "must",
+      "text": "An effect that declares the windows capability may be drawn once behind a group of cards and seen only through them: it draws one continuous scene over the whole group, follows the group's size, and relies on nothing the mask hides; every other rule still holds. Only cards that are windows take the effect's theme; the others keep the page's.",
+      "verification": "manual",
+      "guidance": "Manifest capabilities: [\"windows\"]. The kit draws it behind three window cards under a mask, at two widths, and fails it when anything shows outside the windows or the scene does not span the group."
+    },
+    {
+      "id": "failure-falls-back",
+      "level": "must",
+      "text": "An effect that fails to mount or throws is replaced by the product's default effect, and the failure is reported (sf-effect-error), never shown to the person as a broken page.",
+      "verification": "manual"
+    },
+    {
+      "id": "foreign-effects-sandboxed",
+      "level": "must",
+      "text": "An effect not shipped and reviewed with a product runs only in an iframe sandboxed without allow-same-origin, under a strict content security policy, receiving its checked settings by message: it can never reach the page, its cookies or a form on it.",
+      "verification": "manual"
+    },
+    {
+      "id": "pair-under-the-same-trust",
+      "level": "must",
+      "text": "A pair is resolved and loaded under the same trust as any effect. An id resolves against the catalogue base and is checked against that catalogue index's SHA-256 before it runs inline; an address outside the pinned catalogue is foreign and runs only in the sandbox runner, and is refused while there is none. A trusted effect never pulls an untrusted pair inline.",
+      "verification": "manual",
+      "guidance": "SF.Effects.pairIsForeign names a pair given as an address; the kit notes such a pair as needing the sandbox."
+    },
+    {
+      "id": "installed-effects-checked",
+      "level": "must",
+      "text": "An effect is installed only after its package is checked -- the files it may hold, its size, its manifest, a digest of every file -- and installed switched off until a person turns it on.",
+      "verification": "manual"
+    },
+    {
+      "id": "kit-before-listing",
+      "level": "must",
+      "text": "A product runs the kit (scripts/effect-kit.mjs) on an effect before listing it: manifest, defaults, mount, no network, still motion, hidden tab, pixel ratio, update, cleanup, remount, accessibility, and for what the manifest declares, each scheme with its contrast, the scheme switch, the windows mode and the pair's trust.",
+      "verification": "manual",
+      "guidance": "The probe effect-kit runs it on a rule-keeping and a rule-breaking fixture, and on a two-scheme, windows-capable fixture."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.effect-manifest",
+      "version": "1.2.0",
+      "path": "../../pinned/effect-1.2.0.schema.json",
+      "sha256": "71a32e028f703180ed96517a220eea7e18f7c99c140316ecb6978d92141e5f53",
+      "description": "The form of effect.json: identity, entry, surfaces, schemes, pair, capabilities, typed and bounded settings, needs."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.interaction-rules 1.0.0 (motion, failure containment)",
+      "scope_note": "An animated background drawn into one area of a page -- a sign-in page's art side, a hero block, a group of cards seen as windows. The Framework owns the manifest, the module interface, the runtime rules, the theme policy, SF.Effects and the kit; the catalogue (simai/ui-effects) owns the effects; a product owns its built-in effects, installing and turning effects on, their settings and placements.",
+      "origin": "Designed by simai/larena (larena-specs docs/architecture/2026-10-14-background-effects.md, approved by the owner 2026-10-14), the contract handed to the Framework; authored for publication on 2026-10-16. Edition 1.1.0 (2026-10-19) takes the owner's decisions after the gallery review: schemes, pairs, the placement's theme mode and the windows mode in the standard, effects in the separate catalogue simai/ui-effects (ui-control control/handoffs/2026-10-19-effects-core.md; evidence in the effects lab: THEMES.md, SCHEMES.md, 240 combinations at 4.5:1 or more), and the pair's trust agreed with the catalogue owner.",
+      "changes": "1.1.0 adds schemes-and-pair-declared, theme-follows-the-placement, area-takes-the-drawn-theme, drawn-with-palette-tones, windows-are-mask-safe and pair-under-the-same-trust, and pins the effect manifest schema 1.2.0 (schemes, pair, capabilities; a 1.0 manifest stays valid). To stay within twenty principles three 1.0 requirements were folded into neighbours with their text kept: settings-form-from-the-manifest into manifest-describes-everything, update-without-remount into one-module-one-mount, pixel-density-capped into draws-in-its-host-only. The module contract gains context.scheme and update(settings, context). The bytes of 1.0.0 stay in history.",
+      "validated_against": [
+        "the kit on a rule-keeping and a rule-breaking fixture (tests/fixtures/effect-sample, effect-bad)",
+        "the kit on a two-scheme, windows-capable fixture (tests/fixtures/effect-schemes)",
+        "the kit on six effects-lab effects carrying the 1.1 fields: dark-only, light-only, both, a pair by id and a pair by address"
+      ]
+    }
+  }
+}

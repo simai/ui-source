@@ -1,9 +1,15 @@
-// Background effects (simai.effect 1.0.0; Larena's design of 2026-10-14,
+// Background effects (simai.effect 1.1.0; Larena's design of 2026-10-14,
 // larena-specs docs/architecture/2026-10-14-background-effects.md). An effect
 // is an animated background drawn into one area of a page; its manifest
 // (effect.json) says everything a product needs to list and configure it
 // without running its code, and its module exports mount(host, settings,
 // context) -> {update, pause, resume, destroy}.
+//
+// Since 1.1 a manifest may declare the schemes it draws (dark, light; none
+// means both), the pair of the other scheme, and the windows capability. The
+// effect learns the scheme it draws in as context.scheme, and a switch reaches
+// it as update(settings, context) without a remount. Choosing the scheme from
+// a placement's theme mode, the pair and the windows mode are the next step.
 //
 // What lives here is the part every product would otherwise write again:
 // checking a manifest, turning stored values into checked settings with the
@@ -25,6 +31,9 @@ const VERSION = /^[0-9]+\.[0-9]+\.[0-9]+$/u;
 const KEY = /^[a-zA-Z][a-zA-Z0-9]{0,40}$/u;
 const FILE = /^[a-z0-9][a-z0-9._-]*$/u;
 const COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/iu;
+const SCHEMES = ['dark', 'light'];
+const CAPABILITIES = new Set(['windows']);
+const PAIR_URL = /^https:\/\/[^\s?#]+\/effect\.json$/u;
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isText = (value) => isObject(value) && Object.keys(value).length > 0
   && Object.entries(value).every(([lang, text]) => /^[a-z]{2}(-[A-Z]{2})?$/u.test(lang) && typeof text === 'string' && text.length > 0);
@@ -33,7 +42,7 @@ const isText = (value) => isObject(value) && Object.keys(value).length > 0
 export function checkEffectManifest(manifest) {
   if (!isObject(manifest)) return ['manifest: not an object'];
   const problems = [];
-  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'settings', 'needs'];
+  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'schemes', 'pair', 'capabilities', 'settings', 'needs'];
   for (const key of Object.keys(manifest)) if (!allowed.includes(key)) problems.push(`${key}: undeclared`);
   if (!isSchema(manifest, 'simai.effect', 1)) problems.push('schema: not simai.effect, schema_version 1');
   if (typeof manifest.id !== 'string' || !ID.test(manifest.id)) problems.push('id');
@@ -42,6 +51,16 @@ export function checkEffectManifest(manifest) {
   if (typeof manifest.entry !== 'string' || !FILE.test(manifest.entry) || !/\.m?js$/u.test(manifest.entry)) problems.push('entry: one module file');
   if (manifest.styles !== undefined && (!Array.isArray(manifest.styles) || !manifest.styles.every((file) => typeof file === 'string' && FILE.test(file) && file.endsWith('.css')))) problems.push('styles');
   if (!Array.isArray(manifest.surfaces) || !manifest.surfaces.length) problems.push('surfaces');
+  // simai.effect 1.1: the schemes it draws, the pair of the other scheme, what it is safe for.
+  const schemes = manifest.schemes;
+  if (schemes !== undefined && (!Array.isArray(schemes) || !schemes.length || schemes.length > 2
+    || !schemes.every((scheme) => SCHEMES.includes(scheme)) || new Set(schemes).size !== schemes.length)) problems.push('schemes: one or both of dark, light');
+  if (manifest.pair !== undefined) {
+    if (typeof manifest.pair !== 'string' || !(ID.test(manifest.pair) || (PAIR_URL.test(manifest.pair) && manifest.pair.length <= 2048))) problems.push('pair: a catalogue id or the https URL of an effect.json');
+    if (!Array.isArray(schemes) || schemes.length !== 1) problems.push('pair: only a single-scheme effect names a pair');
+  }
+  if (manifest.capabilities !== undefined && (!Array.isArray(manifest.capabilities)
+    || !manifest.capabilities.every((name) => CAPABILITIES.has(name)) || new Set(manifest.capabilities).size !== manifest.capabilities.length)) problems.push('capabilities: known names, each once');
   if (!isObject(manifest.needs) || manifest.needs.network !== false || Object.keys(manifest.needs).length !== 1) problems.push('needs: {network: false}');
   if (!Array.isArray(manifest.settings)) {
     problems.push('settings');
@@ -129,12 +148,21 @@ export function effectSettings(manifest, stored = {}) {
   return {settings: Object.freeze(settings), invalid};
 }
 
+// The schemes an effect draws: as declared, or both when it declares none (1.0).
+export function effectSchemes(manifest) {
+  return Array.isArray(manifest?.schemes) && manifest.schemes.length ? [...manifest.schemes] : [...SCHEMES];
+}
+
+// A pair given as a URL is outside the catalogue that holds the effect: it is
+// foreign, and runs only in a sandbox (pair-under-the-same-trust).
+export const pairIsForeign = (manifest) => typeof manifest?.pair === 'string' && PAIR_URL.test(manifest.pair);
+
 const reducedMotion = () => Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
 
 // Mount an effect's module under the rules. `module` is the imported entry
 // (or its mount function). Answers a handle whose methods are safe to call in
 // any order and more than once.
-export function mountEffect(host, {manifest, module, stored = {}, locale} = {}) {
+export function mountEffect(host, {manifest, module, stored = {}, locale, scheme} = {}) {
   if (!(host instanceof globalThis.Element)) throw new TypeError('An effect mounts into an element');
   const problems = checkEffectManifest(manifest);
   if (problems.length) throw new TypeError(`Effect manifest is invalid: ${problems.join('; ')}`);
@@ -146,9 +174,14 @@ export function mountEffect(host, {manifest, module, stored = {}, locale} = {}) 
   host.setAttribute('data-sf-effect', manifest.id);
   const document = host.ownerDocument;
   let {settings} = effectSettings(manifest, stored);
+  // The scheme it draws in: one it declares, its home scheme otherwise.
+  const drawable = effectSchemes(manifest);
+  const pick = (wanted) => (drawable.includes(wanted) ? wanted : drawable[0]);
+  let drawn = pick(scheme);
   const context = () => Object.freeze({
     reducedMotion: reducedMotion(),
     locale: locale ?? (document.documentElement.getAttribute('lang') || 'en'),
+    scheme: drawn,
   });
   let handle = mount(host, settings, context()) ?? {};
   let paused = false;
@@ -179,10 +212,16 @@ export function mountEffect(host, {manifest, module, stored = {}, locale} = {}) 
   motion?.addEventListener?.('change', onMotion);
   if (document.hidden) call('pause');
   return Object.freeze({
-    update(stored) {
+    // New settings, and with {scheme} a switch of the scheme it draws in --
+    // both without a remount.
+    update(stored, {scheme: next} = {}) {
       if (destroyed) return;
       settings = effectSettings(manifest, stored).settings;
-      call('update', settings);
+      if (next !== undefined) drawn = pick(next);
+      call('update', settings, context());
+    },
+    get scheme() {
+      return drawn;
     },
     pause() {
       if (destroyed) return;
@@ -209,5 +248,5 @@ export function mountEffect(host, {manifest, module, stored = {}, locale} = {}) 
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.Effects = Object.freeze({checkEffectManifest, checkSetting, effectSettings, mountEffect, EFFECT_SCHEMA});
+  window.SF.Effects = Object.freeze({checkEffectManifest, checkSetting, effectSettings, effectSchemes, pairIsForeign, mountEffect, EFFECT_SCHEMA});
 }
