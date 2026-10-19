@@ -1,0 +1,295 @@
+{
+  "description": "Recipe 1.1.0: the formats of this contract and its canonicalization profile in either form of their names. Each case applies operations to a value of fixtures/header-switch.json (base is a dotted path into it) and names the schema that must accept (positive) or reject (negative) the result. bareResolution resolves header-switch with the recipe, the article template manifest and the inputs envelope named without a version and the profile named simai.recipe.canonical-json: the Document and the receipt take the bare form, the receipt keeps the profile name it was given, and the digests below follow (the template reference digest too: its source is the article manifest named without a version). The older form resolves to the bytes and digests header-switch.json fixes, unchanged since 1.0.1.",
+  "positive": [
+    {
+      "id": "recipe-bare-name",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipe"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "recipe-older-label-with-version",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "manifest-bare-name",
+      "schema": "manifest.schema.json",
+      "base": "sources.article",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipe-manifest"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "inputs-bare-name",
+      "schema": "inputs.schema.json",
+      "base": "inputs.compact",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.inputs"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "dependencies-bare-name",
+      "schema": "dependencies.schema.json",
+      "base": "expected.compact.dependencyReceipt",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.dependencies"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "profile-bare-name",
+      "schema": "dependencies.schema.json",
+      "base": "expected.compact.dependencyReceipt",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "executionContract",
+            "canonicalization"
+          ],
+          "value": "simai.recipe.canonical-json"
+        }
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "id": "recipe-bare-name-without-version",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipe"
+        }
+      ]
+    },
+    {
+      "id": "recipe-bare-name-version-2",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipe"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": "recipe-older-label-version-2",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": "recipe-other-name",
+      "schema": "recipe.schema.json",
+      "base": "recipe",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipes"
+        },
+        {
+          "kind": "set",
+          "path": [
+            "schema_version"
+          ],
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "manifest-bare-name-without-version",
+      "schema": "manifest.schema.json",
+      "base": "sources.article",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.recipe-manifest"
+        }
+      ]
+    },
+    {
+      "id": "inputs-bare-name-without-version",
+      "schema": "inputs.schema.json",
+      "base": "inputs.compact",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.inputs"
+        }
+      ]
+    },
+    {
+      "id": "dependencies-bare-name-without-version",
+      "schema": "dependencies.schema.json",
+      "base": "expected.compact.dependencyReceipt",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "schema"
+          ],
+          "value": "simai.composition.dependencies"
+        }
+      ]
+    },
+    {
+      "id": "profile-other-name",
+      "schema": "dependencies.schema.json",
+      "base": "expected.compact.dependencyReceipt",
+      "operations": [
+        {
+          "kind": "set",
+          "path": [
+            "executionContract",
+            "canonicalization"
+          ],
+          "value": "simai.recipe.canonical-json.v2"
+        }
+      ]
+    }
+  ],
+  "bareResolution": {
+    "compact": {
+      "documentSchema": {
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "receiptSchema": {
+        "schema": "simai.composition.dependencies",
+        "schema_version": 1
+      },
+      "canonicalization": "simai.recipe.canonical-json",
+      "recipeDigest": "sha256:da0cf6212adfe9ea520279b1999ee5781651acfb0b41e5ff6fcb49c690f60ade",
+      "documentDigest": "sha256:01fdf96212a58923fe502de413cb69d7236b65e72bd371168e4a1eafb71115a7",
+      "references": [
+        {
+          "ref": "article",
+          "digest": "sha256:6a50bd90b459076a9881eecec9cc0e1cf206cda421288ff1241698b34e1ca2ee"
+        },
+        {
+          "ref": "header.compact",
+          "digest": "sha256:3c4d8452a532543d183ee34a5b5349e9ea22ad67a499633a6edaba9aa5e16f86"
+        }
+      ]
+    },
+    "expanded": {
+      "documentSchema": {
+        "schema": "simai.composition.document",
+        "schema_version": 1
+      },
+      "receiptSchema": {
+        "schema": "simai.composition.dependencies",
+        "schema_version": 1
+      },
+      "canonicalization": "simai.recipe.canonical-json",
+      "recipeDigest": "sha256:da0cf6212adfe9ea520279b1999ee5781651acfb0b41e5ff6fcb49c690f60ade",
+      "documentDigest": "sha256:bb4414d63f9ae7cd6ce6659c831a773ed7bd611ec0210efd5606561b8ec44bbf",
+      "references": [
+        {
+          "ref": "article",
+          "digest": "sha256:6a50bd90b459076a9881eecec9cc0e1cf206cda421288ff1241698b34e1ca2ee"
+        },
+        {
+          "ref": "header.expanded",
+          "digest": "sha256:4d8fb0221e9304d8765205adc614fb78ad5f67f231794d23870a0221cc3d5ce8"
+        }
+      ]
+    }
+  }
+}

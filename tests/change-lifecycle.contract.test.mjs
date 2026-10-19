@@ -140,7 +140,9 @@ test('sf-upgrade: a format declaration moves to a name and schema_version', () =
     writeFileSync(join(project, 'reader.php'), "<?php $d = ['schema' => 'simai.effect.v1'];\n");
     // A file holding a held format is pinned as a whole; a copy of the
     // Framework is not the project's to edit.
-    const fixture = `${JSON.stringify({recipe: {schema: 'simai.composition.recipe.v1'}, expected: {schema: 'simai.composition.document.v1'}}, null, 2)}\n`;
+    // (A recipe is not held since Recipe 1.1.0 reads both forms; a port
+    // conformance kit still is.)
+    const fixture = `${JSON.stringify({kit: {schema: 'simai.composite.host-port.conformance.v1'}, expected: {schema: 'simai.composition.document.v1'}}, null, 2)}\n`;
     writeFileSync(join(project, 'fixture.json'), fixture);
     mkdirSync(join(project, 'public/ui/distr/core'), {recursive: true});
     writeFileSync(join(project, 'public/ui/distr/core/flags.json'), `${JSON.stringify({schema: 'simai.framework.flag-set.v1'}, null, 2)}\n`);

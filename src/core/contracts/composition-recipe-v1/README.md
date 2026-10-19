@@ -1,4 +1,4 @@
-# Composition Recipe 1.0.1: нормативный комплект
+# Composition Recipe 1.1.0: нормативный комплект
 
 Архитектура согласована пользователем 2026-09-14 после третьего отзыва Larena.
 Редакция 1.0.1 уточняет статус без изменения схем и алгоритма редакции 1.0.0.
@@ -7,16 +7,37 @@
 переключение работающих сайтов и внешний релиз не приняты.
 Канонический владелец — ui-source. Document v1 и type manifest v1 не изменяются.
 
+## Что изменилось в 1.1.0
+
+Редакция 1.1.0 (2026-10-19, по просьбе Larena) принимает имена форматов без версии
+(решение владельца 2026-10-11, запись журнала format-names-without-version).
+Схемы recipe, manifest, inputs и dependencies принимают обе формы: прежнюю метку
+simai.composition.<имя>.v1 без schema_version или с schema_version 1, либо имя без
+версии simai.composition.<имя> только вместе с schema_version 1. Профиль канонизации
+называется simai.recipe.canonical-json.v1 или simai.recipe.canonical-json; это одно
+имя алгоритма, байты и digest от имени не зависят. Runtime принимает в
+executionContract.canonicalization любое из двух имён, повторяет его в receipt и пишет
+прежнее, когда имя не передано; другое имя — incompatible_profile.
+
+Алгоритм, пределы и схемы значений не изменились. Recipe в прежней форме даёт те же
+байты и digest, что фиксирует 1.0.1: fixtures/header-switch.json не изменён.
+Recipe без версии в имени даёт Document и receipt без версии в имени; их digest
+отличается только потому, что отличается поле schema, и записан в
+fixtures/format-names.json вместе с положительными и отрицательными случаями схем.
+Lock строит scripts/lock-composition-recipe-contract.mjs. Разделы candidate и baseline
+в lock — запись приёмки 1.0.x, а не отпечатки текущего runtime.
+
 ## Файлы и версии
 
-- recipe.schema.json — simai.composition.recipe.v1.
-- manifest.schema.json — simai.composition.recipe-manifest.v1.
-- inputs.schema.json — simai.composition.inputs.v1, snapshot доверенных входов.
-- dependencies.schema.json — simai.composition.dependencies.v1, результат сборки.
+- recipe.schema.json — simai.composition.recipe (прежняя метка simai.composition.recipe.v1).
+- manifest.schema.json — simai.composition.recipe-manifest (прежняя метка …recipe-manifest.v1).
+- inputs.schema.json — simai.composition.inputs (прежняя метка …inputs.v1), snapshot доверенных входов.
+- dependencies.schema.json — simai.composition.dependencies (прежняя метка …dependencies.v1), результат сборки.
 - common.schema.json — общие определения, только через ссылки из схем.
 - limits.json — конечные пределы сборки.
 - fixtures/header-switch.json — полные источники и ожидаемые результаты двух режимов.
 - fixtures/canonicalization.json — байты и digest для межъязыковой проверки.
+- fixtures/format-names.json — обе формы имён форматов и профиля, digest формы без версии.
 - contract.lock.json — отпечатки нормативных файлов и базового Framework.
 
 Доступность схем не означает публичную поддержку этих schema IDs runtime.
@@ -159,7 +180,7 @@ README, limits и canonicalization vectors, перечисленных в lock. 
 отдельно. Lock не хеширует сам себя. Изменения нормативных файлов требуют нового lock
 и проверки потребителей. Внешнего релиза в этом комплекте нет.
 
-## Канонизация simai.recipe.canonical-json.v1
+## Канонизация simai.recipe.canonical-json (прежнее имя simai.recipe.canonical-json.v1)
 
 Порядок ключей соответствует текущему JS stableStringify + JSON.stringify:
 сначала канонические десятичные array-index ключи 0..4294967294 без ведущих нулей,

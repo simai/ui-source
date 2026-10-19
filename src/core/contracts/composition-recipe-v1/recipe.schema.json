@@ -3,9 +3,30 @@
   "$id": "https://simai.io/contracts/composition-recipe-v1/recipe.schema.json",
   "type": "object",
   "additionalProperties": false,
+  "anyOf": [
+    {
+      "properties": {
+        "schema": {
+          "const": "simai.composition.recipe.v1"
+        }
+      }
+    },
+    {
+      "required": [
+        "schema_version"
+      ]
+    }
+  ],
   "properties": {
     "schema": {
-      "const": "simai.composition.recipe.v1"
+      "enum": [
+        "simai.composition.recipe.v1",
+        "simai.composition.recipe"
+      ],
+      "description": "The format: simai.composition.recipe with schema_version 1. The older label simai.composition.recipe.v1 is read until the change journal retires it (names carry no version, 2026-10-11; Recipe 1.1.0)."
+    },
+    "schema_version": {
+      "const": 1
     },
     "id": {
       "type": "string",

@@ -10,7 +10,13 @@ import { isSchema, readSchema, schemaFields } from './schema-name.mjs';
 // (fixtures/header-switch.json, whose expected Document, receipt and
 // documentDigest are published bytes); a recipe named without a version
 // resolves to a Document and a receipt named without one.
+// The canonicalization profile has one algorithm under two names since Recipe
+// 1.1.0: simai.recipe.canonical-json.v1 and simai.recipe.canonical-json. An
+// execution contract may name either; the receipt keeps the name it was given,
+// and the older one when none is, so the bytes Recipe 1.0.1 fixes stay as
+// they were.
 const CANONICALIZATION = 'simai.recipe.canonical-json.v1';
+const CANONICALIZATION_NAMES = new Set([CANONICALIZATION, 'simai.recipe.canonical-json']);
 
 function namedLike(recipe, name) {
   return readSchema(recipe)?.form === 'name' ? schemaFields(name, 1) : { schema: `${name}.v1` };
@@ -562,6 +568,8 @@ export async function resolveRecipe(recipe, context = {}) {
     if (!normalized.document) throw Object.assign(new Error('Resolved document is invalid'), { code: 'invalid_resolved_document', sourcePath: '/root', details: normalized.diagnostics });
     const executionContract = context.executionContract;
     if (!executionContract?.contractDigest || !executionContract?.registryDigest || !executionContract?.rendererDigest) throw Object.assign(new Error('Execution contract is required'), { code: 'invalid_value', sourcePath: '/executionContract' });
+    const canonicalization = executionContract.canonicalization ?? CANONICALIZATION;
+    if (!CANONICALIZATION_NAMES.has(canonicalization)) throw Object.assign(new Error('Unsupported canonicalization profile'), { code: 'incompatible_profile', sourcePath: '/executionContract/canonicalization' });
     const dependencyReceipt = {
       ...namedLike(recipe, 'simai.composition.dependencies'),
       scope,
@@ -570,7 +578,7 @@ export async function resolveRecipe(recipe, context = {}) {
       references,
       inputs: inputReceipts,
       logicalPointers,
-      executionContract: { ...clone(executionContract), canonicalization: CANONICALIZATION },
+      executionContract: { ...clone(executionContract), canonicalization },
     };
     return { document: normalized.document, dependencyReceipt, trace, diagnostics };
   } catch (error) {

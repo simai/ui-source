@@ -50,9 +50,37 @@ for (const mode of ['compact', 'expanded']) {
   assert.equal(rendered.html.includes('Дополнительная строка шапки'), mode === 'expanded');
 }
 
+// Recipe 1.1.0: the same corpus named without a version, and the profile
+// under its bare name, resolve to the same tree under the bare names, with the
+// digests fixtures/format-names.json records.
+const names = read('fixtures/format-names.json');
+const named = (value, name) => { const { schema, ...rest } = value; return { schema: name, schema_version: 1, ...rest }; };
+const bareSources = { ...fixture.sources, article: named(fixture.sources.article, 'simai.composition.recipe-manifest') };
+for (const mode of ['compact', 'expanded']) {
+  const expected = fixture.expected[mode];
+  const bare = names.bareResolution[mode];
+  const result = await resolveRecipe(named(fixture.recipe, 'simai.composition.recipe'), {
+    trustedContext: fixture.trustedContext,
+    inputs: named(fixture.inputs[mode], 'simai.composition.inputs'),
+    executionContract: { ...expected.dependencyReceipt.executionContract, canonicalization: 'simai.recipe.canonical-json' },
+    ports: { readReference: async (reference) => ({ source: bareSources[reference.ref], revision: 'r1' }) },
+  });
+  assert.deepEqual(result.diagnostics, []);
+  assert.deepEqual(result.document, named(expected.document, 'simai.composition.document'));
+  const { schema, recipeDigest, documentDigest, references, executionContract, ...receipt } = expected.dependencyReceipt;
+  assert.deepEqual(result.dependencyReceipt, {
+    schema: 'simai.composition.dependencies', schema_version: 1, recipeDigest: bare.recipeDigest, documentDigest: bare.documentDigest,
+    references: references.map((reference, index) => ({ ...reference, digest: bare.references[index].digest })),
+    ...receipt, executionContract: { ...executionContract, canonicalization: bare.canonicalization },
+  });
+  assert.deepEqual(bare.references.map(({ ref }) => ref), references.map(({ ref }) => ref));
+  assert.equal(bare.references[1].digest, references[1].digest, 'a fragment source in the older form keeps its digest');
+  assert.equal(validate(result.document).valid, true);
+}
+
 console.log(JSON.stringify({
   status: 'pass',
-  documents: 2,
+  documents: 4,
   canonicalVectors: vectors.positive.length,
   rejectedJsonVectors: vectors.negativeJsonTexts.length,
   identityVectors: fixture.identityVectors.length,

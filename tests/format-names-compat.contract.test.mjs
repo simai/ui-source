@@ -138,6 +138,11 @@ const LIVE = {
   'src/core/contracts/effect.v1.schema.json': 'simai.effect',
   'src/core/contracts/composition-port-manifest.v1.schema.json': 'simai.composition.port-manifest',
   'src/core/contracts/composition-document.v1.schema.json': 'simai.composition.document',
+  // Recipe 1.1.0 (2026-10-19): the Recipe contract's own schemas.
+  'src/core/contracts/composition-recipe-v1/recipe.schema.json': 'simai.composition.recipe',
+  'src/core/contracts/composition-recipe-v1/manifest.schema.json': 'simai.composition.recipe-manifest',
+  'src/core/contracts/composition-recipe-v1/inputs.schema.json': 'simai.composition.inputs',
+  'src/core/contracts/composition-recipe-v1/dependencies.schema.json': 'simai.composition.dependencies',
 };
 
 test('every live schema of a versioned format takes both forms of its name', () => {
@@ -178,9 +183,9 @@ const KEPT = {
   'simai.smart.sources-local-map.v1': 'ui-studio reads it by this label',
 };
 // Directories whose bytes a published contract pins: the frozen standard
-// copies, every host-port edition with its kit, and Recipe 1.0.1, whose lock
-// (pinned again under contracts/standards/pinned) digests its schemas and
-// fixtures.
+// copies, every host-port edition with its kit, and the Recipe contract, whose
+// lock (pinned again under contracts/standards/pinned) digests its schemas and
+// fixtures; its 1.0.1 corpus keeps the older labels, which 1.1.0 still reads.
 const PINNED = ['contracts/standards/', 'src/core/contracts/ports/', 'src/core/contracts/composition-recipe-v1/'];
 const VERSIONED_LABEL = /^simai\.[a-z0-9.-]+\.v[0-9]+$/u;
 

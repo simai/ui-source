@@ -1,29 +1,30 @@
 {
   "schema": "simai.composition.recipe-contract-lock.v1",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "architecture": "accepted",
   "implementation": "candidate",
   "sourceBaseRevision": "f78cf8399c89d8091c2784d41f493cdb26620151",
-  "contractDigest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd",
+  "contractDigest": "sha256:b9eba08bffbdffcb17e2af9d1349764fc8ef279828c44af6a02fd02ce7a5d649",
   "normativeFiles": {
-    "README.md": "sha256:148b5fa148644cf4f814c511db664c40efc858226a2d8cbd7bf501c4e5ee7e0d",
+    "README.md": "sha256:841526d8466252f8354b744903a889ada4ad08abd358667e8c672f40037b5c98",
     "common.schema.json": "sha256:09945cc8485e7b1a5f8ee8add6938da720ffc6c434c6e86c13fe6f98a95b2fe4",
-    "dependencies.schema.json": "sha256:a2f3f371ace795f22bf4fb293e0005dcecbbc6c340cb669ba8e274c6e0b745e8",
+    "dependencies.schema.json": "sha256:3d4508db8ba3056ad408fdf6c0ae6a497d9ab47ec1cf04cf06e70f2d5efd9cb5",
     "fixtures/canonicalization.json": "sha256:ab6e3aef30bbceef84bdd1314b301d20fe1196b32d6d83f59feb32e376b44239",
+    "fixtures/format-names.json": "sha256:9f860084ee6abb4cabbc90bdddb402cb04f3f5ed39a170e252b3a8fce2debc78",
     "fixtures/limit-boundaries.json": "sha256:c507d0f534868fea42c735e9f741aa228699a487652d4212feba9a4d40a04eb2",
     "fixtures/schema-negative.json": "sha256:66d4611c4ed4699ff86d1ec3de26cfcc6e52307766b8c7844113dff838737401",
-    "inputs.schema.json": "sha256:e83e5c8ece50c4641b58256b852a3fecc33a786919279d85de5c7689d32d2af1",
+    "inputs.schema.json": "sha256:7a05d19fa70e35a2aba0c54cdd89d2b73a3c4417456182e45dd068b9f67457bb",
     "limits.json": "sha256:2a8b3d66ed8f4b183f721ffe257f472cfeb835c6e9829d374a3a420122025e10",
-    "manifest.schema.json": "sha256:e897974dcdb1e2428f0f808a7fa9ad7a8eef6d79128d24016a5e21fc372b730c",
-    "recipe.schema.json": "sha256:63d2f7d506be22b3f4a6060306a4d3d08e562d3720d82f13c41e69bc6ce3ffb3"
+    "manifest.schema.json": "sha256:3943213661945c3d862de7abadd99c18302b1156c233a51ca09271ca70d79536",
+    "recipe.schema.json": "sha256:08749a44701f7c3b4fbbab9f936a8b0f9939f1cffd1ba3d4fa724e9addf8d973"
   },
   "fixtures": {
     "fixtures/header-switch.json": "sha256:a5a3105d42e3403d5d4a99d86155b4a2d5609e54abc7c9638e56c2bb1f7e26eb"
   },
   "checks": {
-    "checks/canonical.php": "sha256:aa92760f31c012e70f2e8b405786840d9cf0ed64a28f751c4412467eb574979a",
-    "checks/current-runtime.mjs": "sha256:b53c9af3ed69e31f00969a68e4f7781c1b28f34cde6c358ecd704690bc55f1ab",
-    "checks/schemas.py": "sha256:14eef5961d8e7cfeca4162b793727fb66d8b78f9d2aa68bc72673c346aca2f91"
+    "checks/canonical.php": "sha256:bc6f6312766b76a39027708e26acbc5f05df827668a6e955bf340177bf59e651",
+    "checks/current-runtime.mjs": "sha256:5798eb8818f010d5fb35cda617022b92396e6aa0430635fa77381cd53ece41ef",
+    "checks/schemas.py": "sha256:9bd3144027234ae47e8e93641f1c68414a442f094d461811624181789315b54e"
   },
   "candidate": {
     "branch": "codex/composition-recipe-v1",

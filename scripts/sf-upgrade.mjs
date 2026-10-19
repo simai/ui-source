@@ -217,8 +217,8 @@ function formatFindings(record, file, source) {
     }
   }
   // A file that carries a format the Framework holds is pinned as a whole --
-  // a Recipe 1.0.1 fixture holds the Document and receipt an older-form
-  // recipe resolves to -- so nothing in it moves.
+  // a port conformance kit is pinned by digest beside what it checks -- so
+  // nothing in it moves.
   const holds = record.items.some((item) => item.held && source.includes(item.from));
   if (holds) jsonMoves = false;
   const scriptMoves = !holds && extname(file) !== '.json' && !/schema_version/u.test(source);

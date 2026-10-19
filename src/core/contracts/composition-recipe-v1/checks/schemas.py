@@ -3,6 +3,7 @@ from pathlib import Path
 import json,copy
 from jsonschema import Draft202012Validator
 from referencing import Registry,Resource
+from jsonschema.exceptions import ValidationError
 b=Path(__file__).resolve().parent.parent
 schemas=[json.loads(p.read_text()) for p in b.glob('*.schema.json')]
 registry=Registry().with_resources((s['$id'],Resource.from_contents(s)) for s in schemas)
@@ -28,4 +29,19 @@ for case in negative:
     try:validate(case['schema'],value)
     except ValidationError:pass
     else:raise AssertionError('accepted '+case['id'])
-print(json.dumps({'status':'pass','schemas':len(schemas),'expectedDocuments':2,'negativeSchemaCases':len(negative),'notVerified':['semantic resolver errors','limits enforced during expansion']}))
+names=json.loads((b/'fixtures/format-names.json').read_text())
+def derive(case):
+    value=f
+    for part in case['base'].split('.'):value=value[part]
+    value=copy.deepcopy(value)
+    for op in case['operations']:
+        target=value
+        for part in op['path'][:-1]:target=target[part]
+        target[op['path'][-1]]=op['value']
+    return value
+for case in names['positive']:validate(case['schema'],derive(case))
+for case in names['negative']:
+    try:validate(case['schema'],derive(case))
+    except ValidationError:pass
+    else:raise AssertionError('accepted '+case['id'])
+print(json.dumps({'status':'pass','schemas':len(schemas),'expectedDocuments':2,'negativeSchemaCases':len(negative),'formatNameCases':len(names['positive'])+len(names['negative']),'notVerified':['semantic resolver errors','limits enforced during expansion']}))
