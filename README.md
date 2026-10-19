@@ -11,7 +11,7 @@ byte-identical mirror of `distr/smart` while consumers moved; it is archived,
 read-only, with its history kept. `simai/ui` holds generated output and is not
 edited directly.
 
-Documentation (Russian): https://simai.github.io/ui-doc/
+Documentation (Russian): https://ui.simai.io/
 
 The Framework is extended through component packages: a component lives with
 its owner. Larena's components (`sf-table`, `sf-data-view`, `sf-property-view`,
