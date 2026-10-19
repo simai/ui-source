@@ -967,6 +967,11 @@ function scan(root) {
 
 function watchDeclared(document) {
   scan(document);
+  // A declared effect runs only from a configured catalogue (anything else is
+  // foreign and waits for the sandbox), so a page without one has nothing a
+  // later node could start: it is scanned once, for the refusals, and the
+  // document is not watched on every change of every page.
+  if (!effectsConfig().catalogue) return;
   new globalThis.MutationObserver((records) => {
     for (const record of records) {
       for (const node of record.addedNodes) if (node.nodeType === 1) scan(node);
