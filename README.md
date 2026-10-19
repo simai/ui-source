@@ -1,4 +1,4 @@
-# Simai Framework source
+# SIMAI Framework source
 
 `ui-source` is the editable source repository for SIMAI Framework. It owns Core,
 the Loader, utilities, components, Smart Components, their contracts, and source

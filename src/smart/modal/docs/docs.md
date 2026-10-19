@@ -304,7 +304,7 @@ Iframe загружается автоматически (если `preload` н�
 - Без scroll lock
 - Без focus trap
 - Esc не закрывает
-# Simai Framework Modal contract
+# SIMAI Framework Modal contract
 
 The machine-readable contract is [`../contract.json`](../contract.json). It is
 the source-owned inventory of parameters, states, events, slots/templates,

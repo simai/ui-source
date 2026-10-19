@@ -1,6 +1,6 @@
 # Pure JavaScript runtime
 
-Simai Framework uses browser APIs for Core, Loader, utilities, and ordinary
+SIMAI Framework uses browser APIs for Core, Loader, utilities, and ordinary
 components. Smart Components may use Lit for declarative templates. No other
 third-party JavaScript library is part of the default runtime contract.
 

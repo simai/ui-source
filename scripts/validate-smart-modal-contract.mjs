@@ -15,7 +15,7 @@ const [rawContract, source, template] = await Promise.all([
 const contract = JSON.parse(rawContract);
 
 assert.equal(contract.contract_id, "simai.framework.smart.modal");
-assert.equal(contract.public_name, "Simai Framework Modal");
+assert.equal(contract.public_name, "SIMAI Framework Modal");
 assert.equal(contract.technical_tag, "sf-modal");
 assert.equal(contract.layer, "smart-component");
 assert.equal(/sf5/i.test(rawContract), false, "new public contract must not use sf5 naming");

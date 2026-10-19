@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composite-host-port.v1.schema.json",
-  "title": "Simai Composite Host Port v1",
+  "title": "SIMAI Composite Host Port v1",
   "x-simai-version": "1.1.0",
   "type": "object",
   "additionalProperties": false,

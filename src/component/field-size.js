@@ -26,7 +26,7 @@ export function fieldSize(value, component = 'field', fallback = '1') {
     const key = `${component}:${size}`;
     if (!warned.has(key) && typeof console !== 'undefined') {
       warned.add(key);
-      console.warn(`[Simai Framework] ${component}: size ${size} is retired for form fields; rendering size ${kept}.`);
+      console.warn(`[SIMAI Framework] ${component}: size ${size} is retired for form fields; rendering size ${kept}.`);
     }
     return kept;
   }

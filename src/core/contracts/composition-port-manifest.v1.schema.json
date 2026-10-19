@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composition-port-manifest.v1.schema.json",
-  "title": "Simai Composition Port Manifest v1",
+  "title": "SIMAI Composition Port Manifest v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "element", "version", "component", "component_version", "outputs", "inputs"],

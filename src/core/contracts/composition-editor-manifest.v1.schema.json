@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composition-editor-manifest.v1.schema.json",
-  "title": "Simai Composition Editor Manifest v1",
+  "title": "SIMAI Composition Editor Manifest v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "type", "type_version", "fields"],

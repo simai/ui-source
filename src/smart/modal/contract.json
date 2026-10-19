@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "contract_id": "simai.framework.smart.modal",
-  "public_name": "Simai Framework Modal",
+  "public_name": "SIMAI Framework Modal",
   "technical_tag": "sf-modal",
   "layer": "smart-component",
   "source": {

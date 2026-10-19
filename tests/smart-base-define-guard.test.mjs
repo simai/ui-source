@@ -3,7 +3,7 @@ import test from 'node:test';
 
 // A component can arrive twice — as its own file and inside a bundle that
 // carries it. Registering it again is a no-op. A different component taking
-// the tag, or a class that is not a Simai element, is a real conflict.
+// the tag, or a class that is not a SIMAI element, is a real conflict.
 
 const brand = 'simai.smart-base.v1';
 
@@ -43,7 +43,7 @@ test('two different components on one tag stay a conflict', () => {
   assert.equal(named('SfIcon').isSameComponentAs(named('SfIconButton')), false);
 });
 
-test('a class that is not a Simai element stays a conflict', () => {
+test('a class that is not a SIMAI element stays a conflict', () => {
   class Foreign {}
   assert.equal(named('SfIcon').isSameComponentAs(Foreign), false);
   assert.equal(named('SfIcon').isSameComponentAs(null), false);

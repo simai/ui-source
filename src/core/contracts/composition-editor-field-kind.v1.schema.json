@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composition-editor-field-kind.v1.schema.json",
-  "title": "Simai Composition Editor Field Kind v1",
+  "title": "SIMAI Composition Editor Field Kind v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "kind", "version", "status", "match", "value_schema", "default", "constraints", "normalization", "validation", "accessibility", "themes", "localization", "server_fallback"],

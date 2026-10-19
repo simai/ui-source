@@ -339,7 +339,7 @@ class SfBaseElement extends HTMLElement {
   // One component can reach a page twice: as its own file and inside a bundle
   // that carries it. Those are two class objects with the same tag, and
   // re-registering is a no-op, not a mistake worth a warning. A tag taken by a
-  // different component, or by a class that is not a Simai element at all, is
+  // different component, or by a class that is not a SIMAI element at all, is
   // a real conflict and still warns.
   static get sfElementBrand() {
     return "simai.smart-base.v1";

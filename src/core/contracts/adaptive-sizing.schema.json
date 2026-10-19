@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/vertical-sizing-contract-v1.json",
-  "title": "Simai Framework vertical adaptive sizing contract",
+  "title": "SIMAI Framework vertical adaptive sizing contract",
   "type": "object",
   "additionalProperties": false,
   "required": [

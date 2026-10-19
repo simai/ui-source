@@ -33,7 +33,7 @@ try {
     await page.close();
   }
 
-  // A genuine conflict still speaks up: a class that is not a Simai element
+  // A genuine conflict still speaks up: a class that is not a SIMAI element
   // takes a tag the component wants.
   const page = await browser.newPage();
   const warnings = [];

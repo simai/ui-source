@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composition-type-manifest.v1.schema.json",
-  "title": "Simai Composition Type Manifest v1",
+  "title": "SIMAI Composition Type Manifest v1",
   "x-simai-version": "1.2.0",
   "type": "object",
   "additionalProperties": false,
