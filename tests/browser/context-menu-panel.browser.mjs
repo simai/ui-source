@@ -62,7 +62,14 @@ try {
     const headTop = head.getBoundingClientRect().top;
     const footTop = footer.getBoundingClientRect().top;
     body.scrollTop = 300;
-    await wait(100);
+    // The body may scroll smoothly: measured after a fixed 100 ms it was still
+    // on its way under load (37 of 185 px in a full probe run, 2026-10-19), so
+    // wait until it has stopped moving.
+    for (let last = -1, still = 0, tries = 0; still < 3 && tries < 100; tries += 1) {
+      await new Promise((frame) => requestAnimationFrame(frame));
+      still = body.scrollTop === last ? still + 1 : 0;
+      last = body.scrollTop;
+    }
     result.scrolled = {body: body.scrollTop, headMoved: Math.round(head.getBoundingClientRect().top - headTop), footMoved: Math.round(footer.getBoundingClientRect().top - footTop),
       bodyScrolls: body.scrollHeight > body.clientHeight};
     document.getElementById('apply').setAttribute('text', 'Применить выбранные поля (12)');
