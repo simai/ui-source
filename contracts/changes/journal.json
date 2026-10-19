@@ -1693,7 +1693,8 @@
         {
           "from": "simai.composition.inputs.v1",
           "to": "\"schema\": \"simai.composition.inputs\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.inputs\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.inputs\\.v1[\"']",
+          "held": "a recipe's form decides the Document and digests it resolves to; sf-upgrade leaves stored recipes as they are, and their owner moves them (the Recipe contract 1.1.0 accepts both forms)"
         },
         {
           "from": "simai.composition.port-manifest.v1",
@@ -1720,12 +1721,14 @@
         {
           "from": "simai.composition.recipe-manifest.v1",
           "to": "\"schema\": \"simai.composition.recipe-manifest\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe-manifest\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe-manifest\\.v1[\"']",
+          "held": "a recipe's form decides the Document and digests it resolves to; sf-upgrade leaves stored recipes as they are, and their owner moves them (the Recipe contract 1.1.0 accepts both forms)"
         },
         {
           "from": "simai.composition.recipe.v1",
           "to": "\"schema\": \"simai.composition.recipe\", \"schema_version\": 1",
-          "match": "[\"']simai\\.composition\\.recipe\\.v1[\"']"
+          "match": "[\"']simai\\.composition\\.recipe\\.v1[\"']",
+          "held": "a recipe's form decides the Document and digests it resolves to; sf-upgrade leaves stored recipes as they are, and their owner moves them (the Recipe contract 1.1.0 accepts both forms)"
         },
         {
           "from": "simai.composition.type-manifest.v1",
