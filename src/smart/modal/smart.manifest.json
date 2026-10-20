@@ -21,7 +21,9 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.spinner"
+    ],
     "public_parts": []
   },
   "inputs": {
@@ -1028,7 +1030,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "c03ae74338e728490601f8c67923ef8f21f0846d92e51c59cff0c9f5732fbaa1"
+        "sha256": "2aa3f439ec0ffdedaa8d53bc65125445f7607a335ba7fd676720195aa03c7e2f"
       }
     ],
     "generated_runtime": [

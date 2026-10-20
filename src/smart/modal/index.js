@@ -7,6 +7,7 @@ import { trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import { lockModalScroll, unlockModalScroll } from "../../component/modal/js/_scroll";
+import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
 
 // A box that holds its own overlays (sf-modal, sf-drawer); the drawer's own
 // name came first and is read until the change journal retires it.
@@ -547,20 +548,28 @@ class SfModal extends SfBaseElement {
     }
 
     if (this._isLoadingRemote) {
+      // The Framework's one spinner, in the page's look (simai/ui-source#11),
+      // kept across renders so its motion does not restart; the modal sheet
+      // draws its slot.
       return html`
         <div
           class="sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4"
           data-sf-modal-state="loading"
         >
-          <div
-            class="sf-modal-spinner animate-spin border-2 border-t-transparent border-outline-variant rounded-full w-8 h-8"
-          ></div>
+          ${this._loadingSpinnerNode()}
           <p class="m-0 text-2 color-on-surface-variant">Loading...</p>
         </div>
       `;
     }
 
     return nothing;
+  }
+
+  _loadingSpinnerNode() {
+    if (!this._loadingSpinner) {
+      this._loadingSpinner = createInlineSpinner({ className: "sf-modal-spinner" });
+    }
+    return this._loadingSpinner;
   }
 
   templateContext() {

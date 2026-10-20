@@ -223,7 +223,6 @@
   "cl-modal": [
     "align-items/default",
     "backdrop-filter-blur/default",
-    "border-color/default",
     "border-radius/default",
     "border-width/default",
     "display/default",
@@ -243,7 +242,6 @@
     "position/default",
     "text-color/default",
     "title/default",
-    "width-ext/default",
     "width/default",
     "z-index/default"
   ],

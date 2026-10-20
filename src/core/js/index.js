@@ -123,6 +123,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     };
   }
 
+  // The page's spinner look (simai/ui-source#11): SF_BOOT_CONFIG.spinner names
+  // it as data-sf-spinner on html would, and is written there unless the page
+  // has written its own. The spinner sheet does the rest.
+  const spinnerLook = window.SF_BOOT_CONFIG.spinner;
+  if (typeof spinnerLook === 'string' && spinnerLook.trim() && document.documentElement
+    && !document.documentElement.hasAttribute('data-sf-spinner')) {
+    document.documentElement.setAttribute('data-sf-spinner', spinnerLook.trim().toLowerCase());
+  }
+
   const applyInitialTheme = () => {
     if (window.SF_BOOT_CONFIG?.theme === false) return;
     const classes = ['theme-dark', 'theme-light'];

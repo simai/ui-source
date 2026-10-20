@@ -1,5 +1,6 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { bindSpinner, renderSpinner, unbindSpinner } from '../../component/spinner/js/_spinner';
+import { SPINNER_DOTS, SPINNER_DOTS_FILLED, SPINNER_LOOKS } from '../../component/spinner/js/_spinner-draw';
 import { renderSpinnerTemplate } from './js/templates/default';
 import {pageText} from "../../core/js/page-language";
 // Every word this component says, in the languages it ships with. A product
@@ -22,10 +23,12 @@ class SfSpinner extends SfBaseElement {
       height: { default: '' },
       label: { default: '' },
       // The axis is called kind, because that is the question it answers.
-      // `variant` keeps working: see contracts/public-api-axes.json.
-      kind: {default: 'arc', values: ['arc', 'dots'], aliases: ['variant']},
-      dots: { default: '16' },
-      filled: { default: '6' },
+      // `variant` keeps working: see contracts/public-api-axes.json. Unset, the
+      // spinner takes the page's look (data-sf-spinner on html, body or any
+      // block; simai/ui-source#11), the arc when the page names none.
+      kind: {default: '', values: ['', ...SPINNER_LOOKS], aliases: ['variant']},
+      dots: { default: String(SPINNER_DOTS) },
+      filled: { default: String(SPINNER_DOTS_FILLED) },
       strokeWidth: { default: '' },
       dotRadius: { default: '' },
       infinite: { type: Boolean, default: false },
@@ -70,11 +73,11 @@ class SfSpinner extends SfBaseElement {
   }
 
   get dots() {
-    return this.getAttribute('dots') || '16';
+    return this.getAttribute('dots') || String(SPINNER_DOTS);
   }
 
   get filled() {
-    return this.getAttribute('filled') || '6';
+    return this.getAttribute('filled') || String(SPINNER_DOTS_FILLED);
   }
 
   get strokeWidth() {

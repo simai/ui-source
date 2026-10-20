@@ -3,5 +3,6 @@ SF.RuleLoader['cl-modal'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
-  relation: [{ name: 'modal' }, { name: 'icon-buttons' }],
+  // spinner: the remote content's loading state shows it, fetched after the page is ready.
+  relation: [{ name: 'modal' }, { name: 'icon-buttons' }, { name: 'spinner', lazy: true }],
 };

@@ -152,7 +152,7 @@
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "Loading state: the spinner in place of the icon, at the icon's size. Sets aria-busy and disables the native button."
+        "description": "Loading state: the spinner in place of the icon, at the icon's size, in the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
       },
       "disabled": {
         "type": "boolean",

@@ -1,4 +1,4 @@
-const SPINNER_KIND_VALUES = ["arc", "dots"];
+const SPINNER_KIND_VALUES = ["", "arc", "breathing", "comet", "dots"];
 
 const sfSpinnerMeta = {
   tag: 'sf-spinner',
@@ -7,13 +7,13 @@ const sfSpinnerMeta = {
     kind: {
       kind: 'enum',
       values: SPINNER_KIND_VALUES,
-      default: 'arc',
-      description: 'What the spinner is: an arc or a row of dots.',
+      default: '',
+      description: "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc.",
     },
     variant: {
       kind: 'enum',
       values: SPINNER_KIND_VALUES,
-      default: 'arc',
+      default: '',
       description: 'Legacy name for kind, still honoured. See contracts/public-api-axes.json.',
     },
   },

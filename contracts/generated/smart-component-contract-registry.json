@@ -272,7 +272,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/buttons/smart.manifest.json",
-      "manifest_sha256": "e083dc64139c9983608334068ad222f5a828dc505827ba64c60ead9152482839",
+      "manifest_sha256": "4462b9e1b26bfbe747d05052418e770520c4bba377b3a7b3766ef3ad91990488",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -886,7 +886,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon-buttons/smart.manifest.json",
-      "manifest_sha256": "f12c6cad2580e3326563d45350ec6d7ac63ce11a6b102e1490132d2561c8da31",
+      "manifest_sha256": "db0a58c036e24ff40445c2a52ec31400e863d2196efbd1e161bb9e39642a4f0c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1055,7 +1055,9 @@
       ],
       "composition": {
         "public_parts": [],
-        "uses": []
+        "uses": [
+          "component.spinner"
+        ]
       },
       "contract_schema": {
         "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
@@ -1066,7 +1068,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "f282c22cbff66ec44dce7ea91d25e2336f2afba8535ee2f274a5d6f45090902b",
+      "manifest_sha256": "63523577373bab0ca5d7a65acd1b5d0b923470a657525af09e391eaaa3768366",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1570,13 +1572,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "f9a2ad78e3186f9e6e2e8dd591c989a8947ffc40699771958fdeb4acf5eb4d2a",
+      "manifest_sha256": "bd94abb1e48e6d71fa7c2697c1c7dfdc2287a7730cc122c6503af987e5efb261",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Indeterminate waiting indicator with arc or dots presentation, optional polite status announcement and Framework-owned motion.",
+      "summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
       "tags": [
         "spinner"
       ],

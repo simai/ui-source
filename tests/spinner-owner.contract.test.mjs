@@ -8,10 +8,12 @@ test('Spinner normalizes its public visual inputs to bounded contracts', async (
   const ordinary = await read('src/component/spinner/js/_spinner.js');
   const smartTemplate = await read('src/smart/spinner/js/templates/default.js');
 
-  assert.match(ordinary, /\['arc', 'dots'\]/);
+  const draw = await read('src/component/spinner/js/_spinner-draw.js');
+  assert.match(draw, /export const SPINNER_LOOKS = \['arc', 'breathing', 'comet', 'dots'\];/);
+  assert.match(ordinary, /normalizeChoice\(root\.dataset\.variant, SPINNER_LOOKS, 'arc'\)/);
   assert.match(ordinary, /\['clockwise', 'counterclockwise'\]/);
-  assert.match(ordinary, /Math\.floor\(toNumber\(root\.dataset\.dots, 16\)\), 3, 32/);
-  assert.match(ordinary, /Math\.floor\(toNumber\(root\.dataset\.filled, 6\)\), 1, dots/);
+  assert.match(ordinary, /Math\.floor\(toNumber\(root\.dataset\.dots, SPINNER_DOTS\)\), 3, 32/);
+  assert.match(ordinary, /Math\.floor\(toNumber\(root\.dataset\.filled, SPINNER_DOTS_FILLED\)\), 1, dots/);
   assert.match(smartTemplate, /\['1\/3', '1\/2', '1', '2', '3'\]/);
 });
 
@@ -45,7 +47,9 @@ test('Spinner machine contract documents status, ownership and closed variants',
   const manifest = JSON.parse(await read('src/smart/spinner/smart.manifest.json'));
 
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
-  assert.deepEqual(manifest.inputs.properties.variant.enum, ['arc', 'dots']);
+  assert.deepEqual(manifest.inputs.properties.variant.enum, ['', 'arc', 'breathing', 'comet', 'dots']);
+  assert.deepEqual(manifest.inputs.properties.kind.enum, ['', 'arc', 'breathing', 'comet', 'dots']);
+  assert.equal(manifest.inputs.properties.kind.default, '', 'unset, the page decides the look');
   assert.deepEqual(manifest.inputs.properties.direction.enum, [
     'clockwise',
     'counterclockwise',
@@ -78,4 +82,22 @@ test('Spinner takes its geometry from the ladder and its colour from the ink', a
     assert.ok(ordinary.includes(`'${attribute}'`), `${attribute} is noted as deprecated`);
   }
   assert.match(ordinary, /noteDeprecated\(\{/);
+});
+
+/* The looks (simai/ui-source#11): four on one ring, chosen once for the page by
+   data-sf-spinner, inherited (the nearest block wins), with the spinner's own
+   data-variant above it; resolved in CSS alone, so a change of the attribute
+   changes every spinner at once. The probe spinner-looks measures them. */
+test('Spinner looks are resolved by inherited variables, the instance above the page', async () => {
+  const visual = await read('src/component/spinner/scss/_css__spinner_custom.scss');
+  const core = await read('src/core/js/index.js');
+  for (const look of ['breathing', 'comet', 'dots']) {
+    assert.ok(visual.includes(`'${look}': (`), `${look} is a look`);
+  }
+  assert.match(visual, /:where\(\[data-sf-spinner\]:not\(\[data-sf-spinner=''\]\)\)/, 'an unknown page look is the arc, weighing nothing');
+  assert.match(visual, /\.sf-loader-container:where\(\[data-variant\]:not\(\[data-variant=''\]\)\)/);
+  assert.ok(visual.indexOf("[data-sf-spinner='#{$look}']") < visual.indexOf(".sf-loader-container[data-variant='#{$look}']"), 'the instance is written after the page');
+  assert.match(visual, /display: var\(--sf-loader--look-comet, none\)/);
+  assert.match(visual, /display: var\(--sf-loader--look-dots, none\)/);
+  assert.match(core, /SF_BOOT_CONFIG\.spinner/);
 });

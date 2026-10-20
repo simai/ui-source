@@ -3,8 +3,11 @@ import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
 import { noteDeprecated } from '../../../core/js/deprecations.js';
 import {
-  SPINNER_GRID,
-  createLadderArcSvg,
+  SPINNER_DOTS,
+  SPINNER_DOTS_FILLED,
+  SPINNER_LOOKS,
+  createLadderSpinnerSvg,
+  createSpinnerSvg,
   createSvgNode,
 } from './_spinner-draw';
 
@@ -60,20 +63,26 @@ function notePixelAttributes(root) {
   return written.length > 0;
 }
 
-// Without pixel options the arc is drawn on the icon grid, its size and stroke
-// set by the ladder; with any of them it is drawn as before, in pixels.
+// Without pixel options the spinner is drawn on the icon grid, its size and
+// stroke set by the ladder; with any of them it is drawn as before, in pixels.
+// Either way the drawing holds every look (simai/ui-source#11), and the sheet
+// shows the page's.
 function createSpinnerArcSvg(options = {}) {
   const pixel = ['width', 'height', 'strokeWidth'].some((key) => {
     const value = options?.[key];
     return value !== undefined && value !== null && value !== '';
   });
-  return pixel ? createPixelArcSvg(options) : createLadderArcSvg();
+  return pixel ? createPixelSpinnerSvg(options) : createLadderSpinnerSvg(options);
 }
 
-function createPixelArcSvg({
+function createPixelSpinnerSvg({
   width = 58,
   height = 58,
   strokeWidth = 4,
+  dots = SPINNER_DOTS,
+  filled = SPINNER_DOTS_FILLED,
+  dotRadius = null,
+  direction = 'clockwise',
 } = {}) {
   const safeWidth = clamp(toNumber(width, 58), 16, 256);
   const safeHeight = clamp(toNumber(height, safeWidth), 16, 256);
@@ -82,40 +91,16 @@ function createPixelArcSvg({
     1,
     Math.min(safeWidth, safeHeight) / 2,
   );
-  const radius = Math.max(
-    1,
-    Math.min(safeWidth, safeHeight) / 2 - safeStroke / 2,
-  );
-  const cx = safeWidth / 2;
-  const cy = safeHeight / 2;
-
-  const svg = createSvgNode('svg', {
-    class: 'sf-loader-svg',
-    viewBox: `0 0 ${safeWidth} ${safeHeight}`,
+  return createSpinnerSvg({
     width: safeWidth,
     height: safeHeight,
-    'aria-hidden': 'true',
+    stroke: safeStroke,
+    dots,
+    filled,
+    dotRadius,
+    direction,
+    pixel: true,
   });
-
-  const filled = createSvgNode('circle', {
-    class: 'sf-loader-ring-filled',
-    cx,
-    cy,
-    r: radius,
-  });
-
-  const accent = createSvgNode('circle', {
-    class: 'sf-loader-ring-accent',
-    cx,
-    cy,
-    r: radius,
-    pathLength: 100,
-    'stroke-dasharray': '0 100',
-    transform: `rotate(90 ${cx} ${cy})`,
-  });
-
-  svg.append(filled, accent);
-  return svg;
 }
 
 function createSpinnerDotsSvg({
@@ -199,8 +184,10 @@ function getSpinnerConfig(root) {
         Math.min(width, height) / 2,
       )
     : null;
-  const dots = clamp(Math.floor(toNumber(root.dataset.dots, 16)), 3, 32);
-  const filled = clamp(Math.floor(toNumber(root.dataset.filled, 6)), 1, dots);
+  // The dots look on the ladder (simai/ui-source#11): eight dots, three of them
+  // lit, as big as the ring allows; data-dots and data-filled still choose.
+  const dots = clamp(Math.floor(toNumber(root.dataset.dots, SPINNER_DOTS)), 3, 32);
+  const filled = clamp(Math.floor(toNumber(root.dataset.filled, SPINNER_DOTS_FILLED)), 1, dots);
   const dotRadius = root.dataset.dotRadius
     ? clamp(
         toNumber(root.dataset.dotRadius, 1),
@@ -213,8 +200,13 @@ function getSpinnerConfig(root) {
     ['clockwise', 'counterclockwise'],
     'clockwise',
   );
-  let variant = String(root.dataset.variant || '').toLowerCase();
-  variant = normalizeChoice(variant, ['arc', 'dots'], circles ? 'dots' : 'arc');
+  // The look is the page's (data-sf-spinner on an ancestor) unless the spinner
+  // names its own in data-variant; the sheet resolves both. Markup that brought
+  // its own .sf-loader--circles part and no variant was a dots spinner, and
+  // says so now that every look is drawn in the one indicator.
+  const variant = root.dataset.variant
+    ? normalizeChoice(root.dataset.variant, SPINNER_LOOKS, 'arc')
+    : circles ? 'dots' : '';
 
   return {
     pixel,
@@ -304,33 +296,29 @@ function renderSpinner(root) {
   // strokes on the icon grid.
   root.classList.toggle('sf-loader--pixel-geometry', config.pixel);
 
-  const visualClass =
-    config.variant === 'dots'
-      ? 'sf-loader--circles'
-      : 'sf-loader--loading-indicator';
-  const visual = ensureSpinnerPart(root, `.${visualClass}`, visualClass);
+  if (config.variant && root.dataset.variant !== config.variant) {
+    root.dataset.variant = config.variant;
+  }
+  // A .sf-loader--circles part written into the markup gives its place to the
+  // indicator, which draws every look.
+  const circles = root.querySelector('.sf-loader--circles');
+  if (circles && !root.querySelector('.sf-loader--loading-indicator')) {
+    const indicator = document.createElement('div');
+    indicator.className = 'sf-loader--loading-indicator';
+    indicator.dataset.sfSpinnerPart = 'sf-loader--loading-indicator';
+    circles.replaceWith(indicator);
+  }
+  const visual = ensureSpinnerPart(root, '.sf-loader--loading-indicator', 'sf-loader--loading-indicator');
   const label =
     config.label || config.labelNode
       ? ensureSpinnerPart(root, '.sf-loader--text', 'sf-loader--text')
       : null;
 
-  const geometry = config.pixel
-    ? config
-    : {...config, width: SPINNER_GRID, height: SPINNER_GRID, strokeWidth: null};
-  const svg =
-    config.variant === 'dots'
-      ? createSpinnerDotsSvg(geometry)
-      : config.pixel
-        ? createPixelArcSvg(config)
-        : createLadderArcSvg();
+  const svg = config.pixel
+    ? createPixelSpinnerSvg({...config, strokeWidth: config.strokeWidth ?? 4})
+    : createLadderSpinnerSvg(config);
 
   visual.append(svg);
-
-  const obsoleteClass =
-    config.variant === 'dots'
-      ? '.sf-loader--loading-indicator'
-      : '.sf-loader--circles';
-  root.querySelector(obsoleteClass)?.remove();
 
   if (label) {
     label.textContent = config.label || '';
@@ -381,9 +369,10 @@ class Spinner extends ComponentObserver {
       width,
       height,
       label = pageText(SPINNER_TEXT, 'label', props?.root ?? document.documentElement),
-      variant = 'arc',
-      dots = 16,
-      filled = 6,
+      // No look unless one is asked for: the page's (data-sf-spinner) applies.
+      variant,
+      dots = SPINNER_DOTS,
+      filled = SPINNER_DOTS_FILLED,
       strokeWidth = null,
       dotRadius = null,
       infinite = false,
@@ -413,7 +402,9 @@ class Spinner extends ComponentObserver {
     if (width !== undefined && width !== null && width !== '') this.template.dataset.width = String(width);
     if (height !== undefined && height !== null && height !== '') this.template.dataset.height = String(height);
     this.template.dataset.label = String(label ?? '');
-    this.template.dataset.variant = String(variant);
+    if (variant !== undefined && variant !== null && variant !== '') {
+      this.template.dataset.variant = String(variant);
+    }
     this.template.dataset.dots = String(dots);
     this.template.dataset.filled = String(filled);
     if (strokeWidth !== null && strokeWidth !== undefined && strokeWidth !== '') {

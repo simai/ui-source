@@ -20,6 +20,11 @@
   --sf-loader-text-size: var(--sf-text-size-1);
   --sf-loader-cycle-duration: calc(var(--sf-duration-slow) * 6);
   --sf-loader-dot-duration: calc(var(--sf-duration-slow) * 3);
+  /* The turn of the breathing and comet looks, and the breath itself
+     (simai/ui-source#11). */
+  --sf-loader-spin-duration: calc(var(--sf-duration-slow) * 4);
+  --sf-loader-breath-duration: calc(var(--sf-duration-slow) * 3);
+  --sf-loader-comet-duration: calc(var(--sf-duration-slow) * 2);
   color: var(--sf-loader--color, currentColor);
   display: flex;
   flex-direction: column;

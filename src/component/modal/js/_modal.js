@@ -5,6 +5,7 @@ import { trapModalFocus } from './_focus';
 import { freezeModalContent } from './_closing';
 import { scheduleModalClose, scheduleModalFrame } from './_motion';
 import { lockModalScroll, unlockModalScroll } from './_scroll';
+import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 // A box that holds its own overlays; a modal in it covers the box, not the
 // viewport, and leaves the page scrollable (sf-modal and sf-drawer read the
@@ -568,9 +569,11 @@ class Modal extends ComponentObserver {
       'sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4';
     loading.setAttribute('data-sf-modal-state', 'loading');
     loading.innerHTML = `
-      <div class="sf-modal-spinner animate-spin border-2 border-t-transparent border-outline-variant rounded-full w-8 h-8"></div>
       <p class="m-0 text-2 color-on-surface-variant">Loading...</p>
     `;
+    // The Framework's one spinner, in the page's look (simai/ui-source#11);
+    // the modal sheet draws its slot.
+    loading.prepend(createInlineSpinner({ className: 'sf-modal-spinner' }));
     container.append(loading);
   }
 

@@ -1,4 +1,41 @@
+@use 'sass:map';
 @use 'var__spinner' as *;
+
+/* The looks (simai/ui-source#11). Every spinner draws the four on one ring;
+   which one shows, and how it moves, is a set of variables, so that it
+   inherits: data-sf-spinner on html, body or any block sets them for
+   everything inside it, the nearest such block winning, and data-variant on a
+   spinner sets them for that spinner above both. With none set, the fallbacks
+   where they are read are the arc's. An unknown name is the arc too. */
+$sf-loader-looks: (
+  'arc': (
+    track: inline, accent: inline, comet: none, dots: none,
+    motion: sf-loader-ring-accent-fill, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
+    spin: none, spin-duration: var(--sf-loader-spin-duration),
+  ),
+  'breathing': (
+    track: inline, accent: inline, comet: none, dots: none,
+    motion: sf-loader-breathing, motion-duration: var(--sf-loader-breath-duration), motion-easing: var(--sf-animation),
+    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-spin-duration),
+  ),
+  'comet': (
+    track: inline, accent: none, comet: inline, dots: none,
+    motion: none, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
+    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-comet-duration),
+  ),
+  'dots': (
+    track: none, accent: none, comet: none, dots: inline,
+    motion: none, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
+    spin: none, spin-duration: var(--sf-loader-spin-duration),
+  ),
+);
+
+@mixin sf-loader-look($look) {
+  @each $name, $value in map.get($sf-loader-looks, $look) {
+    --sf-loader--look-#{$name}: #{$value};
+  }
+}
+
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
 @layer sf.components {
@@ -16,7 +53,47 @@
   width: 100%;
 }
 
+/* The page's look, inherited from the nearest block that names one; a name
+   that is not a look is the arc (that rule weighs nothing, so a named look on
+   the same block wins). An empty name sets nothing and inherits. */
+:where([data-sf-spinner]:not([data-sf-spinner=''])) {
+  @include sf-loader-look('arc');
+}
+
+@each $look, $values in $sf-loader-looks {
+  @if $look != 'arc' {
+    [data-sf-spinner='#{$look}'] {
+      @include sf-loader-look($look);
+    }
+  }
+}
+
+/* The spinner's own look, above the page's. Written after it, so a spinner
+   that also carries data-sf-spinner is still ruled by its data-variant. */
+.sf-loader-container:where([data-variant]:not([data-variant=''])) {
+  @include sf-loader-look('arc');
+}
+
+@each $look, $values in $sf-loader-looks {
+  @if $look != 'arc' {
+    .sf-loader-container[data-variant='#{$look}'] {
+      @include sf-loader-look($look);
+    }
+  }
+}
+
+/* Breathing and comet turn the whole drawing; the track is a full ring and
+   does not show it. */
+/* In longhands: in the shorthand a name of none reads as the fill mode. */
+.sf-loader-container .sf-loader-svg {
+  animation-name: var(--sf-loader--look-spin, none);
+  animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-spin-duration));
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
 .sf-loader-container .sf-loader-ring-filled {
+  display: var(--sf-loader--look-track, inline);
   fill: none;
   opacity: var(--sf-opacity-30);
   stroke: var(--sf-loader-track-color, var(--sf-surface-container));
@@ -25,6 +102,7 @@
 }
 
 .sf-loader-container .sf-loader-ring-accent {
+  display: var(--sf-loader--look-accent, inline);
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -33,13 +111,31 @@
 }
 
 .sf-loader-container .sf-loader--loading-indicator .sf-loader-ring-accent {
-  animation: sf-loader-ring-accent-fill var(--sf-loader-cycle-duration) linear both;
+  animation-name: var(--sf-loader--look-motion, sf-loader-ring-accent-fill);
+  animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
+  animation-timing-function: var(--sf-loader--look-motion-easing, linear);
+  animation-fill-mode: both;
 }
 
 .sf-loader-container.sf-loader--infinite
   .sf-loader--loading-indicator
-  .sf-loader-ring-accent {
+  .sf-loader-ring-accent,
+.sf-loader-container.sf-loader--infinite .sf-loader-svg {
   animation-iteration-count: infinite;
+}
+
+.sf-loader-container .sf-loader-comet {
+  display: var(--sf-loader--look-comet, none);
+}
+
+.sf-loader-container .sf-loader-comet-segment {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--sf-loader-stroke-width);
+}
+
+.sf-loader-container .sf-loader-dots {
+  display: var(--sf-loader--look-dots, none);
 }
 
 .sf-loader-container .sf-loader-dot {
@@ -88,7 +184,11 @@
   }
 }
 
+/* Reduced motion: a still frame of every look -- the arc (breathing's too) a
+   quarter of the ring, the comet where it is drawn, the dots with their lit
+   ones brighter. */
 @media (prefers-reduced-motion: reduce) {
+  .sf-loader-container .sf-loader-svg,
   .sf-loader-container .sf-loader-ring-accent,
   .sf-loader-container .sf-loader-dot {
     animation: none !important;
@@ -97,6 +197,26 @@
   .sf-loader-container .sf-loader-ring-accent {
     opacity: 1;
     stroke-dasharray: 24 76;
+  }
+}
+
+/* Breathing: the arc grows to most of the ring and shrinks back while its
+   start runs ahead, as Material's indeterminate circular indicator does; the
+   drawing turns underneath at its own pace. */
+@keyframes sf-loader-breathing {
+  0% {
+    stroke-dasharray: 4 96;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 70 30;
+    stroke-dashoffset: -15;
+  }
+
+  100% {
+    stroke-dasharray: 4 96;
+    stroke-dashoffset: -100;
   }
 }
 

@@ -7,5 +7,8 @@ SF.RuleLoader['modal'] = {
     { name: 'backdrop-filter-blur/default' },
     { name: 'icon-buttons' },
     { name: 'close' },
+    // The spinner a modal shows while its content loads, fetched after the
+    // page is ready; the modal sheet draws its slot.
+    { name: 'spinner', lazy: true },
   ],
 };
