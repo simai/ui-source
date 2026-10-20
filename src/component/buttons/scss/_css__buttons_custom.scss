@@ -12,47 +12,97 @@
     z-index: 1;
   }
 
-  /* A loading button is also a disabled one -- native disabled is what stops a
-     second click -- so every emphasis wears the same disabled look while it
-     works. The stripes therefore carry no colour of their own: one step of the
-     neutral alpha ramp over transparent, which sits on the grey disabled fill,
-     on a transparent link or outline, and in either theme without shouting
-     over the label. */
-  --sf-button-loading-stripe: var(--sf-alpha-8);
-
-  /* sf-button-state-loading is the documented state class; the generic
-     `loading` beside it is kept for existing markup. */
+  /* A loading button shows the Framework's one loading indicator, the spinner,
+     at the size of its icon (simai/ui-source#10). It is also a disabled one --
+     native disabled is what stops a second click -- so every emphasis wears
+     the disabled look while it works. sf-button-state-loading is the
+     documented state class; the generic `loading` beside it is kept for
+     existing markup. */
   &.loading,
   &.sf-button-state-loading {
     pointer-events: none;
     position: relative;
-    overflow: hidden;
 
+    /* The stripes that were the loading look are gone. A page that set
+       --sf-button-loading-stripe still gets them, still and in its colour,
+       until the sweep of journal token-button-loading-stripe; unset, the layer
+       paints nothing. */
     &::after {
       content: '';
       position: absolute;
-      inset: -50%;
+      inset: 0;
       background-image: repeating-linear-gradient(
                       135deg,
-                      var(--sf-button-loading-stripe) 0,
-                      var(--sf-button-loading-stripe) var(--sf-space-1\/2),
+                      var(--sf-button-loading-stripe, transparent) 0,
+                      var(--sf-button-loading-stripe, transparent) var(--sf-space-1\/2),
                       transparent var(--sf-space-1\/2),
                       transparent var(--sf-space-1)
       );
-      animation: sf-button-stripes-slide calc(var(--sf-duration-slow) * 2) linear infinite;
-      will-change: transform;
+      border-radius: inherit;
       pointer-events: none;
     }
   }
 }
 
-/* The stripes repeat every --sf-space-1 across their own axis, at 135deg. Along
-   the x axis that period is longer by the square root of two, so one loop has
-   to travel exactly that far; travelling --sf-space-1 made the pattern jump
-   back at the end of every cycle. */
-@keyframes sf-button-stripes-slide {
-  from { transform: translateX(0); }
-  to   { transform: translateX(calc(var(--sf-space-1) * 1.41421356)); }
+/* The spinner's slot: exactly the box of the button's icon at every step, so a
+   spinner in place of an icon changes nothing around it. The ladder is the
+   icon's (.sf-button .sf-icon in the main sheet), here as one variable, and
+   the spinner sheet draws the same diameter for the same step. */
+.sf-button {
+  --sf-button-spinner--size: var(--sf-icon-size-3);
+}
+
+.sf-button.sf-button--size-1\/3 {
+  --sf-button-spinner--size: var(--sf-text-height-1\/3);
+}
+
+.sf-button.sf-button--size-1\/2 {
+  --sf-button-spinner--size: var(--sf-text-height-1\/2);
+}
+
+.sf-button.sf-button--size-1 {
+  --sf-button-spinner--size: var(--sf-text-height-1);
+}
+
+.sf-button.sf-button--size-2 {
+  --sf-button-spinner--size: var(--sf-text-height-2);
+}
+
+.sf-button.sf-button--size-3 {
+  --sf-button-spinner--size: var(--sf-text-height-3);
+}
+
+/* The button sheet draws the slot on its own, so the box is right before the
+   spinner sheet has arrived (or on a page that never loads it): the arc then
+   draws still, from the presentation attributes the drawing carries. */
+.sf-button .sf-button-spinner {
+  --sf-loader-svg-width: var(--sf-button-spinner--size);
+  --sf-loader-svg-height: var(--sf-button-spinner--size);
+  display: inline-flex;
+  /* As the icon's: the slot sits on the line as the icon did, so a button
+     laid out without flex is no taller with the spinner than with its icon. */
+  vertical-align: bottom;
+  flex: none;
+  inline-size: var(--sf-button-spinner--size);
+  block-size: var(--sf-button-spinner--size);
+  color: var(--sf-loader--color, currentColor);
+}
+
+.sf-button .sf-button-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Without an icon the spinner is laid over the label, which keeps its place
+   and is only made invisible: the button keeps its width to the pixel at any
+   label, size, spacing or padding variable, and the label stays the button's
+   accessible name. Reserving room beside the label instead would widen every
+   resting button, or change a loading one by the icon and its gap. */
+.sf-button > .sf-button-spinner--overlay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -61,10 +111,6 @@
     transition-duration: 0s;
   }
 
-  .sf-button.loading::after,
-  .sf-button.sf-button-state-loading::after {
-    animation: none;
-  }
 }
 }
 @layer sf.override {
@@ -153,5 +199,20 @@
   .sf-button.sf-button--link[class*="segment-"]:has(+ .sf-button.sf-button--outline[class*="segment-"]) {
     --sf-button--border-inline-end-width: 0;
     border-inline-end-width: 0;
+  }
+}
+
+@layer sf.states {
+  /* A loading button is disabled, so its spinner takes the disabled ink, the
+     ink of its label -- unless --sf-loader--color is set. */
+  .sf-button:is(:disabled, .disabled) .sf-button-spinner {
+    color: var(--sf-loader--color, var(--sf-on-disable));
+  }
+
+  /* The label under an overlaid spinner: in its place and in the accessibility
+     tree, not painted. text-fill reaches what sits inside it (a count). */
+  .sf-button > .sf-button-spinner--overlay ~ * {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 }

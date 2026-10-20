@@ -56,9 +56,35 @@ stays only as a compatibility name; it goes with the next major version.
 
 Native `disabled` is the source of truth for an unavailable action. Loading
 uses `loading sf-button-state-loading`, `aria-busy="true"` and native
-`disabled`, so the same action cannot be triggered twice. Loading colours,
-spacing and animation use semantic Framework tokens; motion stops under
-`prefers-reduced-motion`.
+`disabled`, so the same action cannot be triggered twice.
+
+A loading button shows the spinner, the Framework's one loading indicator, at
+the size of its icon (simai/ui-source#10):
+
+- with an icon, the spinner takes the place of the icon (the start icon, else
+  the end one);
+- without an icon, the spinner lies over the label: the label keeps its place,
+  painted transparent, so the button keeps its width to the pixel and the
+  label stays its accessible name. Reserving room beside the label was
+  rejected: it would widen every resting button, or change a loading one by
+  the icon and its gap;
+- an icon-only button shows the spinner in place of its icon.
+
+The spinner takes the button's disabled ink unless `--sf-loader--color` is set,
+and under `prefers-reduced-motion` it is a still arc. The constructor draws it;
+in hand-written markup put it where the icon was, or before the label with the
+`--overlay` class:
+
+```html
+<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1 loading sf-button-state-loading" disabled aria-busy="true">
+  <span class="sf-loader-container sf-loader--infinite sf-button-spinner sf-button-spinner--overlay" data-infinite="true" aria-hidden="true"></span>
+  <span class="sf-button-text-container">Save</span>
+</button>
+```
+
+The moving stripes are no longer the loading look. `--sf-button-loading-stripe`
+is no longer set; a page that sets it still gets still stripes in that colour
+until 2026-12-01 (journal `token-button-loading-stripe`).
 
 Pointer activation does not publish a focus ring. Keyboard navigation uses
 the shared `:focus-visible` treatment, including a forced-colours fallback.

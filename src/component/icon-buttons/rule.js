@@ -3,4 +3,6 @@ SF.RuleLoader['icon-buttons'] = {
                 type: 'component',
                 css: true,
                 js: true,
+                // The spinner a loading button shows, fetched after the page is ready.
+                relation: [{ name: 'spinner', lazy: true }],
             };

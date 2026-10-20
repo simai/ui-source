@@ -30,6 +30,8 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
     'component.icon-buttons',
     'smart.icons',
     'smart.close',
+    // The spinner a loading icon button shows (simai/ui-source#10).
+    'component.spinner',
   ]);
   assert.equal(manifest.accessibility.role, 'button');
   assert.equal(manifest.accessibility.accessible_name, 'required');

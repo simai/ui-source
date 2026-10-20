@@ -1,10 +1,15 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
+import {
+  SPINNER_GRID,
+  createLadderArcSvg,
+  createSvgNode,
+} from './_spinner-draw';
 
 const SPINNER_TEXT = { en: { label: 'Loading…' }, ru: { label: 'Загрузка…' } };
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
 const SPINNER_SELECTOR = '.sf-loader-container';
 const SPINNER_BOUND_FLAG = 'sfSpinnerBound';
 
@@ -22,19 +27,50 @@ function normalizeChoice(value, allowed, fallback) {
   return allowed.includes(normalized) ? normalized : fallback;
 }
 
-function createSvgNode(tagName, attributes = {}) {
-  const node = document.createElementNS(SVG_NS, tagName);
-  Object.entries(attributes).forEach(([key, value]) => {
-    if (value === undefined || value === null || value === '') {
-      return;
-    }
+// The size ladder decides a spinner's diameter and stroke (simai/ui-source#10).
+// The pixel attributes that let a page draw its own spinner -- data-width (and
+// its short data-w), data-height (data-h), data-stroke-width and
+// data-dot-radius, and the sf-spinner attributes that write them -- are still
+// read until the sweep of journal attribute-spinner-pixel-geometry, and noted
+// in SF.deprecations whenever a spinner is drawn with them.
+const PIXEL_ATTRIBUTES = [
+  ['width', 'data-width', 'width'],
+  ['w', 'data-w', 'width'],
+  ['height', 'data-height', 'height'],
+  ['h', 'data-h', 'height'],
+  ['strokeWidth', 'data-stroke-width', 'stroke-width'],
+  ['dotRadius', 'data-dot-radius', 'dot-radius'],
+];
 
-    node.setAttribute(key, String(value));
+function notePixelAttributes(root) {
+  const smart = root.closest?.('sf-spinner');
+  const written = PIXEL_ATTRIBUTES.filter(([key]) => {
+    const value = root.dataset[key];
+    return value !== undefined && value !== '';
   });
-  return node;
+  written.forEach(([, attribute, smartAttribute]) => {
+    noteDeprecated({
+      component: smart ? 'sf-spinner' : 'spinner',
+      kind: 'attribute',
+      from: smart ? smartAttribute : attribute,
+      // sf-spinner takes size; the ordinary spinner a sf-loader--size-* class.
+      to: smart ? 'size' : null,
+    });
+  });
+  return written.length > 0;
 }
 
-function createSpinnerArcSvg({
+// Without pixel options the arc is drawn on the icon grid, its size and stroke
+// set by the ladder; with any of them it is drawn as before, in pixels.
+function createSpinnerArcSvg(options = {}) {
+  const pixel = ['width', 'height', 'strokeWidth'].some((key) => {
+    const value = options?.[key];
+    return value !== undefined && value !== null && value !== '';
+  });
+  return pixel ? createPixelArcSvg(options) : createLadderArcSvg();
+}
+
+function createPixelArcSvg({
   width = 58,
   height = 58,
   strokeWidth = 4,
@@ -144,6 +180,7 @@ function getSpinnerConfig(root) {
   const hasExplicitHeight =
     Object.prototype.hasOwnProperty.call(root.dataset, 'height') ||
     Object.prototype.hasOwnProperty.call(root.dataset, 'h');
+  const pixel = notePixelAttributes(root);
 
   const width = clamp(
     toNumber(root.dataset.width, toNumber(root.dataset.w, 58)),
@@ -180,6 +217,7 @@ function getSpinnerConfig(root) {
   variant = normalizeChoice(variant, ['arc', 'dots'], circles ? 'dots' : 'arc');
 
   return {
+    pixel,
     width,
     height,
     strokeWidth,
@@ -246,13 +284,13 @@ function renderSpinner(root) {
   } else {
     root.classList.remove('sf-loader--infinite');
   }
-  if (config.hasExplicitWidth) {
+  if (config.pixel && config.hasExplicitWidth) {
     root.style.setProperty('--sf-loader-svg-width', `${config.width}px`);
   } else {
     root.style.removeProperty('--sf-loader-svg-width');
   }
 
-  if (config.hasExplicitHeight || config.hasExplicitWidth) {
+  if (config.pixel && (config.hasExplicitHeight || config.hasExplicitWidth)) {
     root.style.setProperty('--sf-loader-svg-height', `${config.height}px`);
   } else {
     root.style.removeProperty('--sf-loader-svg-height');
@@ -262,6 +300,9 @@ function renderSpinner(root) {
   } else {
     root.style.removeProperty('--sf-loader-stroke-width');
   }
+  // A spinner drawn in pixels keeps the pixel strokes it had; one on the ladder
+  // strokes on the icon grid.
+  root.classList.toggle('sf-loader--pixel-geometry', config.pixel);
 
   const visualClass =
     config.variant === 'dots'
@@ -273,10 +314,15 @@ function renderSpinner(root) {
       ? ensureSpinnerPart(root, '.sf-loader--text', 'sf-loader--text')
       : null;
 
+  const geometry = config.pixel
+    ? config
+    : {...config, width: SPINNER_GRID, height: SPINNER_GRID, strokeWidth: null};
   const svg =
     config.variant === 'dots'
-      ? createSpinnerDotsSvg(config)
-      : createSpinnerArcSvg(config);
+      ? createSpinnerDotsSvg(geometry)
+      : config.pixel
+        ? createPixelArcSvg(config)
+        : createLadderArcSvg();
 
   visual.append(svg);
 

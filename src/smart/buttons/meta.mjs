@@ -119,7 +119,7 @@ const sfButtonMeta = {
       kind: 'boolean',
       values: BOOLEAN_VALUES,
       default: 'false',
-      description: 'Loading state flag.',
+      description: "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. Sets aria-busy and disables the native button.",
     },
     disabled: {
       kind: 'boolean',

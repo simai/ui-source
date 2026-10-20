@@ -4,15 +4,23 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-loader-container {
-  --sf-loader--color: var(--sf-primary);
+  /* The colour is the current ink unless --sf-loader--color is set on the
+     spinner or any ancestor: inside a button it is the button's ink. The
+     Framework never sets it (simai/ui-source#10; it was primary before). */
   --sf-loader-track-color: var(--sf-surface-container);
-  --sf-loader-svg-width: var(--sf-d2);
-  --sf-loader-svg-height: var(--sf-d2);
-  --sf-loader-stroke-width: var(--sf-a6);
+  /* The size ladder (simai/ui-source#10): at each step the spinner is exactly
+     the icon of a button of the same size, so it can stand in for that icon in
+     a button, a field, a chip or a menu item. Step 1 when none is written. */
+  --sf-loader-svg-width: var(--sf-text-height-1);
+  --sf-loader-svg-height: var(--sf-text-height-1);
+  /* In units of the 24-unit icon grid the arc is drawn on: the stroke of a
+     regular-weight icon, which scales with the box as the icon's does. */
+  --sf-loader-stroke-width: 2;
   --sf-loader-text-gap: var(--sf-space-1\/2);
   --sf-loader-text-size: var(--sf-text-size-1);
   --sf-loader-cycle-duration: calc(var(--sf-duration-slow) * 6);
   --sf-loader-dot-duration: calc(var(--sf-duration-slow) * 3);
+  color: var(--sf-loader--color, currentColor);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,30 +35,57 @@
   color: var(--sf-on-surface);
 }
 
+.sf-loader-container.sf-loader--size-1\/3 {
+  --sf-loader-svg-width: var(--sf-text-height-1\/3);
+  --sf-loader-svg-height: var(--sf-text-height-1\/3);
+  --sf-loader-text-gap: var(--sf-space-1\/3);
+  --sf-loader-text-size: var(--sf-text-size-1\/3);
+}
+
 .sf-loader-container.sf-loader--size-1\/2 {
-  --sf-loader-stroke-width: var(--sf-a4);
+  --sf-loader-svg-width: var(--sf-text-height-1\/2);
+  --sf-loader-svg-height: var(--sf-text-height-1\/2);
   --sf-loader-text-gap: var(--sf-space-1\/3);
   --sf-loader-text-size: var(--sf-text-size-1\/2);
 }
 
-.sf-loader-container.sf-loader--size-1,
-.sf-loader-container.sf-loader--size-2 {
-  --sf-loader-stroke-width: var(--sf-a6);
-}
-
 .sf-loader-container.sf-loader--size-1 {
+  --sf-loader-svg-width: var(--sf-text-height-1);
+  --sf-loader-svg-height: var(--sf-text-height-1);
   --sf-loader-text-gap: var(--sf-space-1\/2);
   --sf-loader-text-size: var(--sf-text-size-1);
 }
 
 .sf-loader-container.sf-loader--size-2 {
+  --sf-loader-svg-width: var(--sf-text-height-2);
+  --sf-loader-svg-height: var(--sf-text-height-2);
   --sf-loader-text-gap: var(--sf-space-1);
   --sf-loader-text-size: var(--sf-text-size-2);
 }
 
 .sf-loader-container.sf-loader--size-3 {
-  --sf-loader-stroke-width: var(--sf-a8);
+  --sf-loader-svg-width: var(--sf-text-height-3);
+  --sf-loader-svg-height: var(--sf-text-height-3);
   --sf-loader-text-gap: var(--sf-space-2);
   --sf-loader-text-size: var(--sf-text-size-3);
+}
+
+/* A spinner drawn in pixels (data-width, data-height, data-stroke-width,
+   data-dot-radius: deprecated, journal attribute-spinner-pixel-geometry) keeps
+   the strokes it had, in the pixels of its own drawing, until the sweep. */
+.sf-loader-container.sf-loader--pixel-geometry {
+  --sf-loader-stroke-width: var(--sf-a5);
+}
+
+.sf-loader-container.sf-loader--pixel-geometry:is(.sf-loader--size-1\/3, .sf-loader--size-1\/2) {
+  --sf-loader-stroke-width: var(--sf-a4);
+}
+
+.sf-loader-container.sf-loader--pixel-geometry:is(.sf-loader--size-1, .sf-loader--size-2) {
+  --sf-loader-stroke-width: var(--sf-a6);
+}
+
+.sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-3 {
+  --sf-loader-stroke-width: var(--sf-a8);
 }
 }

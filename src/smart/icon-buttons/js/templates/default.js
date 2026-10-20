@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import './default.css';
+import {createInlineSpinner} from '../../../../component/spinner/js/_spinner-draw';
 
 const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
 
@@ -46,8 +47,11 @@ export function renderIconButtonTemplate(context) {
         loading ? 'loading sf-icon-button-state-loading' : '',
     ].filter(Boolean);
 
-    const iconContent =
-        context.component?.hasSlotContent?.('icon')
+    // Loading shows the spinner in place of the icon, at the icon's size
+    // (simai/ui-source#10); the button keeps its name and says aria-busy.
+    const iconContent = loading
+        ? createInlineSpinner({className: 'sf-icon-button-spinner'})
+        : context.component?.hasSlotContent?.('icon')
             ? context.component.getSlotContent('icon')
             : (kind ?? variant) === 'close'
                 ? html`

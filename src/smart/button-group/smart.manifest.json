@@ -27,7 +27,8 @@
   "composition": {
     "uses": [
       "component.button-group",
-      "smart.buttons"
+      "smart.buttons",
+      "component.spinner"
     ],
     "public_parts": []
   },
@@ -42,7 +43,7 @@
       "items": {
         "type": "array",
         "default": "[]",
-        "description": "Selectable items with stable value, label, icon, count, icon-only and disabled fields.",
+        "description": "Selectable items with stable value, label, icon, count, icon-only, disabled and loading fields.",
         "items": {
           "type": "object",
           "properties": {
@@ -67,6 +68,10 @@
             },
             "disabled": {
               "type": "boolean"
+            },
+            "loading": {
+              "type": "boolean",
+              "description": "The item works: it shows the spinner at its icon's size, in place of its icon or over its label (which keeps its place and its name), says aria-busy and is disabled until the flag is cleared."
             },
             "count": {
               "type": [
@@ -445,7 +450,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-group/index.js",
-        "sha256": "2719a65441300ff8c0c5f515cf951906856b19b4e73844e2fbc61b61b8d9719d"
+        "sha256": "2d9fcd8743768b019510b440f716345b46ca65ea069718845e6497b7de9e73bd"
       }
     ],
     "generated_runtime": []

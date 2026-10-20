@@ -175,7 +175,9 @@ class SfIconButton extends SfBaseElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['disabled', 'aria-label', 'icon', 'loading'];
+    // loading is drawn by the template, not patched: it puts the spinner in
+    // place of the icon (simai/ui-source#10).
+    const directPatchAttributes = ['disabled', 'aria-label', 'icon'];
 
     if (
       changedAttributes.length > 0 &&
@@ -191,7 +193,7 @@ class SfIconButton extends SfBaseElement {
     const button = this.querySelector('.sf-icon-button');
     if (!button) return false;
 
-    if (changedAttributes.includes('disabled') || changedAttributes.includes('loading')) {
+    if (changedAttributes.includes('disabled')) {
       button.disabled = this.disabled || this.loading;
     }
 
@@ -207,16 +209,6 @@ class SfIconButton extends SfBaseElement {
       const iconNode = button.querySelector('.sf-icon');
       if (iconNode) {
         iconNode.textContent = this.icon;
-      }
-    }
-
-    if (changedAttributes.includes('loading')) {
-      button.classList.toggle('loading', this.loading);
-      button.classList.toggle('sf-icon-button-state-loading', this.loading);
-      if (this.loading) {
-        button.setAttribute('aria-busy', 'true');
-      } else {
-        button.removeAttribute('aria-busy');
       }
     }
 

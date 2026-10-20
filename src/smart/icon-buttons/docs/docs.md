@@ -46,7 +46,8 @@ Main attributes:
 - `spacing="compact|normal|comfortable|spacious"`
 - `radius="default|square|rounded"`
 - `root-class`
-- `loading`
+- `loading` — the spinner in place of the icon, at its size; `aria-busy` and
+  native `disabled`
 - `disabled`
 - `native-type`
 - `aria-label`

@@ -17,7 +17,10 @@ Loading model:
 - base styles and base component JS are loaded through relation with `buttons`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
 - `loading` publishes `aria-busy="true"`, disables the native button against
-  duplicate activation and uses token-based motion with a reduced-motion stop
+  duplicate activation and shows the spinner at the icon's size: in place of
+  the start icon (else the end icon; an icon-only button's icon); without an
+  icon it lies over the label, which keeps its place, so the width does not
+  change and the label stays the accessible name. Reduced motion: a still arc
 
 Main attributes:
 

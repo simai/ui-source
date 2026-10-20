@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import iconButtonUtility from '../json/icon-button.utility.json';
 import registerComponent from "../../register-helper";
+import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 class IconButtons extends ComponentObserver {
   static componentName = 'IconButtons';
@@ -79,7 +80,12 @@ class IconButtons extends ComponentObserver {
     this.applyUtilities(this.button, utilities.button ?? utilities);
     this.applyUtilities(this.iconElement, utilities.icon);
 
-    if (this.iconElement) {
+    // Loading shows the spinner in place of the icon, at the icon's size
+    // (simai/ui-source#10).
+    if (loading) {
+      this.spinner = createInlineSpinner({ className: 'sf-icon-button-spinner' });
+      this.button.append(this.spinner);
+    } else if (this.iconElement) {
       this.button.append(this.iconElement);
     }
 

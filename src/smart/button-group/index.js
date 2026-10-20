@@ -44,6 +44,7 @@ function parseItems(value = []) {
       value: valuePart.trim(),
       label: (labelPart || valuePart).trim(),
       disabled: flags.includes('disabled'),
+      loading: flags.includes('loading'),
       icon: iconFlag ? iconFlag.slice('icon='.length) : '',
     };
   });
@@ -72,7 +73,10 @@ function normalizeItems(items = []) {
         count: source.count === null || typeof source.count === 'undefined' ? '' : String(source.count).trim(),
         // Only an icon can stand alone; the label stays as the accessible name.
         iconOnly: Boolean((source.iconOnly ?? source['icon-only']) && source.icon),
-        disabled: Boolean(source.disabled),
+        // A loading item shows the spinner and is disabled while it works, as
+        // a loading button is (simai/ui-source#10).
+        loading: Boolean(source.loading),
+        disabled: Boolean(source.disabled || source.loading),
       };
     })
     .filter(Boolean);

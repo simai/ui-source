@@ -103,7 +103,7 @@ const sfIconButtonMeta = {
       kind: 'boolean',
       values: BOOLEAN_VALUES,
       default: 'false',
-      description: 'Loading state flag.',
+      description: "Loading state: the spinner in place of the icon, at the icon's size. Sets aria-busy and disables the native button.",
     },
     disabled: {
       kind: 'boolean',

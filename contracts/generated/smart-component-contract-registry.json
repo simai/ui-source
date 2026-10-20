@@ -184,7 +184,8 @@
         "public_parts": [],
         "uses": [
           "component.button-group",
-          "smart.buttons"
+          "smart.buttons",
+          "component.spinner"
         ]
       },
       "contract_schema": {
@@ -196,7 +197,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-group/smart.manifest.json",
-      "manifest_sha256": "526eb640ccc1e3f10e4a38a1e2ccfa9b019024e5a8ee0e681e89bcadf611ef89",
+      "manifest_sha256": "5865ea51473fef523c24a110d64e8f1eff5ea76e446ed39354eb9b8377c3206e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -258,7 +259,8 @@
         },
         "public_parts": [],
         "uses": [
-          "smart.icons"
+          "smart.icons",
+          "component.spinner"
         ]
       },
       "contract_schema": {
@@ -270,7 +272,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/buttons/smart.manifest.json",
-      "manifest_sha256": "6f59e4c360166c4a97752393873ee97a574bf9ae938f19aa7c9f4b7648c0a31b",
+      "manifest_sha256": "e083dc64139c9983608334068ad222f5a828dc505827ba64c60ead9152482839",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -871,7 +873,8 @@
         "uses": [
           "component.icon-buttons",
           "smart.icons",
-          "smart.close"
+          "smart.close",
+          "component.spinner"
         ]
       },
       "contract_schema": {
@@ -883,7 +886,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon-buttons/smart.manifest.json",
-      "manifest_sha256": "231f5a224cbd1fbe205941f56430e3b19642184225720fe991ff7d9720e08582",
+      "manifest_sha256": "f12c6cad2580e3326563d45350ec6d7ac63ce11a6b102e1490132d2561c8da31",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1567,7 +1570,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "10660f7e3ae14cc536c76a99147e92f76d4abdc4b53d7271dac3c0b0e03474f5",
+      "manifest_sha256": "f9a2ad78e3186f9e6e2e8dd591c989a8947ffc40699771958fdeb4acf5eb4d2a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

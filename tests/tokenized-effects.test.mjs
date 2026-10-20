@@ -8,7 +8,10 @@ test('stripe, loading and loader motion geometry use system primitives',()=>{
   const files=['utility/stripe/default/scss/_sf_css__stripe.scss','component/buttons/scss/_css__buttons_custom.scss','core/scss/_sf_css__loader.scss'];
   for(const file of files) assert.doesNotMatch(read(file).replace(/\/\*[\s\S]*?\*\//g,''),/(?<![\w-])-?(?:\d*\.)?\d+(?:px|rem|em)\b/,file);
   assert.equal((read(files[0]).match(/var\(--sf-px\)/g)||[]).length,10);
-  assert.match(read(files[1]),/translateX\(calc\(var\(--sf-space-1\) \* 1\.41421356\)\)/);
+  // The loading look is the spinner now (simai/ui-source#10): its slot is the
+  // icon's box on the ladder tokens, and the stripes no longer move.
+  assert.match(read(files[1]),/--sf-button-spinner--size: var\(--sf-text-height-1\\\/3\);/);
+  assert.doesNotMatch(read(files[1]),/@keyframes|animation:/);
   for(const token of ['a9','a2','b5','a7']) assert.ok(read(files[2]).includes(`var(--sf-${token})`));
 });
 

@@ -22,10 +22,11 @@ test('Button custom presentation uses semantic design and motion tokens', async 
   assert.match(base, /:focus-visible/);
   assert.match(base, /forced-colors: active/);
   assert.match(custom, /var\(--sf-duration-fast\)/);
-  assert.match(custom, /var\(--sf-duration-slow\)/);
   assert.match(custom, /prefers-reduced-motion: reduce/);
-  // The loading stripe is one neutral alpha step, not a mix of the variant's roles.
-  assert.match(custom, /--sf-button-loading-stripe: var\(--sf-alpha-\d+\)/);
+  // Loading is the spinner in the icon's slot (simai/ui-source#10); its motion,
+  // and the still arc under reduced motion, are the spinner's own.
+  assert.match(custom, /\.sf-button \.sf-button-spinner \{/);
+  assert.doesNotMatch(custom, /--sf-button-loading-stripe\s*:/, 'the Framework no longer sets the stripe');
   assert.match(custom, /var\(--sf-px\)/);
   assert.doesNotMatch(custom, /rgba?\(|#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(custom, /\b(?:1|2|4|6|8|12|14|16|20|24|32|52)(?:px|rem)\b|0\.3s|0\.01ms/);

@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import buttonUtility from '../json/button.utility.json';
 import registerComponent from "../../register-helper";
+import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 class Buttons extends ComponentObserver {
   static componentName = 'Buttons';
@@ -101,12 +102,25 @@ class Buttons extends ComponentObserver {
     this.applyUtilities(this.textContainer, utilities.textContainer);
 
 
-    if (this.iconLeft) {
-      this.button.append(this.iconLeft);
+    // Loading shows the spinner at the icon's size (simai/ui-source#10): in
+    // place of the start icon, else of the end icon; without an icon it lies
+    // over the label, which keeps its place and stays the accessible name.
+    let startNode = this.iconLeft;
+    let endNode = this.iconRight;
+    if (loading) {
+      const overlay = !startNode && !endNode;
+      this.spinner = createInlineSpinner({ className: 'sf-button-spinner', overlay });
+      if (startNode) startNode = this.spinner;
+      else if (endNode) endNode = this.spinner;
+      else this.button.append(this.spinner);
+    }
+
+    if (startNode) {
+      this.button.append(startNode);
     }
     this.button.append(this.textContainer);
-    if (this.iconRight) {
-      this.button.append(this.iconRight);
+    if (endNode) {
+      this.button.append(endNode);
     }
 
     this.template = this.button;

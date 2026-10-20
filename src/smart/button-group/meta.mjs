@@ -22,7 +22,7 @@ const sfButtonGroupMeta = {
       kind: 'json',
       valueType: 'array',
       default: '[]',
-      description: 'Selectable items with stable value, label, icon, count, icon-only and disabled fields.',
+      description: 'Selectable items with stable value, label, icon, count, icon-only, disabled and loading fields.',
     },
     value: {
       kind: 'custom',

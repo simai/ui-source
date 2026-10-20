@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {createInlineSpinner} from '../../../../component/spinner/js/_spinner-draw';
 
 
 export function renderButtonTemplate(context) {
@@ -46,6 +47,19 @@ export function renderButtonTemplate(context) {
             ? component.getSlotContent('text')
             : text;
     const fullText = !leftIconContent && !rightIconContent;
+    // Loading shows the spinner at the icon's size (simai/ui-source#10): in
+    // place of the start icon, else of the end icon; a button without an icon
+    // lays it over its label, which keeps its place (and the button its width)
+    // and stays the accessible name. Icon-only is the first case.
+    let startContent = leftIconContent;
+    let endContent = rightIconContent;
+    let overlayContent = '';
+    if (loading) {
+        const spinner = (overlay) => createInlineSpinner({className: 'sf-button-spinner', overlay});
+        if (leftIconContent) startContent = spinner(false);
+        else if (rightIconContent) endContent = spinner(false);
+        else overlayContent = spinner(true);
+    }
     const rootClasses = [
         'sf-button',
         `sf-button--size-${size}`,
@@ -75,12 +89,13 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
         >
-            ${leftIconContent}
+            ${overlayContent}
+            ${startContent}
             ${textContent ? html`<span
                     class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${rightIconContent}
+            ${endContent}
         </button>
     `;
 }

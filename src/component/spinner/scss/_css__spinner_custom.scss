@@ -2,34 +2,6 @@
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
 @layer sf.components {
-.sf-loader-container {
-  --sf-loader-track-color: var(--sf-surface-container);
-  --sf-loader-svg-width: var(--sf-text-size-8);
-  --sf-loader-svg-height: var(--sf-text-size-8);
-  --sf-loader-stroke-width: var(--sf-a5);
-  color: var(--sf-loader--color, var(--sf-primary));
-}
-
-.sf-loader-container.sf-loader--size-1\/2 {
-  --sf-loader-svg-width: var(--sf-text-size-5);
-  --sf-loader-svg-height: var(--sf-text-size-5);
-}
-
-.sf-loader-container.sf-loader--size-1 {
-  --sf-loader-svg-width: var(--sf-text-size-8);
-  --sf-loader-svg-height: var(--sf-text-size-8);
-}
-
-.sf-loader-container.sf-loader--size-2 {
-  --sf-loader-svg-width: var(--sf-text-size-9);
-  --sf-loader-svg-height: var(--sf-text-size-9);
-}
-
-.sf-loader-container.sf-loader--size-3 {
-  --sf-loader-svg-width: var(--sf-text-size-10);
-  --sf-loader-svg-height: var(--sf-text-size-10);
-}
-
 .sf-loader-container .sf-loader--loading-indicator,
 .sf-loader-container .sf-loader--circles {
   display: inline-flex;

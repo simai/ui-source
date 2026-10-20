@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { createInlineSpinner } from '../../../../component/spinner/js/_spinner-draw';
 
 function segmentFor(index, total) {
   if (total <= 1) return '';
@@ -24,6 +25,7 @@ function renderItem(item, index, context) {
       aria-label=${item.ariaLabel || nothing}
       class=${selected ? 'active' : nothing}
       ?disabled=${disabled}
+      ?loading=${item.loading}
     ></sf-button>
   `;
 }
@@ -47,6 +49,7 @@ function renderSegment(item, context) {
     item.iconOnly ? 'sf-button-group-icon-only' : '',
     context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : '',
     selected ? 'active' : '',
+    item.loading ? 'loading sf-button-state-loading' : '',
   ].filter(Boolean).join(' ');
   // The count stands next to the label with no space between the two nodes, so
   // the name is composed here: the label (or the item's aria-label), then the
@@ -54,9 +57,17 @@ function renderSegment(item, context) {
   const ariaLabel = item.count !== '' || item.ariaLabel
     ? [item.ariaLabel || item.label, item.count].filter((part) => part !== '').join(' ')
     : '';
-  const icon = item.icon
-    ? html`<sf-icon icon=${item.icon} root-class="pointer-event-none" weight="400" aria-hidden="true"></sf-icon>`
+  // A loading segment shows the spinner as a loading button does
+  // (simai/ui-source#10): in place of its icon, or over its label, which keeps
+  // its place and its name.
+  const spinner = item.loading
+    ? createInlineSpinner({className: 'sf-button-spinner', overlay: !item.icon})
     : nothing;
+  const icon = item.loading && item.icon
+    ? spinner
+    : item.icon
+      ? html`<sf-icon icon=${item.icon} root-class="pointer-event-none" weight="400" aria-hidden="true"></sf-icon>`
+      : nothing;
   const count = item.count !== ''
     ? html`<span class="sf-button-group-count">${item.count}</span>`
     : nothing;
@@ -67,8 +78,10 @@ function renderSegment(item, context) {
       class=${classes}
       data-sf-button-group-value=${item.value}
       aria-label=${ariaLabel || nothing}
+      aria-busy=${item.loading ? 'true' : nothing}
       ?disabled=${disabled}
     >
+      ${item.loading && !item.icon ? spinner : nothing}
       ${icon}
       ${item.iconOnly
         ? html`<span class="sf-button-group-label--hidden">${item.label}</span>${count}`

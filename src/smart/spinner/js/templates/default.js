@@ -16,10 +16,13 @@ function normalizeChoice(value, allowed, fallback) {
 export function renderSpinnerTemplate(context) {
   const rootClasses = joinClasses(
     'sf-loader-container',
-    `sf-loader--size-${normalizeChoice(context.size, ['1/2', '1', '2', '3'], '1')}`,
+    `sf-loader--size-${normalizeChoice(context.size, ['1/3', '1/2', '1', '2', '3'], '1')}`,
     context.rootClass,
   );
 
+  // width, height, stroke-width and dot-radius are the deprecated pixel geometry
+  // (journal attribute-spinner-pixel-geometry): still written through to the
+  // spinner, which reads and notes them until the sweep.
   return html`
     <div
       class=${rootClasses}
