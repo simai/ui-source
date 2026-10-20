@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { renderIconButtonTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
 
 const COMPONENT_ATTRIBUTES = new Set([
   'template',
@@ -22,6 +23,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   'disabled',
   'native-type',
   'aria-label',
+  ...ANCHORED_BADGE_ATTRIBUTES,
   'class',
   'style',
   'id',
@@ -72,6 +74,11 @@ class SfIconButton extends SfBaseElement {
       disabled: { type: Boolean, default: false },
       nativeType: { default: 'button' },
       ariaLabel: { default: '' },
+      // A count or a dot on the button (simai/ui-source#12).
+      badgeCount: { default: '' },
+      badgeDot: { type: Boolean, default: false },
+      badgeCap: { type: Number, default: 99 },
+      badgeLabel: { default: '' },
     };
   }
 
@@ -166,8 +173,14 @@ class SfIconButton extends SfBaseElement {
       type: this.type,
       variant: this.variant,
       ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
+      badge: this.badgeState?.(),
       component: this,
     });
+  }
+
+  // The count or dot on the button and what it says (simai/ui-source#12).
+  badgeState() {
+    return elementBadge(this);
   }
 
   template() {
@@ -199,7 +212,7 @@ class SfIconButton extends SfBaseElement {
 
     if (changedAttributes.includes('aria-label')) {
       if (this.ariaLabel) {
-        button.setAttribute('aria-label', this.ariaLabel);
+        button.setAttribute('aria-label', nameWithBadge(this.ariaLabel, elementBadge(this).phrase));
       } else {
         button.removeAttribute('aria-label');
       }
@@ -253,6 +266,10 @@ class SfIconButton extends SfBaseElement {
       disabled: this.disabled,
       nativeType: this.nativeType,
       ariaLabel: this.ariaLabel,
+      badgeCount: this.getProp('badgeCount'),
+      badgeDot: this.getProp('badgeDot'),
+      badgeCap: this.getProp('badgeCap'),
+      badgeLabel: this.getProp('badgeLabel'),
     };
   }
 

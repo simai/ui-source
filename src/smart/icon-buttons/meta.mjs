@@ -123,6 +123,30 @@ const sfIconButtonMeta = {
       default: '',
       description: 'Accessible label.',
     },
+    'badge-count': {
+      kind: 'custom',
+      valueType: 'string',
+      default: '',
+      description: "A count on the icon button (simai/ui-source#12): a whole number above 0 shows, 0 or empty hides the badge. Above badge-cap it reads «<cap>+»; the exact number joins the icon button's accessible name («Анна Белова, 3 непрочитанных») and the badge's tooltip. On an anchor of size 1/3 or 1/2 a count is drawn as a dot.",
+    },
+    'badge-dot': {
+      kind: 'boolean',
+      values: BOOLEAN_VALUES,
+      default: 'false',
+      description: "A dot on the icon button, a count with no number: something new. Shown when badge-count is not set; with a count, the count is drawn as a dot. Its text equivalent («есть новое» / «new» by default, badge-label to change it) joins the accessible name.",
+    },
+    'badge-cap': {
+      kind: 'custom',
+      valueType: 'integer',
+      default: 99,
+      description: "The largest count drawn as a number; a larger one reads «<cap>+».",
+    },
+    'badge-label': {
+      kind: 'custom',
+      valueType: 'string',
+      default: '',
+      description: "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes.",
+    },
   },
 };
 

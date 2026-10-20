@@ -25,6 +25,11 @@ Loading model:
 - `meta-icon`
 - `card-variant`: `square | portrait`
 - `disabled`
+- `badge-count`, `badge-dot`, `badge-cap` (99), `badge-label` -- a count or a
+  dot at the avatar's top end, sized by `size` (1/4 to 1/2: a dot only), the
+  phrase joined to the button's `aria-label`: «Анна Белова, 3 непрочитанных».
+  `0` hides it. See the Badges documentation, «Бейдж на якоре»
+  (simai/ui-source#12).
 
 The default and label templates intentionally render a native button. Its
 `aria-label` must describe the action (for example, “Open Anna's profile”), not

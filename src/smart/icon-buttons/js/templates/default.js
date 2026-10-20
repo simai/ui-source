@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import './default.css';
 import {createInlineSpinner} from '../../../../component/spinner/js/_spinner-draw';
+import {nameWithBadge, renderAnchoredBadge, renderAnchoredBadgeText} from '../../../helpers/anchored-badge';
 
 const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
 
@@ -23,6 +24,7 @@ export function renderIconButtonTemplate(context) {
         disabled,
         nativeType,
         ariaLabel,
+        badge,
     } = context;
 
     const rootClasses = [
@@ -65,10 +67,10 @@ export function renderIconButtonTemplate(context) {
                 class=${rootClasses.join(' ')}
                 style=${context.rootStyle || nothing}
                 ?disabled=${disabled || loading}
-                aria-label=${ariaLabel || nothing}
+                aria-label=${ariaLabel ? nameWithBadge(ariaLabel, badge?.phrase) : nothing}
                 aria-busy=${loading ? 'true' : nothing}
         >
-            ${iconContent}
+            ${iconContent}${renderAnchoredBadge(badge)}${ariaLabel ? nothing : renderAnchoredBadgeText(badge, false)}
         </button>
     `;
 }

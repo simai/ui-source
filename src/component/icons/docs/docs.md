@@ -41,3 +41,14 @@ A component that learns them at run time calls `SF.Loader.preloadIcons([...])`
 with the same entries. While the subset is on its way the root carries
 `data-sf-icons="subset-pending"` and icons draw nothing; that attribute is
 Loader state too.
+
+## Count and dot
+
+The glyph's text is its ligature, so a count or a dot does not go inside
+`.sf-icon`: wrap the icon in `<span class="sf-badge-anchor
+sf-badge-anchor--size-1">` and put `<span class="sf-badge sf-badge--anchored"
+data-count="3"></span>` beside it. The wrapper is the icon's box; its step
+(`--size-1/3|1/2|1|2|3`) and shape (`--square`, the default, `--round`,
+`--rounded`) decide the badge. Smart `sf-icon` does this itself with
+`badge-count`, `badge-dot`, `badge-cap` and `badge-label`. See the Badges
+documentation, section «Бейдж на якоре» (simai/ui-source#12).

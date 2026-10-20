@@ -32,6 +32,8 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
     'smart.close',
     // The spinner a loading icon button shows (simai/ui-source#10).
     'component.spinner',
+    // The sheet that places a count or a dot on it (simai/ui-source#12).
+    'component.badges',
   ]);
   assert.equal(manifest.accessibility.role, 'button');
   assert.equal(manifest.accessibility.accessible_name, 'required');

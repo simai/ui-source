@@ -86,7 +86,8 @@
                     "gap",
                     "size",
                     "indicator-color",
-                    "indicator-width"
+                    "indicator-width",
+                    "ring-color"
                   ]
                 },
                 "summary": {

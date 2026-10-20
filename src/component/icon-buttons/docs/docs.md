@@ -51,3 +51,13 @@ accident.
 Smart owner: `sf-icon-button`. The `icon` variant composes Smart Icons; the
 `close` variant composes the decorative Smart Close glyph. Both retain one
 native button as the action and focus owner.
+
+## Count and dot
+
+A count or a dot inside the button -- `<span class="sf-badge
+sf-badge--anchored" data-count="3"></span>` after the icon -- sits at the top
+end corner of the button, on its radius (the 45-degree point of a rounded or
+round button, the corner of a square one), sized by the button's size; sizes
+1/3 and 1/2 carry a dot only. The count joins the button's `aria-label`:
+«Уведомления, 3 непрочитанных». See the Badges documentation, section «Бейдж на
+якоре» (simai/ui-source#12).

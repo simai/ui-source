@@ -1,4 +1,5 @@
 import {html, nothing} from "lit";
+import {renderAnchoredBadge} from "../../../helpers/anchored-badge";
 
 function getCompanyBadge(context) {
     return html`<span aria-hidden="true"
@@ -163,11 +164,11 @@ export function avatarButton(context, options = {}) {
         <button
                 class="${avatarClasses(context, options)}"
                 style=${options.includeRootStyle === false ? "" : context.rootStyle || ""}
-                aria-label=${context.ariaLabel}
+                aria-label=${context.buttonLabel ?? context.ariaLabel}
                 ?disabled=${context.disabled}
                 type="button"
         >
-            ${avatarContent(context)} ${statusBadge(context)}
+            ${avatarContent(context)} ${statusBadge(context)} ${renderAnchoredBadge(context.badge)}
         </button>
     `;
 }

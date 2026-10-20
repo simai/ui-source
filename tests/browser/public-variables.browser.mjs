@@ -23,7 +23,9 @@ const contract = JSON.parse(readFileSync(new URL('../../src/core/contracts/publi
 // `open` puts an overlay on the screen. A component the contract adds without
 // an entry here fails, so the probe grows with the contract.
 const DRAW = {
-  badge: {css: ['badges'], js: 'badges', html: '<sf-badge text="Новое" size="1"></sf-badge>'},
+  // A count anchored on an icon besides the label: the ring is drawn on the
+  // anchored badge alone (simai/ui-source#12).
+  badge: {css: ['badges'], js: 'badges', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
   button: {css: ['buttons'], js: 'buttons', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
   input: {css: ['inputs'], js: 'inputs', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
@@ -61,6 +63,8 @@ const ROLES = {
   size: {properties: ['block-size', 'height'], value: '29px'},
   'indicator-color': {properties: ['border-bottom-color', 'background-color'], value: 'rgb(10, 11, 12)'},
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},
+  // The ring of an anchored badge is a spread shadow in the surface's colour.
+  'ring-color': {properties: ['box-shadow'], value: 'rgb(13, 14, 15)'},
 };
 
 const failures = [];
@@ -86,9 +90,11 @@ try {
     await page.waitForTimeout(700);
     if (draw.open) { await page.evaluate(draw.open); await page.waitForTimeout(500); }
     const measured = await page.evaluate(({selector, variables, roles}) => {
-      const root = document.querySelector(selector);
-      if (!root) return {missing: selector};
-      const scope = [root, ...root.querySelectorAll('*')];
+      const roots = [...document.querySelectorAll(selector)];
+      if (!roots.length) return {missing: selector};
+      // Every instance on the stage and its parts: a variant drawn beside the
+      // first (the anchored badge) is part of the component too.
+      const scope = roots.flatMap((root) => [root, ...root.querySelectorAll('*')]);
       const answers = [];
       for (const variable of variables) {
         const role = roles[variable.role];
@@ -99,7 +105,7 @@ try {
         const after = read();
         document.documentElement.style.removeProperty(variable.name);
         // Taken by some element that did not have it before.
-        const ok = after.some((value, at) => (value === role.value || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
+        const ok = after.some((value, at) => (value === role.value || value.startsWith(`${role.value} `) || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
         answers.push({name: variable.name, role: variable.role, ok});
       }
       return {answers};

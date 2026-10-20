@@ -1,0 +1,167 @@
+// The geometry of an anchored badge (simai/ui-source#12), written once and
+// used by every sheet that anchors one: the badge sheet itself (avatar, icon
+// button, .sf-badge-anchor) and the menus that move a row's counter onto its
+// icon when they are compact. A sheet that uses it includes `properties` at
+// its top and `badge`, `step` and `dot` where its selectors say.
+//
+// Where the badge goes. The count or dot is centred on a point near the top end
+// corner of its anchor and overlaps it:
+//   - on a round anchor the point is on the circle at 45 degrees -- r(1 - 1/sqrt 2)
+//     in from each edge of the bounding box, not the box's corner;
+//   - on a rounded square it is the same point of the corner's own arc,
+//     ρ(1 - 1/sqrt 2) in, ρ the corner radius;
+//   - on a square (ρ = 0) it is the corner itself.
+// One formula covers the three: inset = min(ρ, half the box) · (1 - 1/sqrt 2).
+// The anchor says ρ and its border width; percentages are of the anchor's
+// padding box, so `50% + border` is half of its border box on each axis.
+
+$diagonal: 0.29289; // 1 - 1/sqrt(2)
+
+@mixin properties {
+  // Registered so that a radius written as a bare 0 (--sf-radius-square) is a
+  // length inside min(): unregistered, `min(0, 50%)` is invalid and the badge
+  // would lose its position.
+  @property --sf-badge--anchor-radius {
+    syntax: '<length-percentage>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  @property --sf-badge--anchor-border {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+}
+
+// The badge on its anchor: the place, the box from the step's variables, the
+// ring. Step 1 when the anchor names no step.
+@mixin badge {
+  @include step-1;
+  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
+  --sf-badge--anchored-max: none;
+  --sf-badge--anchored-inset: calc(min(var(--sf-badge--anchor-radius), 50% + var(--sf-badge--anchor-border)) * #{$diagonal});
+  // The ring is the surface the anchor sits on: a page may name it with the
+  // public --sf-badge-ring-color; a Framework surface (a menu, a list, a
+  // drawer, a modal) says its own through --sf-badge--surface, which inherits;
+  // the page surface otherwise.
+  --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-0)));
+  // A count says something needs attention: the error role, unless the badge
+  // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
+  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
+  --sf-badge--color: var(--sf-badge-color, var(--sf-on-error));
+
+  position: absolute;
+  inset-block-start: calc(var(--sf-badge--anchored-inset) - var(--sf-badge--anchor-border));
+  inset-inline-start: calc(100% + var(--sf-badge--anchor-border) - var(--sf-badge--anchored-inset));
+  translate: -50% -50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  block-size: var(--sf-badge--anchored-size);
+  min-block-size: var(--sf-badge--anchored-size);
+  min-inline-size: var(--sf-badge--anchored-size);
+  max-inline-size: var(--sf-badge--anchored-max);
+  padding-block: 0;
+  padding-inline: var(--sf-badge--anchored-padding);
+  overflow: hidden;
+  font-size: var(--sf-badge--anchored-font-size);
+  line-height: var(--sf-badge--anchored-size);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring);
+
+  // RTL: the end is the left, and the badge is centred from its right edge.
+  &:dir(rtl) {
+    translate: 50% -50%;
+  }
+
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    box-shadow: none;
+    outline: var(--sf-badge--ring-width) solid Canvas;
+  }
+}
+
+// A dot: the step's dot size, no number drawn. The number, if any, is still in
+// the accessible name and the tooltip.
+@mixin dot {
+  --sf-badge--anchored-size: var(--sf-badge--anchored-dot);
+  --sf-badge--anchored-max: var(--sf-badge--anchored-dot);
+  --sf-badge--anchored-padding: var(--sf-a0);
+  --sf-badge--anchored-font-size: var(--sf-a0);
+}
+
+// The size table. Anchors of 1/3 and 1/2 -- rows, lists, lines -- carry a dot
+// only; 1, 2 and 3 carry a small, medium and large count. The dot grows with
+// the anchor too. The ring is a2 (a1 on the smallest anchor).
+//
+//   anchor | count (height, figures, inline padding) | dot | ring
+//   1/3    | dot only                                 | a6  | a1
+//   1/2    | dot only                                 | a8  | a2
+//   1      | b6, --sf-text-size-1/4, a4               | b0  | a2
+//   2      | c0, --sf-text-size-1/3, a5               | b2  | a2
+//   3      | c2, --sf-text-size-1/2, a6               | b4  | a2
+@mixin step-1-3 {
+  --sf-badge--anchored-count: var(--sf-a6);
+  --sf-badge--anchored-dot: var(--sf-a6);
+  --sf-badge--anchored-font-size: var(--sf-a0);
+  --sf-badge--anchored-padding: var(--sf-a0);
+  --sf-badge--ring-width: var(--sf-a1);
+  @include dot;
+}
+
+@mixin step-1-2 {
+  --sf-badge--anchored-count: var(--sf-a8);
+  --sf-badge--anchored-dot: var(--sf-a8);
+  --sf-badge--anchored-font-size: var(--sf-a0);
+  --sf-badge--anchored-padding: var(--sf-a0);
+  --sf-badge--ring-width: var(--sf-a2);
+  @include dot;
+}
+
+@mixin step-1 {
+  --sf-badge--anchored-count: var(--sf-b6);
+  --sf-badge--anchored-dot: var(--sf-b0);
+  --sf-badge--anchored-font-size: var(--sf-text-size-1\/4);
+  --sf-badge--anchored-padding: var(--sf-a4);
+  --sf-badge--ring-width: var(--sf-a2);
+  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
+  --sf-badge--anchored-max: none;
+}
+
+@mixin step-2 {
+  --sf-badge--anchored-count: var(--sf-c0);
+  --sf-badge--anchored-dot: var(--sf-b2);
+  --sf-badge--anchored-font-size: var(--sf-text-size-1\/3);
+  --sf-badge--anchored-padding: var(--sf-a5);
+  --sf-badge--ring-width: var(--sf-a2);
+  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
+  --sf-badge--anchored-max: none;
+}
+
+@mixin step-3 {
+  --sf-badge--anchored-count: var(--sf-c2);
+  --sf-badge--anchored-dot: var(--sf-b4);
+  --sf-badge--anchored-font-size: var(--sf-text-size-1\/2);
+  --sf-badge--anchored-padding: var(--sf-a6);
+  --sf-badge--ring-width: var(--sf-a2);
+  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
+  --sf-badge--anchored-max: none;
+}
+
+// The hidden words that carry the phrase when no aria-label owns it.
+@mixin visually-hidden {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  margin: calc(var(--sf-px) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

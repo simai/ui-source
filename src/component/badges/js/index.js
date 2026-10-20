@@ -7,4 +7,6 @@
             */
         
             import './_badges';
+            // Counts and dots kept from markup alone (simai/ui-source#12).
+            import './_anchored';
             

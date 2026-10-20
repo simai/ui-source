@@ -51,6 +51,11 @@ Main attributes:
 - `disabled`
 - `native-type`
 - `aria-label`
+- `badge-count`, `badge-dot`, `badge-cap` (99), `badge-label` -- a count or a
+  dot at the button's top end corner, sized by `size` (1/3 and 1/2: a dot
+  only), the phrase joined to `aria-label`: «Уведомления, 3 непрочитанных».
+  `0` hides it. See the Badges documentation, «Бейдж на якоре»
+  (simai/ui-source#12).
 
 For older SF5 templates, `tightness="low|high|highest"` remains a
 compatibility alias.

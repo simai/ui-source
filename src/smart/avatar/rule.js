@@ -3,5 +3,7 @@ SF.RuleLoader['cl-avatar'] = {
                 type: 'smart',
                 mode: 'smart',
                 js: true,
-                relation: [{ name: 'avatars' }]
+                // The badge sheet places a count or a dot on the avatar
+                // (simai/ui-source#12).
+                relation: [{ name: 'avatars' }, { name: 'badges' }]
             };

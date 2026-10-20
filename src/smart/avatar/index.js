@@ -5,6 +5,7 @@ import { renderDefaultTemplate } from "./js/templates/default";
 import { renderLabelTemplate } from "./js/templates/label";
 import { getInitials } from "../helpers/text";
 import {pageText} from "../../core/js/page-language";
+import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
 // Every word this component says, in the languages it ships with. A product
 // adds any other through SF.language.register("sf-avatar", code, words).
 const AVATAR_TEXT = {
@@ -42,6 +43,11 @@ class SfAvatar extends SfBaseElement {
       metaIcon: { default: "" },
       cardVariant: { default: "square" },
       disabled: { type: Boolean, default: false },
+      // A count or a dot on the avatar (simai/ui-source#12).
+      badgeCount: { default: "" },
+      badgeDot: { type: Boolean, default: false },
+      badgeCap: { type: Number, default: 99 },
+      badgeLabel: { default: "" },
     };
   }
 
@@ -239,10 +245,14 @@ class SfAvatar extends SfBaseElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    const badge = elementBadge(this);
 
     return this.createTemplateContext({
       ...props,
       ariaLabel: this.getAttribute("aria-label") || pageText(AVATAR_TEXT, "ariaLabel", this),
+      // The count joins the name: «Анна Белова, 3 непрочитанных».
+      buttonLabel: nameWithBadge(this.getAttribute("aria-label") || pageText(AVATAR_TEXT, "ariaLabel", this), badge.phrase),
+      badge,
       component: this,
       isImage: this.isImage,
       isText: this.isText,
@@ -288,7 +298,7 @@ class SfAvatar extends SfBaseElement {
     }
 
     if (changedAttributes.includes("aria-label")) {
-      button.setAttribute("aria-label", this.ariaLabel);
+      button.setAttribute("aria-label", nameWithBadge(this.ariaLabel, elementBadge(this).phrase));
     }
 
     if (changedAttributes.includes("disabled")) {
@@ -315,6 +325,10 @@ class SfAvatar extends SfBaseElement {
       metaIcon: this.metaIcon,
       cardVariant: this.cardVariant,
       disabled: this.disabled,
+      badgeCount: this.getProp("badgeCount"),
+      badgeDot: this.getProp("badgeDot"),
+      badgeCap: this.getProp("badgeCap"),
+      badgeLabel: this.getProp("badgeLabel"),
     };
   }
 

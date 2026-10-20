@@ -33,3 +33,14 @@ artwork inside a badge is content and may retain its exact brand colors.
 
 Smart/custom-element projection is implemented separately in
 `src/smart/avatar/index.js`.
+
+## Count and dot
+
+A count or a dot is put inside the avatar as `<span class="sf-badge
+sf-badge--anchored" data-count="3"></span>` (or `data-dot`) and the Framework
+places it at the top end, on the circle at 45 degrees or at the corner of the
+square shape; its size follows the avatar's size, sizes 1/4 to 1/2 carry a dot
+only. The online indicator keeps the bottom end, and both may show. The count
+joins the avatar's accessible name. The rules, the markup and the size table
+are in the Badges documentation, section «Бейдж на якоре»
+(simai/ui-source#12).

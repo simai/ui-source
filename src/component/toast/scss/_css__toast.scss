@@ -25,6 +25,7 @@
        surface of its step, with its shadow, and the status tints it. */
     background-color: var(--sf-elevation-3--surface);
     --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+    --sf-badge--surface: var(--sf-elevation-3--surface);
     background-image: linear-gradient(var(--sf-toast--background-color), var(--sf-toast--background-color));
     box-shadow: var(--sf-elevation-3--shadow);
     color: var(--sf-toast--content-color, var(--sf-on-surface));

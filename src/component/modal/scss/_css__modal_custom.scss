@@ -100,6 +100,7 @@
   --sf-modal-surface-shadow: none;
 
   background-color: var(--sf-modal-surface-bg);
+  --sf-badge--surface: var(--sf-modal-surface-bg);
   border: var(--sf-modal-surface-border-width)
     var(--sf-modal-surface-border-style)
     var(--sf-modal-surface-border-color);

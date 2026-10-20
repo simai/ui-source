@@ -3,5 +3,8 @@ SF.RuleLoader['cl-icons'] = {
     type: 'smart',
     mode: 'smart',
     js: true,
-    relation: [{ name: 'icons' }],
+    // The badge sheet places a count or a dot on an icon (simai/ui-source#12).
+    // Icons are everywhere and badges on them are few: it is fetched when the
+    // page is idle, or at once by an icon that has a badge to show.
+    relation: [{ name: 'icons' }, { name: 'badges', lazy: true }],
 };

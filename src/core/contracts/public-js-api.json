@@ -393,6 +393,18 @@
       "summary": "The AdminMenu component's script API, loaded with the component (component/admin-menu); its methods are the component's documentation."
     },
     {
+      "name": "SF.AnchoredBadge",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "component/badges",
+      "summary": "The counts and dots of component/badges kept from markup (simai/ui-source#12): a .sf-badge with data-count or data-dot is drawn, capped, hidden at 0 and named by the runtime as soon as it is in the page. init(scope) takes a subtree at once, update(badge) one badge, state({count, dot, cap, label}, node) answers what a badge shows and says without touching the page.",
+      "members": [
+        "init",
+        "update",
+        "state"
+      ]
+    },
+    {
       "name": "SF.Ajax",
       "status": "internal",
       "kind": "object",

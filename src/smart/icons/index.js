@@ -1,5 +1,6 @@
 import SfBaseElement from "../../core/js/smart-base";
 import { renderIconTemplate } from "./js/templates/default";
+import { elementBadge } from "../helpers/anchored-badge";
 
 const weightClasses = new Map([
   [100, "thin"],
@@ -107,6 +108,11 @@ class SfIcon extends SfBaseElement {
       grade: { type: Number, default: 0 },
       opticalSize: { type: Number, default: 24 },
       label: { type: String, default: "" },
+      // A count or a dot on the icon (simai/ui-source#12).
+      badgeCount: { type: String, default: "" },
+      badgeDot: { type: Boolean, default: false },
+      badgeCap: { type: Number, default: 99 },
+      badgeLabel: { type: String, default: "" },
     };
   }
 
@@ -123,6 +129,10 @@ class SfIcon extends SfBaseElement {
         "grade",
         "optical-size",
         "label",
+        "badge-count",
+        "badge-dot",
+        "badge-cap",
+        "badge-label",
       ]),
     );
   }
@@ -173,6 +183,7 @@ class SfIcon extends SfBaseElement {
       grade: this.iconGrade,
       opticalSize: this.iconOpticalSize,
       label: String(this.getProp("label") || "").trim(),
+      badge: elementBadge(this),
     };
   }
 

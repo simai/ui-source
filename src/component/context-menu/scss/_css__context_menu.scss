@@ -23,6 +23,7 @@
      that keeps its edge where the shadow does not show. */
   --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-elevation-3--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  --sf-badge--surface: var(--sf-context-menu-content--background-color);
   border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
   --sf-context-menu-content--padding-bottom: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
   --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));

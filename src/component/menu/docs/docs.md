@@ -34,3 +34,14 @@ destinations over presenting a disabled link.
 Framework still recognizes existing server markup with a supplied icon button
 or `div[role="button"]`. New generated branches use a native button. Context
 Menu, Admin Menu and Smart Admin Menu have separate behavior contracts.
+
+## Compact menu and counters
+
+A row's counter is a `.sf-badge` with `data-count` inside
+`.sf-menu-element-wrap`, after `.sf-menu-element-text`; it stands at the row's
+end, capped at 99+, hidden at 0, and its phrase ends the row's name. Add
+`sf-menu--compact` to the root `sf-menu` for a rail of top-level destinations:
+each row shows its icon or avatar alone, its words stay in its name out of
+sight, and the counter moves onto the icon's top end corner with the anchored
+badge's geometry and ring (step 1). Branches do not open in a compact menu. See
+the Badges documentation, section «Бейдж на якоре» (simai/ui-source#12).

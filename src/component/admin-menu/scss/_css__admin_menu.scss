@@ -1,5 +1,8 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../badges/scss/anchored-geometry' as anchored;
+
+@include anchored.properties;
 
 @layer sf.components {
   .sf-admin-menu-main {
@@ -27,6 +30,7 @@
                     --sf-admin-menu-panel--background-color,
                     var(--sf-surface-0)
     );
+    --sf-badge--surface: var(--sf-admin-menu-panel--background-color, var(--sf-surface-0));
     border-color: var(
                     --sf-admin-menu-panel--border-color,
                     var(--sf-outline-variant)
@@ -627,6 +631,29 @@
 
   .sf-admin-menu-panel.small .sf-admin-menu-head {
     justify-content: center;
+  }
+
+  /* Compact, an item's counter moves onto its icon (simai/ui-source#12): a
+     .sf-badge inside the item's container -- which holds the icon alone in
+     the flow once the words are hidden -- sits at the icon's top end corner,
+     with the anchored badge's geometry, size and ring. */
+  .sf-admin-menu-panel.small .sf-admin-menu-item-container {
+    position: relative;
+  }
+
+  .sf-admin-menu-panel.small .sf-admin-menu-item .sf-admin-menu-item-container > .sf-badge:not([hidden]) {
+    @include anchored.badge;
+  }
+
+  .sf-admin-menu-panel.small .sf-admin-menu-item .sf-admin-menu-item-container > .sf-badge.sf-badge--dot:not([hidden]) {
+    @include anchored.dot;
+  }
+
+  /* The phrase the count adds to the item's name stays readable. */
+  .sf-admin-menu-panel.small .sf-admin-menu-item span.sf-badge-anchored-text,
+  .sf-admin-menu-panel.small .sf-admin-menu-item > span.sf-badge-anchored-text {
+    @include anchored.visually-hidden;
+    display: block;
   }
 
   @media (max-width: map.get(bp.$breakpoint-array, sm)) {

@@ -1,0 +1,55 @@
+// A compact menu (simai/ui-source#12): a rail of top-level destinations, each
+// row its icon or avatar alone. The words stay in the row for its accessible
+// name, out of sight; a row's counter -- a .sf-badge in the row's wrap -- moves
+// onto the icon the way an anchored badge sits on its anchor, a count at the
+// top end corner, with the same geometry and ring. Branches do not open here.
+@use '../../badges/scss/anchored-geometry' as anchored;
+
+@include anchored.properties;
+
+@layer sf.components {
+  // Beside the words, a counter stands at the row's end.
+  .sf-menu-element-wrap > .sf-badge {
+    flex: none;
+    margin-inline-start: auto;
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element {
+    justify-content: center;
+    padding-inline: var(--sf-menu-element--padding-inline-end, var(--sf-space-1));
+  }
+
+  // The wrap holds the icon alone in the flow, so it is the icon's box: the
+  // counter's anchor.
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap {
+    position: relative;
+    flex: none;
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element-text {
+    @include anchored.visually-hidden;
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element > .sf-icon-button,
+  .sf-menu.sf-menu--compact .sf-menu-item > .sf-menu {
+    display: none;
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-badge {
+    @include anchored.badge;
+    margin-inline-start: 0;
+  }
+
+  // An avatar is round unless it is the square one.
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap:has(> .sf-avatar:not(.sf-avatar--square)) > .sf-badge {
+    --sf-badge--anchor-radius: var(--sf-radius-circle);
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap:has(> .sf-avatar--square) > .sf-badge {
+    --sf-badge--anchor-radius: var(--sf-radius--ui);
+  }
+
+  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-badge.sf-badge--dot {
+    @include anchored.dot;
+  }
+}

@@ -86,6 +86,13 @@
           "summary": "Space between the icon and the text.",
           "default": "var(--sf-space-1/4)",
           "since": "2026-10-13"
+        },
+        {
+          "name": "--sf-badge-ring-color",
+          "role": "ring-color",
+          "summary": "The ring that separates a badge anchored on an avatar, an icon or an icon button from its anchor: the colour of the surface the anchor sits on. Framework surfaces (menus, lists, drawers, modals, toasts) say their own; set it where a page paints a surface of its own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-21"
         }
       ]
     },

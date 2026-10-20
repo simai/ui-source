@@ -21,6 +21,7 @@
     border-radius: var(--sf-radius--surface);
     background-color: var(--sf-elevation-2--surface);
     --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    --sf-badge--surface: var(--sf-elevation-2--surface);
     box-shadow: var(--sf-elevation-2--shadow);
   }
 
