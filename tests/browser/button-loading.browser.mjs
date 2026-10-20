@@ -78,6 +78,8 @@ const READ = `(button) => {
     animation: accent ? getComputedStyle(accent).animationName : null,
     iterations: accent ? getComputedStyle(accent).animationIterationCount : null,
     dash: accent ? getComputedStyle(accent).strokeDasharray : null,
+    spin: spinner ? getComputedStyle(spinner.querySelector('.sf-loader-svg')).animationName : null,
+    spinIterations: spinner ? getComputedStyle(spinner.querySelector('.sf-loader-svg')).animationIterationCount : null,
     stripes: getComputedStyle(button, '::after').backgroundImage,
     stripeAnimation: getComputedStyle(button, '::after').animationName,
   };
@@ -140,7 +142,7 @@ try {
         check(`${at} ${kind}: loading keeps the width and the height`, near(rest.box.width, load.box.width) && near(rest.box.height, load.box.height), {rest: rest.box, load: load.box});
         check(`${at} ${kind}: aria-busy and disabled while loading, neither at rest`, load.busy === 'true' && load.disabled && rest.busy === null && !rest.disabled, {rest: {busy: rest.busy, disabled: rest.disabled}, load: {busy: load.busy, disabled: load.disabled}});
         check(`${at} ${kind}: a spinner while loading, none at rest`, load.spinner && !rest.spinner, {load: load.spinner});
-        check(`${at} ${kind}: the spinner moves without end`, load.animation === 'sf-loader-ring-accent-fill' && load.iterations === 'infinite', {animation: load.animation, iterations: load.iterations});
+        check(`${at} ${kind}: the spinner moves without end`, load.spin === 'sf-loader-svg-rotate' && load.spinIterations === 'infinite' && /^30(px)?, 70(px)?$/u.test(load.dash), {spin: load.spin, iterations: load.spinIterations, dash: load.dash});
         check(`${at} ${kind}: no stripes`, !/rgb/u.test(load.stripes.replace(/rgba\(0, 0, 0, 0\)/gu, '')) && load.stripeAnimation === 'none', {stripes: load.stripes});
       }
       // With an icon: the spinner takes the icon's box and place, the icon goes.
@@ -202,10 +204,10 @@ try {
       <sf-button-group appearance="segmented" aria-label="Действие" value="b" ${items(loadingFirst(TEXT))}></sf-button-group>`});
     const still = await page.evaluate(() => [...document.querySelectorAll('.sf-loader-ring-accent')].map((node) => {
       const style = getComputedStyle(node);
-      return {animation: style.animationName, dash: style.strokeDasharray, opacity: style.opacity};
+      return {animation: style.animationName, spin: getComputedStyle(node.closest('.sf-loader-svg')).animationName, dash: style.strokeDasharray, opacity: style.opacity};
     }));
     evidence.reducedMotion = still;
-    check('reduced motion: a still arc in every loading button', still.length === 4 && still.every((row) => row.animation === 'none' && /^24(px)?, 76(px)?$/u.test(row.dash) && row.opacity === '1'), {still});
+    check('reduced motion: a still arc in every loading button', still.length === 4 && still.every((row) => row.animation === 'none' && row.spin === 'none' && /^30(px)?, 70(px)?$/u.test(row.dash) && row.opacity === '1'), {still});
     await page.close();
   }
 

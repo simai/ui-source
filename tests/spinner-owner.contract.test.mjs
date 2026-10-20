@@ -39,7 +39,13 @@ test('Spinner motion uses Framework tokens and has a static reduced-motion state
   assert.match(base, /--sf-loader-dot-duration: calc\(var\(--sf-duration-slow\) \* 3\)/);
   assert.match(visual, /animation-iteration-count: infinite/);
   assert.match(visual, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(visual, /stroke-dasharray: 24 76/);
+  // The arc (simai/ui-source#13): a fixed 30% of the ring that turns, linear,
+  // once a second; its still frame is the same 30%, breathing's a quarter.
+  assert.match(base, /--sf-loader-arc-duration: calc\(var\(--sf-duration-slow\) \* 2\)/);
+  assert.match(visual, /spin: sf-loader-svg-rotate, spin-duration: var\(--sf-loader-arc-duration\), dash: 30 70,/);
+  assert.match(visual, /dash: 24 76,/);
+  assert.match(visual, /stroke-dasharray: var\(--sf-loader--look-dash, 30 70\)/);
+  assert.doesNotMatch(visual, /sf-loader-ring-accent-fill/);
   assert.doesNotMatch(visual, /3\.2s|1\.4s|opacity: 0\.(?:16|32|62)/);
 });
 

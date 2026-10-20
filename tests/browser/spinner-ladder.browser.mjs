@@ -14,8 +14,8 @@
 //   - the pixel attributes are still read until the sweep and are noted in
 //     SF.deprecations, under the name the page wrote; a spinner on the ladder
 //     notes nothing;
-//   - the arc moves without end when infinite, and under reduced motion it is
-//     a still arc.
+//   - the arc turns without end when infinite (a fixed 30% of the ring,
+//     simai/ui-source#13), and under reduced motion it is the same arc, still.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -56,7 +56,9 @@ const MEASURE = `(root) => {
   const svg = root.querySelector('.sf-loader-svg');
   const accent = root.querySelector('.sf-loader-ring-accent');
   const box = indicator.getBoundingClientRect();
-  const drawn = svg.getBoundingClientRect();
+  // The drawing's own width, not its bounding box: the arc turns the drawing
+  // (simai/ui-source#13), and a turned box is wider than the drawing.
+  const drawn = {width: svg.clientWidth};
   const view = svg.viewBox.baseVal;
   return {
     width: box.width, height: box.height,
@@ -65,6 +67,8 @@ const MEASURE = `(root) => {
     animation: getComputedStyle(accent).animationName,
     iterations: getComputedStyle(accent).animationIterationCount,
     dash: getComputedStyle(accent).strokeDasharray,
+    spin: getComputedStyle(svg).animationName,
+    spinIterations: getComputedStyle(svg).animationIterationCount,
   };
 }`;
 
@@ -103,7 +107,7 @@ try {
         const spinner = row[kind];
         check(`${at} ${kind}: the spinner is the button's icon box`, near(spinner.width, row.icon.width) && near(spinner.height, row.icon.height) && row.icon.width > 0, {icon: row.icon, spinner});
         check(`${at} ${kind}: the stroke is the icon's stroke (2 of 24 units)`, near(spinner.stroke, row.icon.width / 12), {icon: row.icon, spinner});
-        check(`${at} ${kind}: an infinite arc moves without end`, spinner.animation === 'sf-loader-ring-accent-fill' && spinner.iterations === 'infinite', spinner);
+        check(`${at} ${kind}: an infinite arc turns without end, its length fixed at 30%`, spinner.spin === 'sf-loader-svg-rotate' && spinner.spinIterations === 'infinite' && spinner.animation === 'none' && /^30(px)?, 70(px)?$/u.test(spinner.dash), spinner);
       }
     }
     const none = rows.find((row) => row.size === 'none').ordinary;
@@ -164,8 +168,8 @@ try {
         return {...result, opacity: getComputedStyle(accent).opacity};
       });
     }, MEASURE);
-    evidence.reducedMotion = still.map(({animation, dash, opacity}) => ({animation, dash, opacity}));
-    check('reduced motion: no animation, a visible still arc', still.length === 5 && still.every((row) => row.animation === 'none' && /^24(px)?, 76(px)?$/u.test(row.dash) && row.opacity === '1'), {still});
+    evidence.reducedMotion = still.map(({animation, spin, dash, opacity}) => ({animation, spin, dash, opacity}));
+    check('reduced motion: no animation, the arc still at 30%', still.length === 5 && still.every((row) => row.animation === 'none' && row.spin === 'none' && /^30(px)?, 70(px)?$/u.test(row.dash) && row.opacity === '1'), {still});
     await page.close();
   }
 } finally {

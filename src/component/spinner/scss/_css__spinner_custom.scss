@@ -6,27 +6,29 @@
    inherits: data-sf-spinner on html, body or any block sets them for
    everything inside it, the nearest such block winning, and data-variant on a
    spinner sets them for that spinner above both. With none set, the fallbacks
-   where they are read are the arc's. An unknown name is the arc too. */
+   where they are read are the arc's. An unknown name is the arc too.
+   `dash` is the arc's length where no motion draws it: the arc's own (a fixed
+   30% of the ring, simai/ui-source#13) and the still frame of breathing. */
 $sf-loader-looks: (
   'arc': (
     track: inline, accent: inline, comet: none, dots: none,
-    motion: sf-loader-ring-accent-fill, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
-    spin: none, spin-duration: var(--sf-loader-spin-duration),
+    motion: none, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
+    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-arc-duration), dash: 30 70,
   ),
   'breathing': (
     track: inline, accent: inline, comet: none, dots: none,
     motion: sf-loader-breathing, motion-duration: var(--sf-loader-breath-duration), motion-easing: var(--sf-animation),
-    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-spin-duration),
+    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-spin-duration), dash: 24 76,
   ),
   'comet': (
     track: inline, accent: none, comet: inline, dots: none,
     motion: none, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
-    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-comet-duration),
+    spin: sf-loader-svg-rotate, spin-duration: var(--sf-loader-comet-duration), dash: 30 70,
   ),
   'dots': (
     track: none, accent: none, comet: none, dots: inline,
     motion: none, motion-duration: var(--sf-loader-cycle-duration), motion-easing: linear,
-    spin: none, spin-duration: var(--sf-loader-spin-duration),
+    spin: none, spin-duration: var(--sf-loader-spin-duration), dash: 30 70,
   ),
 );
 
@@ -82,12 +84,14 @@ $sf-loader-looks: (
   }
 }
 
-/* Breathing and comet turn the whole drawing; the track is a full ring and
-   does not show it. */
+/* The arc, breathing and comet turn the whole drawing; the track is a full
+   ring and does not show it. The arc is nothing but that turn: a fixed 30% of
+   the ring going round at one turn a second, so its length never changes --
+   breathing's does (simai/ui-source#13). */
 /* In longhands: in the shorthand a name of none reads as the fill mode. */
 .sf-loader-container .sf-loader-svg {
-  animation-name: var(--sf-loader--look-spin, none);
-  animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-spin-duration));
+  animation-name: var(--sf-loader--look-spin, sf-loader-svg-rotate);
+  animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-arc-duration));
   animation-timing-function: linear;
   animation-fill-mode: both;
 }
@@ -105,13 +109,14 @@ $sf-loader-looks: (
   display: var(--sf-loader--look-accent, inline);
   fill: none;
   stroke: currentColor;
+  stroke-dasharray: var(--sf-loader--look-dash, 30 70);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: var(--sf-loader-stroke-width);
 }
 
 .sf-loader-container .sf-loader--loading-indicator .sf-loader-ring-accent {
-  animation-name: var(--sf-loader--look-motion, sf-loader-ring-accent-fill);
+  animation-name: var(--sf-loader--look-motion, none);
   animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
   animation-timing-function: var(--sf-loader--look-motion-easing, linear);
   animation-fill-mode: both;
@@ -184,9 +189,9 @@ $sf-loader-looks: (
   }
 }
 
-/* Reduced motion: a still frame of every look -- the arc (breathing's too) a
-   quarter of the ring, the comet where it is drawn, the dots with their lit
-   ones brighter. */
+/* Reduced motion: a still frame of every look -- the arc its own 30% of the
+   ring, breathing's arc a quarter of it (each the look's dash), the comet
+   where it is drawn, the dots with their lit ones brighter. */
 @media (prefers-reduced-motion: reduce) {
   .sf-loader-container .sf-loader-svg,
   .sf-loader-container .sf-loader-ring-accent,
@@ -196,7 +201,6 @@ $sf-loader-looks: (
 
   .sf-loader-container .sf-loader-ring-accent {
     opacity: 1;
-    stroke-dasharray: 24 76;
   }
 }
 
@@ -216,56 +220,6 @@ $sf-loader-looks: (
 
   100% {
     stroke-dasharray: 4 96;
-    stroke-dashoffset: -100;
-  }
-}
-
-@keyframes sf-loader-ring-accent-fill {
-  0% {
-    opacity: 0;
-    stroke-dasharray: 0.01 100;
-    stroke-dashoffset: 0;
-  }
-
-  10% {
-    opacity: 0;
-    stroke-dasharray: 0.01 100;
-    stroke-dashoffset: 0;
-  }
-
-  18% {
-    opacity: 1;
-    stroke-dasharray: 6 94;
-    stroke-dashoffset: 0;
-  }
-
-  42% {
-    opacity: 1;
-    stroke-dasharray: 100 0;
-    stroke-dashoffset: 0;
-  }
-
-  58% {
-    opacity: 1;
-    stroke-dasharray: 100 0;
-    stroke-dashoffset: 0;
-  }
-
-  82% {
-    opacity: 1;
-    stroke-dasharray: 6 94;
-    stroke-dashoffset: -94;
-  }
-
-  90% {
-    opacity: 0;
-    stroke-dasharray: 0.01 100;
-    stroke-dashoffset: -100;
-  }
-
-  100% {
-    opacity: 0;
-    stroke-dasharray: 0.01 100;
     stroke-dashoffset: -100;
   }
 }

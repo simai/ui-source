@@ -16,8 +16,13 @@
 //     an empty one inherits; SF_BOOT_CONFIG.spinner writes it on html unless
 //     the page wrote its own;
 //   - every look draws in the current ink, and --sf-loader--color replaces it;
-//   - every look moves (breathing and comet turn), and under reduced motion
-//     every look is a still frame: two frames apart are the same pixels.
+//   - every look moves (arc, breathing and comet turn), and under reduced
+//     motion every look is a still frame: two frames apart are the same pixels;
+//   - the arc (simai/ui-source#13), at every step and in every kind of
+//     spinner, is a fixed 30% of the ring with round caps: its dash is the same
+//     in every frame while the drawing turns, linear, one turn a second, by as
+//     much as the time between two frames says; breathing's length changes;
+//     under reduced motion the arc is the same 30%, still.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -68,7 +73,7 @@ const loadingFirst = (list) => list.map((item, index) => (index === 0 ? {...item
 const LOOK = `(root) => {
   const style = (selector) => getComputedStyle(root.querySelector(selector));
   const shown = (selector) => style(selector).display !== 'none';
-  const motion = getComputedStyle(root).getPropertyValue('--sf-loader--look-motion').trim() || 'sf-loader-ring-accent-fill';
+  const motion = getComputedStyle(root).getPropertyValue('--sf-loader--look-motion').trim() || 'none';
   const layers = {track: shown('.sf-loader-ring-filled'), arc: shown('.sf-loader-ring-accent'), comet: shown('.sf-loader-comet'), dots: shown('.sf-loader-dots')};
   const visible = Object.entries(layers).filter(([key, on]) => on && key !== 'track').map(([key]) => key);
   let look = visible.length === 1 ? visible[0] : 'mixed:' + visible.join('+');
@@ -276,12 +281,105 @@ try {
         check(`${look}: it moves`, row.moved, row);
       }
     }
-    check('breathing and comet turn; arc and dots do not', reducedMotion === 'reduce'
+    check('arc, breathing and comet turn; dots do not; only breathing moves its arc', reducedMotion === 'reduce'
       || (motion.breathing.spin.join() === 'sf-loader-svg-rotate' && motion.comet.spin.join() === 'sf-loader-svg-rotate'
-        && motion.arc.spin.join() === 'none' && motion.dots.spin.join() === 'none'
-        && motion.breathing.arc.join() === 'sf-loader-breathing' && motion.arc.arc.join() === 'sf-loader-ring-accent-fill'
+        && motion.arc.spin.join() === 'sf-loader-svg-rotate' && motion.dots.spin.join() === 'none'
+        && motion.breathing.arc.join() === 'sf-loader-breathing' && motion.arc.arc.join() === 'none'
         && motion.dots.dot.join() === 'sf-loader-dot-wave'), motion);
     await page.close();
+  }
+
+  // 6. The arc (simai/ui-source#13): a fixed 30% of the ring that turns. At
+  // every step, in sf-spinner, the ordinary spinner and a loading button, and
+  // in breathing beside it: frames ~250 ms apart, each read with the time of
+  // the turn, so a loaded machine that skips frames still measures the turn
+  // the clock says.
+  {
+    const kinds = (size, look) => `<div data-look="${look}" data-sf-spinner="${look}" data-size="${size}" style="display:flex;gap:8px;padding:4px">
+      <sf-spinner size="${size}" infinite label=""></sf-spinner>
+      <div class="sf-loader-container sf-loader--size-${size}" data-infinite="true"></div>
+      <sf-button size="${size}" icon="save" text="Сохранить" loading></sf-button></div>`;
+    const ARC = `(root) => {
+      const svg = root.querySelector('.sf-loader-svg');
+      const accent = root.querySelector('.sf-loader-ring-accent');
+      const style = getComputedStyle(accent);
+      const turn = getComputedStyle(svg);
+      const matrix = new DOMMatrixReadOnly(turn.transform === 'none' ? undefined : turn.transform);
+      const animation = svg.getAnimations().find((item) => item.animationName === 'sf-loader-svg-rotate');
+      const dash = style.strokeDasharray.split(/[ ,]+/u).map(parseFloat);
+      return {
+        dash, offset: parseFloat(style.strokeDashoffset) || 0, path: Number(accent.getAttribute('pathLength')),
+        fraction: dash[0] / Number(accent.getAttribute('pathLength')),
+        length: dash[0] / Number(accent.getAttribute('pathLength')) * accent.getTotalLength(),
+        cap: style.strokeLinecap, display: style.display,
+        angle: (Math.atan2(matrix.b, matrix.a) * 180 / Math.PI + 360) % 360,
+        time: animation ? Number(animation.currentTime) : null,
+        name: turn.animationName, duration: turn.animationDuration, easing: turn.animationTimingFunction,
+      };
+    }`;
+    for (const reducedMotion of ['no-preference', 'reduce']) {
+      const page = await open({reducedMotion, body: SIZES.map((size) => kinds(size, 'arc') + kinds(size, 'breathing')).join('')});
+      const sample = () => page.evaluate((source) => {
+        const read = eval(source);
+        return [...document.querySelectorAll('[data-look]')].map((block) => ({
+          look: block.dataset.look, size: block.dataset.size,
+          kinds: [...block.querySelectorAll('.sf-loader-container')].map((node) => read(node)),
+        }));
+      }, ARC);
+      const frames = [];
+      const shots = {};
+      for (let index = 0; index < 4; index += 1) {
+        frames.push(await sample());
+        if (reducedMotion === 'reduce' && index < 2) {
+          for (const size of SIZES) (shots[size] ||= []).push(await page.locator(`[data-look="arc"][data-size="${size}"]`).screenshot());
+        }
+        await page.waitForTimeout(reducedMotion === 'reduce' ? 350 : 250);
+      }
+      const measured = {};
+      for (const size of SIZES) {
+        for (const look of ['arc', 'breathing']) {
+          const series = frames.map((frame) => frame.find((row) => row.look === look && row.size === size).kinds);
+          const kindsCount = series[0].length;
+          for (let kind = 0; kind < kindsCount; kind += 1) {
+            const at = `${look} size ${size} kind ${['sf-spinner', 'ordinary', 'button'][kind]} (${reducedMotion})`;
+            const rows = series.map((frame) => frame[kind]);
+            if (look === 'breathing') {
+              if (reducedMotion === 'no-preference') {
+                const lengths = rows.map((row) => row.dash[0]);
+                check(`${at}: breathing's arc changes length`, Math.max(...lengths) - Math.min(...lengths) > 5, {lengths});
+                if (kind === 0) measured[`breathing@${size}`] = lengths.map((value) => Number(value.toFixed(1)));
+              }
+              continue;
+            }
+            check(`${at}: the arc is shown, round-capped`, rows.every((row) => row.display !== 'none' && row.cap === 'round'), rows[0]);
+            check(`${at}: the arc is 30% of the ring in every frame`, rows.every((row) => row.path === 100 && Math.abs(row.fraction - 0.3) <= 0.02 && Math.abs(row.dash[0] + row.dash[1] - 100) <= 0.01), {dash: rows.map((row) => row.dash)});
+            check(`${at}: the arc's length and offset never change`, rows.every((row) => row.dash.join() === rows[0].dash.join() && row.offset === rows[0].offset && Math.abs(row.length - rows[0].length) < 0.001), {rows});
+            if (reducedMotion === 'reduce') {
+              check(`${at}: still under reduced motion`, rows.every((row) => row.name === 'none' && row.angle === rows[0].angle && row.time === null), {rows});
+              continue;
+            }
+            check(`${at}: one linear turn a second`, rows.every((row) => row.name === 'sf-loader-svg-rotate' && row.duration === '1s' && row.easing === 'linear'), rows[0]);
+            const turns = rows.slice(1).map((row, index) => {
+              const previous = rows[index];
+              const moved = (row.angle - previous.angle + 360) % 360;
+              const expected = (((row.time - previous.time) / 1000) * 360 % 360 + 360) % 360;
+              return {moved: Number(moved.toFixed(1)), expected: Number(expected.toFixed(1)), ms: Math.round(row.time - previous.time)};
+            });
+            const agrees = (turn) => Math.min(Math.abs(turn.moved - turn.expected), 360 - Math.abs(turn.moved - turn.expected)) <= 3;
+            check(`${at}: the arc turns between frames, as far as the clock says`, turns.every(agrees) && turns.some((turn) => turn.moved > 5 && turn.moved < 355), {turns});
+            if (kind === 0) measured[`arc@${size}`] = {fraction: rows.map((row) => Number(row.fraction.toFixed(3))), dash: rows[0].dash.join(' '), cap: rows[0].cap, length: Number(rows[0].length.toFixed(2)), duration: rows[0].duration, easing: rows[0].easing, turns};
+          }
+        }
+      }
+      if (reducedMotion === 'reduce') {
+        for (const size of SIZES) {
+          check(`arc size ${size}: two frames 350 ms apart are the same pixels under reduced motion`, shots[size][0].equals(shots[size][1]));
+          measured[`arc@${size}`] = {...measured[`arc@${size}`], fraction: frames.map((frame) => Number(frame.find((row) => row.look === 'arc' && row.size === size).kinds[0].fraction.toFixed(3))), samePixels: shots[size][0].equals(shots[size][1])};
+        }
+      }
+      evidence[`arc:${reducedMotion}`] = measured;
+      await page.close();
+    }
   }
 } finally {
   await browser.close();
