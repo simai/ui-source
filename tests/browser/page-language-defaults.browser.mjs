@@ -43,7 +43,7 @@ const server = createServer((request, response) => {
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
 
-const english = ['Loading...', 'Result pages', 'Pages:', 'Previous page', 'Next page', 'Total:', 'Per page:',
+const english = ['Loading…', 'Result pages', 'Pages:', 'Previous page', 'Next page', 'Total:', 'Per page:',
   'Breadcrumb', 'Show hidden breadcrumbs', 'Steps', 'Completed', 'Remove', 'Modal', 'Close alert', 'Close message'];
 const failures = [];
 const seen = {};
@@ -77,7 +77,7 @@ try {
     if (seen[`${lang}-modal`].heading !== untitled) failures.push(`${lang}: an untitled window is headed ${JSON.stringify(seen[`${lang}-modal`].heading)}, expected ${untitled}`);
     const found = english.filter((text) => texts.includes(text));
     if (lang === 'ru' && found.length) failures.push(`ru: English text on a Russian page: ${found.join(', ')}`);
-    if (lang === 'en' && !found.includes('Loading...')) failures.push(`en: the dictionary's English is missing (${found.join(', ') || 'none'})`);
+    if (lang === 'en' && !found.includes('Loading…')) failures.push(`en: the dictionary's English is missing (${found.join(', ') || 'none'})`);
     await tab.close();
   }
 } finally {

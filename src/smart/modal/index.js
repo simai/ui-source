@@ -16,10 +16,26 @@ import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus } from "../../component/modal/js/_stack";
 
 // The header's two actions, named in the page's language: they were English on
-// every page (documentation trial, 2026-10-12).
+// every page (documentation trial, 2026-10-12). The loading state and its
+// failure said "Loading..." and "Failed to load content" on every page too
+// (simai/ui-source#11 follow-up); they speak the page's language as well.
 const MODAL_TEXT = {
-  en: { close: "Close", minimize: "Minimize", title: "Dialog" },
-  ru: { close: "Закрыть", minimize: "Свернуть", title: "Окно" },
+  en: {
+    close: "Close",
+    minimize: "Minimize",
+    title: "Dialog",
+    loading: "Loading…",
+    loadFailed: "Failed to load content",
+    frameFailed: "Failed to load iframe content",
+  },
+  ru: {
+    close: "Закрыть",
+    minimize: "Свернуть",
+    title: "Окно",
+    loading: "Загрузка…",
+    loadFailed: "Не удалось загрузить содержимое",
+    frameFailed: "Не удалось загрузить встроенную страницу",
+  },
 };
 
 let modalUid = 0;
@@ -550,14 +566,18 @@ class SfModal extends SfBaseElement {
     if (this._isLoadingRemote) {
       // The Framework's one spinner, in the page's look (simai/ui-source#11),
       // kept across renders so its motion does not restart; the modal sheet
-      // draws its slot.
+      // draws its slot. The words are the page's language's, and the state
+      // is a status region named by them, so it is announced, not only seen.
+      const loading = pageText(MODAL_TEXT, "loading", this);
       return html`
         <div
           class="sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4"
           data-sf-modal-state="loading"
+          role="status"
+          aria-label=${loading}
         >
           ${this._loadingSpinnerNode()}
-          <p class="m-0 text-2 color-on-surface-variant">Loading...</p>
+          <p class="m-0 text-2 color-on-surface-variant">${loading}</p>
         </div>
       `;
     }
@@ -1220,7 +1240,8 @@ class SfModal extends SfBaseElement {
     let aborted = false;
     this.requestComponentUpdate("remote-loading");
     this.emitContentEvent("modal:before-content-upload");
-    this._fetchController = new AbortController();
+    const controller = new AbortController();
+    this._fetchController = controller;
 
     try {
       if (this.src.startsWith("#")) {
@@ -1232,7 +1253,7 @@ class SfModal extends SfBaseElement {
         this._remoteHtml = source.innerHTML;
       } else {
         const response = await fetch(this.src, {
-          signal: this._fetchController.signal,
+          signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -1247,14 +1268,19 @@ class SfModal extends SfBaseElement {
       if (error.name === "AbortError") {
         aborted = true;
       } else {
-        this._remoteError = error.message || "Failed to load content";
+        this._remoteError = error.message || pageText(MODAL_TEXT, "loadFailed", this);
       }
     } finally {
-      this._fetchController = null;
-      this._isLoadingRemote = false;
-      this.requestComponentUpdate("remote-content");
-      if (!aborted) {
-        this.emitContentEvent("modal:after-content-upload");
+      // A load aborted by a newer one leaves the state to it: clearing it here
+      // took the loading state down while the newer load was still waiting.
+      const superseded = aborted && this._fetchController && this._fetchController !== controller;
+      if (!superseded) {
+        this._fetchController = null;
+        this._isLoadingRemote = false;
+        this.requestComponentUpdate("remote-content");
+        if (!aborted) {
+          this.emitContentEvent("modal:after-content-upload");
+        }
       }
     }
   }
@@ -1265,7 +1291,7 @@ class SfModal extends SfBaseElement {
   };
 
   handleIframeError = () => {
-    this._remoteError = "Failed to load iframe content";
+    this._remoteError = pageText(MODAL_TEXT, "frameFailed", this);
     this.requestComponentUpdate("remote-content");
   };
 

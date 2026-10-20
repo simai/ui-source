@@ -56,7 +56,7 @@
       "label": {
         "type": "string",
         "default": "",
-        "description": "Empty: the text of the page's language (\"Loading...\" in English)."
+        "description": "Empty: the text of the page's language (\"Loading…\" in English)."
       },
       "kind": {
         "type": "string",

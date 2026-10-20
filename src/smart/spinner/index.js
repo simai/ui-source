@@ -7,7 +7,7 @@ import {pageText} from "../../core/js/page-language";
 // adds any other through SF.language.register("sf-spinner", code, words).
 const SPINNER_TEXT = {
   en: {
-    label: 'Loading...',
+    label: 'Loading…',
   },
   ru: {
     label: 'Загрузка…',
