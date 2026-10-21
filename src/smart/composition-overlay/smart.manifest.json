@@ -444,7 +444,7 @@
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "3d3e18a88181a12712eb8d812de87894d272fa656c26c70e52e0db8db3cc114a"
+        "sha256": "871e5e7c95e47ce43dbe7616a984cfdc0e7a048900f6d438121bd84f7a6bf056"
       },
       {
         "path": "src/core/js/composition/canonical.mjs",

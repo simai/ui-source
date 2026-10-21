@@ -256,6 +256,29 @@ function emitIntent(target, detail) {
   target.dispatchEvent(new globalThis.CustomEvent(SORTABLE_INTENT_EVENT, { bubbles: true, composed: true, detail: Object.freeze(detail) }));
 }
 
+// A keyboard move ends with the person's focus on the item they moved. The
+// host applies the intent by redrawing its list, and a redraw that replaces
+// the dragged element drops focus to the body: the keyboard user lost their
+// place in the page and had to tab back from the top (consumer case
+// ui-mail.sortable-editor-recipe, 2026-10-21). Two frames after the drop --
+// the host has redrawn by then -- the item with the same id takes focus back,
+// in whichever list it landed. A host that restores focus itself keeps it:
+// focus is only moved when it fell to the body or out of the document.
+function restoreFocusAfterDrop(ended) {
+  const document_ = globalThis.document;
+  const id = ended.item;
+  if (!id || !document_) return;
+  const place = () => {
+    const active = document_.activeElement;
+    if (active && active !== document_.body && document_.contains(active)) return;
+    const scope = ended.list && document_.contains(ended.list) ? ended.list : document_;
+    const item = scope.querySelector(`[data-sf-sortable-item="${globalThis.CSS?.escape ? globalThis.CSS.escape(id) : id}"]`);
+    item?.focus?.({ preventScroll: false });
+  };
+  if (typeof globalThis.requestAnimationFrame !== 'function') { place(); return; }
+  globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(place));
+}
+
 function finish(list, reason) {
   if (!shared.session) return;
   const ended = shared.session;
@@ -270,6 +293,7 @@ function finish(list, reason) {
   for (const target of externalTargets) target.leave?.();
   globalThis.document.documentElement.removeAttribute('data-sf-sortable-active');
   list.dispatchEvent(new globalThis.CustomEvent(SORTABLE_STATE_EVENT, { bubbles: true, composed: true, detail: Object.freeze({ state: reason, item: ended.item }) }));
+  if (reason === 'dropped' && ended.input === 'keyboard') restoreFocusAfterDrop(ended);
 }
 
 export function defineSortable(registry = globalThis.customElements) {
@@ -306,7 +330,7 @@ export function defineSortable(registry = globalThis.customElements) {
       this.addEventListener('focusin', (event) => this.prepareItem(event.target.closest?.(ITEM)), options);
       for (const item of items(this)) this.prepareItem(item);
       // Items the host adds later become focusable and draggable as well.
-      this.observer = new globalThis.MutationObserver(() => { for (const item of items(this)) this.prepareItem(item); });
+      this.observer = new globalThis.MutationObserver(() => { this.ensureAccessibilityNodes(); for (const item of items(this)) this.prepareItem(item); });
       this.observer.observe(this, { childList: true, subtree: true });
       this.setAttribute('data-sf-sortable', 'connected');
     }
@@ -328,7 +352,21 @@ export function defineSortable(registry = globalThis.customElements) {
       if (!item.querySelector(HANDLE)) item.style.touchAction = 'none';
     }
 
+    // The list keeps its live region and its instructions among its own
+    // children, so a host that redraws the list with replaceChildren() takes
+    // them out: announcements then went to a detached node, and items said
+    // nothing (consumer case ui-mail.sortable-editor-recipe, 2026-10-21). The
+    // component owns these two nodes and puts them back, with the same
+    // instructions id the items point at through aria-describedby.
+    ensureAccessibilityNodes() {
+      if (!this.live || !this.instructions) return;
+      if (this.live.parentNode === this && this.instructions.parentNode === this) return;
+      this.instructions.textContent = messages().instructions;
+      this.append(this.live, this.instructions);
+    }
+
     announce(text) {
+      this.ensureAccessibilityNodes();
       if (this.live) this.live.textContent = text;
     }
 

@@ -55,6 +55,7 @@ class SfButton extends SfBaseElement {
   constructor() {
     super();
     this._attributeObserver = null;
+    this._textFromChildren = "";
   }
 
   static get props() {
@@ -133,7 +134,32 @@ class SfButton extends SfBaseElement {
   }
 
   get text() {
-    return this.getAttribute("text") || "";
+    return this.getAttribute("text") || this._textFromChildren || "";
+  }
+
+  // The label a button written in JavaScript carries, the way every element
+  // carries one: createElement('sf-button') with textContent = 'Добавить', and
+  // <sf-button>Добавить</sf-button> in HTML. The text attribute and the text
+  // slot still come first. Before, an unslotted text child was left where it
+  // was: the button rendered empty and the text stood beside it as a second,
+  // unstyled label (consumer case ui-mail.button-text-content, 2026-10-21).
+  captureTextChildren() {
+    if (this.hasSlotContent?.("text")) return;
+
+    const nodes = Array.from(this.childNodes).filter(
+      (node) => node.nodeType === 3 && String(node.textContent).trim() !== "",
+    );
+    if (!nodes.length) return;
+
+    this._textFromChildren = nodes
+      .map((node) => String(node.textContent).trim())
+      .join(" ");
+    nodes.forEach((node) => node.remove());
+  }
+
+  onConnected() {
+    this.captureTextChildren();
+    super.onConnected?.();
   }
 
   get icon() {
@@ -208,10 +234,15 @@ class SfButton extends SfBaseElement {
   }
 
   templateContext() {
+    // A child parsed after connectedCallback is still the label.
+    this.captureTextChildren?.();
     const props = this.getPropsContext();
 
     return this.createTemplateContext({
       ...props,
+      // Through the getter: the props context knows only the text attribute,
+      // and a button whose label is a text child has none.
+      text: this.text,
       iconLeft: props.iconStart ?? props.iconLeft,
       iconRight: props.iconEnd ?? props.iconRight,
       // Resolved names the template reads (contracts/template-context.json).

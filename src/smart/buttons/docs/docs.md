@@ -88,6 +88,38 @@ Supported through `SfBaseElement` with:
 - `/local/smart/templates/buttons/<template>/index.js`
 - `/local/smart/templates/buttons/<template>/index.css`
 
+## The label
+
+Three ways to give the button its label, in this order:
+
+1. a `text` slot (`<span slot="text">…</span>`);
+2. the `text` attribute;
+3. a text child — `<sf-button>Добавить</sf-button>`, and the same from code:
+
+```js
+const add = document.createElement('sf-button');
+add.textContent = 'Добавить';     // the label, like on any element
+add.dataset.add = 'block';        // stays on the host, see below
+panel.append(add);
+```
+
+The child is taken into the button as its label when the button draws; it is
+not left beside it. An unslotted child *element* is not a label — wrap it in
+`slot="text"` or use the attribute.
+
+## Host attributes
+
+Attributes the component does not own are copied to the native `<button>` it
+renders, so an author's `aria-*`, `title` or `data-*` reach the real control.
+`data-*` are **copied, not moved**: they stay on the host as well, so
+`querySelector('sf-button[data-add]')`, `host.dataset.add` and a host attribute
+selector all answer, and delegation reading `event.target.dataset` keeps
+working because the native button has the same copy. Removing a `data-*` from
+the host removes it from the button on the next render.
+
+The component's own attributes (the list above, plus `class`, `style`, `id` and
+`slot`) are not copied: they are what the component reads.
+
 ## Slot overrides
 
 Supported light-DOM slot names:

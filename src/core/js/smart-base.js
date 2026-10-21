@@ -1243,6 +1243,15 @@ class SfBaseElement extends HTMLElement {
     return this;
   }
 
+  // Host attributes the component does not own are copied to the control it
+  // renders, so a native button gets the author's aria-, data- and ordinary
+  // attributes. data-* are copied, never moved: they were taken off the host,
+  // and a product that wrote data-add on <sf-button> then found nothing --
+  // querySelector('sf-button[data-add]'), host.dataset and a host attribute
+  // selector all came back empty (consumer case ui-mail.button-data-attributes,
+  // 2026-10-21). The host stays the place the author wrote them; the inner
+  // control gets the same copy, so delegation reading event.target.dataset
+  // keeps working.
   forwardHostAttributes(target, options = {}) {
     if (!target) {
       return this;
@@ -1256,9 +1265,8 @@ class SfBaseElement extends HTMLElement {
     } = options;
 
     const excludeSet = exclude instanceof Set ? exclude : new Set(exclude);
-    const dataAttributes = this[storageKey] || new Map();
+    const dataAttributes = new Map();
     const previous = target[targetStorageKey] || new Set();
-    const dataAttributeNamesToRemove = [];
     const nextKeys = new Set();
 
     previous.forEach((name) => {
@@ -1278,27 +1286,16 @@ class SfBaseElement extends HTMLElement {
 
       if (transferDataAttributes && name.startsWith("data-")) {
         dataAttributes.set(name, value);
-        dataAttributeNamesToRemove.push(name);
-        return;
       }
 
       nextKeys.add(name);
       target.setAttribute(name, value);
     });
 
-    dataAttributes.forEach((value, name) => {
-      nextKeys.add(name);
-      target.setAttribute(name, value);
-    });
-
     target[targetStorageKey] = nextKeys;
+    // The record of what was copied, rebuilt from the host every time: a
+    // data-* the author removed from the host leaves the target as well.
     this[storageKey] = dataAttributes;
-
-    if (dataAttributeNamesToRemove.length) {
-      this.__sfForwardingHostAttributes = true;
-      dataAttributeNamesToRemove.forEach((name) => this.removeAttribute(name));
-      this.__sfForwardingHostAttributes = false;
-    }
 
     return this;
   }
