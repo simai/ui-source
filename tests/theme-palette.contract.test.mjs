@@ -30,8 +30,30 @@ test('another colour moves the brand palettes and leaves the status ones', () =>
   const base = themeFromColor(DEFAULT_THEME_COLOR);
   assert.notEqual(green.palettes.primary.tones[40], base.palettes.primary.tones[40]);
   assert.equal(Math.round(green.palettes.tertiary.hue), Math.round((green.source.hue + 60) % 360));
-  for (const status of ['error', 'warning', 'success']) assert.deepEqual(green.palettes[status], base.palettes[status], status);
+  for (const status of ['error', 'warning', 'success', 'info']) assert.deepEqual(green.palettes[status], base.palettes[status], status);
   assert.deepEqual(themeFromColor('#2E7D32'), themeFromColor('2e7d32'));
+});
+
+// Information is a status, not the brand (owner, 2026-10-21, simai/ui-source#14):
+// derived from the source colour, info went red under a red primary and read as
+// danger. These are the owner-approved tones of #005bbe, and no brand colour
+// moves them.
+const INFO_PALETTE = Object.freeze({
+  98: '#f9f9ff', 95: '#edf0ff', 90: '#d7e2ff', 85: '#c2d4ff', 80: '#acc7ff', 70: '#7eabff',
+  60: '#538ff5', 50: '#3375d9', 40: '#005bbe', 35: '#0050a8', 30: '#004492', 25: '#00397c',
+  20: '#002f67', 15: '#002453', 10: '#001a40', 5: '#00102c',
+});
+
+test('info is the fixed palette of #005bbe under every brand colour, and stays far from error', () => {
+  const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR};
+  for (const [name, color] of Object.entries(primaries)) {
+    const theme = themeFromColor(color);
+    const variables = themeVariables(theme);
+    for (const tone of THEME_TONES) assert.equal(variables[`--sf-info-${tone}`], INFO_PALETTE[tone], `${name}: --sf-info-${tone}`);
+    // Information and danger never tell the same story in the same colour.
+    const apart = Math.abs(theme.palettes.info.hue - theme.palettes.error.hue) % 360;
+    assert.ok(Math.min(apart, 360 - apart) >= 90, `${name}: info and error are ${Math.min(apart, 360 - apart)} deg apart`);
+  }
 });
 
 test('a palette rule can be overridden, and a bad colour is refused', () => {

@@ -139,23 +139,28 @@
     --sf-primary-90--alfa-24: #d7e2ff3d;
     --sf-primary-85: #c2d5ff;
     --sf-primary-80: #acc7ff;
+    /* Information is a status with its own palette of #005bbe, not the brand
+       colour (owner, 2026-10-21, simai/ui-source#14). These primitives used to
+       equal primary's, so the theme generator told information in red under a
+       red brand colour. The owner approved this HCT tonal palette (hue 265.1,
+       chroma 58.6) whole, and theme-palette.js writes the same one. */
     --sf-info-98: #f9f9ff;
     --sf-info-95: #edf0ff;
     --sf-info-90: #d7e2ff;
-    --sf-info-85: #c2d5ff;
+    --sf-info-85: #c2d4ff;
     --sf-info-80: #acc7ff;
     --sf-info-70: #7eabff;
-    --sf-info-60: #488fff;
-    --sf-info-50: #0073ed;
-    --sf-info-50--alfa-12: #0073ed1f;
-    --sf-info-50--alfa-16: #0073ed29;
-    --sf-info-50--alfa-20: #0073ed33;
-    --sf-info-50--alfa-24: #0073ed3d;
-    --sf-info-50--alfa-28: #0073ed47;
-    --sf-info-50--alfa-32: #0073ed52;
+    --sf-info-60: #538ff5;
+    --sf-info-50: #3375d9;
+    --sf-info-50--alfa-12: #3375d91f;
+    --sf-info-50--alfa-16: #3375d929;
+    --sf-info-50--alfa-20: #3375d933;
+    --sf-info-50--alfa-24: #3375d93d;
+    --sf-info-50--alfa-28: #3375d947;
+    --sf-info-50--alfa-32: #3375d952;
     --sf-info-40: #005bbe;
-    --sf-info-35: #0050a7;
-    --sf-info-30: #004491;
+    --sf-info-35: #0050a8;
+    --sf-info-30: #004492;
     --sf-info-25: #00397c;
     --sf-info-20: #002f67;
     --sf-info-15: #002453;
