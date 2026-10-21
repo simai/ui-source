@@ -119,6 +119,33 @@ normal DOM position. Base Dropdown watches both portal and data-portal and binds
 projected-list pointer handlers only while they are needed. Each selection still
 emits one change event, including after repeated mode switches.
 
+## The change event
+
+A selection emits `change` on the host — bubbling and composed, the name to
+bind. The former name `sf-dropdown:change` still arrives with the same detail.
+
+The detail answers what was chosen and what is selected now:
+
+```js
+field.addEventListener('change', (event) => {
+  const {value, label, values, multiple} = event.detail;
+  save(multiple ? values : value);
+});
+```
+
+- `value` — the machine value of the item chosen or cleared, `''` when none;
+- `label` — its visible text;
+- `values` — every selected value after the change, in submitted order;
+- `multiple` — whether several values can be selected;
+- `item` — the chosen `sf-list-item`, or `null`;
+- `root` — the emitting `sf-dropdown`.
+
+`item` and `root` are **live elements, not data**: the detail is not JSON, and
+`JSON.stringify(event.detail)` throws on its circular structure. Take the
+fields you need — `{value, label, values}` are strings and strings — and log or
+send those. The same holds for every Smart change detail that names its
+emitter: `sf-button-group` sends `component`.
+
 Main attributes:
 
 - `template`

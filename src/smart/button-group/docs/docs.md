@@ -13,6 +13,18 @@ ARIA orientation. Состояние остаётся controlled через ат
 прежнее имя `sf-button-group-change` приходит с тем же detail. Сохранение выбора и
 бизнес-действие принадлежат приложению.
 
+В `detail` приходят `previous`, `value`, `item` и `component` — сам
+`sf-button-group`. `component` — живой элемент, а не данные: `detail` не JSON, и
+`JSON.stringify(event.detail)` падает на циклической структуре. Берите нужные
+поля (`previous` и `value` — строки) и отправляйте их:
+
+```js
+group.addEventListener('change', (event) => {
+  const {previous, value} = event.detail;
+  apply(value, previous);
+});
+```
+
 Для независимых команд используйте обычный `.sf-button-group` с `role="group"`,
 не Smart-компонент.
 
