@@ -3884,10 +3884,14 @@ SFLoaderPlugin.prototype.versionAssetUrl = function (pluginURL) {
 };
 
 SFLoaderPlugin.prototype.addStyle = async function (pluginURL) {
+  const src = this.versionAssetUrl(pluginURL);
+  return onceByUrl('styles', src, () => this.insertStyle(src, pluginURL));
+};
+
+SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
   return new Promise((resolve, reject) => {
     const head = document.getElementsByTagName('head')[0];
     const style = document.createElement('link');
-    const src = this.versionAssetUrl(pluginURL);
 
     style.href = src;
     style.type = 'text/css';
@@ -3905,6 +3909,48 @@ SFLoaderPlugin.prototype.addStyle = async function (pluginURL) {
   });
 };
 
+// One insertion per asset URL, shared by every Loader on the page
+// (simai/ui-source#12 follow-up). A dependency named by several plugins --
+// badges, by sf-avatar, sf-icon, sf-icon-button and sf-badge -- had its script
+// inserted once per plugin, and a runtime with module-scope state then ran
+// once per copy. The registry lives on a shared global, not in this module,
+// because each bundle carries its own copy of the module: a pending load hands
+// back the same promise, a loaded one stays resolved, a failed one is
+// forgotten so a later call may try again.
+const ASSET_REGISTRY = Symbol.for('simai.sf.loader.assets');
+
+function assetRegistry() {
+  const scope = globalThis;
+  if (!scope[ASSET_REGISTRY]) {
+    Object.defineProperty(scope, ASSET_REGISTRY, {
+      value: {scripts: new Map(), styles: new Map()},
+      configurable: true,
+    });
+  }
+  return scope[ASSET_REGISTRY];
+}
+
+function assetKey(src) {
+  try {
+    return new URL(src, globalThis.document?.baseURI || globalThis.location?.href).href;
+  } catch {
+    return String(src);
+  }
+}
+
+function onceByUrl(kind, src, insert) {
+  const loads = assetRegistry()[kind];
+  const key = assetKey(src);
+  const known = loads.get(key);
+  if (known) return known;
+  const load = insert();
+  loads.set(key, load);
+  load.catch(() => {
+    if (loads.get(key) === load) loads.delete(key);
+  });
+  return load;
+}
+
 SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   if (typeof document === 'undefined' || !pluginURL) return;
   const href = this.versionAssetUrl(pluginURL);
@@ -3919,10 +3965,14 @@ SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
 };
 
 SFLoaderPlugin.prototype.addScript = function (pluginURL, param = {}) {
+  const src = this.versionAssetUrl(pluginURL);
+  return onceByUrl('scripts', src, () => this.insertScript(src, pluginURL, param));
+};
+
+SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {
   return new Promise((resolve, reject) => {
     const head = document.getElementsByTagName('head')[0];
     const script = document.createElement('script');
-    const src = this.versionAssetUrl(pluginURL);
 
     script.src = src;
     script.async = true;

@@ -621,11 +621,26 @@
 
   .sf-admin-menu-panel.small
   .sf-admin-menu-item
-  > *:not(.sf-admin-menu-item-container),
+  > *:not(.sf-admin-menu-item-container) {
+    display: none;
+  }
+
+  /* Compact, an item's words leave the sight, not the accessibility tree
+     (simai/ui-source#12 follow-up): display: none took them out of both, so
+     every item was named by its icon's ligature -- «Избранное» read "star".
+     The words are hidden the way a compact sf-menu hides them; the initials
+     of an item without an icon stay, they are its avatar. */
   .sf-admin-menu-panel.small
   .sf-admin-menu-item
   .sf-admin-menu-item-container
-  span:not(.sf-admin-menu-item-icon) {
+  span:not(.sf-admin-menu-item-icon, .sf-admin-menu-item-placeholder, .sf-badge) {
+    @include anchored.visually-hidden;
+  }
+
+  .sf-admin-menu-panel.small
+  .sf-admin-menu-item
+  .sf-admin-menu-item-container
+  > .sf-badge[hidden] {
     display: none;
   }
 

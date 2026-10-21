@@ -127,7 +127,7 @@ const sfIconButtonMeta = {
       kind: 'custom',
       valueType: 'string',
       default: '',
-      description: "A count on the icon button (simai/ui-source#12): a whole number above 0 shows, 0 or empty hides the badge. Above badge-cap it reads «<cap>+»; the exact number joins the icon button's accessible name («Анна Белова, 3 непрочитанных») and the badge's tooltip. On an anchor of size 1/3 or 1/2 a count is drawn as a dot.",
+      description: "A count on the icon button (simai/ui-source#12): a whole number above 0 shows, 0 or empty hides the badge. Above badge-cap it reads «<cap>+»; the exact number joins the icon button's accessible name («Уведомления, 5 непрочитанных») and the badge's tooltip. On an anchor of size 1/3 or 1/2 a count is drawn as a dot.",
     },
     'badge-dot': {
       kind: 'boolean',
