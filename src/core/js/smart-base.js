@@ -1244,14 +1244,22 @@ class SfBaseElement extends HTMLElement {
   }
 
   // Host attributes the component does not own are copied to the control it
-  // renders, so a native button gets the author's aria-, data- and ordinary
-  // attributes. data-* are copied, never moved: they were taken off the host,
-  // and a product that wrote data-add on <sf-button> then found nothing --
-  // querySelector('sf-button[data-add]'), host.dataset and a host attribute
-  // selector all came back empty (consumer case ui-mail.button-data-attributes,
-  // 2026-10-21). The host stays the place the author wrote them; the inner
-  // control gets the same copy, so delegation reading event.target.dataset
-  // keeps working.
+  // renders, so a native button gets the author's aria- and ordinary
+  // attributes. data-* are the exception: they stay on the host and are not
+  // copied anywhere, because a data-* names one element and must be found once.
+  // They used to be moved to the inner control, and a product that wrote
+  // data-add on <sf-button> then found nothing -- querySelector(
+  // 'sf-button[data-add]'), host.dataset and a host attribute selector all came
+  // back empty (consumer case ui-mail.button-data-attributes, 2026-10-21). The
+  // first fix copied them instead, and then every such attribute was on two
+  // elements: querySelectorAll('[data-action="close"]') answered 2 where the
+  // product expected 1, and querySelector('[data-sf-admin-search-toggle]')
+  // returned the display:contents host, which took no focus (consumer cases
+  // larena.property-view-arranging and larena.admin-menu-search, 2026-10-22).
+  // So the host keeps them and keeps them alone. Delegation reads them with
+  // event.target.closest('[data-...]'), which reaches the host from the control
+  // inside it; the host's own focus() delegates inward (focusDelegate), so the
+  // element a data-* selector finds is also the element to focus.
   forwardHostAttributes(target, options = {}) {
     if (!target) {
       return this;
@@ -1259,7 +1267,7 @@ class SfBaseElement extends HTMLElement {
 
     const {
       exclude = [],
-      transferDataAttributes = true,
+      hostKeepsDataAttributes = true,
       storageKey = "__sfForwardedDataAttributes",
       targetStorageKey = "__sfForwardedAttributeKeys",
     } = options;
@@ -1284,8 +1292,9 @@ class SfBaseElement extends HTMLElement {
         return;
       }
 
-      if (transferDataAttributes && name.startsWith("data-")) {
+      if (hostKeepsDataAttributes && name.startsWith("data-")) {
         dataAttributes.set(name, value);
+        return;
       }
 
       nextKeys.add(name);
@@ -1293,8 +1302,10 @@ class SfBaseElement extends HTMLElement {
     });
 
     target[targetStorageKey] = nextKeys;
-    // The record of what was copied, rebuilt from the host every time: a
-    // data-* the author removed from the host leaves the target as well.
+    // What the host kept, rebuilt from the host every time. The target no
+    // longer carries these, and a name this pass did not see is removed from
+    // the target above, so a data-* copied by an earlier version leaves the
+    // control on the first render after the upgrade.
     this[storageKey] = dataAttributes;
 
     return this;
@@ -1324,6 +1335,57 @@ class SfBaseElement extends HTMLElement {
     this._forwardHostAttributeObserver?.disconnect?.();
     this._forwardHostAttributeObserver = null;
     return this;
+  }
+
+  // The control inside the host that takes focus on the host's behalf. A Smart
+  // host lays out as display:contents, so it generates no box and cannot be
+  // focused: focus() on it did nothing and left document.activeElement where it
+  // was. A component that renders a native control names it here.
+  //
+  // This is what makes a data-* on the host usable as a handle. A product finds
+  // the host by the attribute it wrote -- the one element that carries it -- and
+  // then focuses what it found: Larena's admin menu returns focus to its
+  // magnifier that way, with this.querySelector('[data-sf-admin-search-toggle]')
+  // and .focus() on the answer (consumer case larena.admin-menu-search,
+  // 2026-10-22). Focus lands on the native control, so document.activeElement is
+  // the control and host.contains(document.activeElement) is true.
+  focusDelegate() {
+    return null;
+  }
+
+  focus(options) {
+    const target = this.focusDelegate?.();
+
+    if (target && typeof target.focus === "function") {
+      target.focus(options);
+      return;
+    }
+
+    // Asked before the control exists: focus once it does, and only if nothing
+    // else took focus while this waited -- a queued focus must not steal it back.
+    if (!target && typeof this.focusDelegate === "function" && !this.isRendered) {
+      const activeWhenAsked = this.ownerDocument?.activeElement || null;
+      this.whenRendered(() => {
+        const ready = this.focusDelegate?.();
+        if (!ready || typeof ready.focus !== "function") return;
+        if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
+        ready.focus(options);
+      });
+      return;
+    }
+
+    super.focus(options);
+  }
+
+  blur() {
+    const target = this.focusDelegate?.();
+
+    if (target && typeof target.blur === "function") {
+      target.blur();
+      return;
+    }
+
+    super.blur();
   }
 
   removeAttributes(attributeNames = []) {

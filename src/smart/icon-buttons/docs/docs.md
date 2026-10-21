@@ -68,6 +68,8 @@ Runtime helpers:
 - `element.onBlur(handler)`
 - `element.onMouseEnter(handler)`
 - `element.onMouseLeave(handler)`
+- `element.focus(options)` — focus the native control inside the host
+- `element.blur()`
 
 Metadata:
 
@@ -115,3 +117,27 @@ Close variant:
   aria-label="Close"
 ></sf-icon-button>
 ```
+
+## Host attributes
+
+Attributes the component does not own are copied to the native `<button>` it
+renders, so an author's `aria-*` or `title` reach the real control.
+
+`data-*` are the exception: **they stay on the host, and only there** — the
+same rule as `<sf-button>`. A `data-*` names one element, so
+`querySelector('[data-sf-admin-search-toggle]')` answers the
+`<sf-icon-button>` host and `querySelectorAll('[data-action="close"]')` counts
+it once. Delegation reads it with `event.target.closest('[data-action]')`,
+which reaches the host from the native button inside it.
+
+The host lays out as `display: contents` and takes no focus itself, so
+`focus()` on it goes to the native button inside — the element a `data-*`
+selector finds is the element to focus:
+
+```js
+const toggle = menu.querySelector('[data-sf-admin-search-toggle]');
+toggle.focus();                          // focus lands on the native button
+menu.contains(document.activeElement);   // true
+```
+
+`blur()` works the same way.

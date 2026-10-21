@@ -4,24 +4,72 @@ import test from 'node:test';
 import {URL} from 'node:url';
 
 // What a Smart host does with the light DOM and the attributes an author wrote
-// on it. Every case here came from the first real editor built on the
-// Framework (ui-mail M2 consumer journal, 2026-10-21).
+// on it. The cases came from the first real editor built on the Framework
+// (ui-mail M2 consumer journal, 2026-10-21) and from the Larena package probes
+// that the first answer to them broke (larena.property-view-arranging and
+// larena.admin-menu-search, 2026-10-22).
 const root = new URL('../', import.meta.url);
 const read = path => readFile(new URL(path, root), 'utf8');
 
-test('host data attributes are copied to the rendered control and stay on the host', async () => {
+test('a host data attribute stays on the host and is on no other element', async () => {
   const base = await read('src/core/js/smart-base.js');
 
   // The host was losing them: forwarding moved data-* to the inner native
   // control, so querySelector('sf-button[data-add]') and host.dataset came
   // back empty (ui-mail.button-data-attributes).
   assert.doesNotMatch(base, /dataAttributeNamesToRemove/, 'data-* are no longer taken off the host');
-  assert.doesNotMatch(base, /dataAttributeNamesToRemove\.forEach\(\(name\) => this\.removeAttribute\(name\)\)/);
-  assert.match(base, /if \(transferDataAttributes && name\.startsWith\("data-"\)\) \{\s*dataAttributes\.set\(name, value\);\s*\}/);
-  // The copy on the target is rebuilt from the host on every pass, so a
-  // data-* the author removes leaves the control as well.
+
+  // Copying them instead put every data-* on two elements, and a product that
+  // counted them got 2 where it wrote 1 (larena.property-view-arranging). The
+  // host keeps them and the loop returns: nothing reaches the target.
+  assert.match(
+    base,
+    /if \(hostKeepsDataAttributes && name\.startsWith\("data-"\)\) \{\s*dataAttributes\.set\(name, value\);\s*return;\s*\}/u,
+    'a data-* is recorded on the host and the forwarding loop stops there',
+  );
+  assert.doesNotMatch(base, /transferDataAttributes/, 'the option no longer says the attributes are transferred');
+
+  // Rebuilt from the host on every pass, and the names this pass did not see
+  // are removed from the target: a data-* copied by the previous version
+  // leaves the control on the first render after the upgrade.
   assert.match(base, /const dataAttributes = new Map\(\);/);
+  assert.match(base, /previous\.forEach\(\(name\) => \{\s*target\.removeAttribute\(name\);/u);
   assert.match(base, /this\[storageKey\] = dataAttributes;/);
+
+  // Neither button asks for the old behaviour.
+  for (const path of ['src/smart/buttons/index.js', 'src/smart/icon-buttons/index.js']) {
+    const source = await read(path);
+    assert.doesNotMatch(source, /transferDataAttributes/, `${path} does not ask for data-* to be transferred`);
+    assert.match(source, /hostKeepsDataAttributes: true/, `${path} keeps data-* on the host`);
+  }
+});
+
+test('focus() on a host reaches the control inside it', async () => {
+  const base = await read('src/core/js/smart-base.js');
+
+  // A data-* selector answers the host, and a product focuses what it found:
+  // the host is display:contents and took no focus, so Escape no longer
+  // returned focus to Larena's magnifier (larena.admin-menu-search).
+  assert.match(base, /focusDelegate\(\) \{\s*return null;\s*\}/u, 'the base names no control; a component does');
+  assert.match(
+    base,
+    /focus\(options\) \{\s*const target = this\.focusDelegate\?\.\(\);\s*\n\s*if \(target && typeof target\.focus === "function"\) \{\s*target\.focus\(options\);\s*return;\s*\}/u,
+    'focus() on the host goes to the named control',
+  );
+  assert.match(base, /blur\(\) \{\s*const target = this\.focusDelegate\?\.\(\);/u, 'blur() follows focus()');
+
+  // Asked before the control exists, the focus waits for the first render --
+  // and is dropped if something else took focus meanwhile, so a queued focus
+  // never steals it back.
+  assert.match(base, /!this\.isRendered/u);
+  assert.match(base, /this\.whenRendered\(\(\) => \{/u);
+  assert.match(base, /if \(\(this\.ownerDocument\?\.activeElement \|\| null\) !== activeWhenAsked\) return;/u);
+
+  const button = await read('src/smart/buttons/index.js');
+  assert.match(button, /focusDelegate\(\) \{\s*return this\.querySelector\("\.sf-button"\);\s*\}/u);
+
+  const iconButton = await read('src/smart/icon-buttons/index.js');
+  assert.match(iconButton, /focusDelegate\(\) \{\s*return this\.querySelector\('\.sf-icon-button'\);\s*\}/u);
 });
 
 test('a text child is the button label, not a second label beside it', async () => {
@@ -49,6 +97,16 @@ test('button documentation names all three label sources and the data-* rule', a
 
   assert.match(docs, /## The label/);
   assert.match(docs, /<sf-button>Добавить<\/sf-button>/);
-  assert.match(docs, /copied, not moved/);
-  assert.match(docs, /querySelector\('sf-button\[data-add\]'\)/);
+  assert.match(docs, /they stay on the host, and only there/);
+  assert.match(docs, /event\.target\.closest\('\[data-add\]'\)/, 'the docs show how delegation reads a host attribute');
+  assert.match(docs, /`focus\(\)` on it goes to the native button inside/);
+});
+
+test('icon button documentation states the same host-attribute and focus rule', async () => {
+  const docs = await read('src/smart/icon-buttons/docs/docs.md');
+
+  assert.match(docs, /## Host attributes/);
+  assert.match(docs, /they stay on the host, and only there/);
+  assert.match(docs, /data-sf-admin-search-toggle/);
+  assert.match(docs, /`focus\(\)` on it goes to the native button inside/);
 });

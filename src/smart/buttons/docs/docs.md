@@ -66,6 +66,8 @@ Runtime helpers:
 - `element.onBlur(handler)`
 - `element.onMouseEnter(handler)`
 - `element.onMouseLeave(handler)`
+- `element.focus(options)` — focus the native control inside the host
+- `element.blur()`
 
 Metadata:
 
@@ -110,12 +112,41 @@ not left beside it. An unslotted child *element* is not a label — wrap it in
 ## Host attributes
 
 Attributes the component does not own are copied to the native `<button>` it
-renders, so an author's `aria-*`, `title` or `data-*` reach the real control.
-`data-*` are **copied, not moved**: they stay on the host as well, so
-`querySelector('sf-button[data-add]')`, `host.dataset.add` and a host attribute
-selector all answer, and delegation reading `event.target.dataset` keeps
-working because the native button has the same copy. Removing a `data-*` from
-the host removes it from the button on the next render.
+renders, so an author's `aria-*` or `title` reach the real control.
+
+`data-*` are the exception: **they stay on the host, and only there.** A
+`data-*` names one element, so one element must carry it —
+`querySelector('[data-add]')` answers the `<sf-button>` host,
+`querySelectorAll('[data-action="close"]')` counts it once, and
+`host.dataset.add` reads it. Earlier versions moved them to the native button
+(then the host had none) and then copied them to it (then every `data-*` was on
+two elements and a count came back doubled).
+
+Delegation reads them from the control inside:
+
+```js
+list.addEventListener('click', (event) => {
+  const add = event.target.closest('[data-add]');   // reaches the sf-button host
+  if (add) addBlock(add.dataset.add);
+});
+```
+
+`event.target` is the native button, so `event.target.dataset.add` is empty —
+`closest()` is what reads a host attribute, as it does for every `data-*` an
+author writes on an `<sf-button>`.
+
+Focus follows the same element. The host lays out as `display: contents` and
+takes no focus itself, so `focus()` on it goes to the native button inside:
+
+```js
+const toggle = panel.querySelector('[data-search-toggle]');  // the host
+toggle.focus();                   // focus lands on the native button inside
+panel.contains(document.activeElement);   // true
+```
+
+`blur()` works the same way. Asked before the button has drawn, the focus is
+applied on its first render — and skipped if something else took focus while it
+waited.
 
 The component's own attributes (the list above, plus `class`, `style`, `id` and
 `slot`) are not copied: they are what the component reads.

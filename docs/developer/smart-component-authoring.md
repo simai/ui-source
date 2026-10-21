@@ -156,6 +156,29 @@ the next one.
   `tests/browser/host-port-request.browser.mjs`. The ports themselves are
   public: `src/core/contracts/ports/<port>/<version>/` (`component-packages.md`).
 
+- **A `data-*` an author writes on the host stays on the host, and nowhere
+  else.** `forwardHostAttributes` copies the attributes the component does not
+  own to the native control it renders, and leaves `data-*` out of that copy
+  (`hostKeepsDataAttributes`). A `data-*` names one element, so one element
+  carries it: `querySelector('[data-add]')` answers the host and
+  `querySelectorAll('[data-action="close"]')` counts it once. Both other
+  shapes were wrong in production — moving them to the control emptied the
+  host a product had written them on, and copying them put every one on two
+  elements and doubled a count. Delegation reads them from inside with
+  `event.target.closest('[data-...]')`.
+  `tests/smart-host-light-dom.contract.test.mjs`;
+  `tests/browser/host-data-attributes-focus.browser.mjs`.
+
+- **A component that renders a focusable control names it in
+  `focusDelegate()`**, and the base sends `focus()` and `blur()` on the host
+  there. A Smart host lays out as `display: contents`, so it generates no box
+  and cannot be focused: without a delegate, `focus()` on the host did nothing
+  and left `document.activeElement` where it was. This is what makes a host
+  `data-*` usable as a handle — a product finds the host by the attribute it
+  wrote and focuses the answer. A focus asked before the first render is
+  applied when the control appears, and dropped if something else took focus
+  while it waited. Same checks as above.
+
 ## Surfaces and lines
 
 - **Height is a pair**: what floats takes `--sf-elevation-N--surface` and

@@ -37,7 +37,7 @@ const COMPONENT_ATTRIBUTES = new Set([
 function applyButtonAttributes(host, button) {
   host?.forwardHostAttributes(button, {
     exclude: COMPONENT_ATTRIBUTES,
-    transferDataAttributes: true,
+    hostKeepsDataAttributes: true,
     storageKey: "__sfButtonForwardedDataAttributes",
     targetStorageKey: "__sfButtonAttributeKeys",
   });
@@ -279,12 +279,20 @@ class SfButton extends SfBaseElement {
         () => this.querySelector(".sf-button"),
         {
           exclude: COMPONENT_ATTRIBUTES,
-          transferDataAttributes: true,
+          hostKeepsDataAttributes: true,
           storageKey: "__sfButtonForwardedDataAttributes",
           targetStorageKey: "__sfButtonAttributeKeys",
         },
       )._forwardHostAttributeObserver;
     }
+  }
+
+  // The native button is what takes focus: the host lays out as
+  // display:contents and takes none. host.focus() reaches it through this, so
+  // the element a data-* selector finds -- the host, the only place that
+  // attribute lives -- is also the element a product can focus.
+  focusDelegate() {
+    return this.querySelector(".sf-button");
   }
 
   get value() {
