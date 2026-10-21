@@ -459,3 +459,77 @@ test('a static icon is filled only when something says so, not when --sf-icon--f
     globalThis.Node = originalNode;
   }
 });
+
+// An app that serves its own icons, with no subset service to ask (consumer
+// case ui-mail.icons-offline, 2026-10-21).
+test('icons.enabled = false asks for no subset at all', async () => {
+  const loader = new TestLoader();
+  globalThis.window.SF_BOOT_CONFIG = {icons: {enabled: false}};
+
+  try {
+    assert.equal(loader.isIconSubsetEnabled(), false);
+    assert.deepEqual(loader.getIconSubsetRequestConfig().icons, []);
+    assert.equal(await loader.loadFonts(), false, 'nothing is requested');
+    // The full font the icons stylesheet declares is the app's own file.
+    assert.equal(
+      loader.getIconFallbackFontUrl('outlined'),
+      '/assets/simai-framework/ui/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2',
+    );
+  } finally {
+    globalThis.window.SF_BOOT_CONFIG = {};
+  }
+});
+
+test('an app can serve the fallback fonts and the subset service itself', () => {
+  const loader = new TestLoader();
+  globalThis.window.SF_BOOT_CONFIG = {
+    icons: {
+      subsetHost: 'https://icons.example.com',
+      fallbackFonts: {outlined: '/fw/fonts/symbols.woff2'},
+      fallbackFontUrl: '/fw/fonts/any.woff2',
+    },
+  };
+
+  try {
+    assert.equal(loader.getIconSubsetHost(), 'https://icons.example.com');
+    assert.equal(loader.getIconFallbackFontUrl('outlined'), '/fw/fonts/symbols.woff2');
+    // A family without its own entry falls to the outlined one, then to the
+    // single fallbackFontUrl, and only then to the distribution's path.
+    assert.equal(loader.getIconFallbackFontUrl('sharp'), '/fw/fonts/symbols.woff2');
+  } finally {
+    globalThis.window.SF_BOOT_CONFIG = {};
+  }
+});
+
+test('a build-time static subset asks for exactly the icons it names', () => {
+  const loader = new TestLoader();
+  globalThis.window.SF_BOOT_CONFIG = {
+    icons: {staticSubset: {icons: ['home', 'upload_file'], weights: ['400']}},
+  };
+
+  try {
+    assert.equal(loader.hasConfiguredIconSubset(), true);
+    const request = loader.getIconSubsetRequestConfig();
+    assert.deepEqual(request.icons, ['home', 'upload_file']);
+    assert.deepEqual([...request.weights], ['400']);
+    // Discovery adds nothing on top of the named list.
+    assert.equal(loader.trackIconDescriptor('search'), 0);
+  } finally {
+    globalThis.window.SF_BOOT_CONFIG = {};
+  }
+});
+
+test('the offline and self-hosted settings are documented', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const {URL} = await import('node:url');
+  const documentation = await readFile(
+    new URL('../docs/developer/icon-subset-runtime.md', import.meta.url),
+    'utf8',
+  );
+
+  assert.match(documentation, /## An app that serves its own icons/);
+  for (const setting of ['icons.enabled = false', 'icons.subsetHost', 'icons.fallbackFonts', 'icons.staticSubset']) {
+    assert.ok(documentation.includes(setting), `${setting} is documented`);
+  }
+  assert.match(documentation, /component\/icons\/fonts\/MaterialSymbols-Outlined\.woff2/);
+});

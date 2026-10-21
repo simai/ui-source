@@ -151,3 +151,26 @@ test('Tabs documents legacy appearance semantics without reinterpreting or restr
     assert.match(branch, /scheme=\$\{context.scheme\}/);
   }
 });
+
+// Which control a two-option switch is, and why a pill row looked all-selected
+// (consumer case ui-mail.tabs-pills-scheme, 2026-10-21).
+test('Tabs documentation sends a segmented switch to the button group and explains the pills paint', async () => {
+  const {readFile: readTabsFile} = await import('node:fs/promises');
+  const {URL: TabsUrl} = await import('node:url');
+  const [docs, skin] = await Promise.all([
+    readTabsFile(new TabsUrl('../src/smart/tabs/docs/docs.md', import.meta.url), 'utf8'),
+    readTabsFile(new TabsUrl('../src/component/tabs/scss/_css__tabs.scss', import.meta.url), 'utf8'),
+  ]);
+
+  // The pills skin only rounds the tabs: the paint is the button appearance
+  // that `scheme` selects.
+  assert.match(skin, /\.sf-tabs--pills > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button/);
+  assert.doesNotMatch(
+    skin.split('.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button')[1]?.slice(0, 600) ?? '',
+    /background-color|--sf-button--color/,
+  );
+  assert.match(docs, /## Pills, and what a two-option switch is/);
+  assert.match(docs, /scheme="outline"/);
+  assert.match(docs, /sf-button-group appearance="segmented"/);
+  assert.match(docs, /Tabs are for panels/);
+});

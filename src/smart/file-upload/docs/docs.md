@@ -60,9 +60,12 @@ does not change the control's dimensions or paint over neighboring file text.
 ## Attributes
 
 - `size="1/3|1/2|1|2|3"`
-- `icon`
-- `link-text`
-- `text`
+- `icon` — the glyph in the drop zone; the neutral default is `upload_file`
+- `link-text` — the link words inside the zone ("Выберите файл", "Click to
+  upload"); the component's own words when not set
+- `text` — the words **after** the link, on the same line ("или перетащите его
+  сюда", "or drag and drop"); the component's own words when not set. It is not
+  the whole prompt and does not replace `link-text`
 - `formats`
 - `supporting-text`
 - `accept`
@@ -83,6 +86,82 @@ does not change the control's dimensions or paint over neighboring file text.
 - `clear()`
 - `removeItem(index)`
 - `setState({...})`
+
+## The item
+
+One item is a plain object. `getItems()` returns them, `setItems()` takes them,
+and every event carries one as `event.detail.item` with its `index` and the
+whole `items` array. The component builds items of this shape from a selection
+and keeps the `File` object on each.
+
+| Key | Meaning |
+|---|---|
+| `id` | The item's identity across `setItems()` calls, which is how state transitions become `file-error`, `file-complete` and `complete` events. A selection uses `<name>-<size>-<lastModified>`. Without an `id`, the name and position identify the item. |
+| `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
+| `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
+| `progress` | `0`–`100`, kept exactly as given: reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
+| `state` (or `status`) | `process` (the bar), `done` (the check), `error` (the retry button). Anything else reads `process`. |
+| `errorMessage` (or `retryText`) | The label of the retry button on an `error` item. The component's own "Повторить"/"Try again" when not set. |
+| `icon` | The glyph on the row; `cloud_upload` when not set. |
+| `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
+
+Transport, progress and server validation belong to the consumer: it sets the
+item's `progress` and `state` through `setItems()` as its own upload proceeds.
+
+## Binding before the element is upgraded
+
+`onFileAdd()` and the other `on…()` methods exist once the Loader has upgraded
+the element; called on a `<sf-file-upload>` that is still an unknown element
+they throw (`… is not a function`). Two ways that always work:
+
+```js
+// 1. The event, which does not need the method: it bubbles from the host.
+upload.addEventListener('sf-file-upload:file-add', (event) => add(event.detail.item));
+
+// 2. Wait for the definition, then use the methods.
+await customElements.whenDefined('sf-file-upload');
+upload.onFileAdd((event) => add(event.detail.item));
+```
+
+Event names: `sf-file-upload:file-add`, `:file-error`, `:file-complete`,
+`:file-remove`, `:file-retry`, `:complete`.
+
+## A browser-only import: select → validate → store → retry
+
+No server: the files go to IndexedDB and the component shows what happened.
+
+```js
+const upload = document.querySelector('sf-file-upload');
+const items = new Map();                       // id -> item
+
+upload.addEventListener('sf-file-upload:file-add', async (event) => {
+  const item = {...event.detail.item};
+  items.set(item.id, item);
+  await store(item);
+});
+
+upload.addEventListener('sf-file-upload:file-retry', (event) => {
+  const item = items.get(event.detail.item.id);
+  if (item) store({...item, state: 'process', progress: 0});
+});
+
+async function store(item) {
+  const next = {...item, state: 'process', progress: 10};
+  items.set(item.id, next);
+  upload.setItems([...items.values()]);        // the bar moves
+  try {
+    if (item.file.size > 5 * 1024 * 1024) throw new Error('Файл больше 5 МБ');
+    await put(item.id, item.file);             // IndexedDB
+    items.set(item.id, {...next, state: 'done', progress: 100});
+  } catch (error) {
+    items.set(item.id, {...next, state: 'error', errorMessage: error.message});
+  }
+  upload.setItems([...items.values()]);
+}
+```
+
+The retry button carries `errorMessage`, so the message and the action are the
+same control: the person reads why it failed and presses it to try again.
 
 ## Example
 

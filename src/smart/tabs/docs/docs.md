@@ -55,6 +55,33 @@ the tab. External custom templates still own their semantic markup.
 
 Reference pattern: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
 
+## Pills, and what a two-option switch is
+
+`type="pills"` only rounds the tabs; their paint comes from `scheme`, which
+selects the button appearance. With the default `scheme` every pill is a filled
+button, the selected one in its selected state — a row where nothing stands
+out. For pills where only the selected tab is filled use `scheme="outline"`
+(or `link`):
+
+```html
+<sf-tabs type="pills" scheme="outline" aria-label="Разделы"></sf-tabs>
+```
+
+Tabs are not a switch. For a two-option segmented switch — two choices, no
+panels — use the segmented button group:
+
+```html
+<sf-button-group appearance="segmented" aria-label="Вид" value="edit"
+  items='[{"value":"edit","label":"Редактор"},{"value":"code","label":"Код"}]'></sf-button-group>
+```
+
+It is a `radiogroup` with one tab stop, arrows, Home and End, and its track is
+the height of an `sf-button` of the same `size`, so it stands in a row with the
+header's buttons. Pills are a tablist of button-shaped tabs and do not follow
+the button height ladder; a pill row beside buttons will not line up with them.
+Tabs are for panels: each tab shows its own panel, and the switch only reports
+a value.
+
 ## Подчёркнутые вкладки: размеры
 
 У `type="underline"` вкладка — это её подпись и линия, без отступов по бокам.
