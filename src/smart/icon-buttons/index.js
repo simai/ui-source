@@ -33,7 +33,7 @@ const COMPONENT_ATTRIBUTES = new Set([
 function applyButtonAttributes(host, button) {
   host?.forwardHostAttributes(button, {
     exclude: COMPONENT_ATTRIBUTES,
-    hostKeepsDataAttributes: true,
+    transferDataAttributes: true,
     storageKey: '__sfIconButtonForwardedDataAttributes',
     targetStorageKey: '__sfIconButtonAttributeKeys',
   });
@@ -238,7 +238,7 @@ class SfIconButton extends SfBaseElement {
         () => this.querySelector('.sf-icon-button'),
         {
           exclude: COMPONENT_ATTRIBUTES,
-          hostKeepsDataAttributes: true,
+          transferDataAttributes: true,
           storageKey: '__sfIconButtonForwardedDataAttributes',
           targetStorageKey: '__sfIconButtonAttributeKeys',
         },
@@ -247,11 +247,10 @@ class SfIconButton extends SfBaseElement {
   }
 
   // The native button is what takes focus: the host lays out as
-  // display:contents and takes none. host.focus() reaches it through this, so
-  // the element a data-* selector finds -- the host, the only place that
-  // attribute lives -- is also the element a product can focus. Larena's admin
-  // menu focuses its magnifier this way, through
-  // querySelector('[data-sf-admin-search-toggle]').
+  // display:contents and takes none, so focus() on the host did nothing and
+  // left document.activeElement where it was. A product that holds the host --
+  // from querySelector('sf-icon-button'), or from closest('sf-icon-button') on a data-* match --
+  // focuses it and reaches the control through this.
   focusDelegate() {
     return this.querySelector('.sf-icon-button');
   }

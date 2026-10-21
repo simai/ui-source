@@ -68,6 +68,8 @@ Runtime helpers:
 - `element.onMouseLeave(handler)`
 - `element.focus(options)` — focus the native control inside the host
 - `element.blur()`
+- `element.dataAttributes` — the `data-*` the author wrote on the host
+- `element.removeHostDataAttribute(name)`
 
 Metadata:
 
@@ -114,33 +116,53 @@ not left beside it. An unslotted child *element* is not a label — wrap it in
 Attributes the component does not own are copied to the native `<button>` it
 renders, so an author's `aria-*` or `title` reach the real control.
 
-`data-*` are the exception: **they stay on the host, and only there.** A
-`data-*` names one element, so one element must carry it —
-`querySelector('[data-add]')` answers the `<sf-button>` host,
-`querySelectorAll('[data-action="close"]')` counts it once, and
-`host.dataset.add` reads it. Earlier versions moved them to the native button
-(then the host had none) and then copied them to it (then every `data-*` was on
-two elements and a count came back doubled).
-
-Delegation reads them from the control inside:
+A `data-*` is **moved, not copied**: it ends up on the native button and the
+host no longer has it. One element carries it, and it is the one that has a
+box, paints, takes focus, is clicked and is dragged — so a `data-*` works as a
+handle:
 
 ```js
-list.addEventListener('click', (event) => {
-  const add = event.target.closest('[data-add]');   // reaches the sf-button host
-  if (add) addBlock(add.dataset.add);
-});
+const save = panel.querySelector('[data-action="save"]');   // the native button
+panel.querySelectorAll('[data-action="save"]').length;      // 1
+save.focus();                      // it is natively focusable
+save.getBoundingClientRect();      // it has a box, so a drag can read one
+save.closest('sf-button');         // the host, when that is what you want
 ```
 
-`event.target` is the native button, so `event.target.dataset.add` is empty —
-`closest()` is what reads a host attribute, as it does for every `data-*` an
-author writes on an `<sf-button>`.
+Delegation reads it either way: `event.target.dataset.action` on the control,
+or `event.target.closest('[data-action]')`.
 
-Focus follows the same element. The host lays out as `display: contents` and
-takes no focus itself, so `focus()` on it goes to the native button inside:
+A host is never the match, because a Smart host lays out as
+`display: contents`: it generates no box at all, so a selector that answered
+the host would answer something that cannot be measured, dragged or painted.
+Leaving the attribute on the host as well was worse — then every `data-*` was
+on two elements and a count came back doubled.
+
+What the author wrote is still readable from the host, under its own name:
 
 ```js
-const toggle = panel.querySelector('[data-search-toggle]');  // the host
-toggle.focus();                   // focus lands on the native button inside
+const add = document.createElement('sf-button');
+add.textContent = 'Добавить';
+add.dataset.add = 'block';         // written on the host as data-add
+panel.append(add);
+// after the first render:
+add.dataAttributes.add;            // 'block' — the host's record
+add.dataset.add;                   // undefined — the attribute is on the button
+add.querySelector('[data-add]');   // the native button that carries it
+add.removeHostDataAttribute('data-add');   // off the record and off the button
+```
+
+`element.dataAttributes` reads like `dataset` (`data-add` → `.add`).
+Removing a `data-*` from the control alone is undone on the next render,
+because the host's record is what the control is given again —
+`removeHostDataAttribute()` takes it off both.
+
+Focus reaches the control from the host too. The host takes no focus itself, so
+`focus()` on it goes to the native button inside:
+
+```js
+const host = panel.querySelector('sf-button');
+host.focus();                             // focus lands on the native button
 panel.contains(document.activeElement);   // true
 ```
 
