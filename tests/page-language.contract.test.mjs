@@ -39,6 +39,10 @@ test('page language: no component falls back to Russian', async () => {
     'src/component/country-code/js/_country_code.js': [/pageText\(COUNTRY_CODE_TEXT, 'phoneLabel'/],
     'src/smart/datepicker/index.js': [/const DATEPICKER_TEXT = \{/],
     'src/smart/drawer/index.js': [/pageText\(DRAWER_TEXT, 'closeLabel', this\)/],
+    // The resizer handle read [lang] itself over its own dictionary until
+    // 2026-10-21 (ui-mail feedback ui-mail.resizer-language): a product could
+    // neither choose its language nor teach it a third one.
+    'src/smart/resizer/index.js': [/pageText\(RESIZER_TEXT, key, node, 'sf-resizer'\)/, /language\.onChange\(/],
   };
   for (const [path, patterns] of Object.entries(sources)) {
     const source = await read(path);

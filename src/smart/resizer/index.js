@@ -8,18 +8,23 @@
 // otherwise as inline-size. With `storage-key` the width is remembered in this
 // browser and restored the next time.
 import {attachResizer, setResizerValue} from './engine.mjs';
+import {language, pageText} from '../../core/js/page-language';
 import BundledPreferences from '../../core/js/preferences.js';
 import './scss/index.scss';
 
-const TEXT = {
+// The two languages the handle ships are the floor, not the whole set: the
+// words go through the shared reader, so SF.language.use() chooses the
+// language and SF.language.register('sf-resizer', ...) adds one the Framework
+// has never heard of. Until then the handle kept a private reading of the
+// page's [lang] and a private dictionary, so it ignored both and could say
+// nothing but English and Russian (ui-mail feedback ui-mail.resizer-language,
+// 2026-10-21).
+const RESIZER_TEXT = {
   en: {label: 'Resize', hint: 'Drag, or use the arrow keys; a double click restores the width.'},
   ru: {label: 'Изменить ширину', hint: 'Тяните или нажимайте стрелки; двойной щелчок возвращает ширину.'},
 };
 
-function pageLanguage(element) {
-  const lang = (element.closest('[lang]')?.getAttribute('lang') || document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
-  return TEXT[lang] ? lang : 'en';
-}
+const text = (node, key) => pageText(RESIZER_TEXT, key, node, 'sf-resizer');
 
 // A CSS length (tokens included) in pixels, read in the target's context.
 function pixels(value, context) {
@@ -78,6 +83,13 @@ export class SfResizer extends HTMLElement {
     // what the width is the width of and where it is kept.
     this._detach = attachResizer(this, {session: () => (this.disabled ? null : this.session())});
     globalThis.addEventListener('resize', this._onWindowResize);
+    // A language announced after the handle drew itself -- SF.language.use(),
+    // or a word registered for it -- renames it where it stands. A Lit
+    // component gets this from smart-base; this one is an ordinary element, so
+    // it listens for itself, as the anchored badges do.
+    this._languageOff = language.onChange(() => {
+      if (this.isConnected) this.syncLabel();
+    });
     // Restored after the target has laid out, so a percentage limit is read
     // against a real width.
     requestAnimationFrame(() => {
@@ -95,6 +107,8 @@ export class SfResizer extends HTMLElement {
   disconnectedCallback() {
     this._detach?.();
     this._detach = null;
+    this._languageOff?.();
+    this._languageOff = null;
     globalThis.removeEventListener('resize', this._onWindowResize);
   }
 
@@ -213,12 +227,13 @@ export class SfResizer extends HTMLElement {
   }
 
   syncLabel() {
-    const text = TEXT[pageLanguage(this)];
+    const label = text(this, 'label');
+    const hint = text(this, 'hint');
     if (!this.getAttribute('aria-label') || this._ownLabel) {
-      this.setAttribute('aria-label', this.getAttribute('label') || text.label);
+      this.setAttribute('aria-label', this.getAttribute('label') || label);
       this._ownLabel = true;
     }
-    this.title = this.getAttribute('label') ? `${this.getAttribute('label')}. ${text.hint}` : text.hint;
+    this.title = this.getAttribute('label') ? `${this.getAttribute('label')}. ${hint}` : hint;
     if (this.disabled) this.setAttribute('aria-disabled', 'true');
     else this.removeAttribute('aria-disabled');
   }

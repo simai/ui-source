@@ -5,7 +5,9 @@
 // stylesheet reads and stops at max and min; the keys move it by a step and to
 // a limit; the width is remembered under the storage key and restored on the
 // next page; a double click returns the stylesheet's width and forgets it; the
-// handle is a separator with its value; sf-resize says move, end and reset.
+// handle is a separator with its value; sf-resize says move, end and reset;
+// its name and hint come from the shared language reader, so a live switch
+// and a registered language rename it where it stands.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -165,7 +167,40 @@ try {
   if (dragged !== 160 || ended.width !== 260 || ended.role !== '260' || JSON.stringify(log) !== JSON.stringify([['commit', 160], ['commit', 260], ['reset']])) {
     note({case: 'SF.Resizer.attach on drawn edges', got: {dragged, ended, log}});
   }
-  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log}));
+  // The name and the hint come from the shared reader (SF.language), so the
+  // page chooses the language and a product adds one; a handle already on the
+  // page is renamed when a language is announced (ui-mail feedback
+  // ui-mail.resizer-language, 2026-10-21).
+  const words = await again.evaluate(async () => {
+    document.documentElement.lang = 'ru';
+    document.body.insertAdjacentHTML('beforeend', '<div id="spoken" style="inline-size:260px"><sf-resizer id="unnamed" min="200px" max="400px"></sf-resizer></div>');
+    const handle = document.getElementById('unnamed');
+    const settle = () => new Promise((done) => setTimeout(done, 30));
+    const read = () => ({label: handle.getAttribute('aria-label'), hint: handle.title});
+    await settle();
+    const russian = read();
+    window.SF.language.use('en');
+    await settle();
+    const english = read();
+    window.SF.language.register('sf-resizer', 'de', {label: 'Breite ändern', hint: 'Ziehen oder Pfeiltasten.'});
+    window.SF.language.use('de');
+    await settle();
+    const german = read();
+    window.SF.language.use(null);
+    await settle();
+    const back = read();
+    window.SF.language.forget();
+    return {russian, english, german, back};
+  });
+  if (words.russian.label !== 'Изменить ширину'
+    || !words.russian.hint.startsWith('Тяните')
+    || words.english.label !== 'Resize' || !words.english.hint.startsWith('Drag, or use the arrow keys')
+    || words.german.label !== 'Breite ändern' || words.german.hint !== 'Ziehen oder Pfeiltasten.'
+    || words.back.label !== 'Изменить ширину') {
+    note({case: 'the page language names the handle, and a live switch renames it', got: words});
+  }
+
+  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log, words}));
 } finally {
   await browser.close();
 }
