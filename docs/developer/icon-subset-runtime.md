@@ -44,6 +44,9 @@ read at boot, so they belong **before** `core.js` on the page:
   Material Symbols font from the distribution itself, so the page draws its
   icons from the app's own files. This is the setting for an offline or
   air-gapped app; it costs the whole font (about 409 KB) instead of a subset.
+  An icon is marked `sf-icon-loaded` -- and drawn -- once that font has
+  loaded, so its ligature text never shows; icons added later are marked the
+  same way (probe `tests/browser/icons-local-font.browser.mjs`).
 - `icons.subsetHost = 'https://icons.example.com'` — the same runtime against a
   subset service the app hosts itself.
 - `icons.fallbackFonts = {outlined, rounded, sharp}` (or `icons.fallbackFontUrl`

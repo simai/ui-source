@@ -165,6 +165,120 @@ export function installIconSubsetRuntime(
     return true;
   };
 
+  // With the subset disabled the icons stylesheet draws from the full local
+  // font, and nothing ever marked an icon loaded: every readiness signal came
+  // from the subset path, so `.sf-icon:not(.sf-icon-loaded)` kept each icon at
+  // font-size 0 while the font sat loaded (ui-chat, 2026-10-22). An icon is
+  // loaded once the family it is drawn in is ready -- the same promise the
+  // subset path keeps, so the ligature text still never flashes.
+  const localIconFontFamilies = Object.freeze({
+    outlined: "Material Symbols Outlined",
+    rounded: "Material Symbols Rounded",
+    sharp: "Material Symbols Sharp",
+  });
+
+  SFLoaderPlugin.prototype.getLocalIconFontFaces = function (type = "") {
+    const family =
+      localIconFontFamilies[this.normalizeIconType(type)] ||
+      localIconFontFamilies.outlined;
+    const faces = [];
+    document.fonts?.forEach?.((face) => {
+      if (String(face.family || "").replace(/["']/g, "").trim() === family) {
+        faces.push(face);
+      }
+    });
+    return faces;
+  };
+
+  // Ready means a face of the family is declared and has loaded (or failed,
+  // which settles it too). A family that is not declared yet is not ready:
+  // the icons stylesheet arrives after the first scan, and asking the browser
+  // before it does answered «nothing to load» -- the ligature text then drew in
+  // a system font until the face arrived.
+  SFLoaderPlugin.prototype.isLocalIconFontReady = function (type = "") {
+    const normalizedType = this.normalizeIconType(type);
+    if (!this.localIconFontsReady) this.localIconFontsReady = new Set();
+    if (this.localIconFontsReady.has(normalizedType)) return true;
+    if (!document.fonts?.forEach) return true;
+
+    const settled = this.getLocalIconFontFaces(normalizedType).some(
+      (face) => face.status === "loaded" || face.status === "error",
+    );
+    if (settled) {
+      this.localIconFontsReady.add(normalizedType);
+      return true;
+    }
+
+    this.waitForLocalIconFont(normalizedType);
+    return false;
+  };
+
+  SFLoaderPlugin.prototype.waitForLocalIconFont = function (type = "") {
+    const normalizedType = this.normalizeIconType(type);
+    if (!this.localIconFontWaits) this.localIconFontWaits = new Map();
+    if (this.localIconFontWaits.has(normalizedType)) {
+      return this.localIconFontWaits.get(normalizedType);
+    }
+
+    const fonts = document.fonts;
+    const wait = new Promise((resolve) => {
+      let done = false;
+      let poll = 0;
+      let timer = 0;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        clearInterval(poll);
+        clearTimeout(timer);
+        fonts.removeEventListener?.("loadingdone", check);
+        fonts.removeEventListener?.("loadingerror", check);
+        resolve();
+      };
+      const check = () => {
+        const faces = this.getLocalIconFontFaces(normalizedType);
+        if (faces.some((face) => face.status === "loaded" || face.status === "error")) {
+          finish();
+          return;
+        }
+        // An icon at font-size 0 may not make the browser fetch the face, so
+        // the face is asked for as soon as a stylesheet declares it.
+        faces.forEach((face) => {
+          if (face.status === "unloaded") face.load().then(check, check);
+        });
+      };
+      fonts.addEventListener?.("loadingdone", check);
+      fonts.addEventListener?.("loadingerror", check);
+      // A stylesheet that declares the face sends no font event; look for it.
+      poll = setInterval(check, 50);
+      // A family no stylesheet ever declares (a rounded or sharp icon with no
+      // fallback face) still settles, the way subset-pending lifts on its
+      // timer: the icon then shows as it would with no Framework at all,
+      // instead of staying zero-sized for good.
+      timer = setTimeout(finish, 6000);
+      check();
+    }).then(() => {
+      this.localIconFontsReady.add(normalizedType);
+      this.iconFontReady = true;
+      document.body?.classList?.add("sf-icons-loaded");
+      this.syncStaticIconLoadedState();
+      window.dispatchEvent(
+        new CustomEvent("sf-icons-subset:ready", {
+          detail: {
+            icons: new Set(),
+            all: true,
+            local: true,
+            types: [normalizedType],
+            loader: this,
+          },
+        }),
+      );
+      return true;
+    });
+
+    this.localIconFontWaits.set(normalizedType, wait);
+    return wait;
+  };
+
   SFLoaderPlugin.prototype.getDefaultIconType = function () {
     return this.normalizeIconType(
       window.SF_BOOT_CONFIG?.icons?.type || window.SF_ICON_TYPE || "outlined",
@@ -781,6 +895,10 @@ export function installIconSubsetRuntime(
 
     const loadAttrs = this.getIconLoadAttrs(tracked.attrs);
 
+    if (!this.isIconSubsetEnabled()) {
+      return this.isLocalIconFontReady(loadAttrs.type);
+    }
+
     if (this.isIconCoveredByManifest(tracked.icon, loadAttrs)) {
       return true;
     }
@@ -965,7 +1083,10 @@ export function installIconSubsetRuntime(
     autoLoad = true,
   ) {
     if (!this.isIconSubsetEnabled()) {
-      return { handled: false, iconCount: 0 };
+      const localIcon = this.getStaticIconElement(node);
+      if (!localIcon) return { handled: false, iconCount: 0 };
+      this.syncStaticIconLoadedState(localIcon);
+      return { handled: true, iconCount: 0 };
     }
 
     const iconElement = this.getStaticIconElement(node);
@@ -993,8 +1114,6 @@ export function installIconSubsetRuntime(
   };
 
   SFLoaderPlugin.prototype.syncStaticIconLoadedState = function (root = null) {
-    if (!this.isIconSubsetEnabled()) return;
-
     const host = root || document.body;
     if (!host) return;
 
@@ -1044,10 +1163,6 @@ export function installIconSubsetRuntime(
     root = null,
     autoLoad = true,
   ) {
-    if (!this.isIconSubsetEnabled()) {
-      return { iconCount: 0 };
-    }
-
     const host =
       root?.nodeType === Node.ELEMENT_NODE
         ? root
@@ -1058,6 +1173,14 @@ export function installIconSubsetRuntime(
     }
 
     if (this.shouldSkipNode(host)) {
+      return { iconCount: 0 };
+    }
+
+    if (!this.isIconSubsetEnabled()) {
+      // Ask for the default family now: an <sf-icon> drawn before this scan
+      // waits on the ready event this wait sends.
+      this.isLocalIconFontReady(this.getDefaultIconType());
+      this.syncStaticIconLoadedState(host);
       return { iconCount: 0 };
     }
 

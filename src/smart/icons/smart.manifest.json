@@ -218,7 +218,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/icons/index.js",
-        "sha256": "2beec0a62742e4afa84d750a07c0110bf51126a228fb662427b7e25204b5eeef"
+        "sha256": "9c1a00450be17564c5898e1b352a4f41fc724501d84d899f99e281ff1ccb5e26"
       },
       {
         "path": "src/smart/icons/js/templates/default.js",

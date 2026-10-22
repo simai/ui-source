@@ -35,7 +35,8 @@ class SfIcon extends SfBaseElement {
         icons instanceof Set
           ? icons.has(icon)
           : Array.isArray(icons) && icons.includes(icon);
-      if (icon && !hasIcon) return;
+      // The local full font (icons.enabled = false) draws every icon at once.
+      if (icon && !hasIcon && !event.detail?.all) return;
 
       this.syncLoadedState();
     };
