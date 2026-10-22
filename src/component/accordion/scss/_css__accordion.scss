@@ -9,6 +9,12 @@
   --sf-accordion--trigger-padding-block: var(--sf-space-2);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
   --sf-accordion--content-padding: var(--sf-space-3);
+  /* Text, icon and the trigger's least height. Declared on every accordion, so
+     a nested one does not inherit its parent's size. */
+  --sf-accordion--text-size: var(--sf-text--size);
+  --sf-accordion--text-height: var(--sf-text--height);
+  --sf-accordion--icon-size: var(--sf-text-height-1);
+  --sf-accordion--trigger-min-block-size: auto;
 
   border-end-end-radius: var(--sf-accordion--radius);
   border-end-start-radius: var(--sf-accordion--radius);
@@ -17,6 +23,64 @@
   overflow: hidden;
   overflow: clip;
   background-color: var(--sf-accordion--background-color);
+}
+
+/* Sizes on the control ladder (simai/ui-source#19). A sized header is a
+   control of its size: the title takes the size's text and line, the chevron
+   is a line tall, and the block padding is the size's default tightness, so
+   the header is exactly --sf-ui-N--control-height -- the height of an sf-input
+   or an sf-button of the same size -- and never shorter. The inline padding is
+   the size's space-x, and the content takes the same inline padding, so its
+   text starts under the title. Without a size class the accordion keeps its
+   roomy default. */
+.sf-accordion.sf-accordion--size-1\/3 {
+  --sf-accordion--trigger-padding-block: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/3--space-x);
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/3--control-height);
+  --sf-accordion--content-padding: var(--sf-ui-1\/3--space-y-tightness-default) var(--sf-ui-1\/3--space-x);
+  --sf-accordion--text-size: var(--sf-text-size-1\/3);
+  --sf-accordion--text-height: var(--sf-text-height-1\/3);
+  --sf-accordion--icon-size: var(--sf-text-height-1\/3);
+}
+
+.sf-accordion.sf-accordion--size-1\/2 {
+  --sf-accordion--trigger-padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/2--space-x);
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/2--control-height);
+  --sf-accordion--content-padding: var(--sf-ui-1\/2--space-y-tightness-default) var(--sf-ui-1\/2--space-x);
+  --sf-accordion--text-size: var(--sf-text-size-1\/2);
+  --sf-accordion--text-height: var(--sf-text-height-1\/2);
+  --sf-accordion--icon-size: var(--sf-text-height-1\/2);
+}
+
+.sf-accordion.sf-accordion--size-1 {
+  --sf-accordion--trigger-padding-block: var(--sf-ui-1--space-y-tightness-default);
+  --sf-accordion--trigger-padding-inline: var(--sf-ui-1--space-x);
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-1--control-height);
+  --sf-accordion--content-padding: var(--sf-ui-1--space-y-tightness-default) var(--sf-ui-1--space-x);
+  --sf-accordion--text-size: var(--sf-text-size-1);
+  --sf-accordion--text-height: var(--sf-text-height-1);
+  --sf-accordion--icon-size: var(--sf-text-height-1);
+}
+
+.sf-accordion.sf-accordion--size-2 {
+  --sf-accordion--trigger-padding-block: var(--sf-ui-2--space-y-tightness-default);
+  --sf-accordion--trigger-padding-inline: var(--sf-ui-2--space-x);
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-2--control-height);
+  --sf-accordion--content-padding: var(--sf-ui-2--space-y-tightness-default) var(--sf-ui-2--space-x);
+  --sf-accordion--text-size: var(--sf-text-size-2);
+  --sf-accordion--text-height: var(--sf-text-height-2);
+  --sf-accordion--icon-size: var(--sf-text-height-2);
+}
+
+.sf-accordion.sf-accordion--size-3 {
+  --sf-accordion--trigger-padding-block: var(--sf-ui-3--space-y-tightness-default);
+  --sf-accordion--trigger-padding-inline: var(--sf-ui-3--space-x);
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
+  --sf-accordion--content-padding: var(--sf-ui-3--space-y-tightness-default) var(--sf-ui-3--space-x);
+  --sf-accordion--text-size: var(--sf-text-size-3);
+  --sf-accordion--text-height: var(--sf-text-height-3);
+  --sf-accordion--icon-size: var(--sf-text-height-3);
 }
 
 .sf-accordion.sf-accordion--outline {
@@ -45,6 +109,7 @@
   gap: var(--sf-space-1);
   width: 100%;
   margin: 0;
+  min-block-size: var(--sf-accordion--trigger-min-block-size);
   padding: var(--sf-accordion--trigger-padding-block)
     var(--sf-accordion--trigger-padding-inline);
   border: 0;
@@ -94,17 +159,17 @@
   min-width: 0;
   color: inherit;
   font-family: var(--sf-text--family);
-  font-size: var(--sf-text--size);
+  font-size: var(--sf-accordion--text-size);
   font-weight: var(--sf-font-weight-medium);
-  line-height: var(--sf-text--height);
+  line-height: var(--sf-accordion--text-height);
 }
 
 .sf-accordion .sf-icon {
   flex: 0 0 auto;
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  font-size: var(--sf-text-height-1);
-  height: var(--sf-text-height-1);
-  width: var(--sf-text-height-1);
+  font-size: var(--sf-accordion--icon-size);
+  height: var(--sf-accordion--icon-size);
+  width: var(--sf-accordion--icon-size);
   transform: rotate(0deg);
   transform-origin: center;
   transition: transform var(--sf-duration-fast) var(--sf-animation);
@@ -132,9 +197,9 @@
   padding: var(--sf-accordion--content-padding);
   color: var(--sf-accordion-content--color, var(--sf-on-surface-variant));
   font-family: var(--sf-text--family);
-  font-size: var(--sf-text--size);
+  font-size: var(--sf-accordion--text-size);
   font-weight: var(--sf-font-weight-regular);
-  line-height: var(--sf-text--height);
+  line-height: var(--sf-accordion--text-height);
 }
 
 @media (forced-colors: active) {
@@ -159,6 +224,11 @@
 .sf-accordion.sf-accordion--legacy:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
+}
+
+/* A sized legacy accordion is its own trigger: it takes the trigger's padding. */
+.sf-accordion.sf-accordion--legacy:is(.sf-accordion--size-1\/3, .sf-accordion--size-1\/2, .sf-accordion--size-1, .sf-accordion--size-2, .sf-accordion--size-3) {
+  padding: var(--sf-accordion--trigger-padding-block) var(--sf-accordion--trigger-padding-inline);
 }
 
 .sf-accordion.sf-accordion--legacy .sf-accordion-content {

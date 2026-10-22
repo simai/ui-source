@@ -59,13 +59,17 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
   assert.match(styles, /--sf-accordion--border-color/);
   assert.match(styles, /var\(--sf-outline-variant\)/);
   assert.match(styles, /background-color: transparent/);
+  // The text is the accordion's, which is the body text until a size class
+  // puts it on the ladder (simai/ui-source#19).
+  assert.match(styles, /--sf-accordion--text-size: var\(--sf-text--size\);/);
+  assert.match(styles, /--sf-accordion--text-height: var\(--sf-text--height\);/);
   assert.match(
     styles,
-    /\.sf-accordion \.sf-accordion-title \{[^}]*font-size: var\(--sf-text--size\);[^}]*line-height: var\(--sf-text--height\)/,
+    /\.sf-accordion \.sf-accordion-title \{[^}]*font-size: var\(--sf-accordion--text-size\);[^}]*line-height: var\(--sf-accordion--text-height\)/,
   );
   assert.match(
     styles,
-    /\.sf-accordion \.sf-accordion-content \{[^}]*font-size: var\(--sf-text--size\);[^}]*line-height: var\(--sf-text--height\)/,
+    /\.sf-accordion \.sf-accordion-content \{[^}]*font-size: var\(--sf-accordion--text-size\);[^}]*line-height: var\(--sf-accordion--text-height\)/,
   );
   assert.match(styles, /\.sf-accordion-trigger:focus-visible/);
   // The trigger fills its row, so the shared ring turns inwards instead of
@@ -87,6 +91,23 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
   assert.doesNotMatch(styles, /--sf-primary-container|--sf-on-primary/);
   assert.doesNotMatch(styles, /\b\d+(?:px|rem|em|ms)\b/i);
   assert.doesNotMatch(styles, /#[0-9a-f]{3,8}\b|rgba?\(/i);
+});
+
+test('accordion sizes are the control ladder', async () => {
+  const styles = await source(
+    'src/component/accordion/scss/_css__accordion.scss',
+  );
+
+  assert.match(styles, /min-block-size: var\(--sf-accordion--trigger-min-block-size\)/);
+  for (const step of ['1\\/3', '1\\/2', '1', '2', '3']) {
+    const rule = styles.match(new RegExp(`\\.sf-accordion\\.sf-accordion--size-${step.replace('\\', '\\\\')} \\{([^}]*)\\}`));
+    assert.ok(rule, `size ${step} has its rule`);
+    const body = rule[1];
+    assert.match(body, new RegExp(`--sf-accordion--trigger-padding-block: var\\(--sf-ui-${step.replace('\\', '\\\\')}--space-y-tightness-default\\)`));
+    assert.match(body, new RegExp(`--sf-accordion--trigger-min-block-size: var\\(--sf-ui-${step.replace('\\', '\\\\')}--control-height\\)`));
+    assert.match(body, new RegExp(`--sf-accordion--text-height: var\\(--sf-text-height-${step.replace('\\', '\\\\')}\\)`));
+    assert.match(body, new RegExp(`--sf-accordion--icon-size: var\\(--sf-text-height-${step.replace('\\', '\\\\')}\\)`));
+  }
 });
 
 test('accordion laboratory covers surface and stress scenarios', async () => {

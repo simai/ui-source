@@ -64,7 +64,15 @@ constant semantic boundary between adjacent rows.
 - Panel content uses the same Framework inset on every side. Hover and focus
   may change the trigger background, but never its perceived ownership of the
   panel or the spacing around panel content.
-- The trigger title and panel content use the normal body text size. The title
+- Without a size class the trigger title and panel content use the normal
+  body text size. A size class `.sf-accordion--size-1/3`, `-1/2`, `-1`, `-2` or
+  `-3` puts the accordion on the control ladder (simai/ui-source#19): the
+  trigger is exactly `--sf-ui-N--control-height` (the height of an `sf-input`
+  or `sf-button` of the size; it grows only when a long title wraps), the
+  title and content take the size's text and line height, the chevron is a
+  line tall, the block padding is `--sf-ui-N--space-y-tightness-default`, and
+  the trigger and the content share the inline padding `--sf-ui-N--space-x`.
+  A size is not inherited by a nested accordion. The title
   is distinguished by medium weight; panel content uses regular weight and the
   secondary on-surface color. Semantic heading rank does not force a larger
   visual size inside this compact control.
