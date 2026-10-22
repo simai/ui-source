@@ -492,3 +492,46 @@
   }
 }
 
+
+@layer sf.states {
+  // The tab's own colour is its label's ink (simai/ui-source#23). The label and
+  // the icon carry their roles, but the button element under them kept the
+  // browser's ButtonText -- #000 in the light theme, #fff in the dark -- and
+  // the icon tab its icon button's resting grey. currentColor, a forced-colours
+  // outline and anything that reads the tab took that. Each rule below stands
+  // beside the label rule it mirrors: the scheme first, then the skins.
+  // An icon tab is drawn by an icon button, whose own colour already follows
+  // its icon; only the tabs' overrides of that icon are repeated for it.
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.sf-button--primary {
+    color: var(--sf-primary);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled),
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
+    color: var(--sf-on-primary);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):hover {
+    color: var(--sf-primary-hover);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
+    color: var(--sf-primary-active);
+  }
+
+  .sf-tabs:is(.sf-tabs--underline, .sf-tabs--full) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled) {
+    color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
+    color: var(--sf-on-surface-active);
+  }
+
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) {
+    color: var(--sf-on-primary);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):is(:disabled, .disabled) {
+    color: var(--sf-on-disable);
+  }
+}
