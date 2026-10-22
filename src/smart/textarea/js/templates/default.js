@@ -27,6 +27,9 @@ export function renderTextareaTemplate(context) {
     mask,
     maskPattern,
     maskOptions,
+    autoGrow,
+    minRows,
+    maxRows,
   } = context;
   const field = createFieldContract(context.component, {
     prefix: 'sf-textarea',
@@ -50,6 +53,7 @@ export function renderTextareaTemplate(context) {
     `sf-textarea--size-${size}`,
     `sf-textarea--${appearance ?? type}`,
     field.invalid ? 'error' : '',
+    autoGrow ? 'sf-textarea--auto-grow' : '',
     'flex',
     'flex-col',
     context.rootClass,
@@ -92,7 +96,7 @@ export function renderTextareaTemplate(context) {
         .value=${value}
         .defaultValue=${value}
         name=${name || ''}
-        rows=${rows}
+        rows=${autoGrow ? minRows : rows}
         ?disabled=${disabled}
         ?readonly=${readonly}
         ?required=${field.required}
@@ -102,6 +106,9 @@ export function renderTextareaTemplate(context) {
         data-mask=${String(mask)}
         data-mask-pattern=${maskPattern || ''}
         data-mask-options=${maskOptions || ''}
+        data-auto-grow=${autoGrow ? 'true' : nothing}
+        data-min-rows=${autoGrow ? minRows : nothing}
+        data-max-rows=${autoGrow && maxRows ? maxRows : nothing}
       ></textarea>
 
       ${messageContent

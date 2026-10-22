@@ -96,6 +96,142 @@ function resolveMaskConfig(root, textarea) {
   return null;
 }
 
+// Auto-grow (simai/ui-source#17). The field follows its text between min-rows
+// and max-rows and scrolls inside only past max-rows. CSS does it where the
+// browser has `field-sizing: content`; the stylesheet also holds the limits, on
+// the size ladder (one row is the height of an input of the same size, each
+// further row adds the text line height of that size). Elsewhere the script
+// below sets the height from scrollHeight on input, on a value set from code,
+// on form reset and when the width changes -- never in the middle of an IME
+// composition, which is measured once it ends.
+const AUTO_GROW_CLASS = 'sf-textarea--auto-grow';
+
+function supportsFieldSizing() {
+  return typeof CSS !== 'undefined' && CSS.supports?.('field-sizing', 'content') === true;
+}
+
+function rowCount(value) {
+  if (value === '' || value === null || typeof value === 'undefined') return null;
+  const normalized = Math.trunc(Number(value));
+  return Number.isFinite(normalized) && normalized > 0 ? normalized : null;
+}
+
+// A bare data-auto-grow (or the root class written in markup) turns it on;
+// data-auto-grow="false" turns it off.
+function autoGrowFlag(value, fallback) {
+  if (value === undefined || value === null) return fallback;
+  if (value === '') return true;
+  return toBoolean(value, fallback);
+}
+
+function resolveAutoGrow(root, textarea) {
+  const enabled = autoGrowFlag(
+    textarea.dataset.autoGrow ?? root.dataset.autoGrow,
+    root.classList.contains(AUTO_GROW_CLASS),
+  );
+  if (!enabled) return null;
+  const minRows = rowCount(textarea.dataset.minRows ?? root.dataset.minRows) ?? 1;
+  const maxRows = rowCount(textarea.dataset.maxRows ?? root.dataset.maxRows);
+  return { minRows, maxRows: maxRows === null ? null : Math.max(maxRows, minRows) };
+}
+
+// The height the text needs, written as the block size; min-block-size and
+// max-block-size in the stylesheet keep it between the two limits. The root
+// holds its height while the field is measured, so the page below does not
+// move and the window does not scroll; the field keeps its own scroll.
+function growTextarea(root, textarea) {
+  if (!textarea.isConnected || textarea.clientWidth === 0) return;
+  const heldMinBlockSize = root.style.minBlockSize;
+  root.style.minBlockSize = `${root.getBoundingClientRect().height}px`;
+  const { scrollTop } = textarea;
+  textarea.style.blockSize = 'auto';
+  const style = getComputedStyle(textarea);
+  const border = (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.borderBottomWidth) || 0);
+  textarea.style.blockSize = `${textarea.scrollHeight + border}px`;
+  // Only a scroll the measuring lost is put back: writing scrollTop cancels the
+  // browser's own pending move of the caret into view after a paste.
+  if (textarea.scrollTop !== scrollTop) textarea.scrollTop = scrollTop;
+  root.style.minBlockSize = heldMinBlockSize;
+}
+
+function bindAutoGrow(root, textarea) {
+  const config = resolveAutoGrow(root, textarea);
+  if (!config) return;
+
+  const addedClass = !root.classList.contains(AUTO_GROW_CLASS);
+  root.classList.add(AUTO_GROW_CLASS);
+  textarea.rows = config.minRows;
+  textarea.style.setProperty('--sf-textarea--min-rows', String(config.minRows));
+  if (config.maxRows === null) textarea.style.removeProperty('--sf-textarea--max-rows');
+  else textarea.style.setProperty('--sf-textarea--max-rows', String(config.maxRows));
+
+  const state = { addedClass, fallback: null };
+  root.__sfTextareaAutoGrow = state;
+  if (supportsFieldSizing()) return;
+
+  let composing = false;
+  let width = -1;
+  const grow = () => {
+    if (!composing) growTextarea(root, textarea);
+  };
+  const onInput = (event) => {
+    if (event.isComposing) return;
+    grow();
+  };
+  const onCompositionStart = () => { composing = true; };
+  const onCompositionEnd = () => {
+    composing = false;
+    grow();
+  };
+  textarea.addEventListener('input', onInput);
+  textarea.addEventListener('compositionstart', onCompositionStart);
+  textarea.addEventListener('compositionend', onCompositionEnd);
+
+  // A value set from code fires no input event: the field's own value setter
+  // measures after it, so el.value = '...' grows and shrinks the field too.
+  const native = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+  Object.defineProperty(textarea, 'value', {
+    configurable: true,
+    enumerable: true,
+    get() { return native.get.call(this); },
+    set(next) {
+      native.set.call(this, next);
+      grow();
+    },
+  });
+
+  // Text wraps differently at another width; the height follows it. The block
+  // size the script writes changes nothing here, so this cannot loop.
+  const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries) => {
+    const next = Math.round(entries[entries.length - 1].contentRect.width);
+    if (next === width) return;
+    width = next;
+    grow();
+  });
+  observer?.observe(textarea);
+  grow();
+
+  state.fallback = { grow, onInput, onCompositionStart, onCompositionEnd, observer };
+}
+
+function unbindAutoGrow(root, textarea) {
+  const state = root.__sfTextareaAutoGrow;
+  if (!state) return;
+  delete root.__sfTextareaAutoGrow;
+  if (state.addedClass) root.classList.remove(AUTO_GROW_CLASS);
+  if (!textarea) return;
+  textarea.style.removeProperty('--sf-textarea--min-rows');
+  textarea.style.removeProperty('--sf-textarea--max-rows');
+  const { fallback } = state;
+  if (!fallback) return;
+  textarea.removeEventListener('input', fallback.onInput);
+  textarea.removeEventListener('compositionstart', fallback.onCompositionStart);
+  textarea.removeEventListener('compositionend', fallback.onCompositionEnd);
+  fallback.observer?.disconnect();
+  delete textarea.value;
+  textarea.style.removeProperty('block-size');
+}
+
 async function bindMask(root, textarea) {
   const config = resolveMaskConfig(root, textarea);
   if (!config) return;
@@ -144,7 +280,9 @@ function bindTextarea(root) {
   });
   root.__sfTextareaReleaseReset = bindFormReset(textarea, () => {
     if (root.__sfTextareaMask) root.__sfTextareaMask.value = textarea.value;
+    root.__sfTextareaAutoGrow?.fallback?.grow();
   });
+  bindAutoGrow(root, textarea);
   bindMask(root, textarea);
 }
 
@@ -161,6 +299,7 @@ function unbindTextarea(root) {
   if (textarea && root.__sfTextareaBlurHandler) {
     textarea.removeEventListener('blur', root.__sfTextareaBlurHandler);
   }
+  unbindAutoGrow(root, textarea);
   if (root.__sfTextareaMask) {
     window.SF?.Mask?.destroy?.(root.__sfTextareaMask);
   }
@@ -262,6 +401,9 @@ class Textarea extends ComponentObserver {
       mask = false,
       maskOptions,
       maskPattern,
+      autoGrow = false,
+      minRows,
+      maxRows,
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -317,6 +459,13 @@ class Textarea extends ComponentObserver {
     if (maskPattern) textarea.dataset.maskPattern = String(maskPattern);
     if (maskOptions && typeof maskOptions === 'object') {
       textarea.dataset.maskOptions = JSON.stringify(maskOptions);
+    }
+    if (toBoolean(autoGrow, false)) {
+      textarea.dataset.autoGrow = 'true';
+      const normalizedMinRows = rowCount(minRows);
+      const normalizedMaxRows = rowCount(maxRows);
+      if (normalizedMinRows !== null) textarea.dataset.minRows = String(normalizedMinRows);
+      if (normalizedMaxRows !== null) textarea.dataset.maxRows = String(normalizedMaxRows);
     }
 
     this.template.append(labelWrap, textarea);

@@ -276,6 +276,26 @@
   --sf-textarea-placeholder--line-height: var(--sf-text-height-1\/2);
 }
 
+/* Auto-grow (simai/ui-source#17): the field follows its text between
+   --sf-textarea--min-rows and --sf-textarea--max-rows, which the script writes
+   from min-rows and max-rows. A row is the field's line height at its size and
+   the frame is its own padding and hairlines, so one row is exactly as tall as
+   an input of the same size and each further row adds one line. Where
+   field-sizing is missing the script writes the block size, and these limits
+   still hold it. With no max-rows the max-block-size calc reads an undefined
+   variable, is invalid at computed-value time and falls back to none: the field
+   then grows without a cap. Later than the rows="1" rules above, and as
+   specific, so the one-row block size does not pin an auto-growing field. */
+.sf-textarea.sf-textarea--auto-grow textarea[rows] {
+  --sf-textarea--row-frame: calc(var(--sf-textarea-textarea--padding-top) + var(--sf-textarea-textarea--padding-bottom) + 2 * var(--sf-px));
+  block-size: auto;
+  field-sizing: content;
+  min-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
+  max-block-size: calc(var(--sf-textarea--max-rows) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
+  overflow-y: auto;
+  resize: none;
+}
+
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
   --sf-textarea-placeholder--color: var(--sf-on-disable);
 }

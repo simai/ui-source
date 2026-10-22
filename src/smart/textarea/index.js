@@ -44,6 +44,11 @@ class SfTextarea extends SfBaseElement {
       mask: { type: Boolean, default: false },
       maskPattern: { default: '' },
       maskOptions: { default: '' },
+      // Auto-grow (simai/ui-source#17): the field follows its text between
+      // min-rows and max-rows, then scrolls inside.
+      autoGrow: { type: Boolean, default: false },
+      minRows: { type: Number, default: 1 },
+      maxRows: { type: Number, default: null },
     };
   }
 
@@ -135,6 +140,21 @@ class SfTextarea extends SfBaseElement {
     return value > 0 ? value : 3;
   }
 
+  get autoGrow() {
+    return this.getBooleanAttr('auto-grow', false);
+  }
+
+  get minRows() {
+    const value = Math.trunc(this.getNumberAttr('minRows', 1));
+    return value > 0 ? value : 1;
+  }
+
+  // No cap unless one is given; a cap below min-rows is min-rows.
+  get maxRows() {
+    const value = Math.trunc(this.getNumberAttr('maxRows', null));
+    return value > 0 ? Math.max(value, this.minRows) : null;
+  }
+
   get disabled() {
     return this.getBooleanAttr('disabled', false);
   }
@@ -178,6 +198,9 @@ class SfTextarea extends SfBaseElement {
       type: this.type,
       minlength: this.minlength,
       maxlength: this.maxlength,
+      autoGrow: this.autoGrow,
+      minRows: this.minRows,
+      maxRows: this.maxRows,
     });
   }
 

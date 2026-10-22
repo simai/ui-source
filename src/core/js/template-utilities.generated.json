@@ -367,6 +367,7 @@
   "cl-textarea": [
     "display/default",
     "flex-direction/default",
+    "isolate/default",
     "position/default",
     "transition-property/default"
   ],
