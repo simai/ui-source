@@ -25,8 +25,12 @@ accepted. Numbers are decorative reference aids, excluded from assistive output
 and reconstructed line breaks remain available to Clipboard selection.
 
 Canonical generated structure uses `.sf-highlight`, `.sf-highlight__head` and
-`.sf-highlight__wrap`; `.source` and `.sf--highlight-*` remain compatibility
-aliases. The large code surface uses the default surface radius while generated
+`.sf-highlight__wrap`; `.sf--highlight-*` remain compatibility aliases. An
+authored `.source` wrapper is still read as the root, but a generated root no
+longer carries `source`: that word is also the Doc component's source block,
+and on it the Loader fetched the Doc styles, whose inverse fill covered the code
+surface (in the dark theme plain identifiers were invisible). The Doc source
+rules do not paint a highlighted block (`.sf-code-surface` or its scroller). The large code surface uses the default surface radius while generated
 controls retain their UI radius. Spacing, typography, borders and syntax colors
 come from semantic Framework tokens. Code direction remains LTR inside an RTL
 document and long lines scroll locally.

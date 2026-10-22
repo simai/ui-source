@@ -34,18 +34,25 @@
     color: var(--sf-on-surface);
   }
 
-  :is(.sf-doc-example, .sf-playground, .example) + :is(.sf-doc-source, .source) {
+  // A highlighted source block is wrapped in the highlighter's code surface,
+  // and the wrapper is what follows the example then.
+  :is(.sf-doc-example, .sf-playground, .example) + :is(.sf-doc-source, .source, .sf-highlight:has(.sf-doc-source)) {
     border-start-end-radius: var(--sf-radius-square);
     border-start-start-radius: var(--sf-radius-square);
   }
 
-  :is(.sf-doc-example, .sf-playground, .example):has(+ :is(.sf-doc-source, .source)) {
+  // (:has() does not nest, so the highlighted case is its own relative selector.)
+  :is(.sf-doc-example, .sf-playground, .example):has(+ :is(.sf-doc-source, .source), + .sf-highlight .sf-doc-source) {
     border-end-end-radius: var(--sf-radius-square);
     border-end-start-radius: var(--sf-radius-square);
   }
 
-  .sf-doc-source,
-  .source {
+  // The source block's own paint, and not the highlighter's: a highlighted
+  // block is drawn by the code surface (--sf-surface-container), whose root or
+  // scroller may carry these classes. Matched, the inverse fill won over the
+  // surface by load order, and in the dark theme plain identifiers stood light
+  // on light (ui-chat).
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
     min-inline-size: 0;
     max-inline-size: 100%;
     margin-block-end: var(--sf-text--space-bottom);
@@ -60,7 +67,7 @@
   // surface and wrong here: the source block is an inverse surface, and code
   // in it stayed dark on dark, 1.3:1. Inside the block it takes the block's
   // colour.
-  :is(.sf-doc-source, .source) code {
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
     color: inherit;
   }
 
@@ -106,8 +113,7 @@
   @media (forced-colors: active) {
     .sf-doc-example,
     .example,
-    .sf-doc-source,
-    .source {
+    :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
       border-color: CanvasText;
     }
 

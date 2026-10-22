@@ -53,5 +53,7 @@ test('scrollbar: the scrolling area is the keyboard stop, the thumb is for the p
 });
 
 test('doc: code inside an inverse source block takes the block colour', async () => {
-  assert.match(await read('component/doc/scss/_sf_css_doc.scss'), /:is\(\.sf-doc-source, \.source\) code \{\s*color: inherit;/);
+  // Not inside a highlighted block, which is drawn on the code surface, not the
+  // inverse one (highlight-dark-surface).
+  assert.match(await read('component/doc/scss/_sf_css_doc.scss'), /:is\(\.sf-doc-source, \.source\):not\(\.sf-code-surface, \.sf-code-surface__scroll\) code \{\s*color: inherit;/);
 });
