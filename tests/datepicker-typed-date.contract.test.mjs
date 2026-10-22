@@ -74,3 +74,21 @@ test('the new behaviour is declared and documented', async () => {
   assert.ok(guide.includes('## A date can be typed'));
   assert.ok(guide.includes('`readonly`'));
 });
+
+// A date set by the `value` attribute could not be cleared: the getter read
+// `date || value`, and clearing removes `date`, so the attribute came back and
+// the change said the old date -- which broke clearing in the field set's date
+// editor too. `value` is the initial value; a present `date`, even empty, wins.
+test('a value set by the attribute can be cleared', async () => {
+  const source = await read('src/smart/datepicker/index.js');
+  assert.match(source, /get date\(\) \{\s*if \(this\.hasAttribute\('date'\)\) return this\.getAttribute\('date'\) \|\| '';\s*return this\.getAttribute\('value'\) \|\| '';/u);
+  assert.doesNotMatch(source, /this\.getAttribute\('date'\) \|\| this\.getAttribute\('value'\)/u);
+  const start = source.indexOf('setState(nextState = {}, callback = null) {');
+  assert.ok(start > 0, 'the component keeps a cleared date');
+  const body = source.slice(start, source.indexOf('\n    }\n', start));
+  assert.ok(body.includes('super.setState(nextState, callback);'));
+  assert.match(body, /if \(clears && this\.hasAttribute\('value'\)\) this\.setAttribute\('date', ''\);/u);
+  const manifest = JSON.parse(await read('src/smart/datepicker/smart.manifest.json'));
+  assert.match(manifest.inputs.properties.value.description, /initial value/u);
+});
+

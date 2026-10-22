@@ -18,6 +18,12 @@ the host owns persistence, timezone policy and domain validation.
 Values are ISO dates (`YYYY-MM-DD`). `format` changes the visible field value,
 not the stored value.
 
+The `value` attribute is the initial value, as on a native input. Once the
+person or code clears the date -- emptying the field, `element.value = ''` --
+the value is empty and stays empty: the attribute does not come back. The
+component keeps the cleared state as `date=""` on the host and reports it with
+the usual `change`, whose detail `value` is `''`.
+
 ## A date can be typed
 
 The field of a single-date picker accepts typing. What is typed is read through

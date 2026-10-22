@@ -497,8 +497,25 @@ class SfDatepicker extends SfBaseElement {
         return parseDateValue(this.endValue, this.format);
     }
 
+    // `value` is the initial value; `date` is the component's own. The getter
+    // read `date || value`, so once a date set by the `value` attribute was
+    // cleared -- the person emptied the field, or code set '' -- the attribute
+    // came back and the old date with it: the value could not be cleared, and
+    // the change said the old date (field renderers' date editor, ui-admin's
+    // datetime). A present `date`, even empty, is the value now.
     get date() {
-        return this.getAttribute('date') || this.getAttribute('value') || '';
+        if (this.hasAttribute('date')) return this.getAttribute('date') || '';
+        return this.getAttribute('value') || '';
+    }
+
+    // An empty date removes the `date` attribute, which let `value` back in; a
+    // cleared value over an initial one is kept as date="".
+    setState(nextState = {}, callback = null) {
+        super.setState(nextState, callback);
+        const clears = nextState && typeof nextState === 'object'
+            && Object.prototype.hasOwnProperty.call(nextState, 'date') && !nextState.date;
+        if (clears && this.hasAttribute('value')) this.setAttribute('date', '');
+        return this;
     }
 
     get value() {

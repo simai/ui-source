@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.datepicker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Datepicker",
   "summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
   "kind": "composite",
@@ -49,12 +49,12 @@
       "value": {
         "type": "string",
         "default": "",
-        "description": "The ISO date (yyyy-mm-dd). As a property, [start, end] for a range; the attribute is the same as date."
+        "description": "The ISO date (yyyy-mm-dd). As a property, [start, end] for a range. The attribute is the initial value: once the date is cleared it stays empty."
       },
       "date": {
         "type": "string",
         "default": "",
-        "description": "The ISO date (yyyy-mm-dd) chosen; value is read when date is absent."
+        "description": "The ISO date (yyyy-mm-dd) chosen; value is read only when date is absent, so date=\"\" is a cleared value."
       },
       "start-value": {
         "type": "string",
@@ -578,7 +578,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "c53d7dbd5777a4d6810986deca039ff4d4d79872685452e3164e9a97470f6afd"
+        "sha256": "955678453d2c45ce2c9b5e334551784586a97efc533a25e19081019c50cc2326"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
@@ -590,7 +590,7 @@
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",
-        "sha256": "4618d75ee7e3f01ed2405ebfa2ed59704815cef34234b957672173d7a733d582"
+        "sha256": "56fb48a8ace751b963d3f7c0421b86bdb991d4225ccc35099a9c80e14e75067a"
       }
     ],
     "generated_runtime": [
