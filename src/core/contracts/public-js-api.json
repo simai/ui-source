@@ -188,8 +188,13 @@
       "name": "SF.ready",
       "status": "public",
       "kind": "function",
-      "loaded_by": "core-loader",
-      "summary": "Runs a function once the runtime is ready."
+      "loaded_by": "core",
+      "summary": "The Loader's readiness (simai/ui-source#16), on window.SF as soon as core.js has run. A thenable: await SF.ready (or SF.ready.then) settles with window.SF exactly when the Loader sends sf-loader-init -- SF.Loader, SF.loadSmartBase and the other core-loader names are there by then -- and a script that asks later gets it already settled; it never rejects. One per page: created once on the shared global, kept by every later bundle (a second core.js included) and never replaced. Called as SF.ready(fn), it runs fn once the Loader is up and the document has been parsed, synchronously when both have happened. A script that runs before core.js queues a function with (window.SF_ON_READY = window.SF_ON_READY || []).push(fn); fn is called with window.SF at the same moment.",
+      "members": [
+        "then",
+        "catch",
+        "finally"
+      ]
     },
     {
       "name": "SF.whenDefined",

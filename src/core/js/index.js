@@ -8,6 +8,7 @@ import './preferences.js';
 import './region-navigation.js';
 import './effects.js';
 import './notify.js';
+import {installReady} from './ready.js';
 import {
   createPreloaderContent,
   DEFAULT_PRELOADER,
@@ -24,6 +25,8 @@ import {
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
+  // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
+  installReady(window);
   if (!SF.loadRuntime) {
     let loading = null;
     const coreScript = () => [...document.scripts]
