@@ -24,6 +24,10 @@ Smart Switch проецирует обычный `.sf-switch` поверх на�
 - `disabled`
 - `name`
 - `value`
+- `aria-label` — accessible name for a switch with no visible label. A host that
+  draws the label itself -- a record panel does -- passes this instead of
+  `label`, and the name lands on the native input rather than being printed a
+  second time.
 
 ## Слоты
 

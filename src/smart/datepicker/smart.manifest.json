@@ -248,6 +248,16 @@
         "type": "string",
         "default": "",
         "description": "The chosen quick range's id. Set by a host it wins over start-value and end-value, and a relative one is resolved against today in the person's time zone when drawn; nothing is emitted for it."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for a date field rendered without a visible label."
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
       }
     },
     "additionalProperties": false
@@ -568,11 +578,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "f071d812c2310ea8823d59b022f638fde21605e1a9b16f7145f6cb8f7ef13fe3"
+        "sha256": "2d307b2ede8d57ab967303939b150bb1bdb57f894c00d815941fdf209ab5b8b1"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
-        "sha256": "8da2241fcdeb43d58665da972b99d1531ae806fca1f66a18dee2fa4f47f5cfbe"
+        "sha256": "744a55802cb36eef3aaa0e29af72b86f139cd1c1a01b8e637defe1584330a5a9"
       },
       {
         "path": "src/smart/datepicker/rule.js",
@@ -580,7 +590,7 @@
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",
-        "sha256": "2a4d3b83d364e9d147250f8e58fa3926577245e74266ca26957e55801beabeb6"
+        "sha256": "d1158de65cf63c2d8d1851a490c7c6727c4e6383d0c5fda2d5d3a41b2dac8de1"
       }
     ],
     "generated_runtime": [

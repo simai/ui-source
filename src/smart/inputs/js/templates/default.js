@@ -35,6 +35,7 @@ export function renderInputTemplate(context) {
     maskLazy,
     maskPlaceholderChar,
     maskOptions,
+    ariaLabel,
   } = context;
   const maskLazyValue = maskLazy === '' ? '' : String(maskLazy);
   const inputValue = hasControlledValue ? value : defaultValue;
@@ -115,6 +116,11 @@ export function renderInputTemplate(context) {
       ? context.component.getSlotContent('error')
       : errorMessage;
   const messageContent = field.invalid && errorContent ? errorContent : hintContent;
+  // The visible label names the control through the wrapping <label>; with no
+  // visible label there is nothing to name it, so the host's aria-label lands on
+  // the native input. Both at once would make the name say one thing and the
+  // page another.
+  const accessibleName = !labelContent && ariaLabel ? ariaLabel : nothing;
 
   return html`
     <label
@@ -153,6 +159,7 @@ export function renderInputTemplate(context) {
                 ?disabled=${disabled}
                 ?readonly=${readonly}
                 ?required=${field.required}
+                aria-label=${accessibleName}
                 aria-invalid=${field.invalid ? 'true' : nothing}
                 aria-describedby=${messageContent ? field.messageId : nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}
@@ -179,6 +186,7 @@ export function renderInputTemplate(context) {
                 ?disabled=${disabled}
                 ?readonly=${readonly}
                 ?required=${field.required}
+                aria-label=${accessibleName}
                 aria-invalid=${field.invalid ? 'true' : nothing}
                 aria-describedby=${messageContent ? field.messageId : nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}

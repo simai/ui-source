@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit';
 
 export function renderSwitchTemplate(context) {
-  const { size, label, description, help, checked, disabled, name, value } = context;
+  const { size, label, description, help, checked, disabled, name, value, ariaLabel } = context;
 
   const rootClasses = ['sf-switch', `sf-switch--size-${size}`, 'flex', context.rootClass];
 
@@ -38,6 +38,7 @@ export function renderSwitchTemplate(context) {
           .value=${value || ''}
           .checked=${checked}
           ?disabled=${disabled}
+          aria-label=${!labelContent && ariaLabel ? ariaLabel : nothing}
         />
         <span class="sf-switch-inner transition" aria-hidden="true"></span>
       </span>

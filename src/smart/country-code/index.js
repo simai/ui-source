@@ -20,6 +20,7 @@ class SfCountryCode extends SfBaseElement {
     return {
       size: { default: '1' },
       label: { default: '' },
+      ariaLabel: { attribute: 'aria-label', default: '' },
       required: { type: Boolean, default: false },
       name: { default: '' },
       form: { default: '' },
@@ -59,6 +60,13 @@ class SfCountryCode extends SfBaseElement {
 
   get label() {
     return this.getAttribute('label') || '';
+  }
+
+  // A telephone inside a field that is already labelled -- a record panel draws
+  // the label -- gets its name from the host instead of printing the label a
+  // second time above the control.
+  get ariaLabel() {
+    return this.getProp('ariaLabel') || '';
   }
 
   get required() {

@@ -72,6 +72,11 @@
       "value": {
         "type": "string",
         "default": ""
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for a switch rendered without a visible label, as in a record panel that draws the label itself."
       }
     },
     "additionalProperties": false
@@ -316,7 +321,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "d79d2f07425471f49a96387437928759a1d6a99408ebb95c49e69b4b2cd1b69c"
+        "sha256": "fc5cfbd84feb24cd6fac4a9d492e62cb0908dfeb77fca17f68e052f6cb1db777"
       }
     ],
     "generated_runtime": [

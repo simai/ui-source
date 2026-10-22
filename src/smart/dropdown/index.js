@@ -5,6 +5,7 @@ import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { openDropdownPortal, closeDropdownPortal } from '../../component/dropdown/portal';
+import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 
 const DROPDOWN_TEXT = { en: { search: 'Search' }, ru: { search: 'Поиск' } };
 
@@ -384,6 +385,7 @@ class SfDropdown extends SfBaseElement {
     if (previousList !== this._list) closeDropdownPortal(previousList);
     this.syncDocumentListeners();
     this.syncPortalListeners();
+    this.syncOpenSurfaceMark();
     this.positionPortalList();
     if (previousRoot !== this._dropdownRoot) {
       this._interaction?.release();
@@ -424,6 +426,7 @@ class SfDropdown extends SfBaseElement {
   }
 
   onDisconnected() {
+    holdOpenSurfaceMark(this, false);
     closeDropdownPortal(this._list);
     this._releaseReset?.();
     this._releaseReset = null;
@@ -576,6 +579,15 @@ class SfDropdown extends SfBaseElement {
         detail,
       }),
     );
+  }
+
+  // An open list owns Escape, so the root says a surface is open and a drawer, a
+  // modal or a record panel leaves that press alone -- they listen on the
+  // document in capture and would otherwise close before the list saw the key.
+  // Synced from the rendered state, because `_open` is set from several places
+  // and every one of them ends in an update.
+  syncOpenSurfaceMark() {
+    holdOpenSurfaceMark(this, this._open);
   }
 
   syncDocumentListeners() {

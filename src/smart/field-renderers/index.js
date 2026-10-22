@@ -813,7 +813,7 @@ function renderPhoneEdit(field, value, host) {
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${scalarValue(value) ?? ''}
-                label=${field.label || field.key || ''}
+                aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?disabled=${field.readonly === true}
                 use-mask="true"
@@ -1056,7 +1056,7 @@ function renderDateEdit(field, value, host) {
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${date ?? ''}
-                label=${field.label || ''}
+                aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 @change=${(event) => {
                     const next = event.detail?.value ?? event.target?.value ?? null;
@@ -1080,7 +1080,7 @@ function renderBooleanEdit(field, value, host) {
                     size=${EDIT_SIZE}
                     name=${fieldName(field)}
                     ?checked=${value === true}
-                    label=${field.label || ''}
+                    aria-label=${field.label || field.key || ''}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked))}
             ></sf-switch>
         `;

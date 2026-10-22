@@ -371,6 +371,9 @@ class SfDatepicker extends SfBaseElement {
             name: {attribute: 'name', default: ''},
             placeholder: {default: ''},
             label: {default: ''},
+            ariaLabel: {attribute: 'aria-label', default: ''},
+            // A date can be typed; a host that wants the grid alone says so.
+            readonly: {type: Boolean, default: false},
             disabled: {type: Boolean, default: false},
             required: {type: Boolean, default: false},
             iconStart: {type: String, attribute: 'icon-start', default: null},
@@ -733,6 +736,25 @@ class SfDatepicker extends SfBaseElement {
         return this.getAttribute('format') || 'DD.MM.YYYY';
     }
 
+    // The name for a field whose label is drawn outside it -- a record panel
+    // prints the label itself, and passing it to the control printed it twice.
+    get ariaLabel() {
+        return this.getProp('ariaLabel') || '';
+    }
+
+    get readonly() {
+        return this.getBooleanAttr('readonly', false);
+    }
+
+    // A date can be typed. The field was hard-readonly, so a host that edits a
+    // date could only pick one on the grid -- and the mask properties beside it
+    // reached a field nobody could type in (Larena storage QA, 2026-10-22).
+    // A range is still chosen on the grid: one field holding two dates has no
+    // single format to read back.
+    get typed() {
+        return !this.range && !this.readonly && !this.disabled;
+    }
+
     get formattedValue() {
         return formatDateValue(this.selectedDate, this.format);
     }
@@ -1025,6 +1047,55 @@ class SfDatepicker extends SfBaseElement {
         return this.open ? this.closePanel() : this.openPanel();
     }
 
+    // What is typed is read through the declared format, so «14.10.2026» and
+    // «2026-10-14» both land. Text that is not a date, or a date outside the
+    // allowed range, puts the field back to the value it held: a half-typed date
+    // must not clear a stored one. An emptied field clears the value, because
+    // deleting the text is how a person says there is no date.
+    handleInputChange(event) {
+        if (!this.typed) return;
+        const field = event?.target;
+        const text = String(field?.value ?? '').trim();
+        const restore = () => {
+            const input = field?.querySelector?.('input') || field;
+            if (input && 'value' in input) input.value = this.displayValue;
+        };
+
+        if (!text) {
+            if (!this.date) return;
+            this.setState({date: '', context: ''});
+            this.emitChange();
+            return;
+        }
+
+        const date = parseDateValue(text, this.format);
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const outOfRange = Boolean(date)
+            && ((minDate && compareDates(date, minDate) < 0)
+                || (maxDate && compareDates(date, maxDate) > 0));
+
+        if (!date || outOfRange) {
+            restore();
+            return;
+        }
+
+        const value = formatIsoDate(date);
+        if (value === this.date) {
+            restore();
+            return;
+        }
+
+        this.setState({
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            date: value,
+            context: '',
+        });
+        this.set({activeDate: value});
+        this.emitChange();
+    }
+
     handleInputClick(event) {
         event?.preventDefault?.();
         event?.stopPropagation?.();
@@ -1032,6 +1103,18 @@ class SfDatepicker extends SfBaseElement {
     }
 
     handleInputKeydown(event) {
+        // In a field that can be typed in, Enter commits the text and the space
+        // bar belongs to the text; ArrowDown still opens the grid.
+        if (this.typed) {
+            if (event.key !== 'ArrowDown' && event.key !== 'Enter') return;
+            event.preventDefault();
+            if (event.key === 'Enter') {
+                this.handleInputChange(event);
+                return;
+            }
+            this.openPanel({focusCalendar: true});
+            return;
+        }
         if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return;
         event.preventDefault();
         this.openPanel({focusCalendar: true});
@@ -1421,6 +1504,8 @@ class SfDatepicker extends SfBaseElement {
             inputName: this.inputName,
             placeholder: this.placeholder,
             label: this.label,
+            ariaLabel: this.ariaLabel,
+            readonly: !this.typed,
             disabled: this.disabled,
             required: this.required,
             leftIcon: this.leftIcon,

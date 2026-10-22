@@ -34,6 +34,10 @@ Visible label/hint links follow dynamic content and removals. Author accessible
 names and external descriptions are preserved; an empty visible label falls back
 to a localized phone-field name. Keep a visible label for sighted users.
 
+With no `label` the label row is not drawn at all -- it left an empty line above
+every phone field in a panel that prints the labels itself -- and `aria-label`
+on the host names the native input, so the label is not printed twice.
+
 The JavaScript countries property supplies local descriptors (iso2, dialCode/code,
 label, maskPattern). Explicit fields override the built-in record; missing fields
 for a known ISO are filled from it. Empty countries restores the dataset. Initial

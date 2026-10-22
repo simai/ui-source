@@ -2,6 +2,7 @@ import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction'
 import { bindFormReset } from '../../form-reset-helper';
 import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal } from '../portal';
 import { retireFieldSizeClass } from '../../field-size';
+import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 
 const DROPDOWN_SELECTOR = ".sf-dropdown";
 const BOUND_FLAG = "sfDropdownBound";
@@ -422,6 +423,11 @@ function applyDropdownViewport(root, visibleItems = 4) {
 
 function openDropdown(root) {
   if (!root || isDisabledDropdown(root)) return;
+  // A Smart dropdown owns its open state and holds the mark on its host.
+  if (isSmartDropdownRoot(root)) {
+    root.closest("sf-dropdown").openDropdown();
+    return;
+  }
   const triggerInput = getTriggerInput(root);
   if (triggerInput && triggerInput.disabled) return;
 
@@ -431,6 +437,12 @@ function openDropdown(root) {
   root.classList.add("sf-dropdown--open");
   ensurePortalList(root);
   list.hidden = false;
+  // An open list owns Escape, so the root says a surface is open and whatever
+  // owns Escape for something larger -- a record panel, a drawer, a modal --
+  // leaves that press alone. Those all listen on the document in capture and
+  // the list closes on its own root in the bubble phase, so without the mark
+  // the panel closed first and the list never saw the key.
+  holdOpenSurfaceMark(root, true);
   syncToggleIcon(root, true);
   applyDropdownViewport(root, 4);
   positionPortalList(root);
@@ -451,6 +463,7 @@ function closeDropdown(root) {
 
   root.classList.remove("sf-dropdown--open");
   list.hidden = true;
+  holdOpenSurfaceMark(root, false);
   syncToggleIcon(root, false);
   restorePortalList(root);
 
@@ -736,6 +749,9 @@ function bindDropdown(root) {
   root.__sfDropdownStateObserver = new MutationObserver((records) => {
     const changed = syncDisabledState(root);
     syncItemCheckboxInteractivity(root);
+    // The open class is the state, and a consumer may toggle it directly; the
+    // mark follows the class so it cannot be left raised or missing.
+    holdOpenSurfaceMark(root, root.classList.contains("sf-dropdown--open"));
     if (changed) syncTags(root);
     if(records.some(record=>['portal','data-portal'].includes(record.attributeName))){
       if(root.classList.contains('sf-dropdown--open')&&isPortalDropdown(root))ensurePortalList(root);
@@ -829,6 +845,7 @@ function bindDropdown(root) {
 
 function unbindDropdown(root) {
   if (!root || root.dataset[BOUND_FLAG] !== "1") return;
+  holdOpenSurfaceMark(root, false);
   root.__sfDropdownInteraction?.release();
   delete root.__sfDropdownInteraction;
   root.__sfDropdownReleaseReset?.();

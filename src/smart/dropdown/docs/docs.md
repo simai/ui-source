@@ -41,6 +41,14 @@ toggle has its own place in the row and does not cover the tags; tag-removal
 buttons do not shrink with their label. Option labels also wrap inside the
 listbox. The same base CSS provides these rules to Smart Dropdown.
 
+While its list is open the dropdown says so on the root
+(`document.documentElement.dataset.sfPopoverOpen`, the shared mark sf-popover
+raises), so a drawer, a modal or a record panel leaves that Escape alone: they
+listen on the document in capture, and without the mark one press closed the
+list and the window behind it together. A `multiple` dropdown draws a box
+beside every option that has no picture of its own, because a class and
+`aria-selected` tell a sighted person nothing about what they have picked.
+
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search
 (or the first available option); ArrowUp opens the last available option.

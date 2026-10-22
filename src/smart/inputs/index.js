@@ -48,6 +48,7 @@ class SfInput extends SfBaseElement {
       maskLazy: { default: '' },
       maskPlaceholderChar: { default: '' },
       maskOptions: { default: '' },
+      ariaLabel: { attribute: 'aria-label', default: '' },
     };
   }
 
@@ -205,6 +206,14 @@ class SfInput extends SfBaseElement {
 
   get maskOptions() {
     return this.getAttribute('mask-options') || '';
+  }
+
+  // A field whose label is drawn outside the control -- a record panel prints
+  // it, a toolbar has no room for one -- still owes a name. The host's
+  // aria-label reaches the native input, which is what assistive technology
+  // reads: on the host it named nothing, because the host is not the control.
+  get ariaLabel() {
+    return this.getProp('ariaLabel') || '';
   }
 
   templateContext() {

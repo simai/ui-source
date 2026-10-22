@@ -1,4 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
+import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {renderPopoverTemplate} from './js/templates/default';
 
 // A surface anchored to a control the consumer supplies: a field's settings, a
@@ -14,19 +15,9 @@ import {renderPopoverTemplate} from './js/templates/default';
 // and roving focus of a menu stay where they already are -- in sf-context-menu,
 // which this draws into.
 // While any popover is open the root says so, and a component whose own Escape
-// closes something -- a drawer, a modal, a panel -- stands back. They all listen
-// on the document in capture, where stopPropagation cannot reach a listener on
-// the same node and the one registered first wins whatever it is: without a
-// shared mark, one press closed the surface and the window behind it together.
-const OPEN_MARK = 'sfPopoverOpen';
-
-function markOpen(delta) {
-    const root = globalThis.document?.documentElement;
-    if (!root) return;
-    const next = Math.max(0, Number(root.dataset[OPEN_MARK] || 0) + delta);
-    if (next) root.dataset[OPEN_MARK] = String(next);
-    else delete root.dataset[OPEN_MARK];
-}
+// closes something -- a drawer, a modal, a panel -- stands back. The mark is a
+// protocol shared with every other surface that owns Escape, so it is held
+// through core (`core/js/open-surface-mark`) rather than written here.
 
 const PLACEMENTS = [
     'bottom-start', 'bottom-end', 'top-start', 'top-end',
@@ -196,7 +187,7 @@ class SfPopover extends SfBaseElement {
             return;
         }
         if (this._onDocumentPointerDown) return;
-        markOpen(1);
+        holdOpenSurfaceMark(this, true);
         this._onDocumentPointerDown = (event) => {
             const path = event.composedPath?.() ?? [];
             if (path.includes(this)) return;
@@ -215,7 +206,7 @@ class SfPopover extends SfBaseElement {
     }
 
     _releaseDismissal() {
-        if (this._onDocumentPointerDown) markOpen(-1);
+        holdOpenSurfaceMark(this, false);
         if (this._onDocumentPointerDown) {
             document.removeEventListener('pointerdown', this._onDocumentPointerDown, true);
         }

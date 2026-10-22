@@ -61,6 +61,16 @@ Runtime helpers:
 - `element.onFocus(handler)`
 - `element.onBlur(handler)`
 
+## A field whose label is drawn outside it
+
+`label` draws the label above the control and names it through the wrapping
+`<label>`. Where the label is drawn outside the component -- a record panel
+prints it beside the field -- leave `label` unset and pass `aria-label`: the
+name lands on the native input, which is what assistive technology reads, and
+the label is not printed twice. On the host alone it named nothing, because the
+host is not the control. With a visible label present `aria-label` is ignored,
+so the name cannot say one thing while the page says another.
+
 ## Native input contract
 
 The native `input` remains the owner of editing, focus, validation, form value,

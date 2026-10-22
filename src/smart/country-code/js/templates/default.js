@@ -45,6 +45,7 @@ export function renderCountryCodeTemplate(context) {
     showMaskPlaceholder,
     maskPlaceholderChar,
     maxItems,
+    ariaLabel,
   } = context;
 
   const rootClasses = ['sf-country-code', `sf-country-code--size-${size}`, 'flex', 'flex-col'];
@@ -71,10 +72,16 @@ export function renderCountryCodeTemplate(context) {
       data-flag-base=${flagBase || ''}
       data-max-items=${String(maxItems || 0)}
     >
-      <span class="sf-country-code-label flex">
-        <span class="sf-country-code-text">${label}</span>
-        ${required ? html`<span class="sf-country-code-required">*</span>` : ''}
-      </span>
+      ${label
+        // No label, no label row: a lone star over a control names nothing, and
+        // the row left an empty line above every phone field in a panel that
+        // draws the labels itself.
+        ? html`
+          <span class="sf-country-code-label flex">
+            <span class="sf-country-code-text">${label}</span>
+            ${required ? html`<span class="sf-country-code-required">*</span>` : ''}
+          </span>`
+        : ''}
 
       <span class="sf-country-code-field transition flex items-center">
         <span class="sf-country-code-left flex items-center">
@@ -92,6 +99,7 @@ export function renderCountryCodeTemplate(context) {
           .value=${value}
           placeholder=${placeholder}
           ?disabled=${disabled}
+          aria-label=${!label && ariaLabel ? ariaLabel : nothing}
         />
       </span>
 

@@ -12,7 +12,7 @@ function getOptionLabel(option = {}) {
 // Options may say where they come from. A list of a few dozen names is read by
 // its stretches rather than line by line, and the name of a stretch belongs
 // above it once instead of after every name in it.
-function renderOptions(options = []) {
+function renderOptions(options = [], multiple = false) {
   const parts = [];
   let group = null;
 
@@ -22,7 +22,14 @@ function renderOptions(options = []) {
       group = next;
       if (next) parts.push(renderListItemHeading(next, option.size));
     }
-    parts.push(renderListItemOption(option));
+    // Where several options may be chosen, each one carries the box that says
+    // so: a plain row said it was chosen with a class and aria-selected alone,
+    // so on a long list nothing on screen told the person what they had picked
+    // (Larena storage QA, 2026-10-22). An option that draws a picture of its
+    // own -- an icon, a colour, an avatar -- keeps it, because that is the
+    // place the box would take.
+    const withBox = multiple && (!option.type || option.type === "text");
+    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option));
   }
 
   return parts;
@@ -287,7 +294,7 @@ export function renderDropdownTemplate(context) {
             @click=${(event) => context.component.handleOptionClick(event)}
             @keydown=${(event) => context.component.handleOptionKeydown(event)}
           >
-            ${renderOptions(context.options)}
+            ${renderOptions(context.options, context.multiple)}
           </div>
         </div>
       </div>

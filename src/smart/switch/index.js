@@ -15,6 +15,7 @@ class SfSwitch extends SfBaseElement {
       disabled: { type: Boolean, default: false },
       name: { default: '' },
       value: { default: '' },
+      ariaLabel: { attribute: 'aria-label', default: '' },
     };
   }
 
@@ -30,6 +31,14 @@ class SfSwitch extends SfBaseElement {
 
   get label() {
     return this.getAttribute('label') || '';
+  }
+
+  // A switch inside a field that is already labelled -- a record panel draws the
+  // label beside the control -- still needs a name. Like sf-checkbox and
+  // sf-button, it comes from the host's aria-label or the ariaLabel prop and
+  // lands on the native input, so the label is not printed a second time.
+  get ariaLabel() {
+    return this.getProp('ariaLabel') || '';
   }
 
   get description() {

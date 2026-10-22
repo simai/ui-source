@@ -81,13 +81,15 @@ function renderDatepickerInput(context) {
         <sf-input class="sf-datepicker-input" ${ref(context.component.refs.input)}
             appearance=${context.inputType} size=${context.inputSize}
             label=${context.label || nothing} name=${context.inputName || nothing}
+            aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}
             placeholder=${context.placeholder || nothing} icon-start=${context.iconStart || nothing}
             root-class=${context.inputRootClass || nothing} value=${context.displayValue || ''}
             ?disabled=${context.disabled} ?required=${context.required} ?mask=${context.mask}
             mask-pattern=${context.maskPattern || nothing} mask-lazy=${String(context.maskLazy)}
             mask-placeholder-char=${context.maskPlaceholderChar || nothing}
-            mask-options=${context.maskOptions || nothing} readonly
+            mask-options=${context.maskOptions || nothing} ?readonly=${context.readonly}
             @click=${(event) => context.component.handleInputClick(event)}
+            @change=${(event) => context.component.handleInputChange(event)}
             @keydown=${(event) => context.component.handleInputKeydown(event)}></sf-input>`;
 }
 

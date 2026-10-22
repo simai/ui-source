@@ -200,6 +200,11 @@
           "filled",
           "hidden"
         ]
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for a field rendered without a visible label; it lands on the native input."
       }
     },
     "additionalProperties": false
@@ -497,7 +502,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/inputs/index.js",
-        "sha256": "12feabb54f97fd3dec9095a120c1d3dd71cf9fa5b4f2d50df018ece64b9daf07"
+        "sha256": "2e5d356b7e2ccc5c4be5abc9893d87b61e3cf12e067cf766e135bfbe46271bfc"
       }
     ],
     "generated_runtime": [

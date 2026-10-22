@@ -18,6 +18,30 @@ the host owns persistence, timezone policy and domain validation.
 Values are ISO dates (`YYYY-MM-DD`). `format` changes the visible field value,
 not the stored value.
 
+## A date can be typed
+
+The field of a single-date picker accepts typing. What is typed is read through
+`format`, and an ISO date is accepted as well, so both `14.10.2026` and
+`2026-10-14` land on the same value. Text that is not a date, or a date outside
+`min-date`/`max-date`, puts the field back to the value it held: a half-typed
+date must not clear a stored one. Emptying the field clears the value, because
+deleting the text is how a person says there is no date. Enter commits what is
+typed; ArrowDown still opens the calendar.
+
+Add `readonly` for a field the person may not type in -- the date is then chosen
+on the grid alone. A `range` field is always read-only: one field holding two
+dates has no single format to read back.
+
+The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
+`mask-placeholder-char`, `mask-options`) reach the field only where it can be
+typed in, which is what they were always for.
+
+## A field whose label is drawn outside it
+
+`label` draws the label above the control. A host that prints the label itself --
+a record panel does -- passes `aria-label` instead and leaves `label` unset: the
+name reaches the native input, and the label is not printed twice.
+
 ## Quick ranges
 
 In range mode `presets` puts a list of ready ranges beside the grid: built-in
@@ -41,7 +65,9 @@ it.
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
-ArrowDown, Enter or Space opens the calendar from the field. Inside the day
+ArrowDown opens the calendar from the field; in a read-only field Enter and
+Space open it too, while in a field that can be typed in they belong to the
+text and Enter commits it. Inside the day
 grid, arrow keys move by day or week, Home and End move to a week edge, and
 PageUp and PageDown change the month. RTL reverses the physical horizontal
 arrows while chronological movement remains correct. Escape closes the popup
