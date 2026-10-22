@@ -640,6 +640,26 @@
       outline: var(--sf-focus-outline-width) solid currentColor;
       outline-offset: var(--sf-focus-outline-width);
     }
+
+    /* A filled button keeps an edge in forced colours (simai/ui-source#25,
+       ui-chat). The system paints every button's fill the same ButtonFace, so
+       a default or tonal button, which has no border of its own, read as bare
+       text beside an outline button. A hairline in ButtonText is drawn
+       inside the control height: the padding gives the border back, so the
+       button does not grow. A disabled one draws it in GrayText. */
+    .sf-button:is(.sf-button--default, .sf-button--tonal) {
+      --sf-button--border-top-width: var(--sf-px);
+      --sf-button--border-bottom-width: var(--sf-px);
+      --sf-button--border-inline-start-width: var(--sf-px);
+      --sf-button--border-inline-end-width: var(--sf-px);
+      --sf-button--border-width: var(--sf-px);
+      --sf-button--border-style: solid;
+      border-color: ButtonText;
+    }
+
+    .sf-button:is(.sf-button--default, .sf-button--tonal):is(:disabled, .disabled) {
+      border-color: GrayText;
+    }
   }
 
   .sf-button.sf-button.sf-button:disabled .sf-icon {

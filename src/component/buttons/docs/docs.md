@@ -88,3 +88,9 @@ until 2026-12-01 (journal `token-button-loading-stripe`).
 
 Pointer activation does not publish a focus ring. Keyboard navigation uses
 the shared `:focus-visible` treatment, including a forced-colours fallback.
+
+In forced colours (Windows High Contrast) the system paints every button's
+fill the same, so a `default` or `tonal` button draws a one-pixel border in
+`ButtonText` (`GrayText` when disabled) and stays distinguishable next to an
+`outline` one. The border is inside the control height: the button does not
+grow. Probe: `tests/browser/button-forced-colors-edge.browser.mjs`.
