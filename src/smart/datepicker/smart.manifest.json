@@ -578,7 +578,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "1d3136e0147126aa6fdc2e891f5d7ce2affe18bccd6544892cbdc36c1eedebf3"
+        "sha256": "30dd094383fc895716752605ed199476f5259a6dbf363e38decf5c9b1e958499"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",

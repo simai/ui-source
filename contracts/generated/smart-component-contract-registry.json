@@ -564,7 +564,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/datepicker/smart.manifest.json",
-      "manifest_sha256": "21d009fbb64e6dc095affa89b8b080359aa065dbd23c709b1b1b8dd3909b3d11",
+      "manifest_sha256": "a6d4a4ff9558e5e1b9559406f65f66f69616e6090e1761f704f0156afbb57b8b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

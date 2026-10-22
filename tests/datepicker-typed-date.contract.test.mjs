@@ -16,9 +16,15 @@ test('the date field is read-only only where it has to be', async () => {
 
   const source = await read('src/smart/datepicker/index.js');
   // A range stays on the grid: one field holding two dates has no single format
-  // to read back. So does a field the host declares read-only, and a disabled one.
-  assert.match(source, /get typed\(\) \{\s*return !this\.range && !this\.readonly && !this\.disabled;/u);
-  assert.ok(source.includes('readonly: !this.typed,'));
+  // to read back, so `range` makes the field read-only. So does a field the host
+  // declares read-only; a disabled one cannot be typed in either.
+  assert.match(source, /get readonly\(\) \{\s*return this\.range \|\| this\.getBooleanAttr\('readonly', false\);/u);
+  assert.match(source, /get typed\(\) \{\s*return !this\.readonly && !this\.disabled;/u);
+  // The template reads the value the component resolves: `!this.typed` also
+  // counted `disabled`, so a range or disabled field drew read-only while
+  // `readonly` said false (template-context probe, rel135).
+  assert.ok(source.includes('readonly: this.readonly,'));
+  assert.ok(!source.includes('readonly: !this.typed'));
 });
 
 test('typed text is read through the declared format, and a typo keeps the value', async () => {

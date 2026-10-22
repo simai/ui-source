@@ -742,17 +742,22 @@ class SfDatepicker extends SfBaseElement {
         return this.getProp('ariaLabel') || '';
     }
 
+    // Read-only as the field draws it, not just the attribute: a range is always
+    // chosen on the grid (one field holding two dates has no single format to
+    // read back), so `range` alone makes the field read-only. The template reads
+    // this same value -- it once read `!this.typed`, which also counted
+    // `disabled`, so a range or disabled field drew read-only while the
+    // component said it was not.
     get readonly() {
-        return this.getBooleanAttr('readonly', false);
+        return this.range || this.getBooleanAttr('readonly', false);
     }
 
     // A date can be typed. The field was hard-readonly, so a host that edits a
     // date could only pick one on the grid -- and the mask properties beside it
     // reached a field nobody could type in (Larena storage QA, 2026-10-22).
-    // A range is still chosen on the grid: one field holding two dates has no
-    // single format to read back.
+    // A range is still chosen on the grid -- `readonly` already says so.
     get typed() {
-        return !this.range && !this.readonly && !this.disabled;
+        return !this.readonly && !this.disabled;
     }
 
     get formattedValue() {
@@ -1516,7 +1521,7 @@ class SfDatepicker extends SfBaseElement {
             placeholder: this.placeholder,
             label: this.label,
             ariaLabel: this.ariaLabel,
-            readonly: !this.typed,
+            readonly: this.readonly,
             disabled: this.disabled,
             required: this.required,
             leftIcon: this.leftIcon,
