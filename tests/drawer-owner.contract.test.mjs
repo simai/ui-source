@@ -50,3 +50,24 @@ test('Smart Drawer geometry uses semantic tokens and logical placement', async (
   assert.doesNotMatch(styles, /\b(?:8|12|14|16|24|32|48|390|9000)px\b/);
   assert.doesNotMatch(styles, /#[0-9a-f]{3,8}\b/i);
 });
+
+test('Smart Drawer: bottom sheet, app bar offset and controlled close (simai/ui-source#20, #29)', async () => {
+  const [source, styles, manifest] = await Promise.all([
+    read('src/smart/drawer/index.js'),
+    read('src/smart/drawer/scss/_smart__drawer.scss'),
+    read('src/smart/drawer/smart.manifest.json').then(JSON.parse),
+  ]);
+  assert.match(source, /const PLACEMENTS = \['left', 'right', 'inline-start', 'inline-end', 'bottom'\]/);
+  assert.match(source, /const SNAPS = \['auto', 'half', 'full'\]/);
+  // A sheet is never a page column.
+  assert.match(source, /getBooleanAttr\('docked', false\) && !this\.sheet/);
+  // The close button stands down only while the outside switch is on screen.
+  assert.match(source, /showClose: this\.showClose && !this\._switchVisible/);
+  assert.match(styles, /inset-block: var\(--sf-drawer-block-start, 0\) 0/);
+  assert.match(styles, /var\(--sf-drawer-dock-block-start, var\(--sf-drawer-block-start, 0\)\)/);
+  assert.match(styles, /env\(safe-area-inset-bottom, 0\)/);
+  assert.match(styles, /data-sf-drawer-placement='bottom'/);
+  assert.deepEqual(manifest.inputs.properties.placement.enum, ['left', 'right', 'inline-start', 'inline-end', 'bottom']);
+  for (const name of ['snap', 'controlled', 'block-start']) assert.ok(manifest.inputs.properties[name], name);
+  assert.ok(manifest.events['drawer:snap']);
+});

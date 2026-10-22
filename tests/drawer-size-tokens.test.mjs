@@ -9,9 +9,10 @@ test('drawer design lengths use Core tokens and semantic dynamic viewport', () =
   assert.match(source, /width:\s*min\(var\(--sf-drawer-width, var\(--sf-g2\)\), 100vi\)/);
   // The panel's block size is its containing block's (inset-block: 0): the
   // viewport on a page, the box of a [data-sf-drawer-container] inside one. A
-  // height of 100vb tied it to the viewport (DEV, 2026-10-18).
+  // height of 100vb tied it to the viewport (DEV, 2026-10-18). The top starts
+  // under an app bar when the page names one (--sf-drawer-block-start, #29).
   const panelRule = withoutComments.match(/\.sf-drawer-panel \{[^}]*\}/u)?.[0] ?? '';
-  assert.match(panelRule, /inset-block:\s*0/);
+  assert.match(panelRule, /inset-block:\s*var\(--sf-drawer-block-start, 0\) 0;/);
   assert.doesNotMatch(panelRule, /height:\s*100vb/);
   assert.match(source, /border-inline-(?:start|end): var\(--sf-px\) solid/);
 });

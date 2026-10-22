@@ -119,10 +119,13 @@
   ],
   "cl-drawer": [
     "display/default",
+    "isolate/default",
     "justify-content/default",
     "margin/default",
     "place-items/default",
-    "position/default"
+    "position/default",
+    "resize/default",
+    "visibility/default"
   ],
   "cl-dropdown": [
     "align-items/default",

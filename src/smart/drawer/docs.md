@@ -22,7 +22,8 @@ Drawer — боковая панель рабочего места, рядом �
 `data-sf-drawer-open`, `data-sf-drawer-toggle` и `data-sf-drawer-close`
 поддерживаются как алиасы совместимости.
 
-Use `placement="inline-start|inline-end"` for direction-aware interfaces.
+Use `placement="inline-start|inline-end"` for direction-aware interfaces;
+`placement="bottom"` opens a bottom sheet (see below).
 Physical `left|right` values remain supported as compatibility aliases.
 
 По умолчанию (устаревший режим) Drawer модальный: удерживает фокус, блокирует прокрутку страницы и
@@ -113,7 +114,63 @@ Drawer находится внутри элемента с атрибутом `d
 Логические `inline-start|inline-end` зеркалируются в RTL; физические
 `left|right` переводятся в логическую сторону по направлению документа.
 Закреплённая панель имеет `role="region"` и требует `label` или `title`.
-Высоту шапки сайта над панелями задаёт `--sf-drawer-dock-block-start`. На
+Высоту шапки сайта над закреплёнными панелями задаёт
+`--sf-drawer-dock-block-start` (если он не задан — `--sf-drawer-block-start`). На
 экранах уже 48rem страница не сужается, а панель перекрывает её. Escape
 закрывает верхнюю панель, фокус не удерживается. При `prefers-reduced-motion`
 сдвиг происходит без анимации.
+
+## Панели под шапкой приложения (`--sf-drawer-block-start`, `block-start`)
+
+Выезжающая панель по умолчанию встаёт от верхнего края окна и закрывает шапку
+приложения: кнопку «назад», название, действия. Переменная
+`--sf-drawer-block-start` задаёт высоту шапки, и все панели — выезжающие,
+модальные, нижний лист — начинаются под ней; scrim тоже, поэтому шапка
+остаётся доступной (simai/ui-source#29). Атрибут `block-start` задаёт отступ
+одной панели.
+
+```html
+<html style="--sf-drawer-block-start: var(--app-bar-height)">
+<sf-drawer id="structure" modal="false" placement="inline-start" title="Структура">…</sf-drawer>
+<sf-drawer id="preview" block-start="4rem" placement="inline-end" title="Просмотр">…</sf-drawer>
+```
+
+## Панель с внешним переключателем (`controlled`)
+
+Если панель открывает и закрывает переключатель вне её — нижняя навигация
+телефона, кнопка в шапке, — второй способ закрыть её лишний. С атрибутом
+`controlled` панель не рисует кнопку закрытия, пока на экране виден элемент
+с её `id` в `aria-controls` (вне самой панели). Когда переключатель скрыт
+(другая раскладка, другая ширина окна), кнопка возвращается. Escape закрывает
+панель как обычно. Чтобы убрать кнопку всегда, есть `show-close="false"`.
+
+```html
+<nav><button type="button" aria-controls="structure" data-drawer="toggle">Структура</button></nav>
+<sf-drawer id="structure" controlled modal="false" placement="inline-start" title="Структура">…</sf-drawer>
+```
+
+## Нижний лист (`placement="bottom"`)
+
+Для телефона: панель выезжает снизу во всю ширину, со скруглением сверху и
+ручкой-кнопкой (simai/ui-source#20).
+
+- `snap="auto|half|full"` — высота покоя: по содержимому (не выше места под
+  шапкой), половина места или всё место под шапкой (`--sf-drawer-block-start`);
+- ручка — кнопка высотой с элемент управления 1/2: нажатие или Enter
+  переключает половину и всё место, стрелки вверх и вниз — между `auto`,
+  `half` и `full`; каждое изменение — событие `drawer:snap`, метод `setSnap()`;
+- смахивание вниз по ручке или шапке закрывает лист (из `full` — переводит в
+  `half`), вверх — открывает на всё место; лист следует за пальцем;
+- модальный лист удерживает фокус и возвращает его, Escape закрывает только
+  верхний слой;
+- снизу сохраняется безопасная зона (`env(safe-area-inset-bottom)`);
+- при `prefers-reduced-motion` лист появляется без анимации.
+
+`docked` у нижнего листа не действует: лист всегда поверх страницы.
+
+```html
+<button type="button" aria-controls="blocks" data-drawer="open">Блоки</button>
+<sf-drawer id="blocks" placement="bottom" snap="half" title="Блоки">…</sf-drawer>
+```
+
+Проба: `tests/browser/drawer-sheet.browser.mjs`.

@@ -6,9 +6,11 @@ import {pageText} from "../../core/js/page-language";
 const DRAWER_TEXT = {
   en: {
     closeLabel: 'Close drawer',
+    handleLabel: 'Resize the panel',
   },
   ru: {
     closeLabel: 'Закрыть панель',
+    handleLabel: 'Изменить высоту панели',
   },
 };
 
@@ -42,6 +44,14 @@ const drawerStack = [];
 // narrowing it.
 const DOCK_MIN_REM = 48;
 const DOCK_MEDIA_QUERY = `(min-width: ${DOCK_MIN_REM}rem)`;
+const PLACEMENTS = ['left', 'right', 'inline-start', 'inline-end', 'bottom'];
+// The heights a bottom sheet rests at, smallest first: its content (auto, up
+// to the room it has), half the room, and all of it.
+const SNAPS = ['auto', 'half', 'full'];
+// A drag of the sheet farther than this share of its height, or faster than
+// this, is a decision: down closes (or steps full down to half), up opens to full.
+const SWIPE_SHARE = 0.25;
+const SWIPE_SPEED = 0.5;
 
 function joinClasses(...parts) {
   return parts.flat().filter(Boolean).join(' ');
@@ -212,8 +222,17 @@ class SfDrawer extends SfBaseElement {
       opened: {attribute: 'open', type: Boolean, default: false},
       placement: {
         default: 'right',
-        values: ['left', 'right', 'inline-start', 'inline-end'],
+        values: PLACEMENTS,
       },
+      // A bottom sheet's resting height (placement="bottom").
+      snap: {default: 'auto', values: SNAPS},
+      // An outside switch opens and closes the panel: the close button stands
+      // down while that switch is on screen (simai/ui-source#29).
+      controlled: {type: Boolean, default: false},
+      // Where the panels start from the top: the height of an app bar they
+      // must not cover (simai/ui-source#29). A length; empty for the
+      // --sf-drawer-block-start variable, else 0.
+      blockStart: {attribute: 'block-start', default: ''},
       overlay: {type: Boolean, default: true},
       modal: {type: Boolean, default: true},
       docked: {type: Boolean, default: false},
@@ -278,6 +297,10 @@ class SfDrawer extends SfBaseElement {
     this._dockObserver = null;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleRootClick = this.handleRootClick.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
+    this.onSheetPointerDown = this.onSheetPointerDown.bind(this);
+    this.onHandleKeyDown = this.onHandleKeyDown.bind(this);
+    this._switchVisible = false;
   }
 
   connectedCallback() {
@@ -286,6 +309,7 @@ class SfDrawer extends SfBaseElement {
     super.connectedCallback();
     drawerManager.bindGlobalEvents();
     document.addEventListener('keydown', this.onKeyDown);
+    globalThis.addEventListener?.('resize', this.onWindowResize, {passive: true});
     if (this.openState) {
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
@@ -296,6 +320,7 @@ class SfDrawer extends SfBaseElement {
     this._areaObserver?.disconnect();
     this._areaObserver = null;
     document.removeEventListener('keydown', this.onKeyDown);
+    globalThis.removeEventListener?.('resize', this.onWindowResize);
     this._dockObserver?.disconnect();
     this._dockObserver = null;
     drawerManager.remove(this);
@@ -321,7 +346,40 @@ class SfDrawer extends SfBaseElement {
   }
 
   get placement() {
-    return this.getEnumAttr('placement', ['left', 'right', 'inline-start', 'inline-end'], 'right');
+    return this.getEnumAttr('placement', PLACEMENTS, 'right');
+  }
+
+  get sheet() {
+    return this.placement === 'bottom';
+  }
+
+  get snap() {
+    return this.getEnumAttr('snap', SNAPS, 'auto');
+  }
+
+  get controlled() {
+    return this.getBooleanAttr('controlled', false);
+  }
+
+  // The switch outside the panel that names it in aria-controls, on screen:
+  // while it is, it is the way to close the panel and the panel draws no
+  // second one.
+  hasVisibleSwitch() {
+    const id = this.drawerId || this.id;
+    if (!id || typeof document === 'undefined') return false;
+    const root = this.getDrawerRoot();
+    return [...document.querySelectorAll('[aria-controls]')].some((element) => {
+      if (!element.getAttribute('aria-controls').split(/\s+/u).includes(id)) return false;
+      if (root?.contains(element) || this.contains(element)) return false;
+      if (element.getClientRects().length === 0) return false;
+      return getComputedStyle(element).visibility !== 'hidden';
+    });
+  }
+
+  onWindowResize() {
+    if (!this.controlled || !this._isMounted) return;
+    const visible = this.hasVisibleSwitch();
+    if (visible !== this._switchVisible) this.requestComponentUpdate('controlled');
   }
 
   get overlay() {
@@ -333,8 +391,9 @@ class SfDrawer extends SfBaseElement {
     return !this.docked && this.getBooleanAttr('modal', true);
   }
 
+  // A bottom sheet floats over the page; it is never a column of it.
   get docked() {
-    return this.getBooleanAttr('docked', false);
+    return this.getBooleanAttr('docked', false) && !this.sheet;
   }
 
   // The inline gutter the head and the body share: a length, empty for the
@@ -404,8 +463,8 @@ class SfDrawer extends SfBaseElement {
   }
 
   templateContext() {
+    this._switchVisible = this.controlled && this.hasVisibleSwitch();
     return this.createTemplateContext({
-      closeLabel: this.getAttribute("close-label") || pageText(DRAWER_TEXT, "closeLabel", this),
       drawerId: this.drawerId || this.resolveDrawerId(),
       open: this.openState,
       placement: this.placement,
@@ -413,7 +472,12 @@ class SfDrawer extends SfBaseElement {
       modal: this.modal,
       docked: this.docked,
       size: this.size,
-      showClose: this.showClose,
+      showClose: this.showClose && !this._switchVisible,
+      controlled: this.controlled,
+      sheet: this.sheet,
+      snap: this.snap,
+      handleLabel: pageText(DRAWER_TEXT, 'handleLabel', this),
+      blockStart: this.getAttribute('block-start') || '',
       closePlacement: this.closePlacement,
       title: this.getAttribute('title') || '',
       label: this.getAttribute('label') || this.getAttribute('title') || '',
@@ -514,6 +578,14 @@ class SfDrawer extends SfBaseElement {
     }
     root.removeEventListener('click', this.handleRootClick);
     root.addEventListener('click', this.handleRootClick);
+    const handle = root.querySelector('[data-sf-drawer-handle]');
+    const head = root.querySelector('.sf-drawer-head');
+    for (const grip of [handle, head]) {
+      grip?.removeEventListener('pointerdown', this.onSheetPointerDown);
+      grip?.addEventListener('pointerdown', this.onSheetPointerDown);
+    }
+    handle?.removeEventListener('keydown', this.onHandleKeyDown);
+    handle?.addEventListener('keydown', this.onHandleKeyDown);
     this.applyStackPosition();
     this.observeDock(root);
     const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';
@@ -554,13 +626,14 @@ class SfDrawer extends SfBaseElement {
       : nothing;
     return html`<div
       class=${joinClasses('sf-drawer', context.open && 'is-open', context.rootClass)}
-      style=${`z-index:${context.zIndex};${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.rootStyle || ''}`}
+      style=${`z-index:${context.zIndex};${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.blockStart ? `--sf-drawer-block-start:${context.blockStart};` : ''}${context.rootStyle || ''}`}
       data-sf-drawer-root
       data-sf-drawer-id=${context.drawerId}
       data-sf-drawer-placement=${context.placement}
       data-sf-drawer-size=${context.size}
       data-sf-drawer-modal=${context.modal ? 'true' : 'false'}
       data-sf-drawer-docked=${context.docked ? 'true' : 'false'}
+      data-sf-drawer-snap=${context.sheet ? context.snap : nothing}
       aria-hidden=${context.open ? 'false' : 'true'}
     >
       <div class=${joinClasses('sf-drawer-overlay', context.overlayClass)} data-sf-drawer-overlay ?hidden=${!context.modal || !context.overlay}></div>
@@ -575,6 +648,8 @@ class SfDrawer extends SfBaseElement {
         ?inert=${!context.open}
         data-sf-drawer-panel
       >
+        ${context.sheet ? html`<button type="button" class="sf-drawer-handle" aria-label=${context.handleLabel}
+            data-sf-drawer-handle><span class="sf-drawer-handle-bar" aria-hidden="true"></span></button>` : nothing}
         ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass
                 ? html`
                   <header class=${joinClasses('sf-drawer-head', context.headerClass)}>
@@ -703,8 +778,75 @@ class SfDrawer extends SfBaseElement {
     target.focus();
   }
 
+  // The sheet's resting height. Set by the handle, a swipe or the attribute;
+  // drawer:snap says where it came to rest.
+  setSnap(snap) {
+    if (!SNAPS.includes(snap) || snap === this.snap) return this;
+    this.setAttribute('snap', snap);
+    this.emitDrawerEvent('drawer:snap');
+    return this;
+  }
+
+  // The handle is a button: a press or Enter toggles half and full, the arrows
+  // step up and down through the resting heights. Escape still closes.
+  onHandleKeyDown(event) {
+    const at = SNAPS.indexOf(this.snap);
+    const step = {ArrowUp: 1, ArrowDown: -1}[event.key];
+    if (step === undefined) return;
+    event.preventDefault();
+    this.setSnap(SNAPS[Math.min(SNAPS.length - 1, Math.max(0, at + step))]);
+  }
+
+  // A swipe on the handle or the head: the sheet follows the finger down, and
+  // on release either closes (or steps down from full), opens to full when
+  // pushed up, or settles back. Controls inside the head keep their presses.
+  onSheetPointerDown(event) {
+    if (!this.sheet || !this.openState || event.button !== 0) return;
+    const grip = event.currentTarget;
+    if (grip.classList.contains('sf-drawer-head') && event.target.closest('button, a[href], input, select, textarea, [tabindex]')) return;
+    const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+    if (!panel) return;
+    const startY = event.clientY;
+    const startTime = event.timeStamp;
+    const height = panel.getBoundingClientRect().height || 1;
+    let moved = false;
+    let delta = 0;
+    grip.setPointerCapture?.(event.pointerId);
+    const move = (moveEvent) => {
+      delta = moveEvent.clientY - startY;
+      if (!moved && Math.abs(delta) < 4) return;
+      moved = true;
+      panel.classList.add('is-dragging');
+      panel.style.setProperty('--sf-drawer-sheet-drag', `${Math.max(0, delta)}px`);
+    };
+    const end = (endEvent) => {
+      grip.removeEventListener('pointermove', move);
+      grip.removeEventListener('pointerup', end);
+      grip.removeEventListener('pointercancel', end);
+      panel.classList.remove('is-dragging');
+      panel.style.removeProperty('--sf-drawer-sheet-drag');
+      if (!moved || endEvent.type === 'pointercancel') return;
+      // A drag that ends on the handle is not also a press of it.
+      grip.addEventListener('click', (clickEvent) => clickEvent.stopImmediatePropagation(), {capture: true, once: true});
+      const speed = delta / Math.max(1, endEvent.timeStamp - startTime);
+      if (delta > height * SWIPE_SHARE || speed > SWIPE_SPEED) {
+        if (this.snap === 'full') this.setSnap('half');
+        else this.close();
+      } else if (-delta > height * SWIPE_SHARE || speed < -SWIPE_SPEED) {
+        this.setSnap('full');
+      }
+    };
+    grip.addEventListener('pointermove', move);
+    grip.addEventListener('pointerup', end);
+    grip.addEventListener('pointercancel', end);
+  }
+
   handleRootClick(event) {
     const root = this.getDrawerRoot();
+    if (event.target instanceof Element && event.target.closest('[data-sf-drawer-handle]')) {
+      this.setSnap(this.snap === 'full' ? 'half' : 'full');
+      return;
+    }
     if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay) {
       this.close();
       return;

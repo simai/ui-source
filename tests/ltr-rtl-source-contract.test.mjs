@@ -74,7 +74,8 @@ test('Smart Drawer preserves physical aliases and adds logical placement', async
     read('src/smart/drawer/docs.md'),
   ]);
 
-  assert.match(source, /values: \['left', 'right', 'inline-start', 'inline-end'\]/);
+  assert.match(source, /const PLACEMENTS = \['left', 'right', 'inline-start', 'inline-end', 'bottom'\]/);
+  assert.match(source, /values: PLACEMENTS/);
   assert.match(source, /body\.style\.paddingInlineEnd/);
   assert.match(source, /event\.key !== 'Tab'/);
   assert.match(source, /drawer:ready/);

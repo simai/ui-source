@@ -5,9 +5,15 @@
 }
 
 @layer sf.components {
+  /* The panels start under an app bar when the page says how tall it is
+     (--sf-drawer-block-start, or the block-start attribute): a sliding panel
+     covered the bar's back, name and actions, which the docked ones already
+     stood under (simai/ui-source#29). The scrim starts there too, so the bar
+     stays in reach. */
   .sf-drawer {
     position: fixed;
     inset: 0;
+    inset-block-start: var(--sf-drawer-block-start, 0);
     z-index: var(--sf-drawer-z-index, var(--sf-z-index-9));
     pointer-events: none;
   }
@@ -42,7 +48,7 @@
   .sf-drawer-panel {
     --sf-drawer-stack-inset: calc(var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset));
     position: fixed;
-    inset-block: 0;
+    inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
     flex-direction: column;
     width: min(var(--sf-drawer-width, var(--sf-g2)), 100vi);
@@ -271,10 +277,90 @@
   }
 
   .sf-drawer[data-sf-drawer-docked='true'] .sf-drawer-panel {
-    inset-block-start: var(--sf-drawer-dock-block-start, 0);
+    inset-block-start: var(--sf-drawer-dock-block-start, var(--sf-drawer-block-start, 0));
     height: auto;
     border-radius: var(--sf-0);
     box-shadow: none;
+  }
+
+  /* The bottom sheet (placement="bottom", simai/ui-source#20): the whole
+     width, from the bottom edge, rounded at the top, with a grab handle. It
+     rests at its content's height (snap="auto", up to the room it has), half
+     the room or all of it -- the room being the window under the app bar.
+     The home indicator's safe area is kept below the content. While a finger
+     drags it, it follows without the transition. */
+  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-panel {
+    --sf-drawer-sheet-room: calc(100% - var(--sf-drawer-block-start, 0%));
+    inset-block: auto 0;
+    inset-inline: 0;
+    width: 100%;
+    max-width: 100%;
+    max-block-size: calc(var(--sf-drawer-sheet-room) - var(--sf-space-3));
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-end-start-radius: var(--sf-0);
+    border-end-end-radius: var(--sf-0);
+    padding-block-end: env(safe-area-inset-bottom, 0);
+    transform: translateY(100%);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='bottom'][data-sf-drawer-snap='half'] .sf-drawer-panel {
+    block-size: calc(var(--sf-drawer-sheet-room) / 2);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='bottom'][data-sf-drawer-snap='full'] .sf-drawer-panel {
+    block-size: var(--sf-drawer-sheet-room);
+    max-block-size: var(--sf-drawer-sheet-room);
+    border-start-start-radius: var(--sf-0);
+    border-start-end-radius: var(--sf-0);
+  }
+
+  .sf-drawer.is-open[data-sf-drawer-placement='bottom'] .sf-drawer-panel {
+    transform: translateY(var(--sf-drawer-sheet-drag, 0));
+  }
+
+  .sf-drawer-panel.is-dragging {
+    transition: none;
+  }
+
+  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-edge {
+    display: none;
+  }
+
+  /* The handle is a control a line tall across the top of the sheet; its bar
+     is the visible part. A finger finds it by its whole width. */
+  .sf-drawer-handle {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    block-size: var(--sf-ui-1\/2--control-height);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: inherit;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .sf-drawer-handle-bar {
+    inline-size: var(--sf-space-3);
+    block-size: var(--sf-space-1\/4);
+    border-radius: var(--sf-radius-rounded);
+    background: var(--sf-outline);
+  }
+
+  .sf-drawer-handle:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-head {
+    inset-block-start: var(--sf-ui-1\/2--control-height);
+    padding-block-start: 0;
   }
 
   /* A box that holds its own drawers: the panel is rendered inside it and
