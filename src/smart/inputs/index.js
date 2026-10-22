@@ -252,6 +252,16 @@ class SfInput extends SfBaseElement {
 
     this._boundRoot = this.querySelector('.sf-input');
     if (this._boundRoot) {
+      // The host's invalid/error is the state; the classes follow it. The
+      // template draws the root's class, but the native input's `error` class
+      // is put there by the binding (syncFieldContract) and no render takes it
+      // off -- and the binding read it back as "still invalid", so removing
+      // `invalid` cleared the message while the red border and
+      // aria-invalid="true" came back (Larena acceptance, 2026-10-22: the
+      // datetime's time field after «Укажите время» and then 10:30).
+      const invalid = this.invalid || this.error;
+      this._boundRoot.classList.toggle('error', invalid);
+      this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);
     }
   }

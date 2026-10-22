@@ -393,6 +393,11 @@ class SfDatepicker extends SfBaseElement {
             readonly: {type: Boolean, default: false},
             disabled: {type: Boolean, default: false},
             required: {type: Boolean, default: false},
+            // Said by the host and drawn by the field: the red border and
+            // aria-invalid on the native input, and the message under it.
+            // Removing it puts both back (Larena acceptance, 2026-10-22).
+            invalid: {type: Boolean, default: false},
+            errorMessage: {attribute: 'error-message', default: ''},
             iconStart: {type: String, attribute: 'icon-start', default: null},
             leftIcon: {attribute: 'left-icon', default: 'calendar_today'},
             inputRootClass: {attribute: 'input-root-class', default: ''},
@@ -662,6 +667,14 @@ class SfDatepicker extends SfBaseElement {
 
     get required() {
         return this.getBooleanAttr('required', false);
+    }
+
+    get invalid() {
+        return this.getBooleanAttr('invalid', false);
+    }
+
+    get errorMessage() {
+        return this.getAttribute('error-message') || '';
     }
 
     get closeOnSelect() {
@@ -1573,6 +1586,8 @@ class SfDatepicker extends SfBaseElement {
             readonly: this.readonly,
             disabled: this.disabled,
             required: this.required,
+            invalid: this.invalid,
+            errorMessage: this.errorMessage,
             leftIcon: this.leftIcon,
             iconStart: this.leftIcon,
             inputRootClass: this.inputRootClass,

@@ -48,6 +48,12 @@ The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
 typed in, which is what they were always for.
 
+## An invalid field
+
+`invalid` draws the field invalid -- the error border, and `aria-invalid="true"`
+on the native input -- and `error-message` is the text under it. Removing
+`invalid` restores the valid field: no border, no `aria-invalid`, no message.
+
 ## A field whose label is drawn outside it
 
 `label` draws the label above the control. A host that prints the label itself --

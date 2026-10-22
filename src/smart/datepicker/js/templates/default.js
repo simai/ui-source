@@ -84,7 +84,8 @@ function renderDatepickerInput(context) {
             aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}
             placeholder=${context.placeholder || nothing} icon-start=${context.iconStart || nothing}
             root-class=${context.inputRootClass || nothing} value=${context.displayValue || ''}
-            ?disabled=${context.disabled} ?required=${context.required} ?mask=${context.mask}
+            ?disabled=${context.disabled} ?required=${context.required} ?invalid=${context.invalid}
+            error-message=${context.errorMessage || nothing} ?mask=${context.mask}
             mask-pattern=${context.maskPattern || nothing} mask-lazy=${String(context.maskLazy)}
             mask-placeholder-char=${context.maskPlaceholderChar || nothing}
             mask-options=${context.maskOptions || nothing} ?readonly=${context.readonly}

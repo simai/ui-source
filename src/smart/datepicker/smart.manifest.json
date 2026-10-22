@@ -191,6 +191,16 @@
         "default": false,
         "description": "Mark the field required in its form."
       },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "Draw the field invalid: the error border and aria-invalid on the native input. Removing it restores the valid field."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The message under an invalid field; ignored while the field is valid."
+      },
       "icon-start": {
         "type": "string",
         "default": "calendar_today",
@@ -578,11 +588,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "5303805d510f89ae43644bcb7b3d502def7a3b1432130c22bc7d2fec20fa69c3"
+        "sha256": "f4ae9968d2e58437a44f5fc05fa652d5a29669504da1741be4b62a925f77fdae"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
-        "sha256": "27489e37090e6bb0f21cdb36de5777f7a05808159011e00187dd54678e7803a2"
+        "sha256": "7c9b379eda8911e7e31ce7ed3076121fcb98b5d688d53eeca1af9e2f8bd98492"
       },
       {
         "path": "src/smart/datepicker/rule.js",
@@ -590,7 +600,7 @@
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",
-        "sha256": "aef1bbc464888c090ed49a86e5f6d880dd77415b9f2391240a01968401f24047"
+        "sha256": "cab94966af5f3053e36acae20113e48cf31c256f4d964fcb3fc12c2f03566a26"
       }
     ],
     "generated_runtime": [

@@ -1087,7 +1087,8 @@ function renderDateEdit(field, value, host) {
 // value has no zone (the host's local time); both cleared write null; coming
 // back to what was stored writes undefined -- no change. A day without a time,
 // a time without a day or a time that is not one is a field error: the
-// message stands under the row, the time control is marked invalid, the host
+// message stands under the row, the control at fault (the day or the time) is
+// marked invalid and loses the mark once it is put right, the host
 // hears it through the optional setFieldError(field, message) -- null once it
 // is put right -- and the change is withdrawn with undefined, so a save never
 // carries a value the person did not finish. The controls keep what was
@@ -1124,6 +1125,7 @@ function renderDateTimeEdit(field, value, host) {
         group.toggleAttribute('data-invalid', Boolean(message));
         const timeWrong = result.error === 'timeMissing' || result.error === 'timeInvalid';
         clock?.toggleAttribute('invalid', timeWrong);
+        picker?.toggleAttribute('invalid', result.error === 'dateMissing' || result.error === 'dateInvalid');
         host.setFieldError?.(field, message || null);
         if (result.error) {
             host.setFieldValue(field, undefined);
