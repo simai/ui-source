@@ -79,3 +79,7 @@ output/
 *.bak_*
 *.bak-*
 *.codex-bak-*
+
+# Federation thread notes: every thread keeps its own work/<task>.md here,
+# so the tree must read clean for all of them.
+/work/
