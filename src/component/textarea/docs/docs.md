@@ -80,3 +80,10 @@ integration accepts the same short `data-mask`, `data-mask-pattern` and
 Pointer focus is visually quiet; keyboard focus remains visible. Presentation,
 hairline, UI radius, spacing, typography, semantic colors and motion use only
 Framework tokens.
+
+## Touch phones
+
+On a touch phone (`(hover: none) and (pointer: coarse)` below 60rem) the
+textarea's text is at least 16px, so iOS Safari does not zoom the page on
+focus; the line height and the row height stay the step's. See
+`docs/foundation-touch-fields.md`.

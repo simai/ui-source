@@ -91,3 +91,10 @@ Priority:
   </span>
 </label>
 ```
+
+## Touch phones
+
+On a touch phone (`(hover: none) and (pointer: coarse)` below 60rem) the field
+text is at least 16px, so iOS Safari does not zoom the page on focus; the line
+height and the control height stay the step's. See
+`docs/foundation-touch-fields.md`.
