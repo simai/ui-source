@@ -167,6 +167,22 @@
        being no role (documentation trial 6, 2026-10-18). */
     --sf-surface-inverse-hover: light-dark(var(--sf-neutral-25), var(--sf-neutral-85));
     --sf-surface-inverse-fixed: var(--sf-neutral-20);
+    /* Paper: the sheet a document is previewed on -- an email, a page, a print
+       layout. Its own colours are the document's, written for white, so the
+       paper stays white and its ink stays dark in both themes; it never flips
+       (simai/ui-source#24, the ui-mail preview). 17.2:1. Not a surface of the
+       interface: controls do not sit on it, and the interface's own text does
+       not take --sf-on-paper. */
+    --sf-paper: var(--sf-white);
+    --sf-on-paper: var(--sf-neutral-10);
+    /* The well: the recessed area a canvas or a paper sits in, below the
+       panels around it. In the light theme a step under surface-1 (the
+       paper's white stands on it by its shadow, 1.13:1, as the elevation guide
+       has it); in the dark theme, where height lightens a surface, it is the
+       darkest step, and the white paper stands off it by itself (18.9:1). Its
+       text takes the ordinary roles: --sf-on-surface 15.2:1 and 14.7:1,
+       --sf-on-surface-variant 5.71:1 and 5.95:1. */
+    --sf-surface-well: light-dark(var(--sf-neutral-95), var(--sf-neutral-5));
     /* A tinted plate on the surface, on the same neutral tone as the state
        layer above: neutral-50 in the light theme, neutral-90 in the dark. It
        used to be neutral-50 in both, which meant the dark theme lightened its
