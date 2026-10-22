@@ -533,10 +533,77 @@ class SfDatepicker extends SfBaseElement {
     // cleared value over an initial one is kept as date="".
     setState(nextState = {}, callback = null) {
         super.setState(nextState, callback);
-        const clears = nextState && typeof nextState === 'object'
-            && Object.prototype.hasOwnProperty.call(nextState, 'date') && !nextState.date;
+        const has = (key) => nextState && typeof nextState === 'object'
+            && Object.prototype.hasOwnProperty.call(nextState, key);
+        const clears = has('date') && !nextState.date;
         if (clears && this.hasAttribute('value')) this.setAttribute('date', '');
+        // The grid's month written by the component itself (a date chosen, an
+        // arrow, the month list), not by a host: the next opening may move it.
+        if (has('year') || has('month')) this._gridMoved = true;
         return this;
+    }
+
+    // The month a value is in, as the state that shows it; nothing for a value
+    // that is not a date, so an emptied value leaves the grid where it was.
+    monthOf(value) {
+        const date = parseDateValue(value, this.format);
+        return date ? {year: date.getFullYear(), month: date.getMonth()} : {};
+    }
+
+    // The day the grid opens on: the value's, or today's when there is none --
+    // inside min-date and max-date either way.
+    get anchorDate() {
+        const candidate = this.primaryDate || new Date();
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(candidate, minDate) < 0) return minDate;
+        if (maxDate && compareDates(candidate, maxDate) > 0) return maxDate;
+        return candidate;
+    }
+
+    // The calendar opens on the month of the value it holds (Larena acceptance,
+    // 2026-10-22: 15.11.2026 typed, the grid opened on August -- the month it
+    // was left on). The grid kept the year and month it was last moved to, and
+    // a value set by a property, by the attribute or by typing did not move it
+    // unless the change came through the component's own selection path. So on
+    // opening: text typed but not yet committed is committed first; then the
+    // grid goes to the value's month, or -- with no value -- back to today's
+    // when the component had moved it (a month a host set stays). Inside
+    // min-date/max-date either way. The focused day follows.
+    showValueMonth() {
+        this.commitTypedText();
+        const primaryDate = this.primaryDate;
+        if (primaryDate) {
+            const anchor = this.anchorDate;
+            this.setState({year: anchor.getFullYear(), month: anchor.getMonth(), context: ''});
+        } else if (this._gridMoved) {
+            this.setState({year: '', month: '', context: ''});
+        }
+        this._gridMoved = false;
+        this.set({activeDate: formatIsoDate(this.anchorDate)});
+        return this;
+    }
+
+    // What stands in the field, read as a date if it is one. Opening the
+    // calendar without leaving the field (a click on it, ArrowDown) fires no
+    // change, so the typed date was not the value yet. Text that is not a date
+    // is left as it is: the change on leaving the field decides about it.
+    commitTypedText() {
+        if (!this.typed || !this._input) return this;
+        const text = String(this._input.value ?? '').trim();
+        if (!text || text === this.displayValue || !parseDateValue(text, this.format)) return this;
+        this.handleInputChange({target: this._input});
+        return this;
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        // A host that changes the value attribute moves the grid to it: an
+        // inline calendar is never opened, so opening cannot do it there.
+        if (name === 'value' && oldValue !== null && oldValue !== newValue && this.primaryDate) {
+            const date = this.primaryDate;
+            this.setState({year: date.getFullYear(), month: date.getMonth()});
+        }
     }
 
     get value() {
@@ -550,6 +617,7 @@ class SfDatepicker extends SfBaseElement {
                 date: startValue || '',
                 startValue: startValue || '',
                 endValue: endValue || '',
+                ...this.monthOf(startValue || endValue),
             });
             return;
         }
@@ -562,6 +630,7 @@ class SfDatepicker extends SfBaseElement {
                 date: nextValue.date || startValue || '',
                 startValue,
                 endValue,
+                ...this.monthOf(nextValue.date || startValue || endValue),
             });
             return;
         }
@@ -570,6 +639,7 @@ class SfDatepicker extends SfBaseElement {
             date: nextValue ? String(nextValue) : '',
             startValue: '',
             endValue: '',
+            ...this.monthOf(nextValue),
         });
     }
 
@@ -592,6 +662,7 @@ class SfDatepicker extends SfBaseElement {
     set date(nextValue) {
         this.setState({
             date: nextValue ? String(nextValue) : '',
+            ...this.monthOf(nextValue),
         })
     }
 
@@ -604,6 +675,7 @@ class SfDatepicker extends SfBaseElement {
     set startValue(nextValue) {
         this.setState({
             startValue: nextValue ? String(nextValue) : '',
+            ...this.monthOf(nextValue),
         })
     }
 
@@ -717,8 +789,7 @@ class SfDatepicker extends SfBaseElement {
     }
 
     get year() {
-        const primaryDate = this.primaryDate;
-        const fallback = primaryDate ? primaryDate.getFullYear() : new Date().getFullYear();
+        const fallback = this.anchorDate.getFullYear();
 
         return this.hasAttribute('year') ? this.getNumberAttr('year', fallback) : fallback;
     }
@@ -730,11 +801,11 @@ class SfDatepicker extends SfBaseElement {
                     ? ''
                     : String(toNumber(nextValue, new Date().getFullYear())),
         })
+        this._gridMoved = false;
     }
 
     get month() {
-        const primaryDate = this.primaryDate;
-        const fallback = primaryDate ? primaryDate.getMonth() : new Date().getMonth();
+        const fallback = this.anchorDate.getMonth();
 
         return this.hasAttribute('month')
             ? normalizeMonth(this.getAttribute('month'), fallback)
@@ -748,6 +819,7 @@ class SfDatepicker extends SfBaseElement {
                     ? ''
                     : String(normalizeMonth(nextValue, new Date().getMonth())),
         })
+        this._gridMoved = false;
     }
 
     get contextMode() {
@@ -1069,7 +1141,8 @@ class SfDatepicker extends SfBaseElement {
     openPanel({focusCalendar = false} = {}) {
         if (this.disabled) return this;
         this._focusCalendarOnOpen = focusCalendar;
-        if (!this.state.activeDate) {
+        if (!this.open) this.showValueMonth();
+        else if (!this.state.activeDate) {
             this.set({activeDate: formatIsoDate(this.activeDate)});
         }
         if (this.open) {

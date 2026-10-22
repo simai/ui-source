@@ -588,7 +588,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "f4ae9968d2e58437a44f5fc05fa652d5a29669504da1741be4b62a925f77fdae"
+        "sha256": "3d5194c8215b86e834b21cd5ed46925ae18d0aa524c06fbf54cef03113a47085"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
@@ -600,7 +600,7 @@
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",
-        "sha256": "cab94966af5f3053e36acae20113e48cf31c256f4d964fcb3fc12c2f03566a26"
+        "sha256": "6186dd8f081883431b8ce6292ee936dee08afaf7ce7a22ec914f9254fda0eeec"
       }
     ],
     "generated_runtime": [

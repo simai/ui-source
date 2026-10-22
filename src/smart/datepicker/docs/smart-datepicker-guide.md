@@ -48,6 +48,15 @@ The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
 typed in, which is what they were always for.
 
+## The month the calendar opens on
+
+The calendar opens on the month of the value: a date picked, typed (committed
+with Enter, or still standing in the field when it is clicked or ArrowDown is
+pressed), or set by the `value` property or attribute -- a range opens on its
+start. With no value it opens on today's month. Either way the month is inside
+`min-date`/`max-date`. A month the person moved to is forgotten when the
+calendar closes; a `month`/`year` a host sets is kept while there is no value.
+
 ## An invalid field
 
 `invalid` draws the field invalid -- the error border, and `aria-invalid="true"`
