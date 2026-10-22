@@ -68,6 +68,10 @@ Runtime helpers:
 - `element.onBlur(handler)`
 - `element.onMouseEnter(handler)`
 - `element.onMouseLeave(handler)`
+- `element.focus(options)` — focus the native control inside the host
+- `element.blur()`
+- `element.dataAttributes` — the `data-*` the author wrote on the host
+- `element.removeHostDataAttribute(name)`
 
 Metadata:
 
@@ -114,4 +118,39 @@ Close variant:
   scheme="on-surface"
   aria-label="Close"
 ></sf-icon-button>
+```
+
+## Host attributes
+
+Attributes the component does not own are copied to the native `<button>` it
+renders, so an author's `aria-*` or `title` reach the real control.
+
+A `data-*` is **moved, not copied** — the same rule as `<sf-button>`. It ends
+up on the native button, which is the one element that has a box, paints, takes
+focus, is clicked and is dragged:
+
+```js
+const toggle = menu.querySelector('[data-sf-admin-search-toggle]');  // the button
+menu.querySelectorAll('[data-sf-admin-search-toggle]').length;       // 1
+toggle.focus();                      // natively focusable
+toggle.getBoundingClientRect();      // it has a box, so a drag can read one
+toggle.closest('sf-icon-button');    // the host, when that is what you want
+```
+
+A Smart host lays out as `display: contents` and generates no box, so it is
+never the match: a selector that answered the host would answer something that
+cannot be measured, dragged or painted.
+
+What the author wrote is readable from the host as
+`element.dataAttributes` (`data-column-key` → `.columnKey`), and
+`element.removeHostDataAttribute(name)` takes one off the host's record and the
+control together.
+
+`focus()` on the host goes to the native button inside, and `blur()` the same
+way:
+
+```js
+const host = menu.querySelector('sf-icon-button');
+host.focus();
+menu.contains(document.activeElement);   // true
 ```

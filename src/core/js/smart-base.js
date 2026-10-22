@@ -1244,14 +1244,29 @@ class SfBaseElement extends HTMLElement {
   }
 
   // Host attributes the component does not own are copied to the control it
-  // renders, so a native button gets the author's aria-, data- and ordinary
-  // attributes. data-* are copied, never moved: they were taken off the host,
-  // and a product that wrote data-add on <sf-button> then found nothing --
-  // querySelector('sf-button[data-add]'), host.dataset and a host attribute
-  // selector all came back empty (consumer case ui-mail.button-data-attributes,
-  // 2026-10-21). The host stays the place the author wrote them; the inner
-  // control gets the same copy, so delegation reading event.target.dataset
-  // keeps working.
+  // renders, so a native button gets the author's aria- and ordinary
+  // attributes. A data-* is moved, not copied: it ends up on the control alone.
+  //
+  // One element carries it, and it is the one that has a box, paints, takes
+  // focus, is clicked and is dragged. Both other shapes failed in production.
+  // Copying a data-* to the control while the host kept it put every one on two
+  // elements: querySelectorAll('[data-action="close"]') answered 2 where the
+  // product had written 1, and the first match was the display:contents host --
+  // no box, so a drag through its bounding box threw, and no paint, so a probe
+  // reading a filled button read the wrong element (consumer cases
+  // larena.property-view-arranging, larena.property-view,
+  // larena.table-sortable-lists, larena.admin-menu-search, 2026-10-22). Keeping
+  // it on the host alone leaves one element, but a boxless one, so the drag and
+  // the paint still have nothing to read: a display:contents host generates no
+  // box at all, and no JavaScript can give it one.
+  //
+  // So the control carries it, and the host is reached back from it with
+  // closest('sf-button') -- the direction that always exists. The host's own
+  // record of what the author wrote is readable as element.dataAttributes
+  // (consumer case ui-mail.button-data-attributes, 2026-10-21: a product that
+  // wrote data-add on <sf-button> needs a way to read it back), and
+  // removeHostDataAttribute() takes one off the host's record and the control
+  // together.
   forwardHostAttributes(target, options = {}) {
     if (!target) {
       return this;
@@ -1265,8 +1280,9 @@ class SfBaseElement extends HTMLElement {
     } = options;
 
     const excludeSet = exclude instanceof Set ? exclude : new Set(exclude);
-    const dataAttributes = new Map();
+    const dataAttributes = this[storageKey] || new Map();
     const previous = target[targetStorageKey] || new Set();
+    const dataAttributeNamesToRemove = [];
     const nextKeys = new Set();
 
     previous.forEach((name) => {
@@ -1286,16 +1302,78 @@ class SfBaseElement extends HTMLElement {
 
       if (transferDataAttributes && name.startsWith("data-")) {
         dataAttributes.set(name, value);
+        dataAttributeNamesToRemove.push(name);
+        return;
       }
 
       nextKeys.add(name);
       target.setAttribute(name, value);
     });
 
+    // The record outlives the host attribute, because the attribute is taken
+    // off the host: it is what the control is given again on every render.
+    dataAttributes.forEach((value, name) => {
+      nextKeys.add(name);
+      target.setAttribute(name, value);
+    });
+
     target[targetStorageKey] = nextKeys;
-    // The record of what was copied, rebuilt from the host every time: a
-    // data-* the author removed from the host leaves the target as well.
     this[storageKey] = dataAttributes;
+    // Where element.dataAttributes and removeHostDataAttribute() read and
+    // write, whatever storage key the component chose.
+    this.__sfHostDataAttributes = dataAttributes;
+    this.__sfHostDataAttributeTarget = target;
+    this.__sfHostDataAttributeTargetKeys = targetStorageKey;
+
+    if (dataAttributeNamesToRemove.length) {
+      this.__sfForwardingHostAttributes = true;
+      dataAttributeNamesToRemove.forEach((name) => this.removeAttribute(name));
+      this.__sfForwardingHostAttributes = false;
+    }
+
+    return this;
+  }
+
+  // What the author wrote as data-* on this host, read the way dataset reads:
+  // dataAttributes.add for data-add. The attributes themselves live on the
+  // native control, so host.dataset is empty and this is the host's answer.
+  get dataAttributes() {
+    const record = this.__sfHostDataAttributes;
+    if (!record || !record.size) {
+      return {};
+    }
+
+    const read = {};
+    record.forEach((value, name) => {
+      const key = name
+        .slice(5)
+        .replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+      read[key] = value;
+    });
+
+    return read;
+  }
+
+  // Take a data-* off the host's record and off the control together. Removing
+  // it from the control alone is undone on the next render, because the record
+  // is what the control is given again.
+  removeHostDataAttribute(name) {
+    if (typeof name !== "string" || !name) {
+      return this;
+    }
+
+    const attribute = name.startsWith("data-")
+      ? name
+      : `data-${name.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`)}`;
+
+    this.__sfForwardingHostAttributes = true;
+    this.removeAttribute(attribute);
+    this.__sfForwardingHostAttributes = false;
+
+    this.__sfHostDataAttributes?.delete(attribute);
+    this.__sfHostDataAttributeTarget?.removeAttribute?.(attribute);
+    const keys = this.__sfHostDataAttributeTargetKeys;
+    if (keys) this.__sfHostDataAttributeTarget?.[keys]?.delete?.(attribute);
 
     return this;
   }
@@ -1324,6 +1402,57 @@ class SfBaseElement extends HTMLElement {
     this._forwardHostAttributeObserver?.disconnect?.();
     this._forwardHostAttributeObserver = null;
     return this;
+  }
+
+  // The control inside the host that takes focus on the host's behalf. A Smart
+  // host lays out as display:contents, so it generates no box and cannot be
+  // focused: focus() on it did nothing and left document.activeElement where it
+  // was. A component that renders a native control names it here.
+  //
+  // This is what makes a data-* on the host usable as a handle. A product finds
+  // the host by the attribute it wrote -- the one element that carries it -- and
+  // then focuses what it found: Larena's admin menu returns focus to its
+  // magnifier that way, with this.querySelector('[data-sf-admin-search-toggle]')
+  // and .focus() on the answer (consumer case larena.admin-menu-search,
+  // 2026-10-22). Focus lands on the native control, so document.activeElement is
+  // the control and host.contains(document.activeElement) is true.
+  focusDelegate() {
+    return null;
+  }
+
+  focus(options) {
+    const target = this.focusDelegate?.();
+
+    if (target && typeof target.focus === "function") {
+      target.focus(options);
+      return;
+    }
+
+    // Asked before the control exists: focus once it does, and only if nothing
+    // else took focus while this waited -- a queued focus must not steal it back.
+    if (!target && typeof this.focusDelegate === "function" && !this.isRendered) {
+      const activeWhenAsked = this.ownerDocument?.activeElement || null;
+      this.whenRendered(() => {
+        const ready = this.focusDelegate?.();
+        if (!ready || typeof ready.focus !== "function") return;
+        if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
+        ready.focus(options);
+      });
+      return;
+    }
+
+    super.focus(options);
+  }
+
+  blur() {
+    const target = this.focusDelegate?.();
+
+    if (target && typeof target.blur === "function") {
+      target.blur();
+      return;
+    }
+
+    super.blur();
   }
 
   removeAttributes(attributeNames = []) {
