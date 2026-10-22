@@ -168,10 +168,10 @@
           "description": "Every selected value after the change."
         },
         "item": {
-          "description": "The chosen sf-list-item, or null."
+          "description": "The chosen option's data (text, value, type, icon, disabled, group, ...), not the sf-list-item element; null when a value was cleared."
         },
         "root": {
-          "description": "The emitting sf-dropdown."
+          "description": "The emitting sf-dropdown, the live element (the detail is not JSON)."
         },
         "multiple": {
           "type": "boolean",

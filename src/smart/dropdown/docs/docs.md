@@ -145,13 +145,18 @@ field.addEventListener('change', (event) => {
 - `label` — its visible text;
 - `values` — every selected value after the change, in submitted order;
 - `multiple` — whether several values can be selected;
-- `item` — the chosen `sf-list-item`, or `null`;
-- `root` — the emitting `sf-dropdown`.
+- `item` — the chosen option's **data**, or `null` when a value was cleared:
+  the object the dropdown read from the `sf-list-item` or from the items data
+  (`text`, `value`, `type`, `size`, `icon`, `disabled`, `group` and the other
+  option fields). It is not the `sf-list-item` element, and its `selected` and
+  `checked` are what the option was declared with, not the selection now —
+  read `values` for that;
+- `root` — the emitting `sf-dropdown`, the live element.
 
-`item` and `root` are **live elements, not data**: the detail is not JSON, and
+`root` is a **live element, not data**: the detail is not JSON, and
 `JSON.stringify(event.detail)` throws on its circular structure. Take the
-fields you need — `{value, label, values}` are strings and strings — and log or
-send those. The same holds for every Smart change detail that names its
+fields you need — `{value, label, values}` are strings and strings, `item` is
+plain data — and log or send those. The same holds for every Smart change detail that names its
 emitter: `sf-button-group` sends `component`.
 
 Main attributes:

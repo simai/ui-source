@@ -99,8 +99,8 @@ and keeps the `File` object on each.
 | `id` | The item's identity across `setItems()` calls, which is how state transitions become `file-error`, `file-complete` and `complete` events. A selection uses `<name>-<size>-<lastModified>`. Without an `id`, the name and position identify the item. |
 | `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
 | `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
-| `progress` | `0`–`100`, kept exactly as given: reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
-| `state` (or `status`) | `process` (the bar), `done` (the check), `error` (the retry button). Anything else reads `process`. |
+| `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
+| `state` (or `status`) | `process` (the bar), `done` (the check), `error` (the retry button). Missing or anything else reads `process`, for the row and for the events alike. |
 | `errorMessage` (or `retryText`) | The label of the retry button on an `error` item. The component's own "Повторить"/"Try again" when not set. |
 | `icon` | The glyph on the row; `cloud_upload` when not set. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
@@ -124,7 +124,10 @@ upload.onFileAdd((event) => add(event.detail.item));
 ```
 
 Event names: `sf-file-upload:file-add`, `:file-error`, `:file-complete`,
-`:file-remove`, `:file-retry`, `:complete`.
+`:remove`, `:retry`, `:complete` — removal and retry are `sf-file-upload:remove`
+and `sf-file-upload:retry`, not `:file-remove` / `:file-retry`. Their detail is
+`{item, index, items}`: the removed item, or the retried one already back at
+`state: 'process'` and `progress: 0`, and the list after the change.
 
 ## A browser-only import: select → validate → store → retry
 
@@ -140,7 +143,7 @@ upload.addEventListener('sf-file-upload:file-add', async (event) => {
   await store(item);
 });
 
-upload.addEventListener('sf-file-upload:file-retry', (event) => {
+upload.addEventListener('sf-file-upload:retry', (event) => {
   const item = items.get(event.detail.item.id);
   if (item) store({...item, state: 'process', progress: 0});
 });

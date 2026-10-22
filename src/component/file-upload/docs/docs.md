@@ -24,6 +24,15 @@ progress is retained; reaching 100 alone does not change item state or emit done
 An error exposes retry; retry returns that item to process at zero. Completion
 events follow explicit state transitions, not cosmetic rendering.
 
+Defaults on ordinary markup differ from the Smart element's: a descriptor
+without `progress` is drawn at 100, and one without `state` (or `status`) is
+drawn as done, with the check. The events, though, read a missing or unknown
+state as process, so such an item never emits `sf-file-upload:file-complete`.
+Set both `state` and `progress` on every descriptor. (The Smart
+`sf-file-upload` draws a missing state as process and a missing progress as 100
+for a done item, 0 otherwise.) Removal and retry emit `sf-file-upload:remove`
+and `sf-file-upload:retry` with `{item, index, items}`.
+
 Use a visible label and an explicit aria-label when file rows are nested inside
 the trigger. Tab reaches the enabled trigger; Enter/Space activate it once.
 Repeated keydown and keys from nested actions do not activate the picker. Native
