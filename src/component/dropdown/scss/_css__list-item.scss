@@ -284,11 +284,13 @@
   --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
 }
 
+/* Size 3 takes its own step's block space: it read size 2's, and a size 3 row
+   stood a step of block space short of a size 3 control on a phone (simai/ui-source#18). */
 .sf-list-item--size-3 {
-  --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+  --sf-list-item--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
   --sf-list-item--padding-inline-end: var(--sf-ui-3--space-x);
   --sf-list-item--padding-inline-start: var(--sf-ui-3--space-x);
-  --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  --sf-list-item--padding-top: var(--sf-ui-3--space-y-tightness-default);
 }
 
 .sf-list-item--size-1\/2 {
@@ -453,4 +455,137 @@
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
   --sf-avatar--line-height: var(--sf-text-height-3);
 }
+}
+
+/* The general list row (simai/ui-source#18, #29; ui-mail F3): the same row as
+   an option, outside a dropdown. A supporting line under the title, a row a
+   person acts on, a row of an sf-sortable list with its handle, and a pinned
+   row that keeps the handle's slot empty. A one-line row is the control height
+   of its size; a two-line row is that plus one line of the step below, which
+   is the supporting line's own step. */
+@layer sf.components {
+.sf-list-item--two-line .sf-list-item-container {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-list-item--two-line .sf-list-item-title,
+.sf-list-item--two-line .sf-list-item-supporting {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-list-item--two-line .sf-list-item-supporting {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-list-item-supporting--font-size, var(--sf-text-size-1\/2));
+  line-height: var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/2));
+}
+
+.sf-list-item--two-line.sf-list-item--size-1\/3,
+.sf-list-item--two-line.sf-list-item--size-1\/2 {
+  --sf-list-item-supporting--font-size: var(--sf-text-size-1\/3);
+  --sf-list-item-supporting--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-list-item--two-line.sf-list-item--size-1 {
+  --sf-list-item-supporting--font-size: var(--sf-text-size-1\/2);
+  --sf-list-item-supporting--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-list-item--two-line.sf-list-item--size-2 {
+  --sf-list-item-supporting--font-size: var(--sf-text-size-1);
+  --sf-list-item-supporting--line-height: var(--sf-text-height-1);
+}
+
+.sf-list-item--two-line.sf-list-item--size-3 {
+  --sf-list-item-supporting--font-size: var(--sf-text-size-2);
+  --sf-list-item-supporting--line-height: var(--sf-text-height-2);
+}
+
+.sf-list-item.disabled .sf-list-item-supporting {
+  color: var(--sf-on-disable);
+}
+
+/* The handle's slot is a line of the size square, before the row's content. */
+.sf-list-item-handle {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
+  block-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
+  color: var(--sf-on-surface-variant);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
+  --sf-icon--width: var(--sf-list-item-handle--size, var(--sf-text-height-1));
+  --sf-icon--height: var(--sf-list-item-handle--size, var(--sf-text-height-1));
+}
+
+.sf-list-item--size-1\/3 { --sf-list-item-handle--size: var(--sf-text-height-1\/3); }
+.sf-list-item--size-1\/2 { --sf-list-item-handle--size: var(--sf-text-height-1\/2); }
+.sf-list-item--size-1 { --sf-list-item-handle--size: var(--sf-text-height-1); }
+.sf-list-item--size-2 { --sf-list-item-handle--size: var(--sf-text-height-2); }
+.sf-list-item--size-3 { --sf-list-item-handle--size: var(--sf-text-height-3); }
+
+.sf-list-item-handle .sf-icon {
+  color: var(--sf-icon--color);
+}
+
+.sf-list-item-handle[data-sf-sortable-handle] {
+  cursor: grab;
+  touch-action: none;
+}
+
+.sf-list-item--interactive:not(.disabled) {
+  cursor: pointer;
+}
+
+.sf-list-item.disabled .sf-list-item-handle {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+/* Where a pointer can hover, the handle shows on the row under it and on the
+   row that has the focus; its slot is always kept, so nothing moves. On a
+   touch screen it is always shown: there is no hover to find it by. */
+@media (hover: hover) {
+  .sf-list-item--sortable .sf-list-item-handle {
+    opacity: 0;
+    transition: opacity var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-list-item--sortable:is(:hover, :focus-within, :focus-visible) .sf-list-item-handle {
+    opacity: 1;
+  }
+}
+}
+
+@layer sf.states {
+  .sf-list-item:is(.sf-list-item--interactive, .sf-list-item--sortable):not(.disabled):not(.selected):hover {
+    --sf-list-item--background-color: var(--sf-surface-container-hover);
+  }
+
+  /* A row of a list draws its ring inside itself, as an option does: rows sit
+     flush against each other, and a ring outside was cut by its neighbours. */
+  .sf-list-item[data-sf-list-roving]:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-list-item--sortable .sf-list-item-handle {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-list-item[data-sf-list-roving]:focus-visible {
+      outline-color: Highlight;
+    }
+
+    .sf-list-item.selected[data-sf-list-roving] {
+      border-inline-start: var(--sf-px) solid Highlight;
+    }
+  }
 }

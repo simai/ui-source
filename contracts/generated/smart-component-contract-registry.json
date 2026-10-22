@@ -1023,7 +1023,10 @@
         "render",
         "theme",
         "responsive",
-        "option-descriptor"
+        "option-descriptor",
+        "list-row",
+        "roving-focus",
+        "sortable-item"
       ],
       "composition": {
         "public_parts": [],
@@ -1038,13 +1041,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-item/smart.manifest.json",
-      "manifest_sha256": "e28f7a57413180d3c9e42ebefdce10ee07a332e5684a7bd3c61ee01b705a418d",
+      "manifest_sha256": "5ef8306aac427e178645f3e6251c0d0470098a8ed71cb514f2045d391573f764",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Declarative option descriptor and visual row primitive owned by Dropdown.",
+      "summary": "Declarative option descriptor owned by Dropdown, and a general list row: supporting line, interactive rows with roving focus, sf-sortable items and pinned rows.",
       "tags": [
         "list-item"
       ],

@@ -19,6 +19,18 @@ export function renderListItemTemplate(context) {
     ? context.component.getSlotContent("trailing")
     : nothing;
 
+  // A general list row (simai/ui-source#18): a second, supporting line under
+  // the title; a row a person acts on (interactive); a row of an sf-sortable
+  // list, which carries the list's item id and a drag handle, or is pinned and
+  // carries neither. None of these exist for an option, which Dropdown owns.
+  const supportingContent = !isOption && context.component?.hasSlotContent?.("supporting")
+    ? context.component.getSlotContent("supporting")
+    : (!isOption && context.supporting) || nothing;
+  const twoLine = supportingContent !== nothing;
+  const sortableItem = !isOption && !context.pinned ? context.sortableItem || "" : "";
+  const handleSlot = !isOption && Boolean(context.sortableItem || context.pinned);
+  const roving = !isOption && Boolean(context.interactive || sortableItem);
+
   const classes = [
     "sf-list-item",
     "flex",
@@ -28,6 +40,10 @@ export function renderListItemTemplate(context) {
     isOption ? "cursor-pointer" : "",
     context.selected ? "selected" : "",
     context.disabled ? "disabled" : "",
+    twoLine ? "sf-list-item--two-line" : "",
+    !isOption && context.interactive ? "sf-list-item--interactive" : "",
+    handleSlot ? "sf-list-item--sortable" : "",
+    !isOption && context.pinned ? "sf-list-item--pinned" : "",
     context.rootClass,
   ].filter(Boolean);
 
@@ -134,7 +150,17 @@ export function renderListItemTemplate(context) {
   const renderText = () => {
     if (context.type === "color") return nothing;
     if (context.type === "avatar") return nothing;
+    if (twoLine) {
+      return html`<div class="sf-list-item-container"><span class="sf-list-item-title">${textContent}</span><span class="sf-list-item-supporting">${supportingContent}</span></div>`;
+    }
     return html`<div class="sf-list-item-container">${textContent}</div>`;
+  };
+
+  // The handle stands in a slot of its own before everything else; a pinned
+  // row keeps the slot empty, so its text starts where its neighbours' does.
+  const renderHandle = () => {
+    if (!handleSlot) return nothing;
+    return html`<span class="sf-list-item-handle" ?data-sf-sortable-handle=${Boolean(sortableItem)} aria-hidden="true">${sortableItem ? html`<i class="sf-icon">drag_indicator</i>` : nothing}</span>`;
   };
 
   const renderTrailing = () => {
@@ -170,11 +196,15 @@ export function renderListItemTemplate(context) {
       role=${isOption ? "option" : nothing}
       tabindex=${isOption ? "-1" : nothing}
       data-value=${isOption ? context.value || nothing : nothing}
-      aria-label=${isOption ? context.ariaLabel || nothing : nothing}
+      aria-label=${isOption || roving ? context.ariaLabel || nothing : nothing}
       title=${isOption ? context.ariaLabel || nothing : nothing}
-      aria-disabled=${isOption && context.disabled ? "true" : nothing}
+      aria-disabled=${(isOption || roving) && context.disabled ? "true" : nothing}
       aria-selected=${isOption ? (context.selected ? "true" : "false") : nothing}
+      data-sf-sortable-item=${sortableItem || nothing}
+      ?data-sf-list-roving=${roving}
+      aria-current=${roving && context.selected ? "true" : nothing}
     >
+      ${renderHandle()}
       <div class=${wrapClasses.join(" ")}>
         ${renderLeading()} ${renderText()} ${renderTrailing()}
       </div>

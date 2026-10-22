@@ -61,3 +61,28 @@ test('List Item presentation uses semantic tokens and owner-scoped states', asyn
   assert.match(style, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(style, /\b\d+(?:\.\d+)?(?:px|rem)\b/);
 });
+
+test('List Item is also a general list row: supporting line, roving rows, sortable and pinned rows (simai/ui-source#18, #29)', async () => {
+  const [template, source, manifest, style] = await Promise.all([
+    read('src/smart/list-item/js/templates/default.js'),
+    read('src/smart/list-item/index.js'),
+    read('src/smart/list-item/smart.manifest.json').then(JSON.parse),
+    read('src/component/dropdown/scss/_css__list-item.scss'),
+  ]);
+
+  for (const name of ['supporting', 'interactive', 'sortable-item', 'pinned']) {
+    assert.ok(manifest.inputs.properties[name], `manifest declares ${name}`);
+  }
+  assert.ok(manifest.events['sf-list-item-activate']);
+  // An option never becomes a list row: the row parts are off for isOption.
+  assert.match(template, /const sortableItem = !isOption && !context\.pinned/);
+  assert.match(template, /const roving = !isOption &&/);
+  assert.match(template, /data-sf-sortable-item=\$\{sortableItem \|\| nothing\}/);
+  // A pinned row keeps the handle slot but carries no handle.
+  assert.match(template, /\?data-sf-sortable-handle=\$\{Boolean\(sortableItem\)\}/);
+  // A keyboard reorder keeps the arrows; Enter stays the list's on a sortable row.
+  assert.match(source, /__sfSortableSharedV1\?\.session/);
+  assert.match(source, /!row\.hasAttribute\('data-sf-sortable-item'\)/);
+  assert.match(style, /\.sf-list-item\[data-sf-list-roving\]:focus-visible/);
+  assert.match(style, /\.sf-list-item--size-3 \{\n  --sf-list-item--padding-bottom: var\(--sf-ui-3--space-y-tightness-default\)/);
+});
