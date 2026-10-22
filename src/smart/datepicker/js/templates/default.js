@@ -90,6 +90,7 @@ function renderDatepickerInput(context) {
             mask-options=${context.maskOptions || nothing} ?readonly=${context.readonly}
             @click=${(event) => context.component.handleInputClick(event)}
             @change=${(event) => context.component.handleInputChange(event)}
+            @input=${(event) => context.component.handleInputInput(event)}
             @keydown=${(event) => context.component.handleInputKeydown(event)}></sf-input>`;
 }
 

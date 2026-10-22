@@ -12,6 +12,7 @@ test('the date field is read-only only where it has to be', async () => {
   assert.ok(template.includes('?readonly=${context.readonly}'));
   assert.doesNotMatch(template, /mask-options=\$\{context\.maskOptions \|\| nothing\} readonly/u);
   assert.ok(template.includes('@change=${(event) => context.component.handleInputChange(event)}'));
+  assert.ok(template.includes('@input=${(event) => context.component.handleInputInput(event)}'));
 
   const source = await read('src/smart/datepicker/index.js');
   // A range stays on the grid: one field holding two dates has no single format
@@ -35,6 +36,18 @@ test('typed text is read through the declared format, and a typo keeps the value
   assert.match(body, /if \(!text\) \{[\s\S]*?this\.setState\(\{date: '', context: ''\}\);[\s\S]*?this\.emitChange\(\);/u);
   // A date that parses moves the state and says so once.
   assert.match(body, /date: value,[\s\S]*?this\.emitChange\(\);/u);
+});
+
+// The field's own change carries the display text. Left to bubble, a host
+// reading event.target.value on a change from sf-datepicker would store
+// «14.10.2026» where it expects the ISO value -- and before typing was possible
+// no native change could ever leave the component.
+test('the field keeps its native change and input to itself', async () => {
+  const source = await read('src/smart/datepicker/index.js');
+  assert.match(source, /if \(event\?\.type === 'change'\) event\.stopPropagation\(\);/u);
+  assert.match(source, /handleInputInput\(event\) \{\s*if \(this\.typed\) event\?\.stopPropagation\?\.\(\);/u);
+  // The change a host listens for is still the component's own, said once.
+  assert.ok(source.includes('this.emitChange();'));
 });
 
 test('Enter commits what was typed and the space bar belongs to the text', async () => {

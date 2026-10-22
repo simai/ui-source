@@ -1054,6 +1054,11 @@ class SfDatepicker extends SfBaseElement {
     // deleting the text is how a person says there is no date.
     handleInputChange(event) {
         if (!this.typed) return;
+        // The field's own change belongs to the component, not to the page: it
+        // carries the display text, and a host reading `event.target.value` on
+        // it would store «14.10.2026» where it expects the ISO value. The
+        // component says the change itself, once, through emitChange.
+        if (event?.type === 'change') event.stopPropagation();
         const field = event?.target;
         const text = String(field?.value ?? '').trim();
         const restore = () => {
@@ -1094,6 +1099,12 @@ class SfDatepicker extends SfBaseElement {
         });
         this.set({activeDate: value});
         this.emitChange();
+    }
+
+    // Typing is not a change: the value is read when the field says it changed,
+    // so the keystrokes stay inside the component too.
+    handleInputInput(event) {
+        if (this.typed) event?.stopPropagation?.();
     }
 
     handleInputClick(event) {

@@ -17,7 +17,7 @@ const styles = [
   'component/component/buttons/css/buttons.css',
   'component/component/dropdown/css/dropdown.css',
   'smart/smart/drawer/css/drawer.css',
-  'smart/smart/modal/css/modal.css',
+  'component/component/modal/css/modal.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
@@ -44,12 +44,14 @@ try {
   await page.setContent(
     '<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"></head>'
     + '<body style="margin:0;padding:40px">'
-    + '<sf-drawer id="drawer" open label="Запись">'
-    + '<div slot="content"><sf-dropdown id="in-drawer" label="Статус" size="1">'
+    // The markup each surface is shown with in its own probes: the drawer takes
+    // its content as children, the modal through its content slot.
+    + '<sf-drawer id="drawer" title="Запись" size="1">'
+    + '<sf-dropdown id="in-drawer" label="Статус" size="1">'
     + '<sf-list-item text="Черновик" value="draft"></sf-list-item>'
     + '<sf-list-item text="Опубликовано" value="live"></sf-list-item>'
-    + '</sf-dropdown></div></sf-drawer>'
-    + '<sf-modal id="modal" open label="Запись">'
+    + '</sf-dropdown></sf-drawer>'
+    + '<sf-modal id="modal" title="Запись">'
     + '<div slot="content"><sf-dropdown id="in-modal" label="Раздел" size="1">'
     + '<sf-list-item text="Каталог" value="catalog"></sf-list-item>'
     + '<sf-list-item text="Новости" value="news"></sf-list-item>'
@@ -74,23 +76,42 @@ try {
   const measured = await page.evaluate(async () => {
     const settle = (ms) => new Promise((done) => setTimeout(done, ms));
     const mark = () => Boolean(document.documentElement.dataset.sfPopoverOpen);
-    const press = () => document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+    // The press starts where the person's press starts -- on the control that
+    // has the focus -- and travels from there. Dispatched on the document it
+    // would reach the drawer's and the modal's own listeners and never the
+    // dropdown's, which listens on its own root: the defect is about the order
+    // of two listeners on one path, so the path has to be real.
+    const press = (node) => node.dispatchEvent(
+      new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, composed: true}),
+    );
 
     const read = async (dropdownId, surfaceId) => {
       const dropdown = document.getElementById(dropdownId);
       const surface = surfaceId ? document.getElementById(surfaceId) : null;
+      if (surface) {
+        surface.setAttribute('open', '');
+        await settle(400);
+      }
       dropdown.openDropdown();
       await settle(250);
+      const trigger = dropdown.querySelector('.sf-dropdown-field, .sf-dropdown-trigger') || dropdown;
       const opened = {list: dropdown.hasAttribute('open') || Boolean(dropdown.querySelector('.sf-dropdown--open')),
         mark: mark(), surface: surface ? surface.hasAttribute('open') : null};
-      press();
+      press(trigger);
       await settle(250);
       const afterFirst = {list: Boolean(dropdown.querySelector('.sf-dropdown--open')),
         mark: mark(), surface: surface ? surface.hasAttribute('open') : null};
       // A second press, with no list open, is the surface's own: it closes.
-      press();
-      await settle(250);
-      const afterSecond = {surface: surface ? surface.hasAttribute('open') : null};
+      // A modal closes through an animation, so the attribute is read until it
+      // drops rather than once -- read too early, a closing modal looks like one
+      // that ignored the press.
+      press(trigger);
+      let closing = 0;
+      while (surface && surface.hasAttribute('open') && closing < 1600) {
+        await settle(200);
+        closing += 200;
+      }
+      const afterSecond = {surface: surface ? surface.hasAttribute('open') : null, waited: closing};
       return {opened, afterFirst, afterSecond};
     };
 
