@@ -156,6 +156,31 @@ the next one.
   `tests/browser/host-port-request.browser.mjs`. The ports themselves are
   public: `src/core/contracts/ports/<port>/<version>/` (`component-packages.md`).
 
+- **A `data-*` an author writes on the host is moved to the native control,
+  never copied.** `forwardHostAttributes` copies the attributes the component
+  does not own to the control it renders and moves `data-*` there
+  (`transferDataAttributes`), so exactly one element carries one — and it is the
+  element that has a box, paints, takes focus, is clicked and is dragged. Both
+  other shapes failed in production: copying put every `data-*` on two elements
+  and doubled a count, and keeping it on the host alone left one element with no
+  box, so a drag through its bounding box threw and a probe reading a filled
+  button read the wrong element. A `display: contents` host generates no box at
+  all, and no JavaScript can give it one. The host is reached back from the
+  control with `closest('sf-button')`, the direction that always exists, and the
+  host's own record of what the author wrote is public as
+  `element.dataAttributes`, with `removeHostDataAttribute()` to clear one from
+  the record and the control together.
+  `tests/smart-host-light-dom.contract.test.mjs`;
+  `tests/browser/host-data-attributes-focus.browser.mjs`.
+
+- **A component that renders a focusable control names it in
+  `focusDelegate()`**, and the base sends `focus()` and `blur()` on the host
+  there. A Smart host lays out as `display: contents`, so it generates no box
+  and cannot be focused: without a delegate, `focus()` on the host did nothing
+  and left `document.activeElement` where it was. A focus asked before the first
+  render is applied when the control appears, and dropped if something else took
+  focus while it waited. Same checks as above.
+
 ## Surfaces and lines
 
 - **Height is a pair**: what floats takes `--sf-elevation-N--surface` and

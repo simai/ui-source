@@ -246,6 +246,15 @@ class SfIconButton extends SfBaseElement {
     }
   }
 
+  // The native button is what takes focus: the host lays out as
+  // display:contents and takes none, so focus() on the host did nothing and
+  // left document.activeElement where it was. A product that holds the host --
+  // from querySelector('sf-icon-button'), or from closest('sf-icon-button') on a data-* match --
+  // focuses it and reaches the control through this.
+  focusDelegate() {
+    return this.querySelector('.sf-icon-button');
+  }
+
   get value() {
     return {
       template: this.templateName,
