@@ -14,7 +14,11 @@
   * {
     // --sf-scroll-bg-track: var(--sf-surface-overlay); - Р·Р°РјРµРЅРёР» РЅР° container С‚.Рє. РїСЂРё СЂР°Р·РЅС‹С… bg-primary,secondary Рё С‚Рґ СЃРєСЂРѕР»Р»Р±Р°СЂ РІРѕРѕР±С‰Рµ РЅРµ РІРёРґРµРЅ
     --sf-scroll-bg-track: var(--sf-transparent);
-    --sf-scroll-bg-thumb: var(--sf-surface-1);
+    // Every page's own scrollbar. The thumb was --sf-surface-1: 1.05:1 over the
+    // page and exactly 1.00:1 on a surface-1 panel, where it is not visible at
+    // all. The graphic role is opaque neutral-50/60 and clears 3:1 on every
+    // step of the surface ladder in both themes (measured 2026-10-22).
+    --sf-scroll-bg-thumb: var(--sf-on-neutral-container-graphic);
     --sf-scroll-bg-width: var(--sf-b4);
     --sf-scroll-thumb-size: var(--sf-a6);
     --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);
