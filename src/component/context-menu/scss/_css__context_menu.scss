@@ -494,3 +494,18 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
     box-shadow: none;
   }
 }
+
+/* A row is a touch target of at least 44px under a coarse pointer
+   (simai/ui-source#25, ui-chat; WCAG 2.5.5 and the platforms' own minimum):
+   at 1/2 a row was 24-32px, under a finger. The row grows to the target and
+   keeps its content on its centre line; a mouse keeps the ladder's rows. */
+@media (pointer: coarse) {
+  @layer sf.states {
+    .sf-context-menu .sf-context-menu-item,
+    .sf-context-menu .sf-context-menu-row,
+    .sf-context-menu .sf-context-menu-content > .sf-button,
+    .sf-context-menu .sf-context-menu-content > sf-button > .sf-button {
+      min-block-size: var(--sf-d1);
+    }
+  }
+}
