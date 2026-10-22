@@ -7,6 +7,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import BundledPosition from '../../core/js/position.js';
 import {pageText} from '../../core/js/page-language';
+import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {renderHelpMarkTemplate} from './js/templates/default';
 import './scss/index.scss';
 
@@ -26,8 +27,11 @@ class SfHelpMark extends SfBaseElement {
       if (!this.isOpen || event.composedPath().includes(this)) return;
       this.close({restoreFocus: false});
     };
+    // An open explanation owns Escape as the innermost open layer, and says so
+    // on the root through the shared mark, so a record panel listening in
+    // capture before it stands back instead of closing with it.
     this._onKey = (event) => {
-      if (!this.isOpen || event.key !== 'Escape') return;
+      if (!this.isOpen || event.key !== 'Escape' || event.defaultPrevented || !isTopOpenSurface(this)) return;
       event.preventDefault();
       event.stopPropagation();
       this.close();
@@ -80,6 +84,8 @@ class SfHelpMark extends SfBaseElement {
     this.isOpen = true;
     this.requestComponentUpdate('open');
     await this.whenRendered?.();
+    // Closed while it was drawing: it must not raise a mark nobody releases.
+    if (!this.isOpen) return;
     const panel = this.panel();
     const button = this.button();
     if (!panel || !button) return;
@@ -88,6 +94,7 @@ class SfHelpMark extends SfBaseElement {
       if (!panel.matches(':popover-open')) panel.showPopover();
     }
     this._position = position().anchor(button, panel, {side: PLACEMENTS[this.placement], align: 'center', flip: true, shift: true});
+    holdOpenSurfaceMark(this, true);
     document.addEventListener('pointerdown', this._onOutside, true);
     document.addEventListener('keydown', this._onKey, true);
     // Said once it is open: the text a screen reader hears is the text shown.
@@ -107,6 +114,7 @@ class SfHelpMark extends SfBaseElement {
     this.announcement = '';
     this._position?.stop();
     this._position = null;
+    holdOpenSurfaceMark(this, false);
     document.removeEventListener('pointerdown', this._onOutside, true);
     document.removeEventListener('keydown', this._onKey, true);
     const panel = this.panel();

@@ -3,6 +3,7 @@ import {fieldSize} from '../../component/field-size';
 import {renderDatepickerTemplate} from './js/templates/default';
 import BundledPosition from '../../core/js/position.js';
 import {pageLocale, pageText} from '../../core/js/page-language';
+import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const YEARS_PAGE_SIZE = 18;
@@ -1189,26 +1190,40 @@ class SfDatepicker extends SfBaseElement {
         this.closePanel();
     }
 
+    // An open calendar owns Escape: the press closes the calendar, the focus goes
+    // back to the field, and nothing behind it -- a drawer, a modal, a record
+    // panel -- sees the press. It listened in the bubble phase and raised no
+    // mark, so a drawer listening before it and a record panel listening in
+    // capture both closed first, and the date typed into the field went with
+    // the panel (Larena admin acceptance, 2026-10-22). Now it listens in capture
+    // like every other surface that owns Escape, holds the shared open-surface
+    // mark while open, and acts only as the innermost open layer, so a calendar
+    // inside a popover closes before the popover does.
     handleDocumentKeydown(event) {
-        if (!this.open || event.key !== 'Escape') {
+        if (!this.open || event.key !== 'Escape' || event.defaultPrevented) {
+            return;
+        }
+        if (!isTopOpenSurface(this)) {
             return;
         }
 
         event.preventDefault();
+        event.stopPropagation();
 
         if (this.contextMode) {
             this.setContext('');
             return;
         }
 
-        this.closePanel();
-        requestAnimationFrame(() => this._input?.focus?.());
+        this.closePanel({restoreFocus: true});
     }
 
     syncOverlayListeners() {
-        if (this.input && this.open) {
+        const open = Boolean(this.input && this.open);
+        holdOpenSurfaceMark(this, open);
+        if (open) {
             document.addEventListener('click', this._documentClickHandler);
-            document.addEventListener('keydown', this._documentKeydownHandler);
+            document.addEventListener('keydown', this._documentKeydownHandler, true);
             return;
         }
 
@@ -1216,8 +1231,9 @@ class SfDatepicker extends SfBaseElement {
     }
 
     removeOverlayListeners() {
+        holdOpenSurfaceMark(this, false);
         document.removeEventListener('click', this._documentClickHandler);
-        document.removeEventListener('keydown', this._documentKeydownHandler);
+        document.removeEventListener('keydown', this._documentKeydownHandler, true);
         this.stopPanelPosition();
         window.removeEventListener('resize', this._viewportHandler);
         document.removeEventListener('scroll', this._viewportHandler, true);

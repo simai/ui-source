@@ -1,5 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
-import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
+import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {renderPopoverTemplate} from './js/templates/default';
 
 // A surface anchored to a control the consumer supplies: a field's settings, a
@@ -195,8 +195,10 @@ class SfPopover extends SfBaseElement {
         };
         // Capture, and the press is stopped going further: a surface closing
         // under the pointer must not also activate what the pointer landed on.
+        // Only as the innermost open layer: a calendar or a list opened inside
+        // it takes the press first, and the popover the next one.
         this._onDocumentKeyDown = (event) => {
-            if (event.key !== 'Escape') return;
+            if (event.key !== 'Escape' || event.defaultPrevented || !isTopOpenSurface(this)) return;
             event.preventDefault();
             event.stopPropagation();
             this.close();

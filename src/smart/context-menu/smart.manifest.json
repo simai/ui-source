@@ -546,7 +546,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
-        "sha256": "9bd28543965d1f8a3a5a738d02a1e4e8228a7194b3142352ef270e30978cc9d8"
+        "sha256": "2b6c3fedc78651c27e99726a4199c7845cbf867e6f229d4d20af75f8118725bb"
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",

@@ -2,6 +2,7 @@ import SfBaseElement from "../../core/js/smart-base";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
 import { pageText } from "../../core/js/page-language";
+import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 
 const CONTEXT_MENU_TEXT = {
   en: { close: "Close" },
@@ -347,6 +348,10 @@ class SfContextMenu extends SfBaseElement {
       side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
     });
     document.addEventListener("pointerdown", this._onOutsidePress, true);
+    // A menu it opens owns Escape, so the root says a surface is open: a record
+    // panel listening on the document in capture runs before the menu's own
+    // listener and would otherwise close with it.
+    holdOpenSurfaceMark(this, true);
     this.dispatchEvent(new CustomEvent("sf-context-menu-open", {bubbles: true, composed: true}));
     if (focus !== "none") {
       this.syncMenuItems();
@@ -376,6 +381,7 @@ class SfContextMenu extends SfBaseElement {
       owned.sizedContent?.style.removeProperty(name);
     }
     document.removeEventListener("pointerdown", this._onOutsidePress, true);
+    holdOpenSurfaceMark(this, false);
     const surface = this.surface();
     if (surface) {
       if (surface.matches?.(":popover-open")) surface.hidePopover();

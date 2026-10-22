@@ -13,6 +13,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import BundledPosition from '../../core/js/position.js';
 import {pageText} from '../../core/js/page-language';
+import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {renderProfilePickerTemplate} from './js/templates/default';
 import './scss/index.scss';
 
@@ -158,6 +159,9 @@ class SfProfilePicker extends SfBaseElement {
     panel.style.minInlineSize = `${Math.round(trigger.getBoundingClientRect().width)}px`;
     this._position = position().anchor(trigger, panel, {side: 'block-end', align: 'start', flip: true, shift: true, fitHeight: true});
     document.addEventListener('pointerdown', this._onOutside, true);
+    // The open panel owns Escape: the root says so, and a drawer or record
+    // panel listening on the document stands back.
+    holdOpenSurfaceMark(this, true);
     (panel.querySelector('.sf-profile-picker-row[aria-checked="true"]') ?? panel.querySelector('.sf-profile-picker-row'))?.focus({preventScroll: true});
   }
 
@@ -167,6 +171,7 @@ class SfProfilePicker extends SfBaseElement {
     this._position?.stop();
     this._position = null;
     document.removeEventListener('pointerdown', this._onOutside, true);
+    holdOpenSurfaceMark(this, false);
     const panel = this.panel();
     if (panel?.matches?.(':popover-open')) panel.hidePopover();
     this.requestComponentUpdate('close');
@@ -240,7 +245,10 @@ class SfProfilePicker extends SfBaseElement {
 
   handleKeyDown(event) {
     if (event.key === 'Escape') {
+      // Consumed: the press closes the panel (or leaves its form), not the
+      // drawer or the window the picker sits in.
       event.preventDefault();
+      event.stopPropagation();
       if (this.state.mode) this.setMode(null);
       else this.close();
       return;

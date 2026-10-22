@@ -7,6 +7,7 @@ import { maskService } from '../../mask-service';
 import BundledPosition from '../../../core/js/position.js';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { pageLanguage, pageText } from '../../../core/js/page-language';
+import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-country-code', code, words); the locale here is
 // also what the number itself is formatted by, which is why it stays.
@@ -366,6 +367,9 @@ function setOpenState(root, open) {
   if (input?.disabled || root.classList.contains('disabled') || root.__sfCountryConfig?.multiCountry === false) open = false;
   if (open) root.classList.add('open');
   else root.classList.remove('open');
+  // An open list of countries owns Escape: the root says so, and a drawer, a
+  // modal or a record panel behind it stands back.
+  holdOpenSurfaceMark(root, open);
   syncCountryAccessibility(root);
   root.__sfCountryViewport?.(open);
 }
@@ -797,7 +801,11 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
       if (!root.classList.contains('open')) onToggleClick(event);
       focusItem(event.key === 'ArrowUp' ? -1 : undefined);
     }
-    if (event.key === 'Escape') {
+    // Escape over an open list closes the list and is consumed; it closed the
+    // list and then, travelling on, the drawer the field sat in.
+    if (event.key === 'Escape' && root.classList.contains('open')) {
+      event.preventDefault();
+      event.stopPropagation();
       setOpenState(root, false);
     }
   };
@@ -845,7 +853,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     if (event.altKey || event.ctrlKey || event.metaKey || input.disabled || root.classList.contains('disabled')) return;
     const choices = enabledItems(), current = choices.indexOf(event.currentTarget);
     if (event.key === 'Escape') {
-      event.preventDefault(); setOpenState(root, false); toggle?.focus({ preventScroll: true }); return;
+      event.preventDefault(); event.stopPropagation(); setOpenState(root, false); toggle?.focus({ preventScroll: true }); return;
     }
     if (event.key === 'Enter' || event.key === ' ') { onItemClick(event); return; }
     if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
@@ -954,6 +962,8 @@ function unbindCountryCode(root) {
   delete root.__sfCountryRequiredObserver;
   root.__sfCountryViewport?.(false);
   delete root.__sfCountryViewport;
+  // Removed while open, it must not leave the mark raised for the whole page.
+  holdOpenSurfaceMark(root, false);
   root.querySelectorAll('img[data-flag-src]').forEach(img => flagObserver?.unobserve(img));
 
   if (toggle && root.__sfCountryCodeToggleClick) {

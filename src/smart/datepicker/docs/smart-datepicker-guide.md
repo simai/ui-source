@@ -71,7 +71,11 @@ text and Enter commits it. Inside the day
 grid, arrow keys move by day or week, Home and End move to a week edge, and
 PageUp and PageDown change the month. RTL reverses the physical horizontal
 arrows while chronological movement remains correct. Escape closes the popup
-and restores focus to the field.
+and restores focus to the field, and the press goes no further: a drawer, a
+modal or a record panel the field sits in stays open, and text typed into the
+field stays. The open calendar holds the shared open-surface mark
+(`document.documentElement.dataset.sfPopoverOpen`) and acts only as the
+innermost open layer, so a calendar inside a popover closes before the popover.
 
 Every day has a full localized date name. The current date uses
 `aria-current="date"`; selection uses `aria-pressed`. Only the active day is in
