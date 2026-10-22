@@ -7,7 +7,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { fieldSize } from '../../component/field-size';
 import { renderTextareaTemplate } from './js/templates/default';
 
-const TEXTAREA_VARIANTS = new Set(['bordered', 'filled']);
+const TEXTAREA_VARIANTS = new Set(['bordered', 'filled', 'flush']);
 const TEXTAREA_INPUT_MODES = new Set(['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
 const TEXTAREA_WRAP_VALUES = new Set(['soft', 'hard']);
 
@@ -22,7 +22,8 @@ class SfTextarea extends SfBaseElement {
       size: { default: '1' },
       // The axis is called appearance, because that is the question it answers.
       // `type` keeps working: see contracts/public-api-axes.json.
-      appearance: {default: 'bordered', values: ['bordered', 'filled'], aliases: ['type']},
+      // flush: inside a composite control that draws the box and the focus.
+      appearance: {default: 'bordered', values: ['bordered', 'filled', 'flush'], aliases: ['type']},
       label: { default: '' },
       required: { type: Boolean, default: false },
       placeholder: { default: '' },

@@ -48,7 +48,8 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
   }
   assert.deepEqual(manifest.composition.uses, ['component.textarea']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
-  assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled']);
+  assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'flush']);
+  assert.deepEqual(manifest.inputs.properties.appearance.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.inputmode.enum, ['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
   assert.deepEqual(manifest.inputs.properties.wrap.enum, ['soft', 'hard']);
   assert.equal(manifest.contracts.state_owner.const, 'native_textarea');
@@ -70,4 +71,39 @@ test('Smart Textarea source metadata describes multiline form ownership', async 
   assert.equal(fixture.props.spellcheck, true);
   assert.ok(scenario.assertions.some((item) => item.type === 'native-attribute'));
   assert.ok(scenario.assertions.some((item) => item.type === 'form-value'));
+});
+
+// Flush (ui-chat's composer): the field inside a composite control that draws
+// the box and the focus. The field draws neither, keeps its text on the size
+// ladder, and auto-grows with a frame that has no hairline.
+test('Textarea flush surface draws no box and no focus of its own', async () => {
+  const [css, javascript, index, meta, docs, smartDocs] = await Promise.all([
+    source('component/textarea/scss/_css__textarea.scss'),
+    source('component/textarea/js/_textarea.js'),
+    source('smart/textarea/index.js'),
+    source('smart/textarea/meta.mjs'),
+    source('component/textarea/docs/docs.md'),
+    source('smart/textarea/docs/docs.md'),
+  ]);
+  assert.match(javascript, /const TEXTAREA_VARIANTS = new Set\(\['bordered', 'filled', 'flush'\]\);/);
+  assert.match(index, /values: \['bordered', 'filled', 'flush'\], aliases: \['type'\]/);
+  assert.match(meta, /\["bordered", "filled", "flush"\]/);
+  const flush = css.slice(css.indexOf('\n.sf-textarea.sf-textarea--flush textarea {', css.indexOf('/* Flush:')));
+  const own = flush.slice(0, flush.indexOf('}'));
+  for (const declaration of ['background-color: transparent', 'border: 0', 'border-radius: 0', 'box-shadow: none', 'margin: 0', 'outline: none', 'resize: none']) {
+    assert.ok(own.includes(declaration), declaration);
+  }
+  // Read with the public wrappers taken off: --sf-textarea-padding-inline and
+  // --sf-textarea-padding-block still override the flush padding.
+  assert.match(own, /--sf-textarea-textarea--padding-inline-start: 0px;/);
+  for (const size of ['1', '2', '1\\/2']) {
+    assert.ok(css.includes(`.sf-textarea.sf-textarea--flush.sf-textarea--size-${size} textarea {\n  --sf-textarea-textarea--padding-top: var(--sf-ui-${size}--space-y-tightness-default);`), size);
+  }
+  assert.match(css, /\.sf-textarea\.sf-textarea--flush\.sf-textarea--auto-grow textarea\[rows\] \{\n  --sf-textarea--row-frame: calc\(var\(--sf-textarea-textarea--padding-top\) \+ var\(--sf-textarea-textarea--padding-bottom\)\);/);
+  assert.match(css, /\.sf-textarea\.sf-textarea--flush:not\(\.sf-textarea--pointer-focus\):has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus-visible\) textarea \{\n  outline: none;/);
+  // The text is on the ladder at every size: the shared font rules name flush too.
+  for (const size of ['1', '2', '1\\/2']) assert.ok(css.includes(`.sf-textarea.sf-textarea--size-${size}.sf-textarea--flush textarea`), size);
+  assert.match(docs, /## Flush/);
+  assert.match(smartDocs, /## Flush/);
+  assert.match(smartDocs, /:has\(:focus-visible\)/);
 });

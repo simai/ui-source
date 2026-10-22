@@ -92,17 +92,17 @@
   --sf-textarea-placeholder--color: var(--sf-on-surface);
 }
 
-.sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
   --sf-textarea-hint-text-wrap--line-height: var(--sf-text-height-1\/2);
 }
 
-.sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--flush .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--flush .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-family: var(--sf-text--family);
   --sf-textarea-hint-text-wrap--font-weight: var(--sf-font-weight-regular);
 }
 
-.sf-textarea.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--color: var(--sf-on-surface-variant);
 }
 
@@ -116,14 +116,14 @@
   --sf-textarea-text--line-height: var(--sf-text-height-1\/2);
 }
 
-.sf-textarea.sf-textarea--size-1.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1.sf-textarea--filled textarea {
+.sf-textarea.sf-textarea--size-1.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-1.sf-textarea--flush textarea {
   --sf-textarea-textarea--font-size: var(--sf-text-size-1);
   --sf-textarea-textarea--line-height: var(--sf-text-height-1);
   --sf-textarea-textarea--font-family: var(--sf-text--family);
   --sf-textarea-textarea--font-weight: var(--sf-font-weight-regular);
 }
 
-.sf-textarea.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--filled textarea {
+.sf-textarea.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--filled textarea, .sf-textarea.sf-textarea--flush textarea {
   --sf-textarea-textarea--color: var(--sf-textarea-color, var(--sf-on-surface));
 }
 
@@ -136,7 +136,7 @@
   --sf-textarea-textarea--border-color: var(--sf-primary);
 }
 
-.sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea {
+.sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--flush:has(textarea:disabled) textarea {
   --sf-textarea-textarea--color: var(--sf-on-disable);
 }
 
@@ -153,7 +153,7 @@
   --sf-textarea-textarea--border-color: var(--sf-outline);
 }
 
-.sf-textarea.error.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.error.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.error.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.error.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.error.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--color: var(--sf-error);
 }
 
@@ -180,7 +180,7 @@
   --sf-textarea-textarea--background-color: var(--sf-error-container);
 }
 
-.sf-textarea.sf-textarea--size-2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.sf-textarea--size-2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-2.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-size: var(--sf-text-size-1);
   --sf-textarea-hint-text-wrap--line-height: var(--sf-text-height-1);
 }
@@ -195,12 +195,12 @@
   --sf-textarea-text--line-height: var(--sf-text-height-1);
 }
 
-.sf-textarea.sf-textarea--size-2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--filled textarea {
+.sf-textarea.sf-textarea--size-2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--flush textarea {
   --sf-textarea-textarea--font-size: var(--sf-text-size-2);
   --sf-textarea-textarea--line-height: var(--sf-text-height-2);
 }
 
-.sf-textarea.sf-textarea--size-2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled textarea {
+.sf-textarea.sf-textarea--size-2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-2.sf-textarea--flush textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--flush textarea {
   --sf-textarea-textarea--font-family: var(--sf-text--family);
 }
 
@@ -208,7 +208,7 @@
   --sf-textarea-textarea--border-color: var(--sf-primary-active);
 }
 
-.sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled .sf-textarea-hint-text-wrap {
+.sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-size: var(--sf-text-size-1\/3);
   --sf-textarea-hint-text-wrap--line-height: var(--sf-text-height-1\/3);
 }
@@ -223,7 +223,7 @@
   --sf-textarea-text--line-height: var(--sf-text-height-1\/3);
 }
 
-.sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled textarea {
+.sf-textarea.sf-textarea--size-1\/2.sf-textarea--bordered textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--filled textarea, .sf-textarea.sf-textarea--size-1\/2.sf-textarea--flush textarea {
   --sf-textarea-textarea--font-size: var(--sf-text-size-1\/2);
   --sf-textarea-textarea--line-height: var(--sf-text-height-1\/2);
 }
@@ -324,6 +324,58 @@
 .sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container);
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+}
+
+/* Flush: the field inside a composite control -- a chat composer, say -- whose
+   own box draws the border, the fill, the shadow and the focus. The field draws
+   none of them: no border, no background, no box shadow, no radius, no inline
+   padding, no margin, no resize handle and no focus ring of its own. The
+   composite shows focus, with :has(:focus-visible), and has to: a flush field
+   is not visibly focused by itself. Its block padding is the bordered field's
+   padding plus its hairline, so its text stands exactly where an input's or a
+   button's text of the same size stands, and one row is that control's height
+   (--sf-ui-N--control-height); each further row adds the size's line height.
+   Auto-grow, min-rows and max-rows work as on every surface; the frame of a row
+   is the padding alone, because there is no hairline. --sf-textarea-padding-block
+   and --sf-textarea-padding-inline still override the padding. */
+.sf-textarea.sf-textarea--flush textarea {
+  --sf-textarea-textarea--font-family: var(--sf-text--family);
+  --sf-textarea-textarea--font-weight: var(--sf-font-weight-regular);
+  --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, 0px);
+  --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, 0px);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  outline: none;
+  resize: none;
+}
+
+.sf-textarea.sf-textarea--flush.sf-textarea--size-1 textarea {
+  --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, var(--sf-ui-1--space-y-tightness-default));
+  --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, var(--sf-ui-1--space-y-tightness-default));
+}
+
+.sf-textarea.sf-textarea--flush.sf-textarea--size-2 textarea {
+  --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, var(--sf-ui-2--space-y-tightness-default));
+  --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, var(--sf-ui-2--space-y-tightness-default));
+}
+
+.sf-textarea.sf-textarea--flush.sf-textarea--size-1\/2 textarea {
+  --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+  --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+}
+
+/* No hairline: a row's frame is the padding alone. */
+.sf-textarea.sf-textarea--flush.sf-textarea--auto-grow textarea[rows] {
+  --sf-textarea--row-frame: calc(var(--sf-textarea-textarea--padding-top) + var(--sf-textarea-textarea--padding-bottom));
+}
+
+/* The keyboard ring is the composite's to draw; as specific as the rule that
+   draws it on the other surfaces, and later. */
+.sf-textarea.sf-textarea--flush:not(.sf-textarea--pointer-focus):has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
+  outline: none;
 }
 }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.textarea",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Textarea",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -47,9 +47,10 @@
         "default": "bordered",
         "enum": [
           "bordered",
-          "filled"
+          "filled",
+          "flush"
         ],
-        "description": "How the field looks: a bordered box or a filled one."
+        "description": "How the field looks: a bordered box, a filled one, or flush -- no box of its own, inside a composite control that draws the box and the focus."
       },
       "label": {
         "type": "string",
@@ -171,7 +172,8 @@
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "bordered",
-          "filled"
+          "filled",
+          "flush"
         ]
       }
     },
@@ -344,7 +346,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/textarea/index.js",
-        "sha256": "55472299d6c3bf2382ae3f1238d2ba15e59a04bc32eec6f4414ae1607199811d"
+        "sha256": "aff702ba06b47bef148c3c528b84c632a5a6e248b0b4bebdd746d8300c8bb2cd"
       }
     ],
     "generated_runtime": [
