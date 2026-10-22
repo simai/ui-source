@@ -92,3 +92,30 @@ test('a value set by the attribute can be cleared', async () => {
   assert.match(manifest.inputs.properties.value.description, /initial value/u);
 });
 
+// «20.11.202630.10.2026» -- two dates glued by a paste -- was read as the date
+// 202630-11-20: the parser took the first three runs of digits. Typed text is
+// now one whole date in the format, with a four-digit year from 1000 to 9999.
+test('typed text is one whole date in the format, never a different date', async () => {
+  const source = await read('src/smart/datepicker/index.js');
+  assert.match(source, /const MIN_YEAR = 1000;\s*const MAX_YEAR = 9999;/u);
+  assert.ok(source.includes('new RegExp(`^${source}$`)'), 'the pattern is anchored at both ends');
+  assert.doesNotMatch(source, /text\.match\(\/\\d\+\/g\)/u, 'no loose digit scan');
+  // Load the parser alone and run it.
+  const code = `${source.match(/const ISO_DATE_RE = .*;/u)[0]}\n`
+    + `${source.slice(source.indexOf('function isValidDate'), source.indexOf('function normalizeMonth('))}\nexport {parseDateValue};`;
+  const parser = await import(`data:text/javascript,${encodeURIComponent(code)}`);
+  const parse = (text, format) => {
+    const date = parser.parseDateValue(text, format);
+    return date ? `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` : null;
+  };
+  assert.equal(parse('20.11.2026'), '2026-11-20');
+  assert.equal(parse('2026-11-20'), '2026-11-20');
+  assert.equal(parse('20/11/2026'), '2026-11-20');
+  assert.equal(parse('1.2.2026'), '2026-2-1');
+  assert.equal(parse('20.11.26', 'DD.MM.YY'), '2026-11-20');
+  assert.equal(parse('11/20/2026', 'MM/DD/YYYY'), '2026-11-20');
+  for (const wrong of ['20.11.202630.10.2026', '20.11.2026 - 30.10.2026', '20.11.99999', '20.11.0999', '0999-01-01',
+    '20.11.2026 x', '31.02.2026', '20.11.____', '2026']) {
+    assert.equal(parse(wrong), null, wrong);
+  }
+});

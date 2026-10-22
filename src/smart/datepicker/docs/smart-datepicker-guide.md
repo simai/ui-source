@@ -28,15 +28,21 @@ the usual `change`, whose detail `value` is `''`.
 
 The field of a single-date picker accepts typing. What is typed is read through
 `format`, and an ISO date is accepted as well, so both `14.10.2026` and
-`2026-10-14` land on the same value. Text that is not a date, or a date outside
-`min-date`/`max-date`, puts the field back to the value it held: a half-typed
-date must not clear a stored one. Emptying the field clears the value, because
+`2026-10-14` land on the same value. The whole text has to be one date in that
+format: `YYYY` is four digits, `YY` two, the day and the month one or two, and
+between them any of `.` `/` `-` `,` or a space. The year is 1000 to 9999. Text
+that is not such a date -- two dates glued together by a paste
+(`20.11.202630.10.2026`), a five-digit year, a date with something after it, a
+day the month does not have -- or a date outside `min-date`/`max-date`, puts the
+field back to the value it held: a half-typed date must not clear a stored one,
+and nothing is ever read as a different date than the one typed. Emptying the field clears the value, because
 deleting the text is how a person says there is no date. Enter commits what is
 typed; ArrowDown still opens the calendar.
 
 Add `readonly` for a field the person may not type in -- the date is then chosen
 on the grid alone. A `range` field is always read-only: one field holding two
-dates has no single format to read back.
+dates has no single format to read back. Its `start-value` and `end-value`
+are read with the same parser, so a value holding two dates is not a date.
 
 The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
