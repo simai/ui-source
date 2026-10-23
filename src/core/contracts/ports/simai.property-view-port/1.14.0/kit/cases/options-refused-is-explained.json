@@ -1,0 +1,14 @@
+{
+  "id": "options-refused-is-explained",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "A field whose candidates the host will not serve is refused with a reason, and the field falls back to its value rather than to an empty list.",
+  "given": {"capabilities": ["field-options"]},
+  "when": {"intent": "field.options", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "forbidden", "cursor": null, "search": ""}},
+  "then": {
+    "answer": "refused",
+    "answer_must_include": ["reason"],
+    "note": "An empty page and a refusal look identical in a list, and only one of them is something a person can act on."
+  }
+}

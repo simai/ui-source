@@ -368,6 +368,7 @@ export const FILTER_RENDERERS = {
     'entity-single-select': renderEntityMultiSelectFilterControl,
     record: renderEntityMultiSelectFilterControl,
     relation: renderEntityMultiSelectFilterControl,
+    lookup: renderEntityMultiSelectFilterControl,
     file: renderFileFilterControl,
     color: renderColorFilterControl,
 };
@@ -396,6 +397,8 @@ export function renderFilterField(field = {}, host) {
 //   boolean             true or false
 //   user                {value, label, avatarText}
 //   record / relation   {value, label, href?} -- href only when it may be opened
+//   lookup              {value, label}, or a list of them when multiple; the
+//                       labels on one line
 //   file                {value, label, mime?, href?} -- an icon from the mime
 //                       type and the label, a link when it may be opened
 //   choices             a list of option values; one tag per value on the line
@@ -623,6 +626,7 @@ const CELL_RENDERERS = {
     user: renderUserCell,
     record: renderReferenceCell,
     relation: renderReferenceCell,
+    lookup: renderLookupCell,
 };
 
 // A consumer found this on their stand: the words were written into the set, so
@@ -737,6 +741,13 @@ function renderReferenceCell(field, value) {
     return referenceLink(value);
 }
 
+// A value from a reference list is its label, and several are their labels in
+// a row: nothing opens from a country or a status, so there is no link to draw.
+function renderLookupCell(field, value) {
+    const items = lookupItems(field, value);
+    return items.length ? items.map((item) => item.label).join(', ') : null;
+}
+
 // What a cell should hold for a field, in the same shape a host would pass: a
 // string, an object with a component, or a list of those. Null means the value
 // is better off as itself. Returning the host's own shape is deliberate -- the
@@ -786,6 +797,7 @@ const EDIT_RENDERERS = {
     record: renderRecordPicker,
     relation: renderRecordPicker,
     user: renderRecordPicker,
+    lookup: renderLookupEdit,
     string: renderTextEdit,
     text: renderTextAreaEdit,
     integer: renderNumberEdit,
@@ -1345,6 +1357,7 @@ const SET_TEXT = {
         loadingOptions: 'Loading the options',
         optionsError: 'The options could not be loaded',
         pickRecord: 'Choose a record',
+        pickFromList: 'Choose from the list',
         searchRecords: 'Find a record',
         loadingRecords: 'Loading records',
         recordsError: 'The records could not be loaded',
@@ -1378,6 +1391,7 @@ const SET_TEXT = {
         loadingOptions: 'Загрузка вариантов',
         optionsError: 'Не удалось загрузить варианты',
         pickRecord: 'Выберите запись',
+        pickFromList: 'Выберите из списка',
         searchRecords: 'Найти запись',
         loadingRecords: 'Загрузка записей',
         recordsError: 'Не удалось загрузить записи',
@@ -1471,6 +1485,122 @@ function renderRecordPicker(field, value, host) {
                     <div role="status" aria-live="polite" class="sf-text-1">
                         ${page.status === 'loading' && !page.quiet ? setText(host, 'loadingRecords')
                             : page.status === 'error' ? setText(host, 'recordsError') : ''}
+                    </div>
+                    ${page.status === 'error' ? html`
+                        <sf-button appearance="outline" size="1" text=${setText(host, 'retry')}
+                                @click=${() => host.loadFieldOptions(field, {cursor: null, search})}
+                        ></sf-button>
+                    ` : nothing}
+                    ${page.nextCursor && page.status !== 'error' ? html`
+                        <sf-button appearance="outline" size="1" text=${setText(host, 'loadMore')}
+                                ?disabled=${page.status === 'loading'}
+                                @click=${() => host.loadFieldOptions(field, {cursor: page.nextCursor, search})}
+                        ></sf-button>
+                    ` : nothing}
+                </div>
+            ` : nothing}
+        </div>
+    `;
+}
+
+// The lookup: a value chosen from a reference list the host keeps (Larena,
+// 2026-10-23). It is the record picker's arrangement -- the host pages and
+// searches, what is chosen stays shown whether or not the page holds it -- with
+// the two things a reference list has that a record does not:
+//
+//   options   a short list arrives whole, as the field's own `options`, and is
+//             chosen from in place: no page is asked for and the dropdown's own
+//             search is right here, because the list in hand is the whole set.
+//             A page is never searched in place -- it is not the whole set.
+//   multiple  several values, each {value, label}, written back as a list.
+//
+// The value is {value, label}, or a list of them, and the control writes the
+// same shape back: the label travels with the value so the host never resolves
+// what it already knew, and a view of the value needs no second read.
+function lookupItems(field, value) {
+    const list = Array.isArray(value) ? value : [value];
+    const options = Array.isArray(field.options) ? field.options : [];
+    return list
+        .filter((item) => item !== null && typeof item !== 'undefined' && item !== '')
+        .map((item) => {
+            if (typeof item === 'object') return {value: item.value, label: String(item.label ?? item.value ?? '')};
+            // A bare value is read against the field's own list, so a host that
+            // sends the inline options and the value alone is still shown a name.
+            const option = options.find((candidate) => String(candidate?.value) === String(item));
+            return {value: item, label: String(option?.label ?? option?.text ?? item)};
+        });
+}
+
+function renderLookupEdit(field, value, host) {
+    const multiple = field.multiple === true;
+    const inline = Array.isArray(field.options) && field.options.length > 0;
+    // A list the host pages needs a host that pages; without one the field falls
+    // back to its value, read-only, as a record does.
+    if (!inline && (!host.loadFieldOptions || !host.getFieldOptionsPage)) return null;
+
+    const page = inline ? null : host.getFieldOptionsPage(field) || null;
+    if (page?.status === 'unsupported') return null;
+    const search = inline ? '' : host.getFieldOptionSearch?.(field) ?? '';
+    const chosen = lookupItems(field, value);
+    const candidates = (inline ? field.options : Array.isArray(page?.items) ? page.items : [])
+        .filter((item) => item && typeof item === 'object')
+        .map((item) => ({value: item.value, label: String(item.label ?? item.text ?? item.value)}));
+    const isChosen = (item) => chosen.some((one) => String(one.value) === String(item.value));
+    const options = [
+        ...chosen.filter((item) => !candidates.some((candidate) => String(candidate.value) === String(item.value))),
+        ...candidates,
+    ].map((item) => ({
+        type: 'text',
+        size: '1',
+        text: item.label,
+        value: String(item.value),
+        selected: isChosen(item),
+    }));
+    // What the dropdown reports is the value as a string; the label and the
+    // value's own type are taken back from what was offered.
+    const known = [...chosen, ...candidates];
+    const resolve = (raw) => {
+        const found = known.find((item) => String(item.value) === String(raw));
+        return found ? {value: found.value, label: found.label} : {value: raw, label: String(raw)};
+    };
+    const write = (event) => {
+        if (multiple) {
+            const next = event.detail?.values ?? event.detail?.value;
+            const values = (Array.isArray(next) ? next : next ? [next] : []).filter((item) => item !== '');
+            host.setFieldValue(field, values.map(resolve));
+            return;
+        }
+        const next = event.detail?.value ?? null;
+        host.setFieldValue(field, next === null || next === '' ? null : resolve(next));
+    };
+
+    return html`
+        <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
+            <sf-dropdown
+                    size=${EDIT_SIZE}
+                    appearance="outlined"
+                    mode="select"
+                    ?multiple=${multiple}
+                    search="true"
+                    name=${fieldName(field)}
+                    ?required=${Boolean(field.required)}
+                    value=${multiple ? nothing : chosen[0] ? String(chosen[0].value) : ''}
+                    placeholder=${field.placeholder || setText(host, 'pickFromList')}
+                    search-placeholder=${field.searchPlaceholder || setText(host, 'searchInList')}
+                    aria-label=${field.label || field.key || ''}
+                    .options=${options}
+                    @change=${write}
+                    @input=${inline ? nothing : (event) => {
+                        const text = event.target?.value ?? '';
+                        host.setFieldOptionSearch?.(field, text);
+                        host.loadFieldOptions(field, {cursor: null, search: text});
+                    }}
+            ></sf-dropdown>
+            ${page ? html`
+                <div class="sf-field-picker-state flex items-cross-center gap-1/3">
+                    <div role="status" aria-live="polite" class="sf-text-1">
+                        ${page.status === 'loading' && !page.quiet ? setText(host, 'loadingOptions')
+                            : page.status === 'error' ? setText(host, 'optionsError') : ''}
                     </div>
                     ${page.status === 'error' ? html`
                         <sf-button appearance="outline" size="1" text=${setText(host, 'retry')}
@@ -1762,6 +1892,21 @@ function renderReferenceView(field, value) {
     `;
 }
 
+// A value from a reference list reads as its label; several read as their
+// labels, each a tag as a list of choices does. Not a link: nothing opens from a
+// country or a status.
+function renderLookupView(field, value) {
+    const items = lookupItems(field, value);
+    if (!items.length) return nothing;
+    if (items.length === 1 && field.multiple !== true) return html`<span class="sf-field-view">${items[0].label}</span>`;
+
+    return html`
+        <span class="sf-field-view flex flex-wrap items-cross-center gap-1/3 min-w-0">
+            ${items.map((item) => html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${item.label}></sf-tag>`)}
+        </span>
+    `;
+}
+
 // The one place the view template is not a smaller edit control: a stored file
 // is shown with its own preview, which carries the download the view wants and
 // not the remove an edit does.
@@ -1809,6 +1954,7 @@ const VIEW_RENDERERS = {
     user: renderUserView,
     record: renderReferenceView,
     relation: renderReferenceView,
+    lookup: renderLookupView,
     file: renderFileView,
     color: renderColorView,
     include: renderIncludeView,

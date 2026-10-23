@@ -1,0 +1,24 @@
+{
+  "id": "load-for-create-is-an-empty-object",
+  "intent": "record.load",
+  "summary": "A create surface reads an empty object of the collection: no record_id, no revision, the collection's arrangement, defaults filled.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "reason": "connected",
+      "mode": "create"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The same sections and groups a record of the collection is shown in, so arranging the view once arranges creating too."
+  }
+}

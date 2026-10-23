@@ -1,0 +1,26 @@
+{
+  "id": "save-applied-is-one-revision",
+  "intent": "record.save",
+  "summary": "A whole-object save is one revision carrying only the changed fields.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "values": {
+        "title": "Другое название",
+        "slug": "other"
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ]
+  }
+}

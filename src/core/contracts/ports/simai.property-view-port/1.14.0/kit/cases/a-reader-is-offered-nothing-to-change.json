@@ -1,0 +1,23 @@
+{
+  "id": "a-reader-is-offered-nothing-to-change",
+  "intent": "record.load",
+  "summary": "A person who may only read gets the record with no record.edit and no lifecycle act among its actions.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "actions is [] or names only what this person may do; the component draws no edit, no footer and no delete for it."
+  }
+}

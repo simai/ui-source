@@ -58,6 +58,15 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'relation', label: {ru: 'Связь', en: 'Relation'},
         variants: [],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']},
+    // lookup: a value chosen from a reference list the host keeps -- a country,
+    // a status, a contract type (Larena, 2026-10-23). It is not a record: the
+    // value is {value, label} and nothing opens from it. Small lists arrive as
+    // `options` and are chosen from in place; anything larger is paged and
+    // searched by the host, from the source the field names (`source`, which the
+    // host reads and no renderer does).
+    {type: 'lookup', label: {ru: 'Из справочника', en: 'From a reference list'},
+        variants: [],
+        params: ['options', 'multiple', 'placeholder', 'searchPlaceholder', 'required', 'readonly']},
     {type: 'file', label: {ru: 'Файл', en: 'File'},
         variants: [
             {id: 'image', label: {ru: 'Изображение', en: 'Image'}},
