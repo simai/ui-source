@@ -126,3 +126,23 @@ test('accordion laboratory covers surface and stress scenarios', async () => {
   assert.match(fixture, /params\.get\('font'\) === 'large'/);
   assert.match(fixture, /params\.get\('check'\) === 'long'/);
 });
+
+// One section needs no disclosure (simai/ui-source#19, #29; ui-mail P-07).
+test('a single section is a plain section, not a toggle', async () => {
+  const [behavior, styles] = await Promise.all([
+    source('src/component/accordion/js/_accordion.js'),
+    source('src/component/accordion/scss/_css__accordion.scss'),
+  ]);
+  assert.match(behavior, /SINGLE_MODIFIER = 'sf-accordion--single'/);
+  assert.match(behavior, /SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section'/);
+  assert.match(behavior, /group\.querySelectorAll\(':scope > \.sf-accordion'\)\.length === 1/);
+  // The legacy markup, where the section is its own control, keeps its toggle.
+  assert.match(behavior, /if \(!this\.el \|\| this\.trigger === this\.el \|\| !this\.content\) return false;/);
+  assert.match(behavior, /document\.createElement\('span'\)/);
+  assert.match(behavior, /data-sf-accordion-static/);
+  assert.match(behavior, /this\.trigger\.replaceWith\(header\)/);
+  assert.match(behavior, /header\.replaceWith\(this\.trigger\)/);
+  assert.match(behavior, /if \(!this\.content \|\| this\.staticHeader\) return;/);
+  assert.match(styles, /\.sf-accordion\.sf-accordion--static \.sf-accordion-trigger \.sf-icon \{\s*display: none;/);
+  assert.match(styles, /\.sf-accordion\.sf-accordion--static \.sf-accordion-trigger:is\(:hover, :active\) \{\s*background-color: transparent;/);
+});

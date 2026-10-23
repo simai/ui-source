@@ -4,6 +4,12 @@ const accordionInstances = new WeakMap();
 const ACCORDION_GROUP_SELECTOR = '.sf-accordion-group';
 const LEGACY_SINGLE_GROUP_SELECTOR = '[data-sf-accordion-mode="single"]';
 const PLUS_MINUS_MODIFIER = 'sf-accordion--plus-minus';
+// One section needs no disclosure (simai/ui-source#19, #29; ui-mail P-07): a
+// section marked single, or the only section of a group, is a plain section --
+// its content always shown, its heading a heading and not a toggle.
+const SINGLE_MODIFIER = 'sf-accordion--single';
+// A group that keeps its one section a toggle says so.
+const SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section';
 let accordionId = 0;
 
 class SfAccordion {
@@ -44,6 +50,52 @@ class SfAccordion {
     if (usesLegacyTrigger) {
       this.trigger.addEventListener('keydown', this.onKeydown);
     }
+    syncSingleSections(this.el.parentElement);
+    this.syncSingle();
+  }
+
+  // Whether this section is alone: marked single, or the only section of a
+  // group that does not keep its one section a toggle. The legacy markup,
+  // where the section itself is the control, keeps its toggle.
+  isSingle() {
+    if (!this.el || this.trigger === this.el || !this.content) return false;
+    if (this.el.classList.contains(SINGLE_MODIFIER)) return true;
+    const group = this.el.parentElement;
+    if (!group?.matches?.(ACCORDION_GROUP_SELECTOR)) return false;
+    if (group.getAttribute(SINGLE_TOGGLE_ATTRIBUTE) === 'toggle') return false;
+    return group.querySelectorAll(':scope > .sf-accordion').length === 1;
+  }
+
+  // A single section: the button gives way to a plain element holding the
+  // same title (a heading with nothing to press), and the content is shown.
+  // When a second section joins the group the button comes back, open: the
+  // content the reader sees does not vanish under them.
+  syncSingle() {
+    if (!this.el || this.trigger === this.el) return;
+    const single = this.isSingle();
+    if (single === Boolean(this.staticHeader)) return;
+    if (single) {
+      const header = document.createElement('span');
+      header.className = this.trigger.className;
+      header.id = this.trigger.id;
+      header.setAttribute('data-sf-accordion-static', '');
+      header.append(...this.trigger.childNodes);
+      this.trigger.removeAttribute('id');
+      this.trigger.replaceWith(header);
+      this.staticHeader = header;
+      this.el.classList.add('sf-accordion--static');
+      this.content.hidden = false;
+      this.content.classList.remove('hidden');
+      this.el.classList.add('active');
+      return;
+    }
+    const header = this.staticHeader;
+    this.trigger.id = header.id;
+    this.trigger.append(...header.childNodes);
+    header.replaceWith(this.trigger);
+    this.staticHeader = null;
+    this.el.classList.remove('sf-accordion--static');
+    this.setOpen(true);
   }
 
   destroy() {
@@ -93,7 +145,7 @@ class SfAccordion {
   }
 
   setOpen(open) {
-    if (!this.content) return;
+    if (!this.content || this.staticHeader) return;
 
     if (open) {
       this.closeSingleModeSiblings();
@@ -144,6 +196,15 @@ class SfAccordion {
   }
 }
 
+// Re-reads whether the sections of a group are single, after a section joined
+// or left it.
+function syncSingleSections(group) {
+  if (!group?.matches?.(ACCORDION_GROUP_SELECTOR)) return;
+  group.querySelectorAll(':scope > .sf-accordion').forEach((item) => {
+    accordionInstances.get(item)?.syncSingle();
+  });
+}
+
 function initAccordions(root = document) {
   if (!root?.querySelectorAll) return;
   root.querySelectorAll('.sf-accordion').forEach((el) => {
@@ -163,6 +224,9 @@ if (document.readyState === 'loading') {
 if (typeof MutationObserver !== 'undefined') {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
+      if ([...mutation.removedNodes].some((node) => node instanceof HTMLElement && node.matches('.sf-accordion'))) {
+        syncSingleSections(mutation.target);
+      }
       mutation.addedNodes.forEach((node) => {
         if (!(node instanceof HTMLElement)) return;
         if (node.matches('.sf-accordion')) {

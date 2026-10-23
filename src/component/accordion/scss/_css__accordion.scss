@@ -202,6 +202,28 @@
   line-height: var(--sf-accordion--text-height);
 }
 
+/* A single section (simai/ui-source#19): the heading is a heading, not a
+   toggle -- nothing to press, no chevron, no hover; the line under it stays,
+   as under an open section. */
+.sf-accordion.sf-accordion--static .sf-accordion-trigger {
+  cursor: auto;
+}
+
+.sf-accordion.sf-accordion--static .sf-accordion-trigger:is(:hover, :active) {
+  background-color: transparent;
+}
+
+.sf-accordion.sf-accordion--static .sf-accordion-trigger .sf-icon {
+  display: none;
+}
+
+.sf-accordion.sf-accordion--static .sf-accordion-trigger::after {
+  background-color: var(
+    --sf-accordion-divider--color,
+    var(--sf-outline-variant)
+  );
+}
+
 @media (forced-colors: active) {
   .sf-accordion-trigger:focus-visible {
     outline: var(--sf-focus-outline-width) solid currentColor;

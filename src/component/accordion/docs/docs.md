@@ -23,6 +23,36 @@ content's `hidden` and the root's `active` class in step, and draws the
 chevron; `sf-accordion--plus-minus` draws `add` / `remove` instead. A section
 that starts closed carries `hidden` (or the `hidden` class) on its content.
 
+## A single section
+
+One section needs no disclosure (simai/ui-source#19, #29). The only
+`.sf-accordion` of an `.sf-accordion-group`, or a section marked
+`sf-accordion--single`, renders as a plain section: its content is always
+shown, and its heading is a heading, not a toggle -- the runtime puts a plain
+element (`span.sf-accordion-trigger[data-sf-accordion-static]`, with the
+same id and title) in the button's place and marks the root
+`sf-accordion--static`. There is no chevron, no hover and nothing in the tab
+order; the line under the heading stays, as under an open section. When a
+second section joins the group the button comes back, open (the content
+the reader sees does not vanish);
+when sections leave and one remains, it becomes plain. A group that keeps its
+one section a toggle -- a list that fills in later -- says
+`data-single-section="toggle"`. The legacy markup keeps its toggle.
+
+```html
+<div class="sf-accordion-group">
+  <article class="sf-accordion sf-accordion--flush sf-accordion--size-1/2">
+    <h3 class="sf-accordion-heading">
+      <button class="sf-accordion-trigger" type="button" aria-expanded="true">
+        <span class="sf-accordion-title">Содержимое</span>
+        <i class="sf-icon" aria-hidden="true">chevron_right</i>
+      </button>
+    </h3>
+    <div class="sf-accordion-content" role="region">Поля блока</div>
+  </article>
+</div>
+```
+
 ## Appearance
 
 - default: a filled surface (`--sf-surface-container`) with the surface radius;

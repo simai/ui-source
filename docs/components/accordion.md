@@ -31,6 +31,8 @@ constant semantic boundary between adjacent rows.
 | Keyboard             | trigger focused                            | Enter or Space                     | associated panel toggles                                                  |
 | Content interaction  | panel open                                 | use a link or control in the panel | panel remains open                                                        |
 | Dynamic insertion    | component added after boot                 | Loader observes it                 | the same contract is initialized once                                     |
+| Single section       | the only section of a group, or `--single` | render                             | a plain section: content shown, heading not a toggle                      |
+| Second section joins | a single section in a group                | append another section             | both sections are toggles again; the first stays open                     |
 | Filled surface       | standalone section or settings card        | render the default component       | the neutral fill provides containment                                     |
 | Outline surface      | component sits on an existing page surface | add `.sf-accordion--outline`       | the component stays transparent with a persistent outline                 |
 | Flush surface        | component is a row in a dense list or menu | add `.sf-accordion--flush`         | the component stays transparent and square with a persistent row boundary |
@@ -38,6 +40,14 @@ constant semantic boundary between adjacent rows.
 ## Target contract
 
 - The heading contains a native `.sf-accordion-trigger` button.
+- A single section -- the only direct `.sf-accordion` of an
+  `.sf-accordion-group`, or one marked `.sf-accordion--single` -- is a plain
+  section (simai/ui-source#19): the runtime puts a `span` with the button's
+  class, id and children in the button's place
+  (`[data-sf-accordion-static]`), marks the root `.sf-accordion--static`,
+  shows the content and draws no chevron and no hover. The panel stays
+  labelled by the heading. A group with `data-single-section="toggle"` keeps
+  its one section a toggle; the legacy markup always does.
 - The button owns `aria-expanded` and `aria-controls`.
 - The associated `.sf-accordion-content` has a stable ID.
 - A behavioral group uses `.sf-accordion-group`; `data-mode="single"` is the

@@ -9,6 +9,10 @@ Both are declared in `src/core/scss/_sf_css__theme.scss` with the other roles.
 | `--sf-paper` | white | white | the sheet the document is drawn on |
 | `--sf-on-paper` | neutral-10 | neutral-10 | text on the paper that is not the document's own |
 | `--sf-surface-well` | neutral-95 | neutral-5 | the recessed area around a canvas or a paper |
+| `--sf-paper-primary` | primary-40 | primary-40 | the selection frame and other marks an editor draws on the paper |
+| `--sf-paper-outline` | neutral-50 | neutral-50 | a hover outline on the paper |
+| `--sf-paper-hover` | primary-50 at 4 % | primary-50 at 4 % | the tint of a hovered block |
+| `--sf-paper-select` | primary-50 at 8 % | primary-50 at 8 % | the tint of a selected block |
 
 **Paper does not flip.** A document carries its own colours, written for white,
 so its sheet stays white and its ink stays dark in the dark theme too
@@ -28,6 +32,24 @@ say.
 <div style="background: var(--sf-surface-well); padding: var(--sf-space-3)">
   <iframe style="background: var(--sf-paper); box-shadow: var(--sf-elevation-1--shadow)"></iframe>
 </div>
+```
+
+**Marks on the paper keep the light theme's colours.** An editor draws its
+selection and hover over the paper: a frame, an outline, a tint. Read from
+the interface's roles in the dark theme, they are the dark theme's colours on
+a white sheet -- the `primary-80` selection frame measured 1.75:1 on it
+(simai/ui-source#29, ui-mail P-04). The four `--sf-paper-*` state roles are
+the light theme's values in both themes, so they can be read anywhere, also
+by an overlay drawn in the host page over an iframe: `--sf-paper-primary`
+holds 6.3:1 on the paper and `--sf-paper-outline` more than 3:1, as parts of
+the interface must; the tints are the light theme's state layers. Inside the
+paper's own subtree, `class="theme-light"` makes every role the light
+theme's, controls included.
+
+```js
+// An overlay in the host page marks the selected block on the paper.
+mark.style.outline = '2px solid var(--sf-paper-primary)';
+mark.style.background = 'var(--sf-paper-select)';
 ```
 
 The device frame that shows a document at a width and fits its height stays

@@ -12,7 +12,12 @@
 //   - the interface's text on the well holds 4.5:1 -- --sf-on-surface and
 //     --sf-on-surface-variant;
 //   - in the dark theme the paper stands off the well by itself (at least 3:1);
-//     in the light theme it stands by the shadow the elevation guide gives it.
+//     in the light theme it stands by the shadow the elevation guide gives it;
+//   - the marks an editor draws on the paper (simai/ui-source#29, ui-mail
+//     P-04) are the light theme's in both themes and in either subtree:
+//     --sf-paper-primary holds 4.5:1 on the paper (the dark theme's primary
+//     measured 1.75:1), --sf-paper-outline 3:1, and the --sf-paper-hover and
+//     --sf-paper-select tints are the light theme's state layers.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -24,7 +29,8 @@ const evidence = {};
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };
 
 const ROLES = ['--sf-paper', '--sf-on-paper', '--sf-surface-well', '--sf-surface-0', '--sf-surface-1',
-  '--sf-on-surface', '--sf-on-surface-variant'];
+  '--sf-on-surface', '--sf-on-surface-variant', '--sf-paper-primary', '--sf-paper-outline', '--sf-paper-hover',
+  '--sf-paper-select', '--sf-primary', '--sf-primary-transparent-hover', '--sf-primary-transparent-select'];
 
 const browser = await chromium.launch();
 try {
@@ -66,11 +72,29 @@ try {
       const paperOnWell = ratio('--sf-paper', '--sf-surface-well');
       evidence[`${where}: paper on well`] = Number(paperOnWell.toFixed(2));
       if (scheme === 'dark') check(at('the paper stands off the well by itself'), paperOnWell >= 3, {ratio: paperOnWell});
+      const frame = ratio('--sf-paper-primary', '--sf-paper');
+      const outline = ratio('--sf-paper-outline', '--sf-paper');
+      evidence[`${where}: paper-primary on paper`] = Number(frame.toFixed(2));
+      evidence[`${where}: paper-outline on paper`] = Number(outline.toFixed(2));
+      evidence[`${where}: primary on paper`] = Number(ratio('--sf-primary', '--sf-paper').toFixed(2));
+      check(at('the selection frame on the paper holds 4.5:1'), frame >= 4.5, {ratio: frame});
+      check(at('the hover outline on the paper holds 3:1'), outline >= 3, {ratio: outline});
+      if (scheme === 'light') {
+        check(at('the paper\'s frame is the light theme\'s primary'), roles['--sf-paper-primary'].color === roles['--sf-primary'].color, roles);
+        check(at('the paper\'s tints are the light theme\'s state layers'),
+          roles['--sf-paper-hover'].color === roles['--sf-primary-transparent-hover'].color
+          && roles['--sf-paper-select'].color === roles['--sf-primary-transparent-select'].color, roles);
+      }
     }
   }
   check('the well differs between the themes', evidence.light['--sf-surface-well'] !== evidence.dark['--sf-surface-well'], evidence);
   check('the paper does not', evidence.light['--sf-paper'] === evidence.dark['--sf-paper']
     && evidence.light['--sf-on-paper'] === evidence.dark['--sf-on-paper'], evidence);
+  for (const role of ['--sf-paper-primary', '--sf-paper-outline', '--sf-paper-hover', '--sf-paper-select']) {
+    const seen = new Set(['light', 'dark', 'dark inside light', 'light inside dark'].map((where) => evidence[where][role]));
+    check(`${role} is the same in both themes and either subtree`, seen.size === 1, {role, seen: [...seen]});
+  }
+  check('the dark theme\'s own primary is what the paper roles replace', evidence.dark['--sf-primary'] !== evidence.dark['--sf-paper-primary'], evidence.dark);
 } finally {
   await browser.close();
 }

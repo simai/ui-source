@@ -175,6 +175,17 @@
        not take --sf-on-paper. */
     --sf-paper: var(--sf-white);
     --sf-on-paper: var(--sf-neutral-10);
+    /* What an editor draws on the paper -- the selection frame, a hover
+       outline, the tints of a hovered and a selected block -- reads these, the
+       light theme's values in both themes, because the paper does not flip:
+       the dark theme's primary-80 frame on white paper measured 1.75:1
+       (simai/ui-source#29, ui-mail P-04). primary-40 on the paper holds 6.3:1
+       and the outline 3:1 or more, as a part of the interface must; the tints
+       are the light theme's state layers. */
+    --sf-paper-primary: var(--sf-primary-40);
+    --sf-paper-outline: var(--sf-neutral-50);
+    --sf-paper-hover: var(--sf-primary-50--alfa-4);
+    --sf-paper-select: var(--sf-primary-50--alfa-8);
     /* The well: the recessed area a canvas or a paper sits in, below the
        panels around it. In the light theme a step under surface-1 (the
        paper's white stands on it by its shadow, 1.13:1, as the elevation guide
