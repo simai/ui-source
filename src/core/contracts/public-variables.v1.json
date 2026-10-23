@@ -791,6 +791,13 @@
           "summary": "Space between the header, the body and the footer.",
           "default": "var(--sf-space-1)",
           "since": "2026-10-18"
+        },
+        {
+          "name": "--sf-modal-footer-gap",
+          "role": "gap",
+          "summary": "Space between the footer's actions, which stand at the end.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-10-23"
         }
       ]
     },

@@ -70,9 +70,6 @@
     scrollbar-gutter: stable both-edges;
     pointer-events: auto;
     border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
-    background: var(--sf-drawer-background, var(--sf-elevation-4--surface));
-    --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
-    --sf-badge--surface: var(--sf-drawer-background, var(--sf-elevation-4--surface));
     color: var(--sf-drawer-color, var(--sf-on-surface));
     box-shadow: var(--sf-drawer-shadow, var(--sf-elevation-4--shadow));
     /* sf-focus-ring: none — the panel takes focus programmatically when it
@@ -80,6 +77,14 @@
        inside it. */
     outline: 0;
     transition: transform var(--sf-duration-normal) var(--sf-ease-exit);
+  }
+
+  /* A floating panel stands on the raised surface, with its dimmed text; a
+     column of the page takes the page's (below). */
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-elevation-4--surface));
+    --sf-badge--surface: var(--sf-drawer-background, var(--sf-elevation-4--surface));
+    --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
   }
 
   /* The drawer is on the shared size ladder. The words small, large and medium
@@ -271,7 +276,7 @@
     position: static;
   }
 
-  /* Docked drawers are modeless page columns: no scrim, no shadow, square edges. */
+  /* Docked drawers are modeless page columns: no scrim, square edges. */
   .sf-drawer[data-sf-drawer-docked='true'] .sf-drawer-overlay {
     display: none;
   }
@@ -280,6 +285,17 @@
     inset-block-start: var(--sf-drawer-dock-block-start, var(--sf-drawer-block-start, 0));
     height: auto;
     border-radius: var(--sf-0);
+  }
+
+  /* A docked drawer with the room is a column of the page, so it takes the
+     page's surface and no elevation: the raised step of a floating panel made
+     it the lightest plane of a dark screen, its fields black holes on it, and
+     hover and selection hard to tell apart (simai/ui-source#26, ui-mail P-02).
+     Its border divides it from the page. Without the room (a narrow host) it
+     floats over the page and keeps the raised surface and its shadow. */
+  .sf-drawer[data-sf-drawer-column='true'] .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-surface-0));
+    --sf-badge--surface: var(--sf-drawer-background, var(--sf-surface-0));
     box-shadow: none;
   }
 

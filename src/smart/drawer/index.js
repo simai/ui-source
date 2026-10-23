@@ -43,7 +43,6 @@ const drawerStack = [];
 // host) docked panels overlay the page instead of
 // narrowing it.
 const DOCK_MIN_REM = 48;
-const DOCK_MEDIA_QUERY = `(min-width: ${DOCK_MIN_REM}rem)`;
 const PLACEMENTS = ['left', 'right', 'inline-start', 'inline-end', 'bottom'];
 // The heights a bottom sheet rests at, smallest first: its content (auto, up
 // to the room it has), half the room, and all of it.
@@ -55,6 +54,15 @@ const SWIPE_SPEED = 0.5;
 
 function joinClasses(...parts) {
   return parts.flat().filter(Boolean).join(' ');
+}
+
+// A threshold in rem, em or px, in pixels. rem and em both read the root's
+// font size: the threshold is the page's, not a box's.
+function lengthToPixels(value) {
+  const match = /^(\d*\.?\d+)(rem|em|px)$/u.exec(String(value).trim());
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  if (!match) return DOCK_MIN_REM * rem;
+  return Number(match[1]) * (match[2] === 'px' ? 1 : rem);
 }
 
 function escapeSelector(value) {
@@ -99,14 +107,20 @@ const drawerManager = {
   // Docked drawers reserve page space: the summed widths of open docked panels
   // per logical side are published as CSS custom properties on the root; any
   // element with data-sf-drawer-dock-host pads itself by them.
+  // A docked drawer that has the room is a column of the page and says so on
+  // its root (data-sf-drawer-column="true"): it takes the page's surface, not
+  // the overlay's (simai/ui-source#26). Without the room it floats over the
+  // page, and is drawn as a floating panel.
   syncDock() {
     const root = document.documentElement;
     if (!root) return;
     this.bindDockMedia();
     const sides = {start: 0, end: 0};
-    const reserve = this.reservesDock();
-    for (const drawer of reserve ? drawerStack : []) {
+    for (const drawer of drawerStack) {
       if (!drawer.openState || !drawer.docked) continue;
+      const column = this.reservesDock(drawer);
+      drawer.setDockColumn(column);
+      if (!column) continue;
       const panel = drawer.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
       const width = panel ? Math.round(panel.getBoundingClientRect().width) : 0;
       sides[drawer.dockSide] += width;
@@ -118,11 +132,29 @@ const drawerManager = {
     }
   },
 
-  bindDockMedia() {
-    if (this.dockMedia === undefined) {
-      this.dockMedia = typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(DOCK_MEDIA_QUERY) : null;
-      this.dockMedia?.addEventListener?.('change', () => this.syncDock());
+  // The window's answer for a threshold, as a media query: a length in rem
+  // reads the initial font size there, as every media query does.
+  dockMedia(threshold) {
+    if (typeof globalThis.matchMedia !== 'function') return null;
+    this.dockMediaLists ??= new Map();
+    let list = this.dockMediaLists.get(threshold);
+    if (!list) {
+      list = globalThis.matchMedia(`(min-width: ${threshold})`);
+      list.addEventListener?.('change', () => this.syncDock());
+      this.dockMediaLists.set(threshold, list);
     }
+    return list;
+  },
+
+  // Redraws only when some open docked drawer's answer changed: syncDock pads
+  // the host, and the padding must not wake the host's observer into a loop.
+  syncDockIfChanged() {
+    if (drawerStack.some((drawer) => drawer.openState && drawer.docked && this.reservesDock(drawer) !== drawer.dockColumn)) {
+      this.syncDock();
+    }
+  },
+
+  bindDockMedia() {
     // The host's own width decides, when the page names a host: a docked
     // drawer inside an editor pane or a documentation example docks by the
     // room that box has, not by the window's (DEV, 2026-10-18).
@@ -131,30 +163,24 @@ const drawerManager = {
       this.dockHostObserver?.disconnect();
       this.dockHost = host;
       this.dockHostObserver = host && typeof ResizeObserver === 'function'
-        ? new ResizeObserver(() => {
-          // Only a change of the answer redraws: syncDock pads the host, and
-          // the padding must not wake this observer into a loop.
-          const before = this.dockReserved;
-          if (this.reservesDock() !== before) this.syncDock();
-        })
+        ? new ResizeObserver(() => this.syncDockIfChanged())
         : null;
       this.dockHostObserver?.observe(host, {box: 'border-box'});
     }
   },
 
-  // Whether docked drawers take room from the page: the dock host is at least
-  // 48rem wide, or -- with no host on the page -- the window is.
-  reservesDock() {
+  // Whether a docked drawer takes room from the page: the dock host is at
+  // least as wide as the drawer's threshold (48rem), or -- with no host on the
+  // page -- the window is.
+  reservesDock(drawer) {
+    if (this.dockHost === undefined) this.bindDockMedia();
     const host = this.dockHost;
-    let reserve;
+    const threshold = drawer.dockBreakpoint;
     if (host?.isConnected) {
-      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      reserve = host.getBoundingClientRect().width >= DOCK_MIN_REM * rem;
-    } else {
-      reserve = this.dockMedia ? this.dockMedia.matches : true;
+      return host.getBoundingClientRect().width >= lengthToPixels(threshold);
     }
-    this.dockReserved = reserve;
-    return reserve;
+    const media = this.dockMedia(threshold);
+    return media ? media.matches : true;
   },
 
   syncPageLock() {
@@ -301,6 +327,7 @@ class SfDrawer extends SfBaseElement {
     this.onSheetPointerDown = this.onSheetPointerDown.bind(this);
     this.onHandleKeyDown = this.onHandleKeyDown.bind(this);
     this._switchVisible = false;
+    this._dockColumn = true;
   }
 
   connectedCallback() {
@@ -417,6 +444,22 @@ class SfDrawer extends SfBaseElement {
     return (placement === 'inline-start') !== rtl ? 'left' : 'right';
   }
 
+  // The width of the dock host (or of the window) from which this docked
+  // drawer is a column of the page; narrower, it floats over the page.
+  get dockBreakpoint() {
+    return `${DOCK_MIN_REM}rem`;
+  }
+
+  // Whether this docked drawer is, at the moment, a column of the page.
+  get dockColumn() {
+    return this._dockColumn;
+  }
+
+  setDockColumn(column) {
+    this._dockColumn = column;
+    this.getDrawerRoot()?.setAttribute('data-sf-drawer-column', column ? 'true' : 'false');
+  }
+
   get dockSide() {
     const placement = this.placement;
     if (placement === 'inline-start') return 'start';
@@ -464,6 +507,7 @@ class SfDrawer extends SfBaseElement {
 
   templateContext() {
     this._switchVisible = this.controlled && this.hasVisibleSwitch();
+    if (this.docked && typeof document !== 'undefined') this._dockColumn = drawerManager.reservesDock(this);
     return this.createTemplateContext({
       drawerId: this.drawerId || this.resolveDrawerId(),
       open: this.openState,
@@ -471,6 +515,7 @@ class SfDrawer extends SfBaseElement {
       overlay: this.overlay,
       modal: this.modal,
       docked: this.docked,
+      column: this.docked && this._dockColumn,
       size: this.size,
       showClose: this.showClose && !this._switchVisible,
       controlled: this.controlled,
@@ -633,6 +678,7 @@ class SfDrawer extends SfBaseElement {
       data-sf-drawer-size=${context.size}
       data-sf-drawer-modal=${context.modal ? 'true' : 'false'}
       data-sf-drawer-docked=${context.docked ? 'true' : 'false'}
+      data-sf-drawer-column=${context.column ? 'true' : 'false'}
       data-sf-drawer-snap=${context.sheet ? context.snap : nothing}
       aria-hidden=${context.open ? 'false' : 'true'}
     >

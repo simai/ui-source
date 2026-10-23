@@ -36,7 +36,7 @@ const DRAW = {
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
   textarea: {css: ['textarea'], js: 'textarea', html: '<sf-textarea label="Текст" value="Строка" size="1"></sf-textarea>'},
   toast: {css: ['toast', 'icon-buttons'], js: 'toast', html: '<sf-toast status="info" title="Сохранено" supporting-text="Изменения доступны."></sf-toast>'},
-  modal: {css: ['modal', 'icon-buttons', 'buttons'], js: 'modal', html: '<sf-modal id="modal" title="Окно"><p>Текст</p></sf-modal>',
+  modal: {css: ['modal', 'icon-buttons', 'buttons'], js: 'modal', html: '<sf-modal id="modal" title="Окно"><p>Текст</p><button slot="footer" type="button">Отмена</button><button slot="footer" type="button">Удалить</button></sf-modal>',
     open: 'document.getElementById("modal").open()'},
   tooltip: {css: ['tooltip'], js: 'tooltip', html: '<sf-tooltip text="Подсказка" supporting-text="Пояснение" size="1"></sf-tooltip>'},
   tabs: {css: ['tabs', 'buttons'], js: 'tabs', html: '<sf-tabs type="underline" size="1" items="Обзор|Настройки|История"></sf-tabs>'},

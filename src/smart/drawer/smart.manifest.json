@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -178,7 +178,7 @@
   "contracts": {
     "dock_host": {
       "type": "object",
-      "description": "A host element marked data-sf-drawer-dock-host receives padding-inline-start/end equal to the summed widths of open docked drawers per logical side, published as --sf-drawer-dock-inline-start/end on the document root. Narrow viewports (<48rem) keep zero padding.",
+      "description": "A host element marked data-sf-drawer-dock-host receives padding-inline-start/end equal to the summed widths of open docked drawers per logical side, published as --sf-drawer-dock-inline-start/end on the document root. Narrow viewports (<48rem) keep zero padding. A docked drawer with the room is a column of the page (data-sf-drawer-column=\"true\" on its root): surface-0, no shadow; without the room it floats over the page with the raised surface and shadow. --sf-drawer-background overrides both.",
       "properties": {
         "attribute": {
           "const": "data-sf-drawer-dock-host"
@@ -647,11 +647,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "fc02ff97358a8e507e25134aa43cda59d84feea004351eb5649fdf1c95be2a26"
+        "sha256": "f8a840d47101eaa1cac100743d7c39158d1bb4d24c7987855015e77621880c6a"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "7f2e32768fcc089052a33dda962c5ce7c08b60cdf8f10aa0da047bb388716f7f"
+        "sha256": "35c17d4211ddcab035f31f81b66fbf7444f6c632cf4815e3225ce57ebf2a1c6f"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -659,7 +659,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "dcb5d67bb12a183bb19a01a1a2db00365524271d942e65a13ceb615f61f15767"
+        "sha256": "351978de867242d7e137738ca9f67c8b3fc0a55cc37fa31e50829a9a717b0ffb"
       }
     ],
     "generated_runtime": [

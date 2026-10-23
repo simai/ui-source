@@ -530,7 +530,7 @@ class Modal extends ComponentObserver {
     if (Array.isArray(params.footerNodes) && params.footerNodes.length && this.showFooter) {
       const footer = document.createElement('div');
       footer.className = joinClasses(
-        'sf-modal-footer flex flex-wrap gap-2',
+        'sf-modal-footer flex flex-wrap',
         params.footerClass,
       );
       params.footerNodes.forEach((node) => {

@@ -210,6 +210,25 @@ own. The same attribute frames `sf-drawer`.
   placed after the slotted content
 - `footer`
 
+## Footer actions
+
+The footer puts its actions at the end of the row, as a dialog does, with
+`--sf-modal-footer-gap` (`var(--sf-space-1/2)`, a step of the ladder) between
+them; they wrap onto a second line when the row is too narrow. Put the
+actions in the slot directly, each with `slot="footer"`, the primary action
+last. A wrapper element in the slot stands at the end as one item and keeps
+its own layout. The defaults sit under the utilities, so a utility in
+`footer-class` still wins -- `content-main-between` for a footer that also
+holds a checkbox at the start (simai/ui-source#26).
+
+```html
+<sf-modal id="delete-letter" title="Удалить письмо?">
+  <p slot="content">Письмо нельзя будет восстановить.</p>
+  <sf-button slot="footer" text="Отмена" appearance="outline" data-sf-modal-close="delete-letter"></sf-button>
+  <sf-button slot="footer" text="Удалить" status="error"></sf-button>
+</sf-modal>
+```
+
 ## Methods
 
 - `open()`

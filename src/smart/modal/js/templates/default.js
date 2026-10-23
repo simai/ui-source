@@ -202,7 +202,7 @@ export function renderModalTemplate(context) {
                                 ? html`
                                     <div
                                             class=${joinClasses(
-                                                    'sf-modal-footer flex flex-wrap gap-2',
+                                                    'sf-modal-footer flex flex-wrap',
                                                     context.footerClass,
                                             )}
                                     >

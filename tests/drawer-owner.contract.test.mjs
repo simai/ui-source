@@ -71,3 +71,20 @@ test('Smart Drawer: bottom sheet, app bar offset and controlled close (simai/ui-
   for (const name of ['snap', 'controlled', 'block-start']) assert.ok(manifest.inputs.properties[name], name);
   assert.ok(manifest.events['drawer:snap']);
 });
+
+test('Smart Drawer: a docked column takes the page surface (simai/ui-source#26)', async () => {
+  const [source, styles] = await Promise.all([
+    read('src/smart/drawer/index.js'),
+    read('src/smart/drawer/scss/_smart__drawer.scss'),
+  ]);
+  // The root says whether a docked drawer has the room and is a column of the
+  // page; the manager decides it per drawer.
+  assert.match(source, /data-sf-drawer-column=\$\{context\.column \? 'true' : 'false'\}/);
+  assert.match(source, /drawer\.setDockColumn\(column\)/);
+  // A column: the page's surface and no shadow; the raised surface and its
+  // dimmed-text role stay with a floating panel.
+  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-0\)\);[^}]*box-shadow: none;/);
+  assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-elevation-4--surface\)\);[^}]*--sf-on-surface-variant: var\(--sf-on-elevation-4--variant\);/);
+  // A docked drawer that floats (a narrow host) keeps its shadow.
+  assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: none/);
+});

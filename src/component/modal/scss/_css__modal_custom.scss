@@ -351,3 +351,16 @@
     block-size: 100%;
   }
 }
+
+/* The footer's actions stand at the end, as a dialog's do, with a step of the
+   ladder between them (simai/ui-source#26, ui-mail P-12): the footer was a
+   wrapping row with justify left at its default, so slotted actions sat at the
+   start with a wide gap. In sf.base, so a utility in footer-class (the
+   alignment of a footer that also holds a checkbox, say) still wins. */
+@layer sf.base {
+  .sf-modal-footer {
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sf-modal-footer-gap, var(--sf-space-1\/2));
+  }
+}
