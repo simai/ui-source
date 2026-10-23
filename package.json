@@ -48,7 +48,7 @@
     "utility-rules:generate": "node scripts/generate-exact-utility-rules.mjs",
     "dimensions:audit": "node scripts/audit-dimensions.mjs --summary"
   },
-  "author": "Rim Zabarov and contributors",
+  "author": "Rim Zabarov",
   "license": "Apache-2.0",
   "dependencies": {
     "@floating-ui/dom": "1.8.0",

@@ -1,20 +1,23 @@
 SIMAI Framework
-Copyright 2008-2026 Rim Zabarov and contributors
+Author: Rim Zabarov (Рим Забаров)
+Copyright 2008-2026 Rim Zabarov
 
 This product is licensed under the Apache License, Version 2.0 (LICENSE).
 Third-party code and fonts it includes keep their own licences; see
 THIRD_PARTY_NOTICES.md and src/core/contracts/third-party-notices.v1.json.
 
-"SIMAI" and "SIMAI Framework" are names of the SIMAI project. The licence
-above grants no right to use them, except as needed to describe the origin
-of the work.
+"SIMAI" and "SIMAI Framework" are names of the SIMAI project and trademarks
+of their owner. The licence above grants no right to use them, except as
+needed to describe the origin of the work.
+
+Distributed and supported under licence by ООО «Симай».
 
 Code published before the change to the Apache License was released under
 the MIT License; copies obtained under it keep those terms:
 
     MIT License
 
-    Copyright (c) 2008-2026 Rim Zabarov and contributors
+    Copyright (c) 2008-2026 Rim Zabarov
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
