@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -132,6 +132,11 @@
         "default": "",
         "description": "How much of each drawer below shows past the one above it at the same edge, as a length (for example var(--sf-space-4)). A drawer stands depth × offset in from its edge, where depth counts the open, undocked drawers below it at that edge. Empty: drawers lie flush."
       },
+      "dock-breakpoint": {
+        "type": "string",
+        "default": "",
+        "description": "From what width of the dock host (or the window, without a host) a docked drawer is a column of the page; narrower, it floats over the page. A length in rem, em or px. Empty: the --sf-drawer-dock-breakpoint variable where the drawer stands, else 48rem."
+      },
       "block-start": {
         "type": "string",
         "default": "",
@@ -178,7 +183,7 @@
   "contracts": {
     "dock_host": {
       "type": "object",
-      "description": "A host element marked data-sf-drawer-dock-host receives padding-inline-start/end equal to the summed widths of open docked drawers per logical side, published as --sf-drawer-dock-inline-start/end on the document root. Narrow viewports (<48rem) keep zero padding. A docked drawer with the room is a column of the page (data-sf-drawer-column=\"true\" on its root): surface-0, no shadow; without the room it floats over the page with the raised surface and shadow. --sf-drawer-background overrides both.",
+      "description": "A host element marked data-sf-drawer-dock-host receives padding-inline-start/end equal to the summed widths of open docked drawers per logical side, published as --sf-drawer-dock-inline-start/end on the document root. A host narrower than the drawer's threshold (dock-breakpoint, else --sf-drawer-dock-breakpoint, else 48rem) keeps zero padding for it. A toggle switch outside the drawer (data-drawer=\"toggle\" naming it in aria-controls, or data-sf-drawer-toggle) hides and shows a docked column and carries aria-expanded. A docked drawer with the room is a column of the page (data-sf-drawer-column=\"true\" on its root): surface-0, no shadow; without the room it floats over the page with the raised surface and shadow. --sf-drawer-background overrides both.",
       "properties": {
         "attribute": {
           "const": "data-sf-drawer-dock-host"
@@ -187,7 +192,8 @@
           "const": [
             "--sf-drawer-dock-inline-start",
             "--sf-drawer-dock-inline-end",
-            "--sf-drawer-dock-block-start"
+            "--sf-drawer-dock-block-start",
+            "--sf-drawer-dock-breakpoint"
           ]
         }
       }
@@ -647,7 +653,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "f8a840d47101eaa1cac100743d7c39158d1bb4d24c7987855015e77621880c6a"
+        "sha256": "2321a416edd59e199c5da99d38b472a881988e26209420d7e391da90fdb93ff6"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
@@ -659,7 +665,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "351978de867242d7e137738ca9f67c8b3fc0a55cc37fa31e50829a9a717b0ffb"
+        "sha256": "56e2c2e6767c9176aee03aff0418f9ec38ec73b5e628b144700faa54d64821ef"
       }
     ],
     "generated_runtime": [

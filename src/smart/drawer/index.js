@@ -40,8 +40,8 @@ const FOCUSABLE_SELECTOR = [
 
 const drawerStack = [];
 // Below this width of the dock host (or of the window, when the page names no
-// host) docked panels overlay the page instead of
-// narrowing it.
+// host) docked panels overlay the page instead of narrowing it, unless the
+// drawer names its own (dock-breakpoint, or --sf-drawer-dock-breakpoint).
 const DOCK_MIN_REM = 48;
 const PLACEMENTS = ['left', 'right', 'inline-start', 'inline-end', 'bottom'];
 // The heights a bottom sheet rests at, smallest first: its content (auto, up
@@ -79,6 +79,7 @@ const drawerManager = {
     drawerStack.push(drawer);
     this.sync();
     this.syncPageLock();
+    drawer.syncSwitches();
   },
 
   remove(drawer, unlock = true) {
@@ -86,6 +87,7 @@ const drawerManager = {
     if (index >= 0) drawerStack.splice(index, 1);
     this.sync();
     if (unlock) this.syncPageLock();
+    drawer.syncSwitches();
   },
 
   bringToFront(drawer) {
@@ -262,6 +264,10 @@ class SfDrawer extends SfBaseElement {
       overlay: {type: Boolean, default: true},
       modal: {type: Boolean, default: true},
       docked: {type: Boolean, default: false},
+      // From what width of the dock host (or the window) a docked drawer is a
+      // column of the page: a length in rem, em or px; empty for the
+      // --sf-drawer-dock-breakpoint variable, else 48rem.
+      dockBreakpoint: {attribute: 'dock-breakpoint', default: ''},
       // The shared size ladder. The words are legacy values, still accepted:
       // see contracts/public-api-axes.json. `full` is not a step of the ladder —
       // it means as wide as the viewport, and drops the radius with it.
@@ -341,6 +347,8 @@ class SfDrawer extends SfBaseElement {
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
     }
+    // Switches written after the drawer in the page are there a frame later.
+    globalThis.requestAnimationFrame?.(() => this.syncSwitches());
   }
 
   disconnectedCallback() {
@@ -362,7 +370,7 @@ class SfDrawer extends SfBaseElement {
       return;
     }
     if ((name === 'modal' || name === 'docked') && this.openState) drawerManager.syncPageLock();
-    if ((name === 'docked' || name === 'placement' || name === 'size' || name === 'width') && this.openState) {
+    if ((name === 'docked' || name === 'dock-breakpoint' || name === 'placement' || name === 'size' || name === 'width') && this.openState) {
       requestAnimationFrame(() => { drawerManager.syncDock(); drawerManager.sync(); });
     }
     super.attributeChangedCallback(name, oldValue, newValue);
@@ -445,9 +453,31 @@ class SfDrawer extends SfBaseElement {
   }
 
   // The width of the dock host (or of the window) from which this docked
-  // drawer is a column of the page; narrower, it floats over the page.
+  // drawer is a column of the page; narrower, it floats over the page. The
+  // drawer's dock-breakpoint, else --sf-drawer-dock-breakpoint where it
+  // stands, else 48rem (simai/ui-source#25: a chat's panel needs 64rem).
   get dockBreakpoint() {
-    return `${DOCK_MIN_REM}rem`;
+    const own = (this.getAttribute('dock-breakpoint') || '').trim();
+    if (own) return own;
+    const themed = typeof getComputedStyle === 'function' && this.isConnected
+      ? getComputedStyle(this).getPropertyValue('--sf-drawer-dock-breakpoint').trim()
+      : '';
+    return themed || `${DOCK_MIN_REM}rem`;
+  }
+
+  // A switch outside the panel that shows and hides it (data-drawer="toggle"
+  // naming it in aria-controls, or data-sf-drawer-toggle) says whether the
+  // panel is shown: aria-expanded follows the panel, so a button that hides a
+  // docked column reads as pressed while the column is there
+  // (simai/ui-source#25).
+  syncSwitches() {
+    const id = this.drawerId || this.id;
+    if (!id || typeof document === 'undefined') return;
+    const expanded = this.openState ? 'true' : 'false';
+    for (const element of document.querySelectorAll('[data-drawer="toggle"][aria-controls], [data-sf-drawer-toggle]')) {
+      const named = (element.getAttribute('aria-controls') || element.getAttribute('data-sf-drawer-toggle') || '').split(/\s+/u);
+      if (named.includes(id)) element.setAttribute('aria-expanded', expanded);
+    }
   }
 
   // Whether this docked drawer is, at the moment, a column of the page.

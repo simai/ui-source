@@ -88,3 +88,24 @@ test('Smart Drawer: a docked column takes the page surface (simai/ui-source#26)'
   // A docked drawer that floats (a narrow host) keeps its shadow.
   assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: none/);
 });
+
+test('Smart Drawer: a configurable dock threshold and a switch that hides a docked column (simai/ui-source#25)', async () => {
+  const [source, manifest, size] = await Promise.all([
+    read('src/smart/drawer/index.js'),
+    read('src/smart/drawer/smart.manifest.json').then(JSON.parse),
+    read('src/core/scss/_sf_css__size.scss'),
+  ]);
+  assert.match(source, /dockBreakpoint: \{attribute: 'dock-breakpoint', default: ''\}/);
+  // The attribute, else the variable where the drawer stands, else 48rem.
+  assert.match(source, /getPropertyValue\('--sf-drawer-dock-breakpoint'\)/);
+  assert.match(source, /return themed \|\| `\$\{DOCK_MIN_REM\}rem`;/);
+  assert.match(source, /const threshold = drawer\.dockBreakpoint;/);
+  // A toggle switch says whether the panel is shown.
+  assert.match(source, /element\.setAttribute\('aria-expanded', expanded\)/);
+  assert.ok(manifest.inputs.properties['dock-breakpoint']);
+  assert.ok(manifest.contracts.dock_host.properties.variables.const.includes('--sf-drawer-dock-breakpoint'));
+  // Layout tokens: a reading column on the scale and the chat kit's floating panel.
+  assert.match(size, /--sf-layout-reading-width: var\(--sf-h2\);/);
+  assert.match(size, /--sf-layout-floating-panel-width: calc\(var\(--sf-g2\) \+ var\(--sf-b6\)\);/);
+  assert.match(size, /--sf-layout-floating-panel-height: calc\(var\(--sf-h0\) \+ var\(--sf-d0\)\);/);
+});

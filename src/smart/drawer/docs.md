@@ -95,6 +95,38 @@ Framework задаёт ему `padding-inline-start/end` по сумме шир�
 при 48rem и шире панель сдвигает страницу, уже — ложится поверх. Без хоста
 решает ширина окна.
 
+Порог задаёт сама панель — атрибут `dock-breakpoint` — или переменная
+`--sf-drawer-dock-breakpoint` там, где панель стоит (на корне, на хосте или
+его предке); атрибут сильнее переменной, без обоих — 48rem. Значение — длина в
+`rem`, `em` или `px`. Чату с колонкой чтения и панелями по бокам нужно 64rem
+(simai/ui-source#25): уже этой ширины панели ложатся поверх переписки, а не
+сжимают её. Порог считается для каждой панели отдельно.
+
+```html
+<html style="--sf-drawer-dock-breakpoint: 64rem">
+<sf-drawer id="chats" docked placement="inline-start" label="Чаты">…</sf-drawer>
+<sf-drawer id="details" docked dock-breakpoint="80rem" placement="inline-end" label="Сведения">…</sf-drawer>
+```
+
+### Скрыть закреплённую панель кнопкой
+
+Закреплённая панель скрывается и возвращается кнопкой-переключателем вне её:
+`data-drawer="toggle"` и `aria-controls` с `id` панели. Скрытая панель
+возвращает странице своё место. Переключатель получает `aria-expanded`: `true`,
+пока панель показана, `false`, когда скрыта, — и читается как нажатая кнопка
+(так же для прежнего `data-sf-drawer-toggle`). Своя кнопка закрытия у
+закреплённой панели тоже есть; с `controlled` она уступает место внешнему
+переключателю, пока тот виден.
+
+```html
+<button type="button" data-drawer="toggle" aria-controls="chats">Чаты</button>
+<sf-drawer id="chats" docked open controlled placement="inline-start" label="Чаты">…</sf-drawer>
+```
+
+Размеры колонки чтения и плавающей панели — токены
+`--sf-layout-reading-width`, `--sf-layout-floating-panel-width` и
+`--sf-layout-floating-panel-height` (`docs/foundation-layout-tokens.md`).
+
 Колонка страницы окрашена как страница: фон закреплённой панели —
 `--sf-surface-0`, без тени и без поднятой поверхности; от страницы её отделяет
 граница. Поднятая поверхность (`--sf-elevation-4--surface`) в тёмной теме была
@@ -126,7 +158,8 @@ Drawer находится внутри элемента с атрибутом `d
 Закреплённая панель имеет `role="region"` и требует `label` или `title`.
 Высоту шапки сайта над закреплёнными панелями задаёт
 `--sf-drawer-dock-block-start` (если он не задан — `--sf-drawer-block-start`). На
-экранах уже 48rem страница не сужается, а панель перекрывает её. Escape
+экранах уже порога (48rem или `dock-breakpoint`) страница не сужается, а
+панель перекрывает её. Escape
 закрывает верхнюю панель, фокус не удерживается. При `prefers-reduced-motion`
 сдвиг происходит без анимации.
 

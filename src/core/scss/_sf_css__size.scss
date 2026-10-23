@@ -18,6 +18,18 @@
 		}
 	}
 
+	// Layout (simai/ui-source#25, the ui-chat kit): the width of a reading
+	// column -- a conversation, an article beside panels -- and the size of a
+	// floating panel that stands over the page at a corner (a chat window, a
+	// help panel). The column is a step of the size scale (h2, 48rem); the
+	// panel is the size the chat kit measured, 400 x 680 at 16px, which is
+	// not a step: it is written as steps, g2 + b6 (24 + 1rem) and h0 + d0
+	// (40 + 2.5rem), so no length is invented here. A page caps them by its room:
+	// min(var(--sf-layout-floating-panel-width), 100vi - 2 * var(--sf-space-2)).
+	--sf-layout-reading-width: var(--sf-h2);
+	--sf-layout-floating-panel-width: calc(var(--sf-g2) + var(--sf-b6));
+	--sf-layout-floating-panel-height: calc(var(--sf-h0) + var(--sf-d0));
+
 	@each $z-index-name, $z-index-value in zIndexVars.$z-index-array {
 		--sf-z-index-#{$z-index-name}: #{$z-index-value};
 	}
