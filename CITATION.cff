@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you refer to SIMAI Framework, please cite it as below."
+title: "SIMAI Framework"
+abstract: "A front-end framework: Core, the Loader, utilities, components and Smart Components."
+type: software
+authors:
+  - family-names: "Zabarov"
+    given-names: "Rim"
+    email: "rim@zabarov.com"
+license: Apache-2.0
+repository-code: "https://github.com/simai/ui-source"
+url: "https://ui.simai.io/"
