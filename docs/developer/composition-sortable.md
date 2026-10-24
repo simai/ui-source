@@ -79,3 +79,61 @@ selected frame label or, from the overlay tree, Space → arrows → Enter; the
 overlay emits `sf-composition-overlay-move` with `{node_id, parent_id, slot,
 index}`. `overlay.setDropFilter((place, item) => boolean)` hides places the host
 would refuse.
+
+## Insertion point and inserter
+
+A block editor needs a "+" exactly where the next item goes, not an "Add"
+that always appends (simai/ui-source#21). Give the list the kinds of item it
+can insert and it draws an insertion point on the gaps between its items,
+before the first and after the last; the point opens a searchable inserter. It
+is opt-in: without `inserter-items` the list draws and does nothing it did not
+do before, and dragging is unchanged either way.
+
+```html
+<sf-sortable id="blocks" group="blocks" label="Letter"
+  inserter-items='[{"value":"heading","label":"Heading","icon":"title"},{"value":"text","label":"Text","icon":"notes","keywords":"paragraph"}]'>
+  <div data-sf-sortable-item="b1">Heading</div>
+  <div data-sf-sortable-item="b2">Text</div>
+</sf-sortable>
+```
+
+```js
+blocks.inserterItems = [
+  {type: 'heading', label: 'Content'},
+  {value: 'heading', label: 'Heading', icon: 'title'},
+  {value: 'button', label: 'Button', icon: 'smart_button', caption: 'A link styled as a button'},
+];
+blocks.addEventListener('sf-sortable-insert', (event) => {
+  const {index, item, to} = event.detail; // index: the new item's position
+  if (!model.insert({kind: item, list: to, index})) event.preventDefault(); // refused: the inserter stays open
+  else redraw(); // the host creates the item; the component never does
+});
+```
+
+- Items: `{value, label, icon?, caption?, keywords?, disabled?}`; `{type:
+  'heading', label}` and `{type: 'separator'}` group them. The search matches
+  the label, the caption and the keywords.
+- `sf-sortable-insert` — `{index, item, to}`: `item` is the chosen `value`,
+  `to` the list's `id` (its group without one). Bubbles, is composed, is
+  cancelable. When it is not cancelled the inserter closes and focus returns
+  to where it was, unless the host moved it (to the new item, say).
+- Pointer: the "+" appears on the gap the pointer is near, within half its own
+  height, and on the place after a focused row (which is how a touch screen
+  reaches it). It is hidden while anything is dragged.
+- Keyboard: the point is the list's **last tab stop** — Tab from the last row
+  reaches it, Tab from it leaves the list, nothing is trapped. On it, the arrow
+  keys of the list's direction walk the places, Home and End go to the first
+  and the last, and each step is announced; Enter or Space opens the inserter.
+  On a focused row, **`+`** opens the inserter for the place after that row.
+  The row instructions say so.
+- The inserter is `sf-context-menu` opened with `openFor`: typing filters,
+  ArrowDown goes to the rows, arrows and Enter choose, Enter in the search
+  takes the first row left. Escape closes the inserter alone: it holds the
+  open-surface mark, so a drawer or modal around the list stands back.
+- Geometry: the "+" is a native icon button of rung 1/3 (`sf-icon-button
+  --surface --on-surface --size-1/3`) on the raised surface with its shadow; a
+  2px line in `--sf-primary` marks the gap. The list takes `position:
+  relative` (in `sf.base`) while it has an inserter.
+- Loading: `icon-buttons`, `icons` and `cl-context-menu` are lazy relations
+  of `cl-sortable`, and a list that turns its inserter on asks for them at
+  once.

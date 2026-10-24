@@ -1530,7 +1530,11 @@
       ],
       "composition": {
         "public_parts": [],
-        "uses": []
+        "uses": [
+          "smart.context-menu",
+          "component.icon-buttons",
+          "component.icons"
+        ]
       },
       "contract_schema": {
         "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
@@ -1541,17 +1545,18 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/sortable/smart.manifest.json",
-      "manifest_sha256": "2533afd7c2e5f04d35d1796aade9966d1cec6d785061c65a71bc7e397a872250",
+      "manifest_sha256": "af1961ce5449b85f069bc893a2df9beb481c2bd79a0e9beb2400976035afe14f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard; reports intent only.",
+      "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard, with an optional insertion point that opens a searchable inserter; reports intent only.",
       "tags": [
         "sortable",
         "drag-and-drop",
-        "editor"
+        "editor",
+        "inserter"
       ],
       "title": "Sortable"
     },

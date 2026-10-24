@@ -34,7 +34,7 @@ test('editor surfaces are Smart components, not part of Core', async () => {
   assert.throws(() => Composition.startInlineEdit({}, {}), /inline_editor_not_loaded/u);
   const entries = {
     'composition-overlay': ['sf-composition-overlay', /defineCompositionOverlay\(\)/u],
-    sortable: ['sf-sortable', /defineSortable\(\)/u],
+    sortable: ['sf-sortable', /defineSortable\((?:inserterRegistry\(\))?\)/u],
     'inline-editor': ['sf-inline-editor', /defineInlineEditor\(\)/u],
   };
   for (const [name, [tag, define]] of Object.entries(entries)) {
