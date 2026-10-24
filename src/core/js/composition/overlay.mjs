@@ -1,22 +1,29 @@
 import { isPlainObject } from './canonical.mjs';
 import { pageText } from '../page-language.js';
 import { activeSortableSession, registerSortableDropTarget } from './sortable.mjs';
+import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 
 // Editor canvas overlay. It draws hover and selection frames, a floating
 // action toolbar and insertion points over a rendered Composition Document
 // without touching the canvas DOM: the published HTML stays byte-identical.
 // The host supplies node descriptions and actions and performs every change.
+//
+// Framed mode (attachFrame + setNodes) draws the same chrome over a same-origin
+// iframe fed a flat node list: frame coordinates are mapped to the host page
+// through the iframe's position, borders, padding, scale and the frame's own
+// scroll, and a plain-string inline edit happens on the element inside the frame.
 
 export const OVERLAY_EVENTS = Object.freeze({
   select: 'sf-composition-overlay-select',
   action: 'sf-composition-overlay-action',
   insert: 'sf-composition-overlay-insert',
   move: 'sf-composition-overlay-move',
+  edit: 'sf-composition-overlay-edit',
 });
 
 const MESSAGES = {
-  ru: { picked: 'Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.', cancelled: 'Перемещение отменено.', tree: 'Структура страницы', toolbar: 'Действия', insert: 'Вставить', insertAt: 'Вставить в «{slot}», позиция {index}', position: '{index} из {total}', selected: 'Выбрано: {label}' },
-  en: { picked: 'Moving {label}. Arrows choose a place, Enter drops, Escape cancels.', cancelled: 'Move cancelled.', tree: 'Page structure', toolbar: 'Actions', insert: 'Insert', insertAt: 'Insert into “{slot}”, position {index}', position: '{index} of {total}', selected: 'Selected: {label}' },
+  ru: { picked: 'Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.', cancelled: 'Перемещение отменено.', tree: 'Структура страницы', toolbar: 'Действия', insert: 'Вставить', insertAt: 'Вставить в «{slot}», позиция {index}', position: '{index} из {total}', selected: 'Выбрано: {label}', editing: 'Редактирование: {label}. Enter — сохранить, Escape — отменить.' },
+  en: { picked: 'Moving {label}. Arrows choose a place, Enter drops, Escape cancels.', cancelled: 'Move cancelled.', tree: 'Page structure', toolbar: 'Actions', insert: 'Insert', insertAt: 'Insert into “{slot}”, position {index}', position: '{index} of {total}', selected: 'Selected: {label}', editing: 'Editing {label}. Enter saves, Escape cancels.' },
 };
 
 const ACTION_ID = /^[a-z][a-z0-9-]{0,63}$/u;
@@ -50,6 +57,114 @@ export function checkOverlayActions(actions) {
   });
 }
 
+const NODE_KEYS = new Set(['id', 'kind', 'rect', 'element', 'label', 'parent', 'editable']);
+const finite = (value) => typeof value === 'number' && Number.isFinite(value);
+// Elements of the frame belong to another realm, so `instanceof Element` is false for them.
+const isElement = (value) => Boolean(value) && typeof value === 'object' && value.nodeType === 1 && typeof value.getBoundingClientRect === 'function';
+
+/**
+ * Checks a framed canvas's flat node list: [{id, kind, rect? | element?, label?,
+ * parent?, editable?}]. rect is in frame-document coordinates {x, y, width,
+ * height}; element is a node inside the frame. Returns frozen entries.
+ */
+export function checkOverlayNodes(nodes) {
+  if (!Array.isArray(nodes)) throw new TypeError('Overlay nodes must be a list');
+  const seen = new Set();
+  const list = nodes.map((node) => {
+    if (!isPlainObject(node) || Object.keys(node).some((key) => !NODE_KEYS.has(key))) {
+      throw new TypeError('Overlay nodes have id, kind, rect or element, label, parent and editable only');
+    }
+    if (typeof node.id !== 'string' || !node.id || seen.has(node.id)) throw new TypeError('Overlay nodes have unique non-empty string ids');
+    if (typeof node.kind !== 'string' || !node.kind) throw new TypeError(`Overlay node ${node.id} names its kind`);
+    const { rect, element } = node;
+    if (rect !== undefined && (!isPlainObject(rect) || !['x', 'y', 'width', 'height'].every((key) => finite(rect[key])) || rect.width < 0 || rect.height < 0)) {
+      throw new TypeError(`Overlay node ${node.id} has a rect {x, y, width, height} of finite numbers`);
+    }
+    if (element !== undefined && !isElement(element)) throw new TypeError(`Overlay node ${node.id} has an element`);
+    if (rect === undefined && element === undefined) throw new TypeError(`Overlay node ${node.id} has a rect or an element`);
+    if (node.label !== undefined && typeof node.label !== 'string') throw new TypeError(`Overlay node ${node.id} has a string label`);
+    if (node.parent !== undefined && node.parent !== null && (typeof node.parent !== 'string' || node.parent === node.id)) {
+      throw new TypeError(`Overlay node ${node.id} names another node as its parent`);
+    }
+    if (node.editable !== undefined && typeof node.editable !== 'boolean') throw new TypeError(`Overlay node ${node.id} has a boolean editable`);
+    if (node.editable && element === undefined) throw new TypeError(`Overlay node ${node.id} is editable only with an element`);
+    seen.add(node.id);
+    return Object.freeze({
+      id: node.id,
+      kind: node.kind,
+      rect: rect === undefined ? null : Object.freeze({ x: rect.x, y: rect.y, width: rect.width, height: rect.height }),
+      element: element ?? null,
+      label: node.label ?? null,
+      parent: node.parent ?? null,
+      editable: node.editable === true,
+    });
+  });
+  const byId = new Map(list.map((node) => [node.id, node]));
+  for (const node of list) {
+    const visited = new Set([node.id]);
+    for (let parent = node.parent; parent !== null; parent = byId.get(parent).parent) {
+      if (!byId.has(parent)) throw new TypeError(`Overlay node ${node.id} names a parent that is not in the list`);
+      if (visited.has(parent)) throw new TypeError(`Overlay node ${node.id} is its own ancestor`);
+      visited.add(parent);
+    }
+  }
+  return Object.freeze(list);
+}
+
+/** Overlay entries for a checked flat list, in list order; the top level is parent null, slot "default". */
+export function flatOverlayNodes(list) {
+  const entries = list.map((node) => ({ id: node.id, type: node.kind, kind: node.kind, label: node.label, parent: node.parent, slot: 'default', index: 0, level: 1, slots: {}, flat: node }));
+  const byId = new Map(entries.map((entry) => [entry.id, entry]));
+  const counts = new Map();
+  for (const entry of entries) {
+    const key = entry.parent ?? '';
+    entry.index = counts.get(key) || 0;
+    counts.set(key, entry.index + 1);
+    if (entry.parent) (byId.get(entry.parent).slots.default ||= []).push(entry.id);
+    for (let parent = entry.parent; parent; parent = byId.get(parent).parent) entry.level += 1;
+  }
+  return entries;
+}
+
+/**
+ * Where a frame's viewport lies on the host page. rect is the iframe's border box
+ * on the host (after any transform or zoom), layout its untransformed border box
+ * size (offsetWidth/offsetHeight), border and padding its own {top, right,
+ * bottom, left} in CSS px, inner the frame's viewport size in its own px and
+ * scroll the frame's scroll position. The scale is rect over layout; without a
+ * layout size it is taken from the parts, which the viewport's whole-pixel size
+ * makes less exact under zoom.
+ */
+export function frameViewport({ rect, layout = null, border, padding, inner, scroll = { x: 0, y: 0 } }) {
+  const outerWidth = layout?.width > 0 ? layout.width : border.left + padding.left + inner.width + padding.right + border.right;
+  const outerHeight = layout?.height > 0 ? layout.height : border.top + padding.top + inner.height + padding.bottom + border.bottom;
+  const scaleX = outerWidth > 0 && rect.width > 0 ? rect.width / outerWidth : 1;
+  const scaleY = outerHeight > 0 && rect.height > 0 ? rect.height / outerHeight : 1;
+  return {
+    left: rect.left + (border.left + padding.left) * scaleX,
+    top: rect.top + (border.top + padding.top) * scaleY,
+    width: inner.width * scaleX,
+    height: inner.height * scaleY,
+    scaleX,
+    scaleY,
+    scrollX: scroll.x,
+    scrollY: scroll.y,
+  };
+}
+
+/** A box in the frame's viewport coordinates {x, y, width, height}, mapped to the host page. */
+export function frameRectToHost(box, view) {
+  const left = view.left + box.x * view.scaleX;
+  const top = view.top + box.y * view.scaleY;
+  const width = box.width * view.scaleX;
+  const height = box.height * view.scaleY;
+  return { x: left, y: top, left, top, width, height, right: left + width, bottom: top + height };
+}
+
+const plainText = (element) => (element.textContent || '').replace(/\s+/gu, ' ').trim();
+const px = (value) => Number.parseFloat(value) || 0;
+const intersect = (a, b) => ({ left: Math.max(a.left, b.left), top: Math.max(a.top, b.top), right: Math.min(a.right, b.right), bottom: Math.min(a.bottom, b.bottom) });
+
 export function defineCompositionOverlay(registry = globalThis.customElements) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
   const existing = registry.get('sf-composition-overlay');
@@ -74,6 +189,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       this.moving = null;
       this.unregisterDrop = null;
       this.dropHint = null;
+      this.iframe = null;
+      this.frameDoc = null;
+      this.frameConnection = null;
+      this.view = null;
+      this.elementIds = new Map();
+      this.rectNodes = [];
+      this.editing = null;
     }
 
     get messages() {
@@ -85,10 +207,14 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
     connectedCallback() {
       if (!this.layer) this.buildLayer();
       const canvasId = this.getAttribute('for');
-      if (canvasId && !this.canvas) {
+      const frameId = this.getAttribute('frame');
+      if (frameId && !this.canvas && !this.iframe) {
+        const iframe = globalThis.document.getElementById(frameId);
+        if (iframe) this.attachFrame(iframe);
+      } else if (canvasId && !this.canvas && !this.iframe) {
         const canvas = globalThis.document.getElementById(canvasId);
         if (canvas) this.attach(canvas);
-      } else if (this.canvas) {
+      } else if (this.canvas || this.iframe) {
         this.bind();
       }
     }
@@ -138,18 +264,40 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       if (!this.layer) this.buildLayer();
       this.unbind();
       this.canvas = canvas;
+      this.iframe = null;
+      this.removeAttribute('data-sf-overlay-mode');
+      this.layer.style.clipPath = '';
+      this.insertionLayer.style.clipPath = '';
+      if (this.isConnected) this.bind();
+      return this;
+    }
+
+    /** Binds the overlay to a same-origin iframe canvas fed by setNodes; the frame's HTML is never modified by the overlay. */
+    attachFrame(iframe) {
+      if (!isElement(iframe) || iframe.localName !== 'iframe') throw new TypeError('Overlay frame must be an iframe element');
+      if (!this.layer) this.buildLayer();
+      this.unbind();
+      this.canvas = null;
+      this.iframe = iframe;
+      this.setAttribute('data-sf-overlay-mode', 'frame');
       if (this.isConnected) this.bind();
       return this;
     }
 
     bind() {
-      if (this.connection || !this.canvas) return;
+      if (this.connection || (!this.canvas && !this.iframe)) return;
       this.connection = new AbortController();
       const options = { signal: this.connection.signal };
       const passive = { ...options, passive: true };
-      this.canvas.addEventListener('pointermove', (event) => this.onPointerMove(event), passive);
-      this.canvas.addEventListener('pointerleave', () => this.setHover(null), passive);
-      this.canvas.addEventListener('click', (event) => this.onCanvasClick(event), { ...options, capture: true });
+      if (this.iframe) {
+        // A new letter (srcdoc, navigation) is a new document: listen to it again.
+        this.iframe.addEventListener('load', () => this.bindFrameDocument(), options);
+        this.iframe.addEventListener('pointerleave', () => this.setHover(null), passive);
+      } else {
+        this.canvas.addEventListener('pointermove', (event) => this.onPointerMove(event), passive);
+        this.canvas.addEventListener('pointerleave', () => this.setHover(null), passive);
+        this.canvas.addEventListener('click', (event) => this.onCanvasClick(event), { ...options, capture: true });
+      }
       this.tree.addEventListener('keydown', (event) => this.onTreeKey(event), options);
       this.tree.addEventListener('focus', () => {
         this.setAttribute('data-sf-overlay-focus', '');
@@ -163,7 +311,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       globalThis.addEventListener('resize', () => this.schedule(), passive);
       if (typeof globalThis.ResizeObserver === 'function') {
         this.resizeObserver = new globalThis.ResizeObserver(() => this.schedule());
-        this.resizeObserver.observe(this.canvas);
+        this.resizeObserver.observe(this.canvas || this.iframe);
       }
       this.unregisterDrop = registerSortableDropTarget({
         resolve: (x, y, dragSession) => (this.accepts(dragSession) ? this.resolveDrop(x, y, null) : null),
@@ -174,10 +322,56 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       this.selectedFrame.firstChild.addEventListener('pointerdown', (event) => this.onHandleDown(event), options);
       this.setAttribute('data-sf-overlay', 'connected');
       this.renderTree();
+      if (this.iframe) this.bindFrameDocument();
+      this.schedule();
+    }
+
+    /** Listens to the frame's current document and window; called on bind and on every frame load. */
+    bindFrameDocument() {
+      if (this.editing) this.finishEdit(false);
+      this.frameConnection?.abort();
+      this.frameConnection = null;
+      let doc = null;
+      try {
+        doc = this.iframe.contentDocument;
+      } catch {
+        doc = null;
+      }
+      const win = doc?.defaultView || null;
+      this.frameDoc = win ? doc : null;
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+        this.resizeObserver.observe(this.iframe);
+      }
+      if (!this.frameDoc) {
+        // A cross-origin or not yet available frame: nothing is drawn over it.
+        this.setAttribute('data-sf-overlay-frame', 'unreachable');
+        this.schedule();
+        return;
+      }
+      this.removeAttribute('data-sf-overlay-frame');
+      this.frameConnection = new AbortController();
+      const options = { signal: this.frameConnection.signal };
+      const passive = { ...options, passive: true };
+      doc.addEventListener('pointermove', (event) => this.setHover(this.frameNodeAt(event)), passive);
+      doc.addEventListener('pointerout', (event) => { if (!event.relatedTarget) this.setHover(null); }, passive);
+      doc.addEventListener('click', (event) => this.onFrameClick(event), { ...options, capture: true });
+      doc.addEventListener('dblclick', (event) => this.onFrameDoubleClick(event), { ...options, capture: true });
+      doc.addEventListener('keydown', (event) => this.onFrameKey(event), { ...options, capture: true });
+      win.addEventListener('scroll', () => this.schedule(), { ...passive, capture: true });
+      win.addEventListener('resize', () => this.schedule(), passive);
+      if (this.resizeObserver) {
+        if (doc.documentElement) this.resizeObserver.observe(doc.documentElement);
+        if (doc.body) this.resizeObserver.observe(doc.body);
+      }
       this.schedule();
     }
 
     unbind() {
+      this.finishEdit(false);
+      this.frameConnection?.abort();
+      this.frameConnection = null;
+      this.frameDoc = null;
       this.pointerDrag?.abort();
       this.pointerDrag = null;
       this.unregisterDrop?.();
@@ -189,15 +383,40 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       this.resizeObserver = null;
       if (this.frameRequest) globalThis.cancelAnimationFrame(this.frameRequest);
       this.frameRequest = 0;
-      if (this.canvas) this.setAttribute('data-sf-overlay', 'disposed');
+      if (this.canvas || this.iframe) this.setAttribute('data-sf-overlay', 'disposed');
     }
 
     /** Supplies the Document structure and a describe(node) → {label, badges}. */
     setDocument(document, { describe } = {}) {
+      this.elementIds = new Map();
+      this.rectNodes = [];
+      this.replaceNodes(overlayNodes(document), describe);
+      return this;
+    }
+
+    /**
+     * Supplies a framed canvas's flat node list [{id, kind, rect? | element?,
+     * label?, parent?, editable?}] in selection order, and an optional
+     * describe(node) → {label, badges}; without it the label is node.label or its kind.
+     */
+    setNodes(nodes, { describe } = {}) {
+      const list = checkOverlayNodes(nodes);
+      this.elementIds = new Map(list.filter((node) => node.element).map((node) => [node.element, node.id]));
+      const entries = flatOverlayNodes(list);
+      this.rectNodes = entries.filter((entry) => entry.flat.rect && !entry.flat.element);
+      if (this.editing) {
+        const next = list.find((node) => node.id === this.editing.id);
+        if (!next || next.element !== this.editing.element || !next.editable) this.finishEdit(false);
+      }
+      this.replaceNodes(entries, typeof describe === 'function' ? describe : (node) => ({ label: node.label || node.kind }));
+      return this;
+    }
+
+    replaceNodes(nodes, describe) {
       const previous = this.selectedId ? this.byId.get(this.selectedId) : null;
       const active = globalThis.document.activeElement;
       const focused = Boolean(active) && (this.toolbar?.contains(active) || this.insertionLayer?.contains(active));
-      this.nodes = overlayNodes(document);
+      this.nodes = nodes;
       this.byId = new Map(this.nodes.map((node) => [node.id, node]));
       if (typeof describe === 'function') this.describe = describe;
       this.renderTree();
@@ -209,6 +428,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
         const fallback = previous?.parent && this.byId.has(previous.parent) ? previous.parent : this.nodes[0]?.id ?? null;
         this.select(focused ? fallback : null, { focus: focused });
       }
+      this.schedule();
+    }
+
+    /** Re-measures on the next frame, after a change no observer reports (a transform on an ancestor of the canvas). */
+    refresh() {
       this.schedule();
       return this;
     }
@@ -345,6 +569,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
 
     // Moving a canvas node: pointer via the selected label, keyboard via the tree.
     onHandleDown(event) {
+      if (this.iframe) return;
       if (event.button !== 0 || !this.selectedId || !this.byId.get(this.selectedId)?.parent) return;
       event.preventDefault();
       const moving = this.selectedId;
@@ -434,6 +659,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
 
     select(id, { focus = false, emit = true } = {}) {
       if (id !== null && !this.byId.has(id)) return this;
+      if (this.editing && this.editing.id !== id) this.finishEdit(true);
       if (this.selectedId === id) return this;
       this.selectedId = id;
       this.renderTreeSelection();
@@ -481,7 +707,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
 
     onTreeKey(event) {
       if (this.moving && this.onMoveKey(event)) return;
-      if (event.key === ' ' && this.selectedId) {
+      if (event.key === ' ' && this.selectedId && !this.iframe) {
         event.preventDefault();
         this.startKeyboardMove();
         return;
@@ -495,9 +721,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       else if (event.key === 'End') next = this.nodes.at(-1);
       else if (event.key === 'ArrowLeft' && current?.parent) next = this.byId.get(current.parent);
       else if (event.key === 'ArrowRight' && current) next = this.nodes.find((node) => node.parent === current.id) || null;
-      else if (event.key === 'Escape' && this.selectedId !== null) {
+      else if (event.key === 'Escape' && this.selectedId !== null && (!this.iframe || isTopOpenSurface(this))) {
         event.preventDefault();
         this.select(null);
+        return;
+      } else if (event.key === 'Enter' && this.iframe && current?.flat?.editable) {
+        event.preventDefault();
+        this.edit(current.id);
         return;
       } else if (event.key === 'Enter' && this.toolbar.querySelector('button')) {
         event.preventDefault();
@@ -590,13 +820,29 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       });
     }
 
+    /** A node's box on the host page: its element's rect, or in framed mode its frame box mapped out of the frame. */
+    nodeBox(id) {
+      const node = typeof id === 'string' ? this.byId.get(id) : null;
+      if (!node) return null;
+      if (!node.flat) return this.element(id)?.getBoundingClientRect() ?? null;
+      const view = this.view;
+      if (!view || !this.frameDoc) return null;
+      const { element, rect } = node.flat;
+      if (element) {
+        if (!element.isConnected || element.ownerDocument !== this.frameDoc) return null;
+        const box = element.getBoundingClientRect();
+        if (!box.width && !box.height) return null;
+        return frameRectToHost({ x: box.left, y: box.top, width: box.width, height: box.height }, view);
+      }
+      return frameRectToHost({ x: rect.x - view.scrollX, y: rect.y - view.scrollY, width: rect.width, height: rect.height }, view);
+    }
+
     place(frame, id) {
-      const element = id ? this.element(id) : null;
-      if (!element) {
+      const box = id ? this.nodeBox(id) : null;
+      if (!box) {
         frame.hidden = true;
         return null;
       }
-      const box = element.getBoundingClientRect();
       frame.hidden = false;
       frame.style.insetInlineStart = '';
       Object.assign(frame.style, { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
@@ -606,9 +852,18 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
     }
 
     position() {
-      if (!this.canvas) return;
+      if (!this.canvas && !this.iframe) return;
+      if (this.iframe) {
+        this.view = this.frameMetrics();
+        this.applyClip(this.view?.clip ?? null);
+      }
       this.place(this.hoverFrame, this.hoverId && this.hoverId !== this.selectedId ? this.hoverId : null);
       const box = this.place(this.selectedFrame, this.selectedId);
+      if (this.iframe) {
+        this.positionFrameToolbar(box);
+        this.positionInsertions();
+        return;
+      }
       // No toolbar without a drawn selection, e.g. while the host re-renders,
       // unless it holds keyboard focus.
       if (box) this.toolbar.hidden = this.actions.length === 0;
@@ -627,13 +882,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
 
     positionInsertions() {
       const selected = this.selectedId ? this.byId.get(this.selectedId) : null;
-      const points = [];
-      if (selected?.parent) {
+      const points = selected?.flat ? this.flatInsertionPoints(selected) : [];
+      if (selected?.parent && !selected.flat) {
         const parent = this.byId.get(selected.parent);
         const siblings = parent.slots[selected.slot] || [];
         for (let index = 0; index <= siblings.length; index += 1) points.push({ parent: parent.id, slot: selected.slot, index, before: siblings[index], after: siblings[index - 1] });
       }
-      if (selected) {
+      if (selected && !selected.flat) {
         for (const [slot, children] of Object.entries(selected.slots)) points.push({ parent: selected.id, slot, index: children.length, after: children.at(-1), end: true });
       }
       const target = this.insertionTarget;
@@ -641,8 +896,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       const existing = new Map([...this.insertionLayer.children].map((button) => [button.dataset.key, button]));
       const keep = new Set();
       for (const point of points) {
-        const anchor = this.element(point.before) || this.element(point.after) || this.element(point.parent);
-        if (!anchor) continue;
+        const box = this.nodeBox(point.before) || this.nodeBox(point.after) || this.nodeBox(point.parent);
+        if (!box) continue;
         const key = `${point.parent}|${point.slot}|${point.index}`;
         keep.add(key);
         let button = existing.get(key);
@@ -661,7 +916,6 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
           button.append(mark);
           this.insertionLayer.append(button);
         }
-        const box = anchor.getBoundingClientRect();
         const top = point.before && !point.end ? box.top : box.bottom;
         const marked = Boolean(target && target.parent_id === point.parent && target.slot === point.slot && target.index === point.index);
         button.setAttribute('aria-pressed', marked ? 'true' : 'false');
@@ -670,10 +924,204 @@ export function defineCompositionOverlay(registry = globalThis.customElements) {
       }
       for (const [key, button] of existing) if (!keep.has(key)) button.remove();
     }
+
+    // Framed mode: insertion places among the selected node's siblings (the top
+    // level is parent_id ""), and at the end of its own children; setDropFilter hides places.
+    flatInsertionPoints(selected) {
+      const siblings = this.nodes.filter((node) => node.parent === selected.parent).map((node) => node.id);
+      const parent = selected.parent ?? '';
+      const points = [];
+      for (let index = 0; index <= siblings.length; index += 1) points.push({ parent, slot: 'default', index, before: siblings[index], after: siblings[index - 1] });
+      const children = selected.slots.default || [];
+      if (children.length) points.push({ parent: selected.id, slot: 'default', index: children.length, after: children.at(-1), end: true });
+      return points.filter((point) => this.dropFilter({ parent_id: point.parent, slot: point.slot, index: point.index }, null));
+    }
+
+    /** The frame's viewport on the host page and the part of it that is visible (clip). */
+    frameMetrics() {
+      const iframe = this.iframe;
+      const win = this.frameDoc?.defaultView;
+      if (!iframe?.isConnected || !win) return null;
+      const rect = iframe.getBoundingClientRect();
+      if (!rect.width && !rect.height) return null;
+      const style = globalThis.getComputedStyle(iframe);
+      const sides = (name, suffix = '') => ({ top: px(style[`${name}Top${suffix}`]), right: px(style[`${name}Right${suffix}`]), bottom: px(style[`${name}Bottom${suffix}`]), left: px(style[`${name}Left${suffix}`]) });
+      const view = frameViewport({ rect, layout: { width: iframe.offsetWidth, height: iframe.offsetHeight }, border: sides('border', 'Width'), padding: sides('padding'), inner: { width: win.innerWidth, height: win.innerHeight }, scroll: { x: win.scrollX, y: win.scrollY } });
+      let clip = { left: view.left, top: view.top, right: view.left + view.width, bottom: view.top + view.height };
+      // Scrolling ancestors hide what lies outside them, and so does the window.
+      const root = globalThis.document.documentElement;
+      for (let element = iframe.parentElement; element && element !== root && element !== globalThis.document.body; element = element.parentElement) {
+        const own = globalThis.getComputedStyle(element);
+        if (own.overflowX === 'visible' && own.overflowY === 'visible') continue;
+        const box = element.getBoundingClientRect();
+        const left = box.left + element.clientLeft;
+        const top = box.top + element.clientTop;
+        clip = intersect(clip, { left, top, right: left + element.clientWidth, bottom: top + element.clientHeight });
+      }
+      view.clip = intersect(clip, { left: 0, top: 0, right: root.clientWidth, bottom: root.clientHeight });
+      return view;
+    }
+
+    applyClip(clip) {
+      const layer = this.layer.getBoundingClientRect();
+      const value = !clip || clip.right <= clip.left || clip.bottom <= clip.top
+        ? 'inset(50%)'
+        : `inset(${Math.max(0, clip.top - layer.top)}px ${Math.max(0, layer.right - clip.right)}px ${Math.max(0, layer.bottom - clip.bottom)}px ${Math.max(0, clip.left - layer.left)}px)`;
+      this.layer.style.clipPath = value;
+      this.insertionLayer.style.clipPath = value;
+    }
+
+    positionFrameToolbar(box) {
+      const clip = this.view?.clip;
+      const visible = Boolean(box && clip && box.right > clip.left && box.left < clip.right && box.bottom > clip.top && box.top < clip.bottom);
+      if (visible) this.toolbar.hidden = this.actions.length === 0;
+      else if (!this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
+      if (!visible || this.toolbar.hidden) return;
+      const bar = this.toolbar.getBoundingClientRect();
+      // Above the node, else below it, and always inside the visible part of the frame.
+      const above = box.top - bar.height - 4;
+      let top = above >= clip.top ? above : box.bottom + 4;
+      top = Math.max(clip.top, Math.min(top, clip.bottom - bar.height));
+      const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
+      const start = rtl ? box.right - bar.width : box.left;
+      const left = Math.max(0, Math.min(start, globalThis.document.documentElement.clientWidth - bar.width));
+      Object.assign(this.toolbar.style, { top: `${top}px`, left: `${left}px` });
+    }
+
+    /** The innermost node under a pointer event in the frame: the smallest element or rect node that holds it. */
+    frameNodeAt(event) {
+      let best = null;
+      let area = Infinity;
+      const consider = (id, width, height) => {
+        if (width * height < area) {
+          best = id;
+          area = width * height;
+        }
+      };
+      for (let element = isElement(event.target) ? event.target : event.target?.parentElement; element; element = element.parentElement) {
+        const id = this.elementIds.get(element);
+        if (id === undefined || !this.byId.has(id)) continue;
+        const box = element.getBoundingClientRect();
+        consider(id, box.width, box.height);
+      }
+      const win = this.frameDoc?.defaultView;
+      if (win && this.rectNodes.length && finite(event.clientX)) {
+        const x = event.clientX + win.scrollX;
+        const y = event.clientY + win.scrollY;
+        for (const { id, flat: { rect } } of this.rectNodes) {
+          if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) consider(id, rect.width, rect.height);
+        }
+      }
+      return best;
+    }
+
+    onFrameClick(event) {
+      if (this.editing && this.editing.element.contains(event.target)) return;
+      // In the editor a click selects; it never follows links or submits. A
+      // click on no node goes back to no selection (the letter itself).
+      event.preventDefault();
+      const id = this.frameNodeAt(event);
+      if (id) event.stopPropagation();
+      this.select(id);
+    }
+
+    onFrameDoubleClick(event) {
+      if (this.editing) return;
+      const id = this.frameNodeAt(event);
+      if (!id || !this.byId.get(id).flat?.editable) return;
+      event.preventDefault();
+      this.edit(id);
+    }
+
+    onFrameKey(event) {
+      if (this.editing) {
+        if (event.isComposing) return;
+        if (event.key === 'Enter' || event.key === 'Escape') {
+          event.preventDefault();
+          event.stopPropagation();
+          this.finishEdit(event.key === 'Enter');
+        }
+        return;
+      }
+      if (!event.defaultPrevented) this.onTreeKey(event);
+    }
+
+    /** Starts plain-string editing of an editable node inside the frame; returns whether it started. */
+    edit(id) {
+      const node = typeof id === 'string' ? this.byId.get(id) : null;
+      const element = node?.flat?.editable ? node.flat.element : null;
+      if (!element || !this.frameDoc || !element.isConnected || element.ownerDocument !== this.frameDoc) return false;
+      if (this.editing?.id === id) return true;
+      if (this.editing) this.finishEdit(true);
+      const returnFocus = globalThis.document.activeElement === this.tree;
+      this.select(id);
+      const doc = element.ownerDocument;
+      const attribute = element.getAttribute('contenteditable');
+      element.setAttribute('contenteditable', 'plaintext-only');
+      // Where plaintext-only is unknown, rich editing is narrowed to plain text by hand.
+      const plain = element.contentEditable === 'plaintext-only';
+      if (!plain) element.setAttribute('contenteditable', 'true');
+      const connection = new AbortController();
+      const options = { signal: connection.signal };
+      element.addEventListener('blur', () => this.finishEdit(true), options);
+      element.addEventListener('input', () => this.schedule(), options);
+      element.addEventListener('beforeinput', (event) => {
+        const type = event.inputType || '';
+        if (type === 'insertParagraph' || type === 'insertLineBreak' || (!plain && type.startsWith('format'))) event.preventDefault();
+      }, options);
+      if (!plain) {
+        element.addEventListener('paste', (event) => {
+          event.preventDefault();
+          doc.execCommand('insertText', false, (event.clipboardData?.getData('text/plain') || '').replace(/\s+/gu, ' '));
+        }, options);
+      }
+      this.editing = { id, element, saved: element.cloneNode(true), previous: plainText(element), attribute, connection, returnFocus };
+      holdOpenSurfaceMark(this, true);
+      this.setAttribute('data-sf-overlay-editing', '');
+      element.focus({ preventScroll: true });
+      const selection = doc.defaultView?.getSelection();
+      if (selection) {
+        const range = doc.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      this.live.textContent = format(this.messages.editing, { label: this.info(node).label });
+      this.schedule();
+      return true;
+    }
+
+    /** Ends the inline edit: commit emits sf-composition-overlay-edit (cancelable) when the text changed; cancel restores it. */
+    finishEdit(commit) {
+      const editing = this.editing;
+      if (!editing) return;
+      this.editing = null;
+      editing.connection.abort();
+      holdOpenSurfaceMark(this, false);
+      this.removeAttribute('data-sf-overlay-editing');
+      const { element } = editing;
+      if (editing.attribute === null) element.removeAttribute('contenteditable');
+      else element.setAttribute('contenteditable', editing.attribute);
+      const restore = () => {
+        if (element.isConnected) element.replaceChildren(...editing.saved.childNodes);
+      };
+      const value = plainText(element);
+      if (!commit) restore();
+      else if (value !== editing.previous) {
+        const event = new globalThis.CustomEvent(OVERLAY_EVENTS.edit, {
+          bubbles: true, composed: true, cancelable: true, detail: Object.freeze({ node_id: editing.id, value, previous: editing.previous }),
+        });
+        this.dispatchEvent(event);
+        // The host refused the value: the letter shows what it showed before.
+        if (event.defaultPrevented) restore();
+      }
+      if (editing.returnFocus && this.isConnected) this.tree.focus({ preventScroll: true });
+      this.schedule();
+    }
   }
 
   registry.define('sf-composition-overlay', SfCompositionOverlay);
   return SfCompositionOverlay;
 }
 
-export default { OVERLAY_EVENTS, checkOverlayActions, defineCompositionOverlay, overlayNodes };
+export default { OVERLAY_EVENTS, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes };

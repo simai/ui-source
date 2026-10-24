@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>SIMAI Framework — editor overlay over a framed canvas</title>
+  <script>
+    const view = new URLSearchParams(location.search);
+    const assets = view.get('assets');
+    const smart = view.get('smart');
+    const source = view.get('source');
+    for (const href of [`${assets}/core/css/core.css`, `${assets}/core/css/utility.full.css`]) document.write(`<link rel="stylesheet" href="${href}">`);
+    window.sfPath = assets;
+    window.sfSmartPath = smart;
+    window.SF_BOOT_CONFIG = {icons: {enabled: true, subsetHost: `${source}/tests/fixtures/icon-subset-service`}, preloader: {enabled: false}, smart: {base: true}, theme: false};
+    window.lab = {events: [], scale: 1, refuse: 'Отказ'};
+    for (const type of ['sf-composition-overlay-select', 'sf-composition-overlay-action', 'sf-composition-overlay-insert', 'sf-composition-overlay-edit']) {
+      document.addEventListener(type, (event) => {
+        window.lab.events.push({type, detail: {...event.detail}});
+        // The host refuses one value: the overlay puts the old text back.
+        if (type === 'sf-composition-overlay-edit' && event.detail.value === window.lab.refuse) event.preventDefault();
+      });
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0 var(--sf-space-2, .5rem); background: var(--sf-surface-1, Canvas); color: var(--sf-on-surface, CanvasText); }
+    header { block-size: 150px; }
+    /* Scrolls land at once, so a measurement never reads a scroll in flight. */
+    html, #scroller { scroll-behavior: auto !important; }
+    #scroller { block-size: 420px; overflow: auto; border: 1px solid; }
+    #letter { display: block; inline-size: 600px; block-size: 360px; margin: 40px; padding: 5px; border: 3px solid #888; background: #fff; }
+    .lab-spacer { block-size: 600px; }
+  </style>
+</head>
+<body>
+  <header><a id="before" href="#start">До холста</a></header>
+  <sf-composition-overlay id="overlay" frame="letter"></sf-composition-overlay>
+  <div id="scroller">
+    <div id="zoombox"><iframe id="letter" sandbox="allow-same-origin" tabindex="-1" title="Письмо"></iframe></div>
+    <div class="lab-spacer"></div>
+  </div>
+  <div class="lab-spacer"></div>
+  <script>
+    // The letter runs no script (sandbox without allow-scripts), as ui-mail's does.
+    const letterHtml = (title) => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><style>
+      body{margin:0;font:16px/1.5 sans-serif;background:#fff;color:#111}
+      .block{margin:16px 24px;padding:12px;border:1px solid #ddd}
+      .tall{height:300px}
+      h1{margin:0;font-size:24px}
+      .footer{margin:0 24px 24px;height:80px;background:#f4f4f4}
+    </style></head><body>
+      <div class="block" data-block="hero"><h1 data-text="hero-title">${title}</h1><p>Только неделю. <a href="https://example.com/sale">Подробнее</a></p></div>
+      <div class="block" data-block="text"><p data-text="text-body">Короткий текст письма</p></div>
+      <div class="block tall" data-block="image">Картинка</div>
+      <div class="block" data-block="button"><a data-text="button-label" href="https://example.com/buy">Купить</a></div>
+      <div class="footer">Подвал</div>
+    </body></html>`;
+    const frame = document.getElementById('letter');
+    const loaded = () => new Promise((done) => frame.addEventListener('load', done, {once: true}));
+
+    // The host's flat node list: blocks, their editable texts and a footer given as a rect.
+    window.lab.nodes = () => {
+      const doc = frame.contentDocument;
+      const block = (id) => doc.querySelector(`[data-block="${id}"]`);
+      const text = (id) => doc.querySelector(`[data-text="${id}"]`);
+      const footer = doc.querySelector('.footer').getBoundingClientRect();
+      const win = frame.contentWindow;
+      return [
+        {id: 'hero', kind: 'block', element: block('hero'), label: 'Обложка'},
+        {id: 'hero-title', kind: 'text', element: text('hero-title'), parent: 'hero', editable: true, label: 'Заголовок'},
+        {id: 'text', kind: 'block', element: block('text'), label: 'Текст'},
+        {id: 'text-body', kind: 'text', element: text('text-body'), parent: 'text', editable: true},
+        {id: 'image', kind: 'block', element: block('image'), label: 'Картинка'},
+        {id: 'button', kind: 'block', element: block('button'), label: 'Кнопка'},
+        {id: 'button-label', kind: 'text', element: text('button-label'), parent: 'button', editable: true, label: 'Надпись'},
+        {id: 'footer', kind: 'footer', rect: {x: footer.left + win.scrollX, y: footer.top + win.scrollY, width: footer.width, height: footer.height}, label: 'Подвал'},
+      ];
+    };
+    // Scrolls a node into the visible part of the frame and of the host scroller.
+    window.lab.reveal = (id) => {
+      const node = window.lab.nodes().find((entry) => entry.id === id);
+      if (node.element) node.element.scrollIntoView({block: 'center', inline: 'nearest'});
+    };
+    window.lab.reload = async (title) => {
+      const done = loaded();
+      frame.srcdoc = letterHtml(title);
+      await done;
+      document.getElementById('overlay').setNodes(window.lab.nodes());
+    };
+
+    // Where a node is expected on the host page, computed without the overlay:
+    // the iframe's border box, its own border and padding, the scale the lab
+    // applied, and the node's box inside the frame.
+    window.lab.measure = (id) => {
+      const overlay = document.getElementById('overlay');
+      const node = window.lab.nodes().find((entry) => entry.id === id);
+      const win = frame.contentWindow;
+      const inner = node.element ? node.element.getBoundingClientRect() : {left: node.rect.x - win.scrollX, top: node.rect.y - win.scrollY, width: node.rect.width, height: node.rect.height};
+      const outer = frame.getBoundingClientRect();
+      const s = window.lab.scale;
+      const style = getComputedStyle(frame);
+      const startX = parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
+      const startY = parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop);
+      const expected = {left: outer.left + startX * s + inner.left * s, top: outer.top + startY * s + inner.top * s, width: inner.width * s, height: inner.height * s};
+      const box = (element) => {
+        if (!element || element.hidden) return null;
+        const r = element.getBoundingClientRect();
+        return {left: r.left, top: r.top, width: r.width, height: r.height, bottom: r.bottom, right: r.right};
+      };
+      return {
+        expected,
+        selected: overlay.selectedId === id ? box(overlay.querySelector('.sf-composition-overlay-frame--selected')) : null,
+        hover: box(overlay.querySelector('.sf-composition-overlay-frame--hover')),
+        hoverLabel: overlay.querySelector('.sf-composition-overlay-frame--hover').textContent,
+        toolbar: box(overlay.querySelector('.sf-composition-overlay-toolbar')),
+        clip: overlay.view?.clip ?? null,
+      };
+    };
+
+    const core = document.createElement('script');
+    core.src = `${assets}/core/js/core.js`;
+    core.onload = async () => {
+      // sf-composition-overlay is a Smart component; the loader fetches it on demand.
+      await customElements.whenDefined('sf-composition-overlay');
+      const overlay = document.getElementById('overlay');
+      const first = loaded();
+      frame.srcdoc = letterHtml('Летняя распродажа');
+      await first;
+      overlay.setNodes(window.lab.nodes());
+      overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'move-down', label: 'Ниже'}, {id: 'remove', label: 'Удалить'}]);
+      window.lab.initialLetter = frame.contentDocument.body.innerHTML;
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      document.documentElement.dataset.ready = 'true';
+    };
+    document.body.append(core);
+  </script>
+</body>
+</html>
