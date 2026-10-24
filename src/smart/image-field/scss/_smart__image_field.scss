@@ -1,0 +1,240 @@
+@layer sf.components {
+/* sf-image-field: one image in a form, on one row -- the thumbnail, the file
+   name and size, then «Заменить…» and «Убрать» -- with the label above and the
+   help or error text below, as every Framework field has them.
+
+   Every measure comes from the size ladder of the field's own size, so a size 1
+   image field stands in a form of size 1 inputs without a stray pixel:
+   - the row's inset is the field's vertical padding (the tightness of its
+     control row, less the border), on all four sides, so the thumbnail sits
+     square in its frame;
+   - the thumbnail is the control height one rung up (a size 1 field, whose
+     control row is 40px, holds a 48px picture: the audit asked for 48-64);
+   - the glyph in an empty thumbnail is the field's icon, its text height;
+   - the name is the field's text, the size line one rung smaller, the label
+     and the help text the rungs sf-textarea uses for them. */
+.sf-image-field {
+  container: sf-image-field / inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+  --sf-image-field--border-color: var(--sf-outline);
+  --sf-image-field--background-color: var(--sf-surface-0);
+  --sf-image-field--border-style: solid;
+}
+
+.sf-image-field--size-1\/2 {
+  --sf-image-field--inset: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  --sf-image-field--thumb: var(--sf-ui-1--control-height);
+  --sf-image-field--icon: var(--sf-text-height-1\/2);
+  --sf-image-field--name-size: var(--sf-text-size-1\/2);
+  --sf-image-field--name-height: var(--sf-text-height-1\/2);
+  --sf-image-field--small-size: var(--sf-text-size-1\/3);
+  --sf-image-field--small-height: var(--sf-text-height-1\/3);
+}
+
+.sf-image-field--size-1 {
+  --sf-image-field--inset: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  --sf-image-field--thumb: var(--sf-ui-2--control-height);
+  --sf-image-field--icon: var(--sf-text-height-1);
+  --sf-image-field--name-size: var(--sf-text-size-1);
+  --sf-image-field--name-height: var(--sf-text-height-1);
+  --sf-image-field--small-size: var(--sf-text-size-1\/2);
+  --sf-image-field--small-height: var(--sf-text-height-1\/2);
+}
+
+.sf-image-field--size-2 {
+  --sf-image-field--inset: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+  --sf-image-field--thumb: var(--sf-ui-3--control-height);
+  --sf-image-field--icon: var(--sf-text-height-2);
+  --sf-image-field--name-size: var(--sf-text-size-2);
+  --sf-image-field--name-height: var(--sf-text-height-2);
+  --sf-image-field--small-size: var(--sf-text-size-1);
+  --sf-image-field--small-height: var(--sf-text-height-1);
+}
+
+.sf-image-field-label {
+  display: flex;
+  gap: var(--sf-space-1\/4);
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-image-field--small-size);
+  line-height: var(--sf-image-field--small-height);
+}
+
+.sf-image-field-required {
+  color: var(--sf-error);
+}
+
+/* The row. A grid, so that on a narrow column the buttons move under the name
+   and keep its start edge instead of wrapping to the thumbnail's. */
+.sf-image-field-well {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "thumb body actions";
+  align-items: center;
+  column-gap: var(--sf-image-field--inset);
+  row-gap: var(--sf-space-1\/4);
+  padding: var(--sf-image-field--inset);
+  border: var(--sf-px) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
+  border-radius: var(--sf-radius--ui);
+  background-color: var(--sf-image-field--background-color);
+  color: var(--sf-on-surface);
+  transition-duration: var(--sf-duration-fast);
+  transition-property: background-color, border-color;
+  transition-timing-function: var(--sf-animation);
+}
+
+/* An empty field is a place to put something: its edge is dashed, as a drop
+   target's is, until it holds an image. */
+.sf-image-field--empty {
+  --sf-image-field--border-style: dashed;
+}
+
+.sf-image-field-thumb {
+  grid-area: thumb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-image-field--thumb);
+  block-size: var(--sf-image-field--thumb);
+  overflow: hidden;
+  border-radius: var(--sf-radius--ui);
+  background-color: var(--sf-surface-container);
+  /* The glyph stands on the container fill, so the dimmed role is the
+     container's own: on-surface-variant alone falls under 4.5:1 there. */
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-image-field-thumb .sf-icon {
+  color: var(--sf-icon--color);
+  font-size: var(--sf-image-field--icon);
+  inline-size: var(--sf-image-field--icon);
+  block-size: var(--sf-image-field--icon);
+}
+
+/* Fitted, never stretched or cropped. */
+.sf-image-field-image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.sf-image-field-body {
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  font-family: var(--sf-text--family);
+}
+
+.sf-image-field-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sf-on-surface);
+  font-size: var(--sf-image-field--name-size);
+  line-height: var(--sf-image-field--name-height);
+}
+
+.sf-image-field-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-image-field--small-size);
+  line-height: var(--sf-image-field--small-height);
+}
+
+.sf-image-field--empty .sf-image-field-name {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-image-field-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+/* A file held over the field: the fill and edge of a selection, and the name
+   line says to let go. */
+.sf-image-field.dragover {
+  --sf-image-field--background-color: var(--sf-primary-transparent-select);
+  --sf-image-field--border-color: var(--sf-outline-primary);
+  --sf-image-field--border-style: solid;
+}
+
+.sf-image-field.error {
+  --sf-image-field--border-color: var(--sf-error);
+}
+
+.sf-image-field.disabled {
+  --sf-image-field--background-color: var(--sf-disable);
+  --sf-image-field--border-color: var(--sf-outline-disable);
+}
+
+.sf-image-field.disabled .sf-image-field-name,
+.sf-image-field.disabled .sf-image-field-meta,
+.sf-image-field.disabled .sf-image-field-label {
+  color: var(--sf-on-disable);
+}
+
+.sf-image-field.disabled .sf-image-field-thumb {
+  --sf-icon--color: var(--sf-on-disable);
+}
+
+.sf-image-field-message {
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-image-field--small-size);
+  line-height: var(--sf-image-field--small-height);
+}
+
+.sf-image-field.error .sf-image-field-message[data-field-message="error"] {
+  color: var(--sf-error);
+}
+
+/* The platform's file input opens the dialog and carries the file to a form.
+   It is out of sight and out of the tab order -- the buttons are the controls
+   -- but not display: none, so a required, empty field can still be pointed
+   at by the browser's own validation message. */
+.sf-image-field-input,
+.sf-image-field-live {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sf-image-field-input {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A column narrower than the row: the buttons go under the name, at its start.
+   24rem is where a thumbnail, a name of eight characters and the two buttons
+   of a size 1 field stop fitting on one line. */
+@container sf-image-field (inline-size < 24rem) {
+  .sf-image-field-well {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "thumb body" "thumb actions";
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-image-field-well {
+    border-color: CanvasText;
+  }
+
+  .sf-image-field.dragover .sf-image-field-well {
+    border-color: Highlight;
+  }
+}
+}

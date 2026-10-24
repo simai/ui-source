@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.image-field",
+  "title": "image field reference",
+  "summary": "Deterministic reference fixture for sf-image-field.",
+  "locale": "ru",
+  "props": {
+    "label": "Логотип",
+    "name": "logo",
+    "hint": "PNG или SVG, до 1 МБ"
+  },
+  "children": [],
+  "state": "default"
+}

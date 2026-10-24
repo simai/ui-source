@@ -201,6 +201,9 @@
     "font-weight/default",
     "position/default"
   ],
+  "cl-image-field": [
+    "position/default"
+  ],
   "cl-inputs": [
     "align-items/default",
     "display/default",
