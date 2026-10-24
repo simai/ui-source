@@ -415,13 +415,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "15aaf785fefedb169bfb755a78f64818206197f17d9f4e8228f962cbc74f1159",
+      "manifest_sha256": "525bc6a795dc88163a961d9bbf091bd1507f33843ef96e0db5e1ba861370aea3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML.",
+      "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML. A framed mode draws the same chrome over a same-origin iframe fed a flat node list, with plain-string inline editing.",
       "tags": [
         "composition",
         "editor",

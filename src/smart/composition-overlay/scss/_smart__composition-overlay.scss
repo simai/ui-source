@@ -176,4 +176,20 @@
         pointer-events: auto;
         touch-action: none;
     }
+
+    // Framed canvas: the frames follow the frame's scroll without lag, and the
+    // label is not a move handle (nodes are not dragged over a frame).
+    .sf-composition-overlay[data-sf-overlay-mode="frame"] .sf-composition-overlay-frame {
+        transition: none;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-mode="frame"] .sf-composition-overlay-frame--selected .sf-composition-overlay-label {
+        cursor: default;
+        pointer-events: none;
+    }
+
+    // While a node's text is edited in the frame, the hover frame stands back.
+    .sf-composition-overlay[data-sf-overlay-editing] .sf-composition-overlay-frame--hover {
+        display: none;
+    }
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Browser acceptance for sf-composition-overlay: pure overlay, frames,
 // toolbar, insertion points, keyboard, accessibility, stacking, scroll,
-// remount, themes, widths and reduced motion.
+// remount, themes, widths and reduced motion; and the framed canvas (a
+// same-origin iframe fed a flat node list, simai/ui-source#22).
 // Usage: PLAYWRIGHT_MODULE=… node composition-overlay.browser.mjs <lab> <distr> <smart-root> <source> <output-dir>
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -195,8 +196,216 @@ const keyboardRemoval = await page.evaluate(async () => {
 });
 check(keyboardRemoval.focusedBefore && keyboardRemoval.focusOnTree && JSON.stringify(keyboardRemoval.events) === '["shell"]', 'keyboard focus moves from the removed toolbar to the tree with the fallback node selected', keyboardRemoval);
 
+// Framed canvas (simai/ui-source#22): the overlay over a same-origin iframe fed a
+// flat node list, as ui-mail's letter is. Positions are compared with the node's
+// box computed by the lab without the overlay, within 1px.
+const frameLab = new URL('composition-overlay-frame-lab.html', labUrl).href;
+await page.emulateMedia({ reducedMotion: 'no-preference' });
+await page.setViewportSize({ width: 1280, height: 800 });
+await page.goto(`${frameLab}?${new URLSearchParams({ assets: assetsUrl, smart: smartUrl, source: sourceUrl })}`);
+await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
+const settle = () => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+const measure = (id) => page.evaluate((id) => window.lab.measure(id), id);
+const near = (box, expected) => Boolean(box) && ['left', 'top', 'width', 'height'].every((key) => Math.abs(box[key] - expected[key]) <= 1);
+// The middle of the part of the node that is visible on the host page.
+const centre = ({ expected, clip }) => {
+  const left = Math.max(expected.left, clip.left); const right = Math.min(expected.left + expected.width, clip.right);
+  const top = Math.max(expected.top, clip.top); const bottom = Math.min(expected.top + expected.height, clip.bottom);
+  return [(left + right) / 2, (top + bottom) / 2];
+};
+const reveal = async (id) => { await page.evaluate((id) => window.lab.reveal(id), id); await settle(); return measure(id); };
+const selectedId = () => page.evaluate(() => document.getElementById('overlay').selectedId);
+const lastEvent = async (type) => (await events()).filter((entry) => entry.type === type).at(-1) ?? null;
+const framed = {};
+
+check(await page.evaluate(() => document.getElementById('overlay').getAttribute('data-sf-overlay-mode')) === 'frame', 'the frame attribute binds the overlay to the iframe', null);
+
+// Hover and click selection inside the frame: the innermost node under the pointer.
+let m = await reveal('image');
+await page.mouse.move(...centre(m));
+await settle();
+m = await measure('image');
+framed.hover = m;
+check(near(m.hover, m.expected) && m.hoverLabel === 'Картинка', 'hover frame covers the node under the pointer in the frame', m);
+m = await reveal('text-body');
+await page.mouse.click(...centre(m));
+await settle();
+m = await measure('text-body');
+check(near(m.selected, m.expected), 'selection frame matches the clicked node inside the frame', m);
+let event = await lastEvent('sf-composition-overlay-select');
+check(event?.detail.node_id === 'text-body', 'a click in the frame selects the innermost node', event);
+check(m.toolbar && (m.toolbar.bottom <= m.expected.top + 1 || m.toolbar.top >= m.expected.top + m.expected.height - 1), 'toolbar sits outside the selected node', m);
+// The frame now has focus: arrow keys there move through the node list.
+await page.keyboard.press('ArrowDown');
+check(await selectedId() === 'image', 'arrow keys in the frame move the selection in list order', await selectedId());
+
+// Scroll and resize sync: the frame's own scroll, the host scroller, the frame's
+// size, the window, a transform and CSS zoom.
+const syncCases = [
+  ['frame scroll', () => document.getElementById('letter').contentWindow.scrollTo(0, 250)],
+  ['host scroll', () => { document.getElementById('scroller').scrollTop = 120; }],
+  ['frame resize', () => Object.assign(document.getElementById('letter').style, { inlineSize: '520px', blockSize: '300px' })],
+  ['transform', () => { window.lab.scale = 0.8; Object.assign(document.getElementById('zoombox').style, { transform: 'scale(0.8)', transformOrigin: '0 0' }); }],
+  ['zoom', () => { window.lab.scale = 1.25; Object.assign(document.getElementById('zoombox').style, { transform: '', zoom: '1.25' }); }],
+];
+framed.sync = {};
+for (const [name, change] of syncCases) {
+  await page.evaluate(() => document.getElementById('overlay').select('button'));
+  await page.evaluate(change);
+  // A transform is seen by no observer: the host asks the overlay to measure again.
+  if (name === 'transform') await page.evaluate(() => document.getElementById('overlay').refresh());
+  await settle();
+  m = await measure('button');
+  framed.sync[name] = m;
+  check(near(m.selected, m.expected), `selection frame follows the node after ${name}`, m);
+}
+await page.setViewportSize({ width: 1100, height: 700 });
+await settle();
+m = await measure('button');
+check(near(m.selected, m.expected), 'selection frame follows the node after a window resize', m);
+await page.evaluate(() => { window.lab.scale = 1; document.getElementById('zoombox').style.zoom = ''; Object.assign(document.getElementById('letter').style, { inlineSize: '', blockSize: '' }); document.getElementById('scroller').scrollTop = 0; });
+await page.setViewportSize({ width: 1280, height: 800 });
+
+// A rect node (frame-document coordinates) is hit-tested and drawn too.
+await page.evaluate(() => document.getElementById('letter').contentWindow.scrollTo(0, 99999));
+await settle();
+m = await measure('footer');
+await page.mouse.click(...centre(m));
+await settle();
+m = await measure('footer');
+check(await selectedId() === 'footer' && near(m.selected, m.expected), 'a rect node is selected by pointer and drawn at its frame rect', m);
+
+// Clipping: what the host scroller hides is not drawn and takes no pointer.
+await page.evaluate(() => { window.scrollTo(0, 0); document.getElementById('letter').contentWindow.scrollTo(0, 0); document.getElementById('scroller').scrollTop = 0; document.getElementById('overlay').select('hero'); });
+await settle();
+// The host scroller hides the top 30px of the hero block.
+await page.evaluate(() => {
+  const scroller = document.getElementById('scroller');
+  const hero = window.lab.measure('hero').expected;
+  scroller.scrollTop = hero.top - (scroller.getBoundingClientRect().top + scroller.clientTop) + 30;
+});
+await settle();
+const clipped = await page.evaluate(() => {
+  const overlay = document.getElementById('overlay');
+  const mark = overlay.querySelector('.sf-composition-overlay-insert[data-parent=""][data-index="0"] .sf-composition-overlay-insert-mark');
+  const box = mark.getBoundingClientRect();
+  const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+  const toolbar = overlay.querySelector('.sf-composition-overlay-toolbar');
+  return { markTop: box.top, clip: overlay.view.clip, markTakesPointer: mark.contains(hit), toolbarTop: toolbar.hidden ? null : toolbar.getBoundingClientRect().top, clipPath: overlay.querySelector('.sf-composition-overlay-layer').style.clipPath };
+});
+framed.clipped = clipped;
+check(clipped.markTop < clipped.clip.top && !clipped.markTakesPointer, 'an insertion mark hidden by the host scroller takes no pointer', clipped);
+check(clipped.toolbarTop !== null && clipped.toolbarTop >= clipped.clip.top - 0.5, 'the toolbar stays inside the visible part of the frame', clipped);
+check(clipped.clipPath.startsWith('inset('), 'frames are clipped to the visible part of the frame', clipped);
+await page.evaluate(() => { document.getElementById('scroller').scrollTop = 0; });
+
+// Toolbar actions and insertion points carry intent only.
+await page.evaluate(() => document.getElementById('overlay').select('text'));
+await settle();
+const insertionCount = await page.locator('.sf-composition-overlay-insert').count();
+// Five top-level nodes give six places among them; text has a child, so one more at its end.
+check(insertionCount === 7, 'insertion points between the selected node\'s siblings and at the end of its children', insertionCount);
+await page.locator('.sf-composition-overlay-insert[data-parent=""][data-index="2"] .sf-composition-overlay-insert-mark').click();
+event = await lastEvent('sf-composition-overlay-insert');
+check(JSON.stringify(event?.detail) === JSON.stringify({ parent_id: '', slot: 'default', index: 2 }), 'insert event names the top-level list and the index', event);
+await page.locator('.sf-composition-overlay-action[data-action="remove"]').click();
+event = await lastEvent('sf-composition-overlay-action');
+check(event?.detail.action_id === 'remove' && event.detail.node_id === 'text', 'toolbar action reports intent for the selected node', event);
+check(await page.evaluate(() => document.getElementById('letter').contentDocument.body.innerHTML === window.lab.initialLetter), 'the letter is byte-identical after hover, selection, scroll, toolbar and insertion', null);
+
+// Keyboard selection through the tree follows the node list order.
+await page.locator('#before').focus();
+await page.keyboard.press('Tab');
+check(await page.evaluate(() => document.activeElement?.getAttribute('role') === 'tree'), 'Tab reaches the overlay tree before the frame', null);
+await page.keyboard.press('Home');
+const order = [await selectedId()];
+for (let step = 0; step < 7; step += 1) {
+  await page.keyboard.press('ArrowDown');
+  order.push(await selectedId());
+}
+framed.order = order;
+check(JSON.stringify(order) === JSON.stringify(['hero', 'hero-title', 'text', 'text-body', 'image', 'button', 'button-label', 'footer']), 'arrow keys move the selection in node list order', order);
+
+// Escape closes the innermost layer only: with another surface open it is not the overlay's.
+const layered = await page.evaluate(() => {
+  const other = document.body.appendChild(document.createElement('div'));
+  const key = Symbol.for('sf.openSurfaceLayers');
+  globalThis[key] = [...(globalThis[key] || []), other];
+  document.querySelector('.sf-composition-overlay-tree').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+  const kept = document.getElementById('overlay').selectedId;
+  globalThis[key] = globalThis[key].filter((layer) => layer !== other);
+  other.remove();
+  return kept;
+});
+check(layered === 'footer', 'Escape leaves the selection while another surface is the innermost layer', layered);
+
+// Plain-string inline editing in the frame: Enter starts, Enter commits, Escape cancels.
+await page.keyboard.press('Home');
+await page.keyboard.press('ArrowDown');
+await page.keyboard.press('Enter');
+const editing = await page.evaluate(() => {
+  const doc = document.getElementById('letter').contentDocument;
+  const title = doc.querySelector('[data-text="hero-title"]');
+  return { editable: title.getAttribute('contenteditable'), focused: doc.activeElement === title, mark: document.documentElement.dataset.sfPopoverOpen ?? null };
+});
+framed.editing = editing;
+check(editing.editable === 'plaintext-only' && editing.focused, 'Enter starts plain-text editing on the element inside the frame', editing);
+check(editing.mark === '1', 'an edit in progress is an open surface (innermost Escape)', editing);
+await page.keyboard.type('Осенняя распродажа');
+await page.keyboard.press('Enter');
+event = await lastEvent('sf-composition-overlay-edit');
+const committed = await page.evaluate(() => {
+  const title = document.getElementById('letter').contentDocument.querySelector('[data-text="hero-title"]');
+  return { editable: title.getAttribute('contenteditable'), text: title.textContent, tree: document.activeElement?.getAttribute('role') === 'tree', mark: document.documentElement.dataset.sfPopoverOpen ?? null };
+});
+check(JSON.stringify(event?.detail) === JSON.stringify({ node_id: 'hero-title', value: 'Осенняя распродажа', previous: 'Летняя распродажа' }), 'Enter commits and the edit event carries the new and previous string', event);
+check(committed.editable === null && committed.tree && committed.mark === null, 'after a commit the element is no longer editable and focus is back in the tree', committed);
+let editEvents = (await events()).filter((entry) => entry.type === 'sf-composition-overlay-edit').length;
+await page.keyboard.press('Enter');
+await page.keyboard.type('Черновик');
+await page.keyboard.press('Escape');
+const cancelled = await page.evaluate(() => ({ text: document.getElementById('letter').contentDocument.querySelector('[data-text="hero-title"]').textContent, selected: document.getElementById('overlay').selectedId }));
+check(cancelled.text === 'Осенняя распродажа' && cancelled.selected === 'hero-title', 'Escape cancels the edit, restores the text and keeps the selection', cancelled);
+check((await events()).filter((entry) => entry.type === 'sf-composition-overlay-edit').length === editEvents, 'a cancelled edit raises no edit event', null);
+await page.keyboard.press('Enter');
+await page.keyboard.type('Отказ');
+await page.keyboard.press('Enter');
+const refused = await page.evaluate(() => document.getElementById('letter').contentDocument.querySelector('[data-text="hero-title"]').textContent);
+check(refused === 'Осенняя распродажа', 'a host that prevents the edit event gets the previous text back', refused);
+await page.keyboard.press('Escape');
+check(await selectedId() === null, 'Escape in the tree clears the selection once nothing else is open', await selectedId());
+// Double-click edits; a link in the frame never navigates.
+const frameUrl = await page.evaluate(() => document.getElementById('letter').contentWindow.location.href);
+m = await reveal('button-label');
+await page.mouse.dblclick(...centre(m));
+const doubled = await page.evaluate(() => document.getElementById('letter').contentDocument.querySelector('[data-text="button-label"]').getAttribute('contenteditable'));
+await page.keyboard.press('Escape');
+check(doubled === 'plaintext-only', 'double-click starts editing an editable node', doubled);
+check(await page.evaluate(() => document.getElementById('letter').contentWindow.location.href) === frameUrl, 'a link in the frame does not navigate', null);
+await page.screenshot({ path: resolve(outputDir, 'overlay-frame.png') });
+
+// A new letter in the frame: the overlay listens to the new document.
+await page.evaluate(() => window.lab.reload('Новая тема'));
+m = await reveal('image');
+await page.mouse.click(...centre(m));
+await settle();
+m = await measure('image');
+check(await selectedId() === 'image' && near(m.selected, m.expected), 'after the frame reloads, selection works on the new document', m);
+
+// Disconnect cleans up: no more listening to the frame.
+const disposed = await page.evaluate(async () => {
+  const overlay = document.getElementById('overlay');
+  overlay.remove();
+  const before = window.lab.events.length;
+  const block = document.getElementById('letter').contentDocument.querySelector('[data-block="text"]');
+  block.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  return { state: overlay.getAttribute('data-sf-overlay'), events: window.lab.events.length - before };
+});
+check(disposed.state === 'disposed' && disposed.events === 0, 'a removed overlay stops listening to the frame', disposed);
+observations.framed = framed;
+
 await browser.close();
-const screenshots = Object.fromEntries(['overlay-wide-light.png', 'overlay-narrow-dark-rtl.png'].map((name) => [name, createHash('sha256').update(readFileSync(resolve(outputDir, name))).digest('hex')]));
+const screenshots = Object.fromEntries(['overlay-wide-light.png', 'overlay-narrow-dark-rtl.png', 'overlay-frame.png'].map((name) => [name, createHash('sha256').update(readFileSync(resolve(outputDir, name))).digest('hex')]));
 const result = { status: failures.length || errors.length ? 'failed' : 'passed', failures, errors, observations, screenshots };
 writeFileSync(resolve(outputDir, 'overlay-browser.json'), `${JSON.stringify(result, null, 2)}\n`);
 process.stdout.write(`${JSON.stringify({ status: result.status, failures, errors: errors.slice(0, 8) })}\n`);
