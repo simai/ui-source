@@ -223,6 +223,7 @@ export function renderDropdownTemplate(context) {
           placeholder=${context.inheritedLabel || context.placeholder}
           type="text"
           class="cursor-pointer"
+          aria-label=${context.accessibleName || nothing}
           .value=${context.triggerText || ""}
           readonly
           ?disabled=${context.disabled}
@@ -275,6 +276,7 @@ export function renderDropdownTemplate(context) {
                 <span class="sf-input-field items-cross-center transition flex">
                   <input
                     placeholder=${context.searchPlaceholder}
+                    aria-label=${context.searchPlaceholder || nothing}
                     type="text"
                     .value=${context.searchValue || ""}
                     ?disabled=${context.disabled}

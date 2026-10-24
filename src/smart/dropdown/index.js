@@ -231,6 +231,30 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
     return this.getAttribute('placeholder') || '';
   }
 
+  // The control a person reaches is the readonly input inside the trigger, and
+  // nothing named it (simai/ui-source#32, axe «label», critical, in ui-mail):
+  // the visible label is a sibling span, not the wrapping <label>, and a name
+  // given to the host -- aria-label, a <label for> or aria-labelledby pointing
+  // at it -- names the host, which is not the control. The name is taken in
+  // that order of precedence: the drawn label, then what the page said about
+  // the host.
+  accessibleName() {
+    if (this.getProp('label')) return this.getProp('label');
+    const own = this.getAttribute('aria-label');
+    if (own) return own;
+    const byIds = (this.getAttribute('aria-labelledby') || '')
+      .split(/\s+/u)
+      .filter(Boolean)
+      .map((id) => this.ownerDocument?.getElementById(id)?.textContent?.trim() || '')
+      .filter(Boolean)
+      .join(' ');
+    if (byIds) return byIds;
+    const labels = this.id && this.ownerDocument
+      ? [...this.ownerDocument.querySelectorAll('label[for]')].filter((label) => label.htmlFor === this.id)
+      : [];
+    return labels.map((label) => label.textContent.trim()).filter(Boolean).join(' ');
+  }
+
   get searchPlaceholder() {
     // The search field read «Placeholder» on every page; a native change it
     // fires when left is stopped in the template, so the dropdown's own change
@@ -368,6 +392,7 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
       triggerText: this.triggerText,
       searchValue: this._searchValue,
       searchPlaceholder: this.searchPlaceholder,
+      accessibleName: this.accessibleName(),
       selectedValues: this.selectedValues,
       selectedOptions: this.selectedOptions,
       options: this.visibleOptions,
