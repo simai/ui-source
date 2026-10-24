@@ -1,0 +1,514 @@
+{
+  "schema_version": 2,
+  "id": "smart.image-field",
+  "version": "1.0.0",
+  "title": "Image field",
+  "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "image",
+    "file",
+    "field",
+    "upload",
+    "form"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-image-field",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.buttons",
+      "smart.icons"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default"
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The image, in the file shape {value, label, mime, size, href}: value the host's id, label the file name (the thumbnail's alt), mime its type, size bytes or text the host formatted, href the address it is shown from. The attribute takes that shape as JSON, or a bare address; the property takes the object, or null for none. Set from code it fires nothing."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name the chosen file is submitted under, by the platform file input inside."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The field label above the image; it names the group. Without it the group is named «Изображение» / Image."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "Help text under the field; slot `hint` takes markup instead."
+      },
+      "accept": {
+        "type": "string",
+        "description": "What the file dialog offers and a drop accepts: `.ext`, `type/*` or `type/sub`, comma separated.",
+        "default": "image/*"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "Field size: 1/2, 1 or 2, as every form field.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "meta": {
+        "type": "string",
+        "default": "",
+        "description": "The line under the name; by default the image's dimensions once it loads and its size («450×300 · 2 КБ»)."
+      },
+      "empty-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the empty field; «Изображение не выбрано» / No image chosen by default."
+      },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The field must hold an image: the platform input is required while it is empty, so a form will not submit without one."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown and not changed: the buttons are disabled and a drop is refused."
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown without buttons; a drop is refused."
+      },
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state; the same as invalid."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state: the edge and the message take the error colour and the group carries aria-invalid."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The error shown in place of the hint while the field is invalid; slot `error` takes markup instead."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "value_shape": {
+      "const": "file_value_v1"
+    },
+    "value_owner": {
+      "const": "host"
+    },
+    "upload_owner": {
+      "const": "host"
+    },
+    "form_owner": {
+      "const": "native_file_input"
+    },
+    "field_states": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "filled",
+        "dragover",
+        "readonly",
+        "disabled",
+        "invalid"
+      ]
+    }
+  },
+  "methods": {
+    "setValue": {
+      "summary": "Set the image from code, in the file shape or as an address; null empties the field. Fires nothing, as a value set from code is not a change. Returns the element.",
+      "arguments": [
+        {
+          "name": "value",
+          "type": [
+            "object",
+            "string",
+            "null"
+          ],
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "clear": {
+      "summary": "Empty the field from code; the same as setValue(null). Returns the element.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
+      "arguments": [
+        {
+          "name": "message",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "choose": {
+      "summary": "Open the file dialog, as «Заменить…» and «Выбрать…» do. Returns false when the field is disabled or read-only.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "removeImage": {
+      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field:remove fire, focus goes to «Выбрать…». Returns whether there was an image to remove.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "takeFile": {
+      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field:select fire. A file the accept list does not name is rejected instead. Returns whether it was taken.",
+      "arguments": [
+        {
+          "name": "file",
+          "type": "object",
+          "required": true
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "change": {
+      "summary": "The image was chosen, dropped or removed: once per change the person made, a CustomEvent on the host carrying the value, the File and the form name. The platform input's own change does not leave the host.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The new value in the file shape; a chosen file carries `file` and an object URL in `href` until the host writes the stored value. null after a removal."
+          },
+          "file": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The File chosen, or null after a removal."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "input",
+              "drop",
+              "remove"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "canonical": true
+    },
+    "input": {
+      "summary": "Sent with every change, before it, with the same detail, as a native file input sends input and change together.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The new value in the file shape; a chosen file carries `file` and an object URL in `href` until the host writes the stored value. null after a removal."
+          },
+          "file": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The File chosen, or null after a removal."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "input",
+              "drop",
+              "remove"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-image-field:select": {
+      "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "input",
+              "drop"
+            ]
+          },
+          "value": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-image-field:remove": {
+      "summary": "The person removed the image; detail carries the value it held.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-image-field:reject": {
+      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array"
+          },
+          "accept": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "value": [
+        "empty",
+        "filled"
+      ],
+      "drag": [
+        "idle",
+        "dragover"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "active",
+      "disabled",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "uploading the file",
+      "choosing where the file is stored"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props",
+      "children",
+      "dropped files"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space"
+    ],
+    "focus": "A group named by the field label and described by the help or error text. «Заменить…», «Убрать» and «Выбрать…» are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the file name. The drop target takes no focus, so it is never a stop or a trap. After a removal focus goes to «Выбрать…». A choice, a removal and a refused file are announced in a polite status."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_artifacts": [
+      {
+        "path": "src/smart/image-field/index.js",
+        "sha256": "ad1a7ad19784795718427809e4d7558b3eb50696f6be7a537c4de32024eb03d6"
+      },
+      {
+        "path": "src/smart/image-field/value.mjs",
+        "sha256": "324074e539f4eccb3b5f1d9baf5e10a933ceb329d07335f9d0256eb54b39b0f6"
+      },
+      {
+        "path": "src/smart/image-field/js/templates/default.js",
+        "sha256": "d3cf5807ddadf3ab09a673f192400c1603911e6a97e7e93df5a9c167b3cfa9b0"
+      },
+      {
+        "path": "src/smart/image-field/scss/_smart__image_field.scss",
+        "sha256": "22fbefd07c41040ac611253548501a873f13dbf98dd3adccae5e472e293d2dcd"
+      },
+      {
+        "path": "src/smart/image-field/rule.js",
+        "sha256": "2e6c8fae618bfe538306bd8de8aa1515f1ff24f33fa7d42ac575693c3d807291"
+      },
+      {
+        "path": "src/smart/image-field/docs.md",
+        "sha256": "45d2cc79ebcea846d90f892e95c3664cb290367aa01d6e81752136f84b82512d"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-image-field for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not use it for several files or a transfer list: that is sf-file-upload",
+      "Do not expect it to upload: it raises the File and the host uploads it"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "methods",
+      "accessibility",
+      "ownership",
+      "provenance"
+    ],
+    "minimal_example": "<sf-image-field label=\"Логотип\" name=\"logo\" value='{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}'></sf-image-field>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}
