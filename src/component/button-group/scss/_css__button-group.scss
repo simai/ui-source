@@ -402,7 +402,12 @@
       border: var(--sf-px) solid CanvasText;
     }
 
-    .sf-button-group--segmented > .sf-button-group-segment.active {
+    /* As strong as the scheme plates above (three classes), or a plate's
+       `color: var(--sf-on-primary)` wins and puts the theme's ink on the
+       system Highlight: black on navy in a light forced palette
+       (simai/ui-source#33, axe color-contrast in ui-mail). `:is()` takes the
+       specificity of its strongest class, so one rule covers every scheme. */
+    .sf-button-group--segmented:is(.sf-button-group--primary, .sf-button-group--secondary, .sf-button-group--on-surface, .sf-button-group--plate-raised, .sf-button-group--segmented) > .sf-button-group-segment.active {
       forced-color-adjust: none;
       background-color: Highlight;
       color: HighlightText;
