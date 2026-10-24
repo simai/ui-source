@@ -2,9 +2,16 @@ import SfBaseElement from '../../core/js/smart-base';
 import { bindSwitch, setSwitchState, unbindSwitch } from '../../component/switch/js/_switch';
 import { renderSwitchTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
+import { pageText } from '../../core/js/page-language';
+import { InheritedValueField } from '../helpers/inherited-value';
+
+const SWITCH_TEXT = {
+  en: { on: 'on', off: 'off' },
+  ru: { on: 'включено', off: 'выключено' },
+};
 
 
-class SfSwitch extends SfBaseElement {
+class SfSwitch extends InheritedValueField(SfBaseElement) {
   static get props() {
     return {
       size: { default: '1' },
@@ -16,6 +23,11 @@ class SfSwitch extends SfBaseElement {
       name: { default: '' },
       value: { default: '' },
       ariaLabel: { attribute: 'aria-label', default: '' },
+      // Whether the switch is on while it holds no value of its own
+      // (simai/ui-source#28): `true`/`on` or `false`/`off`.
+      inheritedValue: { attribute: 'inherited-value', default: '' },
+      inheritedText: { attribute: 'inherited-text', default: '' },
+      resetLabel: { attribute: 'reset-label', default: '' },
     };
   }
 
@@ -54,11 +66,45 @@ class SfSwitch extends SfBaseElement {
   }
 
   set checked(nextValue) {
-    if (nextValue) {
-      this.setAttribute('checked', '');
-    } else {
-      this.removeAttribute('checked');
-    }
+    this._writeChecked(!!nextValue);
+  }
+
+  // With an inherited value, «off» is a value of its own and must be told from
+  // «nothing chosen»: it is kept as checked="false", and no `checked` at all
+  // means the inherited state applies. Without one, a switch is on or off and
+  // nothing else, as it always was.
+  _writeChecked(on) {
+    if (on) this.setAttribute('checked', '');
+    else if (this.hasInheritedValue) this.setAttribute('checked', 'false');
+    else this.removeAttribute('checked');
+  }
+
+  get inheritedOn() {
+    return this.toBoolean(this.inheritedValue, false);
+  }
+
+  // The inherited-value seam. The own value is whether `checked` is there at
+  // all; the native checkbox is the focus and carries the description.
+  inheritedOwnValue() {
+    if (!this.hasAttribute('checked')) return '';
+    return this.checked ? 'on' : 'off';
+  }
+
+  inheritedDisplayValue() {
+    return pageText(SWITCH_TEXT, this.inheritedOn ? 'on' : 'off', this);
+  }
+
+  inheritedFocusTarget() {
+    return this.getInputElement();
+  }
+
+  // Back to no value of its own: the knob goes where the inherited value puts
+  // it, and the host says change, as a flip does.
+  clearOwnValue() {
+    this.removeAttribute('checked');
+    const input = this.getInputElement();
+    if (input) input.checked = this.inheritedOn;
+    this.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   get disabled() {
@@ -93,8 +139,13 @@ class SfSwitch extends SfBaseElement {
   templateContext() {
     const props = this.getPropsContext();
 
+    const inherited = this.isInherited;
     return this.createTemplateContext({
       ...props,
+      // While the inherited state applies the knob shows it, and the form gets
+      // nothing: the checkbox is not named, so it submits no value.
+      checked: inherited ? this.inheritedOn : props.checked,
+      name: inherited ? '' : props.name,
       component: this,
     });
   }
@@ -117,13 +168,15 @@ class SfSwitch extends SfBaseElement {
       const input = this.getInputElement();
       if (input) {
         setSwitchState(input, {
-          checked: this.checked,
+          // While inherited, the knob is where the inherited value puts it.
+          checked: this.isInherited ? this.inheritedOn : this.checked,
           disabled: this.disabled,
         });
         input.addEventListener('change', this._handleChange);
         this._releaseReset = bindCheckableReset(this, input);
       }
     }
+    this.syncInheritedState();
   }
 
   onDisconnected() {
@@ -144,11 +197,10 @@ class SfSwitch extends SfBaseElement {
     const input = this.getInputElement();
     if (!input) return;
 
-    if (input.checked) {
-      this.setAttribute('checked', '');
-    } else {
-      this.removeAttribute('checked');
-    }
+    this._writeChecked(input.checked);
+    // The first flip of an inherited switch gives it a value of its own, and the
+    // form its name back.
+    if (this.hasInheritedValue && this.name && input.name !== this.name) input.name = this.name;
   };
 
   getInputElement() {
@@ -191,11 +243,7 @@ class SfSwitch extends SfBaseElement {
     setSwitchState(input, nextState);
 
     if (Object.prototype.hasOwnProperty.call(nextState, 'checked')) {
-      if (this.toBoolean(nextState.checked)) {
-        this.setAttribute('checked', '');
-      } else {
-        this.removeAttribute('checked');
-      }
+      this._writeChecked(this.toBoolean(nextState.checked));
     }
 
     if (Object.prototype.hasOwnProperty.call(nextState, 'disabled')) {

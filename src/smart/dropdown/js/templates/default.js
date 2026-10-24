@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { renderInheritedSlot } from "../../../helpers/inherited-value";
 import {
   renderListItemHeading,
   renderListItemOption,
@@ -219,13 +220,14 @@ export function renderDropdownTemplate(context) {
         ${hiddenInput}
         ${renderFieldVisual(context)}
         <input
-          placeholder=${context.placeholder}
+          placeholder=${context.inheritedLabel || context.placeholder}
           type="text"
           class="cursor-pointer"
           .value=${context.triggerText || ""}
           readonly
           ?disabled=${context.disabled}
         />
+        ${renderInheritedSlot(context.component, {size: context.size, disabled: context.disabled})}
         <button
           type="button"
           class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${iconButtonSize} absolute"

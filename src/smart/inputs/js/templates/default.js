@@ -1,5 +1,6 @@
 import { html, nothing } from 'lit';
 import { createFieldContract } from '../../../../component/field-contract';
+import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import './default.css'
 export function renderInputTemplate(context) {
   const {
@@ -38,6 +39,10 @@ export function renderInputTemplate(context) {
     ariaLabel,
   } = context;
   const maskLazyValue = maskLazy === '' ? '' : String(maskLazy);
+  // While the field holds nothing of its own, the inherited value is what the
+  // empty field shows, in the placeholder's ink -- never as its value.
+  const shownPlaceholder = context.inheritedValue || placeholder;
+  const inheritedSlot = renderInheritedSlot(context.component, {size, disabled: disabled || readonly});
   const inputValue = hasControlledValue ? value : defaultValue;
   const field = createFieldContract(context.component, {
     prefix: 'sf-input',
@@ -152,7 +157,7 @@ export function renderInputTemplate(context) {
                 minlength=${minlength === '' ? nothing : minlength}
                 maxlength=${maxlength === '' ? nothing : maxlength}
                 pattern=${pattern || nothing}
-                placeholder=${placeholder}
+                placeholder=${shownPlaceholder}
                 .value=${value}
                 .defaultValue=${defaultValue}
                 name=${name || ''}
@@ -179,7 +184,7 @@ export function renderInputTemplate(context) {
                 minlength=${minlength === '' ? nothing : minlength}
                 maxlength=${maxlength === '' ? nothing : maxlength}
                 pattern=${pattern || nothing}
-                placeholder=${placeholder}
+                placeholder=${shownPlaceholder}
                 .defaultValue=${inputValue}
                 .value=${value}
                 name=${name || ''}
@@ -197,6 +202,7 @@ export function renderInputTemplate(context) {
                 data-mask-options=${maskOptions || ''}
               />
             `}
+        ${inheritedSlot}
         ${rightContent}
       </span>
 

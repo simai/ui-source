@@ -4,6 +4,7 @@ import {
 } from '../../component/inputs/js/_inputs';
 import SfBaseElement from '../../core/js/smart-base';
 import { fieldSize } from '../../component/field-size';
+import { InheritedValueField } from '../helpers/inherited-value';
 import { renderInputTemplate } from './js/templates/default';
 
 const INPUT_TYPES = new Set(['text', 'email', 'password', 'search', 'tel', 'url']);
@@ -12,7 +13,7 @@ const INPUT_VARIANTS = new Set(['bordered', 'filled', 'hidden']);
 
 const boundedValue = (value, allowed, fallback) => allowed.has(value) ? value : fallback;
 
-class SfInput extends SfBaseElement {
+class SfInput extends InheritedValueField(SfBaseElement) {
   static get props() {
     return {
       size: { default: '1' },
@@ -49,6 +50,11 @@ class SfInput extends SfBaseElement {
       maskPlaceholderChar: { default: '' },
       maskOptions: { default: '' },
       ariaLabel: { attribute: 'aria-label', default: '' },
+      // What the field falls back to while it holds nothing (simai/ui-source#28):
+      // shown as inherited, with a reset back to it once a value is typed.
+      inheritedValue: { attribute: 'inherited-value', default: '' },
+      inheritedText: { attribute: 'inherited-text', default: '' },
+      resetLabel: { attribute: 'reset-label', default: '' },
     };
   }
 
@@ -216,6 +222,31 @@ class SfInput extends SfBaseElement {
     return this.getProp('ariaLabel') || '';
   }
 
+  // The inherited-value seam: the native input is the value, the focus and
+  // what carries the description.
+  inheritedFocusTarget() {
+    return this.getInputElement();
+  }
+
+  // A reset is a change the person made, so it is said the way typing is: input,
+  // then change, from the native input -- every listener on the host hears it
+  // as it hears an edit.
+  clearOwnValue() {
+    const input = this.getInputElement();
+    // A field without a `value` attribute keeps none: writing one would switch
+    // the template to its controlled input, a new element, and the focus the
+    // reset gives back would land on the one taken away.
+    if (this.hasAttribute('value')) {
+      this.value = '';
+    } else {
+      const mask = this.querySelector('.sf-input')?.__sfInputMask;
+      if (mask) mask.value = '';
+      else if (input) input.value = '';
+    }
+    input?.dispatchEvent(new Event('input', {bubbles: true}));
+    input?.dispatchEvent(new Event('change', {bubbles: true}));
+  }
+
   templateContext() {
     const props = this.getPropsContext();
     const hasControlledValue = this.hasAttribute('value');
@@ -233,6 +264,9 @@ class SfInput extends SfBaseElement {
       value: hasControlledValue ? props.value : (input ? input.value : this.defaultValue),
       defaultValue: this.defaultValue,
       hasControlledValue,
+      inheritedValue: this.inheritedValue,
+      inheritedText: this.inheritedText,
+      resetLabel: this.resetLabel,
       component: this,
     });
   }
@@ -264,6 +298,7 @@ class SfInput extends SfBaseElement {
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);
     }
+    this.syncInheritedState();
   }
 
   getInputElement() {

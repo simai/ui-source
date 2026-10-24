@@ -1,0 +1,124 @@
+@layer sf.components {
+  /* The inherited-value slot (simai/ui-source#28): the «inherited» marker while
+     the field holds nothing of its own, the reset button once it does. Each
+     control that opts in imports this sheet, so the rules are the same
+     everywhere the state is drawn.
+
+     Both sit one step down the ladder from the field and inside its box: the
+     slot's end inset is the space between the field's control height and the
+     button's, halved, less the field's hairline -- so the button stands with the
+     same gap above, below and after it. */
+  .sf-field-inherited-slot {
+    flex: none;
+    gap: var(--sf-space-1\/4);
+    min-inline-size: 0;
+  }
+
+  .sf-field-inherited-slot--size-1\/2 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-ui-1\/3--control-height)) / 2 - var(--sf-px));
+  }
+  .sf-field-inherited-slot--size-1 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px));
+  }
+  .sf-field-inherited-slot--size-2 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px));
+  }
+
+  /* The marker reads as a note about the value, not as the value: the
+     placeholder's ink, one text step down, and never broken across lines. */
+  .sf-field-inherited {
+    color: var(--sf-on-surface-variant);
+    white-space: nowrap;
+    padding-inline-end: var(--sf-field-inherited-slot--inset, 0px);
+  }
+  .sf-field-inherited--size-1\/3 {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-field-inherited--size-1\/2 {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-field-inherited--size-1 {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+
+  .sf-field-inherited-slot > .sf-field-reset {
+    flex: none;
+    margin-inline-end: var(--sf-field-inherited-slot--inset, 0px);
+  }
+
+  /* sf-input: the slot is the last thing in the field before any end text. It
+     takes the field's end padding back, so the button's gap after it is the
+     same as above and below; the marker keeps that padding as its own, so its
+     words end where the field's text would. */
+  .sf-input-field > .sf-field-inherited-slot {
+    align-self: center;
+    margin-inline-end: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
+  }
+  .sf-input-field > .sf-field-inherited-slot > .sf-field-inherited {
+    padding-inline-end: var(--sf-input-field--padding-inline-end, 0px);
+  }
+
+  /* sf-dropdown: the chevron is laid over the field's end, in room the text
+     keeps for it. With a slot it joins the row instead, after the slot, so
+     neither sits under the other at any width; the text stops at the slot. Its
+     glyph keeps the axis it had (the button's own padding is given back at the
+     end), and the slot and the chevron reach into the field's block padding,
+     so the field keeps its height. */
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > input {
+    --sf-dropdown-input--padding-inline-end: 0px;
+    min-inline-size: 0;
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button {
+    position: static;
+    flex: none;
+    margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+    margin-inline-end: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot {
+    margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-inherited {
+    padding-inline-end: var(--sf-space-1\/4);
+  }
+  /* Every icon button in a dropdown is given a tight padding of its own -- the
+     chevron's and the tags' -- which made the reset smaller than its step. It
+     takes its step's padding back. */
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
+    margin-inline-end: 0;
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
+    --sf-field-reset--padding: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
+    --sf-field-reset--padding: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
+    --sf-field-reset--padding: var(--sf-ui-1--space-y-tightness-default);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
+    --sf-icon-button--padding-top: var(--sf-field-reset--padding);
+    --sf-icon-button--padding-bottom: var(--sf-field-reset--padding);
+    --sf-icon-button--padding-inline-start: var(--sf-field-reset--padding);
+    --sf-icon-button--padding-inline-end: var(--sf-field-reset--padding);
+  }
+
+  /* sf-textarea and sf-switch: the slot is its own row or its own cell, so it
+     needs no inset into a box. */
+  .sf-textarea-inherited,
+  .sf-switch-inherited,
+  .sf-color-inherited-slot {
+    --sf-field-inherited-slot--inset: 0px;
+  }
+  .sf-textarea-inherited {
+    justify-content: flex-end;
+  }
+
+  /* A switch drawn in its inherited state says so by its ink: the knob stands
+     where the inherited value puts it, quieter than a value somebody chose. */
+  sf-switch[data-inherited] .sf-switch-toggler {
+    opacity: 0.64;
+  }
+}

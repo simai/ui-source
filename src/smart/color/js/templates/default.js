@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {renderInheritedSlot} from '../../../helpers/inherited-value';
 import './default.css';
 
 // The control is a swatch that opens the browser's own colour picker, with the
@@ -37,7 +38,11 @@ export function renderColorTemplate(context) {
             <span class="sf-color-text">
                 ${isSet
                         ? html`<code>${context.value}</code>`
-                        : html`<span class="sf-color-inherited">${context.inheritedText}</span>`}
+                        // With an inherited colour the shared slot says «inherited»
+                        // (simai/ui-source#28); without one the words stay here.
+                        : context.hasInheritedValue
+                                ? nothing
+                                : html`<span class="sf-color-inherited">${context.inheritedText}</span>`}
             </span>
 
             ${context.swatchList.length
@@ -58,7 +63,13 @@ export function renderColorTemplate(context) {
                         </span>`
                     : nothing}
 
-            ${context.clearable && isSet
+            ${context.hasInheritedValue
+                    // The marker while the inherited colour applies, the reset
+                    // once a colour is chosen: the same slot every field uses.
+                    ? renderInheritedSlot(context.component, {size, disabled, className: 'sf-color-inherited-slot'})
+                    : nothing}
+
+            ${context.clearable && isSet && !context.hasInheritedValue
                     ? html`
                         <sf-icon-button
                                 appearance="link"
