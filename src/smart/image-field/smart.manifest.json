@@ -115,6 +115,11 @@
         "default": "",
         "description": "The error shown in place of the hint while the field is invalid; slot `error` takes markup instead."
       },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "The group's accessible name when no label is drawn inside the field: a form that prints the label beside it (the Framework's field renderers) names the field without a second, visible label."
+      },
       "root-class": {
         "type": "string",
         "default": ""
@@ -465,7 +470,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/image-field/index.js",
-        "sha256": "ad1a7ad19784795718427809e4d7558b3eb50696f6be7a537c4de32024eb03d6"
+        "sha256": "edde1fb9b0271a7adb1032da4cd82306ffa0908f713780613c4a027d5e4d845a"
       },
       {
         "path": "src/smart/image-field/value.mjs",
@@ -485,7 +490,7 @@
       },
       {
         "path": "src/smart/image-field/docs.md",
-        "sha256": "06f5d944c7626c3ef37a683b9f6bc06d3617756c617d203821bf643d052a9ca8"
+        "sha256": "3a1cb4064e56747199a000d1155e5dc98979ac53ead25128bf95d69b20e9e646"
       }
     ],
     "generated_runtime": []

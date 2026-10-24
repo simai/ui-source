@@ -90,6 +90,11 @@ class SfImageField extends SfBaseElement {
       error: {type: Boolean, default: false},
       invalid: {type: Boolean, default: false},
       errorMessage: {attribute: 'error-message', default: ''},
+      // The group's name when no label is drawn: a field renderer's panel
+      // prints the label beside the field, and a second, visible one inside it
+      // would say it twice (the rule tests/field-control-accessible-name holds
+      // for sf-input, sf-switch and the rest).
+      ariaLabel: {attribute: 'aria-label', default: ''},
       rootClass: {default: ''},
     };
   }
@@ -100,6 +105,15 @@ class SfImageField extends SfBaseElement {
     // undefined: follow the attribute. Set by the property, a chosen file or a
     // removal; an attribute written later takes over again.
     this._value = undefined;
+    // A value set as a property before the element was defined -- a lit
+    // `.value` binding on a tag the loader had not upgraded yet, which is how
+    // the field renderers draw it -- is an own property that would hide the
+    // accessor for good and skip the normalising. It is taken through it.
+    if (Object.prototype.hasOwnProperty.call(this, 'value')) {
+      const early = this.value;
+      delete this.value;
+      this._value = normaliseImageValue(early);
+    }
     this._objectUrl = '';
     this._dimensions = new Map();
     this._failed = new Set();
@@ -129,6 +143,7 @@ class SfImageField extends SfBaseElement {
   get error() { return this.getBooleanAttr('error', false); }
   get invalid() { return this.getBooleanAttr('invalid', false); }
   get errorMessage() { return this.getAttribute('error-message') || ''; }
+  get ariaLabel() { return this.getProp('ariaLabel') || ''; }
 
   // The image the field holds, in the file shape, or null when it is empty.
   get value() {
@@ -445,7 +460,7 @@ class SfImageField extends SfBaseElement {
       messageKind: field.invalid && errorContent ? 'error' : 'hint',
       words,
       names: {
-        group: this.label || words.group,
+        group: this.label || this.ariaLabel || words.group,
         choose: words.chooseName,
         replace: fileName ? `${words.replaceName} ${this.quote(fileName)}` : words.replaceName,
         remove: fileName ? `${words.removeName} ${this.quote(fileName)}` : words.removeName,

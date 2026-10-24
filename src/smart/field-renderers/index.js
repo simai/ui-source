@@ -1653,7 +1653,60 @@ function storedFiles(value) {
     return value && typeof value === 'object' ? [value] : [];
 }
 
+// One image, edited in place (simai/ui-source#27). A `file` field whose
+// variant is `image` and which holds one file -- a logo, a cover, the picture
+// of a block -- is what sf-image-field is for: the thumbnail with the name and
+// size, «Заменить…», «Убрать», and a file dropped on it replaces the image. The
+// preview-and-zone pair below stays for everything else: a field the host
+// declares `multiple`, a list that already holds several, the card and list
+// variants, and a file that is not an image. Which fields are images is the
+// host's to say through the variant, as in the view and the cell.
+//
+// sf-image-field transfers no bytes either. Its change carries the value in the
+// file shape -- a chosen file with the File in `file` and an object URL in
+// `href`, null after «Убрать» -- and that goes through setFieldValue as every
+// other control's value does, so the record the host holds is what the person
+// sees. A host that uploads (startFieldUpload) is handed the File as well, in
+// an item carrying it in `.file` as the file control's selection does, and
+// writes the stored value with its lasting address when the file lands. A
+// value that came as a list of one goes back as a list, so a host reads back
+// the shape it sent.
+//
+// The value is bound as a property, never as the attribute: the attribute is
+// JSON, which a File does not survive, and a changed attribute releases the
+// object URL the thumbnail is showing. The panel prints the label, so the field
+// takes it as its accessible name only.
+function isSingleImageField(field, value) {
+    return String(field.variant ?? '') === 'image' && field.multiple !== true && storedFiles(value).length <= 1;
+}
+
+function renderImageEdit(field, value, host) {
+    const stored = storedFiles(value)[0] ?? null;
+    const asList = Array.isArray(value);
+    return html`
+        <sf-image-field
+                size=${EDIT_SIZE}
+                name=${fieldName(field)}
+                accept=${field.accept ? String(field.accept) : nothing}
+                hint=${field.uploadSupportingText || nothing}
+                .value=${stored}
+                aria-label=${field.label || field.key || ''}
+                ?required=${Boolean(field.required)}
+                ?disabled=${field.readonly === true}
+                @change=${(event) => {
+                    const next = event.detail?.value ?? null;
+                    host.setFieldValue(field, asList ? (next ? [next] : []) : next);
+                    const file = event.detail?.file;
+                    if (file && host.startFieldUpload) {
+                        host.startFieldUpload(field, [{name: file.name, state: 'process', progress: 0, file}]);
+                    }
+                }}
+        ></sf-image-field>
+    `;
+}
+
 function renderFileEdit(field, value, host) {
+    if (isSingleImageField(field, value)) return renderImageEdit(field, value, host);
     const files = storedFiles(value);
     const multiple = field.multiple === true || Array.isArray(value);
     const canUpload = Boolean(host.startFieldUpload && host.getFieldUploads);

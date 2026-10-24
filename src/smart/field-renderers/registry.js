@@ -73,7 +73,9 @@ export const PROPERTY_TYPES = Object.freeze([
             {id: 'image-card', label: {ru: 'Изображение карточкой', en: 'Image card'}},
             {id: 'image-list', label: {ru: 'Изображения списком', en: 'Image list'}},
         ],
-        params: ['accept', 'multiple', 'formats', 'uploadText', 'uploadSupportingText', 'uploadHint', 'readonly']},
+        // required: read by the image variant alone, whose control is
+        // sf-image-field -- a required, empty one keeps its form from submitting.
+        params: ['accept', 'multiple', 'formats', 'uploadText', 'uploadSupportingText', 'uploadHint', 'required', 'readonly']},
     {type: 'color', label: {ru: 'Цвет', en: 'Colour'},
         variants: [],
         params: ['swatches', 'required', 'readonly']},
