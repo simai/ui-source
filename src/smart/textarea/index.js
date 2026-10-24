@@ -5,6 +5,7 @@ import {
 } from '../../component/textarea/js/_textarea';
 import SfBaseElement from '../../core/js/smart-base';
 import { fieldSize } from '../../component/field-size';
+import { InheritedValueField } from '../helpers/inherited-value';
 import { renderTextareaTemplate } from './js/templates/default';
 
 const TEXTAREA_VARIANTS = new Set(['bordered', 'filled', 'flush']);
@@ -16,7 +17,7 @@ function boundedValue(value, allowed, fallback) {
   return allowed.has(normalized) ? normalized : fallback;
 }
 
-class SfTextarea extends SfBaseElement {
+class SfTextarea extends InheritedValueField(SfBaseElement) {
   static get props() {
     return {
       size: { default: '1' },
@@ -50,6 +51,10 @@ class SfTextarea extends SfBaseElement {
       autoGrow: { type: Boolean, default: false },
       minRows: { type: Number, default: 1 },
       maxRows: { type: Number, default: null },
+      // What the field falls back to while it holds nothing (simai/ui-source#28).
+      inheritedValue: { attribute: 'inherited-value', default: '' },
+      inheritedText: { attribute: 'inherited-text', default: '' },
+      resetLabel: { attribute: 'reset-label', default: '' },
     };
   }
 
@@ -188,6 +193,20 @@ class SfTextarea extends SfBaseElement {
     return this.getAttribute('mask-options') || '';
   }
 
+  // The inherited-value seam: the native textarea is the value, the focus and
+  // what carries the description.
+  inheritedFocusTarget() {
+    return this.querySelector('.sf-textarea textarea');
+  }
+
+  // A reset is said the way typing is: input, then change, from the textarea.
+  clearOwnValue() {
+    this.value = '';
+    const textarea = this.inheritedFocusTarget();
+    textarea?.dispatchEvent(new Event('input', {bubbles: true}));
+    textarea?.dispatchEvent(new Event('change', {bubbles: true}));
+  }
+
   templateContext() {
     const props = this.getPropsContext();
     const textarea = this.querySelector('textarea');
@@ -202,6 +221,10 @@ class SfTextarea extends SfBaseElement {
       autoGrow: this.autoGrow,
       minRows: this.minRows,
       maxRows: this.maxRows,
+      inheritedValue: this.inheritedValue,
+      inheritedText: this.inheritedText,
+      resetLabel: this.resetLabel,
+      component: this,
     });
   }
 
@@ -222,6 +245,7 @@ class SfTextarea extends SfBaseElement {
     if (this._boundRoot) {
       bindTextarea(this._boundRoot);
     }
+    this.syncInheritedState();
   }
 
   template() {

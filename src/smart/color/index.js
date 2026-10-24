@@ -1,5 +1,6 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {pageText} from '../../core/js/page-language';
+import {INHERITED_TEXT, InheritedValueField} from '../helpers/inherited-value';
 import {renderColorTemplate} from './js/templates/default';
 
 // A colour, for anywhere a colour is set: a theme, a site's own look, a label, a
@@ -28,7 +29,7 @@ const normalise = (value) => {
     return HEX.test(hash) ? hash.toLowerCase() : "";
 };
 
-class SfColor extends SfBaseElement {
+class SfColor extends InheritedValueField(SfBaseElement) {
     static get props() {
         return {
             templateName: {attribute: "template", default: "default"},
@@ -44,6 +45,7 @@ class SfColor extends SfBaseElement {
             chooseLabel: {attribute: "choose-label", default: ""},
             clearLabel: {attribute: "clear-label", default: ""},
             inheritedText: {attribute: "inherited-text", default: ""},
+            resetLabel: {attribute: "reset-label", default: ""},
         };
     }
 
@@ -94,6 +96,32 @@ class SfColor extends SfBaseElement {
 
     get inheritedText() {
         return this.getAttribute("inherited-text") || pageText(COLOR_TEXT, "inherited", this);
+    }
+
+    // The reset back to the inherited colour is the shared one (simai/ui-source#28):
+    // `reset-label` names it, and `clear-label`, its first name, still does.
+    get resetLabel() {
+        return this.getAttribute("reset-label") || this.getAttribute("clear-label")
+            || pageText(INHERITED_TEXT, "reset", this);
+    }
+
+    // The inherited-value seam: the colour is the value, the platform picker's
+    // input takes focus and carries the description.
+    inheritedOwnValue() {
+        return this.value;
+    }
+
+    inheritedFocusTarget() {
+        return this.querySelector(".sf-color-input");
+    }
+
+    // clear() says it as input and change, the way a swatch does.
+    clearOwnValue() {
+        this.clear();
+    }
+
+    afterRender() {
+        this.syncInheritedState();
     }
 
     get chooseLabel() {
@@ -203,6 +231,7 @@ class SfColor extends SfBaseElement {
             isSet: this.isSet,
             inheritedValue: this.inheritedValue,
             inheritedText: this.inheritedText,
+            hasInheritedValue: this.hasInheritedValue,
             chooseLabel: this.chooseLabel,
             clearLabel: this.clearLabel,
             customText: this.customText,

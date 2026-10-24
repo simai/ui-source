@@ -1,5 +1,6 @@
 import { html, nothing } from 'lit';
 import { createFieldContract } from '../../../../component/field-contract';
+import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
 export function renderTextareaTemplate(context) {
   const {
@@ -86,7 +87,7 @@ export function renderTextareaTemplate(context) {
       <textarea
         id=${field.controlId}
         class=${`transition${field.invalid ? ' error' : ''}`}
-        placeholder=${placeholder}
+        placeholder=${context.inheritedValue || placeholder}
         autocomplete=${autocomplete || nothing}
         inputmode=${inputmode || nothing}
         minlength=${minlength ?? nothing}
@@ -110,6 +111,12 @@ export function renderTextareaTemplate(context) {
         data-min-rows=${autoGrow ? minRows : nothing}
         data-max-rows=${autoGrow && maxRows ? maxRows : nothing}
       ></textarea>
+
+      ${renderInheritedSlot(context.component, {
+        size,
+        disabled: disabled || readonly,
+        className: 'sf-textarea-inherited',
+      })}
 
       ${messageContent
         ? html`<span

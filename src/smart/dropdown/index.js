@@ -6,6 +6,7 @@ import { createDropdownInteraction } from '../../component/dropdown/interaction'
 import { bindFormReset } from '../../component/form-reset-helper';
 import { openDropdownPortal, closeDropdownPortal } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
+import { InheritedValueField } from '../helpers/inherited-value';
 
 const DROPDOWN_TEXT = { en: { search: 'Search' }, ru: { search: 'Поиск' } };
 
@@ -107,7 +108,7 @@ function getOptionLabel(option = {}) {
   return option.text || option.avatarTitle || option.value || '';
 }
 
-class SfDropdown extends SfBaseElement {
+class SfDropdown extends InheritedValueField(SfBaseElement) {
   constructor() {
     super();
     this._options = [];
@@ -146,6 +147,11 @@ class SfDropdown extends SfBaseElement {
       columns: { default: '6' },
       disabled: { type: Boolean, default: false },
       ariaLabel: { default: '' },
+      // The option value the field falls back to while nothing is chosen
+      // (simai/ui-source#28): its label is shown as inherited, in select mode.
+      inheritedValue: { attribute: 'inherited-value', default: '' },
+      inheritedText: { attribute: 'inherited-text', default: '' },
+      resetLabel: { attribute: 'reset-label', default: '' },
     };
   }
 
@@ -365,7 +371,40 @@ class SfDropdown extends SfBaseElement {
       selectedValues: this.selectedValues,
       selectedOptions: this.selectedOptions,
       options: this.visibleOptions,
+      inheritedValue: this.inheritedValue,
+      inheritedLabel: this.hasInheritedValue ? this.inheritedDisplayValue() : '',
     });
+  }
+
+  // The inherited-value seam. The value is the selection; what the inherited
+  // value reads as is its options' labels, as a chosen value reads -- a machine
+  // value in the field would be a value nobody can recognise.
+  inheritedOwnValue() {
+    return this.hiddenValue;
+  }
+
+  inheritedDisplayValue() {
+    const options = this.options;
+    return splitValues(this.inheritedValue)
+      .map((value) => {
+        const option = options.find((item) => String(item.value) === value);
+        return option ? getOptionLabel(option) : value;
+      })
+      .join(', ');
+  }
+
+  // The trigger is what a keyboard reaches and what names the field.
+  inheritedFocusTarget() {
+    return this.querySelector('.sf-dropdown-field > button');
+  }
+
+  // A reset is a change the person made: said as change, once, like removing
+  // the last tag.
+  clearOwnValue() {
+    this._selectedValues = [];
+    this.setAttributeValue('value', '');
+    this.dispatchDropdownChange(null, []);
+    this.requestComponentUpdate('reset-to-inherited');
   }
 
   template() {
@@ -405,6 +444,7 @@ class SfDropdown extends SfBaseElement {
       });
     }
     this._interaction?.refresh();
+    this.syncInheritedState();
     const resetControl = this.querySelector('.sf-dropdown-hidden-input') ||
       this.querySelector('.sf-dropdown-field > button');
     if (this._resetControl !== resetControl) {

@@ -49,7 +49,10 @@ function fixture(){
     requestComponentUpdate(){}
     dispatchEvent(e){this.events.push(e);}
   }
-  const runtime=vm.createContext({fieldSize,SfBaseElement:Element,HTMLElement:Element,toBoolean:v=>v===''||v==='true',CustomEvent:class{constructor(type,options){this.type=type;Object.assign(this,options);}}});
+  const runtime=vm.createContext({fieldSize,SfBaseElement:Element,
+    // The inherited-value mixin is out of these tests' scope: it adds a state,
+    // not a selection rule (simai/ui-source#28 has its own contract).
+    InheritedValueField:(Base)=>Base,HTMLElement:Element,toBoolean:v=>v===''||v==='true',CustomEvent:class{constructor(type,options){this.type=type;Object.assign(this,options);}}});
   vm.runInContext(smart.slice(smart.indexOf('function normalizeSize')),runtime);
   const e=vm.runInContext('new SfDropdown()',runtime);
   e._options=[{value:'kazan',text:'Казань'},{value:'moscow',text:'Москва'}];

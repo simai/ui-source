@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, name, value, ariaLabel } = context;
@@ -64,6 +65,7 @@ export function renderSwitchTemplate(context) {
             </span>
           `
         : ''}
+      ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;
 }

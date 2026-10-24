@@ -127,6 +127,48 @@ normal DOM position. Base Dropdown watches both portal and data-portal and binds
 projected-list pointer handlers only while they are needed. Each selection still
 emits one change event, including after repeated mode switches.
 
+## Inherited value
+
+`inherited-value` is the option value (values joined by commas when several may
+be chosen) the field falls back to while nothing is chosen. The field shows the
+options' labels as its placeholder, in the placeholder's ink, with a
+«наследуется» marker before the chevron -- never as a choice -- and the form
+value stays empty. Once something is chosen, the marker gives way to a reset
+button in the same place; the chevron keeps its axis. Select mode; a tag-mode
+field does not draw it.
+
+```html
+<sf-dropdown name="font" label="Font" inherited-value="inter">
+  <sf-list-item value="inter" text="Inter"></sf-list-item>
+  <sf-list-item value="georgia" text="Georgia"></sf-list-item>
+</sf-dropdown>
+```
+
+The reset is a native button named by `reset-label` («Сбросить к наследуемому»,
+"Reset to inherited"); the marker's words are `inherited-text` («наследуется»,
+"inherited"). Both follow the page's language when unset. Pressing the reset
+fires `sf-field:reset` on the host -- bubbling, composed and **cancellable** --
+before anything changes:
+
+```js
+field.addEventListener('sf-field:reset', (event) => {
+  const {value, inheritedValue, name} = event.detail; // value: the own value being dropped
+  if (!confirm(`Return ${name} to ${inheritedValue}?`)) event.preventDefault();
+});
+```
+
+Not prevented, the field empties, says so with its ordinary `change` (detail `value: ''`, `values: []`), shows the
+inherited value again and takes focus back on the control. `element.resetToInherited()`
+does the same from code and returns whether it reset. While inherited, the
+control carries the value as `aria-description` («Наследуется: …»); the visible
+marker is hidden from assistive technology so it is not read twice.
+
+The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
+sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets
+the same way whichever control it is. The marker and the reset are one step
+down the size ladder and sit inside the field's box with the same gap above,
+below and after them.
+
 ## The change event
 
 A selection emits `change` on the host — bubbling and composed, the name to

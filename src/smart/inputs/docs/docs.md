@@ -28,6 +28,7 @@ Main attributes:
 - `pattern`
 - `hint`
 - `value`
+- `inherited-value`, `inherited-text`, `reset-label` — see «Inherited value»
 - `default-value`
 - `name`
 - `icon-start`
@@ -70,6 +71,48 @@ name lands on the native input, which is what assistive technology reads, and
 the label is not printed twice. On the host alone it named nothing, because the
 host is not the control. With a visible label present `aria-label` is ignored,
 so the name cannot say one thing while the page says another.
+
+## Inherited value
+
+`inherited-value` is what the field falls back to while it holds nothing of its
+own -- a default that comes from a parent setting, a brand or a theme. The
+empty field shows it as its placeholder, in the placeholder's ink, with a small
+«наследуется» marker at its end, and the form value stays empty: «not set» and
+«set to the same text» look different, and only the first follows the parent
+when the parent changes. Once a value is typed the marker gives way to a reset
+button in the same place.
+
+```html
+<sf-input name="unsubscribe" label="Unsubscribe link" inherited-value="https://brand.example/unsubscribe"></sf-input>
+```
+
+A number is sf-input with `inputmode="numeric"` or `"decimal"`, and takes it
+the same way.
+
+The reset is a native button named by `reset-label` («Сбросить к наследуемому»,
+"Reset to inherited"); the marker's words are `inherited-text` («наследуется»,
+"inherited"). Both follow the page's language when unset. Pressing the reset
+fires `sf-field:reset` on the host -- bubbling, composed and **cancellable** --
+before anything changes:
+
+```js
+field.addEventListener('sf-field:reset', (event) => {
+  const {value, inheritedValue, name} = event.detail; // value: the own value being dropped
+  if (!confirm(`Return ${name} to ${inheritedValue}?`)) event.preventDefault();
+});
+```
+
+Not prevented, the field empties, says so with its ordinary `input` and `change` (from the native input, as typing does), shows the
+inherited value again and takes focus back on the control. `element.resetToInherited()`
+does the same from code and returns whether it reset. While inherited, the
+control carries the value as `aria-description` («Наследуется: …»); the visible
+marker is hidden from assistive technology so it is not read twice.
+
+The state is shared by sf-input, sf-textarea, sf-dropdown, sf-color and
+sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets
+the same way whichever control it is. The marker and the reset are one step
+down the size ladder and sit inside the field's box with the same gap above,
+below and after them.
 
 ## Native input contract
 

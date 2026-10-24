@@ -3,6 +3,8 @@ SF.RuleLoader['cl-dropdown'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
+  // Its own sheet: the slot of an inherited value (simai/ui-source#28).
+  css: true,
   relation: [
     { name: 'dropdown' },
     { name: 'inputs' },
