@@ -134,3 +134,36 @@ test('image field: the loader knows it and asks for what it draws with', () => {
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/image-field\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['smart.buttons', 'smart.icons']);
 });
+
+// The public variables (2026-10-24): ten, each read with the value the field
+// drew before it existed as its fallback, so a page that sets none sees no
+// change. The states write the internal names, so a drag-over, an error and a
+// disabled field keep their own colours over a customised resting one.
+test('image field: the public variables wrap the values it drew before', () => {
+  const contract = JSON.parse(read('src/core/contracts/public-variables.v1.json'));
+  const entry = contract.components.find((one) => one.component === 'image-field');
+  assert.equal(entry.selector, '.sf-image-field');
+  assert.equal(entry.variables.length, 10);
+  for (const variable of entry.variables) assert.equal(variable.since, '2026-10-24', variable.name);
+  for (const line of [
+    '--sf-image-field--border-color: var(--sf-image-field-border-color, var(--sf-outline));',
+    '--sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-surface-0));',
+    'column-gap: var(--sf-image-field-gap, var(--sf-image-field--inset));',
+    'padding-block: var(--sf-image-field-padding-block, var(--sf-image-field--inset));',
+    'padding-inline: var(--sf-image-field-padding-inline, var(--sf-image-field--inset));',
+    'border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);',
+    'border-radius: var(--sf-image-field-radius, var(--sf-radius--ui));',
+    'inline-size: var(--sf-image-field-thumbnail-size, var(--sf-image-field--thumb));',
+    'block-size: var(--sf-image-field-thumbnail-size, var(--sf-image-field--thumb));',
+    'border-radius: var(--sf-image-field-thumbnail-radius, var(--sf-radius--ui));',
+    'background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));',
+  ]) assert.ok(sheet.includes(line), line);
+  // The states set the internal names only.
+  for (const state of ['.sf-image-field.dragover {', '.sf-image-field.error {', '.sf-image-field.disabled {']) {
+    const block = sheet.slice(sheet.indexOf(state)).split('}')[0];
+    assert.doesNotMatch(block, /--sf-image-field-[a-z]/u, state);
+  }
+  // The docs list every one of them.
+  const docs = read('src/smart/image-field/docs.md');
+  for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
+});

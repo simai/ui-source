@@ -1137,6 +1137,94 @@
           ]
         }
       ]
+    },
+    {
+      "component": "image-field",
+      "selector": ".sf-image-field",
+      "variables": [
+        {
+          "name": "--sf-image-field-background-color",
+          "role": "background",
+          "summary": "The well's fill at rest; drag-over and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-24"
+        },
+        {
+          "name": "--sf-image-field-border-color",
+          "role": "border-color",
+          "summary": "The well's border at rest, dashed while the field is empty; drag-over, error and disabled keep their own.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-24"
+        },
+        {
+          "name": "--sf-image-field-border-width",
+          "role": "border-width",
+          "summary": "The well's border width on every side.",
+          "default": "var(--sf-px)",
+          "since": "2026-10-24"
+        },
+        {
+          "name": "--sf-image-field-radius",
+          "role": "radius",
+          "summary": "The well's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-24"
+        },
+        {
+          "name": "--sf-image-field-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space inside the well before and after the thumbnail and the buttons.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-24",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-image-field-padding-block",
+          "role": "padding-block",
+          "summary": "Space inside the well above and below the thumbnail.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-24",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-image-field-gap",
+          "role": "gap",
+          "summary": "Space between the thumbnail, the name and the buttons; the rows of a narrow field keep their own.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-24",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-image-field-thumbnail-size",
+          "role": "size",
+          "summary": "The thumbnail's width and height: the control height one rung above the field's size.",
+          "default": "var(--sf-ui-2--control-height)",
+          "since": "2026-10-24",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-image-field-thumbnail-radius",
+          "role": "radius",
+          "summary": "The thumbnail's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-24"
+        },
+        {
+          "name": "--sf-image-field-thumbnail-background-color",
+          "role": "background",
+          "summary": "The thumbnail's fill behind a fitted image or the glyph of an empty one; the glyph keeps its colour, so a fill set here must keep it legible.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-24"
+        }
+      ]
     }
   ]
 }

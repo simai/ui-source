@@ -477,7 +477,7 @@
       },
       {
         "path": "src/smart/image-field/scss/_smart__image_field.scss",
-        "sha256": "22fbefd07c41040ac611253548501a873f13dbf98dd3adccae5e472e293d2dcd"
+        "sha256": "1410f21416c9bc8d4b307d3299d55311730bb8586260e20876fe706b05a04366"
       },
       {
         "path": "src/smart/image-field/rule.js",
@@ -485,7 +485,7 @@
       },
       {
         "path": "src/smart/image-field/docs.md",
-        "sha256": "45d2cc79ebcea846d90f892e95c3664cb290367aa01d6e81752136f84b82512d"
+        "sha256": "06f5d944c7626c3ef37a683b9f6bc06d3617756c617d203821bf643d052a9ca8"
       }
     ],
     "generated_runtime": []

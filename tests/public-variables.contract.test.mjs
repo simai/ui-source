@@ -14,10 +14,12 @@ const FOLDERS = {
   switch: 'switch', textarea: 'textarea', toast: 'toast', modal: 'modal',
   tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
   'button-group': 'button-group',
+  // A Smart component that carries its own sheet: the path from src/.
+  'image-field': 'smart/image-field',
 };
 
 const scss = async (folder) => {
-  const dir = `src/component/${folder}/scss`;
+  const dir = folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
   const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => name.endsWith('.scss'));
   return (await Promise.all(names.map((name) => read(`${dir}/${name}`)))).join('\n');
 };
@@ -26,8 +28,9 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
   .map((entry) => (entry.isDirectory() ? walk(`${dir}/${entry.name}`) : /\.(s?css|js|mjs)$/u.test(entry.name) ? [`${dir}/${entry.name}`] : []))))
   .flat();
 
-// The pilot of four (2026-10-13), the twelve after it (2026-10-18) and the
-// segmented button group (2026-10-19).
+// The pilot of four (2026-10-13), the twelve after it (2026-10-18), the
+// segmented button group (2026-10-19) and the image field (2026-10-24), the
+// first whose sheet is its Smart element's own.
 test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
   assert.ok(isSchema(contract, 'simai.framework.public-variables', 1), 'either form of the format name');
   assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());

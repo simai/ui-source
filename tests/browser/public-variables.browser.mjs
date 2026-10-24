@@ -47,6 +47,11 @@ const DRAW = {
   // segment that is not selected, so the count's own colour has a part to reach.
   'button-group': {css: ['button-group', 'buttons'], js: 'button-group',
     html: `<sf-button-group appearance="segmented" aria-label="Тема" value="all" items='[{"value":"all","label":"Все","count":24},{"value":"dark","label":"Тёмные","count":7}]'></sf-button-group>`},
+  // A Smart element with a sheet of its own: a css entry with a slash is a
+  // path in the output. Empty, so the glyph's thumbnail is drawn without an
+  // image to wait for.
+  'image-field': {css: ['buttons', 'smart/smart/image-field/css/image-field.css'], js: 'image-field',
+    html: '<sf-image-field label="Логотип" size="1"></sf-image-field>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -81,7 +86,7 @@ try {
     page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) note({component: entry.component, said: `page error: ${error.message}`}); });
     await page.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><style>*,*::before,*::after{transition:none!important;animation:none!important}</style></head><body style="margin:20px"><div id="stage">${draw.html}</div></body></html>`);
     for (const folder of ['core', ...draw.css]) {
-      const path = folder === 'core' ? 'core/core/css/core.css' : `component/component/${folder}/css/${folder}.css`;
+      const path = folder === 'core' ? 'core/core/css/core.css' : folder.includes('/') ? folder : `component/component/${folder}/css/${folder}.css`;
       await page.addStyleTag({path: join(out, path)}).catch(() => note({component: entry.component, said: `no sheet ${path}`}));
     }
     for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js', 'smart/smart/icon-buttons/js/icon-buttons.js', `smart/smart/${draw.js}/js/${draw.js}.js`]) {

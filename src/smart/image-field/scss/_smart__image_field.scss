@@ -3,6 +3,16 @@
    name and size, then «Заменить…» and «Убрать» -- with the label above and the
    help or error text below, as every Framework field has them.
 
+   A page restyles it through its public variables
+   (src/core/contracts/public-variables.v1.json): the well's fill, border
+   colour and width, radius, insets and the gap between its parts, and the
+   thumbnail's size, radius and fill. Each is read here with the value the
+   field draws without it as its fallback, so a page that sets none sees
+   exactly what it saw before they existed. The double-dash names below are
+   the field's own wiring -- the sizes and the states write them -- and stay
+   internal: a public colour is the resting one, and drag-over, error and
+   disabled keep their own, as sf-input's and sf-textarea's do.
+
    Every measure comes from the size ladder of the field's own size, so a size 1
    image field stands in a form of size 1 inputs without a stray pixel:
    - the row's inset is the field's vertical padding (the tightness of its
@@ -20,8 +30,8 @@
   flex-direction: column;
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
-  --sf-image-field--border-color: var(--sf-outline);
-  --sf-image-field--background-color: var(--sf-surface-0);
+  --sf-image-field--border-color: var(--sf-image-field-border-color, var(--sf-outline));
+  --sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-surface-0));
   --sf-image-field--border-style: solid;
 }
 
@@ -75,11 +85,14 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "thumb body actions";
   align-items: center;
-  column-gap: var(--sf-image-field--inset);
+  /* The gap between the thumbnail, the name and the buttons is the inset by
+     default, so the thumbnail stands as far from the name as from the edge. */
+  column-gap: var(--sf-image-field-gap, var(--sf-image-field--inset));
   row-gap: var(--sf-space-1\/4);
-  padding: var(--sf-image-field--inset);
-  border: var(--sf-px) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
-  border-radius: var(--sf-radius--ui);
+  padding-block: var(--sf-image-field-padding-block, var(--sf-image-field--inset));
+  padding-inline: var(--sf-image-field-padding-inline, var(--sf-image-field--inset));
+  border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
+  border-radius: var(--sf-image-field-radius, var(--sf-radius--ui));
   background-color: var(--sf-image-field--background-color);
   color: var(--sf-on-surface);
   transition-duration: var(--sf-duration-fast);
@@ -98,11 +111,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: var(--sf-image-field--thumb);
-  block-size: var(--sf-image-field--thumb);
+  inline-size: var(--sf-image-field-thumbnail-size, var(--sf-image-field--thumb));
+  block-size: var(--sf-image-field-thumbnail-size, var(--sf-image-field--thumb));
   overflow: hidden;
-  border-radius: var(--sf-radius--ui);
-  background-color: var(--sf-surface-container);
+  border-radius: var(--sf-image-field-thumbnail-radius, var(--sf-radius--ui));
+  background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
   /* The glyph stands on the container fill, so the dimmed role is the
      container's own: on-surface-variant alone falls under 4.5:1 there. */
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
