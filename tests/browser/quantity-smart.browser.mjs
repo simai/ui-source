@@ -230,7 +230,7 @@ try {
   const box = await plus.boundingBox();
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
-  await page.waitForTimeout(650);
+  await page.waitForTimeout(550);
   await page.mouse.up();
   await page.waitForTimeout(100);
   const held = await state('count');
@@ -238,8 +238,11 @@ try {
   const holdInputs = holdEvents.filter((event) => event.type === 'input').length;
   const holdChanges = holdEvents.filter((event) => event.type === 'change');
   if (held.value < 7 || holdInputs !== held.value - 5 || holdChanges.length !== 1 || holdChanges[0].value !== held.value) note({case: 'a held stepper repeats, one change at the end', got: {held: held.value, holdInputs, holdChanges}});
+  // From further down, held well past the time the bound takes to reach.
+  await page.evaluate(() => document.getElementById('count').setValue(2));
+  await page.waitForTimeout(80);
   await page.mouse.down();
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(1500);
   await page.mouse.up();
   await page.waitForTimeout(100);
   const toMax = await state('count');
