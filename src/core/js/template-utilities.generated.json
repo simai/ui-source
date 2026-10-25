@@ -80,6 +80,10 @@
     "place-items/default",
     "position/default"
   ],
+  "cl-code-input": [
+    "position/default",
+    "sr-only/default"
+  ],
   "cl-color": [
     "display/default",
     "position/default"

@@ -12,11 +12,11 @@ test("whole composite manifests are generated into the searchable registry", () 
   assert.equal(registry.schema, "simai.smart-component-contract-registry.v2");
   // Rises with each component the Framework publishes; sf-popover made it 51, and
   // the four components now in package larena leaving the free source made it 47,
-  // and sf-page-header made it 48, and sf-resizer 49, and sf-profile-picker 50, and sf-empty-state 51, and sf-copy-button 52, and sf-help-mark 53, and sf-theme-generator 54, and sf-image-field 55, and sf-accordion 56.
+  // and sf-page-header made it 48, and sf-resizer 49, and sf-profile-picker 50, and sf-empty-state 51, and sf-copy-button 52, and sf-help-mark 53, and sf-theme-generator 54, and sf-image-field 55, and sf-accordion 56, and sf-code-input 57.
   // The number is pinned so an addition is an edit somebody made rather than a
   // count that drifted -- a component appearing in the registry by accident is
   // exactly what this would otherwise miss.
-  assert.equal(registry.entries.length, 56);
+  assert.equal(registry.entries.length, 57);
   for (const id of ["smart.sortable", "smart.composition-overlay", "smart.inline-editor"]) assert.ok(registry.entries.some((entry) => entry.id === id), id);
   // Larena's components are not part of the free registry (package larena).
   for (const id of ["smart.admin-menu", "smart.data-view", "smart.data-view-composite", "smart.property-view"]) {

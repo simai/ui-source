@@ -57,6 +57,12 @@ const DRAW = {
   // first section is open so its content has a colour to take.
   accordion: {css: ['accordion', 'icons', 'smart/smart/accordion/css/accordion.css'], js: 'accordion',
     html: ['default', 'outline', 'flush'].map((appearance) => `<sf-accordion appearance="${appearance}" items='[{"id":"a","title":"Раздел","content":"Текст","open":true},{"id":"b","title":"Ещё раздел","content":"Текст"}]'></sf-accordion>`).join('')},
+  // The class verification's sheet, drawn by sf-code-input bordered and
+  // filled: the fill varies with the appearance, the border is the bordered
+  // one's, and a character in the cells has a colour to take. Neither has
+  // focus, so the current cell is the only one drawn in its own colour.
+  verification: {css: ['verification', 'smart/smart/code-input/css/code-input.css'], js: 'code-input',
+    html: '<sf-code-input label="Код" value="12" size="1"></sf-code-input><sf-code-input label="Код" value="12" appearance="filled" size="1"></sf-code-input>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

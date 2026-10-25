@@ -1,0 +1,395 @@
+{
+  "schema_version": 2,
+  "id": "smart.code-input",
+  "version": "1.0.0",
+  "title": "Code Input",
+  "summary": "A one-time code -- from a message, an authenticator, an email -- as a form field with its own value, paste and errors, drawn as the class verification: one native input holds the code (autocomplete one-time-code, so autofill and WebOTP fill it whole) and the cells picture it. Typing fills the next cell, Backspace steps back and clears, a pasted code fills every cell, and each cell is announced by its place.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "code-input",
+    "one-time-code",
+    "otp",
+    "verification",
+    "form-field"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-code-input",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.verification"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default"
+      },
+      "length": {
+        "type": "string",
+        "default": "6",
+        "description": "How many characters the code has, 1 to 12; one cell each."
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The code. Written as an attribute it is controlled: the attribute follows what the person types. Kept to the mode and the length."
+      },
+      "default-value": {
+        "type": "string",
+        "default": "",
+        "description": "The code a form reset returns to; the field starts with it when there is no value."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name of the native input, which is the form value."
+      },
+      "mode": {
+        "type": "string",
+        "default": "numeric",
+        "description": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out; the native pattern asks for exactly length characters of the mode.",
+        "enum": [
+          "numeric",
+          "alphanumeric"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "A step of the form-field ladder, as sf-input's: the cells and their text.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "bordered",
+        "description": "bordered: cells divided by a border; filled: cells on a tonal fill, which become bordered while the code has focus.",
+        "enum": [
+          "bordered",
+          "filled"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The visible label; it names the group and the field."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "Text under the cells: how many characters, where the code comes from."
+      },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The form asks for a whole code."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false
+      },
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "Legacy name for invalid, still honoured."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The code was refused: cells and hint in the error colour, aria-invalid on the field. The host sets and clears it."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "Shown in place of the hint while invalid, and the field's aria-errormessage."
+      },
+      "mask": {
+        "type": "boolean",
+        "default": false,
+        "description": "Each character shows as a dot; the field is a password field, so a screen reader does not read the code out."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "The name of the group and the field when there is no visible label."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "contracts": {
+    "markup": {
+      "const": "component.verification"
+    },
+    "value_owner": {
+      "const": "native_input"
+    },
+    "form_owner": {
+      "const": "native_form"
+    },
+    "reset": {
+      "const": "native_form_reset"
+    },
+    "editing_target": {
+      "const": "single_native_input"
+    },
+    "field_states": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "partial",
+        "complete",
+        "focus-visible",
+        "readonly",
+        "disabled",
+        "invalid"
+      ]
+    }
+  },
+  "methods": {
+    "getInputElement": {
+      "summary": "Returns the inner native input, or null before render.",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "The HTMLInputElement."
+      }
+    },
+    "focus": {
+      "summary": "Focuses the native input.",
+      "arguments": [
+        {
+          "name": "options",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "null"
+      }
+    }
+  },
+  "events": {
+    "input": {
+      "summary": "The code changed while typing, pasting or by autofill; the native event bubbles from the inner input, which is its target, with the value already kept to the mode and the length. It carries no detail.",
+      "payload": {
+        "type": "null",
+        "description": "A native Event: there is no detail."
+      }
+    },
+    "change": {
+      "summary": "The code was committed: the field lost focus with a code other than the one it had when it took focus. Sent once from the inner input. It carries no detail.",
+      "payload": {
+        "type": "null",
+        "description": "A native Event: there is no detail."
+      },
+      "canonical": true
+    },
+    "sf-code-input:complete": {
+      "summary": "Every cell holds a character, after an edit the person made; once for each whole code, after its input event. The element never submits the form.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The whole code."
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "code": [
+        "empty",
+        "partial",
+        "complete"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "empty",
+      "active",
+      "success",
+      "disabled",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "checking the code",
+      "submitting the form"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "clipboard"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab",
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Home",
+      "End"
+    ],
+    "focus": "The group (role group) and the one native input are named by the label, or by aria-label without one. The input is described by a polite line that says the caret's cell -- «цифра 3 из 6», «digit 3 of 6», «символ» or «character» for an alphanumeric code -- in the page's language, said again each time the caret changes cell; then by the hint or the error message. Typing fills the caret's cell and moves on, Backspace clears the cell before the caret and steps back, the arrows, Home and End move between the cells, a click puts the caret in the cell clicked. The cells are aria-hidden; the characters run left to right in a right-to-left page too."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "25ddde9db1837b124906a3733495a4ece456954c",
+    "source_artifacts": [
+      {
+        "path": "src/smart/code-input/index.js",
+        "sha256": "3a83cafa5f309e4bb14417d6f2c938ee58897d03f2896fe6a8eb6189f0ba76e2"
+      },
+      {
+        "path": "src/smart/code-input/code.mjs",
+        "sha256": "05a7e8bdad7ffc3e1a1d27e74865c3ec97ca5f03a5cbddbec61f5a98ada8a5e6"
+      },
+      {
+        "path": "src/smart/code-input/js/templates/default.js",
+        "sha256": "3f6a7740e07c769fdef8451ba5c7d87ca1e52ee5278599e0944919eeff41a6eb"
+      },
+      {
+        "path": "src/smart/code-input/scss/_smart__code_input.scss",
+        "sha256": "5526523968fbcb05901c36e5b2f12bd02542f8bbcc984adf2b88de3f55cc8e2e"
+      },
+      {
+        "path": "src/smart/code-input/rule.js",
+        "sha256": "fb333cf2f8b24e602eb5b321fd20d110adc3b9724c0781cfeea4aa7f58edf209"
+      },
+      {
+        "path": "src/smart/code-input/docs.md",
+        "sha256": "15bb276034ef94058d5ba91636bd7e5b8a61fdc59e66e289be49a9640961d987"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-code-input for a one-time code a person types or pastes -- from a text message, an authenticator app, an email -- as a field of a native form.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not use it for a PIN or password the person chooses: that is sf-input with input-type password",
+      "Do not submit the form or check the code from the complete event alone: the host checks it",
+      "Do not restyle its cells: they are the class verification's, set its public variables"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "methods",
+      "accessibility",
+      "provenance"
+    ],
+    "minimal_example": "<sf-code-input label=\"Код из сообщения\" name=\"code\" hint=\"Мы отправили шесть цифр на +7 900 000-00-00\"></sf-code-input>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

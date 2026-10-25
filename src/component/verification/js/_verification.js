@@ -165,8 +165,16 @@ function bindLegacy(root, inputs) {
   };
 }
 
+// A field another owner draws and runs -- sf-code-input (src/smart/code-input)
+// writes its cells and sends its events itself -- carries this mark, and the
+// class runtime binds nothing to it, so two owners never write one code.
+function ownedElsewhere(root) {
+  return Boolean(root?.dataset?.sfVerificationOwner);
+}
+
 function bind(root) {
-  if (!root || states.has(root)) return states.get(root);
+  if (!root || ownedElsewhere(root)) return null;
+  if (states.has(root)) return states.get(root);
   const input = canonicalInput(root);
   const inputs = legacyInputs(root);
   const state = input ? bindCanonical(root, input) : (inputs.length ? bindLegacy(root, inputs) : null);
@@ -199,6 +207,7 @@ function setValue(target, value = '') {
   if (!root) return false;
   const state = bind(root);
   const input = canonicalInput(root);
+  if (input && !state) return false;
   if (input) {
     input.value = normalize(value, state.mode, state.length);
     renderCanonical(root, state);

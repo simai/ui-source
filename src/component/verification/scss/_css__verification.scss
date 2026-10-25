@@ -1,9 +1,13 @@
 @layer sf.components {
 .sf-verification {
-  --sf-verification--cell-size: var(--sf-title-height-6);
-  --sf-verification--gap: var(--sf-space-1\/3);
-  --sf-verification--radius: var(--sf-radius--ui);
-  --sf-verification--border-width: var(--sf-px);
+  /* The public variables (src/core/contracts/public-variables.v1.json) wrap
+     the values the code drew before them, so a page that sets none sees no
+     change. Hover, the current cell, focus, error and disabled write their
+     own. */
+  --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6));
+  --sf-verification--gap: var(--sf-verification-gap, var(--sf-space-1\/3));
+  --sf-verification--radius: var(--sf-verification-radius, var(--sf-radius--ui));
+  --sf-verification--border-width: var(--sf-verification-border-width, var(--sf-px));
   position: relative;
   display: inline-grid;
   color: var(--sf-on-surface);
@@ -24,10 +28,10 @@
   inline-size: var(--sf-verification--cell-size);
   block-size: var(--sf-verification--cell-size);
   box-sizing: border-box;
-  border: var(--sf-verification--border-width) solid var(--sf-outline);
+  border: var(--sf-verification--border-width) solid var(--sf-verification-border-color, var(--sf-outline));
   border-radius: var(--sf-verification--radius);
-  background: var(--sf-surface-0);
-  color: var(--sf-on-surface);
+  background: var(--sf-verification-background-color, var(--sf-surface-0));
+  color: var(--sf-verification-color, var(--sf-on-surface));
   font-family: var(--sf-text--family);
   font-size: var(--sf-verification--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-font-weight-regular);
@@ -60,7 +64,7 @@
 .sf-verification--filled .sf-verification-cell,
 .sf-verification-form--filled .sf-verification-form-wrap .sf-verification {
   border-color: transparent;
-  background: var(--sf-surface-container);
+  background: var(--sf-verification-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
 }
 
@@ -84,11 +88,11 @@
 }
 
 .sf-verification--size-1\/2,
-.sf-verification-form--size-1\/2 { --sf-verification--cell-size: var(--sf-title-height-4); --sf-verification--font-size: var(--sf-text-size-1\/2); --sf-verification--line-height: var(--sf-text-height-1\/2); }
+.sf-verification-form--size-1\/2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-4)); --sf-verification--font-size: var(--sf-text-size-1\/2); --sf-verification--line-height: var(--sf-text-height-1\/2); }
 .sf-verification--size-1,
-.sf-verification-form--size-1 { --sf-verification--cell-size: var(--sf-title-height-6); --sf-verification--font-size: var(--sf-text-size-1); --sf-verification--line-height: var(--sf-text-height-1); }
+.sf-verification-form--size-1 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6)); --sf-verification--font-size: var(--sf-text-size-1); --sf-verification--line-height: var(--sf-text-height-1); }
 .sf-verification--size-2,
-.sf-verification-form--size-2 { --sf-verification--cell-size: var(--sf-title-height-7); --sf-verification--font-size: var(--sf-text-size-2); --sf-verification--line-height: var(--sf-text-height-2); }
+.sf-verification-form--size-2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-7)); --sf-verification--font-size: var(--sf-text-size-2); --sf-verification--line-height: var(--sf-text-height-2); }
 
 @media (forced-colors: active) {
   .sf-verification-cell,

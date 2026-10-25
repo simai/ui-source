@@ -1299,6 +1299,67 @@
           "since": "2026-10-25"
         }
       ]
+    },
+    {
+      "component": "verification",
+      "selector": ".sf-verification",
+      "variables": [
+        {
+          "name": "--sf-verification-background-color",
+          "role": "background",
+          "summary": "A cell's fill at rest: the surface when bordered, the tonal fill when filled; a focused filled code, error and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-verification-border-color",
+          "role": "border-color",
+          "summary": "A cell's border at rest; hover, the current cell, error and disabled keep their own, and a filled code has none.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-verification-border-width",
+          "role": "border-width",
+          "summary": "The thickness of a cell's border.",
+          "default": "var(--sf-px)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-verification-radius",
+          "role": "radius",
+          "summary": "A cell's corner radius, and the focus ring's around the cells.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-verification-color",
+          "role": "color",
+          "summary": "The colour of the characters in the cells; error and disabled keep their own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-verification-cell-size",
+          "role": "size",
+          "summary": "A cell's width and height, the same at every size when set.",
+          "default": "var(--sf-title-height-6)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-verification-gap",
+          "role": "gap",
+          "summary": "Space between the cells.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-10-25"
+        }
+      ]
     }
   ]
 }

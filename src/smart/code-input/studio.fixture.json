@@ -1,0 +1,16 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.code-input",
+  "title": "Code Input reference",
+  "summary": "Deterministic reference fixture for sf-code-input.",
+  "locale": "ru",
+  "props": {
+    "label": "Код из сообщения",
+    "name": "code",
+    "value": "123",
+    "hint": "Мы отправили шесть цифр на ваш телефон."
+  },
+  "children": [],
+  "state": "default"
+}

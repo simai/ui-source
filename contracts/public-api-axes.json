@@ -62,6 +62,13 @@
       "state": "canonical_from_the_start"
     },
     {
+      "component": "code-input",
+      "axis": "appearance",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "the class verification's two looks by sf-input's names: bordered cells, or filled cells (sf-verification--filled)."
+    },
+    {
       "component": "accordion",
       "axis": "appearance",
       "legacy": [],
@@ -350,6 +357,7 @@
     "controls": [
       "button-group",
       "checkbox",
+      "code-input",
       "country-code",
       "datepicker",
       "dropdown",

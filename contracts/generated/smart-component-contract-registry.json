@@ -395,6 +395,46 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.verification"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-code-input",
+      "id": "smart.code-input",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/code-input/smart.manifest.json",
+      "manifest_sha256": "d9c6e451e61924dfdd21decdd7519acdf02c9852029a70e084c908aee6add3b0",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A one-time code -- from a message, an authenticator, an email -- as a form field with its own value, paste and errors, drawn as the class verification: one native input holds the code (autocomplete one-time-code, so autofill and WebOTP fill it whole) and the cells picture it. Typing fills the next cell, Backspace steps back and clears, a pasted code fills every cell, and each cell is announced by its place.",
+      "tags": [
+        "code-input",
+        "one-time-code",
+        "otp",
+        "verification",
+        "form-field"
+      ],
+      "title": "Code Input"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],

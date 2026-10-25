@@ -1,0 +1,10 @@
+// sf-code-input draws the class verification's markup, so the class sheet
+// (src/component/verification) draws it. This sheet holds only what the class
+// has no part for: the star after a required field's label, in the error
+// colour as every required field's is. Nothing the class draws is redrawn here.
+@layer sf.components {
+  .sf-verification-form .sf-code-input-required {
+    margin-inline-start: var(--sf-space-1\/3);
+    color: var(--sf-error);
+  }
+}
