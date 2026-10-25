@@ -1357,6 +1357,48 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.quantity",
+          "component.icons",
+          "component.icon-buttons"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-quantity",
+      "id": "smart.quantity",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/quantity/smart.manifest.json",
+      "manifest_sha256": "7ff88290dea1f315a0f47de614824827baac556eb28c929e0229be262fdd470c",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
+      "tags": [
+        "quantity",
+        "number",
+        "stepper",
+        "field",
+        "form"
+      ],
+      "title": "Quantity"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],

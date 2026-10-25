@@ -293,6 +293,15 @@
     "overflow/default",
     "position/default"
   ],
+  "cl-quantity": [
+    "display/default",
+    "filter-blur/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default",
+    "position/default"
+  ],
   "cl-radio": [
     "align-items/default",
     "display/default",

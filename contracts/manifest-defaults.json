@@ -284,6 +284,41 @@
       "component": "textarea",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "quantity",
+      "prop": "locale",
+      "reason": "Follows the page when not set: the document's lang, so the decimal mark is a comma on a Russian page."
+    },
+    {
+      "component": "quantity",
+      "prop": "precision",
+      "reason": "Taken from the step when not set: the digits after the point that step has (none for the default step 1)."
+    },
+    {
+      "component": "quantity",
+      "prop": "pageStep",
+      "reason": "Ten steps when not set, so it follows the step: 10 for the default step 1."
+    },
+    {
+      "component": "quantity",
+      "prop": "decrementLabel",
+      "reason": "The page language's text when not set: \"Decrease value\" on an English page, the dictionary's words on another."
+    },
+    {
+      "component": "quantity",
+      "prop": "incrementLabel",
+      "reason": "The page language's text when not set: \"Increase value\" on an English page, the dictionary's words on another."
+    },
+    {
+      "component": "quantity",
+      "prop": "inheritedText",
+      "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "quantity",
+      "prop": "resetLabel",
+      "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     }
   ],
   "pending": []

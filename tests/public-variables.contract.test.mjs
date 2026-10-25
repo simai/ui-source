@@ -16,6 +16,8 @@ const FOLDERS = {
   'button-group': 'button-group',
   // A Smart component that carries its own sheet: the path from src/.
   'image-field': 'smart/image-field',
+  // sf-quantity draws the class component's markup, so the class sheet reads them.
+  quantity: 'quantity',
 };
 
 const scss = async (folder) => {
@@ -29,8 +31,8 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
   .flat();
 
 // The pilot of four (2026-10-13), the twelve after it (2026-10-18), the
-// segmented button group (2026-10-19) and the image field (2026-10-24), the
-// first whose sheet is its Smart element's own.
+// segmented button group (2026-10-19), the image field (2026-10-24), the
+// first whose sheet is its Smart element's own, and the quantity (2026-10-25).
 test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
   assert.ok(isSchema(contract, 'simai.framework.public-variables', 1), 'either form of the format name');
   assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());

@@ -772,6 +772,7 @@ import '../../smart/page-header/rule.js';
 import '../../smart/progress-bar/rule.js';
 import '../../smart/profile-picker/rule.js';
 import '../../smart/progress-scale/rule.js';
+import '../../smart/quantity/rule.js';
 import '../../smart/radio/rule.js';
 import '../../smart/range-slider/rule.js';
 import '../../smart/reference-link/rule.js';

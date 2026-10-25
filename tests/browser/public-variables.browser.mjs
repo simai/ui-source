@@ -52,6 +52,10 @@ const DRAW = {
   // image to wait for.
   'image-field': {css: ['buttons', 'smart/smart/image-field/css/image-field.css'], js: 'image-field',
     html: '<sf-image-field label="Логотип" size="1"></sf-image-field>'},
+  // sf-quantity draws the class markup; the class sheet and the icon buttons
+  // its steppers are draw it.
+  quantity: {css: ['quantity', 'icon-buttons'], js: 'quantity',
+    html: '<sf-quantity label="Количество" value="3" min="0" max="10" size="1"></sf-quantity>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

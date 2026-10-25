@@ -349,6 +349,7 @@
       "file-upload",
       "image-field",
       "inputs",
+      "quantity",
       "radio",
       "range-slider",
       "switch",

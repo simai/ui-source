@@ -627,8 +627,18 @@ function unbindQuantity(root) {
   delete root.dataset[BOUND_FLAG];
 }
 
+// sf-quantity draws this markup and runs it itself (src/smart/quantity): a
+// root inside it is its owner's, and this binder would add a second set of
+// handlers to its steppers. The country code's binder leaves its owner alone
+// the same way.
+function isSmartOwned(root) {
+  return Boolean(root.closest?.('sf-quantity'));
+}
+
 function initExistingQuantities(target = document) {
-  target.querySelectorAll(QUANTITY_SELECTOR).forEach(bindQuantity);
+  target.querySelectorAll(QUANTITY_SELECTOR).forEach((root) => {
+    if (!isSmartOwned(root)) bindQuantity(root);
+  });
 }
 
 class Quantity extends ComponentObserver {
@@ -792,7 +802,7 @@ const quantityObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
       if (!(node instanceof Element)) return;
-      if (node.matches?.(QUANTITY_SELECTOR)) {
+      if (node.matches?.(QUANTITY_SELECTOR) && !isSmartOwned(node)) {
         bindQuantity(node);
       }
       initExistingQuantities(node);
