@@ -194,10 +194,19 @@ test('quantity: the public variables wrap the values the class sheet drew before
     '--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));',
     '--sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\\/2));',
   ]) assert.ok(sheet.includes(line), line);
-  for (const size of ['1', '2', '1\\/2']) {
-    assert.ok(sheet.includes(`--sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, var(--sf-ui-${size}--space-x));`), size);
-    assert.ok(sheet.includes(`--sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, var(--sf-ui-${size}--space-y-tightness-default));`), size);
+  // The field is on the size ladder: the control height of its size, the
+  // block padding sf-input's field has, steppers one rung down and standing as
+  // far from the side as from the top (tests/browser/quantity-smart measures it).
+  for (const [size, down] of [['1', '1\\/2'], ['2', '1'], ['1\\/2', '1\\/3']]) {
+    assert.ok(sheet.includes(`--sf-quantity-wrap--block-size: var(--sf-ui-${size}--control-height);`), size);
+    assert.ok(sheet.includes(`--sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-${size}--control-height) - var(--sf-ui-${down}--control-height)) / 2 - var(--sf-px)));`), size);
+    assert.ok(sheet.includes(`--sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-${size}--space-y-tightness-default) - var(--sf-px)));`), size);
+    const steppers = sheet.slice(sheet.indexOf(`.sf-quantity.sf-quantity--size-${size} .sf-quantity-count {`)).split('}')[0];
+    assert.ok(steppers.includes(`--sf-icon-button--padding-top: var(--sf-ui-${down}--space-y-tightness-default);`), size);
+    const icon = sheet.slice(sheet.indexOf(`.sf-quantity.sf-quantity--size-${size} .sf-icon {`)).split('}')[0];
+    assert.ok(icon.includes(`--sf-icon--height: var(--sf-text-height-${down});`), size);
   }
+  assert.match(sheet, /block-size: var\(--sf-quantity-wrap--block-size\);/u);
   // The states set the internal names only.
   for (const state of ['.sf-quantity.error .sf-quantity-wrap {', '.sf-quantity:has(input:disabled) .sf-quantity-wrap {', '.sf-quantity:has(input:disabled) input {']) {
     const block = sheet.slice(sheet.indexOf(state)).split('}')[0];

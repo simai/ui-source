@@ -19,7 +19,10 @@
 //   holds the form, disabled and read-only do not step, the inherited value
 //   shows and resets;
 // - at 1000 and 390 wide each size draws exactly what the class markup draws
-//   (box height, padding, steppers), and nothing overflows.
+//   (box height, padding, steppers), and nothing overflows;
+// - the size ladder: a field of each size is exactly as tall as sf-input of
+//   that size (the control height), its steppers are icon buttons one rung
+//   down, and the value's text stands on the same line as sf-input's (1px).
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 
@@ -27,8 +30,14 @@ const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css',
-  'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/quantity/js/quantity.js'];
+  'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css',
+  'component/component/inputs/css/inputs.css', 'smart/smart/inputs/css/inputs.css',
+  // The layout utilities the templates write (flex, flex-col, items-center…):
+  // the Loader would bring them; this page adds the modules by hand.
+  ...['display', 'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'place-items']
+    .map((name) => `utility/utility/${name}/default/css/default.css`)];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/quantity/js/quantity.js',
+  'smart/smart/inputs/js/inputs.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 
@@ -76,12 +85,15 @@ try {
       <sf-quantity id="s-one" size="1" label="1" value="3"></sf-quantity>
       <sf-quantity id="s-two" size="2" label="2" value="3"></sf-quantity>
     </form>
+ <div id="beside" style="display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:640px;margin-top:24px">${['1/2', '1', '2'].map((size) => `<div style="display:flex;gap:16px;align-items:flex-start">
+      <sf-quantity data-beside="${size}" size="${size}" label="Число" value="3" style="flex:1;min-width:0"></sf-quantity>
+      <sf-input data-beside="${size}" size="${size}" label="Число" value="3" style="flex:1;min-width:0"></sf-input></div>`).join('')}</div>
     <div id="classes" style="display:grid;gap:24px;max-width:640px;margin-top:24px">${['1/2', '1', '2'].map(classMarkup).join('')}</div>
     <button id="after" type="button">После</button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => note({case: `no sheet ${path}`}));
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-quantity'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-quantity') && customElements.get('sf-input'), null, {timeout: 8000});
   await page.waitForTimeout(800);
   await page.evaluate(() => {
     window.__events = [];
@@ -296,6 +308,39 @@ try {
     return {
       smart: Object.fromEntries(Object.entries(sizes).map(([size, id]) => [size, measure(document.querySelector(`#${id} .sf-quantity`))])),
       class: Object.fromEntries(Object.keys(sizes).map((size) => [size, measure(document.querySelector(`[data-class-size="${size}"]`))])),
+      // Beside sf-input of the same size, tops aligned: the box heights, the
+      // value's text line (the input's line box, as tall as its line height,
+      // centred in the field) from the top of the field, and the ladder's
+      // control heights the steppers must equal one rung down.
+      ladder: Object.fromEntries(Object.keys(sizes).map((size) => {
+        const quantity = document.querySelector(`sf-quantity[data-beside="${size}"]`);
+        const input = document.querySelector(`sf-input[data-beside="${size}"]`);
+        const line = (field, box) => {
+          const rect = box.getBoundingClientRect();
+          const height = parseFloat(getComputedStyle(box).lineHeight);
+          return round(rect.top + (rect.height - height) / 2 + height - field.getBoundingClientRect().top);
+        };
+        const control = (rung) => {
+          const probe = document.createElement('div');
+          probe.style.blockSize = `var(--sf-ui-${rung.replace('/', '\\/')}--control-height)`;
+          document.body.append(probe);
+          const value = round(probe.getBoundingClientRect().height);
+          probe.remove();
+          return value;
+        };
+        const down = {'1/2': '1/3', 1: '1/2', 2: '1'}[size];
+        const qWrap = quantity.querySelector('.sf-quantity-wrap');
+        const iField = input.querySelector('.sf-input-field');
+        const stepper = quantity.querySelector('.sf-quantity-count').getBoundingClientRect();
+        const wrapRect = qWrap.getBoundingClientRect();
+        return [size, {
+          quantity: round(wrapRect.height), input: round(iField.getBoundingClientRect().height), control: control(String(size)),
+          quantityLine: line(qWrap, qWrap.querySelector('input')), inputLine: line(iField, iField.querySelector('input')),
+          fieldTop: round(wrapRect.top - iField.getBoundingClientRect().top),
+          stepper: round(stepper.height), stepperWidth: round(stepper.width), stepperControl: control(down),
+          stepperGapTop: round(stepper.top - wrapRect.top), stepperGapStart: round(stepper.left - wrapRect.left),
+        }];
+      })),
       scroll: document.documentElement.scrollWidth > document.documentElement.clientWidth,
     };
   });
@@ -312,6 +357,13 @@ try {
         if (smart[key] !== drawn[key]) note({case: `${width}: size ${size} ${key} differs from the class markup`, got: smart[key], expected: drawn[key]});
       }
       if (smart.overflow) note({case: `${width}: size ${size} overflows`});
+    }
+    for (const size of ['1/2', '1', '2']) {
+      const rung = got.ladder[size];
+      if (rung.quantity !== rung.input || rung.quantity !== rung.control) note({case: `${width}: size ${size} is as tall as sf-input and the control height`, got: rung});
+      if (Math.abs(rung.quantityLine - rung.inputLine) > 1) note({case: `${width}: size ${size} value text stands on sf-input's line`, got: rung});
+      if (rung.stepper !== rung.stepperControl || rung.stepperWidth !== rung.stepperControl) note({case: `${width}: size ${size} steppers are one rung down`, got: rung});
+      if (Math.abs(rung.stepperGapTop - rung.stepperGapStart) > 0.5) note({case: `${width}: size ${size} steppers stand as far from the top as from the start`, got: rung});
     }
     if (!(got.smart['1/2'].height < got.smart['1'].height && got.smart['1'].height < got.smart['2'].height)) note({case: `${width}: the sizes climb the ladder`, got: got.smart});
     if (got.scroll) note({case: `${width}: the page scrolls sideways`});

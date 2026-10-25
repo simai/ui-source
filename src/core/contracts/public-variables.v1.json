@@ -1342,8 +1342,8 @@
         {
           "name": "--sf-quantity-padding-inline",
           "role": "padding-inline",
-          "summary": "Space inside the field before «−» and after «+».",
-          "default": "var(--sf-ui-1--space-x)",
+          "summary": "Space inside the field before «−» and after «+»: by default the gap the steppers leave above and below, so they stand the same distance from every edge.",
+          "default": "calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\\/2--control-height)) / 2 - var(--sf-px))",
           "since": "2026-10-25",
           "varies_with": [
             "size"
@@ -1353,7 +1353,7 @@
           "name": "--sf-quantity-padding-block",
           "role": "padding-block",
           "summary": "Space inside the field above and below its content.",
-          "default": "var(--sf-ui-1--space-y-tightness-default)",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
           "since": "2026-10-25",
           "varies_with": [
             "size"
