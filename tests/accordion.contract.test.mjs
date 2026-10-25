@@ -2,9 +2,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { URL } from 'node:url';
+import { withoutPublicVariables } from './support/public-variables.mjs';
 
 const source = async (relative) =>
   readFile(new URL(`../${relative}`, import.meta.url), 'utf8');
+// The sheet as it was before the public variables (2026-10-25): each wraps the
+// value it falls back to, and these contracts hold those values.
+const sheet = async () =>
+  withoutPublicVariables(await source('src/component/accordion/scss/_css__accordion.scss'));
 
 test('accordion uses a dedicated trigger and preserves the legacy contract', async () => {
   const behavior = await source('src/component/accordion/js/_accordion.js');
@@ -29,9 +34,7 @@ test('accordion uses a dedicated trigger and preserves the legacy contract', asy
 });
 
 test('accordion keeps interaction states neutral and keyboard-visible', async () => {
-  const styles = await source(
-    'src/component/accordion/scss/_css__accordion.scss',
-  );
+  const styles = await sheet();
 
   assert.match(
     styles,
@@ -94,9 +97,7 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
 });
 
 test('accordion sizes are the control ladder', async () => {
-  const styles = await source(
-    'src/component/accordion/scss/_css__accordion.scss',
-  );
+  const styles = await sheet();
 
   assert.match(styles, /min-block-size: var\(--sf-accordion--trigger-min-block-size\)/);
   for (const step of ['1\\/3', '1\\/2', '1', '2', '3']) {
@@ -131,7 +132,7 @@ test('accordion laboratory covers surface and stress scenarios', async () => {
 test('a single section is a plain section, not a toggle', async () => {
   const [behavior, styles] = await Promise.all([
     source('src/component/accordion/js/_accordion.js'),
-    source('src/component/accordion/scss/_css__accordion.scss'),
+    sheet(),
   ]);
   assert.match(behavior, /SINGLE_MODIFIER = 'sf-accordion--single'/);
   assert.match(behavior, /SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section'/);

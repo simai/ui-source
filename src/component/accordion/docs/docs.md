@@ -83,7 +83,15 @@ default look.
 
 ## Variables
 
-Set on the accordion: `--sf-accordion--trigger-padding-block`,
+The public variables (`src/core/contracts/public-variables.v1.json`), set on
+the accordion or any ancestor: `--sf-accordion-background-color`,
+`--sf-accordion-border-color`, `--sf-accordion-border-width`,
+`--sf-accordion-radius`, `--sf-accordion-title-color`,
+`--sf-accordion-content-color`, `--sf-accordion-icon-color` and
+`--sf-accordion-divider-color`. Each falls back to the value the accordion
+drew before it; hover, pressed and focus keep their own.
+
+Also set on the accordion: `--sf-accordion--trigger-padding-block`,
 `--sf-accordion--trigger-padding-inline`, `--sf-accordion--content-padding`,
 `--sf-accordion--border-color`; `--sf-accordion-title--color`,
 `--sf-accordion-content--color` and `--sf-accordion-divider--color` change the

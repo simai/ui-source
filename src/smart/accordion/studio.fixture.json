@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.accordion",
+  "title": "Accordion reference",
+  "summary": "Deterministic reference fixture for sf-accordion.",
+  "locale": "ru",
+  "props": {
+    "single": true,
+    "items": "[{\"id\":\"main\",\"title\":\"Основное\",\"content\":\"Название, адрес и описание\",\"open\":true},{\"id\":\"seo\",\"title\":\"SEO\",\"content\":\"Заголовок и описание страницы\",\"badge\":\"3\"}]"
+  },
+  "children": [],
+  "state": "default"
+}

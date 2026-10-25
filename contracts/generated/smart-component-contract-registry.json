@@ -4,6 +4,47 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.accordion",
+          "smart.badges"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-accordion",
+      "id": "smart.accordion",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/accordion/smart.manifest.json",
+      "manifest_sha256": "0d49de588d3dd69414d5f69247eec364091a189280450cf4e4b6322e03e9ed05",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
+      "tags": [
+        "accordion",
+        "disclosure",
+        "sections",
+        "faq",
+        "collapse"
+      ],
+      "title": "Accordion"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],

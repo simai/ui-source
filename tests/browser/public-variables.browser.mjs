@@ -52,6 +52,11 @@ const DRAW = {
   // image to wait for.
   'image-field': {css: ['buttons', 'smart/smart/image-field/css/image-field.css'], js: 'image-field',
     html: '<sf-image-field label="Логотип" size="1"></sf-image-field>'},
+  // The class accordion's sheet, drawn by sf-accordion in each appearance: the
+  // fill and radius are the default one's, the border the outline's, and the
+  // first section is open so its content has a colour to take.
+  accordion: {css: ['accordion', 'icons', 'smart/smart/accordion/css/accordion.css'], js: 'accordion',
+    html: ['default', 'outline', 'flush'].map((appearance) => `<sf-accordion appearance="${appearance}" items='[{"id":"a","title":"Раздел","content":"Текст","open":true},{"id":"b","title":"Ещё раздел","content":"Текст"}]'></sf-accordion>`).join('')},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -104,7 +109,9 @@ try {
       for (const variable of variables) {
         const role = roles[variable.role];
         if (!role) { answers.push({name: variable.name, role: variable.role, unmeasured: true}); continue; }
-        const read = () => scope.flatMap((element) => role.properties.map((property) => getComputedStyle(element).getPropertyValue(property).trim()));
+        // A part may be a pseudo-element: the accordion's divider is the
+        // header's ::after.
+        const read = () => scope.flatMap((element) => [null, '::after'].flatMap((pseudo) => role.properties.map((property) => getComputedStyle(element, pseudo).getPropertyValue(property).trim())));
         const before = read();
         document.documentElement.style.setProperty(variable.name, role.value);
         const after = read();

@@ -62,6 +62,13 @@
       "state": "canonical_from_the_start"
     },
     {
+      "component": "accordion",
+      "axis": "appearance",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "the class accordion's appearances by name: default is the filled surface, outline and flush its two modifiers."
+    },
+    {
       "component": "button-group",
       "axis": "appearance",
       "legacy": [],

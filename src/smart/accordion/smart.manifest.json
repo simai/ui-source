@@ -1,0 +1,467 @@
+{
+  "schema_version": 2,
+  "id": "smart.accordion",
+  "version": "1.0.0",
+  "title": "Accordion",
+  "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "accordion",
+    "disclosure",
+    "sections",
+    "faq",
+    "collapse"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-accordion",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.accordion",
+      "smart.badges"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
+            },
+            "title": {
+              "type": "string",
+              "description": "The header's title."
+            },
+            "content": {
+              "type": "string",
+              "description": "The section's text. Text, never markup: markup goes in a slot."
+            },
+            "slot": {
+              "type": "string",
+              "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "Open at first. In single mode only the first open section stays open."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
+            },
+            "icon": {
+              "type": "string",
+              "description": "An icon before the title, a name from the icon font."
+            },
+            "badge": {
+              "type": "string",
+              "description": "A count or a label after the title, drawn by sf-badge."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        "examples": [
+          [
+            {
+              "id": "main",
+              "title": "Основное",
+              "content": "Название и описание",
+              "open": true
+            },
+            {
+              "id": "seo",
+              "title": "SEO",
+              "content": "Заголовок страницы",
+              "badge": "3"
+            }
+          ]
+        ]
+      },
+      "single": {
+        "type": "boolean",
+        "default": false,
+        "description": "One section open at a time: opening one closes the one that was open."
+      },
+      "size": {
+        "type": "string",
+        "default": "",
+        "description": "A step of the control ladder: the header is exactly the control height of the step, the height of an sf-input and an sf-button of the same size. Without it the roomy header of a content page.",
+        "enum": [
+          "",
+          "1/3",
+          "1/2",
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "default",
+        "description": "default: a filled surface; outline: a hairline border, no fill; flush: no fill and no radius, sections divided by a line, for panels and lists.",
+        "enum": [
+          "default",
+          "outline",
+          "flush"
+        ]
+      },
+      "marker": {
+        "type": "string",
+        "default": "chevron",
+        "description": "What marks a section open or closed: the chevron, or plus and minus.",
+        "enum": [
+          "chevron",
+          "plus-minus"
+        ]
+      },
+      "single-section": {
+        "type": "string",
+        "default": "static",
+        "description": "One section is a plain section -- its content shown, its heading not a toggle; toggle keeps it a disclosure, for a list that fills in later.",
+        "enum": [
+          "static",
+          "toggle"
+        ]
+      },
+      "heading-level": {
+        "type": "string",
+        "default": "3",
+        "description": "The level of each section's heading (role heading, aria-level).",
+        "enum": [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ]
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
+      },
+      "title": {
+        "type": "string",
+        "description": "The header's title."
+      },
+      "content": {
+        "type": "string",
+        "description": "The section's text. Text, never markup: markup goes in a slot."
+      },
+      "slot": {
+        "type": "string",
+        "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Open at first. In single mode only the first open section stays open."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
+      },
+      "icon": {
+        "type": "string",
+        "description": "An icon before the title, a name from the icon font."
+      },
+      "badge": {
+        "type": "string",
+        "description": "A count or a label after the title, drawn by sf-badge."
+      }
+    },
+    "required": [
+      "title"
+    ],
+    "additionalProperties": false
+  },
+  "contracts": {
+    "markup": {
+      "const": "component.accordion"
+    },
+    "open_state_owner": {
+      "const": "component"
+    },
+    "content_markup": {
+      "const": "slot_only"
+    }
+  },
+  "methods": {
+    "open": {
+      "summary": "Open the section with this id; in single mode the open one closes. sf-accordion:toggle fires for each section that changed, source method. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "close": {
+      "summary": "Close the section with this id. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "toggle": {
+      "summary": "Open the section if it is closed, close it if it is open. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "isOpen": {
+      "summary": "Whether the section with this id is open. The single section always is.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "sf-accordion:toggle": {
+      "summary": "A section opened or closed, by the person (source user) or by a method (source method). In single mode the section it closed sends its own, after the one asked for, as a native <details name> group does.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "user",
+              "method"
+            ]
+          },
+          "section": {
+            "type": "object",
+            "description": "The section as the element draws it."
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "section": [
+        "open",
+        "closed",
+        "disabled"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "closed",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "parsing record text as markup"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": null,
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space",
+      "ArrowDown",
+      "ArrowUp",
+      "Home",
+      "End"
+    ],
+    "focus": "Each header is a native button inside a heading (role heading, aria-level), with aria-expanded and aria-controls; Enter and Space open and close it. ArrowDown and ArrowUp move between the headers and wrap, Home and End go to the first and the last; a disabled header is a disabled button, passed over and out of the tab order. Each panel is a region named by its header while there are six sections or fewer. The single section is a plain heading with nothing in the tab order."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "3611b57e08b6f316eb3e90510206f7e286ae1a45",
+    "source_artifacts": [
+      {
+        "path": "src/smart/accordion/index.js",
+        "sha256": "ee8d24c0c83bd2276172354270449d0a7c43a0869416c32d244e51986d4b3b55"
+      },
+      {
+        "path": "src/smart/accordion/sections.mjs",
+        "sha256": "b18170eb555fff684527e8e42d242df3e0b156d23b05df281b3a97bcb5ece0f1"
+      },
+      {
+        "path": "src/smart/accordion/js/templates/default.js",
+        "sha256": "ceb7d15c9853a4d136026fd05af300c00e0ca8fe2d5215e2630cc425e9f10cd0"
+      },
+      {
+        "path": "src/smart/accordion/scss/_smart__accordion.scss",
+        "sha256": "7b4310dab87a9b91aa48a58196cfe9affc8df5900f4741471258cbffd9a08367"
+      },
+      {
+        "path": "src/smart/accordion/rule.js",
+        "sha256": "b1acba66304c3cc41af8da828136f7673bfd44e69faebb63953fd52f6033275b"
+      },
+      {
+        "path": "src/smart/accordion/docs.md",
+        "sha256": "fce4bcdaa5c9aa51055d123f0e49efb88892f9825eb793b3a1a76b0e074c301c"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ -- or are written as <details> in the markup.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not put markup in content: it is shown as text; use a slot",
+      "Do not use it to switch between views of one thing: that is sf-tabs",
+      "Do not restyle its sections: they are the class accordion's, set its public variables"
+    ],
+    "required_reads": [
+      "inputs",
+      "item_contract",
+      "events",
+      "methods",
+      "accessibility",
+      "provenance"
+    ],
+    "minimal_example": "<sf-accordion single items='[{\"id\":\"main\",\"title\":\"Основное\",\"content\":\"Название и описание\",\"open\":true},{\"id\":\"seo\",\"title\":\"SEO\",\"content\":\"Заголовок страницы\"}]'></sf-accordion>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

@@ -736,6 +736,7 @@ import '../../utility/z-index/md/rule.js';
 import '../../utility/z-index/sm/rule.js';
 import '../../utility/z-index/xl/rule.js';
 import '../../utility/z-index/xxl/rule.js';
+import '../../smart/accordion/rule.js';
 import '../../smart/alert/rule.js';
 import '../../smart/avatar/rule.js';
 import '../../smart/avatars/rule.js';
