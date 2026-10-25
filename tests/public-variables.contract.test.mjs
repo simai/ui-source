@@ -13,7 +13,7 @@ const FOLDERS = {
   tag: 'tags', 'icon-button': 'icon-buttons', checkbox: 'checkbox', 'radio-button': 'radio',
   switch: 'switch', textarea: 'textarea', toast: 'toast', modal: 'modal',
   tooltip: 'tooltip', tabs: 'tabs', avatar: 'avatars', 'context-menu': 'context-menu',
-  'button-group': 'button-group', accordion: 'accordion',
+  'button-group': 'button-group', accordion: 'accordion', menu: 'menu',
   // A Smart component that carries its own sheet: the path from src/.
   'image-field': 'smart/image-field',
 };
@@ -30,8 +30,9 @@ const walk = async (dir) => (await Promise.all((await readdir(new URL(`../${dir}
 
 // The pilot of four (2026-10-13), the twelve after it (2026-10-18), the
 // segmented button group (2026-10-19), the image field (2026-10-24), the
-// first whose sheet is its Smart element's own, and the accordion (2026-10-25),
-// whose class sheet sf-accordion draws with.
+// first whose sheet is its Smart element's own, the accordion (2026-10-25),
+// whose class sheet sf-accordion draws with, and the menu (2026-10-25), whose
+// class sheet sf-menu draws with.
 test('every component in the contract has its stylesheet folder here, five to ten variables each', () => {
   assert.ok(isSchema(contract, 'simai.framework.public-variables', 1), 'either form of the format name');
   assert.deepEqual(contract.components.map((entry) => entry.component).sort(), Object.keys(FOLDERS).sort());

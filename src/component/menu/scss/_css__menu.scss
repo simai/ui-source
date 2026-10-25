@@ -9,8 +9,11 @@
   min-inline-size: var(--sf-0);
   max-width: 100%;
   max-inline-size: 100%;
-  background-color: var(--sf-menu--background-color, transparent);
-  gap: var(--sf-menu--gap, var(--sf-space-1\/3));
+  /* The public variables (src/core/contracts/public-variables.v1.json) wrap
+     the values the menu drew before them, so a page that sets none sees no
+     change. */
+  background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));
+  gap: var(--sf-menu--gap, var(--sf-menu-gap, var(--sf-space-1\/3)));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-menu-item--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -59,11 +62,11 @@
   min-inline-size: 100%;
   max-inline-size: calc(100vw - var(--sf-space-2));
   padding: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/3));
-  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-outline-variant));
-  border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-radius--ui));
-  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-elevation-2--surface));
+  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+  border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)));
+  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-elevation-2--surface)));
   --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-  --sf-badge--surface: var(--sf-menu-horizontal-submenu--background-color, var(--sf-elevation-2--surface));
+  --sf-badge--surface: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-elevation-2--surface)));
   box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-elevation-2--shadow));
 }
 
