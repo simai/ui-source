@@ -398,10 +398,13 @@ class SfCodeInput extends SfBaseElement {
     const errorContent = this.hasSlotContent?.('error') ? this.getSlotContent('error') : this.errorMessage;
     const messageIsError = Boolean(field.invalid && errorContent);
     const hasControlledValue = this.hasAttribute('value');
-    const defaultValue = normaliseCode(this.defaultValue, this.mode, this.length);
+    // The template's defaultValue is the component's, as written; what the
+    // native input starts from is that code cleaned to the mode and length,
+    // under its own name, so a template never reads a resolved prop changed.
+    const defaultCode = normaliseCode(this.defaultValue, this.mode, this.length);
     const value = hasControlledValue
       ? normaliseCode(this.getAttribute('value'), this.mode, this.length)
-      : (input ? normaliseCode(input.value, this.mode, this.length) : defaultValue);
+      : (input ? normaliseCode(input.value, this.mode, this.length) : defaultCode);
 
     return this.createTemplateContext({
       ...props,
@@ -418,7 +421,8 @@ class SfCodeInput extends SfBaseElement {
       readonly: this.readonly,
       name: this.name,
       value,
-      defaultValue,
+      defaultValue: this.defaultValue,
+      defaultCode,
       mode: this.mode,
       length: this.length,
       mask: this.mask,

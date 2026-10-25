@@ -31,7 +31,7 @@ export function renderCodeInputTemplate(context) {
     readonly,
     name,
     value,
-    defaultValue,
+    defaultCode,
     mode,
     length,
     mask,
@@ -83,7 +83,7 @@ export function renderCodeInputTemplate(context) {
           dir="ltr"
           pattern=${pattern}
           name=${name || nothing}
-          .defaultValue=${defaultValue}
+          .defaultValue=${defaultCode}
           .value=${live(value)}
           ?disabled=${disabled}
           ?readonly=${readonly}

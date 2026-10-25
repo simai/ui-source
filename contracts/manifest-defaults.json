@@ -36,6 +36,11 @@
       "reason": "Generated per instance when not set."
     },
     {
+      "component": "menu",
+      "prop": "toggleLabel",
+      "reason": "Follows the page language when not set: «Меню» on a Russian page, «Menu» otherwise."
+    },
+    {
       "component": "modal",
       "prop": "modalId",
       "reason": "Generated per instance when not set."
