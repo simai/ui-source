@@ -1,0 +1,18 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.quantity",
+  "title": "quantity reference",
+  "summary": "Deterministic reference fixture for sf-quantity.",
+  "locale": "ru",
+  "props": {
+    "label": "Количество",
+    "name": "count",
+    "value": "2",
+    "min": "0",
+    "max": "99",
+    "hint": "От 0 до 99"
+  },
+  "children": [],
+  "state": "default"
+}

@@ -26,6 +26,37 @@
   line-height: var(--sf-quantity-text--line-height);
 }
 
+/* The help or error line under the field, drawn by sf-quantity as the input and
+   textarea draw theirs: secondary ink, the error colour on an error, one text
+   step below the box. */
+.sf-quantity .sf-quantity-hint-text-wrap {
+  --sf-quantity-hint-text-wrap--color: var(--sf-on-surface-variant);
+  color: var(--sf-quantity-hint-text-wrap--color);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-quantity-hint-text-wrap--font-size);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-quantity-hint-text-wrap--line-height);
+}
+
+.sf-quantity.sf-quantity--size-1 .sf-quantity-hint-text-wrap {
+  --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
+  --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-quantity.sf-quantity--size-2 .sf-quantity-hint-text-wrap {
+  --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1);
+  --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1);
+}
+
+.sf-quantity.sf-quantity--size-1\/2 .sf-quantity-hint-text-wrap {
+  --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1\/3);
+  --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-quantity.error .sf-quantity-hint-text-wrap {
+  --sf-quantity-hint-text-wrap--color: var(--sf-error);
+}
+
 .sf-quantity .sf-quantity-required {
   --sf-quantity-required--color: var(--sf-error);
   --sf-quantity-required--font-family: var(--sf-text--family);
@@ -40,14 +71,14 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-quantity-wrap--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-quantity .sf-quantity-wrap {
   min-inline-size: 0;
-  --sf-quantity-wrap--background-color: var(--sf-surface-0);
-  --sf-quantity-wrap--border: var(--sf-px) solid;
-  --sf-quantity-wrap--border-color: var(--sf-outline);
-  --sf-quantity-wrap--border-end-end-radius: var(--sf-radius--ui);
-  --sf-quantity-wrap--border-end-start-radius: var(--sf-radius--ui);
-  --sf-quantity-wrap--border-start-end-radius: var(--sf-radius--ui);
-  --sf-quantity-wrap--border-start-start-radius: var(--sf-radius--ui);
-  --sf-quantity-wrap--gap: var(--sf-space-2);
+  --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-0));
+  --sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;
+  --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));
+  --sf-quantity-wrap--border-end-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+  --sf-quantity-wrap--border-end-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+  --sf-quantity-wrap--border-start-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+  --sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+  --sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));
   background-color: var(--sf-quantity-wrap--background-color);
   border: var(--sf-quantity-wrap--border);
   border-color: var(--sf-quantity-wrap--border-color, transparent);
@@ -67,23 +98,28 @@
 }
 
 .sf-quantity .sf-icon-button {
-  --sf-icon-button--border-end-end-radius: var(--sf-radius-1\/2);
-  --sf-icon-button--border-end-start-radius: var(--sf-radius-1\/2);
-  --sf-icon-button--border-start-end-radius: var(--sf-radius-1\/2);
-  --sf-icon-button--border-start-start-radius: var(--sf-radius-1\/2);
-  --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
-  --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
-  --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
-  --sf-icon-button--padding-top: var(--sf-space-1\/4);
+  --sf-icon-button--border-end-end-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+  --sf-icon-button--border-end-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+  --sf-icon-button--border-start-end-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+  --sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
   background-color: var(--sf-icon-button--background-color);
   border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
   border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
   border-start-end-radius: var(--sf-icon-button--border-start-end-radius);
   border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
-  padding-bottom: var(--sf-icon-button--padding-bottom);
-  padding-inline-end: var(--sf-icon-button--padding-inline-end);
-  padding-inline-start: var(--sf-icon-button--padding-inline-start);
-  padding-top: var(--sf-icon-button--padding-top);
+}
+
+/* The field is on the size ladder (geometry standard): the box is the control
+   height of its size, as sf-input's field is, with the same block padding, and
+   the steppers are icon buttons one rung down -- a size 1 field (40px on a
+   desktop) carries size 1/2 steppers (32px) -- whatever size class the markup
+   gives them, so hand-written markup lands on the ladder too. The steppers sit
+   in the middle of the box and reach into its block padding, as sf-input's
+   trailing buttons do; the inline padding is the gap they leave above and
+   below, so «−» and «+» stand the same distance from every edge. */
+.sf-quantity .sf-quantity-wrap {
+  box-sizing: border-box;
+  block-size: var(--sf-quantity-wrap--block-size);
 }
 
 /* utility-hint: display/flex (.flex) */
@@ -100,6 +136,9 @@
   line-height: var(--sf-quantity-input--line-height);
   padding-inline-end: var(--sf-quantity-input--padding-inline-end);
   padding-inline-start: var(--sf-quantity-input--padding-inline-start);
+  /* As tall as its line box, as sf-input's value is, so the two values share a
+     baseline (simai/ui-source#23). */
+  block-size: auto;
 }
 
 .sf-quantity .sf-quantity-wrap input::placeholder {
@@ -129,16 +168,24 @@
 }
 
 .sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
-  --sf-quantity-wrap--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-  --sf-quantity-wrap--padding-inline-end: var(--sf-ui-1--space-x);
-  --sf-quantity-wrap--padding-inline-start: var(--sf-ui-1--space-x);
-  --sf-quantity-wrap--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  --sf-quantity-wrap--block-size: var(--sf-ui-1--control-height);
+  --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
+}
+
+.sf-quantity.sf-quantity--size-1 .sf-quantity-count {
+  --sf-icon-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-icon-button--padding-inline-end: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-icon-button--padding-inline-start: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-icon-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
 }
 
 .sf-quantity.sf-quantity--size-1 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-1\/2);
-  --sf-icon--height: var(--sf-text-size-1\/2);
-  --sf-icon--width: var(--sf-text-size-1\/2);
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
 }
 
 .sf-quantity:not(:has(input:disabled)) .sf-icon {
@@ -155,7 +202,7 @@
 }
 
 .sf-quantity input {
-  --sf-quantity-input--color: var(--sf-on-surface);
+  --sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));
 }
 
 .sf-quantity.sf-quantity--size-1:has(input:enabled:not(:disabled):not(.disabled):active) .sf-quantity-wrap {
@@ -177,16 +224,24 @@
 }
 
 .sf-quantity.sf-quantity--size-2 .sf-quantity-wrap {
-  --sf-quantity-wrap--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
-  --sf-quantity-wrap--padding-inline-end: var(--sf-ui-2--space-x);
-  --sf-quantity-wrap--padding-inline-start: var(--sf-ui-2--space-x);
-  --sf-quantity-wrap--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  --sf-quantity-wrap--block-size: var(--sf-ui-2--control-height);
+  --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
+}
+
+.sf-quantity.sf-quantity--size-2 .sf-quantity-count {
+  --sf-icon-button--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+  --sf-icon-button--padding-inline-end: var(--sf-ui-1--space-y-tightness-default);
+  --sf-icon-button--padding-inline-start: var(--sf-ui-1--space-y-tightness-default);
+  --sf-icon-button--padding-top: var(--sf-ui-1--space-y-tightness-default);
 }
 
 .sf-quantity.sf-quantity--size-2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-1);
-  --sf-icon--height: var(--sf-text-size-1);
-  --sf-icon--width: var(--sf-text-size-1);
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
 }
 
 .sf-quantity.sf-quantity--size-2 input {
@@ -215,16 +270,24 @@
 }
 
 .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
-  --sf-quantity-wrap--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
-  --sf-quantity-wrap--padding-inline-end: var(--sf-ui-1\/2--space-x);
-  --sf-quantity-wrap--padding-inline-start: var(--sf-ui-1\/2--space-x);
-  --sf-quantity-wrap--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  --sf-quantity-wrap--block-size: var(--sf-ui-1\/2--control-height);
+  --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-ui-1\/3--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-ui-1\/3--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
+}
+
+.sf-quantity.sf-quantity--size-1\/2 .sf-quantity-count {
+  --sf-icon-button--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-icon-button--padding-inline-end: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-icon-button--padding-inline-start: var(--sf-ui-1\/3--space-y-tightness-default);
+  --sf-icon-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
 }
 
 .sf-quantity.sf-quantity--size-1\/2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-1\/3);
-  --sf-icon--height: var(--sf-text-size-1\/3);
-  --sf-icon--width: var(--sf-text-size-1\/3);
+  --sf-icon--font-size: var(--sf-text-height-1\/3);
+  --sf-icon--height: var(--sf-text-height-1\/3);
+  --sf-icon--width: var(--sf-text-height-1\/3);
 }
 
 .sf-quantity.sf-quantity--size-1\/2 input {

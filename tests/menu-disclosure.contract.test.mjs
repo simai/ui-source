@@ -2,10 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {readFileSync} from 'node:fs';
+import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const js=await readFile(new URL('../src/component/menu/js/_menu.js',import.meta.url),'utf8');
-const menuCss=await readFile(new URL('../src/component/menu/scss/_css__menu.scss',import.meta.url),'utf8');
-const elementCss=await readFile(new URL('../src/component/menu/scss/_css__menu_element.scss',import.meta.url),'utf8');
+// The sheets as they were before the public variables (2026-10-25): each wraps
+// the value it falls back to, and these contracts hold those values.
+const menuCss=withoutPublicVariables(await readFile(new URL('../src/component/menu/scss/_css__menu.scss',import.meta.url),'utf8'));
+const elementCss=withoutPublicVariables(await readFile(new URL('../src/component/menu/scss/_css__menu_element.scss',import.meta.url),'utf8'));
 
 test('Menu assigns one native-first interaction owner only to branches',()=>{
   assert.match(js,/:scope > \.sf-menu-element > \.sf-menu-element-wrap \.sf-menu-element-text/);

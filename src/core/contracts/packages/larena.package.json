@@ -36,6 +36,16 @@
       ]
     },
     {
+      "id": "smart.change-confirm",
+      "element": "sf-change-confirm",
+      "rule_name": "cl-change-confirm",
+      "folder": "change-confirm",
+      "requires": [
+        "smart.buttons",
+        "smart.icons"
+      ]
+    },
+    {
       "id": "smart.data-view",
       "element": "sf-table",
       "rule_name": "cl-table",
@@ -83,6 +93,17 @@
       ]
     },
     {
+      "id": "smart.message-log",
+      "element": "sf-message-log",
+      "rule_name": "cl-message-log",
+      "folder": "message-log",
+      "requires": [
+        "smart.buttons",
+        "smart.icon-buttons",
+        "utility.sr-only"
+      ]
+    },
+    {
       "id": "smart.property-view",
       "element": "sf-property-view",
       "rule_name": "cl-property-view",
@@ -125,6 +146,19 @@
         "smart.textarea",
         "smart.tree",
         "smart.tree-item"
+      ]
+    },
+    {
+      "id": "smart.thread-list",
+      "element": "sf-thread-list",
+      "rule_name": "cl-thread-list",
+      "folder": "thread-list",
+      "requires": [
+        "smart.avatar",
+        "smart.badges",
+        "smart.context-menu",
+        "smart.icons",
+        "utility.sr-only"
       ]
     }
   ]

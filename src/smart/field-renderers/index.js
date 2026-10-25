@@ -1017,7 +1017,56 @@ function renderTextAreaEdit(field, value, host) {
     `;
 }
 
+// A number edited with steps (owner, 2026-10-25): an integer or a number whose
+// variant is `stepper` gets sf-quantity -- «−» and «+», the arrow keys, the
+// bounds the field names -- and every other number keeps the plain sf-input
+// below. The bounds, the step and (for a number) the digits are the field's
+// own keys, read by this variant alone: a renderer still does not enforce a
+// constraint, the stepper only stops at it and the host validates the record.
+//
+// An integer has no digits after the point, whatever the field says. A number
+// takes `precision`, else the digits its `step` implies, else two: a number
+// field whose stepper could not take a decimal mark would be an integer field.
+// The value goes out as the stepper's number, or null when the field is
+// emptied; the panel prints the label, so the control takes it as its
+// accessible name only.
+function isStepperField(field) {
+    return String(field.variant ?? '') === 'stepper';
+}
+
+function stepperNumber(raw) {
+    if (raw === null || raw === undefined || raw === '') return '';
+    const number = Number(raw);
+    return Number.isFinite(number) ? String(number) : '';
+}
+
+function renderStepperEdit(field, value, host) {
+    const decimal = (field.propertyType || field.type) === 'number';
+    const step = stepperNumber(field.step);
+    const precision = decimal
+        ? stepperNumber(field.precision) || (step ? '' : '2')
+        : '0';
+    const write = (event) => host.setFieldValue(field, event.detail?.value ?? null);
+    return html`
+        <sf-quantity
+                size=${EDIT_SIZE}
+                name=${fieldName(field)}
+                value=${stepperNumber(scalarValue(value))}
+                min=${stepperNumber(field.min) || nothing}
+                max=${stepperNumber(field.max) || nothing}
+                step=${step || nothing}
+                precision=${precision || nothing}
+                aria-label=${field.label || field.key || ''}
+                ?required=${Boolean(field.required)}
+                ?disabled=${field.readonly === true}
+                @input=${write}
+                @change=${write}
+        ></sf-quantity>
+    `;
+}
+
 function renderNumberEdit(field, value, host) {
+    if (isStepperField(field)) return renderStepperEdit(field, value, host);
     const decimal = (field.propertyType || field.type) === 'number';
     value = scalarValue(value);
 

@@ -236,6 +236,13 @@
     "place-items/default",
     "position/default"
   ],
+  "cl-menu": [
+    "display/default",
+    "isolate/default",
+    "position/default",
+    "resize/default",
+    "text-max-width/default"
+  ],
   "cl-modal": [
     "align-items/default",
     "backdrop-filter-blur/default",
@@ -301,6 +308,15 @@
     "flex-direction/default",
     "grid-template-columns/default",
     "overflow/default",
+    "position/default"
+  ],
+  "cl-quantity": [
+    "display/default",
+    "filter-blur/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default",
     "position/default"
   ],
   "cl-radio": [

@@ -1,0 +1,550 @@
+{
+  "schema_version": 2,
+  "id": "smart.quantity",
+  "version": "1.0.0",
+  "title": "Quantity",
+  "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "quantity",
+    "number",
+    "stepper",
+    "field",
+    "form"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive"
+  ],
+  "custom_element": "sf-quantity",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.quantity",
+      "component.icons",
+      "component.icon-buttons"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default"
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The number the field holds, written with a point (`2567.5`); empty for none. The property reads a number or null and takes a number, numeric text or null. Rounded to the field's digits. Set from code it fires nothing."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name: a hidden input submits the value with a point and no grouping (`2567.50`), whatever the box shows. The box itself has no name."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The field label above the box; it names the spinbutton. Slot `label` takes markup instead."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "Help text under the field; slot `hint` takes markup instead."
+      },
+      "placeholder": {
+        "type": "string",
+        "default": "",
+        "description": "Shown in the empty box."
+      },
+      "min": {
+        "type": "string",
+        "default": "",
+        "description": "The lower bound: «−» is disabled on it, Home goes to it, a typed value below it is raised to it on commit. Empty for none; with none, or one below zero, a minus sign may be typed."
+      },
+      "max": {
+        "type": "string",
+        "default": "",
+        "description": "The upper bound: «+» is disabled on it, End goes to it, a typed value above it is lowered to it on commit. Empty for none."
+      },
+      "step": {
+        "type": "string",
+        "default": "1",
+        "description": "How far «−», «+», ArrowUp and ArrowDown move the value. A positive number; anything else is 1. Its decimals are the field's digits unless `precision` says otherwise."
+      },
+      "page-step": {
+        "type": "string",
+        "default": "",
+        "description": "How far PageUp and PageDown move the value; ten steps when empty."
+      },
+      "precision": {
+        "type": "string",
+        "default": "",
+        "description": "Digits after the decimal mark, shown and kept; empty takes them from `step` (0.25 has two). With none, a decimal mark cannot be typed."
+      },
+      "grouping": {
+        "type": "boolean",
+        "default": true,
+        "description": "Group thousands the page's language's way («2 567»); `grouping=\"false\"` writes the digits together, for a year or a code."
+      },
+      "locale": {
+        "type": "string",
+        "default": "",
+        "description": "The language the number is read and written in; unset, the page's (`lang`), so the decimal mark is a comma on a Russian page."
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "Field size: 1/2, 1 or 2, as every form field.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The field must hold a number: the box is required, so a form will not submit while it is empty."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown and not changed: the box and both steppers are disabled, and the hidden input is not submitted."
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown and not changed: the box is read-only, the steppers are disabled, the keys do not step."
+      },
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state; the same as invalid."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state: the edge and the message take the error colour and the box carries aria-invalid."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The error shown in place of the hint while the field is invalid; slot `error` takes markup instead."
+      },
+      "decrement-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of «−». Unset, it follows the page's language («Уменьшить значение», «Decrease value»)."
+      },
+      "increment-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of «+». Unset, it follows the page's language («Увеличить значение», «Increase value»)."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "The spinbutton's accessible name when no label is drawn inside the field: a form that prints the label beside it (the Framework's field renderers) names the field without a second, visible label."
+      },
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "What the field falls back to while it holds no number of its own -- a default from a parent setting. Shown in the empty box in the placeholder's ink with an «inherited» marker, never as the value: the form value stays empty. Once the field holds a number of its own, a reset button returns it here."
+      },
+      "inherited-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the marker shown while the inherited value applies. Unset, it follows the page's language («inherited», «наследуется»)."
+      },
+      "reset-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "value_shape": {
+      "const": "number_or_null"
+    },
+    "value_owner": {
+      "const": "component"
+    },
+    "form_owner": {
+      "const": "hidden_input"
+    },
+    "reset": {
+      "const": "native_form_reset"
+    },
+    "field_states": {
+      "type": "string",
+      "enum": [
+        "empty",
+        "filled",
+        "at-min",
+        "at-max",
+        "readonly",
+        "disabled",
+        "invalid",
+        "inherited"
+      ]
+    }
+  },
+  "methods": {
+    "setValue": {
+      "summary": "Set the number from code: a number, numeric text with a point, or null for none. Rounded to the field's digits, not clamped. Fires nothing, as a value set from code is not a change. Returns the element.",
+      "arguments": [
+        {
+          "name": "value",
+          "type": [
+            "number",
+            "string",
+            "null"
+          ],
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "clear": {
+      "summary": "Empty the field from code; the same as setValue(null). Returns the element.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "stepUp": {
+      "summary": "Move the value up by `count` steps (1 by default), held by the bounds, as a native field's stepUp(). Fires nothing. Returns the element.",
+      "arguments": [
+        {
+          "name": "count",
+          "type": "number",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "stepDown": {
+      "summary": "Move the value down by `count` steps (1 by default), held by the bounds. Fires nothing. Returns the element.",
+      "arguments": [
+        {
+          "name": "count",
+          "type": "number",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
+      "arguments": [
+        {
+          "name": "message",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "resetToInherited": {
+      "summary": "Return the field to its inherited value, as the reset button does: sf-field:reset first (cancellable), then input and change. Returns whether it reset.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "getInputElement": {
+      "summary": "Returns the spinbutton's text box, or null before render.",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "The HTMLInputElement."
+      }
+    }
+  },
+  "events": {
+    "change": {
+      "summary": "The value was committed: once per change the person made -- a commit of typed text (Enter or leaving the box), a stepper press (one for a whole held run), a key, a reset. A CustomEvent on the host; the box's own change does not leave the host. A commit that only rewrites the text fires nothing.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "The number the field now holds; null when it is empty."
+          },
+          "text": {
+            "type": "string",
+            "description": "The number as the field writes it, in the page's language."
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "typing",
+              "commit",
+              "button",
+              "keyboard",
+              "reset"
+            ],
+            "description": "What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."
+          }
+        }
+      },
+      "canonical": true
+    },
+    "input": {
+      "summary": "The value moved: while typing, each time the text reads as a different number; on each step of a stepper or a key; before every change whose value it has not reported yet. Same detail as change.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "The number the field now holds; null when it is empty."
+          },
+          "text": {
+            "type": "string",
+            "description": "The number as the field writes it, in the page's language."
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "typing",
+              "commit",
+              "button",
+              "keyboard",
+              "reset"
+            ],
+            "description": "What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."
+          }
+        }
+      }
+    },
+    "sf-field:reset": {
+      "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. Not prevented, the field empties, says so with input and change (source reset), shows the inherited value again and takes focus back.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The field's own value before the reset, written with a point."
+          },
+          "inheritedValue": {
+            "type": "string",
+            "description": "The inherited value it returns to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The form name, empty when the field has none."
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "value": [
+        "empty",
+        "filled"
+      ],
+      "hold": [
+        "idle",
+        "repeating"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "active",
+      "disabled",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "validation beyond the bounds, the step and the digits"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children",
+      "typed and pasted text"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "spinbutton",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab",
+      "ArrowUp",
+      "ArrowDown",
+      "PageUp",
+      "PageDown",
+      "Home",
+      "End",
+      "Enter",
+      "Escape"
+    ],
+    "focus": "One tab stop: the text box with role spinbutton, named by the label (aria-labelledby) or by aria-label, carrying aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext in the page's format, and described by the help or error. ArrowUp/ArrowDown step, PageUp/PageDown move ten steps, Home/End go to the bounds when there are bounds, Enter commits, Escape takes typing back. «−» and «+» are real buttons named «Уменьшить значение» / «Увеличить значение», out of the tab order as the APG pattern has them, controlling the box, disabled at the bounds; a pointer press does not take focus from the box. Pointer focus draws no ring, keyboard focus does."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "3611b57e08b6f316eb3e90510206f7e286ae1a45",
+    "source_artifacts": [
+      {
+        "path": "src/smart/quantity/index.js",
+        "sha256": "e6453c1caa4032ddc1f4c868d092472773ff36ffc842e6f620fe69a092b82534"
+      },
+      {
+        "path": "src/smart/quantity/value.mjs",
+        "sha256": "3c9e7207eac27fab610369c794f21ed0e47cfe1af512dbbdc2d825f06127a435"
+      },
+      {
+        "path": "src/smart/quantity/js/templates/default.js",
+        "sha256": "dfa69cf763975049ba8fc95d294160a736c151f07806e9de98a91cdcb2dfd884"
+      },
+      {
+        "path": "src/smart/quantity/rule.js",
+        "sha256": "aea022cfd341b25305ed212073ab052a0cec61f9ab260fd5641395e8a6a02971"
+      },
+      {
+        "path": "src/smart/quantity/docs.md",
+        "sha256": "c94e5f5f7426d1a7c89d56adb324c52eb2ccf444ba8fa2a1aae26ea070c87540"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not use it for a range picked by dragging: that is sf-range-slider",
+      "Do not read the box's text as the value: read value (a number or null) or the submitted form value"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "methods",
+      "accessibility",
+      "provenance"
+    ],
+    "minimal_example": "<sf-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

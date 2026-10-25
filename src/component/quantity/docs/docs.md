@@ -75,6 +75,13 @@ Direct editing retains the browser's native `input` and `change` events.
 
 ## Focus and geometry
 
+The field is on the size ladder: the box is `--sf-ui-<size>--control-height`
+tall, exactly as an Input of the same size, with the same block padding, and
+the value shares the Input's text line. The steppers are icon buttons one rung
+down (a size `1` field carries size `1/2` steppers) whatever size class the
+markup gives them, and stand as far from the field's side as from its top and
+bottom.
+
 The composite control uses the UI radius token `--sf-radius--ui`, the hairline
 token `--sf-px`, semantic typography and spacing tokens. Pointer activation
 does not leave a focus ring. Keyboard focus is visible on the actual field or
