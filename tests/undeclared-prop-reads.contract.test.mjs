@@ -30,6 +30,14 @@ const declaredProps = (source) => {
   }
   return keys;
 };
+// A component may take its accessors from a mixin it imports (the inherited
+// value seam in src/smart/helpers/inherited-value.js gives inputs, textarea,
+// dropdown and switch their inheritedValue getter): a getter defined there is
+// defined on the component, so the mixins it imports are read alongside it.
+const importedHelpers = (path, source) => [...source.matchAll(/from\s+["'](\.\.\/helpers\/[^"']+?)(?:\.js)?["']/gu)]
+  .map(([, spec]) => resolve(root, path, '..', `${spec}.js`))
+  .filter((file) => existsSync(file))
+  .map((file) => readFileSync(file, 'utf8'));
 const escape = (name) => name.replace(/\$/gu, '\\$');
 const defines = (source, key) =>
   new RegExp(`^\\s+(?:static\\s+)?(?:async\\s+)?(?:get\\s+|set\\s+)?${escape(key)}\\s*\\([^)]*\\)\\s*\\{`, 'mu').test(source)
@@ -53,8 +61,9 @@ test('a component reads a declared prop through a getter or getProp, never off t
     const path = `src/smart/${name}/index.js`;
     if (!existsSync(resolve(root, path))) continue;
     const source = read(path);
+    const mixins = importedHelpers(path, source);
     for (const key of declaredProps(source)) {
-      if (defines(source, key) || defines(base, key)) continue;
+      if (defines(source, key) || defines(base, key) || mixins.some((mixin) => defines(mixin, key))) continue;
       checked += 1;
       const bare = new RegExp(`\\bthis\\??\\.${escape(key)}\\b(?!\\s*=(?!=))`, 'u').test(source)
         || new RegExp(`\\{[^}]*\\b${escape(key)}\\b[^}]*\\}\\s*=\\s*this\\b`, 'u').test(source);
