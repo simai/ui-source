@@ -74,6 +74,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // top bar is gone; 47 with sf-resizer, a panel widened by its edge; 48 with
   // sf-profile-picker; 49 with sf-empty-state;
   // 50 with sf-copy-button; 51 with sf-help-mark;
-  // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity.
-  assert.equal(fixtureCount, 55);
+  // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu.
+  assert.equal(fixtureCount, 56);
 });

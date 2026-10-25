@@ -61,6 +61,12 @@ const DRAW = {
   // its steppers are draw it.
   quantity: {css: ['quantity', 'icon-buttons'], js: 'quantity',
     html: '<sf-quantity label="Количество" value="3" min="0" max="10" size="1"></sf-quantity>'},
+  // The class menu's sheet, drawn by sf-menu as a column and as a row whose
+  // panel is open, so the panel's own variables have a part to reach.
+  menu: {css: ['menu', 'icons', 'icon-buttons', 'smart/smart/menu/css/menu.css'], js: 'menu',
+    html: `<sf-menu label="Разделы" items='[{"id":"a","label":"Обзор","href":"#a"},{"id":"b","label":"Каталог","href":"#b"}]'></sf-menu>`
+      + `<div style="inline-size:900px"><sf-menu id="row" orientation="horizontal" label="Шапка" items='[{"id":"c","label":"Каталог","children":[{"id":"d","label":"Решения","href":"#d"}]},{"id":"e","label":"Контакты","href":"#e"}]'></sf-menu></div>`,
+    open: 'document.getElementById("row").open("c")'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

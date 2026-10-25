@@ -1,0 +1,522 @@
+{
+  "schema_version": 2,
+  "id": "smart.menu",
+  "version": "1.0.0",
+  "title": "Menu",
+  "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "menu",
+    "navigation",
+    "site-navigation",
+    "disclosure",
+    "nav"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive",
+    "navigation"
+  ],
+  "custom_element": "sf-menu",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.menu",
+      "component.badges"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The items, [{id, label, href?, icon?, badge?, current?, disabled?, open?, children?}]: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The item's name in open(id), close(id), toggle(id), current and the events; its place (item-1, item-1-2…) without it. One id names one item in the whole tree: a repeated one is left out with its children."
+            },
+            "label": {
+              "type": "string",
+              "description": "The row's words. Text, never markup."
+            },
+            "href": {
+              "type": "string",
+              "description": "The page the item leads to. An item with neither an address nor children is words in the row's place."
+            },
+            "icon": {
+              "type": "string",
+              "description": "An icon before the label, a name from the icon font."
+            },
+            "badge": {
+              "type": "string",
+              "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
+            },
+            "current": {
+              "type": "boolean",
+              "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Unavailable: a link without an address, a branch the person cannot open or close."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "A column's branch is open at first; a row's panels open only when asked."
+            },
+            "children": {
+              "type": "array",
+              "description": "Nested items, the same shape: an item with them is a branch. The class menu draws four levels; a deeper one is drawn as the fourth.",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "examples": [
+          [
+            {
+              "id": "about",
+              "label": "О компании",
+              "href": "/about/"
+            },
+            {
+              "id": "catalog",
+              "label": "Каталог",
+              "children": [
+                {
+                  "id": "solutions",
+                  "label": "Решения",
+                  "href": "/catalog/solutions/"
+                }
+              ]
+            },
+            {
+              "id": "contacts",
+              "label": "Контакты",
+              "href": "/contacts/",
+              "badge": "3"
+            }
+          ]
+        ]
+      },
+      "orientation": {
+        "type": "string",
+        "default": "vertical",
+        "enum": [
+          "vertical",
+          "horizontal"
+        ],
+        "description": "vertical: a column whose branches open in place; horizontal: the first level in a row, each branch a panel below it (deeper ones to the side), placed by the Framework's geometry."
+      },
+      "appearance": {
+        "type": "string",
+        "default": "default",
+        "enum": [
+          "default",
+          "documentation-tree",
+          "compact"
+        ],
+        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open. Both are columns."
+      },
+      "current": {
+        "type": "string",
+        "default": "",
+        "description": "The id of the item that is the current page: its link gets aria-current=\"page\"."
+      },
+      "current-from-location": {
+        "type": "boolean",
+        "default": false,
+        "description": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
+      },
+      "collapse": {
+        "type": "string",
+        "default": "auto",
+        "enum": [
+          "auto",
+          "always",
+          "none"
+        ],
+        "description": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The navigation's name (aria-label of its <nav>); the element's aria-label, or the one of a <nav> written inside it, when not set."
+      },
+      "toggle-label": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The item's name in open(id), close(id), toggle(id), current and the events; its place (item-1, item-1-2…) without it. One id names one item in the whole tree: a repeated one is left out with its children."
+      },
+      "label": {
+        "type": "string",
+        "description": "The row's words. Text, never markup."
+      },
+      "href": {
+        "type": "string",
+        "description": "The page the item leads to. An item with neither an address nor children is words in the row's place."
+      },
+      "icon": {
+        "type": "string",
+        "description": "An icon before the label, a name from the icon font."
+      },
+      "badge": {
+        "type": "string",
+        "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
+      },
+      "current": {
+        "type": "boolean",
+        "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
+      },
+      "disabled": {
+        "type": "boolean",
+        "description": "Unavailable: a link without an address, a branch the person cannot open or close."
+      },
+      "open": {
+        "type": "boolean",
+        "description": "A column's branch is open at first; a row's panels open only when asked."
+      },
+      "children": {
+        "type": "array",
+        "description": "Nested items, the same shape: an item with them is a branch. The class menu draws four levels; a deeper one is drawn as the fourth.",
+        "items": {
+          "type": "object"
+        }
+      }
+    },
+    "required": [
+      "label"
+    ],
+    "additionalProperties": false
+  },
+  "contracts": {
+    "markup": {
+      "const": "component.menu"
+    },
+    "open_state_owner": {
+      "const": "component"
+    },
+    "navigation_owner": {
+      "const": "host_on_cancel"
+    },
+    "label_markup": {
+      "const": "text_only"
+    }
+  },
+  "methods": {
+    "open": {
+      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu:toggle fires for each branch that changed, source method. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "close": {
+      "summary": "Close the branch with this id; in a row the panels inside it close too. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "toggle": {
+      "summary": "Open the branch if it is closed, close it if it is open. Returns whether anything changed.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "isOpen": {
+      "summary": "Whether the branch with this id is open.",
+      "arguments": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "closeAll": {
+      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "sf-menu:navigate": {
+      "summary": "A link of the menu is followed, before the browser goes. Cancellable: preventDefault() stops the navigation so a host that routes itself (a SPA) changes the page. A press with a modifier key, the middle button or a link to another window is the browser's and sends none.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          },
+          "item": {
+            "type": "object",
+            "description": "The item as the element draws it."
+          }
+        }
+      }
+    },
+    "sf-menu:toggle": {
+      "summary": "A branch opened or closed, by the person (source user) or a method (source method): the branch asked for first, then the ones that closed with it, innermost first. The panel of a collapsed menu sends it with id null.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "user",
+              "method"
+            ]
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "branch": [
+        "open",
+        "closed",
+        "disabled"
+      ],
+      "layout": [
+        "column",
+        "row",
+        "collapsed"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "closed",
+      "active",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "parsing item text as markup",
+      "routing the page"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "navigation",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab",
+      "Enter",
+      "Space",
+      "Escape"
+    ],
+    "focus": "A <nav> named by label, of native links and, for each branch, a native button with aria-expanded and aria-controls; a branch that is also a page has its link and its button side by side in the row. Tab walks the links and the buttons in order; Enter and Space open and close a branch; Escape closes the innermost open panel only -- a row's deepest open panel, the one the focus is in first, else the panel of the collapsed menu's button -- and gives the focus back to its button, holding the shared open-surface mark so a drawer or a modal behind stands back. Focus leaving a row closes its panels. The current page's link has aria-current=\"page\". No role=menu."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile",
+      "ltr",
+      "rtl"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "runnable",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke",
+      "keyboard",
+      "responsive",
+      "a11y"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "25ddde9db1837b124906a3733495a4ece456954c",
+    "source_artifacts": [
+      {
+        "path": "src/smart/menu/index.js",
+        "sha256": "5fd5e213a2d5eeec81c5718a8271d3121b954cd8546c266323e5fd7890d9ebdd"
+      },
+      {
+        "path": "src/smart/menu/items.mjs",
+        "sha256": "1c16a6d1cca129315049a31e0c137bb6f8b702c28cf64e6c56d803374f38b192"
+      },
+      {
+        "path": "src/smart/menu/js/templates/default.js",
+        "sha256": "1b49d6359801d94059102a9d5b9f8877ef98f1da1e1ee5616d8b2ea49f9a8aef"
+      },
+      {
+        "path": "src/smart/menu/scss/_smart__menu.scss",
+        "sha256": "a270cf5ba1aac506788e7682a74cc15b8f51b9a3703d09f6c922bfa06b3ea6ea"
+      },
+      {
+        "path": "src/smart/menu/rule.js",
+        "sha256": "b1b29104b6259d4cf6e9363004fe55a12b969a3cd947e71a678c2cf357441f7d"
+      },
+      {
+        "path": "src/smart/menu/docs.md",
+        "sha256": "a128828a683e61e79ca14758fe8743dadc37139e91a7db115ee3de2802ca1a9a"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-menu for site, section or cabinet navigation that comes from data or from a nested list of links: a header row, a side panel, a documentation tree.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not use it for actions on a selected object: that is sf-context-menu",
+      "Do not add role=menu: it is navigation, a list of links",
+      "Do not put markup in label: it is shown as text",
+      "Do not restyle its rows: they are the class menu's, set its public variables",
+      "Do not use sf-admin-menu for site navigation: it is the Pro admin menu"
+    ],
+    "required_reads": [
+      "inputs",
+      "item_contract",
+      "events",
+      "methods",
+      "accessibility",
+      "provenance"
+    ],
+    "minimal_example": "<sf-menu label=\"Разделы\" orientation=\"horizontal\" items='[{\"id\":\"about\",\"label\":\"О компании\",\"href\":\"/about/\"},{\"id\":\"catalog\",\"label\":\"Каталог\",\"children\":[{\"id\":\"solutions\",\"label\":\"Решения\",\"href\":\"/catalog/solutions/\"}]}]'></sf-menu>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

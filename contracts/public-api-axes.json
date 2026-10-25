@@ -69,6 +69,13 @@
       "note": "the class accordion's appearances by name: default is the filled surface, outline and flush its two modifiers."
     },
     {
+      "component": "menu",
+      "axis": "appearance",
+      "legacy": [],
+      "state": "canonical_from_the_start",
+      "note": "the class menu's presentations by name: default, documentation-tree and compact, its two modifiers."
+    },
+    {
       "component": "button-group",
       "axis": "appearance",
       "legacy": [],

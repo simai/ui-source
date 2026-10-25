@@ -1374,6 +1374,87 @@
           "since": "2026-10-25"
         }
       ]
+    },
+    {
+      "component": "menu",
+      "selector": ".sf-menu",
+      "variables": [
+        {
+          "name": "--sf-menu-background-color",
+          "role": "background",
+          "summary": "The fill behind the whole list; none by default.",
+          "default": "transparent",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-menu-gap",
+          "role": "gap",
+          "summary": "The space between the rows of a list; the documentation tree keeps its own closer one.",
+          "default": "var(--sf-space-1/3)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-menu-item-color",
+          "role": "color",
+          "summary": "The colour of a row's words and icon at rest; a disabled row keeps its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-menu-item-background-color",
+          "role": "background",
+          "summary": "A row's fill at rest; hover and an open branch keep their own.",
+          "default": "var(--sf-transparent)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-menu-item-border-color",
+          "role": "border-color",
+          "summary": "The colour of a row's hairline border at rest; hover and an open branch keep their own.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-menu-item-radius",
+          "role": "radius",
+          "summary": "A row's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-menu-submenu-background-color",
+          "role": "background",
+          "summary": "The fill of a horizontal menu's panel, which the counters in it are ringed with.",
+          "default": "var(--sf-elevation-2--surface)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "orientation"
+          ]
+        },
+        {
+          "name": "--sf-menu-submenu-border-color",
+          "role": "border-color",
+          "summary": "The colour of a horizontal menu's panel border.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "orientation"
+          ]
+        },
+        {
+          "name": "--sf-menu-submenu-radius",
+          "role": "radius",
+          "summary": "A horizontal menu's panel corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "orientation"
+          ]
+        }
+      ]
     }
   ]
 }
