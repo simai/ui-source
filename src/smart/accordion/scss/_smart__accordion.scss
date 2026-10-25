@@ -1,0 +1,29 @@
+// sf-accordion draws the class accordion's markup, so the class sheet
+// (src/component/accordion) draws it. This sheet holds only what the class has
+// no part for: an icon before the title, a badge after it, and a disabled
+// section. Nothing the class draws is redrawn here.
+
+// The icon before the title is the class's icon box -- a line tall, the
+// icon colour -- but it is not the marker: it does not turn when the section
+// opens, in either direction.
+.sf-accordion .sf-accordion-heading .sf-accordion-trigger .sf-icon.sf-accordion-lead {
+  transform: none;
+}
+
+// A badge stands after the title, never squeezed by it.
+.sf-accordion .sf-accordion-trigger .sf-accordion-badge {
+  flex: 0 0 auto;
+}
+
+// A disabled section: its header is not a control, and says so as every
+// disabled control does -- the disabled colour, nothing to press, no hover.
+.sf-accordion.sf-accordion--disabled .sf-accordion-trigger:disabled {
+  --sf-icon--color: var(--sf-on-disable);
+
+  color: var(--sf-on-disable);
+  cursor: not-allowed;
+}
+
+.sf-accordion.sf-accordion--disabled .sf-accordion-trigger:disabled:is(:hover, :active) {
+  background-color: transparent;
+}

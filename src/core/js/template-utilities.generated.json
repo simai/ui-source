@@ -1,4 +1,10 @@
 {
+  "cl-accordion": [
+    "display/default",
+    "flex-direction/default",
+    "gap/default",
+    "position/default"
+  ],
   "cl-alert": [
     "display/default",
     "flex-direction/default",

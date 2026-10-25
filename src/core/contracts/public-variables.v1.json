@@ -1227,6 +1227,80 @@
       ]
     },
     {
+      "component": "accordion",
+      "selector": ".sf-accordion",
+      "variables": [
+        {
+          "name": "--sf-accordion-background-color",
+          "role": "background",
+          "summary": "A section's fill in the default appearance; outline and flush have none, and hover and pressed keep their own.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-accordion-border-color",
+          "role": "border-color",
+          "summary": "The colour of the outline appearance's border and of the line under a flush section.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-accordion-border-width",
+          "role": "border-width",
+          "summary": "The thickness of that border and line, and of the divider under an open section's header.",
+          "default": "var(--sf-px)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-accordion-radius",
+          "role": "radius",
+          "summary": "A section's corner radius; a flush section stays square.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-10-25",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-accordion-title-color",
+          "role": "color",
+          "summary": "The colour of a section's title in its header.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-accordion-content-color",
+          "role": "color",
+          "summary": "The colour of a section's content text.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-accordion-icon-color",
+          "role": "color",
+          "summary": "The colour of the marker (the chevron, or plus and minus) and of an icon before the title; a disabled section keeps its own.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-25"
+        },
+        {
+          "name": "--sf-accordion-divider-color",
+          "role": "indicator-color",
+          "summary": "The colour of the line under an open section's header, and under a single section's.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-25"
+        }
+      ]
+    },
+    {
       "component": "quantity",
       "selector": ".sf-quantity",
       "variables": [

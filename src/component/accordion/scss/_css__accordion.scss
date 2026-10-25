@@ -1,10 +1,13 @@
 @use 'var__accordion' as *;
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-accordion {
-  --sf-accordion--radius: var(--sf-radius--surface);
-  --sf-accordion--border-width: var(--sf-px);
-  --sf-accordion--border-color: var(--sf-outline-variant);
-  --sf-accordion--background-color: var(--sf-surface-container);
+  /* The public variables (src/core/contracts/public-variables.v1.json) wrap
+     the values the accordion drew before them, so a page that sets none sees
+     no change. Hover, pressed and focus write their own. */
+  --sf-accordion--radius: var(--sf-accordion-radius, var(--sf-radius--surface));
+  --sf-accordion--border-width: var(--sf-accordion-border-width, var(--sf-px));
+  --sf-accordion--border-color: var(--sf-accordion-border-color, var(--sf-outline-variant));
+  --sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   --sf-accordion--trigger-padding-block: var(--sf-space-2);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
@@ -115,7 +118,7 @@
   border: 0;
   box-sizing: border-box;
   appearance: none;
-  color: var(--sf-accordion-title--color, var(--sf-on-surface));
+  color: var(--sf-accordion-title--color, var(--sf-accordion-title-color, var(--sf-on-surface)));
   background-color: transparent;
   font: inherit;
   text-align: start;
@@ -136,7 +139,7 @@
 .sf-accordion-trigger[aria-expanded='true']::after {
   background-color: var(
     --sf-accordion-divider--color,
-    var(--sf-outline-variant)
+    var(--sf-accordion-divider-color, var(--sf-outline-variant))
   );
 }
 
@@ -166,7 +169,7 @@
 
 .sf-accordion .sf-icon {
   flex: 0 0 auto;
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-variant)));
   font-size: var(--sf-accordion--icon-size);
   height: var(--sf-accordion--icon-size);
   width: var(--sf-accordion--icon-size);
@@ -195,7 +198,7 @@
 
 .sf-accordion .sf-accordion-content {
   padding: var(--sf-accordion--content-padding);
-  color: var(--sf-accordion-content--color, var(--sf-on-surface-variant));
+  color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface-variant)));
   font-family: var(--sf-text--family);
   font-size: var(--sf-accordion--text-size);
   font-weight: var(--sf-font-weight-regular);
@@ -220,7 +223,7 @@
 .sf-accordion.sf-accordion--static .sf-accordion-trigger::after {
   background-color: var(
     --sf-accordion-divider--color,
-    var(--sf-outline-variant)
+    var(--sf-accordion-divider-color, var(--sf-outline-variant))
   );
 }
 
