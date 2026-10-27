@@ -207,6 +207,8 @@ for (const width of WIDTHS) {
         if (!(m.gap > 0)) failures.push(`${where} ${m.impl}: no gap after the mark (${m.gap})`);
         if (!(m.mark?.[0] > 0 && m.mark?.[1] > 0)) failures.push(`${where} ${m.impl}: mark ${JSON.stringify(m.mark)}`);
         if (kind === 'radio' && !(m.box[0] > 2 * m.border)) failures.push(`${where} ${m.impl}: ring ${m.box[0]}px wide, border ${m.border}`);
+        // The selected mark is half its ring at every size (it was 12px at all three).
+        if (kind === 'radio' && Math.abs(m.mark[0] - m.box[0] / 2) > 0.5) failures.push(`${where} ${m.impl}: selected mark ${m.mark[0]}px, ring ${m.box[0]}px`);
         if (kind === 'checkbox') {
           // The help mark is the line; the box mark fills the box inside its border.
           if (m.help?.[1] !== m.line) failures.push(`${where} ${m.impl}: help ${JSON.stringify(m.help)} vs line ${m.line}`);
