@@ -236,7 +236,9 @@ try {
       await page.evaluate(() => { document.querySelector('#reset textarea').value = 'А\nБ\nВ\nГ'; });
       await settle(page);
       const beforeReset = await height('#reset');
-      await page.evaluate(() => document.querySelector('#form').reset());
+      // The form's own reset: a form-associated field with id="reset" is a
+      // named property of the form (standard 1.3.8 §17.1), as a native one is.
+      await page.evaluate(() => HTMLFormElement.prototype.reset.call(document.querySelector('#form')));
       await page.waitForTimeout(50);
       await settle(page);
       const afterReset = await height('#reset');

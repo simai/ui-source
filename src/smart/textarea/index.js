@@ -124,6 +124,8 @@ class SfTextarea extends FormField(TextareaElement) {
 
     return this.createTemplateContext({
       ...props,
+      // The size the field draws: a retired size (1/3) is the one it keeps.
+      size: this.size,
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
       // The host is the form control where the browser has ElementInternals,
       // so the textarea carries no name (§17.1 item 6).

@@ -142,6 +142,9 @@ class SfInput extends FormField(InputElement) {
 
     return this.createTemplateContext({
       ...props,
+      // The size the field draws: a retired size (1/3) is the one it keeps,
+      // as the props' closed list alone would read it as the default.
+      size: this.size,
       leftIcon: this.iconStart,
       rightText: this.textEnd,
       // Resolved names the template reads (contracts/template-context.json).

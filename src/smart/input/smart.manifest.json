@@ -545,7 +545,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input/index.js",
-        "sha256": "b4a8310745787fe979e56d43e4b3b477593de1fd61325478ea9b71170a60f484"
+        "sha256": "633c01ff56897f1bc88255be930541d72e6b0bcd9f807a9b29bee6a28e5f6269"
       },
       {
         "path": "src/smart/input/rule.js",
