@@ -1,0 +1,18 @@
+{
+  "title": "Quantity",
+  "runtime": {
+    "decrement": "Decrease value",
+    "increment": "Increase value",
+    "range-underflow": "The value must be at least {min}",
+    "range-overflow": "The value must be at most {max}",
+    "step-mismatch": "The value must be a multiple of {step}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "inherited",
+      "reset": "Reset to inherited",
+      "described": "Inherited: {value}"
+    }
+  }
+}

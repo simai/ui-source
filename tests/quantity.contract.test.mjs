@@ -76,11 +76,15 @@ test('quantity: a step lands inside the bounds, and an empty field starts from z
 });
 
 test('quantity: it is a form field like sf-input, with the inherited value', () => {
-  assert.match(source, /class SfQuantity extends InheritedValueField\(SfBaseElement\)/u);
-  for (const prop of ['label', 'hint', 'placeholder', 'required', 'disabled', 'readonly', 'error', 'invalid', 'min', 'max', 'step', 'precision']) {
-    assert.match(source, new RegExp(`\\n      ${prop}: \\{`, 'u'), prop);
+  // Built from its component.json (standard 1.3.8 §4): the settings are the
+  // manifest's, `error` is a dated alias of `invalid` (§17.2).
+  assert.match(source, /base: InheritedValueField\(SfBaseElement\),/u);
+  assert.match(source, /class SfQuantity extends FormField\(QuantityElement\)/u);
+  const declared = JSON.parse(read('src/smart/quantity/component.json'));
+  for (const prop of ['label', 'hint', 'placeholder', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'min', 'max', 'step', 'precision']) {
+    assert.ok(declared.settings[prop], prop);
   }
-  assert.match(source, /errorMessage: \{attribute: 'error-message', default: ''\}/u);
+  assert.ok(JSON.parse(read('src/smart/quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
   assert.match(source, /inheritedValue: \{attribute: 'inherited-value', default: ''\}/u);
   assert.match(source, /ariaLabel: \{attribute: 'aria-label', default: ''\}/u);
   assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-quantity'\); \}/u);
@@ -111,9 +115,15 @@ test('quantity: the control is a WAI-ARIA spinbutton and the steppers are named 
   assert.match(stepper, /aria-label=\$\{down \? context\.decrementLabel : context\.incrementLabel\}/u);
   assert.match(stepper, /aria-controls=\$\{field\.controlId\}/u);
   assert.match(stepper, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
-  // The words are the class component's, in both languages.
-  assert.match(source, /en: \{decrement: 'Decrease value', increment: 'Increase value'\},\n  ru: \{decrement: 'Уменьшить значение', increment: 'Увеличить значение'\},/u);
-  assert.match(source, /pageText\(QUANTITY_TEXT, 'decrement', this, 'sf-quantity'\)/u);
+  // The words are the class component's, in both languages, in the language
+  // files (standard 1.3.8 §11); the labels default to them.
+  const en = JSON.parse(read('src/smart/quantity/lang/en.json')).runtime;
+  const ru = JSON.parse(read('src/smart/quantity/lang/ru.json')).runtime;
+  assert.deepEqual([en.decrement, en.increment], ['Decrease value', 'Increase value']);
+  assert.deepEqual([ru.decrement, ru.increment], ['Уменьшить значение', 'Увеличить значение']);
+  const settings = JSON.parse(read('src/smart/quantity/component.json')).settings;
+  assert.equal(settings['decrement-label']['default-from'], 'runtime.decrement');
+  assert.equal(settings['increment-label']['default-from'], 'runtime.increment');
   // The APG keys.
   for (const key of ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', 'Enter', 'Escape']) {
     assert.ok(source.includes(key), key);
@@ -132,7 +142,8 @@ test('quantity: input and change on the host with one detail shape; the box\'s o
   assert.match(source, /onNativeInput\(event\) \{\n    event\.stopPropagation\(\);/u);
   assert.match(source, /onNativeChange\(event\) \{\n    event\.stopPropagation\(\);/u);
   // Set from code is not a change.
-  const setValue = source.slice(source.indexOf('  setValue(next) {'), source.indexOf('  clear() {'));
+  const setValue = source.slice(source.indexOf('  setValue(next) {'), source.indexOf('  // ---- The form'));
+  assert.ok(setValue.length > 40, 'the setter is found');
   assert.doesNotMatch(setValue, /dispatchEvent|_emit/u);
   // A hold sends input per step and one change when it ends.
   assert.match(source, /this\.stepBy\(direction, 'button', \{change: false\}\)/u);
@@ -183,8 +194,9 @@ test('quantity: the public variables wrap the values the class sheet drew before
   const contract = JSON.parse(read('src/core/contracts/public-variables.v1.json'));
   const entry = contract.components.find((one) => one.component === 'quantity');
   assert.equal(entry.selector, '.sf-quantity');
-  assert.equal(entry.variables.length, 9);
-  for (const variable of entry.variables) assert.equal(variable.since, '2026-10-25', variable.name);
+  // Nine from 2026-10-25, and the invalid state's own (standard 1.3.8 §6).
+  assert.equal(entry.variables.length, 10);
+  for (const variable of entry.variables) assert.equal(variable.since, variable.state ? '2026-10-27' : '2026-10-25', variable.name);
   for (const line of [
     '--sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-0));',
     '--sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;',

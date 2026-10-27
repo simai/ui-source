@@ -1,0 +1,18 @@
+{
+  "title": "Количество",
+  "runtime": {
+    "decrement": "Уменьшить значение",
+    "increment": "Увеличить значение",
+    "range-underflow": "Значение должно быть не меньше {min}",
+    "range-overflow": "Значение должно быть не больше {max}",
+    "step-mismatch": "Значение должно быть кратно {step}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "наследуется",
+      "reset": "Сбросить к наследуемому",
+      "described": "Наследуется: {value}"
+    }
+  }
+}

@@ -65,10 +65,7 @@ export function renderQuantityTemplate(context) {
 
   return html`
     <div class=${rootClasses.join(' ')}
-         style=${context.rootStyle || nothing}
-         @pointerdown=${() => component.onPointerFocus()}
-         @keydown=${() => component.onKeyboardFocus()}
-         @focusout=${(event) => component.onFocusOut(event)}>
+         style=${context.rootStyle || nothing}>
       ${hasLabel
         ? html`<label class="sf-quantity-label ${LAYOUT.label}" for=${field.controlId}>${labelContent}</label>`
         : nothing}

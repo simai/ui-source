@@ -27,13 +27,30 @@
 // groups with it). The value is committed on Enter and when the field loses
 // focus: then it is rounded to the field's digits, clamped to the bounds and
 // written back in the page's format.
+//
+// Since standard simai.smart-component 1.3.8 it is built from its
+// component.json (§3, §4, §17, §20): the settings are made by
+// core/js/element-manifest.js, the words are lang/<locale>.json, clear,
+// step-up, step-down and set-error are actions that answer an outcome (§4.4),
+// `error` is a dated alias of `invalid` (§17.2) and sf-field:reset of
+// sf-field-reset (aliases.json). The host is the form control through
+// ElementInternals: it submits the number with a point (§17.1 item 2),
+// reports value-missing, range and step validity, and says on itself when
+// the value stands at a bound (data-at-min, data-at-max, §5.3,
+// simai/ui-source#46 item 4).
 import SfBaseElement from '../../core/js/smart-base';
-import {pageLocale, pageText} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {pageLocale} from '../../core/js/page-language';
 import {createFieldContract} from '../../component/field-contract';
-import {FIELD_SIZES, fieldSize} from '../../component/field-size';
+import {fieldSize} from '../../component/field-size';
 import {bindFormReset} from '../../component/form-reset-helper';
 import {InheritedValueField} from '../helpers/inherited-value';
+import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderQuantityTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import {
   clamp,
   formValue,
@@ -46,13 +63,6 @@ import {
   stepFrom,
 } from './value.mjs';
 
-// Every word this component says. A product adds any other language through
-// SF.language.register('sf-quantity', code, words).
-const QUANTITY_TEXT = {
-  en: {decrement: 'Decrease value', increment: 'Increase value'},
-  ru: {decrement: 'Уменьшить значение', increment: 'Увеличить значение'},
-};
-
 // A held stepper waits, then repeats: long enough that a click is one step,
 // fast enough that a hundred steps take a few seconds.
 const REPEAT_DELAY = 400;
@@ -60,31 +70,51 @@ const REPEAT_INTERVAL = 60;
 // PageUp and PageDown move this many steps unless the field names its own.
 const PAGE_STEPS = 10;
 
-class SfQuantity extends InheritedValueField(SfBaseElement) {
+// The actions (§4.4): each answers an outcome, and none is a person's change,
+// so none sends an event, as a native field's stepUp() does not.
+const actions = {
+  clear() {
+    this.setValue(null);
+  },
+  'step-up'({count} = {}) {
+    this.setValue(stepFrom(this.currentValue(), Number(count) || 1, this.stepOptions()));
+  },
+  'step-down'({count} = {}) {
+    this.setValue(stepFrom(this.currentValue(), -(Number(count) || 1), this.stepOptions()));
+  },
+  // The error message shown in place of the hint, and a custom error the form
+  // will not submit over (§17.2: it used to paint only). An empty message
+  // clears both.
+  'set-error'({message} = {}) {
+    const text = String(message ?? '');
+    if (text) {
+      this.setAttribute('error-message', text);
+      this.setAttribute('invalid', '');
+    } else {
+      this.removeAttribute('error-message');
+      this.removeAttribute('invalid');
+    }
+    this.setCustomValidity(text);
+  },
+};
+
+const QuantityElement = elementFromManifest(manifest, {
+  base: InheritedValueField(SfBaseElement),
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+  actions,
+});
+
+class SfQuantity extends FormField(QuantityElement) {
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
+      // The value's attribute is its default (§4.3); observed, so writing it
+      // moves the field. The manifest's value has no default (empty is no
+      // number), so the generated props leave it out.
       value: {default: ''},
-      name: {default: ''},
-      label: {default: ''},
-      hint: {default: ''},
-      placeholder: {default: ''},
-      min: {default: ''},
-      max: {default: ''},
-      step: {default: '1'},
-      pageStep: {attribute: 'page-step', default: ''},
-      precision: {default: ''},
-      grouping: {type: Boolean, default: true},
-      locale: {default: ''},
-      size: {default: '1', values: FIELD_SIZES},
-      required: {type: Boolean, default: false},
-      disabled: {type: Boolean, default: false},
-      readonly: {type: Boolean, default: false},
-      error: {type: Boolean, default: false},
-      invalid: {type: Boolean, default: false},
-      errorMessage: {attribute: 'error-message', default: ''},
-      decrementLabel: {attribute: 'decrement-label', default: ''},
-      incrementLabel: {attribute: 'increment-label', default: ''},
       // The control's name when no label is drawn: a field renderer's panel
       // prints the label beside the field (tests/field-control-accessible-name).
       ariaLabel: {attribute: 'aria-label', default: ''},
@@ -132,18 +162,7 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
   }
 
   get size() { return fieldSize(this.getAttribute('size') || '1', 'sf-quantity'); }
-  get name() { return this.getAttribute('name') || ''; }
-  get label() { return this.getAttribute('label') || ''; }
-  get hint() { return this.getAttribute('hint') || ''; }
-  get placeholder() { return this.getAttribute('placeholder') || ''; }
-  get required() { return this.getBooleanAttr('required', false); }
-  get disabled() { return this.getBooleanAttr('disabled', false); }
-  get readonly() { return this.getBooleanAttr('readonly', false); }
-  get error() { return this.getBooleanAttr('error', false); }
-  get invalid() { return this.getBooleanAttr('invalid', false); }
-  get errorMessage() { return this.getAttribute('error-message') || ''; }
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }
-  get grouping() { return this.getBooleanAttr('grouping', true); }
   get locale() { return this.getAttribute('locale') || pageLocale(this); }
 
   // The bounds: a number, or null when the field has none on that side.
@@ -168,9 +187,6 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
     if (own !== null && own >= 0) return Math.min(20, Math.floor(own));
     return inferPrecision(this.getAttribute('step') || '1');
   }
-
-  get decrementLabel() { return this.getAttribute('decrement-label') || pageText(QUANTITY_TEXT, 'decrement', this, 'sf-quantity'); }
-  get incrementLabel() { return this.getAttribute('increment-label') || pageText(QUANTITY_TEXT, 'increment', this, 'sf-quantity'); }
 
   get interactive() {
     return !this.disabled && !this.readonly;
@@ -228,33 +244,39 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
     this._reported = this._value;
     this._committed = this._value;
     this.requestComponentUpdate('value');
+    this.syncControlState();
     return this;
   }
 
-  clear() {
-    return this.setValue(null);
+  // ---- The form (§17.1, §17.2) ---------------------------------------------
+
+  // The number with a point and no grouping, '' when empty; nothing while
+  // disabled.
+  sfFormValue() {
+    if (this.disabled) return null;
+    return this.formValue;
   }
 
-  // Steps from code, like a native field's stepUp(): no event.
-  stepUp(count = 1) {
-    return this.setValue(stepFrom(this.currentValue(), Number(count) || 1, this.stepOptions()));
-  }
-
-  stepDown(count = 1) {
-    return this.setValue(stepFrom(this.currentValue(), -(Number(count) || 1), this.stepOptions()));
-  }
-
-  // The error message shown in place of the hint, or none, as sf-image-field's.
-  setError(message = '') {
-    const text = String(message ?? '');
-    if (text) {
-      this.setAttribute('error-message', text);
-      this.setAttribute('invalid', '');
-    } else {
-      this.removeAttribute('error-message');
-      this.removeAttribute('invalid');
+  // value-missing is the box's own (required, and empty -- an inherited value
+  // is a hint and does not count, §20.2); the range and the step are read off
+  // the value, which a person may type past a bound until the commit clamps it.
+  sfSyncFormState() {
+    this.sfSyncForm();
+    const value = this.value;
+    const own = {};
+    if (value !== null) {
+      if (this.min !== null && value < this.min) own.rangeUnderflow = this.sfWord('range-underflow', {vars: {min: formatNumber(this.min, this.numberOptions)}});
+      if (this.max !== null && value > this.max) own.rangeOverflow = this.sfWord('range-overflow', {vars: {max: formatNumber(this.max, this.numberOptions)}});
+      const base = this.min ?? 0;
+      const steps = (value - base) / this.step;
+      if (Math.abs(steps - Math.round(steps)) > 1e-7) own.stepMismatch = this.sfWord('step-mismatch', {vars: {step: formatNumber(this.step, this.numberOptions)}});
     }
-    return this;
+    syncFieldValidity(this, this.getInputElement(), own);
+  }
+
+  // The browser's restore of a form (back, reload): the submitted number.
+  formStateRestoreCallback(state) {
+    if (typeof state === 'string') this.setValue(state);
   }
 
   stepOptions() {
@@ -547,20 +569,9 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
 
   // ---- Focus look -------------------------------------------------------------
 
-  // The class sheet draws the field's ring for the keyboard and none for a
-  // pointer, by the root's sf-quantity--pointer-focus, as its own binder sets it.
-  onPointerFocus() {
-    this.querySelector(':scope .sf-quantity')?.classList.add('sf-quantity--pointer-focus');
-  }
-
-  onKeyboardFocus() {
-    this.querySelector(':scope .sf-quantity')?.classList.remove('sf-quantity--pointer-focus');
-  }
-
-  onFocusOut(event) {
-    if (event.relatedTarget && this.contains(event.relatedTarget)) return;
-    this.querySelector(':scope .sf-quantity')?.classList.remove('sf-quantity--pointer-focus');
-  }
+  // The ring follows :focus-visible (standard 1.3.8 §5.3, §16 item 9): the
+  // element writes no pointer-focus class. The class component's binder still
+  // does, for markup written by hand.
 
   // ---- Drawing ----------------------------------------------------------------
 
@@ -591,8 +602,12 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
     const [minus, plus] = this.querySelectorAll(':scope .sf-quantity-count');
     if (minus) minus.disabled = !this.interactive || this.atMin(value);
     if (plus) plus.disabled = !this.interactive || this.atMax(value);
+    // At a bound, said on the host (§5.3, simai/ui-source#46 item 4).
+    this.sfHostState('data-at-min', this.atMin(value));
+    this.sfHostState('data-at-max', this.atMax(value));
     const hidden = this.querySelector(':scope .sf-quantity-value');
     if (hidden) hidden.value = this.formValue;
+    this.sfSyncFormState();
   }
 
   afterRender(callback) {
@@ -629,7 +644,7 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
     const field = createFieldContract(this, {
       prefix: 'sf-quantity',
       required: this.required,
-      invalid: this.invalid || this.error,
+      invalid: this.invalid,
       hint: this.hint,
       errorMessage: this.errorMessage,
     });
@@ -646,7 +661,9 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
       text: this.text,
       formValue: this.formValue,
       size: this.size,
-      name: this.name,
+      // The host is the form control where the browser has ElementInternals:
+      // no hidden input then (§17.1 item 6).
+      name: innerControlName(this, this.name),
       label: this.label,
       hint: this.hint,
       placeholder: this.placeholder,
@@ -660,7 +677,6 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
       required: this.required,
       disabled: this.disabled,
       readonly: this.readonly,
-      error: this.error,
       invalid: this.invalid,
       errorMessage: this.errorMessage,
       ariaLabel: this.ariaLabel,

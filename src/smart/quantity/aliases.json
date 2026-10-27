@@ -1,0 +1,40 @@
+{
+  "$comment": "Dated aliases of sf-quantity for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-quantity",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-quantity",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1",
+      "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+    },
+    {
+      "from": "error",
+      "to": "invalid",
+      "kind": "setting",
+      "section": "§17.2",
+      "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
+      "component": "sf-quantity",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "sf-field:reset",
+      "to": "sf-field-reset",
+      "kind": "event",
+      "component": "sf-quantity",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, §20.2",
+      "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first"
+    }
+  ]
+}

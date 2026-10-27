@@ -127,6 +127,7 @@
 | `--sf-quantity-padding-block` | Отступ внутри поля сверху и снизу. | `calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))`; зависит от размера |
 | `--sf-quantity-gap` | Промежуток между кнопками и числом. | `var(--sf-space-2)` |
 | `--sf-quantity-stepper-radius` | Скругление углов «−» и «+». | `var(--sf-radius-1\/2)` |
+| `--sf-quantity-invalid-border-color` | Рамка поля в состоянии ошибки. | `var(--sf-error)` |
 
 ```css
 .order-form .sf-quantity {

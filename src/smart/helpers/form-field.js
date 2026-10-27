@@ -31,9 +31,11 @@ export function innerControlName(component, name) {
 
 /**
  * The host's validity from its inner control: the control's failed flags and
- * message, or the custom error the page set, or valid.
+ * message, or the custom error the page set, or valid. `own` adds flags the
+ * component reads itself, {flag: message} (a number field's range and step,
+ * which its text box cannot know).
  */
-export function syncFieldValidity(component, control) {
+export function syncFieldValidity(component, control, own = {}) {
   const internals = component?.sfInternals;
   if (!internals) return;
   try {
@@ -44,10 +46,16 @@ export function syncFieldValidity(component, control) {
     }
     const validity = control?.validity;
     const flags = {};
-    if (validity && !validity.valid) {
+    let message = '';
+    if (validity && !validity.valid && control.willValidate !== false) {
       for (const flag of VALIDITY_FLAGS) if (validity[flag]) flags[flag] = true;
+      message = control.validationMessage;
     }
-    if (Object.keys(flags).length) internals.setValidity(flags, control.validationMessage || ' ', control);
+    for (const [flag, text] of Object.entries(own || {})) {
+      flags[flag] = true;
+      message ||= String(text || '');
+    }
+    if (Object.keys(flags).length) internals.setValidity(flags, message || ' ', control || undefined);
     else internals.setValidity({});
   } catch (error) {
     component.reportComponentError?.(error, 'validity');

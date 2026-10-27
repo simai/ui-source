@@ -350,7 +350,7 @@
 
 .sf-quantity.error .sf-quantity-wrap {
   --sf-quantity-wrap--background-color: var(--sf-transparent-for-focus);
-  --sf-quantity-wrap--border-color: var(--sf-error);
+  --sf-quantity-wrap--border-color: var(--sf-quantity-invalid-border-color, var(--sf-error));
 }
 
 .sf-quantity.error .sf-icon {

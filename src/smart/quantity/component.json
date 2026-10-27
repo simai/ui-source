@@ -1,0 +1,406 @@
+{
+  "$comment": "The source of sf-quantity's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/quantity (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.quantity",
+  "tag": "sf-quantity",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "field",
+  "traits": [
+    "field-inherit@1"
+  ],
+  "settings": {
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "hint": {
+      "type": "string",
+      "default": ""
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "min": {
+      "type": "number",
+      "nullable": true
+    },
+    "max": {
+      "type": "number",
+      "nullable": true
+    },
+    "step": {
+      "type": "number",
+      "default": 1
+    },
+    "page-step": {
+      "type": "number",
+      "nullable": true
+    },
+    "precision": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "max": 20,
+      "nullable": true
+    },
+    "grouping": {
+      "type": "boolean",
+      "default": true
+    },
+    "locale": {
+      "type": "string",
+      "default": ""
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error-message": {
+      "type": "string",
+      "default": ""
+    },
+    "decrement-label": {
+      "type": "string",
+      "default-from": "runtime.decrement"
+    },
+    "increment-label": {
+      "type": "string",
+      "default-from": "runtime.increment"
+    }
+  },
+  "values": {
+    "value": {
+      "type": "number",
+      "nullable": true
+    }
+  },
+  "events": {
+    "change": {
+      "carries": "native",
+      "x-detail": {
+        "value": {
+          "type": "number",
+          "nullable": true
+        },
+        "text": "string",
+        "name": "string",
+        "source": {
+          "type": "enum",
+          "values": [
+            "typing",
+            "commit",
+            "button",
+            "keyboard",
+            "reset"
+          ]
+        }
+      },
+      "$comment": "Sent on the host as `change` with a detail: once per commit (Enter, leaving the box, a stepper press or a held run, a key) and for a reset to the inherited value (§17.3)."
+    },
+    "input": {
+      "carries": "native",
+      "x-detail": {
+        "value": {
+          "type": "number",
+          "nullable": true
+        },
+        "text": "string",
+        "name": "string",
+        "source": {
+          "type": "enum",
+          "values": [
+            "typing",
+            "commit",
+            "button",
+            "keyboard",
+            "reset"
+          ]
+        }
+      },
+      "$comment": "Sent on the host as `input` with a detail each time the number moves; the text box's own input and change stop at the host."
+    }
+  },
+  "actions": {
+    "clear": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "step-up": {
+      "with": {
+        "count": {
+          "type": "number",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "step-down": {
+      "with": {
+        "count": {
+          "type": "number",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "set-error": {
+      "with": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ]
+    }
+  },
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "readonly": "readonly",
+    "validity": [
+      "value-missing",
+      "range-underflow",
+      "range-overflow",
+      "step-mismatch",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowUp": "step:+1",
+      "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
+      "Home": "to:min",
+      "End": "to:max",
+      "Enter": "commit",
+      "Escape": "revert"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "spinbutton",
+    "name": {
+      "from": [
+        "label",
+        "slot:label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowUp": "step:+1",
+      "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
+      "Home": "to:min",
+      "End": "to:max",
+      "Enter": "commit",
+      "Escape": "revert"
+    }
+  },
+  "host-states": {
+    "data-at-min": "boolean",
+    "data-at-max": "boolean",
+    "data-inherited": "boolean"
+  },
+  "css-variables": {
+    "--sf-quantity-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-quantity-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-quantity-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-quantity-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-stepper-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-quantity-invalid-border-color": {
+      "type": "color",
+      "state": "invalid"
+    }
+  },
+  "x-summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
+  "x-source": {
+    "package": "framework",
+    "folder": "quantity",
+    "manifest": "simai/ui-source@5100227 src/smart/quantity/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/quantity.component.json"
+  },
+  "x-words": [
+    "label",
+    "hint",
+    "placeholder",
+    "decrement-label",
+    "increment-label"
+  ],
+  "x-target": {
+    "replaced": {
+      "settings": [
+        "min",
+        "max",
+        "step"
+      ],
+      "values": [
+        "value"
+      ],
+      "events": [
+        "change"
+      ]
+    }
+  },
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children",
+        "typed and pasted text"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "validation beyond the bounds, the step and the digits"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use it for a range picked by dragging: that is sf-range-slider",
+        "Do not read the box's text as the value: read value (a number or null) or the submitted form value"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "methods",
+        "accessibility",
+        "provenance"
+      ],
+      "minimal_example": "<sf-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "number-type: page-step and precision are numbers with nullable (no number = the default: ten steps, the step's digits); precision is an integer 0..20, as the code clamps.",
+    "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
+    "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (count 2 of 0..99) plus a price with two digits, a bound reached, invalid with a message, disabled, read-only, inherited and size 2.",
+    "css-variables: the nine public variables of public-variables.v1.json plus --sf-quantity-invalid-border-color for the invalid state: ten (§6).",
+    "host-states: data-at-min and data-at-max say on the host that the value stands at a bound (§5.3, simai/ui-source#46 item 4), beside the trait's data-inherited.",
+    "events: input and change keep their native names and carry a detail {value, text, name, source}; the manifest says carries native (the DOM name) and x-detail (the fields), since a declared carries object would derive sf-quantity-input (§8).",
+    "actions: clear, step-up, step-down and the new set-error {message} answer an outcome (§4.4: chaining is not part of the interface; they returned the element). set-error now also sets custom-error, so the form does not submit over it (§17.2; it used to paint only, stand 15 A2).",
+    "form.validity: value-missing from the box, range-underflow, range-overflow and step-mismatch read off the value (a person may type past a bound until the commit clamps it), and custom-error.",
+    "form: the host submits the number with a point through ElementInternals; the hidden input is not drawn then and the box has no name (§17.1 items 2, 6).",
+    "focus: the pointer-focus class is no longer written by the element; the ring follows :focus-visible (§5.3, §16 item 9). The class component's binder still writes it for hand-written markup.",
+    "words: decrement and increment are lang runtime words (settings default-from them); range-underflow, range-overflow and step-mismatch are new runtime words for the validity message.",
+    "version 1.1.0: set-error and the host states are added members, error is renamed behind a dated alias (§4.10)."
+  ]
+}

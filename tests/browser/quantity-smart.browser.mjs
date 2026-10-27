@@ -122,7 +122,9 @@ try {
       valuetext: input.getAttribute('aria-valuetext'), invalid: input.getAttribute('aria-invalid'),
       minus: {name: minus.getAttribute('aria-label'), disabled: minus.disabled, tab: minus.tabIndex, controls: minus.getAttribute('aria-controls') === input.id},
       plus: {name: plus.getAttribute('aria-label'), disabled: plus.disabled, tab: plus.tabIndex},
-      hidden: host.querySelector('.sf-quantity-value')?.value ?? null,
+      // What the form gets: the host itself through ElementInternals (standard
+      // 1.3.8 §17.1), else the hidden input it draws.
+      hidden: host.form && host.getAttribute('name') ? (new FormData(host.form).get(host.getAttribute('name')) ?? null) : (host.querySelector('.sf-quantity-value')?.value ?? null),
       placeholder: input.placeholder, inherited: host.getAttribute('data-inherited'),
       reset: (() => { const reset = host.querySelector('[data-inherited-reset]'); return reset ? !reset.hidden : null; })(),
       focused: document.activeElement === input,

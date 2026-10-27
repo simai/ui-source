@@ -1,0 +1,107 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Количество 0–99",
+      "settings": {
+        "label": "Количество",
+        "name": "count",
+        "value": 2,
+        "min": 0,
+        "max": 99,
+        "hint": "От 0 до 99"
+      },
+      "expect": {
+        "value": 2
+      }
+    },
+    {
+      "name": "price",
+      "title": "Цена с копейками",
+      "settings": {
+        "label": "Цена",
+        "name": "price",
+        "value": 2567.5,
+        "min": 0,
+        "step": 0.01
+      },
+      "expect": {
+        "value": 2567.5,
+        "form-value": "2567.50"
+      }
+    },
+    {
+      "name": "at-max",
+      "title": "На границе",
+      "settings": {
+        "label": "Мест",
+        "value": 9,
+        "min": 0,
+        "max": 9
+      },
+      "expect": {
+        "data-at-max": true
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Количество",
+        "value": 5,
+        "invalid": true,
+        "error-message": "Слишком много"
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступно",
+      "settings": {
+        "label": "Количество",
+        "value": 3,
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Только чтение",
+      "settings": {
+        "label": "Количество",
+        "value": 3,
+        "readonly": true
+      },
+      "expect": {
+        "readonly": true
+      }
+    },
+    {
+      "name": "inherited",
+      "title": "Наследуемое значение",
+      "settings": {
+        "label": "Отступ",
+        "inherited-value": 5
+      },
+      "expect": {
+        "data-inherited": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупное",
+        "value": 1,
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}
