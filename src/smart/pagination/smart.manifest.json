@@ -216,6 +216,11 @@
         "default": true,
         "description": "Whether the number of records is known. A host that does not count every answer sets it false, and the view offers the number instead of showing it."
       },
+      "total-exact": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the total is exact. sf-data-view sets it false from the port's total_exact: the row then reads «~N», the last page and the page count are not offered as exact, and the count link asks for the number."
+      },
       "can-count": {
         "type": "boolean",
         "default": false,
@@ -882,7 +887,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "e6ac0cb86e8021a0d708bfe4a3b5f261e588fac77628c182ede7695ce268534e"
+        "sha256": "88a4d91ec25466151b0004b74fbf8be463acc5c270406bebaface5011624ad76"
       }
     ],
     "generated_runtime": [

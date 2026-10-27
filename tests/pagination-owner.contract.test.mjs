@@ -58,7 +58,9 @@ test("Pagination renders source-driven summary and localized control labels", as
   // Round four took the marked count out of the footer; the band of bulk
   // controls is where it is said, and only while something is marked.
   assert.doesNotMatch(template, /context\.selectedCount\}\/\$\{context\.total/);
-  assert.match(template, /context\.totalLabel\} \$\{context\.total/);
+  // The total as shown: N, or «~N» while it is an estimate (gate 29).
+  assert.match(template, /context\.totalLabel\} \$\{context\.shownTotal/);
+  assert.match(runtime, /get shownTotal\(\) \{\s*return this\.totalExact \? String\(this\.total\) : `~\$\{this\.total\}`;/);
   assert.doesNotMatch(template, /0\/10|Показать количество/);
   // Greyed controls were the earlier answer here. The consumer's owner replaced
   // it on 2026-10-03: a direction that leads nowhere is not shown, and neither
@@ -75,9 +77,9 @@ test("Pagination handles an empty set without a fake page action", async () => {
   // The guards are about a count that is known to be zero. When the host sends
   // no count at all there is no empty set to answer: it has said there are
   // records and whether more follow.
-  assert.match(runtime, /get pageItems\(\) \{[\s\S]*?if \(this\.countKnown && this\.total === 0\) \{\s*return \[\]/);
+  assert.match(runtime, /get pageItems\(\) \{[\s\S]*?if \(this\.exactCount && this\.total === 0\) \{\s*return \[\]/);
   // The action go-to-page answers an outcome (standard 1.3.8 §4.4).
-  assert.match(runtime, /goToPage\(page\) \{\s*if \(this\.countKnown && this\.total === 0\) \{\s*return \{ outcome: "refused", reason: "empty" \}/);
+  assert.match(runtime, /goToPage\(page\) \{\s*if \(this\.exactCount && this\.total === 0\) \{\s*return \{ outcome: "refused", reason: "empty" \}/);
   assert.match(await read("src/smart/pagination/js/templates/default.js"), /!context\.countKnown \|\| context\.total > 0/);
   assert.match(runtime, /getBooleanAttr\("show-page-size", true\)/);
 });

@@ -136,10 +136,29 @@ export function renderPaginationTemplate(context) {
                      offered at all — a link that answers "unavailable" is worse
                      than no link. -->
                 <div class="sf-pagination-total flex items-cross-center">
+                  <!-- An estimate (total-exact false) reads «~N», and the
+                       offer to find out stands beside it: the number is
+                       there, but it is not one to act on. -->
                   ${context.countKnown
                     ? html`
-                        <div class="sf-pagination-total-text">
-                          ${context.totalLabel} ${context.total}
+                        <div class="sf-pagination-total-text flex items-cross-center">
+                          ${context.totalLabel} ${context.shownTotal}
+                          ${context.totalExact
+                            ? ""
+                            : context.counting
+                              ? html`<sf-spinner size=${context.size} aria-label=${context.countingLabel}></sf-spinner>`
+                              : context.canCount
+                                ? html`
+                                    <sf-button
+                                      class="sf-pagination-count-request"
+                                      size=${context.size}
+                                      appearance="link"
+                                      scheme="primary"
+                                      text=${context.showCountLabel}
+                                      @click=${() => component.requestCount("total")}
+                                    ></sf-button>
+                                  `
+                                : ""}
                         </div>
                       `
                     : context.counting
@@ -203,12 +222,14 @@ export function renderPaginationTemplate(context) {
                                 label: context.nextLabel,
                                 page: () => component.goToPage(context.current + 1),
                               })}
-                              ${renderDirection(context, {
-                                kind: "last",
-                                icon: "last_page",
-                                label: context.lastLabel,
-                                page: () => component.lastPage(),
-                              })}
+                              ${context.canJumpToLast
+                                ? renderDirection(context, {
+                                    kind: "last",
+                                    icon: "last_page",
+                                    label: context.lastLabel,
+                                    page: () => component.lastPage(),
+                                  })
+                                : ""}
                             `
                           : ""}
                       </ol>
@@ -319,7 +340,7 @@ export function renderPaginationTemplate(context) {
                     <span class="sf-pagination-actions-separator" aria-hidden="true"></span>
                     <sf-checkbox
                       label=${context.countKnown
-                        ? `${context.actionForAllLabel} (${context.total})`
+                        ? `${context.actionForAllLabel} (${context.shownTotal})`
                         : context.actionForAllLabel}
                       ?checked=${Boolean(context.actionForAll)}
                       @change=${(event) =>
