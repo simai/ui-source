@@ -110,3 +110,15 @@ test('sf-drawer: the panel from its manifest; drawer:* names follow with the old
   assert.match(source, /this\.emitDrawerEvent\('close', true, \{reason, unsaved: Boolean\(this\.unsaved\)\}\)/);
   assert.match(source, /event\.key === 'Escape' && this\.closeOnEsc && this\.dismissible/);
 });
+
+test('sf-popover: requests before, facts after; role on the host is a dated alias of surface-role', () => {
+  const manifest = json('src/smart/popover/component.json');
+  assert.deepEqual(Object.keys(manifest.events), ['open', 'opened', 'close', 'closed']);
+  assert.equal(manifest.events.close.cancelable, true);
+  assert.deepEqual(manifest.layer, {kind: 'surface', 'locks-page': false, 'traps-focus': false});
+  const source = read('src/smart/popover/index.js');
+  assert.doesNotMatch(source, /get role\(\)/, 'the prototype role stays the browser\'s (§3.1)');
+  assert.match(source, /this\.close\(\{reason: 'escape'\}\)/);
+  assert.match(source, /this\.close\(\{reason: 'outside'\}\)/);
+  assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-elevation-2--surface\)\);/);
+});

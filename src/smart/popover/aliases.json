@@ -1,0 +1,41 @@
+{
+  "$comment": "Dated aliases of sf-popover for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (attribute rows), manifest-only (the DOM name does not change; its meaning does, so no shim).",
+  "component": "sf-popover",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "role",
+      "to": "surface-role",
+      "kind": "attribute",
+      "component": "sf-popover",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1",
+      "note": "read by the popover, not the shim: role leaves the host once read (the shim would mirror that removal onto surface-role); each read is noted with these dates",
+      "mode": "host-attribute"
+    },
+    {
+      "from": "sf-popover-open",
+      "to": null,
+      "kind": "event",
+      "component": "sf-popover",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§19.3, vocabulary §4",
+      "note": "the same DOM name is the cancelable request now (sent before opening); the fact is sf-popover-opened"
+    },
+    {
+      "from": "sf-popover-close",
+      "to": null,
+      "kind": "event",
+      "component": "sf-popover",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§19.3, vocabulary §4",
+      "note": "the same DOM name is the cancelable request now (sent before closing, {reason, unsaved}); the fact is sf-popover-closed"
+    }
+  ]
+}

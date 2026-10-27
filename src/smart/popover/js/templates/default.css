@@ -14,15 +14,19 @@
     position: absolute;
     z-index: 3;
     box-sizing: border-box;
+    /* The public variables (standard 1.3.8 §6, component.json css-variables):
+       a page sets them on the popover or any ancestor; the older internal
+       --sf-popover--max-* names are still read beneath them. */
     inline-size: var(--sf-popover--width, max-content);
-    max-inline-size: var(--sf-popover--max-width, 100vi);
-    max-block-size: var(--sf-popover--max-height, 60vb);
+    max-inline-size: var(--sf-popover-max-width, var(--sf-popover--max-width, 100vi));
+    max-block-size: var(--sf-popover-max-height, var(--sf-popover--max-height, 60vb));
     overflow: auto;
-    border-radius: var(--sf-radius--surface);
-    background-color: var(--sf-elevation-2--surface);
+    border-radius: var(--sf-popover-radius, var(--sf-radius--surface));
+    background-color: var(--sf-popover-background-color, var(--sf-elevation-2--surface));
+    color: var(--sf-popover-color, inherit);
     --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    --sf-badge--surface: var(--sf-elevation-2--surface);
-    box-shadow: var(--sf-elevation-2--shadow);
+    --sf-badge--surface: var(--sf-popover-background-color, var(--sf-elevation-2--surface));
+    box-shadow: var(--sf-popover-shadow, var(--sf-elevation-2--shadow));
   }
 
   sf-popover[data-open='false'] > [slot='content'] {

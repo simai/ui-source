@@ -1,7 +1,27 @@
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {hasLayerAbove} from '../../core/js/layer-stack';
 import {renderPopoverTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// sf-popover from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §19): placement, label, width, dismissible, surface-role and the
+// value open are attributes and properties made by core/js/element-manifest.js;
+// the old host attribute role is a dated alias of surface-role.
+const PopoverElement = elementFromManifest(manifest, {
+    base: SfBaseElement,
+    lang: {en, ru},
+    source: 'ru',
+    aliases,
+});
+
+const applied = () => ({outcome: 'applied'});
+const refused = (reason) => ({outcome: 'refused', reason});
 
 // A surface anchored to a control the consumer supplies: a field's settings, a
 // list of things to add, a filter, a colour picker's own panel. It exists
@@ -20,30 +40,12 @@ import {renderPopoverTemplate} from './js/templates/default';
 // protocol shared with every other surface that owns Escape, so it is held
 // through core (`core/js/open-surface-mark`) rather than written here.
 
-const PLACEMENTS = [
-    'bottom-start', 'bottom-end', 'top-start', 'top-end',
-    'inline-start', 'inline-end',
-];
-
-class SfPopover extends SfBaseElement {
+class SfPopover extends PopoverElement {
+    // The manifest's settings and value, and the base's template name.
     static get props() {
         return {
+            ...super.props,
             templateName: {attribute: 'template', default: 'default'},
-            open: {type: Boolean, default: false},
-            placement: {default: 'bottom-end', values: PLACEMENTS},
-            label: {default: ''},
-            // What the surface is to a reader. `role` was the name, and a role
-            // attribute on the host made the host itself a menu or a dialog
-            // beside its surface; it is still read once and moved off the host.
-            surfaceRole: {attribute: 'surface-role', default: 'dialog', values: ['dialog', 'menu', 'listbox', 'group']},
-            // A surface wider than its trigger says how wide it is; left to the
-            // content, a list of field names made the surface as wide as its
-            // longest one.
-            width: {default: ''},
-            // Esc and a press outside both close it. A consumer that owns those
-            // keys itself -- a step in a wizard, say -- turns them off and calls
-            // `close()` when it decides.
-            dismissible: {type: Boolean, default: true},
         };
     }
 
@@ -51,50 +53,23 @@ class SfPopover extends SfBaseElement {
         super();
         this._onDocumentPointerDown = null;
         this._onDocumentKeyDown = null;
+        this._closeReason = 'api';
     }
 
     static get observedAttributes() {
-        return [...(super.observedAttributes ?? []), 'open'];
+        return [...new Set([...(super.observedAttributes ?? []), 'open'])];
     }
 
-    get open() {
-        return this.getBooleanAttr('open', false);
-    }
-
-    get placement() {
-        return this.getEnumAttr('placement', PLACEMENTS, 'bottom-end');
-    }
-
-    get label() {
-        return this.getAttribute('label') || '';
-    }
-
-    get surfaceRole() {
-        const values = ['dialog', 'menu', 'listbox', 'group'];
-        if (this.hasAttribute('surface-role')) return this.getEnumAttr('surface-role', values, 'dialog');
-        return values.includes(this._legacyRole) ? this._legacyRole : 'dialog';
-    }
-
-    // The legacy name, kept so a consumer reading el.role still gets an answer.
-    get role() {
-        return this.surfaceRole;
-    }
-
-    // A role written on the host is the surface's: it is taken once and removed,
-    // so the host is not a second menu or dialog around the real one.
+    // A role written on the host is the surface's: it is taken once into
+    // surface-role and off the host, so the host is not a second menu or dialog
+    // around the real one (a dated alias, aliases.json).
     _adoptLegacyRole() {
         if (!this.hasAttribute('role')) return;
-        this._legacyRole = String(this.getAttribute('role') || '').trim().toLowerCase();
+        const role = String(this.getAttribute('role') || '').trim().toLowerCase();
+        if (!this.hasAttribute('surface-role') && ['dialog', 'menu', 'listbox', 'group'].includes(role)) this.setAttribute('surface-role', role);
         this.removeAttribute('role');
-        globalThis.SF?.deprecations?.note?.({component: 'sf-popover', kind: 'attribute', attribute: 'role', from: 'role', to: 'surface-role'});
-    }
-
-    get width() {
-        return this.getAttribute('width') || '';
-    }
-
-    get dismissible() {
-        return this.getBooleanAttr('dismissible', true);
+        noteDeprecated({component: 'sf-popover', tag: 'sf-popover', kind: 'attribute', attribute: 'role', from: 'role', to: 'surface-role',
+            since: aliases.since, remove_after: aliases.remove_after});
     }
 
     // The host is a box rather than a passthrough: the surface is positioned
@@ -128,14 +103,15 @@ class SfPopover extends SfBaseElement {
         this.addEventListener('click', this._onTriggerClick);
     }
 
-    // A press anywhere in the trigger opens it; a press in the content is the
-    // content's own.
+    // A press anywhere in the trigger opens it, or closes it with reason
+    // close; a press in the content is the content's own.
     _onTriggerClick = (event) => {
         const path = event.composedPath?.() ?? [];
         const inTrigger = path.some((node) => node?.getAttribute?.('slot') === 'trigger');
         if (!inTrigger) return;
         event.preventDefault();
-        this.toggle();
+        if (this.open) this.close({reason: 'close'});
+        else this.show();
     };
 
     onDisconnected() {
@@ -148,25 +124,42 @@ class SfPopover extends SfBaseElement {
         super.attributeChangedCallback?.(name, previous, next);
         if (previous === next || name !== 'open') return;
         this._bindDismissal();
-        this.emitComponentEvent(this.open ? 'popover-open' : 'popover-close', {open: this.open});
+        // The fact, after the state changed (vocabulary §4); a setting written
+        // from outside is reported the same way, as the surface's own state.
+        if (this.open) this.sfEmit('opened', {});
+        else this.sfEmit('closed', {reason: this._closeReason || 'api'});
+        this._closeReason = 'api';
         if (!this.open) this.returnFocus();
     }
 
+    // Opens or closes the surface. Answers an outcome (§4.4): refused when a
+    // listener prevents the request (sf-popover-open, sf-popover-close).
     toggle(force) {
-        const next = typeof force === 'boolean' ? force : !this.open;
-        if (next === this.open) return this.open;
-        if (next) this._opener = this.querySelector('[slot="trigger"]') ?? null;
-        this.toggleAttribute('open', next);
-        this.requestComponentUpdate('open');
-        return next;
+        const given = force && typeof force === 'object' ? force.force : force;
+        const next = typeof given === 'boolean' ? given : !this.open;
+        if (next === this.open) return applied();
+        return next ? this.show() : this.close();
     }
 
     show() {
-        return this.toggle(true);
+        if (this.open) return applied();
+        if (!this.sfEmit('open', {}, {cancelable: true})) return refused('prevented');
+        this._opener = this.querySelector('[slot="trigger"]') ?? null;
+        this.toggleAttribute('open', true);
+        this.requestComponentUpdate('open');
+        return applied();
     }
 
-    close() {
-        return this.toggle(false);
+    // options.reason says why (standard 1.3.8 §19.3): escape, outside, close
+    // (the trigger pressed again) or api, the default.
+    close(options = {}) {
+        if (!this.open) return refused('closed');
+        const reason = typeof options?.reason === 'string' ? options.reason : 'api';
+        if (!this.sfEmit('close', {reason, unsaved: Boolean(this.unsaved)}, {cancelable: true})) return refused('prevented');
+        this._closeReason = reason;
+        this.toggleAttribute('open', false);
+        this.requestComponentUpdate('open');
+        return applied();
     }
 
     // The control that opened it gets the focus back, because a surface that
@@ -180,6 +173,7 @@ class SfPopover extends SfBaseElement {
             ? trigger
             : trigger?.querySelector?.('button, a[href], [tabindex]');
         focusable?.focus?.();
+        return applied();
     }
 
     _bindDismissal() {
@@ -197,7 +191,7 @@ class SfPopover extends SfBaseElement {
             // theirs, and the popover under them stays. A list opened from it
             // closes with it, as before.
             if (hasLayerAbove(this)) return;
-            this.close();
+            this.close({reason: 'outside'});
         };
         // Capture, and the press is stopped going further: a surface closing
         // under the pointer must not also activate what the pointer landed on.
@@ -207,7 +201,7 @@ class SfPopover extends SfBaseElement {
             if (event.key !== 'Escape' || event.defaultPrevented || !isTopOpenSurface(this)) return;
             event.preventDefault();
             event.stopPropagation();
-            this.close();
+            this.close({reason: 'escape'});
         };
         document.addEventListener('pointerdown', this._onDocumentPointerDown, true);
         document.addEventListener('keydown', this._onDocumentKeyDown, true);

@@ -1,0 +1,66 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Настройки поля",
+      "settings": {
+        "label": "Настройки поля",
+        "placement": "bottom-end"
+      },
+      "slots": {
+        "trigger": "<button type=\"button\">Настроить</button>",
+        "content": "<div>Параметры</div>"
+      },
+      "expect": {
+        "open": false,
+        "name": "Настройки поля"
+      }
+    },
+    {
+      "name": "opened",
+      "title": "Открыта",
+      "settings": {
+        "open": true,
+        "label": "Фильтр",
+        "width": "20rem"
+      },
+      "slots": {
+        "trigger": "<button type=\"button\">Фильтр</button>",
+        "content": "<div>Условия</div>"
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "menu",
+      "title": "Меню команд",
+      "settings": {
+        "surface-role": "menu",
+        "label": "Действия"
+      },
+      "slots": {
+        "trigger": "<button type=\"button\">Ещё</button>",
+        "content": "<sf-context-menu></sf-context-menu>"
+      },
+      "expect": {
+        "open": false
+      }
+    },
+    {
+      "name": "not-dismissible",
+      "title": "Закрывается только явно",
+      "settings": {
+        "open": true,
+        "dismissible": false,
+        "label": "Шаг"
+      },
+      "expect": {
+        "open": true,
+        "keys": {
+          "Escape": "nothing"
+        }
+      }
+    }
+  ]
+}

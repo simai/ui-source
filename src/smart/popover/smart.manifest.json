@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -89,6 +89,10 @@
           "group"
         ],
         "description": "What the surface is to a reader: dialog, menu, listbox or group. Written on sf-popover; the surface gets the role and the trigger aria-haspopup."
+      },
+      "unsaved": {
+        "type": "boolean",
+        "default": false
       }
     },
     "additionalProperties": false
@@ -306,7 +310,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "5bba20cb93d1635263eb28c1a97207f9985c4a8c5bb894d5cf411ed2e2f89a5c"
+        "sha256": "d1aadd82e86a6626db8e4c849553db44d26f7056626afce01b775a7d3698cd87"
       },
       {
         "path": "src/smart/popover/rule.js",
@@ -318,7 +322,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "d522e3d74355107765bfd9b0b7189f0c60997766a1074e6d7d916a38768c19ba"
+        "sha256": "a875e07234779d925bd2ce53744bedd2d237bda5a09f5a73790de37c8242a15c"
       }
     ],
     "generated_runtime": []
