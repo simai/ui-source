@@ -293,7 +293,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/profile-picker/index.js",
-        "sha256": "59cb0de1e8c4272f8d0cda747d1c684a9cc15f1afb7e666f77c5cbd7b212305d"
+        "sha256": "768d8122e235c26aa58a79340c7e7179b409e800e60f09179f9a5a925d60f51b"
       },
       {
         "path": "src/smart/profile-picker/js/templates/default.js",
