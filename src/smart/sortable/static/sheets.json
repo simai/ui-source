@@ -9,7 +9,8 @@
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "core/css/core.css",
-    "smart/sortable/css/sortable.min.css"
+    "smart/sortable/css/sortable.min.css",
+    "utility/headers/default/css/default.min.css"
   ],
   "examples": {
     "horizontal": [
@@ -24,7 +25,8 @@
     ],
     "library": [
       "core/css/core.css",
-      "smart/sortable/css/sortable.min.css"
+      "smart/sortable/css/sortable.min.css",
+      "utility/headers/default/css/default.min.css"
     ],
     "reference": [
       "core/css/core.css",

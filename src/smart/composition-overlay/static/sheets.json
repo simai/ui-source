@@ -8,7 +8,8 @@
   "sheets": [
     "core/css/core.css",
     "smart/composition-overlay/css/composition-overlay.min.css",
-    "smart/sortable/css/sortable.min.css"
+    "smart/sortable/css/sortable.min.css",
+    "utility/headers/default/css/default.min.css"
   ],
   "examples": {
     "actions": [
@@ -24,7 +25,8 @@
     "library": [
       "core/css/core.css",
       "smart/composition-overlay/css/composition-overlay.min.css",
-      "smart/sortable/css/sortable.min.css"
+      "smart/sortable/css/sortable.min.css",
+      "utility/headers/default/css/default.min.css"
     ],
     "reference": [
       "core/css/core.css",
