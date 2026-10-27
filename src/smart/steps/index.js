@@ -1,25 +1,32 @@
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderStepsTemplate } from './js/templates/default';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-steps", code, words).
-const STEPS_TEXT = {
-  en: {
-    ariaLabel: 'Steps',
-    completedLabel: 'Completed',
-    errorLabel: 'Error',
-  },
-  ru: {
-    ariaLabel: 'Шаги',
-    completedLabel: 'Завершено',
-    errorLabel: 'Ошибка',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-
-
+// sf-steps from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §8, §11): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json (a product adds
+// another language through SF.language.register("sf-steps", code, words)), and
+// the old event name sf-step-change is a dated alias of sf-steps-change.
+const StepsElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
 function parseItems(items = '') {
+  // The list as JSON in the attribute reads like the property.
+  if (typeof items === 'string' && items.trim().startsWith('[')) {
+    try {
+      return parseItems(JSON.parse(items));
+    } catch {
+      // Not JSON: the "label::disabled|label" form below.
+    }
+  }
   if (Array.isArray(items)) {
     return items
       .map((item) => (typeof item === 'string' ? { label: item } : item))
@@ -45,14 +52,19 @@ function parseItems(items = '') {
     });
 }
 
-class SfSteps extends SfBaseElement {
+class SfSteps extends StepsElement {
+  // The manifest's settings, and what the steps read more closely: items from
+  // the attribute's own forms or the property, the words from the language
+  // files while the attribute is empty.
   static get props() {
     return {
+      ...super.props,
       size: { default: '1' },
       items: {
         default: [],
-        parser(value) {
-          return parseItems(value);
+        parser(value, fallback, element) {
+          if (value !== undefined && value !== null) return parseItems(value);
+          return parseItems(element?.__sfManifestData?.items ?? []);
         },
       },
       current: { type: Number, default: 0 },
@@ -79,9 +91,22 @@ class SfSteps extends SfBaseElement {
     return this.getProp('items');
   }
 
+  // A list setting is a property (§4): the list given here wins until the
+  // attribute is written again.
+  set items(value) {
+    if (!this.__sfManifestData) this.__sfManifestData = {};
+    this.__sfManifestData.items = value;
+    if (this.hasAttribute('items')) this.removeAttribute('items');
+    else this.requestComponentUpdate('items');
+  }
+
   get current() {
     const maxIndex = Math.max(this.items.length - 1, 0);
     return Math.min(Math.max(this.getNumberAttr('current', 0), 0), maxIndex);
+  }
+
+  set current(value) {
+    this.setAttribute('current', String(toNumber(value, 0)));
   }
 
   get errorStep() {
@@ -125,9 +150,9 @@ class SfSteps extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
-      ariaLabel: this.getAttribute("aria-label") || pageText(STEPS_TEXT, "ariaLabel", this),
-      completedLabel: this.getAttribute("completed-label") || pageText(STEPS_TEXT, "completedLabel", this),
-      errorLabel: this.getAttribute("error-label") || pageText(STEPS_TEXT, "errorLabel", this),
+      ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
+      completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
+      errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
       component: this,
       rootClass: this.getRootClass(),
       items: this.computedItems,
@@ -144,9 +169,9 @@ class SfSteps extends SfBaseElement {
       current: this.current,
       errorStep: this.errorStep,
       separatorIcon: this.separatorIcon,
-      ariaLabel: this.getAttribute('aria-label') || 'Steps',
-      completedLabel: this.getAttribute('completed-label') || 'Completed',
-      errorLabel: this.getAttribute('error-label') || 'Error',
+      ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
+      completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
+      errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
       items: this.items,
       rootClass: this.getRootClass(),
     };
@@ -194,29 +219,48 @@ class SfSteps extends SfBaseElement {
     return this;
   }
 
+  // The action go-to-step (§4.4): moves current and answers an outcome. It
+  // reports nothing: `change` is what a person did (§8), which is the press
+  // below.
   goToStep(index) {
-    const nextIndex = Math.min(Math.max(toNumber(index, this.current), 0), this.items.length - 1);
+    return this.moveToStep(index, { person: false });
+  }
+
+  moveToStep(index, { person = false } = {}) {
+    const requested = toNumber(index?.index ?? index, Number.NaN);
+    if (!Number.isFinite(requested)) return { outcome: 'refused', reason: 'out-of-range' };
+    const nextIndex = Math.min(Math.max(requested, 0), this.items.length - 1);
     const item = this.items[nextIndex];
 
-    if (!item || item.disabled || nextIndex === this.current) {
-      return this;
-    }
+    if (!item) return { outcome: 'refused', reason: 'out-of-range' };
+    if (item.disabled) return { outcome: 'refused', reason: 'disabled' };
+    if (nextIndex === this.current) return { outcome: 'refused', reason: 'current' };
 
     const previous = this.current;
     this.setAttribute('current', String(nextIndex));
-    this.emitComponentEvent('step-change', {
-      previous,
-      current: nextIndex,
-      item,
-      items: this.items,
-    });
-    return this;
+    if (person) {
+      this.sfEmit('change', { previous, current: nextIndex, item, items: this.items });
+    }
+    return { outcome: 'applied' };
+  }
+
+  // The old name keeps its old detail (§16.20 split row): the element and its
+  // template were in it.
+  sfAliasAdapters() {
+    return {
+      'sf-step-change': (detail) => ({
+        component: this,
+        tagName: this.componentTagName,
+        template: this.componentTemplateName,
+        ...detail,
+      }),
+    };
   }
 
   onStepChange(handler, options) {
     if (typeof handler === 'function') {
       this.addEventListener(
-        'sf-step-change',
+        this.sfEventName('change'),
         (event) => {
           handler(event.detail?.current, event.detail, event);
         },
@@ -234,7 +278,7 @@ class SfSteps extends SfBaseElement {
     }
 
     const nextIndex = toNumber(step.dataset.stepIndex, this.current);
-    this.goToStep(nextIndex);
+    this.moveToStep(nextIndex, { person: true });
   };
 
 }

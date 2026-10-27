@@ -18,8 +18,9 @@
       "type": "upgraded"
     },
     {
-      "type": "event",
-      "name": "sf-step-change"
+      "type": "attribute",
+      "name": "current",
+      "value": "2"
     },
     {
       "type": "no-console-error"

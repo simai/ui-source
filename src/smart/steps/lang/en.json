@@ -1,0 +1,8 @@
+{
+  "title": "Steps",
+  "runtime": {
+    "aria-label": "Steps",
+    "completed-label": "Completed",
+    "error-label": "Error"
+  }
+}

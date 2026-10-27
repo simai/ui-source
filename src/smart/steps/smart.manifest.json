@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Steps",
   "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
   "kind": "smart",
@@ -289,7 +289,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/steps/index.js",
-        "sha256": "cb4faf3b4263ca0c0eba2e54b61822b4f67640a8407307ec8b5447b9a93841f7"
+        "sha256": "592316cc8160442d1b0168a86d3d4f33ad27437c78f2be8ff724c63441b88ba7"
       }
     ],
     "generated_runtime": [

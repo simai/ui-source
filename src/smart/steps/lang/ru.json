@@ -1,0 +1,8 @@
+{
+  "title": "Шаги",
+  "runtime": {
+    "aria-label": "Шаги",
+    "completed-label": "Завершено",
+    "error-label": "Ошибка"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "component": "sf-steps",
+  "probe": "sf-steps against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs (SF_OVERLAYS names the folders)",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\"><sf-steps id=\"st\" aria-label=\"Этапы публикации\" current=\"1\" items=\"Черновик|Проверка|Готово|Архив::disabled\"></sf-steps></div>",
+      "  <sf-steps id=\"st-err\" current=\"2\" error-step=\"2\" items='[{\"label\":\"Корзина\"},{\"label\":\"Доставка\"},{\"label\":\"Оплата\"}]'></sf-steps>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-enter-moves",
+      "title": "Tab reaches a step, Enter moves there: sf-steps-change once, sf-step-change once, noted with its dates",
+      "covers": "keyboard.host Tab reach, Enter select, events.change, aliases sf-step-change",
+      "steps": [
+        {
+          "script": "(document.querySelector('#st [data-step-index=\"1\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement === document.querySelector('#st [data-step-index=\"2\"]')"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-steps-change",
+                "count": 1,
+                "detail": {
+                  "previous": 1,
+                  "current": 2,
+                  "item": {
+                    "label": "Готово"
+                  }
+                }
+              },
+              {
+                "name": "sf-step-change",
+                "count": 1,
+                "detail": {
+                  "current": 2,
+                  "component": "<sf-steps>",
+                  "tagName": "sf-steps"
+                }
+              }
+            ],
+            "values": {
+              "#st.current": 2
+            },
+            "journal": [
+              {
+                "from": "sf-step-change",
+                "to": "sf-steps-change",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "!('component' in (window.__heard.find((one) => one.name === 'sf-steps-change')?.detail ?? {component: 1})) && document.querySelector('#st [aria-current=\"step\"]')?.dataset.stepIndex === '2'"
+        }
+      ]
+    },
+    {
+      "id": "p2-space-moves",
+      "title": "Space on a step moves there too",
+      "covers": "keyboard.host Space select",
+      "steps": [
+        {
+          "script": "(document.querySelector('#st [data-step-index=\"0\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-steps-change",
+                "count": 1,
+                "detail": {
+                  "previous": 1,
+                  "current": 0
+                }
+              }
+            ],
+            "values": {
+              "#st.current": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-disabled-skipped",
+      "title": "a disabled step is not reachable and go-to-step refuses it",
+      "covers": "settings.items disabled, actions.go-to-step",
+      "steps": [
+        {
+          "check": "document.querySelector('#st [data-step-index=\"3\"]').disabled === true"
+        },
+        {
+          "action": {
+            "name": "go-to-step",
+            "with": 3
+          },
+          "target": "#st",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "disabled"
+            },
+            "values": {
+              "#st.current": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-action-is-silent",
+      "title": "go-to-step applies and sends no change (§8)",
+      "covers": "actions.go-to-step, §8",
+      "steps": [
+        {
+          "action": {
+            "name": "go-to-step",
+            "with": {
+              "index": 2
+            }
+          },
+          "target": "#st",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-steps-change",
+                "count": 0
+              }
+            ],
+            "values": {
+              "#st.current": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-name-and-words",
+      "title": "the group is named by aria-label, else by the language file; the states have their words",
+      "covers": "accessibility.name, lang runtime",
+      "steps": [
+        {
+          "check": "document.querySelector('#st [role=\"group\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-err [role=\"group\"]').getAttribute('aria-label') === 'Шаги' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Завершено' && document.querySelector('#st-err [data-step-index=\"2\"]').getAttribute('aria-label') === 'Оплата, Ошибка'"
+        },
+        {
+          "script": "(document.getElementById('st-err').setAttribute('lang', 'en'), true)",
+          "wait": 300,
+          "check": "document.querySelector('#st-err [role=\"group\"]').getAttribute('aria-label') === 'Steps' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Completed'"
+        }
+      ]
+    },
+    {
+      "id": "p6-list-property",
+      "title": "items as a property draws the list",
+      "covers": "settings.items (list)",
+      "steps": [
+        {
+          "script": "(document.getElementById('st-err').items = [{label: 'Один'}, {label: 'Два'}], true)",
+          "wait": 200,
+          "check": "document.querySelectorAll('#st-err .sf-step').length === 2 && document.querySelector('#st-err [data-step-index=\"1\"]').textContent.includes('Два')"
+        }
+      ]
+    },
+    {
+      "id": "p7-public-variables",
+      "title": "a public variable on an ancestor reaches the steps",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-steps-current-border-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-steps-gap', '17px'), true)",
+          "wait": 500,
+          "check": "getComputedStyle(document.querySelector('#st .sf-step.selected')).borderTopColor === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#st .sf-steps-container')).columnGap === '17px'"
+        }
+      ]
+    }
+  ]
+}

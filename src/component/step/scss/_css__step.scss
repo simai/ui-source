@@ -4,12 +4,12 @@
   max-inline-size: 100%;
   box-shadow: var(--sf-step--box-shadow);
   border-bottom-width: var(--sf-step--border-bottom-width, var(--sf-px));
-  border-end-end-radius: var(--sf-step--border-bottom-right-radius, var(--sf-radius-circle));
-  border-end-start-radius: var(--sf-step--border-bottom-left-radius, var(--sf-radius-circle));
+  border-end-end-radius: var(--sf-step--border-bottom-right-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
+  border-end-start-radius: var(--sf-step--border-bottom-left-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
   border-inline-end-width: var(--sf-step--border-right-width, var(--sf-px));
   border-inline-start-width: var(--sf-step--border-left-width, var(--sf-px));
-  border-start-end-radius: var(--sf-step--border-top-right-radius, var(--sf-radius-circle));
-  border-start-start-radius: var(--sf-step--border-top-left-radius, var(--sf-radius-circle));
+  border-start-end-radius: var(--sf-step--border-top-right-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
+  border-start-start-radius: var(--sf-step--border-top-left-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
   border-style: var(--sf-step--border-style, solid);
   border-top-width: var(--sf-step--border-top-width, var(--sf-px));
   border-width: var(--sf-step--border-width, var(--sf-px));
@@ -29,7 +29,9 @@
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
   transition-timing-function: var(--sf-animation);
-  --sf-step--border-color: var(--sf-outline-variant);
+  /* The public variables of sf-steps (component.json css-variables, standard
+     1.3.8 §6) over the role tokens. */
+  --sf-step--border-color: var(--sf-steps-step-border-color, var(--sf-outline-variant));
   --sf-step--background-color: transparent;
   --sf-step--color: var(--sf-on-surface-variant);
 }
@@ -61,11 +63,11 @@
 }
 
 .sf-step.sf-step--stage-default .sf-step-container, .sf-step.sf-step--stage-completed .sf-step-container, .sf-step.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-on-surface-variant);
+  --sf-step-container--color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
 }
 
 .sf-step.sf-step--stage-completed .sf-icon {
-  --sf-icon--color: var(--sf-success);
+  --sf-icon--color: var(--sf-steps-completed-icon-color, var(--sf-success));
 }
 
 .sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
@@ -111,7 +113,7 @@
 }
 
 .sf-step.selected {
-  --sf-step--border-color: var(--sf-outline-primary);
+  --sf-step--border-color: var(--sf-steps-current-border-color, var(--sf-outline-primary));
   --sf-step--color: var(--sf-on-surface);
 }
 

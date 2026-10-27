@@ -60,7 +60,26 @@ items="Account|Profile|Verification::disabled|Done"
 
 - `disabled`
 
-## Методы
+Тот же список можно передать массивом в свойство `items` или как JSON в
+атрибуте: `items='[{"label": "Account"}, {"label": "Done", "disabled": true}]'`.
 
-- `goToStep(index)`
-- `onStepChange(handler)`
+## События и действия
+
+Когда человек нажимает шаг, компонент отправляет `sf-steps-change` с
+`{previous, current, item, items}` — только данные, без самого элемента.
+Старое имя `sf-step-change` работает до 2026-12-01: оно приходит следом с
+прежним `detail` (с `component`, `tagName`, `template`), и каждое его
+использование записывается в `SF.deprecations` с датами.
+
+- `goToStep(index)` — действие `go-to-step`: переходит к шагу и отвечает
+  `{outcome: 'applied'}` или `{outcome: 'refused', reason}` (`disabled`,
+  `current`, `out-of-range`). Как и у обычных полей, событие при этом не
+  отправляется: `sf-steps-change` сообщает о действии человека.
+- `onStepChange(handler)` — подписка на `sf-steps-change`.
+
+## Внешний вид
+
+Публичные переменные: `--sf-steps-gap`, `--sf-steps-separator-color`,
+`--sf-steps-step-color`, `--sf-steps-step-border-color`,
+`--sf-steps-step-radius`, `--sf-steps-current-border-color`,
+`--sf-steps-completed-icon-color`.

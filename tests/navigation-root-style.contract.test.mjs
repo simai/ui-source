@@ -13,7 +13,8 @@ for (const [owner, tag] of [['breadcrumbs', 'nav'], ['steps', 'div']]) {
 
 test('available steps use readable text and disabled error preserves the disabled role', async () => {
   const source = await readFile(new URL('../src/component/step/scss/_css__step.scss', import.meta.url), 'utf8');
-  assert.match(source, /--sf-step-container--color: var\(--sf-on-surface-variant\)/);
+  // The public --sf-steps-step-color (standard 1.3.8 §6) reads the role token as its fallback.
+  assert.match(source, /--sf-step-container--color: var\(--sf-steps-step-color, var\(--sf-on-surface-variant\)\)/);
   assert.doesNotMatch(source, /--sf-on-surface-muted/);
   assert.match(source, /\.sf-step.disabled.sf-step--stage-error \.sf-step-container\s*\{\s*--sf-step-container--color: var\(--sf-on-disable\)/);
   assert.match(source, /\.sf-step.disabled.sf-step--stage-error \.sf-icon\s*\{\s*--sf-icon--color: var\(--sf-on-disable\)/);

@@ -1,0 +1,113 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Этапы публикации",
+      "settings": {
+        "aria-label": "Этапы публикации",
+        "items": [
+          {
+            "label": "Черновик"
+          },
+          {
+            "label": "Проверка"
+          },
+          {
+            "label": "Готово"
+          }
+        ],
+        "current": 1
+      },
+      "expect": {
+        "name": "Этапы публикации",
+        "values": {
+          "current": 1
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "move",
+      "title": "Переход к шагу",
+      "settings": {
+        "items": [
+          {
+            "label": "Черновик"
+          },
+          {
+            "label": "Проверка"
+          },
+          {
+            "label": "Готово"
+          }
+        ],
+        "current": 1
+      },
+      "script": [
+        {
+          "act": "go-to-step",
+          "with": {
+            "index": 2
+          }
+        }
+      ],
+      "expect": {
+        "name": "Шаги",
+        "values": {
+          "current": 2
+        },
+        "events": []
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "error",
+      "title": "Шаг с ошибкой",
+      "settings": {
+        "aria-label": "Оформление заказа",
+        "items": [
+          {
+            "label": "Корзина"
+          },
+          {
+            "label": "Доставка"
+          },
+          {
+            "label": "Оплата"
+          },
+          {
+            "label": "Готово",
+            "disabled": true
+          }
+        ],
+        "current": 2,
+        "error-step": 2
+      },
+      "expect": {
+        "name": "Оформление заказа"
+      }
+    },
+    {
+      "name": "compact",
+      "title": "Половинный размер",
+      "settings": {
+        "aria-label": "Анкета",
+        "size": "1/2",
+        "items": [
+          {
+            "label": "Профиль"
+          },
+          {
+            "label": "Контакты"
+          },
+          {
+            "label": "Подтверждение"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Анкета"
+      }
+    }
+  ]
+}
