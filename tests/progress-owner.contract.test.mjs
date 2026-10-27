@@ -31,7 +31,8 @@ test('Progress Scale preserves exact value while rounding visual segments only',
 test('Progress percentage never infers error, warning or success paint', async () => {
   const styles = await read('src/component/progress-scale/scss/_css__progress_scale.scss');
 
-  assert.match(styles, /--sf-progress-scale-fill-color: var\(--sf-primary\)/);
+  // The public variable reads first, the role token is its fallback (standard 1.3.8 §6).
+  assert.match(styles, /--sf-progress-scale--fill-color: var\(--sf-progress-scale-fill-color, var\(--sf-primary\)\)/);
   assert.match(styles, /sf-progress-scale--success/);
   assert.match(styles, /sf-progress-scale--warning/);
   assert.match(styles, /sf-progress-scale--error/);

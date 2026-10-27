@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-scale",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Progress Scale",
   "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "kind": "smart",
@@ -231,7 +231,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-scale/index.js",
-        "sha256": "066b9d9ebc484e056f49b018c08b03c315642c8953ace3a2dab85236ec574aec"
+        "sha256": "6096eb415f1e9a9d4d4b69ff01b306becf0a420879313f72060d9d10aae82d2e"
       },
       {
         "path": "src/smart/progress-scale/js/templates/default.js",
@@ -243,7 +243,7 @@
       },
       {
         "path": "src/smart/progress-scale/docs/docs.md",
-        "sha256": "687982d50c998eed604cc2f87aa88074622a158299e8a76bf840a355b913d42a"
+        "sha256": "64de1e6e084ab60fecd86c542ceb2858e6b465e1a435f37c06873fdb113a6e63"
       }
     ],
     "generated_runtime": [

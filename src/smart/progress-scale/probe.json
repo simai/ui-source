@@ -1,0 +1,128 @@
+{
+  "component": "sf-progress-scale",
+  "probe": "sf-progress-scale against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-progress-scale id=\"p1\" label=\"Загрузка файлов\" value=\"65\"></sf-progress-scale>",
+      "  <sf-progress-scale id=\"p2\" aria-label=\"Копирование\" value=\"40\" status=\"success\"></sf-progress-scale>",
+      "  <sf-progress-scale id=\"p-old\" label=\"Старое имя\" value=\"20\" tone=\"warning\"></sf-progress-scale>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-role-and-value",
+      "title": "the root is a progressbar named by label, its valuenow the value",
+      "covers": "accessibility (role, name, valuenow), settings.value",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#p1 .sf-progress-scale'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '65' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex'); })()",
+          "expect": {
+            "values": {
+              "#p1.value": 65
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2-name-from-host",
+      "title": "without label the host's aria-label names the progressbar (§3.1)",
+      "covers": "accessibility.name",
+      "steps": [
+        {
+          "check": "document.querySelector('#p2 .sf-progress-scale').getAttribute('aria-label') === 'Копирование'"
+        }
+      ]
+    },
+    {
+      "id": "p3-value-number",
+      "title": "value is a number; writing it moves valuenow",
+      "covers": "settings.value (number)",
+      "steps": [
+        {
+          "script": "(document.getElementById('p1').value = 30, true)",
+          "wait": 300,
+          "check": "document.querySelector('#p1 .sf-progress-scale').getAttribute('aria-valuenow') === '30' && document.getElementById('p1').getAttribute('value') === '30'",
+          "expect": {
+            "values": {
+              "#p1.value": 30
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-chunk",
+      "title": "chunk {done, total} shows a part of a job in per cent",
+      "covers": "actions.chunk (vocabulary §5.2)",
+      "steps": [
+        {
+          "action": {
+            "name": "chunk",
+            "with": {
+              "done": 30,
+              "total": 120
+            }
+          },
+          "target": "#p1",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "values": {
+              "#p1.value": 25
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('#p1 .sf-progress-scale').getAttribute('aria-valuenow') === '25'"
+        },
+        {
+          "action": {
+            "name": "chunk",
+            "with": {
+              "done": 1,
+              "total": 0
+            }
+          },
+          "target": "#p1",
+          "expect": {
+            "returns": {
+              "outcome": "refused"
+            },
+            "values": {
+              "#p1.value": 25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-aliases",
+      "title": "tone and setProgress still answer, each use noted with its dates",
+      "covers": "aliases.json",
+      "steps": [
+        {
+          "check": "document.getElementById('p-old').getAttribute('status') === 'warning' && document.querySelector('#p-old .sf-progress-scale').className.includes('warning')"
+        },
+        {
+          "script": "document.getElementById('p1').setProgress(80) && document.getElementById('p1').value",
+          "expect": {
+            "returns": 80,
+            "journal": [
+              {
+                "from": "setProgress",
+                "to": "chunk",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

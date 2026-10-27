@@ -2353,6 +2353,60 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "progress-scale",
+      "selector": ".sf-progress-scale",
+      "variables": [
+        {
+          "name": "--sf-progress-scale-fill-color",
+          "role": "background",
+          "summary": "The filled segments; a status gives its own colour unless this is set.",
+          "default": "var(--sf-primary)",
+          "varies_with": [
+            "status"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-scale-track-color",
+          "role": "background",
+          "summary": "The segments not yet filled.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-scale-segment-gap",
+          "role": "gap",
+          "summary": "Space between the ten segments.",
+          "default": "var(--sf-a1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-scale-radius",
+          "role": "radius",
+          "summary": "The corners of the segment row.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-scale-color",
+          "role": "color",
+          "summary": "The visible percentage.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-scale-gap",
+          "role": "gap",
+          "summary": "Space between the segments and the percentage.",
+          "default": "var(--sf-space-1/4)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }
