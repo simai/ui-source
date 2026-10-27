@@ -42,9 +42,13 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
     source('smart/textarea/smart.manifest.json'),
   ]);
   const manifest = JSON.parse(manifestText);
-  for (const name of ['autocomplete', 'inputmode', 'minlength', 'maxlength', 'spellcheck', 'wrap']) {
-    assert.match(template, new RegExp(name, 'i'));
-    assert.match(index, new RegExp(name, 'i'));
+  // The settings are the component.json's (standard 1.3.8 §4); spellcheck is
+  // spell-check there, a property of HTMLElement being reserved (§3.1).
+  const declared = JSON.parse(await source('smart/textarea/component.json'));
+  assert.match(index, /elementFromManifest\(manifest,/);
+  for (const name of ['autocomplete', 'inputmode', 'minlength', 'maxlength', 'spell-check', 'wrap']) {
+    assert.match(template, new RegExp(name.replace('-', ''), 'i'));
+    assert.ok(declared.settings[name], name);
   }
   assert.deepEqual(manifest.composition.uses, ['component.textarea']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
@@ -86,7 +90,11 @@ test('Textarea flush surface draws no box and no focus of its own', async () => 
     source('smart/textarea/docs/docs.md'),
   ]);
   assert.match(javascript, /const TEXTAREA_VARIANTS = new Set\(\['bordered', 'filled', 'flush'\]\);/);
-  assert.match(index, /values: \['bordered', 'filled', 'flush'\], aliases: \['type'\]/);
+  const declared = JSON.parse(await source('smart/textarea/component.json'));
+  const aliasRows = JSON.parse(await source('smart/textarea/aliases.json')).aliases;
+  assert.match(index, /elementFromManifest\(manifest,/);
+  assert.deepEqual(declared.settings.appearance.values, ['bordered', 'filled', 'flush']);
+  assert.ok(aliasRows.some((row) => row.from === 'type' && row.to === 'appearance' && row.kind === 'setting'));
   assert.match(meta, /\["bordered", "filled", "flush"\]/);
   const flush = css.slice(css.indexOf('\n.sf-textarea.sf-textarea--flush textarea {', css.indexOf('/* Flush:')));
   const own = flush.slice(0, flush.indexOf('}'));

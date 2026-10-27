@@ -190,6 +190,14 @@
         "type": "string",
         "default": "",
         "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      },
+      "spell-check": {
+        "type": "boolean",
+        "default": true
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -389,7 +397,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/textarea/index.js",
-        "sha256": "c0e7b46498b182b12d3fceaf5205aecf7a2291b9836455fefa4610df809e39de"
+        "sha256": "29e5e2d5915d1fcacb189fb73adb36f7c1c5fc1373d87e4db3a77dbba3e71097"
       },
       {
         "path": "src/smart/textarea/rule.js",
@@ -397,7 +405,7 @@
       },
       {
         "path": "src/smart/textarea/js/templates/default.js",
-        "sha256": "8f5dd660e67cfa97caa2fdf2ac06d369d2217a151de53f9c1674e1632f5115d1"
+        "sha256": "43477bdd60f18891163ac7bff291f1536e38687ea10938008e0a381a87e33149"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

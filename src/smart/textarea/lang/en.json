@@ -1,0 +1,11 @@
+{
+  "title": "Text area",
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "inherited",
+      "reset": "Reset to inherited",
+      "described": "Inherited: {value}"
+    }
+  }
+}

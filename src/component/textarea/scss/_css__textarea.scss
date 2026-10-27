@@ -159,7 +159,7 @@
 
 .sf-textarea.error.sf-textarea--bordered textarea {
   --sf-textarea-textarea--background-color: var(--sf-transparent-for-focus);
-  --sf-textarea-textarea--border-color: var(--sf-error);
+  --sf-textarea-textarea--border-color: var(--sf-textarea-invalid-border-color, var(--sf-error));
 }
 
 .sf-textarea.sf-textarea--filled textarea {

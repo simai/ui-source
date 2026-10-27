@@ -74,7 +74,7 @@ test('Smart Textarea reads live text while its template records reset default', 
 
 test('Smart text setters synchronize native/masked values immediately without synthetic input', async () => {
   for (const [family, nextGetter, maskKey] of [
-    ['input', 'defaultValue', '__sfInputMask'], ['textarea', 'name', '__sfTextareaMask'],
+    ['input', 'defaultValue', '__sfInputMask'], ['textarea', 'rows', '__sfTextareaMask'],
   ]) {
     const source = await read(`smart/${family}/index.js`);
     const setter = source.slice(source.indexOf('  set value('), source.indexOf(`  get ${nextGetter}()`));

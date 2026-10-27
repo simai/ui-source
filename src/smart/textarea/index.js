@@ -4,53 +4,35 @@ import {
   unbindTextarea,
 } from '../../component/textarea/js/_textarea';
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
+import { FormField, innerControlName } from '../helpers/form-field';
 import { renderTextareaTemplate } from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-const TEXTAREA_VARIANTS = new Set(['bordered', 'filled', 'flush']);
-const TEXTAREA_INPUT_MODES = new Set(['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
-const TEXTAREA_WRAP_VALUES = new Set(['soft', 'hard']);
+// sf-textarea from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §17, §20). The settings are made by core/js/element-manifest.js;
+// `spellcheck` (a property of HTMLElement, §3.1) is spell-check, and `type`
+// (appearance) and `error` (invalid, §17.2) are dated aliases, as is the
+// trait's old event sf-field:reset (aliases.json). The host is the form
+// control through ElementInternals: it submits the text and reports the native
+// textarea's validity, and the textarea carries no name (§17.1).
+const TextareaElement = elementFromManifest(manifest, {
+  base: InheritedValueField(SfBaseElement),
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-function boundedValue(value, allowed, fallback) {
-  const normalized = String(value || fallback);
-  return allowed.has(normalized) ? normalized : fallback;
-}
-
-class SfTextarea extends InheritedValueField(SfBaseElement) {
+class SfTextarea extends FormField(TextareaElement) {
   static get props() {
     return {
-      size: { default: '1' },
-      // The axis is called appearance, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      // flush: inside a composite control that draws the box and the focus.
-      appearance: {default: 'bordered', values: ['bordered', 'filled', 'flush'], aliases: ['type']},
-      label: { default: '' },
-      required: { type: Boolean, default: false },
-      placeholder: { default: '' },
-      autocomplete: { default: '' },
-      inputmode: { default: '' },
-      minlength: { type: Number, default: null },
-      maxlength: { type: Number, default: null },
-      spellcheck: { type: Boolean, default: true },
-      wrap: { default: 'soft' },
-      hint: { default: '' },
-      value: { default: '' },
-      name: { default: '' },
-      rows: { type: Number, default: 3 },
-      disabled: { type: Boolean, default: false },
-      readonly: { type: Boolean, default: false },
-      error: { type: Boolean, default: false },
-      invalid: { type: Boolean, default: false },
-      errorMessage: { default: '' },
-      mask: { type: Boolean, default: false },
-      maskPattern: { default: '' },
-      maskOptions: { default: '' },
-      // Auto-grow (simai/ui-source#17): the field follows its text between
-      // min-rows and max-rows, then scrolls inside.
-      autoGrow: { type: Boolean, default: false },
-      minRows: { type: Number, default: 1 },
-      maxRows: { type: Number, default: null },
+      ...super.props,
+      rootClass: { default: '' },
       // What the field falls back to while it holds nothing (simai/ui-source#28).
       inheritedValue: { attribute: 'inherited-value', default: '' },
       inheritedText: { attribute: 'inherited-text', default: '' },
@@ -68,35 +50,6 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
     return fieldSize(this.getAttribute('size') || '1', 'sf-textarea');
   }
 
-  get appearance() {
-    return this.getProp('appearance');
-  }
-
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.appearance;
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
-  get required() {
-    return this.getBooleanAttr('required', false);
-  }
-
-  get placeholder() {
-    return this.getAttribute('placeholder') || '';
-  }
-
-  get autocomplete() {
-    return this.getAttribute('autocomplete') || '';
-  }
-
-  get inputmode() {
-    return boundedValue(this.getAttribute('inputmode'), TEXTAREA_INPUT_MODES, '');
-  }
-
   get minlength() {
     const value = this.getNumberAttr('minlength', null);
     return Number.isInteger(value) && value >= 0 ? value : null;
@@ -105,18 +58,6 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
   get maxlength() {
     const value = this.getNumberAttr('maxlength', null);
     return Number.isInteger(value) && value >= 0 ? value : null;
-  }
-
-  get spellcheck() {
-    return this.getBooleanAttr('spellcheck', true);
-  }
-
-  get wrap() {
-    return boundedValue(this.getAttribute('wrap'), TEXTAREA_WRAP_VALUES, 'soft');
-  }
-
-  get hint() {
-    return this.getAttribute('hint') || '';
   }
 
   get value() {
@@ -135,19 +76,12 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
     const textarea = root?.querySelector('textarea');
     if (root?.__sfTextareaMask) root.__sfTextareaMask.value = normalizedValue;
     else if (textarea) textarea.value = normalizedValue;
-  }
-
-  get name() {
-    return this.getAttribute('name') || '';
+    this.sfSyncFormState?.();
   }
 
   get rows() {
     const value = Math.trunc(this.getNumberAttr('rows', 3));
     return value > 0 ? value : 3;
-  }
-
-  get autoGrow() {
-    return this.getBooleanAttr('auto-grow', false);
   }
 
   get minRows() {
@@ -161,42 +95,14 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
     return value > 0 ? Math.max(value, this.minRows) : null;
   }
 
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  get readonly() {
-    return this.getBooleanAttr('readonly', false);
-  }
-
-  get error() {
-    return this.getBooleanAttr('error', false);
-  }
-
-  get invalid() {
-    return this.getBooleanAttr('invalid', false);
-  }
-
-  get errorMessage() {
-    return this.getAttribute('error-message') || '';
-  }
-
-  get mask() {
-    return this.getBooleanAttr('mask', false);
-  }
-
-  get maskPattern() {
-    return this.getAttribute('mask-pattern') || '';
-  }
-
-  get maskOptions() {
-    return this.getAttribute('mask-options') || '';
-  }
-
   // The inherited-value seam: the native textarea is the value, the focus and
   // what carries the description.
   inheritedFocusTarget() {
     return this.querySelector('.sf-textarea textarea');
+  }
+
+  getInputElement() {
+    return this.inheritedFocusTarget();
   }
 
   // A reset is said the way typing is: input, then change, from the textarea.
@@ -207,6 +113,11 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
     textarea?.dispatchEvent(new Event('change', {bubbles: true}));
   }
 
+  // The browser's restore of a form (back, reload) gives the text back.
+  formStateRestoreCallback(state) {
+    if (typeof state === 'string') this.value = state;
+  }
+
   templateContext() {
     const props = this.getPropsContext();
     const textarea = this.querySelector('textarea');
@@ -214,8 +125,11 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
     return this.createTemplateContext({
       ...props,
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
+      // The host is the form control where the browser has ElementInternals,
+      // so the textarea carries no name (§17.1 item 6).
+      name: innerControlName(this, props.name),
       // Resolved names the template reads (contracts/template-context.json).
-      type: this.type,
+      type: this.appearance,
       minlength: this.minlength,
       maxlength: this.maxlength,
       autoGrow: this.autoGrow,
@@ -246,6 +160,7 @@ class SfTextarea extends InheritedValueField(SfBaseElement) {
       bindTextarea(this._boundRoot);
     }
     this.syncInheritedState();
+    this.sfSyncFormState();
   }
 
   template() {

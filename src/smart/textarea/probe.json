@@ -1,0 +1,322 @@
+{
+  "probe": "sf-textarea against component.json (standard simai.smart-component 1.3.8 §12, §17, §20, gate 20)",
+  "page": {
+    "lang": "ru",
+    "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+    "listen": [
+      "input",
+      "change"
+    ],
+    "box": "textarea"
+  },
+  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/fields-manifest.browser.mjs",
+  "checks": [
+    {
+      "id": "typed-text-submits",
+      "covers": "values.value, form.submits",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "user": [
+        "type:ab",
+        "tab"
+      ],
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "note": "ab"
+        },
+        "formNames": [
+          "note"
+        ],
+        "innerNames": [
+          null
+        ],
+        "listed": 1
+      }
+    },
+    {
+      "id": "typing-says-input-then-change",
+      "covers": "events.input, events.change (native, §17.3)",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "user": [
+        "type:ab",
+        "tab"
+      ],
+      "expect": {
+        "events": [
+          {
+            "type": "input"
+          },
+          {
+            "type": "input"
+          },
+          {
+            "type": "change"
+          }
+        ],
+        "value": "ab"
+      }
+    },
+    {
+      "id": "tab-reaches-the-box",
+      "covers": "keyboard.host.Tab reach",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "user": "tab",
+      "expect": {
+        "focus": "sf-textarea textarea"
+      }
+    },
+    {
+      "id": "setting-value-is-silent",
+      "covers": "§8: a value set from outside sends nothing",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "property": {
+        "name": "value",
+        "value": "set"
+      },
+      "expect": {
+        "events": [],
+        "formData": {
+          "note": "set"
+        }
+      }
+    },
+    {
+      "id": "required-empty-blocks-submit",
+      "covers": "form.required, form.validity value-missing",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\" required></sf-textarea>",
+      "form": "submit",
+      "expect": {
+        "submitted": false,
+        "checkValidity": false,
+        "validity": {
+          "valueMissing": true,
+          "valid": false
+        }
+      }
+    },
+    {
+      "id": "disabled-leaves-the-form",
+      "covers": "form.disabled (§17.1 item 3)",
+      "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-textarea>",
+      "setting": {
+        "name": "disabled",
+        "value": true
+      },
+      "expect": {
+        "formData": {
+          "note": null
+        },
+        "disabled": {
+          "textarea": true
+        }
+      }
+    },
+    {
+      "id": "readonly-submits",
+      "covers": "form.readonly (§17.1 item 3)",
+      "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\" readonly></sf-textarea>",
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "note": "текст"
+        }
+      }
+    },
+    {
+      "id": "form-reset-returns-the-default",
+      "covers": "form.reset (§17.1 item 4), no events",
+      "field": "<sf-textarea name=\"note\" value=\"a\" label=\"Заметка\"></sf-textarea>",
+      "given": [
+        {
+          "user": "type:b"
+        }
+      ],
+      "form": "reset",
+      "expect": {
+        "events": [],
+        "value": "a",
+        "formData": {
+          "note": "a"
+        }
+      }
+    },
+    {
+      "id": "inherited-submits-empty",
+      "covers": "trait field-inherit: shown, never the value; data-inherited",
+      "field": "<sf-textarea name=\"sign\" label=\"Подпись\" inherited-value=\"С уважением\"></sf-textarea>",
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "sign": ""
+        },
+        "host": {
+          "attributes": {
+            "data-inherited": "true"
+          }
+        },
+        "box": {
+          "text": "",
+          "attributes": {
+            "placeholder": "С уважением"
+          }
+        }
+      }
+    },
+    {
+      "id": "reset-to-inherited-new-then-old-event",
+      "covers": "sf-field-reset then sf-field:reset once each, one detail, a dated journal note (§8, §16.20, §20.2)",
+      "field": "<sf-textarea name=\"sign\" label=\"Подпись\" value=\"Своя\" inherited-value=\"С уважением\"></sf-textarea>",
+      "listen": [
+        "sf-field-reset",
+        "sf-field:reset",
+        "input",
+        "change"
+      ],
+      "action": {
+        "name": "reset-to-inherited"
+      },
+      "expect": {
+        "returns": true,
+        "events": [
+          {
+            "type": "sf-field-reset",
+            "value": "Своя",
+            "inheritedValue": "С уважением",
+            "name": "sign"
+          },
+          {
+            "type": "sf-field:reset",
+            "value": "Своя",
+            "inheritedValue": "С уважением",
+            "name": "sign"
+          },
+          {
+            "type": "input"
+          },
+          {
+            "type": "change"
+          }
+        ],
+        "journal": [
+          {
+            "from": "sf-field:reset",
+            "to": "sf-field-reset",
+            "kind": "event",
+            "since": "2026-10-27",
+            "remove_after": "2026-12-01"
+          }
+        ],
+        "formData": {
+          "sign": ""
+        },
+        "host": {
+          "attributes": {
+            "data-inherited": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "custom-validity-blocks-submit",
+      "covers": "form.validity custom-error (§17.2)",
+      "field": "<sf-textarea name=\"note\" value=\"текст\" label=\"Заметка\"></sf-textarea>",
+      "action": {
+        "name": "set-custom-validity",
+        "with": "Слишком коротко"
+      },
+      "expect": {
+        "checkValidity": false,
+        "validity": {
+          "customError": true,
+          "valid": false
+        }
+      }
+    },
+    {
+      "id": "legacy-spellcheck-is-spell-check",
+      "covers": "aliases.json spellcheck -> spell-check (§3.1, §16 item 26)",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "setting": {
+        "name": "spellcheck",
+        "value": "false"
+      },
+      "expect": {
+        "host": {
+          "attributes": {
+            "spell-check": "false"
+          },
+          "props": {
+            "spellCheck": false
+          }
+        },
+        "journal": [
+          {
+            "from": "spellcheck",
+            "to": "spell-check",
+            "kind": "setting",
+            "since": "2026-10-27",
+            "remove_after": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "id": "legacy-error-is-invalid",
+      "covers": "aliases.json error -> invalid (§17.2)",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "setting": {
+        "name": "error",
+        "value": true
+      },
+      "expect": {
+        "host": {
+          "attributes": {
+            "invalid": ""
+          }
+        },
+        "box": {
+          "attributes": {
+            "aria-invalid": "true"
+          }
+        },
+        "journal": [
+          {
+            "from": "error",
+            "to": "invalid",
+            "kind": "setting",
+            "since": "2026-10-27",
+            "remove_after": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "id": "legacy-type-is-appearance",
+      "covers": "aliases.json type -> appearance",
+      "field": "<sf-textarea name=\"note\" label=\"Заметка\"></sf-textarea>",
+      "setting": {
+        "name": "type",
+        "value": "filled"
+      },
+      "expect": {
+        "host": {
+          "attributes": {
+            "appearance": "filled"
+          }
+        },
+        "journal": [
+          {
+            "from": "type",
+            "to": "appearance",
+            "kind": "setting",
+            "since": "2026-10-27",
+            "remove_after": "2026-12-01"
+          }
+        ]
+      }
+    }
+  ]
+}

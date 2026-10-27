@@ -1,0 +1,112 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Комментарий, обязательное",
+      "settings": {
+        "label": "Комментарий",
+        "value": "Текст примера",
+        "required": true,
+        "hint": "Добавьте пояснение для пользователя.",
+        "maxlength": 500,
+        "spell-check": true
+      },
+      "expect": {
+        "value": "Текст примера"
+      }
+    },
+    {
+      "name": "filled",
+      "title": "Заливка",
+      "settings": {
+        "label": "Описание",
+        "appearance": "filled"
+      },
+      "expect": {
+        "appearance": "filled"
+      }
+    },
+    {
+      "name": "flush",
+      "title": "Без рамки",
+      "settings": {
+        "appearance": "flush",
+        "placeholder": "Сообщение"
+      },
+      "expect": {
+        "appearance": "flush"
+      }
+    },
+    {
+      "name": "auto-grow",
+      "title": "Растёт с текстом",
+      "settings": {
+        "label": "Заметка",
+        "auto-grow": true,
+        "min-rows": 2,
+        "max-rows": 6
+      },
+      "expect": {
+        "auto-grow": true
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Описание",
+        "invalid": true,
+        "error-message": "Опишите задачу"
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступно",
+      "settings": {
+        "label": "Описание",
+        "value": "Текст",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Только чтение",
+      "settings": {
+        "label": "Описание",
+        "value": "Текст",
+        "readonly": true
+      },
+      "expect": {
+        "readonly": true
+      }
+    },
+    {
+      "name": "inherited",
+      "title": "Наследуемое значение",
+      "settings": {
+        "label": "Подпись письма",
+        "inherited-value": "С уважением, команда"
+      },
+      "expect": {
+        "data-inherited": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупное",
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}
