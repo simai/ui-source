@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.page-header",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Page header",
   "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "kind": "smart",

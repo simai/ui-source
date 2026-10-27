@@ -438,6 +438,6 @@
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus the lightbox and the actions; probe.json drives go-to, next, open, close and the aliases.",
     "skeleton: none; the slides are the page's children, drawn before any code; the lightbox is closed at first paint (§5.4).",
     "css-variables: five public variables read by the gallery's own sheet; the slider's and the modal's pass through (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

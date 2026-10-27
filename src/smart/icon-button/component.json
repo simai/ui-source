@@ -270,6 +270,6 @@
     "css-variables: the seven public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
     "folder: icon-buttons takes the tag's name, icon-button (§3, §21, §16 item 16); the loader bundle is cl-icon-button, cl-icon-buttons is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/icon-buttons/js/icon-buttons.js a forwarding script (css/icon-buttons.css its sheet) until 2026-12-01 (change journal path-smart-icon-buttons-to-icon-button). The registry id follows the folder: smart.icon-button (smart.icon-buttons is its dated alias in the same record).",
     "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

@@ -201,6 +201,6 @@
     "examples: examples.json from studio.fixture.json (Документация, #) plus a label and text, plain, no icon, a size, a line and disabled.",
     "css-variables: seven public variables (fill and border at rest, radius, link colour, padding inline and block, gap), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json.",
     "version 1.0.0: the interface is unchanged; nothing is renamed, so aliases.json holds only the host attribute aria-label.",
-    "version 1.0.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.0.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

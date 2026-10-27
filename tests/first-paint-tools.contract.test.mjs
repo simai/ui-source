@@ -3,7 +3,7 @@ import {mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES} from '../scripts/first-paint-lib.mjs';
 import {fillSkeleton, repeatCount} from '../scripts/first-paint-skeleton.mjs';
 
 // The first-paint tools themselves (scripts/first-paint-*.mjs,
@@ -180,4 +180,58 @@ test('6. the text faces: optional on a page, block on the snapshot server only',
   assert.equal(measuredFonts('@font-face{font-family:"Inter Fallback";src:local(Arial)}'), '@font-face{font-family:"Inter Fallback";src:local(Arial)}');
   const snapshot = readFileSync(join(root, 'scripts/snapshot-first-paint.mjs'), 'utf8');
   assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 2, 'every snapshot page waits for Inter');
+});
+
+test('7. a closed surface prints closed, and a snapshot keeps to its size', () => {
+  assert.equal(SNAPSHOT_MAX_BYTES, 8192);
+  assert.equal(sizeProblem({name: 'a'}, 8192), null);
+  assert.match(sizeProblem({name: 'a'}, 8193), /over 8192/u);
+  assert.equal(sizeProblem({name: 'a', 'first-paint': {'max-bytes': 20000, why: 'a palette'}}, 19000), null);
+  assert.match(sizeProblem({name: 'a', 'first-paint': {'max-bytes': 20000, why: 'a palette'}}, 20001), /declared 20000/u);
+  assert.match(sizeProblem({name: 'a', 'first-paint': {'max-bytes': 20000}}, 10), /needs an integer max-bytes and a why/u);
+  const checked = [];
+  for (const component of components()) {
+    for (const example of component.examples.filter((one) => one.template !== 'skeleton')) {
+      const files = exampleFiles(component, example);
+      for (const file of [files.html, files.skeleton]) {
+        let bytes;
+        try { bytes = readFileSync(file).length; } catch { continue; }
+        checked.push(file);
+        assert.equal(sizeProblem(example, bytes), null, file);
+      }
+    }
+  }
+  for (const assembly of assemblies()) {
+    for (const layout of Object.keys(assembly.layouts)) {
+      for (const example of assembly.examples) {
+        assert.equal(sizeProblem(example, readFileSync(join(assembly.dir, 'static', layout, `${example.name}.html`)).length), null, `${assembly.folder}/${layout}/${example.name}`);
+      }
+    }
+  }
+  assert.ok(checked.length > 250);
+  // sf-country-code printed its whole open list (107 KB) for a closed field.
+  const country = readFileSync(join(root, 'src/smart/country-code/static/default/default.html'), 'utf8');
+  assert.doesNotMatch(country, /sf-country-code-item/u);
+  assert.match(country, /<span class="sf-country-code-list" id="[^"]+" role="listbox"[^>]*><\/span>/u, 'the list is printed as its empty element');
+  const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
+  assert.match(page, /if \(closed\(el\)\) inner = '';/u);
+  const tool = readFileSync(join(root, 'scripts/snapshot-first-paint.mjs'), 'utf8');
+  assert.match(tool, /results\.tooLarge\.length \|\|/u, 'the size gate fails the run, --check included');
+});
+
+test('8. no size or place the code measured enters a snapshot', () => {
+  const geometry = /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size)|left|top|right|bottom|inset(?:-[\w-]+)?|clip-path|transform|translate)$/u;
+  for (const file of snapshots()) {
+    const html = readFileSync(file, 'utf8');
+    for (const [, style] of html.matchAll(/ style="([^"]*)"/gu)) {
+      for (const part of style.split(';')) {
+        const at = part.indexOf(':');
+        if (at < 0 || !geometry.test(part.slice(0, at).trim())) continue;
+        const px = [...part.slice(at + 1).matchAll(/(?<![\w.#-])(-?(?:\d+\.?\d*|\.\d+))px\b/gu)].filter((one) => Number(one[1]) !== 0);
+        assert.equal(px.length, 0, `${file}: ${part.trim()}`);
+      }
+    }
+  }
+  const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
+  assert.match(page, /function unmeasured\(style\)/u);
 });

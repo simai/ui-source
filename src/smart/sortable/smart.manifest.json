@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.sortable",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Sortable",
   "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard, with an optional insertion point that opens a searchable inserter; reports intent only.",
   "kind": "smart",

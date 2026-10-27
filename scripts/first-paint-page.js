@@ -99,11 +99,45 @@
   // it has, on the next not yet. The live element sets it again; a snapshot
   // never holds it, so it is the same on every run.
   const ICON_LOADED = 'sf-icon-loaded';
+
+  // A size or place the code measured in the browser (a column's width, an
+  // overlay's clip) is the measuring page's, not the page that prints the
+  // snapshot: it depends on the viewport and the fonts. A geometry declaration
+  // of an inline style that holds a non-zero px length is left out; the
+  // sheets set the box until the element measures again. Percentages,
+  // variables and zero stay: they are data, not measurements.
+  const GEOMETRY = /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size)|left|top|right|bottom|inset(?:-[\w-]+)?|clip-path|transform|translate)$/u;
+  const measured = (value) => [...value.matchAll(/(?<![\w.#-])(-?(?:\d+\.?\d*|\.\d+))px\b/gu)].some((match) => Number(match[1]) !== 0);
+  function unmeasured(style) {
+    const parts = [];
+    let depth = 0;
+    let from = 0;
+    for (let i = 0; i < style.length; i += 1) {
+      if (style[i] === '(') depth += 1;
+      else if (style[i] === ')') depth -= 1;
+      else if (style[i] === ';' && !depth) { parts.push(style.slice(from, i)); from = i + 1; }
+    }
+    parts.push(style.slice(from));
+    const kept = parts.filter((part) => {
+      const at = part.indexOf(':');
+      if (at < 0) return part.trim() !== '';
+      return !(GEOMETRY.test(part.slice(0, at).trim().toLowerCase()) && measured(part.slice(at + 1)));
+    });
+    // Untouched when nothing was measured: the attribute as the code wrote it.
+    if (kept.length === parts.filter((part) => part.trim() !== '').length) return style;
+    return kept.map((part) => part.trim()).join('; ') + (kept.length ? ';' : '');
+  }
+
   function attributes(el, extra = []) {
     const out = [];
     for (const {name, value} of el.attributes) {
       if (RUNTIME.has(name)) continue;
       if (name === 'loaded' && el.localName === 'sf-icon') continue;
+      if (name === 'style') {
+        const kept = unmeasured(value);
+        if (kept === value || kept.trim()) out.push([name, kept]);
+        continue;
+      }
       if (name === 'class' && value.split(/\s+/u).includes(ICON_LOADED)) {
         const kept = value.split(/\s+/u).filter((one) => one && one !== ICON_LOADED).join(' ');
         if (kept) out.push([name, kept]);
@@ -159,6 +193,30 @@
     return escText(data);
   }
 
+  // A closed surface prints closed: a list, a menu, a popover or a dialog
+  // that is not open at the first paint is printed as its empty element (it
+  // keeps its id, so the trigger's aria-controls still points at it), never
+  // its content -- the code draws that when it opens. So is any subtree the
+  // page cannot show: hidden or inert. sf-country-code printed its whole
+  // country list (107 KB) for a closed field.
+  const POPUP = new Set(['listbox', 'menu', 'dialog', 'alertdialog', 'tooltip']);
+  const unseen = (el) => {
+    const style = getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return true;
+    if (style.display === 'contents') return false;
+    const box = el.getBoundingClientRect();
+    return !box.width || !box.height;
+  };
+  function closed(el) {
+    if (el.hasAttribute('hidden')) return true;
+    if (el.localName === 'dialog' && !el.open) return true;
+    if (el.hasAttribute('popover') && !el.matches(':popover-open')) return true;
+    // inert alone may be a shown, disabled part: closed only when not seen.
+    if (el.hasAttribute('inert') && unseen(el)) return true;
+    if (!POPUP.has(el.getAttribute('role') ?? '')) return false;
+    return el.getAttribute('aria-hidden') === 'true' || unseen(el);
+  }
+
   // The rendered markup: everything as it is, the page's markers out; the
   // top node marked data-sf-static. A Smart element drawn inside it gets its
   // own drawn children marked too, so if its code arrives first it replaces
@@ -168,7 +226,8 @@
     const extra = top ? [['data-sf-static', '']] : [];
     if (mode.skeleton && top) extra.push(['aria-hidden', 'true']);
     let inner = '';
-    if (el.localName === 'template') inner = el.innerHTML;
+    if (closed(el)) inner = '';
+    else if (el.localName === 'template') inner = el.innerHTML;
     else if (RAW.has(el.localName)) inner = el.textContent;
     else if (mode.skeleton && el.localName === 'textarea') inner = '';
     else {

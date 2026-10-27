@@ -288,6 +288,6 @@
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus <details> in the markup, plus-minus markers and one plain section; probe.json drives the arrows, Home, End, Enter, Space and Tab (gate 16).",
     "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
     "side-effects: none.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

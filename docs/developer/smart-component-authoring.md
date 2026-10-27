@@ -171,6 +171,18 @@ the next one.
   child), and the icon runtime's font state -- `sf-icon`'s `loaded`
   attribute, the `sf-icon-loaded` class -- is left out: the live element sets
   it, and a snapshot is the same on every run.
+- **A closed surface prints closed; nothing measured is printed** (owner
+  decision 2026-10-27). A list, menu, popover or dialog that is not open at
+  the first paint -- `hidden`, a closed `<dialog>` or `popover`, `inert` and
+  unseen, or a popup role that is `aria-hidden` or unseen -- is printed as its
+  empty element (its id kept for `aria-controls`); the code draws its content
+  when it opens. An inline geometry declaration (width, height, inset, clip,
+  transform) holding a non-zero px length is left out: a size the code
+  measured is the measuring page's, so the sheets hold the box until the
+  element measures again (fixed layout or minimum sizes where gate 24 needs
+  them). A snapshot over 8 KB fails the run, `--check` included, unless its
+  example declares why: `"first-paint": {"max-bytes": 20000, "why": "..."}`
+  (sf-theme-generator's palette, sf-pagination's bulk row).
 - **Snapshots are measured in Inter** (decision 2026-10-27). On a page the
   Inter faces are `font-display: optional`: a cold visit keeps the metric
   fallback ("Inter Fallback", Arial bent to Inter's metrics) for the visit

@@ -300,6 +300,6 @@
     "form.validity: what the native textarea reports and the host mirrors -- value-missing, too-short, too-long -- and custom-error (§17.2).",
     "form: the host is the form control through ElementInternals; the textarea carries no name (§17.1 item 6); read-only still submits.",
     "accessibility.name: the label only, as converted; the textarea takes no aria-label from the host today (left as it is).",
-    "version 1.5.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.5.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

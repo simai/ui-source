@@ -81,6 +81,10 @@
       },
       "expect": {
         "name": "Страницы результатов"
+      },
+      "first-paint": {
+        "max-bytes": 10000,
+        "why": "The bulk row is shown at rest beside the pages: two closed dropdowns, a button, a checkbox and a clear button, each a printed Smart element with its own markup."
       }
     }
   ]

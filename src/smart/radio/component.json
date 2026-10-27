@@ -207,6 +207,6 @@
     "form: the host is the form control through ElementInternals. The inner radio keeps the native group (one checked, arrow keys) under a group key name -- the host form's id or place among document.forms, and the host's name -- and a form attribute naming no form, so it joins no form (§17.1 item 6); its form reset is done by the host (formResetCallback).",
     "size is the enum 1/2, 1, 2 of the class radio sheet.",
     "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

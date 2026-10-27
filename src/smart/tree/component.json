@@ -332,7 +332,7 @@
     "template: templates.default names js/templates/default.js; the rows are sf-tree-item's js/templates/row.js.",
     "examples: examples.json from studio.fixture.json (a section with a child) plus files, one and many selection, links and a large tree.",
     "css-variables: six public variables of the tree class sheet (component/tree): the rows' gap, the tree's inline padding, a level's indent, a row's radius and ink, a selected row's fill (a resting look and the selected state; hover stays the role token's). Listed in src/core/contracts/public-variables.v1.json.",
-    "version 2.0.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 2.0.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ],
   "x-measured": {
     "$comment": "stand 20's method (control/smart-architecture/stands/20-performance/bench.mjs, lists): Playwright Chromium, headless, macOS, the time from setting items to a stable DOM confirmed by a frame; medians; the dev build of this branch against the build of b237d0e (ui-8a77add77500). The first change is the stand's: the whole items with one label changed.",

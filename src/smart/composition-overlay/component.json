@@ -358,6 +358,6 @@
     "examples: examples.json from studio.fixture.json (an overlay for a canvas) plus a framed canvas, a library that drops on the canvas and actions.",
     "css-variables: five public variables of its sheet: the frames' and insertion points' colour (read into the overlay's own --sf-composition-overlay-color), the layer's z-index, the toolbar's fill, radius and gap. Not in src/core/contracts/public-variables.v1.json: the parts they colour exist only over a canvas with a selection, which its probe does not draw.",
     "source-drift: the shipped manifest differs from 5100227 in the framed mode (frame, attach-frame, set-nodes, simai/ui-source#22) and the plain-string edit (sf-composition-overlay-edit); they are carried here by hand.",
-    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

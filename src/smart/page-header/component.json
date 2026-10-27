@@ -179,6 +179,6 @@
     "examples: examples.json from studio.fixture.json (a catalogue with a count and a star) plus an install page, a favourite, a path and an action, and a header without a star.",
     "css-variables: five public variables of a sheet of its own (scss/): the gap between the path and the line, the line's gap, the actions' gap, the heading's colour and the favourite star's colour. The gaps were utilities in the template; they are the sheet's now, so a page can change them. Listed in src/core/contracts/public-variables.v1.json.",
     "source-drift: the shipped manifest differs from 5100227 only in its provenance hashes and the rule's relation names (cl-badge, cl-icon-button, cl-icon); the interface is the same, nothing to carry.",
-    "version 1.1.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

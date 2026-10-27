@@ -8,6 +8,10 @@
       },
       "expect": {
         "value": "#2e7d32"
+      },
+      "first-paint": {
+        "max-bytes": 20000,
+        "why": "The generator shows its palette at rest: eight tonal rows of six swatches, each a printed span, plus its two fields. That is the first paint, not a closed surface."
       }
     },
     {
@@ -16,6 +20,10 @@
       "settings": {},
       "expect": {
         "value": ""
+      },
+      "first-paint": {
+        "max-bytes": 20000,
+        "why": "The generator shows its palette at rest: eight tonal rows of six swatches, each a printed span, plus its two fields. That is the first paint, not a closed surface."
       }
     },
     {
@@ -29,6 +37,10 @@
       "expect": {
         "hue": 200,
         "chroma": 60
+      },
+      "first-paint": {
+        "max-bytes": 20000,
+        "why": "The generator shows its palette at rest: eight tonal rows of six swatches, each a printed span, plus its two fields. That is the first paint, not a closed surface."
       }
     },
     {
@@ -40,6 +52,10 @@
       },
       "expect": {
         "size": "1/2"
+      },
+      "first-paint": {
+        "max-bytes": 20000,
+        "why": "The generator shows its palette at rest: eight tonal rows of six swatches, each a printed span, plus its two fields. That is the first paint, not a closed surface."
       }
     },
     {
@@ -54,6 +70,10 @@
       },
       "expect": {
         "apply": true
+      },
+      "first-paint": {
+        "max-bytes": 20000,
+        "why": "The generator shows its palette at rest: eight tonal rows of six swatches, each a printed span, plus its two fields. That is the first paint, not a closed surface."
       }
     }
   ]

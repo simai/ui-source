@@ -314,6 +314,6 @@
     "side-effects: portal -- the open list is shown in the browser's top layer, or, without it, moved to the end of body (or of the open modal dialog).",
     "layer: kind surface; the open list registers through core open-surface-mark, so Escape reaches it while it is the top layer; it does not trap focus.",
     "change: the change the person made is sent as `change` on the host (a CustomEvent with {value, label, values, item, multiple}); the old name sf-dropdown:change follows with root added, once per change.",
-    "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

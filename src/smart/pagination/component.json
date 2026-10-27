@@ -492,6 +492,6 @@
     "css-variables: nine public variables read by the class sheets (component/pagination) over the role tokens (§6): the fill, the words' colour, the gap, the divider, a page number's fill, colour and radius, the current page's fill and colour. They are not in src/core/contracts/public-variables.v1.json yet: on the built bytes (tests/browser/public-variables.browser.mjs) only the fill, the words' colour and the gap reach sf-pagination; the page number's and the current page's variables style .sf-page-number, which the template no longer draws (the page field took the row of numbers), and the divider styles .sf-pagination-top, which it does not draw either. They enter the contract when they are pointed at what the element draws.",
     "side-effects: none.",
     "docs: docs/docs.md, where the folder keeps it (as sf-tooltip).",
-    "version 1.2.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.2.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

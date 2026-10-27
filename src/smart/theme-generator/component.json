@@ -234,6 +234,6 @@
     "examples: examples.json from studio.fixture.json (a green theme) plus SIMAI Framework's colour, a tuned hue and chroma, product swatches and apply to a part of the page.",
     "css-variables: five public variables of its sheet: the gap, the text's ink, the labels' ink, the swatches' radius and border. Listed in src/core/contracts/public-variables.v1.json.",
     "source-drift: the shipped manifest differs from 5100227 in the alias rows and its provenance; the interface converted is the shipped one.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

@@ -321,6 +321,6 @@
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json (an icon row) plus a two-line interactive row, a checkbox row, an avatar row, a colour row and a disabled row.",
     "css-variables: five public variables read by the class sheet it draws with (component/dropdown, _css__list-item.scss): the row's fill, its divider, the title's ink, the supporting line's ink and the handle's ink, each over the role token it replaced. Listed in src/core/contracts/public-variables.v1.json.",
-    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }

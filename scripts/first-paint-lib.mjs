@@ -142,6 +142,26 @@ export function givesLateData(component, example) {
 }
 
 /**
+ * How large a snapshot may be (owner decision 2026-10-27): 8 KB, a first
+ * paint is the closed, resting element. An example whose first paint is
+ * larger by nature (a palette of swatches) says so and why:
+ *   "first-paint": {"max-bytes": 20000, "why": "..."}
+ * Answers the problem with a file of `bytes`, or null.
+ */
+export const SNAPSHOT_MAX_BYTES = 8192;
+export function sizeProblem(example, bytes) {
+  const declared = example['first-paint'] ?? null;
+  if (declared && (!Number.isInteger(declared['max-bytes']) || !String(declared.why ?? '').trim())) {
+    return `${example.name}: "first-paint" needs an integer max-bytes and a why`;
+  }
+  const max = declared ? declared['max-bytes'] : SNAPSHOT_MAX_BYTES;
+  if (bytes <= max) return null;
+  return declared
+    ? `${example.name}: ${bytes} bytes, over its declared ${max}`
+    : `${example.name}: ${bytes} bytes, over ${SNAPSHOT_MAX_BYTES} (a closed surface prints closed; a larger first paint declares "first-paint": {"max-bytes", "why"} in its example)`;
+}
+
+/**
  * An example's port answers (§4.9): a component fed through a host port, not
  * a setting, declares in its example what a fake port answers, and the gate
  * hands that port over as the late data of phase 3. The example's `port`:

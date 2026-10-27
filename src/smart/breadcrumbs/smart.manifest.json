@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Breadcrumbs",
   "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
   "kind": "smart",

@@ -318,6 +318,6 @@
     "form: the host is the form control through ElementInternals; the native input (the hidden one too) carries no name (§17.1 item 6); read-only still submits.",
     "minlength and maxlength stay strings as converted (no x-todo raised them; a type change is a major).",
     "version 1.3.0: renamed members behind dated aliases are a minor (§4.10).",
-    "version 1.3.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
+    "version 1.3.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
   ]
 }
