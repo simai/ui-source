@@ -106,6 +106,7 @@
   },
   "events": {
     "change": {
+      "x-native": false,
       "carries": {
         "selected": "id",
         "previous": "number",

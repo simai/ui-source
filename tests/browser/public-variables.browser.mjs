@@ -93,6 +93,16 @@ const DRAW = {
     open: 'document.getElementById("held").setAttribute("data-dragged-over", "true")'},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'datepicker',
     html: '<sf-datepicker input="false" value="2026-09-03"></sf-datepicker><sf-datepicker input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-datepicker>'},
+  // The navigation family, with its move to standard 1.3.8 (2026-10-27): a
+  // trail with a plain crumb, a link and the current page (the link's hover
+  // colour is a state the probe does not reach); steps with one completed and
+  // one current; pages with a current one and the top row drawn.
+  breadcrumbs: {css: ['breadcrumbs', 'icons'], js: 'breadcrumbs',
+    html: `<sf-breadcrumbs aria-label="Навигация" items='[{"label":"Главная","href":"#"},{"label":"Раздел"},{"label":"Страница"}]'></sf-breadcrumbs>`},
+  steps: {css: ['step', 'icons'], js: 'steps',
+    html: `<sf-steps aria-label="Этапы" current="1" items='[{"label":"Черновик"},{"label":"Проверка"},{"label":"Готово"}]'></sf-steps>`},
+  pagination: {css: ['pagination', 'icon-buttons', 'buttons', 'inputs', 'dropdown'], js: 'pagination',
+    html: '<sf-pagination aria-label="Страницы" current="2" total="80" page-size="10" selected-count="3"></sf-pagination>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

@@ -5,8 +5,7 @@ import test from 'node:test';
 // The navigation family from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §7.2.1, §8, §16.20, §18): sf-menu, sf-tabs, sf-accordion,
 // sf-breadcrumbs, sf-steps, sf-pagination. The browser half, on the built
-// bytes, is each folder's probe.json run by tests/browser/overlays-manifest.browser.mjs
-// with SF_OVERLAYS naming the folders.
+// bytes, is each folder's probe.json, run by tests/browser/manifest-probes.browser.mjs.
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));

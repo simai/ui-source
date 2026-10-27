@@ -80,6 +80,9 @@ test('the DOM name of an event follows its verb (§8)', () => {
   const detailed = {tag: 'sf-thing', events: {change: {carries: {value: 'string'}}, input: {carries: {value: 'string'}}}};
   assert.equal(eventName(detailed, 'change'), 'change');
   assert.equal(eventName(detailed, 'input'), 'input');
+  // A component that is no value control keeps <tag>-change (sf-tabs, sf-steps, sf-pagination).
+  const own = {tag: 'sf-thing', events: {change: {'x-native': false, carries: {current: 'number'}}}};
+  assert.equal(eventName(own, 'change'), 'sf-thing-change');
   assert.equal(eventName(manifest, 'open'), 'sf-thing-open');
   assert.equal(eventName(manifest, 'close'), 'sf-thing-close');
 });

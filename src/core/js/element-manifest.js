@@ -83,13 +83,17 @@ function isNativeMember(property) {
 // The browser's own names a field reports under (§8, §17.3): a page listens
 // for `change` and `input` on any form control, ours included, so they keep
 // those names whatever they carry -- a detail when the component gives one,
-// never `<tag>-change`.
+// never `<tag>-change`. A component that holds other content and is no value
+// control (sf-tabs, sf-steps, sf-pagination) declares `"x-native": false` on
+// the event: it sends `<tag>-change`, so a field's change bubbling out of a
+// panel is never taken for its own.
 const NATIVE_EVENTS = new Set(['change', 'input']);
 
 /** The DOM name of an event the manifest declares by its verb (§8). */
 export function eventName(manifest, verb) {
   const declared = manifest?.events?.[verb];
-  if (NATIVE_EVENTS.has(verb) || declared?.carries === 'native') return verb;
+  if (declared?.carries === 'native') return verb;
+  if (NATIVE_EVENTS.has(verb) && declared?.['x-native'] !== false) return verb;
   return `${manifest.tag}-${verb}`;
 }
 

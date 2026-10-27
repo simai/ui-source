@@ -194,6 +194,7 @@
   },
   "events": {
     "change": {
+      "x-native": false,
       "carries": {
         "previous": "number",
         "current": "number",

@@ -27,6 +27,10 @@ const FOLDERS = {
   'range-slider': 'range-slider',
   'file-upload': 'file-upload',
   datepicker: 'datepicker',
+  // The navigation family, with its move to standard 1.3.8 (2026-10-27).
+  breadcrumbs: 'breadcrumbs',
+  steps: 'step',
+  pagination: 'pagination',
 };
 
 const scss = async (folder) => {
