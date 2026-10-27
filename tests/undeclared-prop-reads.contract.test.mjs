@@ -81,7 +81,9 @@ test('a component reads a declared prop through a getter or getProp, never off t
       else if (bare) offenders.push(`${path}: this.${key}`);
     }
   }
-  assert.ok(checked > 100, `only ${checked} props without a getter were checked; the parser is not finding them`);
+  // The count falls as components move to standard 1.3.8: elementFromManifest
+  // generates their props' getters (display group A took it to 100).
+  assert.ok(checked > 50, `only ${checked} props without a getter were checked; the parser is not finding them`);
   for (const id of allowed) assert.ok(used.has(id), `${id}: exempt but no longer read bare; remove the exemption`);
   assert.deepEqual(offenders, [], 'read it with this.getProp(key), or define a getter');
 });
