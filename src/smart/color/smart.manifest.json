@@ -303,7 +303,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/color/index.js",
-        "sha256": "da7e4dcdb97b8f4cd05fd354ec62105ae2349f80d303e86be4948a8ad5026d35"
+        "sha256": "318a6bc44f2895d73df0a91edec2a96113c36a0a3e730c35d13f2c9e37736cf5"
       },
       {
         "path": "src/smart/color/rule.js",
@@ -311,11 +311,11 @@
       },
       {
         "path": "src/smart/color/js/templates/default.js",
-        "sha256": "f764df01fc867d7d939f4bcd4f22ff3771670b3bfce282c4c4af82a59359be78"
+        "sha256": "572f2a00f6985195ce9c118418e3bca4c4967b0b1867e5d3cc3da5983a877059"
       },
       {
         "path": "src/smart/color/js/templates/default.css",
-        "sha256": "e5755625a291f02dc4e75716b5cdecb454954e47219854cc63055f2a0ca3aaec"
+        "sha256": "82fb434a7723767e263082c44ba06da4ff54495a1a02d442f8e8a85de0ebebec"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -1,0 +1,30 @@
+{
+  "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+  "component": "sf-color",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-field:reset",
+      "to": "sf-field-reset",
+      "kind": "event",
+      "component": "sf-color",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, §20.2",
+      "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first"
+    },
+    {
+      "from": "shown",
+      "to": "effective-value",
+      "kind": "value",
+      "component": "sf-color",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "shim": "none",
+      "section": "§4.1, §4.3",
+      "note": "the getter shown returned the painted colour; shown is now the base value (a boolean) on every element, so the old meaning cannot be served beside it: read effectiveValue"
+    }
+  ]
+}

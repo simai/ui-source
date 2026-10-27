@@ -84,6 +84,8 @@ const DRAW = {
   'country-code': {css: ['country-code'], js: 'country-code',
     html: '<sf-country-code label="Телефон" value="+7 999 123-45-67" size="1"></sf-country-code>',
     open: 'document.querySelector(".sf-country-code").classList.add("open")'},
+  color: {css: ['smart/smart/color/css/color.css'], js: 'color',
+    html: '<sf-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-color><sf-color label="Цвет"></sf-color>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

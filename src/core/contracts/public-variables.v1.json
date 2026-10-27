@@ -1666,6 +1666,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "color",
+      "selector": ".sf-color",
+      "variables": [
+        {
+          "name": "--sf-color-gap",
+          "role": "gap",
+          "summary": "The space between the swatch, the hex and the presets.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-color-chip-radius",
+          "role": "radius",
+          "summary": "The corner radius of the swatch and of each preset.",
+          "default": "var(--sf-radius-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-color-chip-border-color",
+          "role": "border-color",
+          "summary": "The border of the swatch and of each preset at rest; the outlined and plain appearances keep their own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-color-swatches-gap",
+          "role": "gap",
+          "summary": "The space between presets.",
+          "default": "var(--sf-space-1\\/2, 4px)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-color-inherited-color",
+          "role": "color",
+          "summary": "The ink of the word that says the colour is inherited.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

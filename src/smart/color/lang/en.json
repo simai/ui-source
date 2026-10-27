@@ -1,0 +1,11 @@
+{
+  "title": "Color",
+  "runtime": {
+    "choose": "Choose a colour",
+    "clear": "Use the inherited colour",
+    "custom": "Custom",
+    "inherited": "inherited",
+    "reset": "Reset to inherited",
+    "described": "Inherited: {value}"
+  }
+}

@@ -14,6 +14,7 @@ const {readAliasTable} = await import('../src/core/js/alias-table.js');
 
 const COMPONENTS = {
   'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
+  color: {class: 'SfColor', sheets: 'src/smart/color/js/templates'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -99,4 +100,23 @@ test('sf-country-code: the host is the form control; the inner tel input carries
   assert.equal(manifest.settings.form, undefined, 'form is a host attribute, read by the browser');
   assert.deepEqual(manifest.form.validity, ['value-missing', 'custom-error']);
   assert.equal(json('src/smart/country-code/lang/ru.json').runtime['value-missing'], 'Введите номер телефона.');
+});
+
+test('sf-color: shown is the base value; the painted colour is effective-value, a dated documentary rename (§4.1, §4.3)', () => {
+  const source = read('src/smart/color/index.js');
+  assert.doesNotMatch(source, /\n {4}get shown\(\) \{/u, 'the component no longer shadows the base value shown');
+  assert.match(source, /\n {4}get effectiveValue\(\) \{/u);
+  assert.match(source, /class SfColor extends FormField\(ColorElement\)/u);
+  assert.match(source, /base: InheritedValueField\(SfBaseElement\)/u);
+  const manifest = json('src/smart/color/component.json');
+  assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value']);
+  assert.deepEqual(manifest['host-states'], {'data-inherited': 'boolean'});
+  const rows = json('src/smart/color/aliases.json').aliases;
+  assert.deepEqual(rows.map((row) => [row.from, row.to]), [['sf-field:reset', 'sf-field-reset'], ['shown', 'effective-value']]);
+  // Words come from the language files, trait words with them (§11).
+  assert.doesNotMatch(source, /COLOR_TEXT|Выбрать цвет/u);
+  assert.equal(json('src/smart/color/lang/ru.json').runtime.reset, 'Сбросить к наследуемому');
+  // Without ElementInternals only: the hidden input.
+  assert.match(source, /hiddenName: this\.sfInternals \? "" : this\.name/u);
+  assert.match(read('src/smart/color/js/templates/default.js'), /context\.hiddenName/u);
 });

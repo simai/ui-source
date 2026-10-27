@@ -8,7 +8,7 @@
   .sf-color {
     display: flex;
     align-items: center;
-    gap: var(--sf-space-1);
+    gap: var(--sf-color-gap, var(--sf-space-1));
     min-block-size: var(--sf-ui-1--control-height);
   }
 
@@ -46,8 +46,8 @@
   .sf-color-chip {
     inline-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
     block-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
-    border-radius: var(--sf-radius-1);
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-color-chip-radius, var(--sf-radius-1));
+    border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));
     background-color: var(--sf-color-chip, transparent);
   }
 
@@ -74,12 +74,12 @@
   }
 
   .sf-color-inherited {
-    color: var(--sf-on-surface-variant);
+    color: var(--sf-color-inherited-color, var(--sf-on-surface-variant));
   }
 
   .sf-color-swatches {
     display: inline-flex;
-    gap: var(--sf-space-1\/2, 4px);
+    gap: var(--sf-color-swatches-gap, var(--sf-space-1\/2, 4px));
     margin-inline-start: var(--sf-space-1);
   }
 
@@ -87,8 +87,8 @@
     inline-size: var(--sf-ui-1\/2--control-height);
     block-size: var(--sf-ui-1\/2--control-height);
     padding: 0;
-    border-radius: var(--sf-radius-1);
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-radius: var(--sf-color-chip-radius, var(--sf-radius-1));
+    border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));
     background-color: var(--sf-color-chip);
     cursor: pointer;
   }

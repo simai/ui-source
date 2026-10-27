@@ -1,7 +1,12 @@
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText} from '../../core/js/page-language';
-import {INHERITED_TEXT, InheritedValueField} from '../helpers/inherited-value';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {InheritedValueField} from '../helpers/inherited-value';
+import {FormField} from '../helpers/form-field';
 import {renderColorTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
 // A colour, for anywhere a colour is set: a theme, a site's own look, a label, a
 // chart series. It was built because the property set had no colour at all while a
@@ -13,10 +18,23 @@ import {renderColorTemplate} from './js/templates/default';
 // theme until somebody chooses one, and returnable to that. And it offers the
 // colours a product already has, as swatches, so a person picks «the brand colour»
 // rather than matching a hex by eye.
-const COLOR_TEXT = {
-    en: {choose: "Choose a colour", clear: "Use the inherited colour", inherited: "inherited", custom: "Custom"},
-    ru: {choose: "Выбрать цвет", clear: "Вернуть унаследованный", inherited: "наследуется", custom: "Свой"},
-};
+//
+// Built from its component.json (standard simai.smart-component 1.3.8 §3, §4,
+// §11, §16.20, §17.1): the settings are attributes and properties made by
+// core/js/element-manifest.js, the words are lang/<locale>.json (the trait's
+// words with them), and the host is the form control through ElementInternals.
+const ColorElement = elementFromManifest(manifest, {
+    base: InheritedValueField(SfBaseElement),
+    lang: {en, ru},
+    source: "ru",
+    aliases,
+    actions: {
+        // §4.4: an outcome. Nothing to clear is refused, not an error.
+        clear() {
+            return this.setValue("") ? "applied" : "unchanged";
+        },
+    },
+});
 
 // #abc, #aabbcc and #aabbccdd, which is what a person pastes and what a store
 // keeps. Anything else is not a colour this control will claim to hold.
@@ -29,21 +47,14 @@ const normalise = (value) => {
     return HEX.test(hash) ? hash.toLowerCase() : "";
 };
 
-class SfColor extends InheritedValueField(SfBaseElement) {
+class SfColor extends FormField(ColorElement) {
     static get props() {
         return {
+            ...super.props,
             templateName: {attribute: "template", default: "default"},
-            value: {default: ""},
-            size: {default: "1", values: ["1/2", "1", "2"]},
-            appearance: {default: "bordered", values: ["bordered", "outlined", "plain"]},
-            swatches: {default: ""},
+            // The trait field-inherit@1 (§20.2): its settings until the build
+            // merges a trait's interface.
             inheritedValue: {attribute: "inherited-value", default: ""},
-            clearable: {type: Boolean, default: false},
-            disabled: {type: Boolean, default: false},
-            name: {default: ""},
-            label: {default: ""},
-            chooseLabel: {attribute: "choose-label", default: ""},
-            clearLabel: {attribute: "clear-label", default: ""},
             inheritedText: {attribute: "inherited-text", default: ""},
             resetLabel: {attribute: "reset-label", default: ""},
         };
@@ -62,28 +73,15 @@ class SfColor extends InheritedValueField(SfBaseElement) {
         return normalise(this.getAttribute("value"));
     }
 
-    get size() {
-        return this.getAttribute("size") || "1";
-    }
-
-    get appearance() {
-        return this.getAttribute("appearance") || "bordered";
-    }
-
-    get disabled() {
-        return this.hasAttribute("disabled");
-    }
-
-    get clearable() {
-        return this.hasAttribute("clearable");
-    }
-
-    get name() {
-        return this.getAttribute("name") || "";
-    }
-
-    get label() {
-        return this.getAttribute("label") || "";
+    // Written from code, the value is not a change: no event, as for a native
+    // field (§8).
+    set value(next) {
+        const value = normalise(next);
+        if (value) this.setAttribute("value", value);
+        else this.removeAttribute("value");
+        this._committed = value;
+        this.requestComponentUpdate("value");
+        this.fieldSyncForm();
     }
 
     // What the colour falls back to while nothing is chosen. Shown rather than
@@ -95,14 +93,20 @@ class SfColor extends InheritedValueField(SfBaseElement) {
     }
 
     get inheritedText() {
-        return this.getAttribute("inherited-text") || pageText(COLOR_TEXT, "inherited", this);
+        return this.getAttribute("inherited-text") || this.sfWord("inherited");
     }
 
     // The reset back to the inherited colour is the shared one (simai/ui-source#28):
     // `reset-label` names it, and `clear-label`, its first name, still does.
     get resetLabel() {
         return this.getAttribute("reset-label") || this.getAttribute("clear-label")
-            || pageText(INHERITED_TEXT, "reset", this);
+            || this.sfWord("reset");
+    }
+
+    // What a screen reader hears beside the name while the value is inherited,
+    // in the element's language (§11.1).
+    inheritedDescription() {
+        return this.sfWord("described", {vars: {value: this.inheritedDisplayValue()}});
     }
 
     // The inherited-value seam: the colour is the value, the platform picker's
@@ -122,18 +126,11 @@ class SfColor extends InheritedValueField(SfBaseElement) {
 
     afterRender() {
         this.syncInheritedState();
-    }
-
-    get chooseLabel() {
-        return this.getAttribute("choose-label") || pageText(COLOR_TEXT, "choose", this);
-    }
-
-    get clearLabel() {
-        return this.getAttribute("clear-label") || pageText(COLOR_TEXT, "clear", this);
+        this.fieldSyncForm();
     }
 
     get customText() {
-        return pageText(COLOR_TEXT, "custom", this);
+        return this.sfWord("custom");
     }
 
     // The colours a product already has. A comma separated list, each one a hex,
@@ -156,9 +153,28 @@ class SfColor extends InheritedValueField(SfBaseElement) {
     }
 
     // What is painted now: the value when there is one, the inherited colour when
-    // there is not.
-    get shown() {
+    // there is not (§4.3). It was `shown`, which is the base value of every
+    // element now (§4.1): whether it has a box in an opened container.
+    get effectiveValue() {
         return this.value || this.inheritedValue || "";
+    }
+
+    // What the form gets (§17.1): the hex, empty while the inherited colour
+    // applies (§20.2), nothing while disabled.
+    sfFormValue() {
+        if (this.disabled) return null;
+        return this.value;
+    }
+
+    // form.reset(): back to the colour the element was written with, without
+    // events (§17.1 item 4).
+    fieldReset() {
+        const initial = normalise(this._initialValue);
+        if (initial) this.setAttribute("value", initial);
+        else this.removeAttribute("value");
+        this._committed = initial;
+        this.requestComponentUpdate("value");
+        this.syncInheritedState();
     }
 
     get isSet() {
@@ -180,6 +196,7 @@ class SfColor extends InheritedValueField(SfBaseElement) {
         if (value) this.setAttribute("value", value);
         else this.removeAttribute("value");
         this.requestComponentUpdate("value");
+        this.fieldSyncForm();
         this._emit("input");
         return true;
     }
@@ -218,16 +235,12 @@ class SfColor extends InheritedValueField(SfBaseElement) {
         this._commit();
     }
 
-    clear() {
-        return this.setValue("");
-    }
-
     templateContext() {
         return this.createTemplateContext({
             ...this.getPropsContext(),
             component: this,
             value: this.value,
-            shown: this.shown,
+            painted: this.effectiveValue,
             isSet: this.isSet,
             inheritedValue: this.inheritedValue,
             inheritedText: this.inheritedText,
@@ -241,6 +254,9 @@ class SfColor extends InheritedValueField(SfBaseElement) {
             size: this.size,
             appearance: this.appearance,
             name: this.name,
+            // The host is the form control where the browser has
+            // ElementInternals; the hidden input is drawn only without them.
+            hiddenName: this.sfInternals ? "" : this.name,
             label: this.label,
         });
     }

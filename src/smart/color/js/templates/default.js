@@ -8,31 +8,32 @@ import './default.css';
 // keyboard, and reimplementing a colour wheel would be a worse version of a thing
 // the system already does well.
 export function renderColorTemplate(context) {
-    const {shown, isSet, disabled, size, appearance} = context;
+    const {painted, isSet, disabled, size, appearance} = context;
 
     return html`
         <div class="sf-color sf-color--${appearance} sf-color--size-${size}"
              data-set=${isSet ? 'true' : 'false'}>
             <label class="sf-color-swatch" title=${context.chooseLabel}>
                 <span class="sf-color-chip"
-                      style=${shown ? `--sf-color-chip: ${shown}` : nothing}
-                      data-empty=${shown ? nothing : 'true'}
+                      style=${painted ? `--sf-color-chip: ${painted}` : nothing}
+                      data-empty=${painted ? nothing : 'true'}
                       aria-hidden="true"></span>
                 <input
                         type="color"
                         class="sf-color-input"
-                        .value=${shown || '#000000'}
+                        .value=${painted || '#000000'}
                         ?disabled=${disabled}
                         aria-label=${context.label || context.chooseLabel}
                         @input=${(event) => context.component._pickerInput(event)}
                         @change=${(event) => context.component._pickerChange(event)}
                 >
             </label>
-            ${context.name
-                    // The form gets the value, empty while the inherited colour
-                    // applies. The colour input cannot hold «nothing»: named, it
-                    // submitted #000000 for every colour nobody had chosen.
-                    ? html`<input type="hidden" name=${context.name} .value=${context.value}>`
+            ${context.hiddenName
+                    // Without ElementInternals the form gets the value from a
+                    // hidden input, empty while the inherited colour applies. The
+                    // colour input cannot hold «nothing»: named, it submitted
+                    // #000000 for every colour nobody had chosen.
+                    ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
                     : nothing}
 
             <span class="sf-color-text">

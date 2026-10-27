@@ -22,11 +22,13 @@ const FOLDERS = {
   toggle: 'toggle',
   // Group B of the form fields, with their move to standard 1.3.8 (2026-10-27).
   'country-code': 'country-code',
+  // A Smart component whose sheet sits beside its template.
+  color: 'smart/color/js/templates',
 };
 
 const scss = async (folder) => {
-  const dir = folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
-  const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => name.endsWith('.scss'));
+  const dir = folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
+  const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => /\.s?css$/u.test(name));
   return (await Promise.all(names.map((name) => read(`${dir}/${name}`)))).join('\n');
 };
 

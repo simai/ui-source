@@ -1,0 +1,7 @@
+[
+  {"name": "set", "title": "Выбранный цвет", "settings": {"label": "Цвет акцента", "name": "accent", "value": "#1f6feb"}, "expect": {"values": {"value": "#1f6feb", "effective-value": "#1f6feb"}}},
+  {"name": "inherited", "title": "Цвет наследуется", "settings": {"label": "Цвет акцента", "name": "accent", "inherited-value": "#d1242f"}, "expect": {"values": {"value": "", "effective-value": "#d1242f"}, "host-states": {"data-inherited": true}}},
+  {"name": "swatches", "title": "Цвета продукта", "settings": {"label": "Цвет метки", "swatches": "#1f6feb|Синий, #d1242f|Красный, #1a7f37|Зелёный"}, "expect": {"values": {"value": ""}}},
+  {"name": "clearable", "title": "Со сбросом", "settings": {"label": "Цвет", "value": "#1a7f37", "clearable": true}, "expect": {"values": {"value": "#1a7f37"}}},
+  {"name": "disabled", "title": "Недоступен", "settings": {"label": "Цвет", "value": "#1a7f37", "disabled": true}, "expect": {"values": {"value": "#1a7f37"}}}
+]
