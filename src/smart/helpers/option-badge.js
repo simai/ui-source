@@ -1,10 +1,10 @@
-import {BADGE_SCHEMES} from "../../component/badges/js/contract.js";
+import {canonicalBadgeScheme} from "../../component/badges/js/contract.js";
 
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 
 /**
  * Badge look for a filter option with optionRenderer 'badge'. option.color is
- * a Framework badge scheme (success, danger, info...) or a hex colour; a hex
+ * a Framework badge scheme (success, error, info...) or a hex colour; a hex
  * colour tints the tonal background and keeps the text on the surface colour,
  * so the label stays readable in both themes. Anything else is neutral.
  */
@@ -14,8 +14,9 @@ const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 export function optionBadgeProps(option = {}) {
     const raw = option?.scheme ?? option?.color;
     const color = typeof raw === "string" ? raw.trim() : "";
-    const scheme = color.toLowerCase();
-    if (BADGE_SCHEMES.includes(scheme)) return {scheme, rootStyle: ""};
+    // A former name (danger) reads as its canonical scheme (error).
+    const scheme = canonicalBadgeScheme(color);
+    if (scheme) return {scheme, rootStyle: ""};
     if (HEX_COLOR.test(color)) {
         return {
             scheme: "neutral",

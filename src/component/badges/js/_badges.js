@@ -1,7 +1,8 @@
 import {ComponentObserver} from "../../../core/js/ComponentObserver";
 import badgeUtility from '../json/badge.utility.json';
 import registerComponent from "../../register-helper";
-import {normalizeBadgeContract} from './contract';
+import {BADGE_SCHEME_ALIASES, normalizeBadgeContract} from './contract';
+import {noteDeprecated} from '../../../core/js/deprecations.js';
 
 class Badges extends ComponentObserver {
     static componentName = 'Badges';
@@ -16,7 +17,26 @@ class Badges extends ComponentObserver {
             iconRight,
             iconPosition = 'start',
         } = this.params || {};
-        const {size, type, scheme} = normalizeBadgeContract(this.params);
+        // The same axes as sf-badge: appearance (type is its former name) and
+        // the status, or the colour role in scheme. A former scheme name such as
+        // danger draws its canonical class and is noted in SF.deprecations.
+        const params = this.params || {};
+        const requestedScheme = params.status || params.scheme;
+        const formerScheme = String(requestedScheme ?? '').trim().toLowerCase();
+        if (BADGE_SCHEME_ALIASES[formerScheme]) {
+            noteDeprecated({
+                component: 'badges',
+                kind: 'value',
+                attribute: 'scheme',
+                from: formerScheme,
+                to: BADGE_SCHEME_ALIASES[formerScheme],
+            });
+        }
+        const {size, type, scheme} = normalizeBadgeContract({
+            type: params.appearance ?? params.type,
+            scheme: requestedScheme,
+            size: params.size,
+        });
         const className = this.attrs.class || this.attrs.className;
         const accessibleLabel = this.attrs['aria-label'] || '';
         this.badge = document.createElement('span');

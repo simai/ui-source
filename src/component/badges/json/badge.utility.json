@@ -1,6 +1,6 @@
 {
   ".sf-badge": [
-    "display/flex (.flex)",
+    "display/inline-flex (.inline-flex)",
     "flex-direction/row (.flex-row)",
     "flex-wrap/nowrap (.flex-nowrap)",
     "gap/var(--sf-a0)",

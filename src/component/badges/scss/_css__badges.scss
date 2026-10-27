@@ -3,7 +3,8 @@
    used before, is matched beside it so existing markup and project CSS keep
    working. See contracts/public-api-axes.json. */
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a0) justify-content/center (.justify-center) align-items/center (.items-center) */
+/* utility-hint: display/inline-flex (.inline-flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a0) justify-content/center (.justify-center) align-items/center (.items-center) */
+/* Inline: a badge is as wide as its text, as sf-badge draws it (simai/ui-source#51). */
 .sf-badge {
   border-end-end-radius: var(--sf-badge-radius, var(--sf-radius-circle));
   border-end-start-radius: var(--sf-badge-radius, var(--sf-radius-circle));
