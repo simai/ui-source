@@ -3,6 +3,7 @@ import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageText} from "../../core/js/page-language";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, normalizeTime, splitDateTime as readDateTime} from "./datetime.js";
+import {maskPattern, maskState} from "./mask.js";
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -982,8 +983,10 @@ function renderIncludeCell(field, value) {
 }
 
 function renderTextEdit(field, value, host) {
+    const mask = maskPattern(field);
     if (String(field.variant ?? '') === 'phone') return renderPhoneEdit(field, value, host);
     if (isPasswordField(field)) return renderPasswordEdit(field, value, host);
+    if (mask) return renderMaskedEdit(field, value, host, mask);
     value = scalarValue(value);
     return html`
         <sf-input
@@ -996,6 +999,79 @@ function renderTextEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
                 @change=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
+        ></sf-input>
+    `;
+}
+
+// A string typed through a mask (simai.property-view-port 1.16.0, field.mask;
+// consumer simai.main, agreed contract q-b0de123841). The control is the stock
+// sf-input with its own mask -- the Framework grammar, the same mask-pattern a
+// page writes by hand -- so the typing, the caret and the fixed parts are the
+// field's and nothing here formats a character.
+//
+// What the set adds is the one thing sf-input does not say: whether the text
+// fills the pattern (./mask.js). The value written is the text as shown, fixed
+// parts included («+7 (912) 345-67-89»): the host stores what it gets. Empty is
+// not incomplete -- an optional masked field may be cleared, and writes null,
+// or "" for a field that declares `nullable: false`. Required stays a mark: an
+// empty required field is written as cleared and the host validates it.
+//
+// An incomplete text is not a value. The host hears it through the optional
+// setFieldError(field, message) on every keystroke -- null once the text is
+// complete or empty -- so a panel can hold both of its saves while any masked
+// field in it is incomplete, each field on its own. The control marks itself
+// invalid with the stock message only once the person leaves it (change):
+// shouting «Заполните поле полностью» at the first digit of a phone would be
+// an error for typing. A completed or cleared text takes the mark off at once.
+//
+// What is written while incomplete depends on the host. A host that hears
+// errors gets the text as typed, because it re-renders with the value it was
+// given and anything else would put an older text over the person's typing (a
+// value attribute that moves is written into the input). A host that does not
+// hear errors cannot hold a save, so the change is withdrawn with undefined,
+// as the datetime pair does: what it saves is never the half-typed text.
+function renderMaskedEdit(field, value, host, mask) {
+    value = scalarValue(value);
+    const cleared = field.nullable === false ? '' : null;
+    const write = (event, left) => {
+        const input = event.currentTarget;
+        const text = String(input?.value ?? '');
+        const state = maskState(text, mask);
+        if (state === 'incomplete') {
+            const message = setText(host, 'maskIncomplete');
+            if (left && input) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, text);
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        if (input?.hasAttribute('invalid')) {
+            input.toggleAttribute('invalid', false);
+            input.removeAttribute('error-message');
+        }
+        host.setFieldError?.(field, null);
+        host.setFieldValue(field, state === 'empty' ? cleared : text);
+    };
+    return html`
+        <sf-input
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${value ?? ''}
+                placeholder=${field.placeholder || nothing}
+                autocomplete="off"
+                mask
+                mask-pattern=${mask}
+                ?required=${Boolean(field.required)}
+                aria-label=${field.label || field.key || ''}
+                @input=${(event) => write(event, false)}
+                @change=${(event) => write(event, true)}
         ></sf-input>
     `;
 }
@@ -1291,7 +1367,109 @@ function editOptions(field, value, multiple) {
     }));
 }
 
+// A choice as buttons (simai.property-view-port 1.16.0, variant `buttons`;
+// consumer simai.main, agreed contract q-b0de123841): one segmented
+// sf-button-group, a button per option, for a short list a person reads at a
+// glance -- a kind, a tier, a yes-no-maybe. The group is the stock one: Tab
+// enters it, the arrows move and choose, Space and Enter choose, and it is a
+// radiogroup to assistive technology. It wraps when it does not fit and is
+// never replaced by a dropdown: a field that changes its control with the
+// width of a window is two fields.
+//
+// `size` is the field's own step on the ladder ("1/2", "1", "2"), absent the
+// panel's: the track of a segmented group is exactly as tall as an sf-button of
+// the same size, so the buttons stand on the line the fields beside them do.
+//
+// The value is the option's own, in its own type -- the group speaks strings,
+// so a chosen "2" is written back as the 2 the option carries -- or null.
+// Pressing the chosen button again clears it when the field is not required;
+// the group itself keeps a chosen button chosen (its select answers
+// unchanged), so the press is read in the capture phase, before the group's
+// own listener, where the value it is about to be compared with is still the
+// one shown. A required field keeps the stock behaviour: the chosen button
+// stays chosen.
+//
+// Read-only shows the chosen button chosen, in its own colours, and lets none
+// be pressed: pointer events are off on the track and a key that would choose
+// is stopped before the group hears it. Disabled is the group's own disabled,
+// in the on-disable colours. The two are different facts -- «not yours to
+// change» and «not available now» -- and drawn as the group draws them.
+const CHOICE_BUTTON_SIZES = new Set(['1/2', '1', '2']);
+const CHOOSING_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ', 'Enter']);
+
+function isChoiceButtons(field) {
+    return String(field.variant ?? '') === 'buttons';
+}
+
+function renderChoiceButtons(field, value, host) {
+    value = scalarValue(value);
+    const options = (field.options || field.filter?.options || field.constraints?.options || [])
+        .filter((option) => option && option.value !== null && option.value !== undefined && String(option.value) !== '');
+    const items = options.map((option) => ({
+        value: String(option.value),
+        label: String(option.label ?? option.text ?? option.value),
+        ...(option.icon ? {icon: String(option.icon)} : {}),
+        ...(option.disabled ? {disabled: true} : {}),
+    }));
+    const asked = String(field.size ?? '');
+    const size = CHOICE_BUTTON_SIZES.has(asked) ? asked : EDIT_SIZE;
+    const disabled = EDIT_DISABLED;
+    const locked = !disabled && field.readonly === true;
+    const clearable = field.required !== true && !locked && !disabled;
+    const chosen = value === null || value === undefined ? '' : String(value);
+    const optionValue = (text) => options.find((option) => String(option.value) === text)?.value ?? text;
+
+    const press = {
+        capture: true,
+        handleEvent(event) {
+            const group = event.currentTarget;
+            const segment = event.target?.closest?.('[data-sf-button-group-value]');
+            if (!group || !segment || !group.contains(segment)) return;
+            if (locked) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            if (!clearable || segment.disabled) return;
+            if (segment.getAttribute('data-sf-button-group-value') !== group.value) return;
+            event.preventDefault();
+            event.stopPropagation();
+            group.clear?.();
+        },
+    };
+    const keys = {
+        capture: true,
+        handleEvent(event) {
+            if (!locked || !CHOOSING_KEYS.has(event.key)) return;
+            event.preventDefault();
+            event.stopPropagation();
+        },
+    };
+
+    return html`
+        <sf-button-group
+                class="sf-field-choice-buttons"
+                appearance="segmented"
+                size=${size}
+                root-class=${locked ? 'flex-wrap pointer-event-none' : 'flex-wrap'}
+                name=${fieldName(field)}
+                items=${JSON.stringify(items)}
+                value=${chosen || nothing}
+                ?disabled=${disabled}
+                data-readonly=${locked ? 'true' : nothing}
+                aria-label=${field.label || field.key || ''}
+                @click=${press}
+                @keydown=${keys}
+                @change=${(event) => {
+                    const next = String(event.detail?.value ?? '');
+                    host.setFieldValue(field, next === '' ? null : optionValue(next));
+                }}
+        ></sf-button-group>
+    `;
+}
+
 function renderChoiceEdit(field, value, host) {
+    if (isChoiceButtons(field)) return renderChoiceButtons(field, value, host);
     value = scalarValue(value);
     return html`
         <sf-dropdown
@@ -1424,6 +1602,7 @@ const SET_TEXT = {
         dateTime_dateInvalid: 'The date is not a calendar date',
         dateTime_timeMissing: 'Enter the time',
         dateTime_timeInvalid: 'Enter the time as hh:mm, from 00:00 to 23:59',
+        maskIncomplete: 'Complete the field',
     },
     ru: {
         yes: 'Да',
@@ -1458,6 +1637,7 @@ const SET_TEXT = {
         dateTime_dateInvalid: 'Дата указана неверно',
         dateTime_timeMissing: 'Укажите время',
         dateTime_timeInvalid: 'Укажите время в виде чч:мм, от 00:00 до 23:59',
+        maskIncomplete: 'Заполните поле полностью',
     },
 };
 
@@ -1819,21 +1999,38 @@ function renderFileEdit(field, value, host) {
 // type yet.
 const sizeOption = (options) => (options?.size === '1/2' ? '1/2' : '1');
 
+// A control that stays a control when it may not be changed: a choice as
+// buttons shows which button is chosen, which is what it is for, where the
+// view's badge would show a different thing (port 1.16.0).
+const keepsControlWhenLocked = (asked, field) => asked === 'choice' && isChoiceButtons(field);
+
+// `options.disabled`: the control is drawn disabled, not read-only -- a field a
+// condition turns off for now (port 1.14.0 `when.enabled`), which the host
+// knows and the field does not carry. Read by the controls that draw the two
+// differently; for every other one a disabled field is a read-only one.
+let EDIT_DISABLED = false;
+
 export function renderEditField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
+    const disabled = options?.disabled === true;
     // A field the person may not change is shown, not offered as a control that
     // refuses: the same rule for every type, so `readonly` means one thing
     // wherever the registry lists it.
-    if (field.readonly === true && VIEW_RENDERERS[asked]) return renderViewField(field, value, host, options);
+    if ((field.readonly === true || disabled) && VIEW_RENDERERS[asked] && !keepsControlWhenLocked(asked, field)) {
+        return renderViewField(field, value, host, options);
+    }
     const renderer = EDIT_RENDERERS[asked];
     if (!renderer || !host?.setFieldValue) return null;
 
     const outer = EDIT_SIZE;
+    const outerDisabled = EDIT_DISABLED;
     EDIT_SIZE = sizeOption(options);
+    EDIT_DISABLED = disabled;
     try {
         return renderer(field, value, host);
     } finally {
         EDIT_SIZE = outer;
+        EDIT_DISABLED = outerDisabled;
     }
 }
 

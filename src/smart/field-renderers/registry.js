@@ -20,7 +20,12 @@ export const PROPERTY_TYPES = Object.freeze([
         // setFieldValue and writes nothing for a field nobody typed in.
         variants: [{id: 'phone', label: {ru: 'Телефон', en: 'Phone'}},
             {id: 'password', label: {ru: 'Пароль', en: 'Password'}, writeOnly: true}],
-        params: ['placeholder', 'required', 'readonly']},
+        // mask (property-view port 1.16.0): the Framework mask grammar of
+        // sf-input's mask-pattern; the value is the text as shown, fixed parts
+        // included, and an incomplete one is reported, not written as a value.
+        // nullable: false makes a cleared masked field write "" instead of null.
+        // Read by the plain string alone: phone and password keep their controls.
+        params: ['placeholder', 'mask', 'nullable', 'required', 'readonly']},
     {type: 'text', label: {ru: 'Текст', en: 'Text'},
         variants: [],
         params: ['placeholder', 'required', 'readonly']},
@@ -42,9 +47,13 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'boolean', label: {ru: 'Да или нет', en: 'Yes or no'},
         variants: [],
         params: ['trueText', 'falseText', 'required', 'readonly']},
+    // buttons (property-view port 1.16.0): one segmented button group, a
+    // button per option, sized by `size` on the ladder ("1/2", "1", "2"; absent,
+    // the field's); pressing the chosen one again clears a field that is not
+    // required. The dropdown stays the default.
     {type: 'choice', label: {ru: 'Одно из списка', en: 'One of a list'},
-        variants: [],
-        params: ['options', 'badgeAppearance', 'required', 'readonly']},
+        variants: [{id: 'buttons', label: {ru: 'Кнопками', en: 'As buttons'}}],
+        params: ['options', 'badgeAppearance', 'size', 'required', 'readonly']},
     {type: 'choices', label: {ru: 'Несколько из списка', en: 'Several of a list'},
         // badges: the view; checklist and select: the edit control (a list of
         // 13 or more is a checklist unless select is asked for).
