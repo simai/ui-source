@@ -1045,7 +1045,13 @@ class SfDrawer extends DrawerElement {
     if (!this.modal) return false;
     if (event.key !== 'Tab') return false;
     const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
-    const focusable = Array.from(panel?.querySelectorAll(FOCUSABLE_SELECTOR) || [])
+    // The edge beside the panel is part of the window: its close, a copy and
+    // an open-full control stand there. Cycled through the panel alone, Tab
+    // never reached them (simai.main keyboard QA, 2026-10-28).
+    const edge = this.getDrawerRoot()?.querySelector('[data-sf-drawer-edge]');
+    const inside = (element) => Boolean(element && (panel?.contains(element) || edge?.contains(element)));
+    const focusable = [panel, edge]
+      .flatMap((area) => Array.from(area?.querySelectorAll(FOCUSABLE_SELECTOR) || []))
       .filter((element) => element.getClientRects().length > 0);
     if (focusable.length === 0) {
       event.preventDefault();
@@ -1054,7 +1060,7 @@ class SfDrawer extends DrawerElement {
     }
     const first = focusable[0];
     const last = focusable.at(-1);
-    if (!panel?.contains(document.activeElement)) {
+    if (!inside(document.activeElement)) {
       event.preventDefault();
       (event.shiftKey ? last : first).focus();
     } else if (event.shiftKey && document.activeElement === first) {
