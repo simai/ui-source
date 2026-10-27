@@ -235,6 +235,7 @@ class SfTabs extends TabsElement {
   disconnectedCallback() {
     this._resizeObserver?.disconnect();
     this._observed = null;
+    this._panelObserver?.disconnect();
     this._moreMenu?.close?.({restoreFocus: false});
     this._moreMenu?.remove?.();
     this._settingsMenu?.close?.({restoreFocus: false});
@@ -259,17 +260,23 @@ class SfTabs extends TabsElement {
   // and never copied. A panel with data-entry="<id>" is the panel of that
   // entry; the others follow in order. A closed one carries `hidden`, so a
   // part with start opened inside it starts when its tab opens.
+  // The panels a page adds later are watched while the element is in the
+  // page (§7.7): the watch stops when it is taken out and starts again, with
+  // the panels added meanwhile, when it is placed again.
   captureSlotTemplates() {
     const first = !this._slotTemplatesCaptured;
     super.captureSlotTemplates();
-    if (!first) return;
-    this.capturePagePanels();
-    if (typeof MutationObserver === 'function') {
-      this._panelObserver = new MutationObserver(() => {
-        if (this.capturePagePanels()) this.requestComponentUpdate('panels');
-      });
-      this._panelObserver.observe(this, { childList: true });
+    if (first) {
+      this.capturePagePanels();
+      if (typeof MutationObserver === 'function') {
+        this._panelObserver = new MutationObserver(() => {
+          if (this.capturePagePanels()) this.requestComponentUpdate('panels');
+        });
+      }
+    } else if (this.capturePagePanels()) {
+      this.requestComponentUpdate('panels');
     }
+    this._panelObserver?.observe(this, { childList: true });
   }
 
   capturePagePanels() {
