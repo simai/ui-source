@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "List Item",
   "summary": "Declarative option descriptor owned by Dropdown, and a general list row: supporting line, interactive rows with roving focus, sf-sortable items and pinned rows.",
   "kind": "smart",
@@ -286,7 +286,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-item/index.js",
-        "sha256": "eccf58c306ff17a33e01103ef3fba97f0dfde2e5a878e3f5eb6037583d6c9f43"
+        "sha256": "4c314f17123c9006035d73f1d7040c41e974a827625767e356204bcaf0480499"
       }
     ],
     "generated_runtime": [

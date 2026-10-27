@@ -1,0 +1,329 @@
+{
+  "$comment": "The source of sf-list-item's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/list-item (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.list-item",
+  "tag": "sf-list-item",
+  "version": "1.2.0",
+  "kind": "leaf",
+  "family": "list",
+  "settings": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The row's id: the machine value a parent sf-dropdown reads, and the id its open request carries"
+    },
+    "kind": {
+      "type": "enum",
+      "values": [
+        "text",
+        "icon",
+        "checkbox",
+        "avatar",
+        "color"
+      ],
+      "default": "text"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1"
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "icon",
+      "default": "person"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "color-class": {
+      "type": "string",
+      "default": "bg-tertiary"
+    },
+    "avatar-image-url": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar-title": {
+      "type": "string",
+      "default": "",
+      "summary": "The avatar row's title; empty takes text"
+    },
+    "supporting": {
+      "type": "string",
+      "default": "",
+      "summary": "A second line under the title"
+    },
+    "interactive": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A row a person acts on: one Tab stop of its list, open on a press or Enter"
+    },
+    "sortable-item": {
+      "type": "string",
+      "default": "",
+      "summary": "The row's item id in the surrounding sf-sortable list; draws a drag handle"
+    },
+    "pinned": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A row of an sf-sortable list that does not move: no handle, its slot kept"
+    }
+  },
+  "values": {
+    "checked": {
+      "type": "boolean",
+      "default": false
+    },
+    "selected": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": {
+    "open": {
+      "carries": {
+        "id": "string",
+        "trigger": {
+          "type": "enum",
+          "values": [
+            "pointer",
+            "keyboard"
+          ]
+        }
+      },
+      "summary": "A person pressed an interactive row, or Enter on it: open {id} of vocabulary 1.1.5 §5, id being value"
+    }
+  },
+  "actions": {},
+  "slots": {
+    "leading": {},
+    "text": {
+      "replaces": "text"
+    },
+    "supporting": {
+      "replaces": "supporting"
+    },
+    "trailing": {}
+  },
+  "keyboard": {
+    "host": {
+      "Tab": {
+        "effect": "reach",
+        "when": {
+          "interactive": true
+        }
+      },
+      "ArrowDown": {
+        "effect": "focus:next",
+        "when": {
+          "interactive": true
+        }
+      },
+      "ArrowUp": {
+        "effect": "focus:prev",
+        "when": {
+          "interactive": true
+        }
+      },
+      "Home": {
+        "effect": "focus:first",
+        "when": {
+          "interactive": true
+        }
+      },
+      "End": {
+        "effect": "focus:last",
+        "when": {
+          "interactive": true
+        }
+      },
+      "Enter": {
+        "effect": "open",
+        "when": {
+          "interactive": true
+        }
+      }
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws. sf-dropdown draws its options with the same template (renderListItemOption)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "No role of its own: a standalone row is a visual preview, a row of a list leaves the role to the list (a selected row says aria-current, a disabled one aria-disabled), and the option role belongs to sf-dropdown, which draws its options with the same template. An interactive or sortable row is the focusable box.",
+    "role": "none",
+    "name": {
+      "from": [
+        "aria-label",
+        "text",
+        "slot:text"
+      ]
+    },
+    "keys": {
+      "Tab": {
+        "effect": "reach",
+        "when": {
+          "interactive": true
+        }
+      },
+      "ArrowDown": {
+        "effect": "focus:next",
+        "when": {
+          "interactive": true
+        }
+      },
+      "ArrowUp": {
+        "effect": "focus:prev",
+        "when": {
+          "interactive": true
+        }
+      },
+      "Home": {
+        "effect": "focus:first",
+        "when": {
+          "interactive": true
+        }
+      },
+      "End": {
+        "effect": "focus:last",
+        "when": {
+          "interactive": true
+        }
+      },
+      "Enter": {
+        "effect": "open",
+        "when": {
+          "interactive": true
+        }
+      }
+    }
+  },
+  "css-variables": {
+    "--sf-list-item-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-item-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-item-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-item-supporting-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-list-item-handle-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
+  "x-source": {
+    "package": "framework",
+    "folder": "list-item",
+    "manifest": "simai/ui-source@5100227 src/smart/list-item/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/list-item.component.json"
+  },
+  "x-words": [
+    "text",
+    "supporting",
+    "avatar-title"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "settings.type → kind: the legacy axis name (contracts/public-api-axes.json); a dated setting alias",
+    "events.sf-list-item-activate {value, item, trigger} → open {id, trigger}: a press on a row asks to open it (vocabulary 1.1.5 §5 open, as sf-tree:activate → open); sf-list-item-open, the old name a dated split alias with its old detail",
+    "the value property: an object snapshot of every attribute → the value setting's string (§4); writing an object still writes the attributes"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "line",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-list-item as a direct child of sf-dropdown to declare an option, or as a list row: supporting for a second line, interactive for a row a person acts on (sf-list-item-open {id}), sortable-item inside sf-sortable, pinned for a row that stays in place.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use a standalone sf-list-item without interactive as a button, link or independent checkbox",
+        "Do not place independently interactive controls inside a listbox option",
+        "Do not put data-sf-sortable-item on the sf-list-item host: it is boxless; use sortable-item"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-dropdown label=\"Статус\"><sf-list-item value=\"open\" text=\"Открыт\"></sf-list-item><sf-list-item value=\"done\" text=\"Готов\"></sf-list-item></sf-dropdown>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "events (vocabulary 1.1.5 §5): a press or Enter on an interactive row asks to open that row, so the event is open {id, trigger} with id = value -- the same verb the vocabulary gives sf-tree:activate and thread-list-select -- sent as sf-list-item-open. The old sf-list-item-activate follows until 2026-12-01 as a split alias whose adapter gives its old detail {value, item, trigger}.",
+    "type → kind: type was the legacy name of the kind axis; it leaves the settings and is a dated setting alias (attribute and property, aliases.json), as sf-button's type → appearance.",
+    "value: the value setting is the row's id, a string (§4). The value property answered an object snapshot of every attribute and took one to write them; reading it now answers the id, writing an object still writes its attributes (a compatibility path the template studio used), so nothing that wrote rows breaks. Nothing in the Framework read the snapshot.",
+    "checked and selected are values with a default, so they are writable settings too (§4); selected is the row's own state, the list's selection (§18.2) is its parent's.",
+    "a11y-role: none. The list owns the role (aria-current marks a selected row); the option role is sf-dropdown's, drawn with the same template when it captures the row as an option.",
+    "key-effects: on an interactive (or sortable) row ArrowDown, ArrowUp, Home and End move the focus between the list's rows (focus:next/prev/first/last), Tab reaches the list's one stop, Enter opens the row (open). In sf-sortable Space and Enter pick the row up: that is the list's key, not the row's.",
+    "item-shape: the list item has no list setting; item_contract (parent, placement, machine value, visible label) describes its place in sf-dropdown, which reads value and text -- named by the settings themselves, nothing to declare with of.",
+    "own-verb-words: none left -- open is a vocabulary verb.",
+    "version 1.2.0: an event and a setting renamed behind dated aliases, the value property's object form retired (§4.10).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json (an icon row) plus a two-line interactive row, a checkbox row, an avatar row, a colour row and a disabled row.",
+    "css-variables: five public variables read by the class sheet it draws with (component/dropdown, _css__list-item.scss): the row's fill, its divider, the title's ink, the supporting line's ink and the handle's ink, each over the role token it replaced. Listed in src/core/contracts/public-variables.v1.json."
+  ]
+}

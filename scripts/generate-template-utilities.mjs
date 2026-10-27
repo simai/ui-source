@@ -60,6 +60,15 @@ for (const folder of readdirSync(smartRoot, {withFileTypes: true}).filter((entry
   if (names.length !== 1) continue;
   const tokens = new Set();
   for (const file of sources(join(smartRoot, folder))) for (const token of tokensOf(readFileSync(file, 'utf8'))) tokens.add(token);
+  // A component made from its component.json (standard 1.3.8) keeps its
+  // settings' defaults there, not in index.js: a default a template writes as
+  // a class (sf-list-item's color-class bg-tertiary) is a token too.
+  const component = join(smartRoot, folder, 'component.json');
+  if (existsSync(component)) {
+    for (const spec of Object.values(JSON.parse(readFileSync(component, 'utf8')).settings ?? {})) {
+      if (typeof spec?.default === 'string') for (const token of tokensOf(spec.default)) tokens.add(token);
+    }
+  }
   const used = utilities.filter(([, rule]) => [...tokens].some((token) => rule.test(token))).map(([key]) => key).sort();
   if (used.length) map[names[0]] = used;
 }

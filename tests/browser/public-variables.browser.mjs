@@ -145,6 +145,10 @@ const DRAW = {
   // star's colour and the actions' gap have a part to reach.
   'page-header': {css: ['badges', 'icon-buttons', 'icons', 'smart/smart/page-header/css/page-header.css'], js: 'page-header',
     html: '<sf-page-header heading="Каталог" count="4" star><button slot="actions" type="button">Создать</button></sf-page-header>'},
+  // A two-line row of a sortable list: the supporting line and the handle
+  // have parts to reach; the row stands alone, so its divider is drawn.
+  'list-item': {css: ['dropdown', 'icons'], js: 'list-item',
+    html: '<sf-list-item text="Заголовок" supporting="Пояснение" sortable-item="a" interactive size="1"></sf-list-item>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

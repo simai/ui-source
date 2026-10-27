@@ -11,6 +11,8 @@
 }
 
 @layer sf.components {
+/* The row's public variables (standard 1.3.8 §6, sf-list-item): its fill and
+   divider, the title's and the supporting line's ink, the handle's ink. */
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item {
   padding-inline-start: var(--sf-list-item--padding-inline-start);
@@ -22,9 +24,9 @@
   border-bottom-width: var(--sf-list-item--border-bottom-width);
   border-style: var(--sf-list-item--border-style, solid);
   box-shadow: var(--sf-list-item--box-shadow);
-  --sf-list-item--background-color: var(--sf-elevation-1--surface);
+  --sf-list-item--background-color: var(--sf-list-item-background-color, var(--sf-elevation-1--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
-  --sf-list-item--border-color: var(--sf-outline-variant);
+  --sf-list-item--border-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
   --sf-list-item--border-bottom-width: var(--sf-px);
   --sf-list-item--border-style: solid;
   min-inline-size: 0;
@@ -107,7 +109,7 @@
 }
 
 .sf-list-item.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.sf-list-item--text .sf-list-item-container, .sf-list-item.sf-list-item--icon .sf-list-item-container {
-  --sf-list-item-container--color: var(--sf-on-surface);
+  --sf-list-item-container--color: var(--sf-list-item-color, var(--sf-on-surface));
 }
 
 .sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > .sf-icon {
@@ -478,7 +480,7 @@
 }
 
 .sf-list-item--two-line .sf-list-item-supporting {
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
   font-size: var(--sf-list-item-supporting--font-size, var(--sf-text-size-1\/2));
   line-height: var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/2));
 }
@@ -516,8 +518,8 @@
   justify-content: center;
   inline-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
   block-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
-  color: var(--sf-on-surface-variant);
-  --sf-icon--color: var(--sf-on-surface-variant);
+  color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
+  --sf-icon--color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
   --sf-icon--font-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
   --sf-icon--width: var(--sf-list-item-handle--size, var(--sf-text-height-1));
   --sf-icon--height: var(--sf-list-item-handle--size, var(--sf-text-height-1));

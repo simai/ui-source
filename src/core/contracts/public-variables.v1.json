@@ -2830,6 +2830,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "list-item",
+      "selector": "sf-list-item, .sf-list-item",
+      "variables": [
+        {
+          "name": "--sf-list-item-background-color",
+          "role": "background",
+          "summary": "The row's fill.",
+          "default": "var(--sf-elevation-1--surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-list-item-border-color",
+          "role": "border-color",
+          "summary": "The divider under the row; seen where the row has one.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-list-item-color",
+          "role": "color",
+          "summary": "The title's ink in a text, icon or checkbox row.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-list-item-supporting-color",
+          "role": "color",
+          "summary": "The supporting line's ink.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-list-item-handle-color",
+          "role": "color",
+          "summary": "The drag handle's ink in an sf-sortable list.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

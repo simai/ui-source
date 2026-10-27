@@ -228,8 +228,7 @@
     "flex/default",
     "gap/default",
     "justify-content/default",
-    "place-items/default",
-    "position/default"
+    "place-items/default"
   ],
   "cl-menu": [
     "display/default",

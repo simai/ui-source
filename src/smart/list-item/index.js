@@ -1,6 +1,18 @@
+// A row: an option sf-dropdown captures, or the general list row.
+//
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// the settings are made by core/js/element-manifest.js; a press or Enter on an
+// interactive row sends sf-list-item-open {id, trigger} (vocabulary 1.1.5 §5
+// open), the old sf-list-item-activate its dated alias; type is kind's dated
+// alias (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import { renderListItemTemplate } from './js/templates/default';
 import { nearestFieldSize } from '../../component/field-size';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
 // A row a person reaches by keyboard (interactive, or an item of an sf-sortable
 // list) is one stop of its list: the list is a single Tab stop and the arrows,
@@ -79,34 +91,14 @@ function normalizeSizeGroup(value) {
   };
 }
 
-class SfListItem extends SfBaseElement {
-  static get props() {
-    return {
-      templateName: { attribute: 'template', default: 'default' },
-      itemValue: { attribute: 'value', default: '' },
-      // The axis is called kind, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      kind: {default: 'text', values: ['text', 'icon', 'checkbox', 'avatar', 'color'], aliases: ['type']},
-      size: { default: '1', values: ['1/3', '1/2', '1', '2', '3'] },
-      text: { default: '' },
-      icon: { default: 'person' },
-      checked: { type: Boolean, default: false },
-      selected: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
-      colorClass: { default: 'bg-tertiary' },
-      avatarImageUrl: { default: '' },
-      avatarTitle: { default: '' },
-      ariaLabel: { default: '' },
-      // The general row (simai/ui-source#18): a supporting line under the
-      // title, a row a person acts on, a row of an sf-sortable list (its item
-      // id), and a pinned row of such a list that has no handle and does not move.
-      supporting: { default: '' },
-      interactive: { type: Boolean, default: false },
-      sortableItem: { attribute: 'sortable-item', default: '' },
-      pinned: { type: Boolean, default: false },
-    };
-  }
+const ListItemElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
+class SfListItem extends ListItemElement {
   connectedCallback() {
     super.connectedCallback();
     if (this._rowBound) return;
@@ -157,7 +149,7 @@ class SfListItem extends SfBaseElement {
       if (target && target !== row) moveTo(target);
       return;
     }
-    // Enter acts on a row, unless the row is an item of an sf-sortable list:
+    // Enter opens a row, unless the row is an item of an sf-sortable list:
     // there Space and Enter pick it up, as the list's instructions say.
     if (event.key === 'Enter' && this.interactive && !row.hasAttribute('data-sf-sortable-item')) {
       event.preventDefault();
@@ -179,31 +171,19 @@ class SfListItem extends SfBaseElement {
     this.activate(event);
   }
 
+  // A press or Enter on the row: the request open {id} (vocabulary §5).
   activate(event) {
     if (this.disabled) return;
-    this.dispatchEvent(new CustomEvent('sf-list-item-activate', {
-      bubbles: true,
-      composed: true,
-      detail: { value: this.itemValue, item: this, trigger: event?.type === 'keydown' ? 'keyboard' : 'pointer' },
-    }));
+    this._openTrigger = event?.type === 'keydown' ? 'keyboard' : 'pointer';
+    this.sfEmit('open', {id: this.value, trigger: this._openTrigger});
   }
 
-  get supporting() {
-    return this.getAttribute('supporting') || '';
+  // The old sf-list-item-activate carried the element and named the id value.
+  sfAliasAdapters() {
+    return {
+      'sf-list-item-activate': (detail) => ({value: detail.id, item: this, trigger: detail.trigger}),
+    };
   }
-
-  get interactive() {
-    return this.getBooleanAttr('interactive', false);
-  }
-
-  get sortableItem() {
-    return this.getAttribute('sortable-item') || '';
-  }
-
-  get pinned() {
-    return this.getBooleanAttr('pinned', false);
-  }
-
 
   get componentName() {
     return 'list-item';
@@ -213,61 +193,43 @@ class SfListItem extends SfBaseElement {
     return this.getAttribute('template') || 'default';
   }
 
-  get kind() {
-    return this.getProp('kind');
-  }
-
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
+  // The legacy name, kept so a consumer reading el.type still gets an answer
+  // (the shim maps the attribute; aliases.json).
   get type() {
     return this.kind;
   }
 
+  // Kept for the code that read the id under this name.
   get itemValue() {
-    return this.getAttribute('value') || '';
-  }
-
-  get size() {
-    return this.getEnumAttr('size', ['1/3', '1/2', '1', '2', '3'], '1');
+    return this.value;
   }
 
   get sizeGroup() {
     return normalizeSizeGroup(this.size);
   }
 
-  get text() {
-    return this.getAttribute('text') || '';
-  }
-
-  get icon() {
-    return this.getAttribute('icon') || 'person';
-  }
-
-  get checked() {
-    return this.getBooleanAttr('checked', false);
-  }
-
-  get selected() {
-    return this.getBooleanAttr('selected', false);
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  get colorClass() {
-    return this.getAttribute('color-class') || 'bg-tertiary';
-  }
-
-  get avatarImageUrl() {
-    return this.getAttribute('avatar-image-url') || '';
-  }
-
   get avatarTitle() {
     return this.getAttribute('avatar-title') || this.text;
   }
 
-  get ariaLabel() {
-    return this.getAttribute('aria-label') || '';
+  set avatarTitle(next) {
+    super.avatarTitle = next;
+  }
+
+  // The value is the row's id (§4). Writing an object writes its attributes,
+  // as the old snapshot form did.
+  get value() {
+    return super.value;
+  }
+
+  set value(next) {
+    if (next && typeof next === 'object') {
+      const { value: itemValue, ...attributes } = next;
+      if (Object.prototype.hasOwnProperty.call(next, 'value')) this.setAttributeValue('value', itemValue);
+      this.setValueAttributes(attributes);
+      return;
+    }
+    super.value = next;
   }
 
   templateContext() {
@@ -282,9 +244,19 @@ class SfListItem extends SfBaseElement {
       interactive: this.interactive,
       sortableItem: this.sortableItem,
       pinned: this.pinned,
+      ariaLabel: this.getAttribute('aria-label') || '',
       // Resolved names the template reads (contracts/template-context.json).
-      type: this.type,
-      value: this.itemValue,
+      kind: this.kind,
+      type: this.kind,
+      size: this.size,
+      text: this.text,
+      icon: this.icon,
+      checked: this.checked,
+      selected: this.selected,
+      disabled: this.disabled,
+      colorClass: this.colorClass,
+      avatarImageUrl: this.avatarImageUrl,
+      value: this.value,
       option: false,
     });
   }
@@ -342,38 +314,6 @@ class SfListItem extends SfBaseElement {
     }
 
     return true;
-  }
-
-  get value() {
-    return {
-      template: this.templateName,
-      value: this.itemValue,
-      type: this.type,
-      size: this.size,
-      text: this.text,
-      icon: this.icon,
-      checked: this.checked,
-      selected: this.selected,
-      disabled: this.disabled,
-      colorClass: this.colorClass,
-      avatarImageUrl: this.avatarImageUrl,
-      avatarTitle: this.avatarTitle,
-      ariaLabel: this.ariaLabel,
-      supporting: this.supporting,
-      interactive: this.interactive,
-      sortableItem: this.sortableItem,
-      pinned: this.pinned,
-    };
-  }
-
-  set value(nextValue) {
-    if (!nextValue || typeof nextValue !== 'object') return;
-
-    const { value: itemValue, ...attributes } = nextValue;
-    if (Object.prototype.hasOwnProperty.call(nextValue, 'value')) {
-      this.setAttributeValue('value', itemValue);
-    }
-    this.setValueAttributes(attributes);
   }
 }
 

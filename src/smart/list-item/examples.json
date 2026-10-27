@@ -1,0 +1,83 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Пункт со значком",
+      "settings": {
+        "value": "open",
+        "kind": "icon",
+        "text": "Пункт списка",
+        "icon": "star"
+      },
+      "expect": {
+        "value": "open",
+        "kind": "icon"
+      }
+    },
+    {
+      "name": "row",
+      "title": "Строка списка с пояснением",
+      "settings": {
+        "value": "hero",
+        "text": "Заголовок",
+        "supporting": "Здравствуйте",
+        "interactive": true,
+        "size": "1/2"
+      },
+      "expect": {
+        "interactive": true
+      }
+    },
+    {
+      "name": "checkbox",
+      "title": "С отметкой",
+      "settings": {
+        "value": "done",
+        "kind": "checkbox",
+        "text": "Готово",
+        "checked": true
+      },
+      "expect": {
+        "checked": true
+      }
+    },
+    {
+      "name": "avatar",
+      "title": "С аватаром",
+      "settings": {
+        "value": "u-1",
+        "kind": "avatar",
+        "text": "Анна Смирнова"
+      },
+      "expect": {
+        "avatar-title": "Анна Смирнова"
+      }
+    },
+    {
+      "name": "color",
+      "title": "С цветом",
+      "settings": {
+        "value": "green",
+        "kind": "color",
+        "text": "Зелёный",
+        "color-class": "bg-success"
+      },
+      "expect": {
+        "color-class": "bg-success"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "value": "archived",
+        "text": "В архиве",
+        "interactive": true,
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    }
+  ]
+}

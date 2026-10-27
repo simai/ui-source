@@ -42,7 +42,10 @@ test('List Item source contract includes machine value and all visible labels up
     read('src/smart/list-item/smart.manifest.json').then(JSON.parse),
   ]);
 
-  assert.match(source, /itemValue: \{ attribute: 'value', default: '' \}/);
+  // The value is the row's id, a setting of component.json (standard 1.3.8 §4).
+  const component = JSON.parse(await read('src/smart/list-item/component.json'));
+  assert.deepEqual(component.settings.value, {type: 'string', default: '', summary: component.settings.value.summary});
+  assert.match(source, /elementFromManifest\(manifest/);
   assert.match(source, /\.sf-list-item-container, \.sf-avatar-label-group-title, \.sf-tag-container/);
   assert.equal(manifest.inputs.properties.value.type, 'string');
   assert.equal(manifest.item_contract.parent, 'smart.dropdown');

@@ -50,6 +50,8 @@ const FOLDERS = {
   'profile-picker': 'smart/profile-picker',
   // The editors and screens, with their move to standard 1.3.8 (2026-10-27).
   'page-header': 'smart/page-header',
+  // sf-list-item draws with the class sheet of the dropdown's rows.
+  'list-item': 'dropdown',
 };
 
 const scss = async (folder) => {

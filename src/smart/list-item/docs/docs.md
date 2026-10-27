@@ -44,8 +44,10 @@ Current scope:
 Main attributes:
 
 - `template`
-- `value` — stable machine value read by the parent Dropdown
-- `type`
+- `value` — the row's id: the machine value the parent Dropdown reads and the
+  id `sf-list-item-open` carries. The property answers it as a string;
+  writing an object still writes its attributes.
+- `kind` (`type` is its dated alias until 2026-12-01)
 - `size`
 - `text`
 - `icon`
@@ -96,7 +98,7 @@ for a Dropdown option, so options are unchanged.
 | Attribute | What it does |
 | --- | --- |
 | `supporting` (or a `slot="supporting"` child) | A second line under the title, one step of the ladder smaller (1/3 and 1/2 rows: 1/3; 1: 1/2; 2: 1; 3: 2). A two-line row is the control height plus that line. Kinds `text`, `icon` and `checkbox`. |
-| `interactive` | A row a person acts on: hover, keyboard focus and `selected` states, a pointer cursor, and `sf-list-item-activate` (`detail: {value, trigger}`) on click or Enter. A click on a control inside the row (a trailing action) is that control's, not the row's. |
+| `interactive` | A row a person acts on: hover, keyboard focus and `selected` states, a pointer cursor, and `sf-list-item-open` (`detail: {id, trigger}`, vocabulary 1.1.5 `open`, `id` being `value`) on click or Enter. The former `sf-list-item-activate` (`{value, item, trigger}`) follows until 2026-12-01. A click on a control inside the row (a trailing action) is that control's, not the row's. |
 | `sortable-item="<id>"` | The row is an item of the surrounding `sf-sortable` list: the row's own box carries `data-sf-sortable-item` (the host is boxless, so the attribute does not go on the host) and a drag handle stands in a slot before the content. |
 | `pinned` | A row of the list that does not move: no handle and not an item of the list, so it cannot be dragged or picked up. It keeps the handle's slot empty, so its text starts where the other rows' text does. |
 
@@ -114,7 +116,7 @@ Space or Enter drops it, exactly as for any item of the list; Enter therefore
 does not activate a sortable row (a click does). Where a pointer can hover, the
 handle shows on the row under the pointer and on the focused row; on a touch
 screen it is always shown. Its slot is always kept, so nothing moves.
-When the host applies `sf-sortable-intent` and redraws, it moves or replaces the
+When the host applies `sf-sortable-move` and redraws, it moves or replaces the
 `sf-list-item` elements themselves: the element carrying
 `data-sf-sortable-item` is the row's box inside the host, and removing only
 that box leaves an empty host behind.
@@ -133,3 +135,11 @@ that box leaves an empty host behind.
 
 The list owns the role: a selected row says `aria-current="true"`, a disabled
 one `aria-disabled="true"`. Probe: `tests/browser/list-row-general.browser.mjs`.
+
+## Interface
+
+The interface is `component.json` (standard simai.smart-component 1.3.8), the
+examples `examples.json`, the dated aliases `aliases.json`. Public variables
+(read by the class sheet in `component/dropdown`): `--sf-list-item-background-color`,
+`--sf-list-item-border-color`, `--sf-list-item-color` (the title),
+`--sf-list-item-supporting-color`, `--sf-list-item-handle-color`.
