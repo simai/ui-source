@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
+import checkboxUtility from '../json/checkbox.utility.json';
 
 const CHECKBOX_SELECTOR = 'label.sf-checkbox';
 const CHECKBOX_BOUND_FLAG = 'sfCheckboxBound';
@@ -228,6 +229,15 @@ class Checkbox extends ComponentObserver {
 
       this.template.append(this.container);
     }
+
+    // The layout lives in utility hints (the stylesheet draws no display):
+    // without these classes the label drew inline -- a 26x21 mark, no gap and a
+    // 21px row (simai/ui-source#49). Optional parts are skipped by the helper.
+    this.applyLayoutUtilities(this.template, '.sf-checkbox');
+    this.applyLayoutUtilities(this.box, '.sf-checkbox .sf-checkbox-box');
+    this.applyLayoutUtilities(this.container, '.sf-checkbox .sf-checkbox-container');
+    this.applyLayoutUtilities(this.top, '.sf-checkbox .sf-checkbox-top');
+    this.applyLayoutUtilities(this.label, '.sf-checkbox .sf-checkbox-label');
   }
 
   init() {
@@ -239,6 +249,8 @@ class Checkbox extends ComponentObserver {
     unbindCheckbox(this.template);
   }
 }
+
+Checkbox.utilityMap = checkboxUtility;
 
 registerComponent('Checkbox', Checkbox);
 

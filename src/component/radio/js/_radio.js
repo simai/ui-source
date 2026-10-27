@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
+import radioUtility from '../json/radio.utility.json';
 
 const RADIO_SELECTOR = 'label.sf-radio-button';
 const RADIO_BOUND_FLAG = 'sfRadioBound';
@@ -309,11 +310,11 @@ class Radio extends ComponentObserver {
 
     if (title || descriptionText || help) {
       this.container = document.createElement('span');
-      this.container.classList.add('sf-radio-button-container', 'flex', 'flex-col');
+      this.container.classList.add('sf-radio-button-container');
 
       if (title || help) {
         this.top = document.createElement('span');
-        this.top.classList.add('sf-radio-button-top', 'flex');
+        this.top.classList.add('sf-radio-button-top');
 
         if (title) {
           this.text = document.createElement('span');
@@ -342,6 +343,16 @@ class Radio extends ComponentObserver {
 
       this.template.append(this.container);
     }
+
+    // The layout lives in utility hints (the stylesheet draws no display):
+    // without these classes the ring was an inline span 2px wide and the
+    // selected mark 0px (simai/ui-source#50). Optional parts are skipped by
+    // the helper.
+    this.applyLayoutUtilities(this.template, '.sf-radio-button');
+    this.applyLayoutUtilities(this.box, '.sf-radio-button .sf-radio-button-box');
+    this.applyLayoutUtilities(this.container, '.sf-radio-button .sf-radio-button-container');
+    this.applyLayoutUtilities(this.top, '.sf-radio-button .sf-radio-button-top');
+    this.applyLayoutUtilities(this.text, '.sf-radio-button .sf-radio-button-text');
   }
 
   init() {
@@ -495,6 +506,8 @@ class Radio extends ComponentObserver {
     return wrap;
   }
 }
+
+Radio.utilityMap = radioUtility;
 
 registerComponent('Radio', Radio);
 
