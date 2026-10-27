@@ -1,31 +1,32 @@
 import SfBaseElement, { toBoolean, parseJsonAttribute } from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderAvatarsTemplate } from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import '../../component/avatars/scss/index.scss';
 
+// sf-avatars from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4): the settings are the attributes and properties
+// core/js/element-manifest.js makes from the manifest. Each also falls back
+// to its field in the JSON text of fields (data until 2026-12-01: data is a
+// reserved name, §3.1) or, for the sizes, of property; the getters below say
+// that.
+const AvatarsElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-
-
-class SfAvatars extends SfBaseElement {
+class SfAvatars extends AvatarsElement {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
-      data: { default: '' },
-      property: { default: '' },
-      imageUrl: { default: '' },
-      avatarUrl: { default: '' },
-      avatarSize: { default: '' },
-      active: { type: Boolean, default: false },
-      check: { type: Boolean, default: false },
-      name: { default: '' },
-      source: { default: '' },
-      labelText: { default: '' },
-      labelSecondText: { default: '' },
-      avatars: { type: Array, default: [] },
-      avatarsMore: { default: '' },
-      roundSize: { default: '' },
-      labelSize: { default: '' },
-      profileSize: { default: '' },
-      rootClass: { default: '' },
+      // The list also arrives as JSON text in the attribute, as it always did.
+      avatars: { type: Array, default: [], attribute: 'avatars' },
     };
   }
 
@@ -35,7 +36,7 @@ class SfAvatars extends SfBaseElement {
   }
 
   get dataValue() {
-    return parseJsonAttribute(this, 'data', {});
+    return parseJsonAttribute(this, 'fields', {});
   }
 
   get propertyValue() {
@@ -51,6 +52,10 @@ class SfAvatars extends SfBaseElement {
     );
   }
 
+  set imageUrl(value) {
+    super.imageUrl = value;
+  }
+
   get avatarUrl() {
     return (
       this.getAttribute('avatar-url') ||
@@ -58,6 +63,10 @@ class SfAvatars extends SfBaseElement {
       this.dataValue.avatar_url ||
       this.imageUrl
     );
+  }
+
+  set avatarUrl(value) {
+    super.avatarUrl = value;
   }
 
   get avatarSize() {
@@ -69,10 +78,18 @@ class SfAvatars extends SfBaseElement {
     );
   }
 
+  set avatarSize(value) {
+    super.avatarSize = value;
+  }
+
   get active() {
     return this.hasAttribute('active')
       ? this.getBooleanAttr('active', true)
       : toBoolean(this.dataValue.active, false);
+  }
+
+  set active(value) {
+    super.active = value;
   }
 
   get check() {
@@ -81,12 +98,24 @@ class SfAvatars extends SfBaseElement {
       : toBoolean(this.dataValue.check, false);
   }
 
+  set check(value) {
+    super.check = value;
+  }
+
   get name() {
     return this.getAttribute('name') || this.dataValue.name || '';
   }
 
+  set name(value) {
+    super.name = value;
+  }
+
   get source() {
     return this.getAttribute('source') || this.dataValue.source || '';
+  }
+
+  set source(value) {
+    super.source = value;
   }
 
   get labelText() {
@@ -98,6 +127,10 @@ class SfAvatars extends SfBaseElement {
     );
   }
 
+  set labelText(value) {
+    super.labelText = value;
+  }
+
   get labelSecondText() {
     return (
       this.getAttribute('label-second-text') ||
@@ -105,6 +138,10 @@ class SfAvatars extends SfBaseElement {
       this.dataValue.label_second_text ||
       ''
     );
+  }
+
+  set labelSecondText(value) {
+    super.labelSecondText = value;
   }
 
   get avatars() {
@@ -116,8 +153,14 @@ class SfAvatars extends SfBaseElement {
         console.warn('sf-avatars: invalid avatars JSON', error);
       }
     }
+    const own = super.avatars;
+    if (Array.isArray(own) && own.length) return own;
 
     return Array.isArray(this.dataValue.avatars) ? this.dataValue.avatars : [];
+  }
+
+  set avatars(value) {
+    super.avatars = value;
   }
 
   get avatarsMore() {
@@ -129,6 +172,10 @@ class SfAvatars extends SfBaseElement {
     );
   }
 
+  set avatarsMore(value) {
+    super.avatarsMore = value;
+  }
+
   get roundSize() {
     return (
       this.getAttribute('round-size') ||
@@ -136,6 +183,10 @@ class SfAvatars extends SfBaseElement {
       this.propertyValue.roundSize ||
       ''
     );
+  }
+
+  set roundSize(value) {
+    super.roundSize = value;
   }
 
   get labelSize() {
@@ -147,6 +198,10 @@ class SfAvatars extends SfBaseElement {
     );
   }
 
+  set labelSize(value) {
+    super.labelSize = value;
+  }
+
   get profileSize() {
     return (
       this.getAttribute('profile-size') ||
@@ -154,6 +209,10 @@ class SfAvatars extends SfBaseElement {
       this.propertyValue.profileSize ||
       ''
     );
+  }
+
+  set profileSize(value) {
+    super.profileSize = value;
   }
 
   get rootClass() {

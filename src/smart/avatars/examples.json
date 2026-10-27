@@ -1,0 +1,80 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Команда проекта",
+      "settings": {
+        "template": "label",
+        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
+        "avatar-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
+        "avatar-size": "2",
+        "label-text": "Команда проекта",
+        "label-second-text": "5 участников"
+      },
+      "expect": {
+        "label-text": "Команда проекта"
+      }
+    },
+    {
+      "name": "user",
+      "title": "Человек и источник",
+      "settings": {
+        "template": "user",
+        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
+        "name": "Анна Захарова",
+        "source": "simai.ru",
+        "avatar-size": "1"
+      },
+      "expect": {
+        "name": "Анна Захарова"
+      }
+    },
+    {
+      "name": "group",
+      "title": "Группа с остатком",
+      "settings": {
+        "template": "group",
+        "round-size": "1",
+        "avatars-more": "5",
+        "avatars": [
+          {
+            "text": "АЗ"
+          },
+          {
+            "text": "БИ"
+          },
+          {
+            "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E"
+          }
+        ]
+      },
+      "expect": {
+        "avatars-more": "5"
+      }
+    },
+    {
+      "name": "profile",
+      "title": "Профиль",
+      "settings": {
+        "template": "profile",
+        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
+        "profile-size": "big"
+      },
+      "expect": {
+        "profile-size": "big"
+      }
+    },
+    {
+      "name": "online",
+      "title": "В сети",
+      "settings": {
+        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
+        "round-size": "2",
+        "active": true
+      },
+      "expect": {
+        "active": true
+      }
+    }
+  ]
+}
