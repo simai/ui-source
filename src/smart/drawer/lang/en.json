@@ -1,0 +1,7 @@
+{
+  "title": "Drawer",
+  "runtime": {
+    "close-label": "Close drawer",
+    "handle-label": "Resize the panel"
+  }
+}

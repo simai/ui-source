@@ -1,0 +1,410 @@
+{
+  "component": "sf-drawer",
+  "probe": "sf-drawer against component.json (standard simai.smart-component 1.3.8 §12, §19, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <button id=\"opener\" data-sf-action=\"d1.open\">Панель</button>",
+      "  <button id=\"opener-old\" data-sf-drawer-open=\"d-old\">Старое имя</button>",
+      "  <button id=\"opener-locked\" data-sf-action=\"d-locked.open\">Обязательная</button>",
+      "</main>",
+      "<div id=\"area\"><sf-drawer id=\"d1\" heading=\"Фильтры\"><input id=\"d1-field\" aria-label=\"Поиск\"><button id=\"d1-close\" data-sf-action=\"d1.close\">Готово</button><button slot=\"edge\" id=\"d1-edge\">Край</button></sf-drawer></div>",
+      "<sf-drawer id=\"d-old\" title=\"Старая панель\"><p>Старые имена</p></sf-drawer>",
+      "<sf-drawer id=\"d-locked\" heading=\"Решите\" dismissible=\"false\" unsaved><button id=\"locked-ok\" data-sf-action=\"d-locked.close\">Понятно</button></sf-drawer>",
+      "<sf-drawer id=\"d-sheet\" placement=\"bottom\" label=\"Лист\"><p>Лист</p></sf-drawer>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-open-focus-lock",
+      "title": "open moves focus into the panel and locks the page; sf-drawer-opened",
+      "covers": "layer.traps-focus, layer.locks-page, events.opened, data-sf-action",
+      "steps": [
+        {
+          "user": "click:#opener",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-open",
+                "count": 1,
+                "detail": {
+                  "drawerId": "d1"
+                }
+              },
+              {
+                "name": "sf-drawer-opened",
+                "count": 1,
+                "detail": {
+                  "drawerId": "d1"
+                }
+              }
+            ],
+            "values": {
+              "#d1.open": true
+            }
+          }
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-panel]"
+        },
+        {
+          "check": "document.documentElement.style.overflow === 'hidden'"
+        }
+      ]
+    },
+    {
+      "id": "p2-escape-reason-returns-focus",
+      "title": "Escape closes with reason escape and returns focus to the opener",
+      "covers": "keyboard.host.Escape close, events.close {reason, unsaved}, events.closed",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-close",
+                "count": 1,
+                "detail": {
+                  "reason": "escape",
+                  "unsaved": false
+                }
+              },
+              {
+                "name": "sf-drawer-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "escape"
+                }
+              }
+            ],
+            "values": {
+              "#d1.open": false
+            }
+          }
+        },
+        {
+          "focus": "expect returned to #opener"
+        },
+        {
+          "check": "document.documentElement.style.overflow !== 'hidden'"
+        }
+      ]
+    },
+    {
+      "id": "p3-outside-and-close-reasons",
+      "title": "the overlay says outside, the close button says close",
+      "covers": "§19.3 outside, close",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "click:[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-overlay]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "outside"
+                }
+              }
+            ],
+            "values": {
+              "#d1.open": false
+            }
+          }
+        },
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "click:[data-sf-drawer-portal=\"d1\"] .sf-drawer-close",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              }
+            ],
+            "values": {
+              "#d1.open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-focus-trap",
+      "title": "Tab and Shift+Tab stay inside the modal panel",
+      "covers": "keyboard.host.Tab, Shift+Tab reach",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-panel]"
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-panel]"
+        }
+      ]
+    },
+    {
+      "id": "p5-not-dismissible",
+      "title": "dismissible=false ignores Escape and the overlay; an explicit action closes with unsaved",
+      "covers": "settings.dismissible, settings.unsaved",
+      "steps": [
+        {
+          "user": "click:#opener-locked"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "values": {
+              "#d-locked.open": true
+            }
+          }
+        },
+        {
+          "user": "click:[data-sf-drawer-portal=\"d-locked\"] [data-sf-drawer-overlay]",
+          "expect": {
+            "values": {
+              "#d-locked.open": true
+            }
+          }
+        },
+        {
+          "user": "click:[data-sf-drawer-portal=\"d-locked\"] #locked-ok",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-close",
+                "count": 1,
+                "detail": {
+                  "reason": "api",
+                  "unsaved": true
+                }
+              }
+            ],
+            "values": {
+              "#d-locked.open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-refused-close",
+      "title": "a page that prevents the close request keeps the panel; the action answers refused",
+      "covers": "events.close cancelable",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "script": "(document.getElementById('d1').addEventListener('sf-drawer-close', (event) => event.preventDefault()), true)"
+        },
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#d1",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            },
+            "values": {
+              "#d1.open": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-old-names-once-dated",
+      "title": "old and new names fire once each; the old ones keep their detail and are noted with their dates",
+      "covers": "aliases.json split rows, §16.20",
+      "steps": [
+        {
+          "user": "click:#opener",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-opened",
+                "count": 1
+              },
+              {
+                "name": "drawer:after-open",
+                "count": 1,
+                "detail": {
+                  "drawerId": "d1",
+                  "drawer": "<sf-drawer>"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "drawer:after-open",
+                "to": "sf-drawer-opened",
+                "kind": "event",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-closed",
+                "count": 1
+              },
+              {
+                "name": "drawer:after-close",
+                "count": 1,
+                "detail": {
+                  "reason": "escape",
+                  "drawer": "<sf-drawer>"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "drawer:after-close",
+                "to": "sf-drawer-closed",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8-old-title-and-trigger",
+      "title": "title and data-sf-drawer-open still work; title is noted with its dates",
+      "covers": "aliases.json setting row, §16.10",
+      "steps": [
+        {
+          "user": "click:#opener-old",
+          "expect": {
+            "values": {
+              "#d-old.open": true,
+              "#d-old.heading": "Старая панель"
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\"d-old\"] .sf-drawer-title').textContent === 'Старая панель' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-drawer' && note.from === 'title' && note.remove_after === '2026-12-01')"
+        }
+      ]
+    },
+    {
+      "id": "p9-slots-placed",
+      "title": "the page's nodes are placed, not copied: the content keeps its node and the edge stands beside the panel",
+      "covers": "§4.5 slots content and edge",
+      "steps": [
+        {
+          "script": "(window.__field = document.getElementById('d1-field'), true)"
+        },
+        {
+          "user": "click:#opener"
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-body] #d1-field') === window.__field && Boolean(document.querySelector('[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-edge] #d1-edge'))"
+        }
+      ]
+    },
+    {
+      "id": "p10-snapped",
+      "title": "a bottom sheet reports where it rests: sf-drawer-snapped {snap}",
+      "covers": "events.snapped",
+      "steps": [
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#d-sheet"
+        },
+        {
+          "user": "click:[data-sf-drawer-portal=\"d-sheet\"] [data-sf-drawer-handle]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-snapped",
+                "count": 1,
+                "detail": {
+                  "snap": "full"
+                }
+              },
+              {
+                "name": "drawer:snap",
+                "count": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p11-portal-carries-variables",
+      "title": "the portal carries the host's declared public variables and lang",
+      "covers": "§19.1 css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-drawer-background', 'rgb(1, 2, 3)'), true)",
+          "wait": 50
+        },
+        {
+          "user": "click:#opener"
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\"d1\"]').style.getPropertyValue('--sf-drawer-background') === 'rgb(1, 2, 3)' && document.querySelector('[data-sf-drawer-portal=\"d1\"]').getAttribute('lang') === 'ru'"
+        }
+      ]
+    }
+  ]
+}

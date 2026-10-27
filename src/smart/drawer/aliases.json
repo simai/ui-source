@@ -1,0 +1,132 @@
+{
+  "$comment": "Dated aliases of sf-drawer for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail, split (the old detail from the element's adapter), page-trigger (a page attribute the drawer reads, no shim), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-drawer",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "drawer:before-open",
+      "to": "sf-drawer-open",
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §5.1, §9",
+      "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "drawer:after-open",
+      "to": "sf-drawer-opened",
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §5.1, §9",
+      "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "drawer:before-close",
+      "to": "sf-drawer-close",
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §5.1, §9",
+      "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "drawer:after-close",
+      "to": "sf-drawer-closed",
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §5.1, §9",
+      "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "drawer:snap",
+      "to": "sf-drawer-snapped",
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §5.1, §9",
+      "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "drawer:ready",
+      "to": null,
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "vocabulary §5.1, §16.13",
+      "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it"
+    },
+    {
+      "from": "drawer:update",
+      "to": null,
+      "kind": "event",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "vocabulary §5.1, §16.13",
+      "note": "a lifecycle copy; still sent until the date, noted when a listener reads it"
+    },
+    {
+      "from": "data-sf-drawer-open",
+      "to": "data-sf-action",
+      "kind": "attribute",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "page-trigger",
+      "section": "§8, §16.10",
+      "note": "a page trigger: data-sf-drawer-open=\"<id>\" is data-sf-action=\"<id>.open\"; read by the drawer, no shim (the shim maps an element's own attributes)"
+    },
+    {
+      "from": "data-sf-drawer-close",
+      "to": "data-sf-action",
+      "kind": "attribute",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "page-trigger",
+      "section": "§8, §16.10",
+      "note": "data-sf-action=\"<id>.close\""
+    },
+    {
+      "from": "data-sf-drawer-toggle",
+      "to": "data-sf-action",
+      "kind": "attribute",
+      "component": "sf-drawer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "page-trigger",
+      "section": "§8, §16.10",
+      "note": "data-sf-action=\"<id>.toggle\""
+    }
+  ]
+}

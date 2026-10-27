@@ -94,3 +94,19 @@ test('one page trigger: data-sf-action="<id>.<action>" runs a declared action (Â
   assert.match(source, /if \(!declared\.some\(\(action\) => action\.name === read\.action\)\) return null;/);
   assert.match(read('src/core/js/element-manifest.js'), /if \(read\.actions\.length\) bindPageActions\(\);/);
 });
+
+test('sf-drawer: the panel from its manifest; drawer:* names follow with the old detail', () => {
+  const manifest = json('src/smart/drawer/component.json');
+  assert.deepEqual(manifest.layer, {kind: 'panel', 'locks-page': true, 'traps-focus': true});
+  assert.deepEqual(manifest['side-effects'], ['locks-page', 'portal']);
+  assert.deepEqual(Object.keys(manifest.events), ['open', 'opened', 'close', 'closed', 'snapped']);
+  const {rows} = readAliasTable(json('src/smart/drawer/aliases.json'), {tag: 'sf-drawer'});
+  assert.deepEqual(rows.filter((row) => row.kind === 'event').map((row) => row.from),
+    ['drawer:before-open', 'drawer:after-open', 'drawer:before-close', 'drawer:after-close', 'drawer:snap']);
+  const source = read('src/smart/drawer/index.js');
+  assert.doesNotMatch(source, /Math\.random/, 'no random ids (#41)');
+  assert.match(source, /const generated = partId\(instancePath\(this\)\);/);
+  assert.match(source, /carryLayerOrigin\(portal, this, \{variables: DRAWER_VARIABLES\}\)/);
+  assert.match(source, /this\.emitDrawerEvent\('close', true, \{reason, unsaved: Boolean\(this\.unsaved\)\}\)/);
+  assert.match(source, /event\.key === 'Escape' && this\.closeOnEsc && this\.dismissible/);
+});

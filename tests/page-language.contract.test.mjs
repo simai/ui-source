@@ -38,7 +38,8 @@ test('page language: no component falls back to Russian', async () => {
     'src/component/highlight/js/index.js': [/pageText\(HIGHLIGHT_TEXT, 'copy', block/],
     'src/component/country-code/js/_country_code.js': [/pageText\(COUNTRY_CODE_TEXT, 'phoneLabel'/],
     'src/smart/datepicker/index.js': [/const DATEPICKER_TEXT = \{/],
-    'src/smart/drawer/index.js': [/pageText\(DRAWER_TEXT, 'closeLabel', this\)/],
+    // sf-drawer's words are its language files (standard 1.3.8 §11).
+    'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import en from '\.\/lang\/en\.json';/],
     // The resizer handle read [lang] itself over its own dictionary until
     // 2026-10-21 (ui-mail feedback ui-mail.resizer-language): a product could
     // neither choose its language nor teach it a third one.

@@ -1,0 +1,107 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Панель справа",
+      "settings": {
+        "open": true,
+        "heading": "Фильтры",
+        "placement": "right"
+      },
+      "slots": {
+        "content": "<p>Содержимое панели</p>"
+      },
+      "expect": {
+        "open": true,
+        "name": "Фильтры"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "toggled",
+      "title": "Открыть и закрыть",
+      "settings": {
+        "heading": "Фильтры"
+      },
+      "script": [
+        {
+          "act": "toggle"
+        }
+      ],
+      "expect": {
+        "open": true,
+        "events": [
+          "open",
+          "opened"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "docked",
+      "title": "Колонка страницы",
+      "settings": {
+        "open": true,
+        "docked": true,
+        "placement": "inline-start",
+        "label": "Навигация"
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "sheet",
+      "title": "Нижний лист",
+      "settings": {
+        "open": true,
+        "placement": "bottom",
+        "snap": "half",
+        "label": "Действия"
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "outside-close",
+      "title": "Кнопка закрытия снаружи",
+      "settings": {
+        "open": true,
+        "heading": "Карточка",
+        "close-placement": "outside"
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "unsaved",
+      "title": "С несохранённым",
+      "settings": {
+        "open": true,
+        "heading": "Запись",
+        "unsaved": true
+      },
+      "script": [
+        {
+          "act": "close",
+          "with": {
+            "reason": "api"
+          }
+        }
+      ],
+      "expect": {
+        "events": [
+          "close"
+        ],
+        "detail": {
+          "close": {
+            "reason": "api",
+            "unsaved": true
+          }
+        }
+      }
+    }
+  ]
+}

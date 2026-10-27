@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -175,6 +175,18 @@
       "close-class": {
         "type": "string",
         "default": ""
+      },
+      "heading": {
+        "type": "string",
+        "default": ""
+      },
+      "unsaved": {
+        "type": "boolean",
+        "default": false
+      },
+      "dismissible": {
+        "type": "boolean",
+        "default": true
       }
     },
     "additionalProperties": false
@@ -679,7 +691,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "70f3e8a3f837199b5008fac19831cb450d261fc0b724fe12896e9cf9959d16e0"
+        "sha256": "a13f0a10bb8dcc3df7d161aa8ff514e51f65946e6e87be65e7daf70a3b65b4bc"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",

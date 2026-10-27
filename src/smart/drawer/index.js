@@ -1,20 +1,54 @@
 import {html, nothing, render} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText} from "../../core/js/page-language";
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations';
+import {instancePath, partId} from '../../core/js/instance-path';
 import {carryLayerOrigin, closeLayer, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
   raiseLayer, returnLayerFocus, landmarksAround, updateLayer} from '../../core/js/layer-stack';
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-drawer", code, words).
-const DRAWER_TEXT = {
-  en: {
-    closeLabel: 'Close drawer',
-    handleLabel: 'Resize the panel',
-  },
-  ru: {
-    closeLabel: 'Закрыть панель',
-    handleLabel: 'Изменить высоту панели',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// sf-drawer from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §8, §19): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json (a product
+// adds a language through SF.language.register("sf-drawer", code, words)),
+// and the old names -- title and the drawer:* events -- are dated aliases.
+const DrawerElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
+
+// The public variables the manifest declares; the panel drawn at the end of the
+// body carries their values from where its host stands (§19.1).
+const DRAWER_VARIABLES = Object.keys(manifest['css-variables'] || {});
+
+const OLD_EVENT_NAMES = ['drawer:before-open', 'drawer:after-open', 'drawer:before-close', 'drawer:after-close', 'drawer:snap'];
+
+// A lifecycle copy (drawer:ready, drawer:update) is still sent until its date;
+// a listener that reads it is a use (vocabulary §5.1, §16.13).
+function retiredEvent(type, detail) {
+  const event = new CustomEvent(type, {bubbles: true, composed: true, detail});
+  let used = false;
+  Object.defineProperty(event, 'detail', {
+    configurable: true,
+    get() {
+      if (!used) {
+        used = true;
+        noteDeprecated({component: 'sf-drawer', tag: 'sf-drawer', kind: 'event', from: type, to: null,
+          since: aliases.since, remove_after: aliases.remove_after});
+      }
+      return detail;
+    },
+  });
+  return event;
+}
+
+const applied = () => ({outcome: 'applied'});
+const refused = (reason) => ({outcome: 'refused', reason});
 
 import './scss/index.scss';
 
@@ -272,11 +306,13 @@ const drawerManager = {
   },
 };
 
-class SfDrawer extends SfBaseElement {
+class SfDrawer extends DrawerElement {
+  // The manifest's settings, and what the drawer reads more closely: the size
+  // ladder's legacy words, the base's template name.
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
-      opened: {attribute: 'open', type: Boolean, default: false},
       placement: {
         default: 'right',
         values: PLACEMENTS,
@@ -314,7 +350,6 @@ class SfDrawer extends SfBaseElement {
         default: 'inside',
         values: ['inside', 'outside'],
       },
-      title: {default: ''},
       label: {default: ''},
       closeLabel: {attribute: 'close-label', default: ''},
       width: {default: ''},
@@ -341,6 +376,7 @@ class SfDrawer extends SfBaseElement {
       'close-on-overlay',
       'preserve-scroll-gap',
       'show-close',
+      'dismissible',
     ]);
   }
 
@@ -407,20 +443,8 @@ class SfDrawer extends SfBaseElement {
     return this.hasAttribute('open');
   }
 
-  get placement() {
-    return this.getEnumAttr('placement', PLACEMENTS, 'right');
-  }
-
   get sheet() {
     return this.placement === 'bottom';
-  }
-
-  get snap() {
-    return this.getEnumAttr('snap', SNAPS, 'auto');
-  }
-
-  get controlled() {
-    return this.getBooleanAttr('controlled', false);
   }
 
   // The switch outside the panel that names it in aria-controls, on screen:
@@ -444,10 +468,6 @@ class SfDrawer extends SfBaseElement {
     if (visible !== this._switchVisible) this.requestComponentUpdate('controlled');
   }
 
-  get overlay() {
-    return this.getBooleanAttr('overlay', true);
-  }
-
   get modal() {
     // A docked drawer is part of the page layout and is always modeless.
     return !this.docked && this.getBooleanAttr('modal', true);
@@ -456,18 +476,6 @@ class SfDrawer extends SfBaseElement {
   // A bottom sheet floats over the page; it is never a column of it.
   get docked() {
     return this.getBooleanAttr('docked', false) && !this.sheet;
-  }
-
-  // The inline gutter the head and the body share: a length, empty for the
-  // drawer's own (space-1).
-  get gutter() {
-    return this.getAttribute('gutter') || '';
-  }
-
-  // How much of each drawer below shows past the one above it at the same
-  // edge: a length, empty for none (the drawers lie flush, as before).
-  get stackOffset() {
-    return this.getAttribute('stack-offset') || '';
   }
 
   // The physical edge the panel opens from, so left and inline-start count as
@@ -530,34 +538,20 @@ class SfDrawer extends SfBaseElement {
     return this.getProp('size');
   }
 
-  get closeOnEsc() {
-    return this.getBooleanAttr('close-on-esc', true);
-  }
-
-  get closeOnOverlay() {
-    return this.getBooleanAttr('close-on-overlay', true);
-  }
-
-  get preserveScrollGap() {
-    return this.getBooleanAttr('preserve-scroll-gap', true);
-  }
-
-  get showClose() {
-    return this.getBooleanAttr('show-close', true);
-  }
-
-  get closePlacement() {
-    return this.getEnumAttr('close-placement', ['inside', 'outside'], 'inside');
-  }
-
   resolveDrawerId() {
     const existing = this.id || this.getAttribute('drawer-id');
     if (existing) {
-      if (!this.id) this.id = existing;
+      // A drawer-id the page wrote is also the element's id, as it was; the
+      // path id the drawer made for itself is not.
+      if (!this.id && existing !== this._generatedDrawerId) this.id = existing;
       return existing;
     }
-    const generated = `sf-drawer-${Math.random().toString(36).slice(2, 10)}`;
-    this.id = generated;
+    // Its path id (§7.1.1): sf-drawer-<n> in document order, not a random one
+    // (simai/ui-source#41). It names the portal and the title, not the element:
+    // an id written on the element would change the order the next drawer
+    // without one counts in, and two drawers would share a path.
+    const generated = partId(instancePath(this));
+    this._generatedDrawerId = generated;
     this.setAttribute('drawer-id', generated);
     return generated;
   }
@@ -567,6 +561,8 @@ class SfDrawer extends SfBaseElement {
     if (this.docked && typeof document !== 'undefined') this._dockColumn = drawerManager.reservesDock(this);
     return this.createTemplateContext({
       drawerId: this.drawerId || this.resolveDrawerId(),
+      // A path id (§7.1.1): <path>--title.
+      titleId: partId(instancePath(this), 'title'),
       open: this.openState,
       placement: this.placement,
       overlay: this.overlay,
@@ -578,11 +574,12 @@ class SfDrawer extends SfBaseElement {
       controlled: this.controlled,
       sheet: this.sheet,
       snap: this.snap,
-      handleLabel: pageText(DRAWER_TEXT, 'handleLabel', this),
+      handleLabel: this.sfWord('handle-label'),
       blockStart: this.getAttribute('block-start') || '',
       closePlacement: this.closePlacement,
-      title: this.getAttribute('title') || '',
-      label: this.getAttribute('label') || this.getAttribute('title') || '',
+      title: this.getAttribute('heading') || '',
+      // The name: label, else the heading the panel is labelled by (§4.8).
+      label: this.getAttribute('label') || '',
       closeLabel: this.getAttribute('close-label') || this.defaultCloseLabel,
       width: this.getAttribute('width') || '',
       stackOffset: this.stackOffset,
@@ -595,6 +592,16 @@ class SfDrawer extends SfBaseElement {
       bodyClass: this.getAttribute('body-class') || '',
       closeClass: this.getAttribute('close-class') || '',
     });
+  }
+
+  // The resolved z-index the panel is drawn at; the attribute replaces it.
+  get zIndex() {
+    return this.drawerZIndex;
+  }
+
+  set zIndex(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('z-index');
+    else this.setAttribute('z-index', String(value));
   }
 
   // Its place in the one layer scale (--sf-z-index-layer, in opening order
@@ -611,7 +618,7 @@ class SfDrawer extends SfBaseElement {
   // directly, which misses a region that names its own language and leaves a
   // product unable to register a third -- the same two faults admin-menu had.
   get defaultCloseLabel() {
-    return pageText(DRAWER_TEXT, 'closeLabel', this);
+    return this.sfWord('close-label');
   }
 
   async renderComponent(changedAttributes = []) {
@@ -621,7 +628,7 @@ class SfDrawer extends SfBaseElement {
     const portal = this.resolvePortalRoot();
     // The portal stands at the end of the body; it speaks and looks as the
     // drawer does where it stands (standard 1.3.8 §19.1).
-    carryLayerOrigin(portal, this);
+    carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES});
     render(result, portal);
     this.afterRender();
   }
@@ -699,18 +706,16 @@ class SfDrawer extends SfBaseElement {
     handle?.addEventListener('keydown', this.onHandleKeyDown);
     this.applyStackPosition();
     this.observeDock(root);
+    // Lifecycle copies retire (vocabulary §5.1, §16.13): still sent until their
+    // date, and a listener that reads one is noted.
     const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';
-    this.dispatchEvent(new CustomEvent(eventName, {
-      bubbles: true,
-      composed: true,
-      detail: {component: this, drawer: this, drawerId: this.drawerId, root},
-    }));
+    this.dispatchEvent(retiredEvent(eventName, {component: this, drawer: this, drawerId: this.drawerId, root}));
     this._hasEmittedReady = true;
     if (this._focusAfterRender || this._emitAfterOpen) {
       this._focusAfterRender = false;
       requestAnimationFrame(() => {
         if (this.openState && this.modal) this.focusFirst();
-        if (this._emitAfterOpen) this.emitDrawerEvent('drawer:after-open');
+        if (this._emitAfterOpen) this.emitDrawerEvent('opened');
         this._emitAfterOpen = false;
       });
     }
@@ -755,7 +760,7 @@ class SfDrawer extends SfBaseElement {
         role=${context.docked ? 'region' : 'dialog'}
         aria-modal=${context.modal ? 'true' : nothing}
         aria-label=${context.label || nothing}
-        aria-labelledby=${context.title ? `${context.drawerId}-title` : nothing}
+        aria-labelledby=${context.title ? context.titleId : nothing}
         tabindex="-1"
         ?inert=${!context.open}
         data-sf-drawer-panel
@@ -765,7 +770,7 @@ class SfDrawer extends SfBaseElement {
         ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass
                 ? html`
                   <header class=${joinClasses('sf-drawer-head', context.headerClass)}>
-                    ${context.title ? html`<div class="sf-drawer-title" id=${`${context.drawerId}-title`}>${context.title}</div>` : nothing}
+                    ${context.title ? html`<div class="sf-drawer-title" id=${context.titleId}>${context.title}</div>` : nothing}
                     ${context.closePlacement === 'inside' ? closeButton : nothing}
                   </header>`
                 : nothing}
@@ -777,12 +782,15 @@ class SfDrawer extends SfBaseElement {
     </div>`;
   }
 
+  // Opens the panel, or raises an open one. Answers an outcome (§4.4):
+  // refused when a listener prevents sf-drawer-open.
   open(options = {}) {
+    options = options || {};
     if (this.openState) {
       drawerManager.bringToFront(this);
-      return this;
+      return applied();
     }
-    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-open', true)) return this;
+    if (options.emit !== false && !this.emitDrawerEvent('open', true)) return refused('prevented');
     this._lastActive = document.activeElement;
     this._focusReturnAncestors = landmarksAround(this._lastActive);
     this.syncOpenAttribute(true);
@@ -790,21 +798,24 @@ class SfDrawer extends SfBaseElement {
     this._focusAfterRender = this.modal;
     this._emitAfterOpen = options.emit !== false;
     this.requestComponentUpdate('open');
-    return this;
+    return applied();
   }
 
   // options.reason says why (standard 1.3.8 §19.3): close, escape, outside,
   // cancelled or api, the default.
+  // A listener that prevents sf-drawer-close keeps it open, and the action
+  // answers refused (§8); `unsaved` is the setting (§19.3).
   close(options = {}) {
-    if (!this.openState) return this;
+    options = options || {};
+    if (!this.openState) return refused('closed');
     const reason = typeof options.reason === 'string' ? options.reason : 'api';
-    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-close', true, {reason, unsaved: false})) return this;
+    if (options.emit !== false && !this.emitDrawerEvent('close', true, {reason, unsaved: Boolean(this.unsaved)})) return refused('prevented');
     this.syncOpenAttribute(false);
     const wasTop = drawerManager.remove(this);
     this.requestComponentUpdate('close');
     this.returnFocus(wasTop);
-    if (options.emit !== false) this.emitDrawerEvent('drawer:after-close', false, {reason});
-    return this;
+    if (options.emit !== false) this.emitDrawerEvent('closed', false, {reason});
+    return applied();
   }
 
   // A drawer that closes under another layer moves no focus (§19.2). A modal
@@ -909,7 +920,7 @@ class SfDrawer extends SfBaseElement {
   setSnap(snap) {
     if (!SNAPS.includes(snap) || snap === this.snap) return this;
     this.setAttribute('snap', snap);
-    this.emitDrawerEvent('drawer:snap');
+    this.emitDrawerEvent('snapped', false, {snap});
     return this;
   }
 
@@ -974,7 +985,7 @@ class SfDrawer extends SfBaseElement {
       return;
     }
     // A press outside is the top layer's only.
-    if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay && drawerManager.isTop(this)) {
+    if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay && this.dismissible && drawerManager.isTop(this)) {
       this.close({reason: 'outside'});
       return;
     }
@@ -990,7 +1001,7 @@ class SfDrawer extends SfBaseElement {
   onKeyDown(event) {
     // An editor or drag operation that handled Escape keeps it.
     if (event.defaultPrevented || !this.openState || !drawerManager.isTop(this)) return false;
-    if (event.key === 'Escape' && this.closeOnEsc) {
+    if (event.key === 'Escape' && this.closeOnEsc && this.dismissible) {
       this.close({reason: 'escape'});
       return true;
     }
@@ -1019,51 +1030,40 @@ class SfDrawer extends SfBaseElement {
     return false;
   }
 
-  emitDrawerEvent(type, cancelable = false, extra = {}) {
-    // Drawer events bubble like other sf-* events, so hosts can listen on the
-    // document. detail.drawer names the panel; nested drawers bubble through
-    // their ancestors.
-    return this.dispatchEvent(new CustomEvent(type, {
-      bubbles: true,
-      composed: true,
-      cancelable,
-      detail: {
-        component: this,
-        drawer: this,
-        drawerId: this.drawerId,
-        root: this.getDrawerRoot(),
-        ...extra,
-      },
-    }));
+  // Sends one of the drawer's events by its verb (§8): sf-drawer-<verb> first,
+  // then its old drawer:* name with the old detail through the alias table.
+  // Data only in detail; answers false when a listener refused it.
+  emitDrawerEvent(verb, cancelable = false, extra = {}) {
+    return this.sfEmit(verb, {drawerId: this.drawerId, ...extra}, {cancelable});
+  }
+
+  // The old drawer:* names keep their old detail (§16.20 split rows): the new
+  // names carry data only (§8), the old ones also the element and its panel.
+  sfAliasAdapters() {
+    const add = (detail) => ({...detail, component: this, drawer: this, root: this.getDrawerRoot()});
+    return Object.fromEntries(OLD_EVENT_NAMES.map((name) => [name, add]));
   }
 
   // The on* helpers keep their original meaning: only this drawer's events,
-  // not those bubbling up from a nested drawer.
+  // not those bubbling up from a nested drawer; by their new names (§8).
   ownDrawerHandler(handler) {
     return (event) => {
-      if (event.detail?.drawer === this) handler.call(this, event);
+      if (event.target === this) handler.call(this, event);
     };
   }
 
-  onBeforeOpen(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:before-open', this.ownDrawerHandler(handler), options);
+  onDrawerEvent(verb, handler, options) {
+    if (typeof handler === 'function') this.addEventListener(this.sfEventName(verb), this.ownDrawerHandler(handler), options);
     return this;
   }
 
-  onAfterOpen(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:after-open', this.ownDrawerHandler(handler), options);
-    return this;
-  }
+  onBeforeOpen(handler, options) { return this.onDrawerEvent('open', handler, options); }
 
-  onBeforeClose(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:before-close', this.ownDrawerHandler(handler), options);
-    return this;
-  }
+  onAfterOpen(handler, options) { return this.onDrawerEvent('opened', handler, options); }
 
-  onAfterClose(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:after-close', this.ownDrawerHandler(handler), options);
-    return this;
-  }
+  onBeforeClose(handler, options) { return this.onDrawerEvent('close', handler, options); }
+
+  onAfterClose(handler, options) { return this.onDrawerEvent('closed', handler, options); }
 
   clearPortal() {
     if (!this._portalRoot) return;

@@ -1,0 +1,422 @@
+{
+  "$comment": "The source of sf-drawer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/drawer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.drawer",
+  "tag": "sf-drawer",
+  "version": "1.7.0",
+  "kind": "leaf",
+  "family": "drawer",
+  "settings": {
+    "placement": {
+      "type": "enum",
+      "values": [
+        "left",
+        "right",
+        "inline-start",
+        "inline-end",
+        "bottom"
+      ],
+      "default": "right"
+    },
+    "snap": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "half",
+        "full"
+      ],
+      "default": "auto"
+    },
+    "overlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "modal": {
+      "type": "boolean",
+      "default": true
+    },
+    "docked": {
+      "type": "boolean",
+      "default": false
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2",
+        "full"
+      ],
+      "default": "1"
+    },
+    "close-on-esc": {
+      "type": "boolean",
+      "default": true
+    },
+    "close-on-overlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "preserve-scroll-gap": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-close": {
+      "type": "boolean",
+      "default": true
+    },
+    "controlled": {
+      "type": "boolean",
+      "default": false
+    },
+    "close-placement": {
+      "type": "enum",
+      "values": [
+        "inside",
+        "outside"
+      ],
+      "default": "inside"
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "close-label": {
+      "type": "string",
+      "default-from": "runtime.close-label"
+    },
+    "width": {
+      "type": "string",
+      "default": ""
+    },
+    "stack-offset": {
+      "type": "string",
+      "default": ""
+    },
+    "dock-breakpoint": {
+      "type": "string",
+      "default": ""
+    },
+    "block-start": {
+      "type": "string",
+      "default": ""
+    },
+    "gutter": {
+      "type": "string",
+      "default": ""
+    },
+    "z-index": {
+      "type": "string",
+      "default": ""
+    },
+    "overlay-class": {
+      "type": "string",
+      "default": ""
+    },
+    "panel-class": {
+      "type": "string",
+      "default": ""
+    },
+    "panel-style": {
+      "type": "string",
+      "default": ""
+    },
+    "header-class": {
+      "type": "string",
+      "default": ""
+    },
+    "body-class": {
+      "type": "string",
+      "default": ""
+    },
+    "close-class": {
+      "type": "string",
+      "default": ""
+    },
+    "unsaved": {
+      "type": "boolean",
+      "default": false
+    },
+    "dismissible": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "values": {
+    "open": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": {
+    "open": {
+      "carries": {
+        "drawer-id": "string"
+      },
+      "cancelable": true
+    },
+    "opened": {
+      "carries": {
+        "drawer-id": "string"
+      }
+    },
+    "close": {
+      "carries": {
+        "drawer-id": "string",
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        },
+        "unsaved": "boolean"
+      },
+      "cancelable": true
+    },
+    "closed": {
+      "carries": {
+        "drawer-id": "string",
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      }
+    },
+    "snapped": {
+      "carries": {
+        "drawer-id": "string",
+        "snap": {
+          "type": "enum",
+          "values": [
+            "auto",
+            "half",
+            "full"
+          ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "open": {
+      "emits": "open",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "emits": "close",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "slots": {
+    "content": {
+      "default": true
+    },
+    "edge": {}
+  },
+  "layer": {
+    "kind": "panel",
+    "locks-page": true,
+    "traps-focus": true
+  },
+  "side-effects": [
+    "locks-page",
+    "portal"
+  ],
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "index.js",
+      "$comment": "The Lit template in JavaScript (SfDrawer.template()), the migration form of §5.2 (§16): the build does not compile template.html yet."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "dialog",
+    "name": {
+      "from": [
+        "label",
+        "heading"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "Escape": {
+        "effect": "close",
+        "when": {
+          "close-on-esc": true,
+          "dismissible": true
+        }
+      }
+    }
+  },
+  "css-variables": {
+    "--sf-drawer-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-drawer-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-drawer-overlay-background": {
+      "type": "color",
+      "state": "overlay"
+    },
+    "--sf-drawer-gutter": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-drawer-block-start": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-drawer-dock-breakpoint": {
+      "type": "length",
+      "state": "docked"
+    },
+    "--sf-drawer-z-index": {
+      "type": "number",
+      "state": "default"
+    }
+  },
+  "x-summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
+  "x-source": {
+    "package": "framework",
+    "folder": "drawer",
+    "manifest": "simai/ui-source@5100227 src/smart/drawer/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/drawer.component.json"
+  },
+  "x-words": [
+    "label",
+    "close-label"
+  ],
+  "x-renamed": [
+    "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated",
+    "events drawer:before-open/after-open/before-close/after-close → sf-drawer-open/-opened/-close/-closed (vocabulary §5, §7)",
+    "events drawer:snap → sf-drawer-snapped {snap} (vocabulary §5.1)",
+    "events drawer:ready, drawer:update retire (vocabulary §5.1, §16.13)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion",
+        "semantic-surface-radius",
+        "logical-placement"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",
+      "do_not": [
+        "Do not use a modal sf-drawer for new interfaces; use sf-modal with a side position",
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use overlay as a substitute for modal semantics",
+        "Do not pass literal design dimensions when a standard size or Framework token exists"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<div data-sf-drawer-dock-host>…</div><sf-drawer id=\"blocks\" docked open placement=\"inline-start\" size=\"1/2\" title=\"Blocks\"><p>Content</p></sf-drawer>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "alias-conflict: vocabulary §5.1 decides drawer:snap → sf-drawer-snapped, a fact of the component (the alias table's sf-drawer-snap is the bare verb of a request the drawer never waits on); the converter's sf-drawer-snap never shipped and gets no row.",
+    "detail-adapter: §8 takes page elements out of detail, so the new names carry {drawerId, …} only; each old drawer:* name keeps its old detail (component, drawer, root added) through a split row and the element's detail adapter (sfAliasAdapters). Larena and bx-simai.main listen to drawer:after-open and drawer:after-close (vocabulary §9.2).",
+    "version: 1.6.0 → 1.7.0, a minor while the renamed members hold dated aliases (§4.10); added unsaved, dismissible and the snapped detail field.",
+    "existing-aliases: compatibility.deprecations folds into aliases.json as documentation rows: the page triggers data-sf-drawer-open/-close/-toggle stay as aliases of data-sf-action (§16.10) and of data-drawer with aria-controls; the modal-like default without docked keeps its own deprecation in the change journal (no alias kind: it is a recommendation, not a name).",
+    "template: templates.default names the Lit template in index.js (template()), the migration form §5.2 allows; no template.html until the build compiles one.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the docked column, the bottom sheet and the outside close button; probe.json drives Tab, Shift+Tab and Escape (gate 16).",
+    "css-variables: the seven variables docs.md and the sheet already promise (background, colour, overlay, gutter, block start, dock breakpoint, z-index); the portal carries their computed values from the host (§19.1). --sf-drawer-radius and --sf-drawer-width stay internal: the sheet sets them per size.",
+    "side-effects: the panel draws at the end of body or of its [data-sf-overlay-container] (portal) and, when modal and not docked, locks the page through the layer stack's one lease (locks-page).",
+    "layer: kind panel (§19.1); a modal drawer traps focus, a docked or modeless one does not (updateLayer re-declares it when modal or docked changes).",
+    "slots: the drawer places the page's own nodes (the content into its body, slot=\"edge\" beside the panel) and never copies them (§4.5); the converter's slot \"default\" is the content slot.",
+    "dismissing: the close request carries {reason, unsaved} (§19.3); dismissible=false removes escape and outside like close-on-esc and close-on-overlay, never an explicit action.",
+    "instance ids (§7.1.1, simai/ui-source#41): a drawer without id or drawer-id takes its path id (sf-drawer-<n> in document order) instead of a random one."
+  ]
+}

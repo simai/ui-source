@@ -11,7 +11,8 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 test('drawer stack: a declared offset, applied per depth at one edge', async () => {
   const source = await read('src/smart/drawer/index.js');
   assert.match(source, /stackOffset: \{attribute: 'stack-offset', default: ''\}/);
-  assert.match(source, /get stackOffset\(\) \{/);
+  // The property is the manifest's (standard 1.3.8 §4).
+  assert.equal(JSON.parse(await read('src/smart/drawer/component.json')).settings['stack-offset'].default, '');
   assert.match(source, /drawer\.openState && !drawer\.docked && drawer\.stackEdge === edge/);
   assert.match(source, /root\.style\.setProperty\('--sf-drawer-stack-depth', String\(depth\)\)/);
   const styles = await read('src/smart/drawer/scss/_smart__drawer.scss');

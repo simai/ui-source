@@ -14,7 +14,8 @@ test('drawer gutter: one gutter for head and body, declared', async () => {
   assert.match(styles, /padding: var\(--sf-space-1\\\/2\) var\(--sf-drawer-gutter, var\(--sf-space-1\)\) var\(--sf-space-3\);/);
   const source = await read('src/smart/drawer/index.js');
   assert.match(source, /gutter: \{default: ''\}/);
-  assert.match(source, /get gutter\(\) \{/);
+  // The property is the manifest's (standard 1.3.8 §4).
+  assert.equal(JSON.parse(await read('src/smart/drawer/component.json')).settings.gutter.default, '');
   assert.match(source, /--sf-drawer-gutter:\$\{context\.gutter\};/);
   const manifest = JSON.parse(await read('src/smart/drawer/smart.manifest.json'));
   assert.equal(manifest.inputs.properties.gutter.default, '');
