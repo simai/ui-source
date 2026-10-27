@@ -1,0 +1,202 @@
+{
+  "probe": "sf-radio against component.json (standard simai.smart-component 1.3.8 §12, §17, gate 20)",
+  "page": {
+    "lang": "ru",
+    "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form><form id=\"g\"><sf-radio id=\"other\" name=\"plan\" value=\"other\" label=\"Другая форма\" checked></sf-radio></form>",
+    "listen": [
+      "input",
+      "change"
+    ],
+    "box": "input[type=\"radio\"]"
+  },
+  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/fields-manifest.browser.mjs",
+  "checks": [
+    {
+      "id": "checked-submits-its-value",
+      "covers": "form.submits, form.value",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "plan": "primary"
+        },
+        "formNames": [
+          "plan"
+        ],
+        "listed": 3
+      }
+    },
+    {
+      "id": "without-value-submits-on",
+      "covers": "settings.value default (§17.1 item 2)",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" ></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" checked></sf-radio>",
+      "target": "#c",
+      "form": "submit",
+      "expect": {
+        "submitted": true,
+        "formData": {
+          "plan": "on"
+        }
+      }
+    },
+    {
+      "id": "inner-radios-join-no-form",
+      "covers": "§17.1 item 6: the inner radios carry the group key and no form",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "form": "reset",
+      "expect": {
+        "box": {
+          "attributes": {
+            "form": "sf-radio-no-form",
+            "name": "sf-radio:f:plan"
+          }
+        }
+      }
+    },
+    {
+      "id": "space-selects",
+      "covers": "keyboard.host.Space select, events.change (native)",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#b",
+      "user": "keyboard:Space",
+      "expect": {
+        "events": [
+          {
+            "type": "input"
+          },
+          {
+            "type": "change"
+          }
+        ],
+        "host": {
+          "attributes": {
+            "checked": ""
+          }
+        },
+        "formData": {
+          "plan": "spare"
+        }
+      }
+    },
+    {
+      "id": "arrow-down-moves-and-selects",
+      "covers": "keyboard.host.ArrowDown focus:next, the group of one name in one form",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "user": "keyboard:ArrowDown",
+      "expect": {
+        "host": {
+          "attributes": {
+            "checked": null
+          }
+        },
+        "formData": {
+          "plan": "spare"
+        },
+        "focus": "#b input"
+      }
+    },
+    {
+      "id": "another-form-keeps-its-group",
+      "covers": "the group key holds the form: a second form with the same name is its own group",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "user": "keyboard:ArrowDown",
+      "expect": {
+        "formData": {
+          "plan": "spare"
+        }
+      }
+    },
+    {
+      "id": "disabled-leaves-the-form",
+      "covers": "form.disabled (§17.1 item 3)",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "setting": {
+        "name": "disabled",
+        "value": true
+      },
+      "expect": {
+        "formData": {
+          "plan": null
+        },
+        "disabled": {
+          "input[type=\"radio\"]": true
+        }
+      }
+    },
+    {
+      "id": "form-reset-returns-the-default",
+      "covers": "form.reset (§17.1 item 4), no events",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" checked></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "given": [
+        {
+          "user": "keyboard:ArrowDown"
+        }
+      ],
+      "form": "reset",
+      "expect": {
+        "events": [],
+        "host": {
+          "attributes": {
+            "checked": ""
+          }
+        },
+        "formData": {
+          "plan": "primary"
+        }
+      }
+    },
+    {
+      "id": "custom-validity-blocks-submit",
+      "covers": "form.validity custom-error (§17.2)",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" ></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "action": {
+        "name": "set-custom-validity",
+        "with": "Выберите вариант"
+      },
+      "expect": {
+        "checkValidity": false,
+        "validity": {
+          "customError": true,
+          "valid": false
+        }
+      }
+    },
+    {
+      "id": "legacy-error-is-invalid",
+      "covers": "aliases.json error -> invalid (§17.2, §16.20)",
+      "field": "<sf-radio id=\"a\" name=\"plan\" value=\"primary\" label=\"Основной\" ></sf-radio><sf-radio id=\"b\" name=\"plan\" value=\"spare\" label=\"Запасной\" ></sf-radio><sf-radio id=\"c\" name=\"plan\" label=\"Без значения\" ></sf-radio>",
+      "target": "#a",
+      "setting": {
+        "name": "error",
+        "value": true
+      },
+      "expect": {
+        "host": {
+          "attributes": {
+            "invalid": ""
+          },
+          "props": {
+            "invalid": true
+          }
+        },
+        "journal": [
+          {
+            "from": "error",
+            "to": "invalid",
+            "kind": "setting",
+            "since": "2026-10-27",
+            "remove_after": "2026-12-01"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Группа из трёх",
+      "markup": "<sf-radio name=\"plan\" value=\"primary\" label=\"Основной вариант\" checked></sf-radio><sf-radio name=\"plan\" value=\"spare\" label=\"Запасной\"></sf-radio><sf-radio name=\"plan\" value=\"none\" label=\"Без варианта\"></sf-radio>",
+      "expect": {
+        "checked": "primary"
+      }
+    },
+    {
+      "name": "description",
+      "title": "С пояснением и значком",
+      "settings": {
+        "label": "Доставка",
+        "description": "Курьером до двери",
+        "help": "info",
+        "value": "courier"
+      },
+      "expect": {
+        "checked": false
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Выберите вариант",
+        "invalid": true,
+        "value": "a"
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "label": "Нет в наличии",
+        "disabled": true,
+        "value": "b"
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупная",
+        "size": "2",
+        "value": "c"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}

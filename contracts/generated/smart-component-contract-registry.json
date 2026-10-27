@@ -1545,7 +1545,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/radio/smart.manifest.json",
-      "manifest_sha256": "b2705f4917f0c2e90e8fd482b63bc0ff1dff1668ac2912dbe37c3cc478e76985",
+      "manifest_sha256": "0ab305d8e9b5bb8cea43e0a703cca67ef43b35c166cfdd825fdde60bdca804b3",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

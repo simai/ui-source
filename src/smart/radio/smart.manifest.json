@@ -70,11 +70,22 @@
       },
       "value": {
         "type": "string",
-        "default": ""
+        "default": "on",
+        "description": "What a checked radio submits; without it, \"on\", as a native radio (standard 1.3.8 §17.1 item 2)."
       },
       "error": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Legacy name of invalid: a dated alias until 2026-12-01 (aliases.json, standard 1.3.8 §17.2)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The shown invalid state: the error look and aria-invalid on the native input."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -322,7 +333,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/radio/index.js",
-        "sha256": "b4fce0a9c1cd6f66d5f6581f579cc14e67eefed879852445aad9fae0b4411978"
+        "sha256": "f7c1535d4326d468bb26d7a83575be3c87b27c868968870c063e3c8c98724a66"
       }
     ],
     "generated_runtime": [

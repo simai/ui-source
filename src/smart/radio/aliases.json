@@ -1,0 +1,18 @@
+{
+  "$comment": "Dated aliases of sf-radio for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-radio",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "error",
+      "to": "invalid",
+      "kind": "setting",
+      "section": "§17.2",
+      "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
+      "component": "sf-radio",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    }
+  ]
+}

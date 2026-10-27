@@ -1,8 +1,45 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { bindRadio, setRadioState, unbindRadio } from '../../component/radio/js/_radio';
 import { renderRadioTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
+import { FormField } from '../helpers/form-field';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-radio from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §17.1, §17.2). The settings and the value checked are made by
+// core/js/element-manifest.js; `error` is a dated alias of `invalid` (§17.2,
+// aliases.json). The host is the form control through ElementInternals: a
+// checked radio submits its value ("on" without one, as a native radio).
+//
+// The inner radios still make the group -- one checked at a time, the arrow
+// keys move through it -- and a native group is the radios of one name in
+// one form owner. So while the host submits, an inner radio is taken out of
+// the page's form by a `form` attribute that names no form (§17.1 item 6:
+// it joins no form and submits nothing), and its name is the group key: the
+// host's form (its id, else its place among the page's forms, read from the
+// page and never counted) and the host's name, so two forms on one page that
+// use the same name keep two groups.
+const RadioElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
+
+// The id the inner radios' form attribute names: no element carries it.
+const NO_FORM = 'sf-radio-no-form';
+
+function groupKey(component) {
+  if (!component.name) return '';
+  const form = component.form;
+  if (!form) return `sf-radio:page:${component.name}`;
+  const place = form.id || String(Array.prototype.indexOf.call(form.ownerDocument?.forms || [], form));
+  return `sf-radio:${place}:${component.name}`;
+}
 
 function syncSmartRadioGroup(source) {
   if (!source?.name) return;
@@ -17,88 +54,32 @@ function syncSmartRadioGroup(source) {
     } else {
       component.removeAttribute('checked');
     }
+    component.sfSyncFormState?.();
   });
 }
 
-class SfRadio extends SfBaseElement {
+class SfRadio extends FormField(RadioElement) {
   static get props() {
     return {
-      size: { default: '1' },
-      label: { default: '' },
-      description: { default: '' },
-      help: { default: '' },
-      checked: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
-      name: { default: '' },
-      value: { default: '' },
-      error: { type: Boolean, default: false },
+      ...super.props,
+      rootClass: { default: '' },
     };
   }
-
 
   constructor() {
     super();
     this._boundRoot = null;
   }
 
-  get size() {
-    return this.getAttribute('size') || '1';
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
-  get description() {
-    return this.getAttribute('description') || '';
-  }
-
-  get help() {
-    return this.getAttribute('help') || '';
-  }
-
-  get checked() {
-    return this.getBooleanAttr('checked', false);
-  }
-
-  set checked(nextValue) {
-    if (nextValue) {
-      this.setAttribute('checked', '');
-    } else {
-      this.removeAttribute('checked');
-    }
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  get name() {
-    return this.getAttribute('name') || '';
-  }
-
-  get value() {
-    return this.getAttribute('value') || '';
-  }
-
-  set value(nextValue) {
-    if (nextValue === null || nextValue === undefined) {
-      this.removeAttribute('value');
-      return;
-    }
-
-    this.setAttribute('value', String(nextValue));
-  }
-
-  get error() {
-    return this.getBooleanAttr('error', false);
-  }
-
   templateContext() {
     const props = this.getPropsContext();
+    const internals = Boolean(this.sfInternals);
 
     return this.createTemplateContext({
       ...props,
+      // Without ElementInternals the named inner radio submits, as before.
+      name: internals ? groupKey(this) : props.name,
+      innerForm: internals ? NO_FORM : '',
       component: this,
     });
   }
@@ -128,6 +109,7 @@ class SfRadio extends SfBaseElement {
         this._releaseReset = bindCheckableReset(this, input);
       }
     }
+    this.sfSyncFormState();
   }
 
   onDisconnected() {
@@ -144,6 +126,24 @@ class SfRadio extends SfBaseElement {
     }
   }
 
+  // Inside a form the host is reset by the form; its inner radio, out of the
+  // form, is put back here: the default is what the markup said (§17.1 item 4).
+  formResetCallback() {
+    const input = this.getInputElement();
+    if (input && this.sfInternals) {
+      const checked = Object.prototype.hasOwnProperty.call(this, '_resetChecked') ? this._resetChecked : this.checked;
+      input.checked = checked;
+      if (checked) this.setAttribute('checked', '');
+      else this.removeAttribute('checked');
+    }
+    super.formResetCallback();
+  }
+
+  // A group key follows the form the host is in.
+  formAssociatedCallback() {
+    if (this.sfInternals) this.requestComponentUpdate?.('form');
+  }
+
   _handleChange = () => {
     const input = this.getInputElement();
     if (!input) return;
@@ -154,6 +154,7 @@ class SfRadio extends SfBaseElement {
       this.removeAttribute('checked');
     }
 
+    this.sfSyncFormState();
     syncSmartRadioGroup(input);
   };
 
@@ -187,8 +188,8 @@ class SfRadio extends SfBaseElement {
     return {
       checked: !!input?.checked,
       disabled: !!input?.disabled,
-      name: input?.name || '',
-      value: input?.value || '',
+      name: this.name,
+      value: this.value,
     };
   }
 
@@ -218,6 +219,7 @@ class SfRadio extends SfBaseElement {
       }
     }
 
+    this.sfSyncFormState();
     return this;
   }
 
