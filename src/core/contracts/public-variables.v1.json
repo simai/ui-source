@@ -1961,8 +1961,8 @@
       "variables": [
         {
           "name": "--sf-close-color",
-          "role": "color",
-          "summary": "The cross's colour; forced colours keep their own.",
+          "role": "background",
+          "summary": "The cross's colour: it is drawn as the fill of a mask; forced colours keep their own.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
@@ -2269,7 +2269,7 @@
         },
         {
           "name": "--sf-help-mark-max-width",
-          "role": "size",
+          "role": "max-inline-size",
           "summary": "The explanation's widest line, never wider than the viewport.",
           "default": "var(--sf-g0)",
           "since": "2026-10-27"

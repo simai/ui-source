@@ -23,7 +23,7 @@ const mounts = [
   ['/distr/utility/', join(out, 'utility', 'utility')],
   ['/distr/smart/', join(out, 'smart', 'smart')],
 ];
-const absent = [join(out, 'core', 'core', 'js', 'core.js'), join(out, 'smart', 'smart', 'badges', 'js', 'badges.js')]
+const absent = [join(out, 'core', 'core', 'js', 'core.js'), join(out, 'smart', 'smart', 'badge', 'js', 'badge.js')]
   .filter((path) => !existsSync(path));
 if (absent.length) throw new Error(`asset(s) not found: ${absent.join(', ')}`);
 

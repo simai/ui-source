@@ -8,7 +8,8 @@ import {chromium} from 'playwright';
 if (!process.argv[3]) throw new Error('Smart output root and distr root are required');
 const smartRoot = resolve(process.argv[2]);
 const distrRoot = resolve(process.argv[3]);
-const bundles = ['icons', 'icon-buttons', 'pagination', 'buttons', 'modal', 'context-menu'];
+// Folders named as their tags (standard 1.3.8 §3, §21).
+const bundles = ['icon', 'icon-button', 'pagination', 'button', 'modal', 'context-menu'];
 const tags = ['sf-icon', 'sf-icon-button', 'sf-pagination', 'sf-button', 'sf-modal', 'sf-context-menu'];
 const browser = await chromium.launch();
 const failures = [];
@@ -46,7 +47,7 @@ try {
     class Foreign extends HTMLElement {}
     customElements.define('sf-icon', Foreign);
   });
-  await page.addScriptTag({path: join(smartRoot, 'icons', 'js', 'icons.js')});
+  await page.addScriptTag({path: join(smartRoot, 'icon', 'js', 'icon.js')});
   await page.close();
   if (!warnings.some((text) => text.includes('already defined'))) {
     failures.push({conflict: 'a foreign class on sf-icon did not warn', warnings});

@@ -69,6 +69,11 @@
     inline-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
     color: var(--sf-download-file-icon-color, var(--sf-primary));
     font-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    /* The glyph's own sheet is unlayered and sizes .sf-icon from these, so the
+       size reaches it (as in reference-link). */
+    --sf-icon--font-size: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    --sf-icon--height: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
+    --sf-icon--width: var(--sf-download-file-icon-size, var(--sf-download-file--icon-size));
   }
 
   .sf-download-file--size-1\/3 {

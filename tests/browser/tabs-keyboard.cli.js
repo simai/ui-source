@@ -9,7 +9,7 @@ async page => {
     await page.emulateMedia({forcedColors: 'none', reducedMotion: 'reduce'});
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for (const name of ['buttons', 'tabs']) await page.addStyleTag({url: `${base}/component/${name}/css/${name}.css`});
-    for (const name of ['icons', 'close', 'buttons', 'icon-buttons', 'tabs']) await page.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});
+    for (const name of ['icon', 'close', 'button', 'icon-button', 'tabs']) await page.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});
     await page.evaluate(async ({theme, variant, type, dir}) => {
       document.documentElement.className = `theme-${theme}`; document.documentElement.dir = dir;
       const main = document.querySelector('main'); main.replaceChildren();

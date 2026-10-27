@@ -21,7 +21,7 @@ try {
     await page.goto('about:blank');
     await page.evaluate((lang) => { if (lang) document.documentElement.lang = lang; }, lang);
     await page.addScriptTag({path: join(distrRoot, 'core', 'js', 'smart-base.js')});
-    for (const name of ['tags', 'country-code']) await page.addScriptTag({path: join(smartRoot, name, 'js', `${name}.js`)});
+    for (const name of ['tag', 'country-code']) await page.addScriptTag({path: join(smartRoot, name, 'js', `${name}.js`)});
     const seen = await page.evaluate(async () => {
       document.body.innerHTML = '<sf-tag kind="default" closable text="A"></sf-tag><sf-country-code></sf-country-code>';
       await new Promise((settle) => setTimeout(settle, 300));

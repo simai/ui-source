@@ -26,11 +26,15 @@ sf-copy-button {
   opacity: var(--sf-copy-button-pending-opacity, 1);
 }
 
-.sf-copy-button--success {
-  --sf-icon--color: var(--sf-copy-button-success-color, var(--sf-success));
+/* The result's ink is the glyph's own colour: the icon button and the button
+   set --sf-icon--color on their root, nearer the glyph than this wrapper, so a
+   variable set here never reached it and the check stayed in the resting ink
+   (found by tests/browser/public-variables, 2026-10-27). */
+.sf-copy-button--success :is(.sf-icon-button, .sf-button) .sf-icon {
+  color: var(--sf-copy-button-success-color, var(--sf-success));
 }
 
-.sf-copy-button--error {
-  --sf-icon--color: var(--sf-copy-button-error-color, var(--sf-error));
+.sf-copy-button--error :is(.sf-icon-button, .sf-button) .sf-icon {
+  color: var(--sf-copy-button-error-color, var(--sf-error));
 }
 }

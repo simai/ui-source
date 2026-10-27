@@ -280,7 +280,7 @@
       },
       {
         "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
-        "sha256": "7cf7f2ff90b741ddaa410ce78f4d47ffeaed7ed36d49fd7a91dc369172d21d84"
+        "sha256": "9bfe86eb0f4f8d7b8309cfddd4d3a527d70b1a86be1651f33c7aaa5451b07039"
       },
       {
         "path": "src/smart/copy-button/rule.js",

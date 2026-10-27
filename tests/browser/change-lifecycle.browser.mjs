@@ -53,7 +53,7 @@ try {
     await page.goto('about:blank');
     if (optIn) await page.evaluate(() => { document.documentElement.dataset.sfDeprecations = 'warn'; });
     await page.addScriptTag({path: join(out, 'core', 'core', 'js', 'smart-base.js')});
-    await page.addScriptTag({path: join(smart, 'buttons', 'js', 'buttons.js')});
+    await page.addScriptTag({path: join(smart, 'button', 'js', 'button.js')});
     const seen = await page.evaluate(async () => {
       document.body.innerHTML = '<sf-button type="outline" text="A"></sf-button><sf-button type="outline" text="B"></sf-button>';
       await new Promise((settle) => setTimeout(settle, 200));
@@ -78,7 +78,7 @@ try {
     const page = await browser.newPage();
     await page.goto('about:blank');
     await page.addScriptTag({path: join(out, 'core', 'core', 'js', 'smart-base.js')});
-    await page.addScriptTag({path: join(smart, 'buttons', 'js', 'buttons.js')});
+    await page.addScriptTag({path: join(smart, 'button', 'js', 'button.js')});
     const seen = await page.evaluate(async () => {
       document.body.innerHTML = '<sf-button id="d" status="danger" text="A"></sf-button><sf-button id="c" status="critical" text="B"></sf-button>'
         + '<sf-button icon-left="add" icon-right="close" tightness="low" text="C"></sf-button>';
@@ -87,7 +87,9 @@ try {
     });
     await page.close();
     for (const [kind, from, to] of [['value', 'danger', 'error'], ['value', 'critical', 'error'], ['attribute', 'icon-left', 'icon-start'], ['attribute', 'icon-right', 'icon-end'], ['attribute', 'tightness', 'spacing']]) {
-      if (!seen.list.some((entry) => entry.component === 'sf-button' && entry.kind === kind && entry.from === from && entry.to === to)) failures.push(`sf-button ${from} is not noted as ${to} (${JSON.stringify(seen.list)})`);
+      // A renamed attribute of a component built from its component.json is noted
+      // by the dated aliases as a setting (standard 1.3.8 §16.20).
+      if (!seen.list.some((entry) => entry.component === 'sf-button' && (entry.kind === kind || (kind === 'attribute' && entry.kind === 'setting')) && entry.from === from && entry.to === to)) failures.push(`sf-button ${from} is not noted as ${to} (${JSON.stringify(seen.list)})`);
     }
     if (!seen.danger.includes('sf-button--error') || !seen.critical.includes('sf-button--error')) failures.push(`sf-button status danger/critical does not paint error (${seen.danger} / ${seen.critical})`);
   }

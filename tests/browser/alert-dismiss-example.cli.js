@@ -7,7 +7,7 @@ async page => {
     await page.setViewportSize({width, height: 900});
     await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
     for (const asset of ['alerts', 'buttons', 'icon-buttons', 'close']) await page.addStyleTag({url: `${base}/component/${asset}/css/${asset}.css`});
-    for (const asset of ['icons', 'close', 'icon-buttons', 'alert']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
+    for (const asset of ['icon', 'close', 'icon-button', 'alert']) await page.addScriptTag({url: `${base}/smart/${asset}/js/${asset}.js`});
     await page.evaluate(async theme => {
       document.documentElement.className = `theme-${theme}`;
       const response = await fetch('../../source/output/action-focus-browser/examples/alert-dismiss.html');

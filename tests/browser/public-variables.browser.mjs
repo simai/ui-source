@@ -25,14 +25,14 @@ const contract = JSON.parse(readFileSync(new URL('../../src/core/contracts/publi
 const DRAW = {
   // A count anchored on an icon besides the label: the ring is drawn on the
   // anchored badge alone (simai/ui-source#12).
-  badge: {css: ['badges'], js: 'badges', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
-  button: {css: ['buttons'], js: 'buttons', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
+  badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
+  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
   // A variable of a state (standard 1.3.8 §6) is measured on an instance in
   // that state, drawn beside the one at rest.
   input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
-  tag: {css: ['tags'], js: 'tags', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
-  'icon-button': {css: ['icon-buttons'], js: 'icon-buttons', html: '<sf-icon-button icon="add" aria-label="Добавить" size="1"></sf-icon-button>'},
+  tag: {css: ['tags'], js: 'tag', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
+  'icon-button': {css: ['icon-buttons'], js: 'icon-button', html: '<sf-icon-button icon="add" aria-label="Добавить" size="1"></sf-icon-button>'},
   checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
   'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
@@ -91,6 +91,20 @@ const DRAW = {
   'file-upload': {css: ['file-upload', 'featured-icon'], js: 'file-upload',
     html: '<sf-file-upload aria-label="Документы"></sf-file-upload><sf-file-upload id="held" aria-label="Документы"></sf-file-upload>',
     open: 'document.getElementById("held").setAttribute("data-dragged-over", "true")'},
+  // Display group A (standard 1.3.8, 2026-10-27): each state a variable
+  // colours is drawn -- a copy that succeeded and one that failed, an open
+  // explanation.
+  close: {css: ['close'], js: 'close', html: '<sf-close size="1"></sf-close>'},
+  icon: {css: ['icons'], js: 'icon', html: '<sf-icon icon="home" size="1"></sf-icon>'},
+  'reference-link': {css: ['reference-link', 'icons'], js: 'reference-link',
+    html: '<sf-reference-link label="Документация" text="/docs/" href="#" size="1"></sf-reference-link>'},
+  'download-file': {css: ['icons', 'download-file'], js: 'download-file',
+    html: '<sf-download-file file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-download-file>'},
+  'copy-button': {css: ['icon-buttons', 'icons', 'smart/smart/copy-button/css/copy-button.css'], js: 'copy-button',
+    html: '<sf-copy-button value="a" label="Копировать" duration="60000"></sf-copy-button><sf-copy-button value="b" label="Копировать" duration="60000"></sf-copy-button><sf-copy-button value="c" label="Копировать" duration="60000"></sf-copy-button>',
+    open: 'const [, ok, failed] = document.querySelectorAll("sf-copy-button"); ok.setPhase("success", ""); failed.setPhase("error", "")'},
+  'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
+    html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'datepicker',
     html: '<sf-datepicker input="false" value="2026-09-03"></sf-datepicker><sf-datepicker input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-datepicker>'},
   // The navigation family, with its move to standard 1.3.8 (2026-10-27): a

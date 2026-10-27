@@ -12,7 +12,7 @@ async page => {
   for (const name of ['buttons', 'context-menu']) {
     await page.addStyleTag({url: `http://127.0.0.1:8891/component/component/${name}/css/${name}.css`});
   }
-  for (const name of ['buttons', 'context-menu']) {
+  for (const name of ['button', 'context-menu']) {
     await page.addScriptTag({url: `http://127.0.0.1:8891/smart/smart/${name}/js/${name}.js`});
   }
   await page.evaluate(() => {

@@ -56,11 +56,6 @@
       "reason": "The page language's text when not set: \"Close alert\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "avatar",
-      "prop": "ariaLabel",
-      "reason": "The page language's text when not set: \"Avatar\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "breadcrumbs",
       "prop": "ariaLabel",
       "reason": "The page language's text when not set: \"Breadcrumb\" on an English page, the dictionary's word on another."
@@ -239,6 +234,11 @@
       "component": "tag",
       "prop": "closeLabel",
       "reason": "The page language's text when not set: \"Remove\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "help-mark",
+      "prop": "label",
+      "reason": "The page language's text when not set: \"More information\" on an English page, the dictionary's word on another (lang runtime.label)."
     },
     {
       "component": "color",
