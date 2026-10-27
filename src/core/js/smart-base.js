@@ -453,6 +453,15 @@ class SfBaseElement extends HTMLElement {
   }
 
   connectedCallback() {
+    // A connected callback can run for an element that is no longer in the
+    // page: custom-element reactions run late, at the next [CEReactions]
+    // boundary, so an element a parent takes out while its connected reaction
+    // is still queued (a modal moving its slotted content) runs that reaction
+    // detached, and its disconnected reaction may already have run inside it.
+    // What it started then would have no disconnect to end it (gate 36: a
+    // language listener per sf-slider of a gallery's lightbox, 2026-10-27).
+    // It is placed again later, and that placing connects it.
+    if (!this.isConnected) return;
     this.constructor.ensureStyleReadinessCss();
     this.captureHostStyle();
     this.applyHostDisplayStyle();
@@ -471,6 +480,9 @@ class SfBaseElement extends HTMLElement {
       this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName, signal: this.sfScope, adapters: this.sfAliasAdapters?.() ?? {}});
     }
     this.onConnected();
+    // Taken out while it connected (its disconnected callback ran inside
+    // onConnected): nothing more is started.
+    if (!this.isConnected) return;
     // A component chooses its words when it draws and would otherwise keep
     // them for ever: changing the page's language used to mean reloading it.
     // Subscribing here rather than in each component is the same argument as
