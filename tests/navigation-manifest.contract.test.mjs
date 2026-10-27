@@ -96,3 +96,22 @@ test('sf-accordion: sf-accordion-toggle with the same detail as its colon alias;
   assert.doesNotMatch(klass, /accordionId/u, 'the class accordion has no module counter either');
   assert.match(klass, /this\.trigger\.id = partId\(path, 'trigger'\)/u);
 });
+
+test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it acts (#44), outcomes, path ids', () => {
+  const manifest = json('src/smart/menu/component.json');
+  const events = readManifest(manifest).events;
+  assert.equal(events.navigate.name, 'sf-menu-navigate');
+  assert.equal(events.navigate.cancelable, true);
+  assert.equal(events.toggle.name, 'sf-menu-toggle');
+  const {rows} = readAliasTable(json('src/smart/menu/aliases.json'), {tag: 'sf-menu'});
+  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-menu:navigate', 'sf-menu-navigate', 'same-detail'], ['sf-menu:toggle', 'sf-menu-toggle', 'same-detail']]);
+  // simai/ui-source#44 item 2: Escape is a panel's key; in accessibility.keys it says when.
+  assert.deepEqual(manifest.keyboard.panel, {Escape: 'close'});
+  assert.ok(!('Escape' in manifest.keyboard.host));
+  assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {collapse: 'always'}]);
+  const source = read('src/smart/menu/index.js');
+  assert.match(source, /return flyouts \|\| panel \? \{outcome: 'applied'\} : \{outcome: 'refused', reason: 'already'\};/u);
+  assert.doesNotMatch(source, /\+\+sequence|let sequence/u, 'no module counter (#41)');
+  assert.match(source, /id: partId\(instancePath\(this, \{kind: 'sf-menu'\}\)\)/u);
+  assert.doesNotMatch(read('src/component/menu/js/_menu.js'), /submenuId/u, 'the class menu has no module counter either');
+});

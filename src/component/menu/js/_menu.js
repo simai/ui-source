@@ -1,3 +1,4 @@
+import { instancePath, partId } from '../../../core/js/instance-path.js';
 import BundledPosition from '../../../core/js/position.js';
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
@@ -21,7 +22,6 @@ const generatedElements = new WeakSet();
 const generatedLeadingIcons = new WeakSet();
 const generatedTrailingControls = new WeakSet();
 const legacyExpandedOwners = new WeakSet();
-let submenuId = 0;
 
 // sf-menu (src/smart/menu) draws this markup from data and keeps its state
 // itself -- open branches, the current page, the panels of a row. It marks
@@ -308,10 +308,12 @@ function applyElementState(root, element, expanded, isBranch) {
   if (element instanceof HTMLButtonElement) element.disabled = disabled;
 }
 
+// A submenu's path id and a local name (standard 1.3.8 §7.1.1,
+// simai/ui-source#41): <path>--submenu, the same in every bundle and in server
+// markup. A module counter numbered them in creation order, once per bundle.
 function ensureSubmenuId(submenu) {
   if (!submenu.id) {
-    submenuId += 1;
-    submenu.id = `sf-menu-submenu-${submenuId}`;
+    submenu.id = partId(instancePath(submenu, { kind: 'sf-menu' }), 'submenu');
   }
   return submenu.id;
 }

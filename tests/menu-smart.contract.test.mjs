@@ -158,10 +158,12 @@ test('smart menu: a row\'s panels are placed by SF.Position and Escape closes th
 });
 
 test('smart menu: navigate is cancellable and modified presses stay the browser\'s', () => {
-  assert.match(source, /new CustomEvent\('sf-menu:navigate', \{\n      bubbles: true,\n      composed: true,\n      cancelable: true,\n      detail: \{id: item\.id, href: item\.href, item\},/u);
-  assert.match(source, /if \(navigate\.defaultPrevented\) event\.preventDefault\(\);/u);
+  // sf-menu-navigate (vocabulary §5 navigate); sf-menu:navigate is its dated
+  // alias with one shared cancel (aliases.json).
+  assert.match(source, /const allowed = this\.sfEmit\('navigate', \{id: item\.id, href: item\.href, item\}\);/u);
+  assert.match(source, /if \(!allowed\) event\.preventDefault\(\);/u);
   assert.match(source, /event\.button > 0 \|\| event\.metaKey \|\| event\.ctrlKey \|\| event\.shiftKey \|\| event\.altKey/u);
-  assert.match(source, /new CustomEvent\('sf-menu:toggle', \{\n        bubbles: true,\n        composed: true,\n        detail: \{id: one\.id, open: after\.has\(one\.id\), source, item: one\},/u);
+  assert.match(source, /this\.sfEmit\('toggle', \{id: one\.id, open: after\.has\(one\.id\), source, item: one\}\);/u);
 });
 
 test('smart menu: the manifest is the element', () => {
@@ -175,8 +177,11 @@ test('smart menu: the manifest is the element', () => {
     assert.ok(props.includes(`${key === 'template' ? 'templateName' : key}:`), name);
   }
   for (const method of Object.keys(manifest.methods)) assert.match(source, new RegExp(`\\n  ${method}\\((id)?\\) \\{`, 'u'), method);
-  const sent = new Set([...source.matchAll(/new CustomEvent\('([^']+)'/gu)].map((match) => match[1]));
-  assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
+  // The events are component.json's verbs, sent through sfEmit (standard 1.3.8
+  // §8); the old colon names are aliases.json's.
+  const sent = new Set([...source.matchAll(/this\.sfEmit\('([^']+)'/gu)].map((match) => match[1]));
+  assert.deepEqual(Object.keys(JSON.parse(read('src/smart/menu/component.json')).events).sort(), [...sent].sort());
+  assert.doesNotMatch(source, /new CustomEvent\(/u);
   assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'label', 'href', 'icon', 'badge', 'current', 'disabled', 'open', 'children']);
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/u);
   // The Pro admin menu is another component: nothing of it is used here.

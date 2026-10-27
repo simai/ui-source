@@ -1,0 +1,32 @@
+{
+  "$comment": "Dated aliases of sf-menu for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+  "component": "sf-menu",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-menu:navigate",
+      "to": "sf-menu-navigate",
+      "kind": "event",
+      "component": "sf-menu",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": true,
+      "section": "§8, §16 item 6, vocabulary §5.1",
+      "note": "{id, href, item} is data only; one cancel for both names"
+    },
+    {
+      "from": "sf-menu:toggle",
+      "to": "sf-menu-toggle",
+      "kind": "event",
+      "component": "sf-menu",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "section": "§8, §16 item 6",
+      "note": "{id, open, source, item} is data only"
+    }
+  ]
+}

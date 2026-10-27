@@ -15,9 +15,10 @@
 // markup carries data-sf-menu-owned, so the class runtime -- loaded beside it
 // for the sheet -- leaves it alone and two owners never toggle one branch.
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
-import {pageText} from '../../core/js/page-language';
 import {renderMenuTemplate} from './js/templates/default';
 import {
   MENU_APPEARANCES,
@@ -32,20 +33,33 @@ import {
   walkItems,
 } from './items.mjs';
 import './scss/index.scss';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
 
-const MENU_TEXT = {
-  en: {toggleLabel: 'Menu'},
-  ru: {toggleLabel: 'Меню'},
-};
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8,
+// §11): the settings are attributes and properties made by
+// core/js/element-manifest.js, the button's word is lang/<locale>.json, the
+// actions answer outcomes, and the old event names sf-menu:navigate and
+// sf-menu:toggle are dated aliases of sf-menu-navigate and sf-menu-toggle.
+const MenuElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
-let sequence = 0;
+// open('catalog') and open({id: 'catalog'}) both name an item (§4.4).
+const itemArgument = (value) => (value && typeof value === 'object' ? value.id : value);
 
-class SfSmartMenu extends SfBaseElement {
+class SfSmartMenu extends MenuElement {
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
       items: {default: []},
       orientation: {default: 'vertical', values: MENU_ORIENTATIONS},
@@ -61,7 +75,6 @@ class SfSmartMenu extends SfBaseElement {
 
   constructor() {
     super();
-    this._id = `sf-smart-menu-${++sequence}`;
     // undefined: follow the attribute. Set by the property; an attribute
     // written later takes over again.
     this._items = undefined;
@@ -153,10 +166,8 @@ class SfSmartMenu extends SfBaseElement {
     return items.length ? items : this._childItems;
   }
 
-  get orientation() { return this.getProp('orientation'); }
-  get appearance() { return this.getProp('appearance'); }
-  get collapse() { return this.getProp('collapse'); }
-  get currentFromLocation() { return this.getBooleanAttr('current-from-location', false); }
+  // orientation, appearance, collapse, current-from-location and the words are
+  // the manifest's accessors (attribute and property).
 
   // The documentation tree and the compact rail are columns.
   get horizontal() {
@@ -203,36 +214,41 @@ class SfSmartMenu extends SfBaseElement {
     return findItem(this.menuItems, id);
   }
 
+  // The actions open, close and toggle {id} and close-all (§4.4): each
+  // answers an outcome, applied or refused with a reason.
   open(id) {
-    return this.setOpen(id, true, 'method');
+    return this.setOpen(itemArgument(id), true, 'method');
   }
 
   close(id) {
-    return this.setOpen(id, false, 'method');
+    return this.setOpen(itemArgument(id), false, 'method');
   }
 
   toggle(id) {
-    return this.setOpen(id, !this.isOpen(id), 'method');
+    const key = itemArgument(id);
+    return this.setOpen(key, !this.isOpen(key), 'method');
   }
 
   // Closes every open panel of a row and the panel of a collapsed menu; the
-  // groups of a column keep their state. Returns whether anything changed.
+  // groups of a column keep their state.
   closeAll() {
     const flyouts = this.flyouts ? this.closeFlyouts('method') : false;
     const panel = this.setPanelOpen(false, 'method');
-    return flyouts || panel;
+    return flyouts || panel ? {outcome: 'applied'} : {outcome: 'refused', reason: 'already'};
   }
 
   // A row's open panels are one chain: opening a branch closes every panel
   // that is not above it, closing one closes the panels inside it. A column's
   // groups open and close each on its own. A disabled branch is not opened or
-  // closed by the person. Returns whether anything changed.
+  // closed by the person. Answers an outcome: applied, or refused with
+  // unknown (no such branch), compact (no groups), disabled or already.
   setOpen(id, open, source = 'method') {
     const item = this.item(id);
-    if (!item || !item.children.length || this.appearance === 'compact') return false;
-    if (item.disabled && source === 'user') return false;
+    if (!item || !item.children.length) return {outcome: 'refused', reason: 'unknown'};
+    if (this.appearance === 'compact') return {outcome: 'refused', reason: 'compact'};
+    if (item.disabled && source === 'user') return {outcome: 'refused', reason: 'disabled'};
     const before = new Set(this.openIds);
-    if (before.has(item.id) === Boolean(open)) return false;
+    if (before.has(item.id) === Boolean(open)) return {outcome: 'refused', reason: 'already'};
     const after = new Set(before);
     if (this.flyouts) {
       const above = new Set(pathTo(this.menuItems, item.id) || []);
@@ -243,7 +259,9 @@ class SfSmartMenu extends SfBaseElement {
     } else {
       after.delete(item.id);
     }
-    return this.applyOpen(before, after, source, item.id);
+    return this.applyOpen(before, after, source, item.id)
+      ? {outcome: 'applied'}
+      : {outcome: 'refused', reason: 'already'};
   }
 
   closeFlyouts(source) {
@@ -263,12 +281,10 @@ class SfSmartMenu extends SfBaseElement {
     // The branch asked for first, then the ones it closed, innermost first.
     const depth = (one) => (pathTo(this.menuItems, one.id) || []).length;
     changed.sort((a, b) => (a.id === asked ? -1 : b.id === asked ? 1 : depth(b) - depth(a)));
+    // sf-menu-toggle, then its old name sf-menu:toggle with the same detail
+    // (aliases.json, until 2026-12-01).
     for (const one of changed) {
-      this.dispatchEvent(new CustomEvent('sf-menu:toggle', {
-        bubbles: true,
-        composed: true,
-        detail: {id: one.id, open: after.has(one.id), source, item: one},
-      }));
+      this.sfEmit('toggle', {id: one.id, open: after.has(one.id), source, item: one});
     }
     return true;
   }
@@ -278,11 +294,7 @@ class SfSmartMenu extends SfBaseElement {
     if (!this.collapsed || this._panelOpen === Boolean(open)) return false;
     this._panelOpen = Boolean(open);
     this.requestComponentUpdate('panel');
-    this.dispatchEvent(new CustomEvent('sf-menu:toggle', {
-      bubbles: true,
-      composed: true,
-      detail: {id: null, open: this._panelOpen, source, item: null},
-    }));
+    this.sfEmit('toggle', {id: null, open: this._panelOpen, source, item: null});
     return true;
   }
 
@@ -328,22 +340,17 @@ class SfSmartMenu extends SfBaseElement {
     if (link) this.onNavigate(event, link);
   };
 
-  // A link's own press: a cancellable sf-menu:navigate first, so a host that
-  // routes the page itself prevents it and the browser does not go. A press
-  // that opens another tab or window is the browser's alone.
+  // A link's own press: a cancellable sf-menu-navigate first (and its old name
+  // sf-menu:navigate, one cancel for both), so a host that routes the page
+  // itself prevents it and the browser does not go. A press that opens
+  // another tab or window is the browser's alone.
   onNavigate(event, link) {
     if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     if ((link.getAttribute('target') || '_self') !== '_self') return;
     const item = this.item(link.dataset.sfMenuLink);
     if (!item) return;
-    const navigate = new CustomEvent('sf-menu:navigate', {
-      bubbles: true,
-      composed: true,
-      cancelable: true,
-      detail: {id: item.id, href: item.href, item},
-    });
-    this.dispatchEvent(navigate);
-    if (navigate.defaultPrevented) event.preventDefault();
+    const allowed = this.sfEmit('navigate', {id: item.id, href: item.href, item});
+    if (!allowed) event.preventDefault();
     // Gone to the page: nothing stays open over it.
     if (this.flyouts) this.closeFlyouts('user');
     this.setPanelOpen(false, 'user');
@@ -534,7 +541,9 @@ class SfSmartMenu extends SfBaseElement {
     return this.createTemplateContext({
       ...props,
       component: this,
-      id: this._id,
+      // The host's path id (§7.1.1, simai/ui-source#41): <path>--list and
+      // <path>--menu-<n>, n the item's place in this element's own map.
+      id: partId(instancePath(this, {kind: 'sf-menu'})),
       items,
       open: new Set(this.openIds),
       currentId: this.currentId,
@@ -544,7 +553,7 @@ class SfSmartMenu extends SfBaseElement {
       compact: this.appearance === 'compact',
       appearance: this.appearance,
       label: this.getAttribute('aria-label') || this.getProp('label') || this._childLabel,
-      toggleLabel: this.getProp('toggleLabel') || pageText(MENU_TEXT, 'toggleLabel', this),
+      toggleLabel: this.getAttribute('toggle-label') || this.sfWord('toggle-label'),
       domId: (id) => this.domId(id),
       rootClass: this.getRootClass(),
     });

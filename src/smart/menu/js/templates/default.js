@@ -85,7 +85,7 @@ function renderItem(context, item, level) {
   // A compact rail opens no branch: its rows are the first level alone.
   const branch = item.children.length > 0 && !context.compact;
   const open = branch && context.open.has(item.id);
-  const submenuId = `${context.id}-menu-${context.domId(item.id)}`;
+  const submenuId = `${context.id}--menu-${context.domId(item.id)}`;
   return html`
     <li class=${joinClasses('sf-menu-item', branch ? 'sf-menu-item--has-submenu' : '', open ? 'open' : '')}
         data-sf-menu-item=${item.id} data-sf-menu-level=${level}>
@@ -107,7 +107,7 @@ function renderItems(context, items, level) {
 function renderPanelToggle(context) {
   const open = context.panelOpen;
   return html`<button class=${joinClasses('sf-menu-element', 'sf-menu-element--level-1', 'sf-menu-element--has-submenu', 'sf-smart-menu-toggle', open ? 'open' : '')}
-                      type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${`${context.id}-list`}
+                      type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${`${context.id}--list`}
                       data-sf-menu-panel-toggle>
     <span class="sf-menu-element-wrap"><i class="sf-icon sf-menu-element-icon" aria-hidden="true">menu</i><span class="sf-menu-element-text">${context.toggleLabel}</span></span>
     ${renderTrailing(open ? 'keyboard_arrow_up' : 'keyboard_arrow_down')}
@@ -131,7 +131,7 @@ export function renderMenuTemplate(context) {
          data-orientation=${context.flyouts ? 'horizontal' : 'vertical'}
          data-sf-menu-owned>
       ${context.collapsed ? renderPanelToggle(context) : nothing}
-      <ul class=${listClasses} id=${`${context.id}-list`} ?hidden=${context.collapsed && !context.panelOpen}>
+      <ul class=${listClasses} id=${`${context.id}--list`} ?hidden=${context.collapsed && !context.panelOpen}>
         ${renderItems(context, context.items, 1)}
       </ul>
     </nav>

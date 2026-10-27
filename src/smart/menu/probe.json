@@ -1,0 +1,295 @@
+{
+  "component": "sf-menu",
+  "probe": "sf-menu against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs (SF_OVERLAYS names the folders)",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\" style=\"inline-size: 900px\"><sf-menu id=\"row\" label=\"Сайт\" orientation=\"horizontal\" collapse=\"none\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}, {\"id\": \"catalog\", \"label\": \"Каталог\", \"children\": [{\"id\": \"solutions\", \"label\": \"Решения\", \"href\": \"#solutions\"}, {\"id\": \"products\", \"label\": \"Продукты\", \"href\": \"#products\", \"badge\": \"3\", \"children\": [{\"id\": \"desks\", \"label\": \"Столы\", \"href\": \"#desks\"}]}]}, {\"id\": \"contacts\", \"label\": \"Контакты\", \"href\": \"#contacts\"}]'></sf-menu></div>",
+      "  <sf-menu id=\"col\" label=\"Разделы\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}, {\"id\": \"catalog\", \"label\": \"Каталог\", \"children\": [{\"id\": \"solutions\", \"label\": \"Решения\", \"href\": \"#solutions\"}, {\"id\": \"products\", \"label\": \"Продукты\", \"href\": \"#products\", \"badge\": \"3\", \"children\": [{\"id\": \"desks\", \"label\": \"Столы\", \"href\": \"#desks\"}]}]}, {\"id\": \"contacts\", \"label\": \"Контакты\", \"href\": \"#contacts\"}]'></sf-menu>",
+      "  <sf-menu id=\"btn\" label=\"Кнопка\" collapse=\"always\" items='[{\"id\": \"about\", \"label\": \"О компании\", \"href\": \"#about\", \"icon\": \"info\"}]'></sf-menu>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-row-enter-escape",
+      "title": "in a row Enter opens a branch's panel, Escape closes it and gives the focus back: sf-menu-toggle and sf-menu:toggle once each per change, noted with its dates",
+      "covers": "keyboard.host Enter select, keyboard.panel Escape close, events.toggle, aliases sf-menu:toggle",
+      "steps": [
+        {
+          "script": "(document.querySelector('#row [data-sf-menu-toggle=\"catalog\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-menu-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "catalog",
+                  "open": true,
+                  "source": "user"
+                }
+              },
+              {
+                "name": "sf-menu:toggle",
+                "count": 1,
+                "detail": {
+                  "id": "catalog",
+                  "open": true
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "sf-menu:toggle",
+                "to": "sf-menu-toggle",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "document.querySelector('#row [data-sf-menu-toggle=\"catalog\"]').getAttribute('aria-expanded') === 'true'"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-menu-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "catalog",
+                  "open": false,
+                  "source": "user"
+                }
+              }
+            ]
+          },
+          "check": "document.querySelector('#row [data-sf-menu-toggle=\"catalog\"]').getAttribute('aria-expanded') === 'false' && document.activeElement === document.querySelector('#row [data-sf-menu-toggle=\"catalog\"]')"
+        }
+      ]
+    },
+    {
+      "id": "p2-column-space-escape",
+      "title": "in a column Space toggles a group; Escape leaves it as it is (when: a column has no panel)",
+      "covers": "keyboard.host Space select, accessibility.keys Escape when",
+      "steps": [
+        {
+          "script": "(document.querySelector('#col [data-sf-menu-toggle=\"catalog\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-menu-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "catalog",
+                  "open": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-menu-toggle",
+                "count": 0
+              }
+            ]
+          },
+          "check": "document.querySelector('#col [data-sf-menu-toggle=\"catalog\"]').getAttribute('aria-expanded') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p3-navigate",
+      "title": "Tab reaches a link; Enter sends sf-menu-navigate once and sf-menu:navigate once; refused by the page, the browser stays",
+      "covers": "keyboard.host Tab reach, events.navigate, aliases sf-menu:navigate",
+      "steps": [
+        {
+          "script": "(document.addEventListener('sf-menu:navigate', (event) => event.preventDefault(), {once: true}), document.querySelector('#col a[data-sf-menu-link=\"about\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement === document.querySelector('#col [data-sf-menu-toggle=\"catalog\"]')"
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-menu-navigate",
+                "count": 1,
+                "detail": {
+                  "id": "about",
+                  "href": "#about"
+                }
+              },
+              {
+                "name": "sf-menu:navigate",
+                "count": 1,
+                "detail": {
+                  "id": "about"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "sf-menu:navigate",
+                "to": "sf-menu-navigate",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "location.hash === ''"
+        }
+      ]
+    },
+    {
+      "id": "p4-button-panel-escape",
+      "title": "the menu drawn as a button opens its panel with Enter, Escape closes it (when collapse always)",
+      "covers": "keyboard.panel Escape close, settings.collapse",
+      "steps": [
+        {
+          "script": "(document.querySelector('#btn [data-sf-menu-panel-toggle]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "wait": 200,
+          "check": "document.querySelector('#btn [data-sf-menu-panel-toggle]').getAttribute('aria-expanded') === 'true'"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200,
+          "check": "document.querySelector('#btn [data-sf-menu-panel-toggle]').getAttribute('aria-expanded') === 'false' && document.activeElement === document.querySelector('#btn [data-sf-menu-panel-toggle]')"
+        }
+      ]
+    },
+    {
+      "id": "p5-actions-outcomes",
+      "title": "open, close, toggle and close-all answer outcomes",
+      "covers": "actions.open, actions.close, actions.toggle, actions.close-all",
+      "steps": [
+        {
+          "action": {
+            "name": "open",
+            "with": {
+              "id": "catalog"
+            }
+          },
+          "target": "#row",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-menu-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "catalog",
+                  "source": "method"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "name": "open",
+            "with": "catalog"
+          },
+          "target": "#row",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "already"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "toggle",
+            "with": "missing"
+          },
+          "target": "#row",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "unknown"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "close-all"
+          },
+          "target": "#row",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "check": "document.getElementById('row').openIds.length === 0"
+        },
+        {
+          "action": {
+            "name": "close-all"
+          },
+          "target": "#row",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "already"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-name-ids",
+      "title": "the nav is named by label; list and panel ids are path ids (#41)",
+      "covers": "accessibility.name, §7.1.1",
+      "steps": [
+        {
+          "check": "document.querySelector('#row nav').getAttribute('aria-label') === 'Сайт' && document.querySelector('#btn [data-sf-menu-panel-toggle]').getAttribute('aria-controls') === 'page-btn--list' && Boolean(document.getElementById('page-btn--list')) && (() => { const ids = [...document.querySelectorAll('sf-menu [id]')].map((n) => n.id); return new Set(ids).size === ids.length && ids.every((id) => id.startsWith('page-')); })()"
+        }
+      ]
+    },
+    {
+      "id": "p7-public-variables",
+      "title": "a public variable on an ancestor reaches the rows",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-menu-item-color', 'rgb(1, 2, 3)'), true)",
+          "wait": 400,
+          "check": "getComputedStyle(document.querySelector('#row a[data-sf-menu-link=\"about\"] .sf-menu-element-text') || document.querySelector('#row a[data-sf-menu-link=\"about\"]')).color === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

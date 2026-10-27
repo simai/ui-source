@@ -11,14 +11,14 @@
 // - the current page marked aria-current="page" from `current`, from the
 //   location (and after history navigation), and the column opened to it;
 // - a click toggles once (the class runtime leaves the markup alone), one
-//   sf-menu:toggle per change; Enter and Space on a branch toggle it; Tab
+//   sf-menu-toggle per change (sf-menu:toggle is its dated alias); Enter and Space on a branch toggle it; Tab
 //   walks links and buttons;
 // - a row: panels placed by SF.Position below the first level and beside the
 //   deeper ones, one chain open at a time, closed by a press outside and by
 //   focus leaving; Escape closes the innermost panel only, gives the focus
 //   back to its button, holds the shared open-surface mark, and stands back
 //   when another surface opened after it is on top;
-// - sf-menu:navigate is cancellable: prevented, the page does not go;
+// - sf-menu-navigate is cancellable: prevented, the page does not go;
 // - rows are drawn as the class runtime draws the same list (row heights,
 //   level indents), compact and documentation-tree as the class draws them;
 // - at 390 wide the row becomes the menu button, nothing scrolls sideways,
@@ -129,7 +129,7 @@ try {
   await page.waitForTimeout(400);
   await page.evaluate(() => {
     window.__events = [];
-    for (const name of ['sf-menu:toggle', 'sf-menu:navigate']) {
+    for (const name of ['sf-menu-toggle', 'sf-menu-navigate']) {
       document.addEventListener(name, (event) => window.__events.push({type: name, host: event.target.id, id: event.detail.id, open: event.detail.open, source: event.detail.source, href: event.detail.href}));
     }
   });
@@ -212,7 +212,7 @@ try {
   await page.waitForTimeout(150);
   let state = await page.evaluate(() => document.querySelector('#col [data-sf-menu-toggle="catalog"]').getAttribute('aria-expanded'));
   let sent = await events();
-  check('column: a click closes the group once, one event', state === 'false' && sent.length === 1 && sent[0].type === 'sf-menu:toggle'
+  check('column: a click closes the group once, one event', state === 'false' && sent.length === 1 && sent[0].type === 'sf-menu-toggle'
     && sent[0].id === 'catalog' && sent[0].open === false && sent[0].source === 'user', {state, sent});
   // Enter and Space on the branch's button.
   await page.focus('#col [data-sf-menu-toggle="catalog"]');
@@ -408,7 +408,7 @@ try {
 
   // Navigation: cancellable, and the menu closes after it.
   await page.evaluate(() => {
-    document.getElementById('row').addEventListener('sf-menu:navigate', (event) => { if (event.detail.id === 'solutions') event.preventDefault(); }, {once: true});
+    document.getElementById('row').addEventListener('sf-menu-navigate', (event) => { if (event.detail.id === 'solutions') event.preventDefault(); }, {once: true});
   });
   await page.click('#row [data-sf-menu-toggle="catalog"]');
   await page.waitForTimeout(200);
@@ -418,7 +418,7 @@ try {
   row = await rowState();
   sent = await events();
   check('navigate: prevented, the page does not go; the panel closes', prevented === '' && row.open.length === 0
-    && sent.some((one) => one.type === 'sf-menu:navigate' && one.id === 'solutions' && one.href === '#solutions'), {prevented, open: row.open, sent});
+    && sent.some((one) => one.type === 'sf-menu-navigate' && one.id === 'solutions' && one.href === '#solutions'), {prevented, open: row.open, sent});
   await page.click('#row a[href="#contacts"]');
   await page.waitForTimeout(200);
   const went = await page.evaluate(() => location.hash);
@@ -427,7 +427,7 @@ try {
   await page.click('#row a[href="#contacts"]', {modifiers: ['Shift']}).catch(() => {});
   await page.waitForTimeout(200);
   sent = await events();
-  check('navigate: a press with a modifier is the browser\'s, no event', !sent.some((one) => one.type === 'sf-menu:navigate'), {sent});
+  check('navigate: a press with a modifier is the browser\'s, no event', !sent.some((one) => one.type === 'sf-menu-navigate'), {sent});
   for (const extra of browser.contexts()[0].pages().slice(1)) await extra.close();
 
   // 390: the row becomes the button; nothing scrolls sideways.
@@ -506,7 +506,8 @@ try {
     return {results, openIds: host.openIds, currentId: host.currentId};
   });
   sent = await events();
-  check('methods: open, close, toggle, isOpen, openIds, source method', JSON.stringify(methods.results) === '[true,false,false,true,false]'
+  // The actions answer outcomes (standard 1.3.8 §4.4).
+  check('methods: open, close, toggle, isOpen, openIds, source method', JSON.stringify(methods.results.map((one) => (typeof one === 'boolean' ? one : one.outcome === 'applied'))) === '[true,false,false,true,false]'
     && JSON.stringify(methods.openIds) === '["products"]' && methods.currentId === 'solutions'
     && sent.every((one) => one.source === 'method') && sent.length === 1, {methods, sent});
 } catch (error) {

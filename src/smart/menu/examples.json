@@ -1,0 +1,257 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Разделы",
+      "settings": {
+        "label": "Разделы",
+        "current": "solutions",
+        "items": [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about",
+            "icon": "info"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "#solutions"
+              },
+              {
+                "id": "products",
+                "label": "Продукты",
+                "href": "#products",
+                "badge": "3"
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Разделы",
+        "values": {
+          "current": "solutions"
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "visible",
+      "title": "Видимое меню",
+      "settings": {
+        "label": "Разделы",
+        "items": [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about",
+            "icon": "info"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "#solutions"
+              },
+              {
+                "id": "products",
+                "label": "Продукты",
+                "href": "#products",
+                "badge": "3",
+                "children": [
+                  {
+                    "id": "desks",
+                    "label": "Столы",
+                    "href": "#desks"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Разделы"
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "row",
+      "title": "Строка с панелями",
+      "settings": {
+        "label": "Сайт",
+        "orientation": "horizontal",
+        "collapse": "none",
+        "items": [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about",
+            "icon": "info"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "#solutions"
+              },
+              {
+                "id": "products",
+                "label": "Продукты",
+                "href": "#products",
+                "badge": "3",
+                "children": [
+                  {
+                    "id": "desks",
+                    "label": "Столы",
+                    "href": "#desks"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "open",
+          "with": {
+            "id": "catalog"
+          }
+        }
+      ],
+      "expect": {
+        "name": "Сайт",
+        "events": [
+          "toggle"
+        ]
+      }
+    },
+    {
+      "name": "button",
+      "title": "Меню-кнопка",
+      "settings": {
+        "label": "Сайт",
+        "collapse": "always",
+        "items": [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about",
+            "icon": "info"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "#solutions"
+              },
+              {
+                "id": "products",
+                "label": "Продукты",
+                "href": "#products",
+                "badge": "3",
+                "children": [
+                  {
+                    "id": "desks",
+                    "label": "Столы",
+                    "href": "#desks"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Сайт"
+      }
+    },
+    {
+      "name": "docs-tree",
+      "title": "Дерево документации",
+      "settings": {
+        "label": "Документация",
+        "appearance": "documentation-tree",
+        "current": "desks",
+        "items": [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "#about",
+            "icon": "info"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "#solutions"
+              },
+              {
+                "id": "products",
+                "label": "Продукты",
+                "href": "#products",
+                "badge": "3",
+                "children": [
+                  {
+                    "id": "desks",
+                    "label": "Столы",
+                    "href": "#desks"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "#contacts"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Документация",
+        "values": {
+          "current": "desks"
+        }
+      }
+    }
+  ]
+}
