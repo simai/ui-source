@@ -521,7 +521,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "366e507c7bbbb5f409347f8f62cf0c9ce87a0354",
     "source_artifacts": [
       {
         "path": "src/smart/image-field/index.js",

@@ -231,7 +231,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "3b432c6f6838c16554b11661d5e7ccb876c1b750",
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",

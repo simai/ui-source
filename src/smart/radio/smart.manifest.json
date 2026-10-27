@@ -329,7 +329,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "d949e0253f672652b706a70c107ed9c4711c3613",
     "source_artifacts": [
       {
         "path": "src/smart/radio/index.js",

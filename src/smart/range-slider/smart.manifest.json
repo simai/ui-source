@@ -581,7 +581,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "a38447c031988137d3ebead71d2397ceaf6b1b14",
     "source_artifacts": [
       {
         "path": "src/smart/range-slider/index.js",

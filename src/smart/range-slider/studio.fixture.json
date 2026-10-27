@@ -12,7 +12,7 @@
     "multiple": true,
     "prefix": "от ",
     "suffix": " %",
-    "label": "both"
+    "label": "text"
   },
   "children": [],
   "state": "default"

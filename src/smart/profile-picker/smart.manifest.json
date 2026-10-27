@@ -289,7 +289,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "fe080980b8d3cf67a5bfe5abd8cdda150553c502",
     "source_artifacts": [
       {
         "path": "src/smart/profile-picker/index.js",

@@ -7,7 +7,20 @@
   "locale": "ru",
   "props": {
     "single": true,
-    "items": "[{\"id\":\"main\",\"title\":\"Основное\",\"content\":\"Название, адрес и описание\",\"open\":true},{\"id\":\"seo\",\"title\":\"SEO\",\"content\":\"Заголовок и описание страницы\",\"badge\":\"3\"}]"
+    "items": [
+      {
+        "id": "main",
+        "title": "Основное",
+        "content": "Название, адрес и описание",
+        "open": true
+      },
+      {
+        "id": "seo",
+        "title": "SEO",
+        "content": "Заголовок и описание страницы",
+        "badge": "3"
+      }
+    ]
   },
   "children": [],
   "state": "default"

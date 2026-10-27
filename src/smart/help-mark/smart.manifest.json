@@ -224,7 +224,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "895c39fa1b9814c01567966b250be206b0ebd6ad",
     "source_artifacts": [
       {
         "path": "src/smart/help-mark/index.js",

@@ -8,7 +8,36 @@
   "props": {
     "label": "Разделы",
     "current": "solutions",
-    "items": "[{\"id\":\"about\",\"label\":\"О компании\",\"href\":\"#about\",\"icon\":\"info\"},{\"id\":\"catalog\",\"label\":\"Каталог\",\"children\":[{\"id\":\"solutions\",\"label\":\"Решения\",\"href\":\"#solutions\"},{\"id\":\"products\",\"label\":\"Продукты\",\"href\":\"#products\",\"badge\":\"3\"}]},{\"id\":\"contacts\",\"label\":\"Контакты\",\"href\":\"#contacts\"}]"
+    "items": [
+      {
+        "id": "about",
+        "label": "О компании",
+        "href": "#about",
+        "icon": "info"
+      },
+      {
+        "id": "catalog",
+        "label": "Каталог",
+        "children": [
+          {
+            "id": "solutions",
+            "label": "Решения",
+            "href": "#solutions"
+          },
+          {
+            "id": "products",
+            "label": "Продукты",
+            "href": "#products",
+            "badge": "3"
+          }
+        ]
+      },
+      {
+        "id": "contacts",
+        "label": "Контакты",
+        "href": "#contacts"
+      }
+    ]
   },
   "children": [],
   "state": "default"

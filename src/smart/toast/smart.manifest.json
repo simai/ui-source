@@ -357,7 +357,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "bb7750714086130977812bcbeba503997ab1a669",
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",

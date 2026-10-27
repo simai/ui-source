@@ -395,7 +395,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "e040c525608ae183ea8b2f59f0ea4f5539cbdbc3",
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",

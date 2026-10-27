@@ -236,7 +236,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "e44a70338622e5062ca1fe2a5d8a35ae0dd209f9",
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",

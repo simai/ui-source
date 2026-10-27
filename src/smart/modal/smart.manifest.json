@@ -1078,7 +1078,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "7ba5823082b917953c70ff3b5b67761ead95e752",
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",

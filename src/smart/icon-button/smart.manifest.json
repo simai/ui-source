@@ -507,7 +507,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "0d9999504a77d3dbbedc0b7fe881b9152a8a1830",
     "source_artifacts": [
       {
         "path": "src/smart/icon-button/index.js",

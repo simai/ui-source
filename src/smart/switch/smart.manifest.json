@@ -361,7 +361,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "15634edbb04334b53609d27fa6b98e602b5bf315",
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
