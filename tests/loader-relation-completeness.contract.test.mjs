@@ -101,3 +101,27 @@ test('a rule fetches every Smart element its own templates render', () => {
     'a component that renders another one has to fetch it, or a page that loads it on demand is missing a part',
   );
 });
+
+// A forward is a former name: it is not a rule of its own, it names a rule that
+// exists, and no rule in ui-source still relates to it (2026-10-27: a scripted
+// rename once turned the forward keys into their targets, cl-button -> cl-button,
+// and every old relation silently lost its bundle).
+test('every Smart rule forward is a former name that leads to a rule', () => {
+  const ruleKeys = new Set();
+  const relations = new Set();
+  for (const entry of readdirSync(resolve(root, 'src/smart'), {withFileTypes: true})) {
+    const rule = resolve(root, `src/smart/${entry.name}/rule.js`);
+    if (!entry.isDirectory() || !existsSync(rule)) continue;
+    const source = readFileSync(rule, 'utf8');
+    for (const match of source.matchAll(/SF\.RuleLoader\[['"]([^'"]+)['"]\]/gu)) ruleKeys.add(match[1]);
+    for (const name of relationsOf(source)) relations.add(name);
+  }
+  const forwards = forwardingRules();
+  assert.ok(forwards.size >= 6, 'the forwards contract is read');
+  for (const [name, to] of forwards) {
+    assert.notEqual(name, to, `${name} forwards to itself`);
+    assert.ok(!ruleKeys.has(name), `${name} is a forward and a rule`);
+    assert.ok(ruleKeys.has(to), `${name} forwards to ${to}, which is not a rule`);
+    assert.ok(!relations.has(name), `a ui-source rule still relates to the former name ${name}`);
+  }
+});

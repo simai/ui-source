@@ -8,31 +8,31 @@
       "remove_after": "2026-12-01",
       "journal": "path-smart-inputs-to-input"
     },
-    "cl-button": {
+    "cl-buttons": {
       "to": "cl-button",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "journal": "path-smart-buttons-to-button"
     },
-    "cl-icon-button": {
+    "cl-icon-buttons": {
       "to": "cl-icon-button",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "journal": "path-smart-icon-buttons-to-icon-button"
     },
-    "cl-icon": {
+    "cl-icons": {
       "to": "cl-icon",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "journal": "path-smart-icons-to-icon"
     },
-    "cl-badge": {
+    "cl-badges": {
       "to": "cl-badge",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "journal": "path-smart-badges-to-badge"
     },
-    "cl-tag": {
+    "cl-tags": {
       "to": "cl-tag",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
