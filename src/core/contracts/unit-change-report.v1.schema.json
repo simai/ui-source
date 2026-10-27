@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/unit-change-report.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework unit change report",
+  "description": "What changed between two inventories of one source (standard simai.linkage inventories-compare): units added, removed, changed with their versions, units whose dependencies changed, and the violations a release gate refuses (a hash that moved while the version stayed, a version that went back).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_version",
+    "source",
+    "from",
+    "to",
+    "added",
+    "removed",
+    "changed",
+    "dependencies_changed",
+    "violations"
+  ],
+  "properties": {
+    "schema": {
+      "const": "simai.framework.unit-change-report"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "from": {
+      "type": "object",
+      "required": [
+        "revision"
+      ],
+      "properties": {
+        "revision": {
+          "type": "string"
+        },
+        "release": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "to": {
+      "type": "object",
+      "required": [
+        "revision"
+      ],
+      "properties": {
+        "revision": {
+          "type": "string"
+        },
+        "release": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "added": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "removed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "changed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "from_version",
+          "to_version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$"
+          },
+          "from_version": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "to_version": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "step": {
+            "enum": [
+              "major",
+              "minor",
+              "patch",
+              "none"
+            ]
+          }
+        }
+      }
+    },
+    "dependencies_changed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "added",
+          "removed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "added": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "moved": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dependencies kept whose own version changed."
+          }
+        }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "enum": [
+              "hash-moved-without-version",
+              "version-went-back",
+              "source-differs"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
