@@ -34,7 +34,9 @@ try {
     + ' swatches="#1f6feb|Brand blue, #e5534b|Alert, #111 #222"></sf-color></form></body></html>');
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#color .sf-color'), null, {timeout: 8000});
+  // Drawn and past its style gate (core.runtime 1.0.7): the element's after-render
+  // work, its form value among it, runs once its sheets are applied.
+  await page.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#color[data-sf-style-ready] .sf-color'), null, {timeout: 8000});
 
   const measured = await page.evaluate(async () => {
     const settle = () => new Promise((done) => setTimeout(done, 50));

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",

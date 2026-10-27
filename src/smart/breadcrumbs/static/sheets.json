@@ -12,6 +12,7 @@
     "utility/align-items/default/css/default.min.css",
     "utility/container/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
@@ -23,6 +24,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
@@ -33,6 +35,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
@@ -43,6 +46,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
@@ -53,6 +57,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]

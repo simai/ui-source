@@ -10,7 +10,9 @@
     "component/reference-link/css/reference-link.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
-    "utility/display/default/css/default.min.css"
+    "utility/display/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
+    "utility/position/default/css/default.min.css"
   ],
   "examples": {
     "disabled": [
@@ -18,49 +20,63 @@
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "label": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "line": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "no-icon": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "plain": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "reference": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "size": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
-      "utility/display/default/css/default.min.css"
+      "utility/display/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ]
   }
 }

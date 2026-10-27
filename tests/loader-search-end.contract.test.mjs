@@ -25,7 +25,10 @@ test('every prepare schedules the end of its search, at once when the window has
 test('ending the search processes the changes queued meanwhile', () => {
   const end = loader.slice(loader.indexOf('SFLoaderPlugin.prototype.endSearch = function'));
   assert.match(end.slice(0, end.indexOf('};')), /this\.flushObservedChanges\?\.\(\)/u);
-  assert.match(loader, /this\.flushObservedChanges = \(\) => \{[\s\S]{0,120}processChanges\(_this\.observeElements\.splice\(0\)\)/u);
+  // Read through the queue of batches (queueChanges), which reads them one
+  // after another in slices (stand 25, D9).
+  assert.match(loader, /this\.flushObservedChanges = \(\) => \{[\s\S]{0,120}queueChanges\(_this\.observeElements\.splice\(0\)\)/u);
+  assert.match(loader, /const queueChanges = \(changeList\) => \{[\s\S]{0,160}processChanges\(changeList\)/u);
 });
 
 test('a Turbo visit prepares, and so ends its search too', () => {

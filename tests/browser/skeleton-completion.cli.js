@@ -29,13 +29,14 @@ async page => {
     return textRadius>0&&surfaceRadius>textRadius;
   }));
   check('pulse, wave and static modes are distinct',await page.locator('#motion').evaluate(root=>{
+    // A pulse is the group's one animation (its bars pulse with it), a wave each bar's sweep.
     const [pulse,wave,none]=[...root.children].map(group=>group.firstElementChild);
-    return getComputedStyle(pulse).animationName==='sf-skeleton-pulse'&&getComputedStyle(wave,'::after').animationName==='sf-skeleton-wave'&&getComputedStyle(none).animationName==='none';
+    return getComputedStyle(pulse.parentElement).animationName==='sf-skeleton-pulse'&&getComputedStyle(pulse).animationName==='none'&&getComputedStyle(wave,'::after').animationName==='sf-skeleton-wave'&&getComputedStyle(none).animationName==='none';
   }));
   await page.emulateMedia({reducedMotion:'reduce'});
   check('reduced motion keeps geometry but removes animation',await page.locator('#motion').evaluate(root=>[...root.children].every(group=>{
     const item=group.firstElementChild;
-    return item.getBoundingClientRect().height>0&&getComputedStyle(item).animationName==='none'&&getComputedStyle(item,'::after').animationName==='none';
+    return item.getBoundingClientRect().height>0&&getComputedStyle(group).animationName==='none'&&getComputedStyle(item).animationName==='none'&&getComputedStyle(item,'::after').animationName==='none';
   })));
   await page.evaluate(()=>document.documentElement.className='theme-dark');
   check('semantic skeleton paint remains visible in dark theme',await page.locator('#lines .sf-skeleton-text').first().evaluate(node=>getComputedStyle(node).backgroundImage!=='none'||getComputedStyle(node).backgroundColor!=='rgba(0, 0, 0, 0)'));

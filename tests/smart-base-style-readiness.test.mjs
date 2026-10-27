@@ -20,5 +20,14 @@ test('Smart base retains the style-readiness contract used by released component
   assert.match(source, /markStylePending\(target = this\)/);
   assert.match(source, /markStyleReady\(target = this\)/);
   assert.match(source, /async whenRenderedStylesReady\(target = this\)/);
-  assert.match(source, /loader\.ensureStylesReady\(target \|\| this/);
+  // The Loader implements the gate (stand 25, D2): the element asks it for
+  // its sheets, and one defined before the Loader waits for SF.ready.
+  assert.match(source, /loader\.ensureStylesReady\(this, \{ autoLoad \}\)/);
+  assert.match(source, /window\.SF\.ready\)\.then\(\(\) => window\.SF\?\.Loader\)/);
+});
+
+test('the Loader implements ensureStylesReady', async () => {
+  const loader = await readFile(path.join(root, 'src/core/js/loader.js'), 'utf8');
+  assert.match(loader, /SFLoaderPlugin\.prototype\.ensureStylesReady = function \(element, \{autoLoad = true\} = \{\}\)/);
+  assert.match(loader, /SFLoaderPlugin\.prototype\.styleSheetsOfRule = function/);
 });

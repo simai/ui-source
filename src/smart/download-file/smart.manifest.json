@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.download-file",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",

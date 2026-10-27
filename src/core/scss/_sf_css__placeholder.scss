@@ -7,79 +7,53 @@
 }
 
 @layer sf.base {
-/* The final shape before the code (owner, 2026-10-15; ui-control
-   control/designs/2026-10-15-interaction-rules.md, rule 5). A Smart element
-   whose code has not arrived yet takes the room its loaded form takes and
-   shows its shape in skeleton bars, so nothing moves when it is defined. The
-   element says which shape with data-sf-skeleton -- server markup writes it --
-   and these shapes live in core because a component's own stylesheet arrives
-   with its code, too late for this.
+/* The box before the code (owner, 2026-10-15, rule 5; the box rule of
+   2026-10-28, stand 25 D1/D4). A Smart element whose code has not arrived
+   yet keeps the box the page gave it, and core draws no shape of its own in
+   it: core does not know the loaded shape -- a list's row height, its
+   toolbar, a menu's columns are the component's -- and a shape it guessed
+   was a picture of its own between the page and the component (a list
+   1176 px tall that the component then drew at 200, then 640, then 1096; a
+   menu in stripes before the menu's skeleton). So:
 
-   rows    a list: a toolbar and --sf-skeleton-rows rows (10)
-   record  a record: --sf-skeleton-rows label-and-value pairs (6)
-   menu    a menu column: --sf-skeleton-rows items (8)
-   block   a box --sf-skeleton-block-size tall
-   line    one line of text */
-:where([data-sf-skeleton]):not(:defined) {
+   - static markup printed in the element (data-sf-static, the composed first
+     paint) is the element's picture and box; no placeholder is drawn;
+   - otherwise the element reserves the box the page declares -- its own
+     block-size or min-block-size, or --sf-skeleton-block-size -- and nothing
+     more; a count alone (--sf-skeleton-rows) is not a box;
+   - a «block» or a «line» draws that declared box as one bar: the shape it
+     names is the box itself; «rows», «record» and «menu» reserve the box and
+     leave it empty until the component draws its own skeleton.
+
+   The shape still names the kind for a manifest and a page; the room is the
+   page's (it knows the loaded box) or the printed first paint's. */
+:where([data-sf-skeleton]):not(:defined):not(:has(> [data-sf-static])) {
   --sf-skeleton-base: var(--sf-neutral-60--alfa-48);
   --sf-skeleton-line: var(--sf-text-height-1);
   --sf-skeleton-bar: var(--sf-text-size-1);
-  --sf-skeleton-row: calc(var(--sf-text-height-1) + 2 * var(--sf-space-1));
-  --sf-skeleton-inset: var(--sf-space-1);
   display: block;
   background-repeat: no-repeat;
-  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
 
-
-:where([data-sf-skeleton="rows"]):not(:defined) {
-  --sf-skeleton-rows: 10;
-  --sf-skeleton-toolbar: var(--sf-ui-1--control-height);
-  min-block-size: calc(var(--sf-skeleton-toolbar) + var(--sf-space-1) + var(--sf-skeleton-rows) * var(--sf-skeleton-row));
-  background-image:
-    linear-gradient(var(--sf-skeleton-base), var(--sf-skeleton-base)),
-    placeholder-bars(var(--sf-skeleton-row), var(--sf-skeleton-bar)),
-    placeholder-bars(var(--sf-skeleton-row), var(--sf-skeleton-bar)),
-    linear-gradient(var(--sf-outline-variant), var(--sf-outline-variant));
-  background-size: 40% var(--sf-skeleton-toolbar), 30% 100%, 20% 100%, 100% var(--sf-px);
-  background-position:
-    0 0,
-    var(--sf-skeleton-inset) calc(var(--sf-skeleton-toolbar) + var(--sf-space-1)),
-    55% calc(var(--sf-skeleton-toolbar) + var(--sf-space-1)),
-    0 calc(var(--sf-skeleton-toolbar) + var(--sf-space-1) + var(--sf-skeleton-row));
+:where([data-sf-skeleton="rows"]):not(:defined):not(:has(> [data-sf-static])),
+:where([data-sf-skeleton="record"]):not(:defined):not(:has(> [data-sf-static])),
+:where([data-sf-skeleton="menu"]):not(:defined):not(:has(> [data-sf-static])) {
+  min-block-size: var(--sf-skeleton-block-size, 0);
 }
 
-:where([data-sf-skeleton="record"]):not(:defined) {
-  --sf-skeleton-rows: 6;
-  --sf-skeleton-pair: calc(var(--sf-text-height-1\/2) + var(--sf-text-height-1) + var(--sf-space-1));
-  min-block-size: calc(var(--sf-skeleton-rows) * var(--sf-skeleton-pair));
-  background-image:
-    placeholder-bars(var(--sf-skeleton-pair), var(--sf-text-size-1\/2)),
-    placeholder-bars(var(--sf-skeleton-pair), var(--sf-skeleton-bar));
-  background-size: 25% 100%, 60% 100%;
-  background-position: 0 calc(var(--sf-text-height-1) / -2), 0 calc(var(--sf-text-height-1\/2) / 2);
-}
-
-:where([data-sf-skeleton="menu"]):not(:defined) {
-  --sf-skeleton-rows: 8;
-  --sf-skeleton-row: var(--sf-ui-1\/2--control-height);
-  min-block-size: calc(var(--sf-skeleton-rows) * var(--sf-skeleton-row));
-  background-image: placeholder-bars(var(--sf-skeleton-row), var(--sf-text-size-1\/2));
-  background-size: 70% 100%;
-  background-position: var(--sf-skeleton-inset) 0;
-}
-
-:where([data-sf-skeleton="block"]):not(:defined) {
+:where([data-sf-skeleton="block"]):not(:defined):not(:has(> [data-sf-static])) {
   min-block-size: var(--sf-skeleton-block-size, var(--sf-ui-1--control-height));
   background-image: linear-gradient(var(--sf-skeleton-base), var(--sf-skeleton-base));
   background-size: 100% 100%;
   border-radius: var(--sf-radius--ui);
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
 
-:where([data-sf-skeleton="line"]):not(:defined) {
-  min-block-size: var(--sf-skeleton-line);
+:where([data-sf-skeleton="line"]):not(:defined):not(:has(> [data-sf-static])) {
+  min-block-size: var(--sf-skeleton-block-size, var(--sf-skeleton-line));
   background-image: placeholder-bars(var(--sf-skeleton-line), var(--sf-skeleton-bar));
   background-size: 60% 100%;
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
 
 @keyframes sf-placeholder-pulse {

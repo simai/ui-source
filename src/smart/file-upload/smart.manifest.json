@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-upload",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "File Upload",
   "summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
   "kind": "smart",

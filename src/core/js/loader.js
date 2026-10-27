@@ -452,6 +452,7 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
 // before their rule arrived are loaded now. Before the first scan there is
 // nothing to read again: that scan reads the new rules itself.
 SFLoaderPlugin.prototype.rulesChanged = function () {
+  this.customElementRules = null;
   this.clearAttributeRuleIndex();
   this.clearRegexpScanRules();
   this.attrMatchCache.clear();
@@ -603,6 +604,8 @@ function parseParams(str) {
   return result;
 }
 
+const SHORTCODE_SKIPPED = 'script, style, yamap, head, meta, link, [data-sf-observer="ignore"]';
+
 SFLoaderPlugin.prototype.findShortCodes = function (node) {
   const regex =
       /\[!([a-zA-Z0-9_-]+)(?:\s+([^\](]+?))?](?:\(([^)]*)\))?(?:#([a-zA-Z0-9_-]+))?/g;
@@ -612,20 +615,30 @@ SFLoaderPlugin.prototype.findShortCodes = function (node) {
   if (this.shouldSkipNode(host)) {
     return;
   }
-  // Разбираем и TEXT, и COMMENT плейсхолдеры, чтобы поддержать boot-скрытие.
+  // Both text and comment placeholders (the boot script hides a shortcode in
+  // a comment). The walk is the browser's: a recursive walk in script over
+  // every node of the page, for a `[!` that is almost never there, was the
+  // larger part of the Loader's task at the window's load (stand 25, D9:
+  // 378 ms on the admin at 4x CPU). Text is read only when the subtree's text
+  // holds a `[!` at all; comments are few and the browser filters them.
   if (node.nodeType === Node.ELEMENT_NODE) {
-    node.childNodes.forEach((child) => {
-      if (
-          child.nodeType === Node.TEXT_NODE ||
-          child.nodeType === Node.COMMENT_NODE
-      ) {
-        this.findShortCodes(child);
-      } else if (
-          child.nodeType === Node.ELEMENT_NODE &&
-          !this.shouldSkipNode(child)
-      ) {
-        this.findShortCodes(child);
+    const show = (node.textContent || '').includes('[!')
+        ? NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT
+        : NodeFilter.SHOW_COMMENT;
+    const walker = document.createTreeWalker(node, show);
+    const found = [];
+    while (walker.nextNode()) {
+      const child = walker.currentNode;
+      const value = child.nodeValue || '';
+      if (child.nodeType === Node.COMMENT_NODE ? value.startsWith('sf-shortcode ') : value.includes('[!')) {
+        found.push(child);
       }
+    }
+    // What the recursive walk did not enter: an ignored subtree, and a
+    // script, a style or another excluded element at any depth.
+    found.forEach((child) => {
+      if (child.parentElement?.closest?.(SHORTCODE_SKIPPED)) return;
+      this.findShortCodes(child);
     });
     return;
   }
@@ -1494,6 +1507,44 @@ SFLoaderPlugin.prototype.shouldUseClassFallbackRule = function (rule) {
   return /\\b|\\s|\(\?:|\||\[[^\]]|\^|\$|\(\?=|\(\?!/.test(source);
 };
 
+// A rule that matches one whole class token and nothing else: anchored at
+// both ends of the tested string, with no character in it that an attribute
+// string always carries (`=`, `"`) and no class that could stand for one. It
+// can only ever match a single token, so the attribute string need not be
+// tested against it (doesRuleMatchAttributes tests both).
+const TOKEN_RULE = /^\^\(\?:([\s\S]*)\)\(\?!\[\\s\\S\]\)$/u;
+function isTokenOnlyRule(source, rule) {
+  if (!source) return false;
+  const regex = rule?.regex ? rule.regex : rule;
+  if (regex instanceof RegExp && /[mgy]/u.test(regex.flags)) return false;
+  const body = source.match(TOKEN_RULE)?.[1];
+  if (body === undefined) return false;
+  return !/["'=.]|\\[SWDsdw]|\[\^|\\u|\\x/u.test(body);
+}
+
+// The literal characters every match of a whole-token rule starts with: the
+// body's leading plain characters, when the body has no alternation outside
+// a group (`a|b` at the top may start either way). '' when there are none.
+function tokenRuleHead(source) {
+  const body = source.match(TOKEN_RULE)?.[1] || '';
+  let depth = 0;
+  for (let index = 0; index < body.length; index++) {
+    const char = body[index];
+    if (char === '\\') { index++; continue; }
+    if (char === '[') {
+      while (index < body.length && body[index] !== ']') index += body[index] === '\\' ? 2 : 1;
+      continue;
+    }
+    if (char === '(') depth++;
+    else if (char === ')') depth--;
+    else if (char === '|' && depth === 0) return '';
+  }
+  const head = body.match(/^[a-z0-9_:-]+/iu)?.[0] || '';
+  // A quantifier after the head's last character makes that character optional.
+  const next = body[head.length];
+  return next === '?' || next === '*' || next === '{' ? head.slice(0, -1) : head;
+}
+
 SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
   if (this.attributeRuleIndex) {
     return this.attributeRuleIndex;
@@ -1503,6 +1554,7 @@ SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
   const byClassHint = new Map();
   const classPrefixRules = [];
   const classFallback = [];
+  const tokenRules = [];
   const prefixRules = [];
   const fallback = [];
 
@@ -1517,6 +1569,7 @@ SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
       key,
       rule,
       classHints: this.extractRuleClassHints(rule),
+      tokenOnly: isTokenOnlyRule(this.getRuleRegexSource(rule), rule),
     };
     const { attrs, prefixes } = this.extractRuleAttributeTargets(rule);
     const useClassFallback =
@@ -1534,6 +1587,10 @@ SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
       byAttr.get(attr).push(indexedRule);
 
       if (attr === 'class') {
+        if (indexedRule.tokenOnly) {
+          tokenRules.push(indexedRule);
+          return;
+        }
         if (useClassFallback) {
           classFallback.push(indexedRule);
           return;
@@ -1558,11 +1615,33 @@ SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
     });
   });
 
+  // A whole-token rule is tested only on a token that starts with its
+  // literal head (`md:items-cross-` of `^(?:md:items-cross-(?:…))`); one
+  // with no head (an alternation at the top) is tested on every token.
+  const tokenRulesByFirst = new Map();
+  const tokenRulesAlways = [];
+  tokenRules.forEach((indexedRule) => {
+    const regex = indexedRule.rule?.regex ? indexedRule.rule.regex : indexedRule.rule;
+    indexedRule.tokenPrefix = regex instanceof RegExp && regex.flags.includes('i')
+        ? ''
+        : tokenRuleHead(this.getRuleRegexSource(indexedRule.rule));
+    if (!indexedRule.tokenPrefix) {
+      tokenRulesAlways.push(indexedRule);
+      return;
+    }
+    const first = indexedRule.tokenPrefix[0];
+    if (!tokenRulesByFirst.has(first)) tokenRulesByFirst.set(first, []);
+    tokenRulesByFirst.get(first).push(indexedRule);
+  });
+
   this.attributeRuleIndex = {
     byAttr,
     byClassHint,
     classPrefixRules,
     classFallback,
+    tokenRules,
+    tokenRulesByFirst,
+    tokenRulesAlways,
     prefixRules,
     fallback,
   };
@@ -1571,6 +1650,33 @@ SFLoaderPlugin.prototype.getAttributeRuleIndex = function () {
 
 SFLoaderPlugin.prototype.clearAttributeRuleIndex = function () {
   this.attributeRuleIndex = null;
+  this.tokenRuleMatches = null;
+};
+
+// The keys of the whole-token rules (a utility's `^(?:…)(?![\s\S])`) one
+// class token matches, worked out once per token for the page: a token is
+// matched or not whatever element carries it, so the ~760 utility rules are
+// tested once per distinct class name instead of once per distinct attribute
+// string. On the admin every row's attribute string was new (its id, its
+// record), and each cost 760 tests: scanAttributes took 480 ms of the load
+// task at 4x CPU, a row batch 380 ms (stand 25, D9).
+SFLoaderPlugin.prototype.getTokenRuleKeys = function (token) {
+  if (!this.tokenRuleMatches) this.tokenRuleMatches = new Map();
+  const known = this.tokenRuleMatches.get(token);
+  if (known) return known;
+  const keys = [];
+  const {tokenRulesByFirst, tokenRulesAlways} = this.getAttributeRuleIndex();
+  const rules = [...(tokenRulesByFirst.get(token[0]) || []), ...tokenRulesAlways];
+  for (let index = 0; index < rules.length; index++) {
+    const {key, rule, tokenPrefix} = rules[index];
+    if (tokenPrefix && !token.startsWith(tokenPrefix)) continue;
+    const regex = rule?.regex ? rule.regex : rule;
+    const re = regex instanceof RegExp ? regex : new RegExp(regex, regex?.flags || '');
+    if (re.global || re.sticky) re.lastIndex = 0;
+    if (re.test(token)) keys.push(key);
+  }
+  this.tokenRuleMatches.set(token, keys);
+  return keys;
 };
 
 SFLoaderPlugin.prototype.shouldRuleUseRegexpScan = function (rule) {
@@ -1724,6 +1830,7 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
 
   const attributeRuleIndex = this.getAttributeRuleIndex();
   const candidates = new Map();
+  const tokenMatched = new Set();
   const className = HtmlElement.getAttribute('class') || '';
   attributes.forEach((attrName) => {
     const normalizedAttrName = attrName.toLowerCase();
@@ -1733,6 +1840,10 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
           .split(/\s+/)
           .filter(Boolean);
 
+      // A token rule is tested on the token as written, as before.
+      className.split(/\s+/).forEach((token) => {
+        if (token) this.getTokenRuleKeys(token).forEach((key) => tokenMatched.add(key));
+      });
       classTokens.forEach((token) => {
         const exactRules = attributeRuleIndex.byClassHint.get(token) || [];
         exactRules.forEach((item) => candidates.set(item.key, item.rule));
@@ -1764,6 +1875,12 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
     candidates.set(item.key, item.rule);
   });
 
+  for (const key of tokenMatched) {
+    if (this.module[key] || candidates.has(key)) continue;
+    keys.push(key);
+    totalItemCount++;
+    this.setExistCookie(key);
+  }
   for (const [key, rule] of candidates) {
     if (this.module[key]) continue;
     const hasRegex =
@@ -1834,7 +1951,14 @@ function isClaimableTag(tagName, rule) {
   return Boolean(rule?.package) && CUSTOM_ELEMENT_NAME.test(tagName);
 }
 
+// The tag map is read for every element a walk meets (and every ancestor of
+// a nested Smart element), so it is built once per rule set: again after
+// rulesChanged, or when a rule file added rules to the map directly.
 SFLoaderPlugin.prototype.getCustomElementRules = function () {
+  const ruleCount = Object.keys(this.findPlugins || {}).length;
+  if (this.customElementRules && this.customElementRulesCount === ruleCount) {
+    return this.customElementRules;
+  }
   const tagRules = {};
 
   Object.entries(this.findPlugins || {}).forEach(([componentName, rule]) => {
@@ -1850,6 +1974,8 @@ SFLoaderPlugin.prototype.getCustomElementRules = function () {
     });
   });
 
+  this.customElementRules = tagRules;
+  this.customElementRulesCount = ruleCount;
   return tagRules;
 };
 
@@ -2045,8 +2171,10 @@ SFLoaderPlugin.prototype.scanAttributes = function (root = null) {
   let totalItemCount = 0;
   let scannedNodes = 0;
   let skippedNodes = 0;
-  const processNode = (el) => {
-    if (this.shouldSkipNode(el)) return;
+  // The walker rejects an ignored or excluded subtree, so a node it reaches
+  // needs no closest() of its own (one per node of a two-thousand-node table).
+  const processNode = (el, filtered = false) => {
+    if (!filtered && this.shouldSkipNode(el)) return;
     if (!this.hasRelevantRuleAttributes(el)) {
       skippedNodes++;
       return;
@@ -2063,7 +2191,7 @@ SFLoaderPlugin.prototype.scanAttributes = function (root = null) {
 
   const walker = this.createFilteredElementWalker(host);
   while (walker.nextNode()) {
-    processNode(walker.currentNode);
+    processNode(walker.currentNode, true);
   }
 
   if (totalItemCount > 0) {
@@ -2075,6 +2203,44 @@ SFLoaderPlugin.prototype.scanAttributes = function (root = null) {
     found: totalItemCount,
     root: host === document.body ? 'body' : host.tagName?.toLowerCase?.(),
   });
+  return { keys, count: totalItemCount };
+};
+
+// scanAttributes in slices (the window's load reads the whole page): the
+// modules found are asked for when the walk is done, as scanAttributes does.
+SFLoaderPlugin.prototype.scanAttributesInSlices = async function (root = null) {
+  const host = root || document.body;
+  if (!host || (host.nodeType === Node.ELEMENT_NODE && this.shouldSkipNode(host))) {
+    return { keys: [], count: 0 };
+  }
+  // The window's load task ends here; the rule index (a thousand rules read
+  // once) is built in a task of its own.
+  await yieldToPage();
+  this.getAttributeRuleIndex();
+  await yieldToPage();
+  const keys = [];
+  let totalItemCount = 0;
+  const processNode = (el) => {
+    if (!this.hasRelevantRuleAttributes(el)) return;
+    const result = this.getAttributes(el);
+    totalItemCount += result.count;
+    keys.push(...result.keys);
+  };
+  // The nodes are listed first, in one go (the walk alone is cheap), and
+  // read in slices: a walker left between slices loses its place when the
+  // page removes the node it stands on. A node gone meanwhile is passed over;
+  // one added meanwhile is the mutation observer's.
+  const nodes = host.nodeType === Node.ELEMENT_NODE ? [host] : [];
+  const walker = this.createFilteredElementWalker(host);
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const clock = sliceClock();
+  for (let index = 0; index < nodes.length; index++) {
+    if (nodes[index].isConnected) processNode(nodes[index]);
+    if (clock.due() && index < nodes.length - 1) await clock.next();
+  }
+  if (totalItemCount > 0) {
+    this.mutate(() => this.getLoader(this.module, true));
+  }
   return { keys, count: totalItemCount };
 };
 
@@ -2269,7 +2435,10 @@ SFLoaderPlugin.prototype.search = function () {
   let mutationBuffer = [];
   let debounceTimer = null;
   const DEBOUNCE_MS = 100;
-  const processChanges = (changeList) => {
+  // A batch is read in slices (sliceClock): a table's page of rows is a
+  // few thousand nodes, and reading them in one task held the page for
+  // 240-500 ms at 4x CPU (stand 25, D9). Batches are read one after another.
+  const processChanges = async (changeList) => {
     if (this.stopObserver) {
       return false;
     }
@@ -2278,8 +2447,11 @@ SFLoaderPlugin.prototype.search = function () {
     const addedRootSet = new Set(addedRoots);
     let processedAddedRoots = 0;
     let processedAttributeTargetsCount = 0;
-    const processAddedNode = (objHTML) => {
+    const clock = sliceClock();
+    const processAddedNode = async (objHTML) => {
       if (this.shouldSkipNode(objHTML)) return;
+      // Taken out again before its turn came: nothing of it is on the page.
+      if (objHTML.isConnected === false) return;
       processedAddedRoots++;
       this.findShortCodes(objHTML);
       const customScan = this.scanCustomElements(objHTML, false);
@@ -2294,24 +2466,33 @@ SFLoaderPlugin.prototype.search = function () {
         return;
       }
 
-      const nodes = [objHTML, ...objHTML.querySelectorAll('*')];
-      nodes.forEach((el) => {
-        if (this.shouldSkipNode(el)) return;
-        if (!el.tagName || !this.excludedTags(el.tagName.toLowerCase())) {
-          return;
+      // The root passed shouldSkipNode; the walker rejects an ignored or
+      // excluded subtree below it, and only an element with an attribute a
+      // rule reads is read (scanAttributes does the same).
+      const nodes = [objHTML];
+      const walker = this.createFilteredElementWalker(objHTML);
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (let index = 0; index < nodes.length; index++) {
+        const el = nodes[index];
+        if (el.isConnected && this.hasRelevantRuleAttributes(el)) {
+          const { count, keys } = this.getAttributes(el);
+          totalItemCount += count;
+          newPlugins.push(...keys);
         }
-        const { count, keys } = this.getAttributes(el, output, output2);
-        totalItemCount += count;
-        newPlugins.push(...keys);
-      });
+        if (clock.due()) await clock.next();
+      }
     };
 
-    addedRoots.forEach(processAddedNode);
+    for (const root of addedRoots) {
+      if (this.stopObserver) return false;
+      await processAddedNode(root);
+    }
 
     const processedAttributeTargets = new Set();
 
     for (let o = 0; o < changeList.length; o++) {
       const change = changeList[o];
+      if (clock.due()) await clock.next();
 
       if (
           this.isSyncingStaticIconState &&
@@ -2403,6 +2584,14 @@ SFLoaderPlugin.prototype.search = function () {
     });
   };
 
+  let changesRead = Promise.resolve();
+  const queueChanges = (changeList) => {
+    changesRead = changesRead
+        .then(() => processChanges(changeList))
+        .catch((error) => console.warn('SFLoader: a batch of changes failed', error));
+    return changesRead;
+  };
+
   const callback = (changes) => {
     if (this.stopObserver) {
       mutationBuffer = [];
@@ -2428,7 +2617,7 @@ SFLoaderPlugin.prototype.search = function () {
       debounceTimer = setTimeout(() => {
         const bufferedChanges = [...mutationBuffer];
         mutationBuffer = [];
-        processChanges(bufferedChanges);
+        queueChanges(bufferedChanges);
       }, DEBOUNCE_MS);
     } else {
       _this.observeElements.push(...relevantChanges);
@@ -2439,7 +2628,7 @@ SFLoaderPlugin.prototype.search = function () {
   // they are processed when it ends, not dropped.
   this.flushObservedChanges = () => {
     if (!_this.observeElements.length) return;
-    processChanges(_this.observeElements.splice(0));
+    queueChanges(_this.observeElements.splice(0));
   };
   this.mutationObserver = new MutationObserver(callback);
   const options = {
@@ -2732,6 +2921,15 @@ SFLoaderPlugin.prototype.loadPlugin = function (
     } else {
       this.isRelationPlugin(pluginName, null, smart, point, module, true);
     }
+  }
+  // The sheets a Smart element's style gate waits for (ensureStylesReady) are
+  // asked for with its script, not when it first draws: the utilities its
+  // templates use that no relation asked for came a round trip after the
+  // element was defined, and the element waited for them.
+  if (module === 'smart' || smart) {
+    this.styleSheetsOfRule(pluginName).forEach((file) => {
+      if (!linkedSheet(file)) this.addStyleEitherForm(file);
+    });
   }
   if (!skipCss) {
     if (
@@ -3655,8 +3853,11 @@ SFLoaderPlugin.prototype.searchRegexp = function (event, html = null) {
       htmlString = html.textContent;
     }
   } else {
+    // Only the first 4096 characters are read below: the page's markup is
+    // written up to there, not cloned and serialised whole (stand 25: the
+    // whole admin cloned, its defined elements constructed again, for 4 KB).
     htmlString = document.body
-        ? this.getObserverFilteredHTML(document.body)
+        ? this.getObserverFilteredHTMLPrefix(document.body, 4096)
         : '';
   }
 
@@ -3730,6 +3931,43 @@ SFLoaderPlugin.prototype.getObserverFilteredHTML = function (node) {
   if (clone.outerHTML !== undefined) return clone.outerHTML;
   if (clone.textContent !== undefined) return clone.textContent;
   return '';
+};
+
+const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+const escapeText = (value) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\u00a0/g, '&nbsp;');
+const escapeAttribute = (value) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/\u00a0/g, '&nbsp;');
+
+// The markup getObserverFilteredHTML would give, with stripIgnoredBlocks
+// already applied (<code>, <pre> and ignored blocks left out), written only
+// until it is `limit` characters long.
+SFLoaderPlugin.prototype.getObserverFilteredHTMLPrefix = function (node, limit) {
+  if (!node || this.shouldSkipNode(node)) return '';
+  const tags = this.getCustomElementRules();
+  const hostClosed = node.nodeType === Node.ELEMENT_NODE
+      && Boolean(closedContainerOf(node) || isClosedContainer(node));
+  let out = '';
+  const write = (current) => {
+    for (let child = current.firstChild; child && out.length < limit; child = child.nextSibling) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const parent = current.localName;
+        out += parent === 'script' || parent === 'style' ? child.data : escapeText(child.data);
+      } else if (child.nodeType === Node.COMMENT_NODE) {
+        out += `<!--${child.data}-->`;
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        const name = child.localName;
+        if (name === 'code' || name === 'pre' || child.matches(OBSERVER_IGNORE_SELECTOR)) continue;
+        if (tags[name] && (hostClosed || closedContainerOf(child))) continue;
+        out += `<${name}`;
+        for (const attribute of child.attributes) out += ` ${attribute.name}="${escapeAttribute(attribute.value)}"`;
+        out += '>';
+        if (VOID_ELEMENTS.has(name)) continue;
+        write(name === 'template' ? child.content : child);
+        if (out.length < limit) out += `</${name}>`;
+      }
+    }
+  };
+  write(node);
+  return out;
 };
 
 SFLoaderPlugin.prototype.stripIgnoredBlocks = function (html) {
@@ -4026,7 +4264,16 @@ SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
       reject(new Error(`Failed to load styles: ${pluginURL}`));
     }, {once: true});
 
-    head.append(style);
+    // The sheets asked for in one task go into <head> together, at the end
+    // of it: one change of the page's sheet list, not one per sheet.
+    this.pendingStyleLinks = this.pendingStyleLinks || [];
+    this.pendingStyleLinks.push(style);
+    if (this.pendingStyleLinks.length === 1) {
+      Promise.resolve().then(() => {
+        const links = this.pendingStyleLinks.splice(0);
+        head.append(...links);
+      });
+    }
   });
 };
 
@@ -4122,6 +4369,10 @@ SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {
       }
     }
 
+    // Smart definitions wait for the next frame in a batch (smart-base); a
+    // script asked for now may name them as relations, and a relation is
+    // defined before the element that names it runs.
+    globalThis[Symbol.for('simai.sf.smart-base.definitions')]?.flush?.();
     head.append(script);
   });
 };
@@ -4270,17 +4521,26 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
     } catch (e) {
       console.warn('sf-shortcodes-ready dispatch failed', e);
     }
+    // The elements first: they ask for their modules at once. The page's
+    // attributes are read in slices after the observer is on (search), so
+    // the load is not one long task and nothing added meanwhile is missed.
+    // Each step after the first in a task of its own: together they were
+    // one task of 100-130 ms at 4x CPU (searchRegexp's getLoader alone 60).
     this.scanCustomElements(document.body);
-    this.scanStaticIcons(document.body);
-    this.scanAttributes(document.body);
-    this.searchAttr(false);
-    this.searchRegexp('');
     this.search();
-    if (Object.keys(this.module || {}).length) {
-      this.getLoader(this.module, true);
-    }
-    this.revalidateMissingPlugins();
-    this.logTiming('onWindowLoad search done');
+    (async () => {
+      await yieldToPage();
+      this.scanStaticIcons(document.body);
+      this.searchAttr(false);
+      await yieldToPage();
+      this.searchRegexp('');
+      await this.scanAttributesInSlices(document.body);
+      if (Object.keys(this.module || {}).length) {
+        this.getLoader(this.module, true);
+      }
+      this.revalidateMissingPlugins();
+      this.logTiming('onWindowLoad search done');
+    })().catch((error) => console.warn('SFLoader: the page scan failed', error));
   });
 };
 
@@ -4364,6 +4624,40 @@ function scheduleLoaderWork(fn) {
   const frame = requestAnimationFrame(run);
   timer = setTimeout(run, LOADER_FRAME_FALLBACK_MS);
   return frame;
+}
+
+// The Loader's walks give the page back between slices (stand 25, D9: a
+// 378 ms task at the window's load and a 241-498 ms one per batch of rows on
+// the admin at 4x CPU). A slice ends after SLICE_MS of work; the rest runs in
+// a task of its own, before other queued work when the browser has
+// scheduler.yield, and on a message otherwise (a timer in a hidden tab is
+// throttled to a second).
+const SLICE_MS = 16;
+
+function yieldToPage() {
+  if (typeof globalThis.scheduler?.yield === 'function') {
+    return globalThis.scheduler.yield();
+  }
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => {
+      channel.port1.close();
+      resolve();
+    };
+    channel.port2.postMessage(null);
+  });
+}
+
+function sliceClock() {
+  const now = () => (globalThis.performance?.now ? performance.now() : Date.now());
+  let deadline = now() + SLICE_MS;
+  return {
+    due: () => now() >= deadline,
+    async next() {
+      await yieldToPage();
+      deadline = now() + SLICE_MS;
+    },
+  };
 }
 
 SFLoaderPlugin.prototype.mutate = function (fn) {
@@ -4817,6 +5111,108 @@ function createSmartElement(name, params = {}) {
 
 // Loads a rule by its name -- a component, a Smart element, a lazy relation --
 // unless it is loaded or on its way.
+// The style gate (smart-base whenRenderedStylesReady, stand 25 D2): a Smart
+// element draws visibly only once the sheets it draws with are applied -- its
+// own sheet and those of the components and utilities it relates to (not the
+// lazy ones). A sheet already linked in <head> and loaded counts at once, so
+// a page that links its parts' sheets pays nothing; a sheet linked but on its
+// way is waited for; one nobody asked for yet is asked for now (autoLoad;
+// without it, it is not waited for: a printed first paint waits only for what
+// the page linked),
+// through addStyle, which the Loader's own request then shares. A sheet that
+// fails to load does not hold the element. Settles per tag, once.
+SFLoaderPlugin.prototype.styleSheetsOfRule = function (requested, visited = new Set()) {
+  const sheets = [];
+  // The module the Loader itself would load under this name (setExistCookie).
+  const name = requested
+      ? resolveUtilityModule(requested, utilityModuleAliases.aliases, this.findPlugins, this.productionPlanActive)
+      : requested;
+  if (!name || visited.has(name)) return sheets;
+  visited.add(name);
+  const rule = this.findPlugins?.[name];
+  if (!rule || typeof rule !== 'object') return sheets;
+  const type = rule.type === 'smart' ? 'smart'
+      : rule.type === 'component' || rule.type === 'attribute' ? 'component'
+          : 'utility';
+  if (rule.css === true || (type === 'utility' && rule.css !== false)) {
+    const point = name.includes('/') ? name.split('/').pop() : 'default';
+    const unit = type === 'utility' && !name.includes('/') ? `${name}/${point}` : name;
+    const file = this.pathPluginCss(unit, type, point);
+    if (file) sheets.push(file);
+  }
+  const drawnWith = type === 'smart'
+      ? (templateUtilities[name] || []).map((key) => ({name: key}))
+      : [];
+  [...(Array.isArray(rule.relation) ? rule.relation : []), ...drawnWith].forEach((relation) => {
+    if (!relation?.name || relation.lazy === true) return;
+    const target = this.ruleForwards?.[relation.name] || relation.name;
+    sheets.push(...this.styleSheetsOfRule(target, visited));
+  });
+  return sheets;
+};
+
+// The page's stylesheet links by path (either form, minified or readable),
+// read again only when the list of links has changed.
+let linkedSheets = {count: -1, byPath: new Map()};
+function linkedSheet(href) {
+  let path;
+  try {
+    path = new URL(href, document.baseURI).pathname;
+  } catch {
+    return null;
+  }
+  const links = document.querySelectorAll('link[rel~="stylesheet"][href]');
+  if (linkedSheets.count !== links.length) {
+    const byPath = new Map();
+    links.forEach((link) => {
+      try {
+        byPath.set(new URL(link.href, document.baseURI).pathname, link);
+      } catch {
+        // not a URL: not a sheet the Loader names
+      }
+    });
+    linkedSheets = {count: links.length, byPath};
+  }
+  return linkedSheets.byPath.get(path) || linkedSheets.byPath.get(otherForm(path)) || null;
+}
+
+function sheetApplied(link) {
+  if (link.sheet) return Promise.resolve();
+  return new Promise((resolve) => {
+    link.addEventListener('load', () => resolve(), {once: true});
+    link.addEventListener('error', () => resolve(), {once: true});
+  });
+}
+
+// A sheet in the form asked for, else its other form (minified or readable),
+// as loadPlugin does; settles either way.
+SFLoaderPlugin.prototype.addStyleEitherForm = function (file) {
+  return this.addStyle(file).catch(() => {
+    const other = otherForm(file);
+    return other ? this.addStyle(other) : null;
+  }).catch(() => {});
+};
+
+SFLoaderPlugin.prototype.ensureStylesReady = function (element, {autoLoad = true} = {}) {
+  const tagName = element?.localName || '';
+  const ruleName = tagName ? this.getCustomElementRules()[tagName] : '';
+  if (!ruleName) return Promise.resolve(true);
+  this.styleGates = this.styleGates || new Map();
+  const known = this.styleGates.get(ruleName);
+  if (known) return known;
+  const waits = this.styleSheetsOfRule(ruleName).map((file) => {
+    const linked = linkedSheet(file);
+    if (linked) return sheetApplied(linked);
+    if (!autoLoad) return Promise.resolve();
+    return this.addStyleEitherForm(file);
+  });
+  const gate = Promise.all(waits).then(() => true);
+  // Without autoLoad only the linked sheets were waited for: not kept, so a
+  // later call that may ask for the rest still does.
+  if (autoLoad) this.styleGates.set(ruleName, gate);
+  return gate;
+};
+
 SFLoaderPlugin.prototype.ensurePlugin = function (name) {
   const key = String(name || '').trim();
   if (!key || !this.findPlugins?.[key]) return false;

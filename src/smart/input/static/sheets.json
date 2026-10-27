@@ -14,6 +14,7 @@
     "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
     "utility/flex-direction/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
@@ -28,6 +29,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -41,6 +43,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -54,6 +57,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -67,6 +71,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -80,6 +85,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -93,6 +99,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -106,6 +113,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -119,6 +127,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
@@ -132,6 +141,7 @@
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"

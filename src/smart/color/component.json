@@ -2,7 +2,7 @@
   "$comment": "The source of sf-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.color",
   "tag": "sf-color",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -228,6 +228,7 @@
     "version: 1.2.0 -- the value effective-value is added and the getter shown leaves for the base value behind a dated row; a minor (§4.10)",
     "shown: renamed effective-value; the shim cannot serve the old name, because shown is the base value (§4.1) on every element, so the row is documentary (shim none)",
     "actions.clear answers an outcome (§4.4): applied, or refused with reason unchanged when there was nothing to clear; setValue stays a method of the class outside the interface (a person-like write that sends input and change)",
-    "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals"
+    "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals",
+    "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
   ]
 }

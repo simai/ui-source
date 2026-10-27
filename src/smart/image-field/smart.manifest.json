@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.image-field",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "Image field",
   "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
   "kind": "smart",

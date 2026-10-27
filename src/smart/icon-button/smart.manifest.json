@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon-button",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",

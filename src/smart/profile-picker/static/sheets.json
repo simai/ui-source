@@ -10,7 +10,10 @@
     "component/icons/css/icons.min.css",
     "core/css/core.css",
     "smart/profile-picker/css/profile-picker.min.css",
+    "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
+    "utility/flex/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css"
@@ -21,7 +24,10 @@
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "smart/profile-picker/css/profile-picker.min.css",
+      "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
@@ -31,7 +37,10 @@
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "smart/profile-picker/css/profile-picker.min.css",
+      "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"
@@ -41,7 +50,10 @@
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "smart/profile-picker/css/profile-picker.min.css",
+      "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css"

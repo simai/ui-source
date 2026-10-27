@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.button-group",
   "tag": "sf-button-group",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -308,6 +308,7 @@
     "item-shape: items name id, value, label, icon, count, icon-only, loading and disabled; the attribute keeps its JSON and value::label::flags forms",
     "actions: select {value} and clear answer an outcome (§4.4): applied, or refused with unknown, disabled, unchanged or theme (a Loader that cannot change the theme); chaining is gone. Both are a person's request in code and send change, as before",
     "form: the host is the form control through ElementInternals (§17.1): the selected value, nothing while disabled; form.reset() returns the value the group was written with (a theme switch keeps the preference). The hidden input is drawn only without ElementInternals",
-    "accessibility.name: the host's aria-label, or the theme switch's own word «Тема»"
+    "accessibility.name: the host's aria-label, or the theme switch's own word «Тема»",
+    "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
   ]
 }

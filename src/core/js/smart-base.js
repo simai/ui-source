@@ -81,6 +81,83 @@ export function parseJsonAttribute(element, name, fallback = null) {
   }
 }
 
+// Definitions in batches (stand 25, D10). A page's Smart bundles arrive one
+// script after another, and each definition upgrades its elements and
+// invalidates the style of the whole page: on the admin forty of them, each in
+// a frame of its own with a style recalculation of 100-300 ms at 4x CPU. A
+// definition now waits for the next frame, and every bundle that ran before it
+// is defined in the same callback, so the frame recalculates once. A hidden
+// tab has no frames: there the batch runs on a timer, as the Loader's work
+// does. SF_BOOT_CONFIG.batchDefinitions = false defines at once, as before.
+// The queue is on a shared global: each bundle may carry its own copy of
+// this module.
+const DEFINITIONS = Symbol.for("simai.sf.smart-base.definitions");
+
+function pendingDefinitions() {
+  if (!globalThis[DEFINITIONS]) {
+    // flush: the Loader defines what is queued before it runs a script that
+    // depends on it -- a relation is defined before the element naming it runs.
+    Object.defineProperty(globalThis, DEFINITIONS, {
+      value: { queue: new Map(), scheduled: false, flush: () => defineQueued() },
+      configurable: true,
+    });
+  }
+  return globalThis[DEFINITIONS].queue;
+}
+
+// Defines what is queued, in the order the bundles ran.
+function defineQueued() {
+  const state = globalThis[DEFINITIONS];
+  const batch = [...state.queue];
+  state.queue.clear();
+  batch.forEach(([tagName, constructor]) => {
+    if (customElements.get(tagName)) return;
+    try {
+      customElements.define(tagName, constructor);
+    } catch (error) {
+      console.error(`${tagName}: definition failed`, error);
+    }
+  });
+}
+
+function flushDefinitions() {
+  globalThis[DEFINITIONS].scheduled = false;
+  defineQueued();
+}
+
+function queueDefinition(tagName, constructor) {
+  // Only on a page the Loader drives: a bundle included by hand beside the
+  // Smart base alone is defined at once, as its page expects.
+  const batching =
+    typeof window !== "undefined" &&
+    typeof requestAnimationFrame === "function" &&
+    Boolean(window.SF?.Loader) &&
+    window.SF_BOOT_CONFIG?.batchDefinitions !== false;
+  if (!batching) {
+    customElements.define(tagName, constructor);
+    return;
+  }
+  pendingDefinitions().set(tagName, constructor);
+  const state = globalThis[DEFINITIONS];
+  if (state.scheduled) return;
+  state.scheduled = true;
+  if (document.hidden) {
+    setTimeout(flushDefinitions, 0);
+    return;
+  }
+  // A frame, or a short timer when none comes (an iframe out of view).
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    cancelAnimationFrame(frame);
+    flushDefinitions();
+  };
+  const frame = requestAnimationFrame(run);
+  const timer = setTimeout(run, 100);
+}
+
 function smartTagName(type) {
   const tagName = String(type || "").startsWith("sf-")
     ? String(type)
@@ -394,7 +471,9 @@ class SfBaseElement extends HTMLElement {
       );
     }
 
-    const existing = customElements.get(resolvedTagName);
+    const existing =
+      customElements.get(resolvedTagName) ||
+      pendingDefinitions().get(resolvedTagName);
     if (existing) {
       if (!this.isSameComponentAs(existing)) {
         console.warn(
@@ -406,7 +485,7 @@ class SfBaseElement extends HTMLElement {
       return existing;
     }
 
-    customElements.define(resolvedTagName, this);
+    queueDefinition(resolvedTagName, this);
     return this;
   }
 
@@ -1130,6 +1209,23 @@ class SfBaseElement extends HTMLElement {
       return;
     }
 
+    // A printed first paint stays on screen until the sheets the element
+    // draws with are applied, and is replaced styled: hiding the element
+    // while they came showed a blank box between the printed picture and the
+    // element's own (stand 25: the admin menu blank for 200-300 ms). The
+    // Loader asks for those sheets with the element's script, so they are
+    // usually in when it is defined.
+    if (!this._hasRendered && !this._styleReady && this.staticMarkup().length) {
+      const readiness = this.stylesReadiness();
+      if (readiness) {
+        await readiness;
+        if (!this._isMounted || renderToken !== this._renderToken) {
+          return;
+        }
+        this._styleReady = true;
+      }
+    }
+
     const printed = this._hasRendered ? [] : this.staticMarkup();
     this.prepareRenderContainer(changedAttributes);
     this.markStylePending(this);
@@ -1188,37 +1284,64 @@ class SfBaseElement extends HTMLElement {
     return this;
   }
 
-  async whenRenderedStylesReady(target = this) {
-    if (!this.shouldWaitForStylesReady()) {
-      return;
-    }
+  // The sheets this element draws with, applied: a promise that settles once
+  // per element (and at the latest after styleReadyTimeout), null when there
+  // is nothing to wait for.
+  //
+  // The Loader knows the sheets an element draws with (ensureStylesReady).
+  // An element defined before the Loader has started -- a page that loads
+  // its parts with <script defer> beside core.js -- waits for it (SF.ready
+  // settles at sf-loader-init) instead of declaring itself ready: it used to
+  // draw its text before any of its sheets (stand 25, D2). Without core on
+  // the page there is no Loader to wait for, and the element is ready now.
+  stylesReadiness({ autoLoad = true } = {}) {
+    if (this._styleReady || !this.shouldWaitForStylesReady()) return null;
+    if (autoLoad && this._styleReadyPromise) return this._styleReadyPromise;
+    const loaderNow = window.SF?.Loader;
+    const awaitedLoader =
+      loaderNow && typeof loaderNow.ensureStylesReady === "function"
+        ? Promise.resolve(loaderNow)
+        : !loaderNow && window.SF?.ready && typeof window.SF.ready.then === "function"
+          ? Promise.resolve(window.SF.ready).then(() => window.SF?.Loader)
+          : null;
+    if (!awaitedLoader) return null;
 
-    const loader = window.SF?.Loader;
-    if (!loader || typeof loader.ensureStylesReady !== "function") {
-      this.markStyleReady(target);
-      return;
-    }
-
-    const readiness = Promise.resolve().then(() =>
-      loader.ensureStylesReady(target || this, { autoLoad: true }),
+    const readiness = awaitedLoader.then((loader) =>
+      typeof loader?.ensureStylesReady === "function"
+        ? loader.ensureStylesReady(this, { autoLoad })
+        : true,
     );
     const timeout = Number(this.constructor.styleReadyTimeout ?? 3000);
-    this._styleReadyPromise =
+    // The time limit is cleared once the sheets are in: a timer left behind
+    // per element was a leak of its own (gate 36).
+    let timer = null;
+    const settled = (
       timeout > 0
         ? Promise.race([
             readiness,
             new Promise((resolve) => {
-              setTimeout(resolve, timeout);
+              timer = setTimeout(resolve, timeout);
             }),
           ])
-        : readiness;
+        : readiness
+    )
+      .catch((error) => {
+        console.warn(
+          `${this.componentTagName || "sf-element"}: style readiness failed`,
+          error,
+        );
+      })
+      .finally(() => clearTimeout(timer));
+    if (autoLoad) this._styleReadyPromise = settled;
+    return settled;
+  }
 
-    await this._styleReadyPromise.catch((error) => {
-      console.warn(
-        `${this.componentTagName || "sf-element"}: style readiness failed`,
-        error,
-      );
-    });
+  async whenRenderedStylesReady(target = this) {
+    if (!this.shouldWaitForStylesReady()) {
+      return;
+    }
+    const readiness = this.stylesReadiness();
+    if (readiness) await readiness;
     this.markStyleReady(target);
   }
 

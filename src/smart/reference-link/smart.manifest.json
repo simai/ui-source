@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.reference-link",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Reference Link",
   "summary": "Navigation surface that pairs a real destination with a compact reference.",
   "kind": "smart",

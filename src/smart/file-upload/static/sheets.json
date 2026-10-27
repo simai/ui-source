@@ -23,6 +23,7 @@
     "utility/justify-content/default/css/default.min.css",
     "utility/justify-items/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/transition-property/default/css/default.min.css",
     "utility/width/default/css/default.min.css"
   ],
   "examples": {
@@ -44,6 +45,7 @@
       "utility/justify-content/default/css/default.min.css",
       "utility/justify-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ]
   }

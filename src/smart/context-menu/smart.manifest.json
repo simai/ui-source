@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.context-menu",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "title": "Context Menu",
   "summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",

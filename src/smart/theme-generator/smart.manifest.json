@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Theme generator",
   "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads and the 98 translucent steps core derives from them, with a preview, events carrying the CSS, and an optional live application to the page.",
   "kind": "smart",
