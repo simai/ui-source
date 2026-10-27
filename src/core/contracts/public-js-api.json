@@ -239,6 +239,23 @@
       "summary": "Old names still accepted and what replaced them, as the change journal declares them."
     },
     {
+      "name": "SF.aliases",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Dated aliases of an element (standard simai.smart-component 1.3.8 §16.20): install(element, table) keeps a component's old event, setting, attribute, action and value names working until remove_after and notes each use in SF.deprecations with its dates; strict = true withholds expired names.",
+      "members": [
+        "version",
+        "strict",
+        "install",
+        "uninstall",
+        "dispatch",
+        "of",
+        "read",
+        "expired"
+      ]
+    },
+    {
       "name": "SF.SfBaseElement",
       "status": "public",
       "kind": "class",
