@@ -36,3 +36,41 @@ test('native field min-content size cannot force the surrounding grid wider at t
     assert.match(css,selector==='textarea'?/\.sf-textarea textarea \{[^}]*\bmin-inline-size: 0;/:new RegExp(`\\.sf-${selector} \\.sf-${selector}-${selector==='input'?'field':'wrap'} input \\{[^}]*\\bmin-inline-size: 0;`));
   }
 });
+
+// simai/ui-source#49, #50: the layout of a Native checkbox and radio moved from
+// the stylesheet into utility hints, and the constructors applied none of them,
+// so the label drew inline (a 26x21 mark on a 21px row, a radio ring 2px wide
+// with a 0px mark). Each constructor's private map is the stylesheet's hints,
+// selector for selector, and the constructor applies every selector to the part
+// it builds. Measured: tests/browser/choice-native-smart-geometry.browser.mjs.
+const hintsOf=css=>Object.fromEntries([...css.matchAll(/utility-hint:([^*]*)\*\/\s*\n\s*([^{]+)\{/g)]
+  .map(([,hint,selector])=>[selector.trim(),[...hint.matchAll(/\(\.[^)]+\)/g)].map(([m])=>m.slice(2,-1))]));
+for (const [family,stem,scss,Class,parts] of [
+  ['checkbox','checkbox','_css__checkbox.scss','Checkbox',{
+    template:'.sf-checkbox', box:'.sf-checkbox .sf-checkbox-box', container:'.sf-checkbox .sf-checkbox-container',
+    top:'.sf-checkbox .sf-checkbox-top', label:'.sf-checkbox .sf-checkbox-label'}],
+  ['radio','radio','_css_radio.scss','Radio',{
+    template:'.sf-radio-button', box:'.sf-radio-button .sf-radio-button-box', container:'.sf-radio-button .sf-radio-button-container',
+    top:'.sf-radio-button .sf-radio-button-top', text:'.sf-radio-button .sf-radio-button-text'}],
+]) {
+  test(`${Class} constructor applies the layout its stylesheet hints`,async()=>{
+    const map=JSON.parse(await read(`component/${family}/json/${stem}.utility.json`));
+    const hints=hintsOf(await read(`component/${family}/scss/${scss}`));
+    const fromMap=Object.fromEntries(Object.entries(map).map(([selector,values])=>[selector,ComponentObserver.prototype.extractUtilityClasses(values)]));
+    assert.deepEqual(fromMap,hints,'the map is the stylesheet hints');
+    for (const selector of Object.values(parts)) assert.ok(fromMap[selector]?.includes('flex'),`${selector} is a flex box`);
+    const js=await read(`component/${family}/js/_${family}.js`);
+    assert.match(js,new RegExp(`import \\w+ from '\\.\\./json/${stem}\\.utility\\.json'`));
+    assert.match(js,new RegExp(`${Class}\\.utilityMap = \\w+;`));
+    for (const [part,selector] of Object.entries(parts)) {
+      assert.ok(js.includes(`this.applyLayoutUtilities(this.${part}, '${selector}');`),`${part} gets ${selector}`);
+    }
+    // applyLayoutUtilities reads the class's map: an instance gets the classes.
+    class Probe extends ComponentObserver {}
+    Probe.utilityMap=map;
+    const added=[];
+    // Without a constructor call: the base constructor announces itself on window.
+    Object.create(Probe.prototype).applyLayoutUtilities({classList:{add:c=>added.push(c)}},parts.template);
+    assert.deepEqual(added,hints[parts.template]);
+  });
+}

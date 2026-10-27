@@ -347,7 +347,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/checkbox/smart.manifest.json",
-      "manifest_sha256": "3d1743cf027ccb6e90d365a2a9dee72f8b27721181d159a7a2abc84599de9068",
+      "manifest_sha256": "03f91eab9264d250af89f254f5e732e0263fcb21cfa1025d865747248b176494",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
