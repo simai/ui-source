@@ -760,7 +760,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-upload/index.js",
-        "sha256": "854731030d5c58206772119349b092f1e4bc8c7708d1878653ac143f3045876e"
+        "sha256": "a4e80c921dc58eb88ea3ccd1a62f038d5ad3fae38078e7062718217a4245a6c8"
       }
     ],
     "generated_runtime": [

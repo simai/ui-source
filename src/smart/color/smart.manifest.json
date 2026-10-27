@@ -303,7 +303,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/color/index.js",
-        "sha256": "318a6bc44f2895d73df0a91edec2a96113c36a0a3e730c35d13f2c9e37736cf5"
+        "sha256": "8bb7296c4fdde4ba9d168b9eaee051eac774a4bbebc8238e182a371f4662ab6d"
       },
       {
         "path": "src/smart/color/rule.js",
@@ -319,7 +319,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "0c8658ab61678cd5f89badea902be244b92ba96240fb802c60438227f8f9faa9"
+        "sha256": "604f3d40d27a1430afc06182b7167d2188251191d06e9ccf2f22c3bede321826"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",

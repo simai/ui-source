@@ -525,7 +525,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/image-field/index.js",
-        "sha256": "9e0ce3515102a4c3da9bef5d1146df65979b191ab13825b453725d69e5dc0754"
+        "sha256": "c62e7a4daf849304aad9240c1cd047369d4e69e0fa35c74210baa85d2589a9c1"
       },
       {
         "path": "src/smart/image-field/value.mjs",
