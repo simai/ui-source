@@ -30,3 +30,16 @@ test('joined dropdown and options use keyboard-only semantic inset focus',async(
   assert.match(custom,/@layer sf\.states\s*\{\s*\.sf-dropdown/);
   assert.match(custom,/button\[aria-haspopup\]:focus-visible\s*\{[^}]*box-shadow: none;[^}]*outline: none;/);
 });
+test('Native search box keeps its own change inside, as sf-dropdown does (simai/ui-source#53)',async()=>{
+  const base=await read('src/component/dropdown/js/_dropdown.js');
+  const template=await read('src/smart/dropdown/js/templates/default.js');
+  assert.match(template,/@change=\$\{\(event\) => event\.stopPropagation\(\)\}/);
+  assert.match(base,/function onSearchChange\(event\) \{\s*event\.stopPropagation\(\);\s*\}/);
+  // Bound and released through the same lifecycle as the search input listener.
+  assert.ok(base.includes('searchInput.addEventListener("change", onSearchChange)'));
+  assert.ok(base.includes('root.__sfDropdownOnSearchChange = onSearchChange'));
+  assert.match(base,/removeEventListener\(\s*"change",\s*root\.__sfDropdownOnSearchChange,?\s*\)/);
+  assert.ok(base.includes('delete root.__sfDropdownOnSearchChange'));
+  // Only the search box: the selection change the component dispatches still bubbles.
+  assert.match(base,/new CustomEvent\("change", \{[\s\S]*?bubbles: true/);
+});

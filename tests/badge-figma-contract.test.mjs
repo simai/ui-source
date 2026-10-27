@@ -26,7 +26,7 @@ test('badge contract exposes the Figma matrix and semantic extensions', async ()
       'info',
       'success',
       'warning',
-      'danger',
+      'error',
       'on-surface',
     ],
   );
@@ -79,6 +79,47 @@ test('badge contract normalizes invalid values and unsupported pairs', async () 
     normalizeBadgeContract({type: 'tonal', scheme: 'on-surface', size: '1'}),
     {type: 'main', scheme: 'on-surface', size: '1'},
   );
+});
+
+test('badge contract takes error, and reads the former danger as error (simai/ui-source#51)', async () => {
+  const {normalizeBadgeContract, canonicalBadgeScheme, BADGE_SCHEME_ALIASES, BADGE_VARIANTS} = await loadContract();
+
+  assert.deepEqual(BADGE_SCHEME_ALIASES, {danger: 'error'});
+  for (const type of ['main', 'tonal', 'outline']) {
+    assert.deepEqual(normalizeBadgeContract({type, scheme: 'error', size: '1'}), {type, scheme: 'error', size: '1'});
+    assert.deepEqual(normalizeBadgeContract({type, scheme: 'danger', size: '1'}), {type, scheme: 'error', size: '1'});
+    assert.deepEqual(normalizeBadgeContract({type, scheme: ' Danger ', size: '1'}), {type, scheme: 'error', size: '1'});
+  }
+  assert.equal(canonicalBadgeScheme('danger'), 'error');
+  assert.equal(canonicalBadgeScheme('error'), 'error');
+  assert.equal(canonicalBadgeScheme('primary'), 'primary');
+  assert.equal(canonicalBadgeScheme('critical'), '');
+  assert.equal(canonicalBadgeScheme(undefined), '');
+  // The matrix keeps its 78 rows; the error rows are where the danger rows were.
+  assert.equal(BADGE_VARIANTS.filter(({scheme}) => scheme === 'error').length, 9);
+  assert.equal(BADGE_VARIANTS.some(({scheme}) => scheme === 'danger'), false);
+});
+
+test('Native badge draws the canonical status class, notes danger and hugs its text (simai/ui-source#51)', async () => {
+  const [core, utilityMap, css, optionBadge] = await Promise.all([
+    read('src/component/badges/js/_badges.js'),
+    read('src/component/badges/json/badge.utility.json'),
+    read('src/component/badges/scss/_css__badges.scss'),
+    read('src/smart/helpers/option-badge.js'),
+  ]);
+  // Inline, as sf-badge draws it: a block-level flex root filled its container.
+  const root = JSON.parse(utilityMap)['.sf-badge'];
+  assert.ok(root.includes('display/inline-flex (.inline-flex)'));
+  assert.ok(!root.some((value) => /\(\.flex\)/.test(value)));
+  assert.match(css, /utility-hint: display\/inline-flex \(\.inline-flex\)[^\n]*\*\/\n(?:\/\*[^\n]*\*\/\n)?\.sf-badge \{/);
+  // The same axes as sf-badge, and a former scheme word is noted.
+  assert.match(core, /params\.appearance \?\? params\.type/);
+  assert.match(core, /params\.status \|\| params\.scheme/);
+  assert.match(core, /BADGE_SCHEME_ALIASES\[formerScheme\]/);
+  assert.match(core, /noteDeprecated\(/);
+  // A filter option coloured danger keeps its colour through the alias.
+  assert.match(optionBadge, /canonicalBadgeScheme\(color\)/);
+  assert.doesNotMatch(optionBadge, /BADGE_SCHEMES\.includes/);
 });
 
 test('Core and Smart renderers share the canonical classes and icon-only shape', async () => {

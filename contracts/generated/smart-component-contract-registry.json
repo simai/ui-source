@@ -166,7 +166,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "d82c7072884010d542271f89b582ea5f707df5acded3c07ee7b27bc1bd180223",
+      "manifest_sha256": "63a06b83099daac865aa64f0ced4c863b4bb67e9bb09bd48498b031872660608",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -313,7 +313,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-group/smart.manifest.json",
-      "manifest_sha256": "9df8b19e3a7d96dd7875df93b300c0f5a08d4e1ce815c782ae4b8ea5c9540ed8",
+      "manifest_sha256": "7c5e20a345d11c9979d751f6fced59e3700ee3fb77a966e8f469684985e8babc",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

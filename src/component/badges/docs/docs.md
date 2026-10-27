@@ -6,9 +6,11 @@ control when the element performs an action.
 
 ## Public contract
 
-- emphasis: `main`, `tonal`, `outline`;
+- emphasis: `main`, `tonal`, `outline` (`appearance`; `type` is its former name);
 - scheme: `neutral`, `primary`, `secondary`, `tertiary`, `info`, `success`,
-  `warning`, `danger`, `on-surface`;
+  `warning`, `error`, `on-surface` (a status may also be given as `status`).
+  `danger`, the former name of `error`, still draws the error badge and is
+  noted in `SF.deprecations` until 2026-12-01 (journal `class-status-aliases`);
 - size: `1/3`, `1/2`, `1`;
 - optional text and decorative icon at the logical start or end.
 
@@ -17,7 +19,9 @@ control when the element performs an action.
 
 ## Semantics
 
-Use an inline `span` for ordinary markup. The visible word or number provides
+Use an inline `span` for ordinary markup. The root is `inline-flex`, as wide as
+its text, in the constructor and in `sf-badge` alike; a badge that must fill its
+row takes a width utility through `utilities` (for example `w-full`). The visible word or number provides
 the default accessible content, and an icon is `aria-hidden="true"`. An
 icon-only or abbreviated value needs a full text equivalent using an `sr-only`
 child. A badge with neither visible nor screen-reader text is decorative.

@@ -62,8 +62,13 @@
      that produced transparent horizontal edges and two competing vertical
      edges around the selected item. The group owns one continuous perimeter:
      every item draws block edges, while only the item on the left draws each
-     internal join. Selection changes fill and text, never border geometry. */
-  .sf-button-group > sf-button[segment][type][scheme] > .sf-button[class*='segment-'],
+     internal join. Selection changes fill and text, never border geometry.
+     A Smart segment is a host, sf-button[segment], carrying its appearance and
+     scheme; old markup names the appearance `type` (a dated alias until
+     2026-12-01). Keying on [type] alone matched no group sf-button-group draws,
+     and every join was two lines wide (simai/ui-source#52). The :is() keeps the
+     specificity the button's own segment rules are written against. */
+  .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
   .sf-button-group > .sf-button[class*='segment-'] {
     --sf-button--border-top-width: var(--sf-px);
     --sf-button--border-bottom-width: var(--sf-px);
@@ -79,7 +84,7 @@
     border-inline-color: var(--sf-outline);
   }
 
-  .sf-button-group > sf-button[segment][type][scheme]:first-child > .sf-button[class*='segment-'],
+  .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme]:first-child > .sf-button[class*='segment-'],
   .sf-button-group > .sf-button[class*='segment-']:first-child {
     --sf-button--border-inline-start-width: var(--sf-px);
     border-inline-start-width: var(--sf-px);
@@ -89,12 +94,12 @@
     border-end-end-radius: 0;
   }
 
-  .sf-button-group > sf-button[segment][type][scheme]:not(:first-child):not(:last-child) > .sf-button[class*='segment-'],
+  .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme]:not(:first-child):not(:last-child) > .sf-button[class*='segment-'],
   .sf-button-group > .sf-button[class*='segment-']:not(:first-child):not(:last-child) {
     border-radius: 0;
   }
 
-  .sf-button-group > sf-button[segment][type][scheme]:last-child > .sf-button[class*='segment-'],
+  .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme]:last-child > .sf-button[class*='segment-'],
   .sf-button-group > .sf-button[class*='segment-']:last-child {
     border-start-start-radius: 0;
     border-end-start-radius: 0;
@@ -103,7 +108,7 @@
   }
 
   /* A vertical group uses the same one-edge-per-join rule on the block axis. */
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment][type][scheme] > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-'] {
     --sf-button--border-top-width: 0;
     --sf-button--border-bottom-width: var(--sf-px);
@@ -114,7 +119,7 @@
     border-inline-width: var(--sf-px);
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment][type][scheme]:first-child > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme]:first-child > .sf-button[class*='segment-'],
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-']:first-child {
     --sf-button--border-top-width: var(--sf-px);
     border-block-start-width: var(--sf-px);
@@ -124,7 +129,7 @@
     border-end-end-radius: 0;
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment][type][scheme]:last-child > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme]:last-child > .sf-button[class*='segment-'],
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-']:last-child {
     border-start-start-radius: 0;
     border-start-end-radius: 0;
