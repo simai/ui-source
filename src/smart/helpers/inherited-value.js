@@ -114,7 +114,11 @@ export const InheritedValueField = (Base) => class extends Base {
   /**
    * Back to the inherited value. Fires `sf-field:reset` first, cancellable:
    * a host that must confirm or refuse calls preventDefault and nothing
-   * changes. Returns whether the field was reset.
+   * changes. Returns whether the field was reset. The detail names the
+   * element (`tag`), as a trait event does (standard 1.3.8 §20, trait
+   * field-inherit@1: sf-field-reset {tag, value, inherited-value, name}): the
+   * event comes from every field of the family, and a listener on a form
+   * tells them apart by it.
    */
   resetToInherited() {
     if (!this.hasInheritedValue || this.inheritedOwnValue() === '') return false;
@@ -124,6 +128,7 @@ export const InheritedValueField = (Base) => class extends Base {
       composed: true,
       cancelable: true,
       detail: {
+        tag: this.localName,
         value: this.inheritedOwnValue(),
         inheritedValue: this.inheritedValue,
         name: this.getAttribute('name') || '',

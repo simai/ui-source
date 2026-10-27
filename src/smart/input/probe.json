@@ -9,7 +9,7 @@
     ],
     "box": "input"
   },
-  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/fields-manifest.browser.mjs",
+  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
   "checks": [
     {
       "id": "typed-text-submits",
@@ -219,12 +219,14 @@
         "events": [
           {
             "type": "sf-field-reset",
+            "tag": "sf-input",
             "value": "#112233",
             "inheritedValue": "#336699",
             "name": "brand"
           },
           {
             "type": "sf-field:reset",
+            "tag": "sf-input",
             "value": "#112233",
             "inheritedValue": "#336699",
             "name": "brand"

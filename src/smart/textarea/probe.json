@@ -9,7 +9,7 @@
     ],
     "box": "textarea"
   },
-  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/fields-manifest.browser.mjs",
+  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
   "checks": [
     {
       "id": "typed-text-submits",
@@ -183,12 +183,14 @@
         "events": [
           {
             "type": "sf-field-reset",
+            "tag": "sf-textarea",
             "value": "Своя",
             "inheritedValue": "С уважением",
             "name": "sign"
           },
           {
             "type": "sf-field:reset",
+            "tag": "sf-textarea",
             "value": "Своя",
             "inheritedValue": "С уважением",
             "name": "sign"

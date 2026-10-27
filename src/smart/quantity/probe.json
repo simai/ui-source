@@ -9,7 +9,7 @@
     ],
     "box": ".sf-quantity-wrap input"
   },
-  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/fields-manifest.browser.mjs",
+  "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
   "checks": [
     {
       "id": "form-value-point-box-comma",
@@ -441,12 +441,14 @@
         "events": [
           {
             "type": "sf-field-reset",
+            "tag": "sf-quantity",
             "value": "7",
             "inheritedValue": "5",
             "name": "count"
           },
           {
             "type": "sf-field:reset",
+            "tag": "sf-quantity",
             "value": "7",
             "inheritedValue": "5",
             "name": "count"

@@ -23,7 +23,8 @@ const CONTROLS = {
 test('the shared state names one cancellable event and draws one slot', () => {
   assert.match(helper, /export const INHERITED_RESET_EVENT = 'sf-field:reset';/u);
   assert.match(helper, /new CustomEvent\(INHERITED_RESET_EVENT, \{[\s\S]*?bubbles: true,[\s\S]*?composed: true,[\s\S]*?cancelable: true/u);
-  assert.match(helper, /detail: \{\s*value: this\.inheritedOwnValue\(\),\s*inheritedValue: this\.inheritedValue,\s*name:/u);
+  // The trait event names the element (standard 1.3.8 §20, field-inherit@1).
+  assert.match(helper, /detail: \{\s*tag: this\.localName,\s*value: this\.inheritedOwnValue\(\),\s*inheritedValue: this\.inheritedValue,\s*name:/u);
   // Prevented, nothing changes; not prevented, the value empties and focus
   // goes back to the control rather than to the vanished button.
   assert.match(helper, /if \(!this\.dispatchEvent\(event\)\) return false;\s*this\.clearOwnValue\(\);/u);
