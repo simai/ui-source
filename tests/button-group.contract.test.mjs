@@ -76,7 +76,8 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.match(styles, /--sf-button--border-inline-end-width: var\(--sf-px\)/);
   assert.match(styles, /border-inline-start-width: 0/);
   assert.match(styles, /border-inline-end-width: var\(--sf-px\)/);
-  assert.match(styles, /sf-button\[segment\]\[type\]\[scheme\]/);
+  // The host carries appearance (type is its dated alias), never type alone (simai/ui-source#52).
+  assert.match(styles, /sf-button\[segment\]:is\(\[appearance\], \[type\]\)\[scheme\]/);
   assert.doesNotMatch(styles, /sf-button\[data-sf-button-group-value\]/);
   assert.match(styles, /border-start-start-radius: var\(--sf-button--radius\)/);
   assert.match(styles, /border-end-end-radius: var\(--sf-button--radius\)/);
@@ -251,4 +252,23 @@ test('button group documentation separates generic actions from managed selectio
   assert.match(vertical, /data-orientation="vertical"/);
   assert.doesNotMatch(vertical, /aria-orientation/);
   assert.doesNotMatch(`${overview}\n${vertical}`, /<style\b|style=/);
+});
+
+test('group joins key on the attributes a segment host carries (simai/ui-source#52)', async () => {
+  const [styles, template] = await Promise.all([
+    source('src/component/button-group/scss/_css__button-group.scss'),
+    source('src/smart/button-group/js/templates/default.js'),
+  ]);
+  // sf-button-group passes appearance, scheme and segment; type is the dated
+  // alias of appearance, so a join rule keyed on [type] alone matched nothing.
+  assert.match(template, /appearance=\$\{/);
+  assert.match(template, /scheme=\$\{/);
+  assert.match(template, /segment=\$\{/);
+  assert.doesNotMatch(template, /\stype=\$\{/);
+  assert.doesNotMatch(styles, /sf-button\[segment\]\[type\]/);
+  const hostRules = styles.match(/sf-button\[segment\]:is\(\[appearance\], \[type\]\)\[scheme\]/g) || [];
+  assert.equal(hostRules.length, 7);
+  // Every host rule is paired with the Native .sf-button rule of the same join.
+  const nativeRules = styles.match(/> \.sf-button\[class\*='segment-'\]/g) || [];
+  assert.ok(nativeRules.length >= 7);
 });
