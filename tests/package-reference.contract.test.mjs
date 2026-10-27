@@ -26,6 +26,9 @@ test('every package reference names components the free Framework does not ship'
       assert.ok(!existsSync(join(root, 'src/smart', entry.folder)), `${entry.element} is not in the free source`);
       assert.doesNotMatch(readFileSync(join(root, 'src/core/js/rule.src.js'), 'utf8'),
         new RegExp(`smart/${entry.folder}/rule\\.js`), `${entry.rule_name} is not a Core rule`);
+      // The ui registry builder refuses a requires list that is not sorted and
+      // unique (package_reference_requires_invalid); a rename can reorder it.
+      assert.deepEqual(entry.requires, [...new Set(entry.requires)].sort(), `${entry.id}: requires sorted and unique`);
     }
   }
 });
