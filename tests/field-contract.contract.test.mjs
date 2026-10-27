@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import {Buffer} from 'node:buffer';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
@@ -11,8 +10,8 @@ const json = async (relative) => JSON.parse(await text(relative));
 
 test('field contract keeps stable identities and chooses an error over a hint', async () => {
   const source = await text('src/component/field-contract.js');
-  const moduleUrl = `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
-  const {createFieldContract} = await import(moduleUrl);
+  assert.doesNotMatch(source, /\blet \w*[Ss]equence\b|\+\+\w*[Ss]equence/u, 'no module counter makes an id (#41)');
+  const {createFieldContract} = await import(new URL('../src/component/field-contract.js', import.meta.url));
   const owner = {};
   const first = createFieldContract(owner, {
     prefix: 'sf-input',
@@ -92,8 +91,7 @@ test('input and textarea manifests publish the shared field parameters', async (
 });
 
 test('field names exclude hints and sibling buttons, and preserve author naming', async () => {
-  const source = await text('src/component/field-contract.js');
-  const {syncFieldContract} = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+  const {syncFieldContract} = await import(new URL('../src/component/field-contract.js', import.meta.url));
   const node = (tagName, textContent = '') => ({
     tagName, textContent, id: '', attributes: new Map(), classList: {toggle() {}},
     hasAttribute(k) { return this.attributes.has(k); },

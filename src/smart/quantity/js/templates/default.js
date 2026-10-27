@@ -40,7 +40,7 @@ function renderStepper(context, direction) {
 
 export function renderQuantityTemplate(context) {
   const {component, field} = context;
-  const labelId = `${context.id}-label`;
+  const labelId = `${context.id}--label`;
   const rootClasses = [
     'sf-quantity',
     `sf-quantity--size-${context.size}`,

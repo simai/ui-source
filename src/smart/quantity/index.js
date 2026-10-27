@@ -60,8 +60,6 @@ const REPEAT_INTERVAL = 60;
 // PageUp and PageDown move this many steps unless the field names its own.
 const PAGE_STEPS = 10;
 
-let sequence = 0;
-
 class SfQuantity extends InheritedValueField(SfBaseElement) {
   static get props() {
     return {
@@ -100,7 +98,6 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
 
   constructor() {
     super();
-    this._id = `sf-quantity-${++sequence}`;
     // undefined: follow the attribute. Set by the property, a step, a commit or
     // a reset; an attribute written later takes over again.
     this._value = undefined;
@@ -643,7 +640,7 @@ class SfQuantity extends InheritedValueField(SfBaseElement) {
     return this.createTemplateContext({
       ...props,
       component: this,
-      id: this._id,
+      id: field.base,
       field,
       value,
       text: this.text,

@@ -1,17 +1,22 @@
-let fieldSequence = 0;
+import {instancePath, partId, pathIsSettled} from '../core/js/instance-path.js';
+
+// A field's ids come from its instance's role path (standard 1.3.8 §7.1.1;
+// simai/ui-source#41), never from a counter: core/js/instance-path.js.
 const fieldIdentities = new WeakMap();
 
 function nextIdentity(owner, prefix) {
   if (owner && fieldIdentities.has(owner)) return fieldIdentities.get(owner);
 
-  const explicit = owner?.id ? String(owner.id).trim() : '';
-  const base = explicit || `${prefix}-${++fieldSequence}`;
+  const base = partId(instancePath(owner, {kind: prefix}));
   const identity = {
-    controlId: `${base}-control`,
-    messageId: `${base}-message`,
+    base,
+    controlId: `${base}--control`,
+    messageId: `${base}--message`,
   };
 
-  if (owner && (typeof owner === 'object' || typeof owner === 'function')) {
+  // An instance not yet in the page has no place in it: its path is settled
+  // when it is, so it is not kept before.
+  if (owner && (typeof owner === 'object' || typeof owner === 'function') && pathIsSettled(owner)) {
     fieldIdentities.set(owner, identity);
   }
 
