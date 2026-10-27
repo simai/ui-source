@@ -1,0 +1,12 @@
+{
+  "id": "load-applied-carries-the-object",
+  "intent": "record.load",
+  "summary": "An applied read carries the object with its sections, groups and fields, and the revision a later write will be compared against.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "record.sections is required even when there is one section: the arrangement is the host's, and a flat list of values would make the component invent one."
+  }
+}

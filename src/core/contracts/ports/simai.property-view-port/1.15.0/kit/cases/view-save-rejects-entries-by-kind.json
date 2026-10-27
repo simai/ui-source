@@ -1,0 +1,36 @@
+{
+  "id": "view-save-rejects-entries-by-kind",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A layer naming an entry the host does not know is refused, with the reason under the entry that caused it, keyed by kind and key.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": "v7"
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {
+          "ghost": {
+            "order": 1
+          }
+        },
+        "groups": {},
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "note": "Keyed by kind -- section:ghost -- because a section and a field may share a key. A bare key could name two different entries, and the error would be shown under the wrong one, which is worse than no error at all: it accuses something that is fine."
+  }
+}
