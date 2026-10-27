@@ -1,0 +1,186 @@
+{
+  "component": "sf-help-mark",
+  "probe": "sf-help-mark against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <style>#h-var { --sf-help-mark-background-color: rgb(1, 2, 3); }</style>",
+      "  <label id=\"l\">Код решения <sf-help-mark id=\"h\" label=\"Подробнее: код решения\" heading=\"Код решения\" text=\"Уникальное имя модуля.\"></sf-help-mark></label>",
+      "  <sf-help-mark id=\"h-old\" title=\"Старое имя\" text=\"Пояснение.\"></sf-help-mark>",
+      "  <button type=\"button\" id=\"elsewhere\">Мимо</button>",
+      "  <sf-help-mark id=\"h-var\" text=\"Своя заливка.\"></sf-help-mark>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-closed",
+      "title": "closed: a named button with aria-expanded false, the explanation hidden",
+      "covers": "accessibility.role button, accessibility.name label",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#h sf-icon-button button'); return b.getAttribute('aria-label') === 'Подробнее: код решения' && b.getAttribute('aria-expanded') === 'false' && document.querySelector('#h .sf-help-mark-panel').hidden; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-word",
+      "title": "without label the button says the page's word",
+      "covers": "settings.label default-from runtime.label",
+      "steps": [
+        {
+          "check": "document.querySelector('#h-old sf-icon-button button').getAttribute('aria-label') === 'Подробнее'"
+        }
+      ]
+    },
+    {
+      "id": "p3-enter-opens",
+      "title": "Enter opens it and sends sf-help-mark-opened, then the dated sf-help-mark-open",
+      "covers": "keyboard Enter toggle:open, events.opened, aliases.json sf-help-mark-open, host-states data-open",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#h sf-icon-button button').focus(); return true; })()"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-help-mark-opened",
+                "count": 1
+              },
+              {
+                "name": "sf-help-mark-open",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.querySelector('#h .sf-help-mark-panel').hidden && document.querySelector('#h').getAttribute('data-open') === 'true' && document.querySelector('#h .sf-help-mark-title').textContent === 'Код решения'"
+        }
+      ]
+    },
+    {
+      "id": "p4-escape-closes",
+      "title": "Escape closes it, the focus stays on the button",
+      "covers": "keyboard Escape close, events.closed",
+      "steps": [
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#h",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          }
+        },
+        {
+          "script": "(() => { document.querySelector('#h sf-icon-button button').focus(); return true; })()"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-help-mark-closed",
+                "count": 1
+              },
+              {
+                "name": "sf-help-mark-close",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "document.querySelector('#h .sf-help-mark-panel').hidden && !document.querySelector('#h').hasAttribute('data-open') && document.activeElement === document.querySelector('#h sf-icon-button button')"
+        }
+      ]
+    },
+    {
+      "id": "p5-outside-closes",
+      "title": "a press outside closes it",
+      "covers": "dismissing outside",
+      "steps": [
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#h"
+        },
+        {
+          "script": "(() => { const e = document.querySelector('#elsewhere'); e.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})); return true; })()",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-help-mark-closed",
+                "count": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-actions-answer",
+      "title": "close on a closed mark answers applied and sends nothing",
+      "covers": "actions.close outcome",
+      "steps": [
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#h",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-help-mark-closed",
+                "count": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-title-dated",
+      "title": "title still draws the heading, noted with its dates",
+      "covers": "aliases.json title -> heading",
+      "steps": [
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#h-old"
+        },
+        {
+          "check": "document.querySelector('#h-old .sf-help-mark-title')?.textContent === 'Старое имя' && document.querySelector('#h-old').heading === 'Старое имя' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-help-mark' && note.from === 'title' && note.remove_after === '2026-12-01')"
+        }
+      ]
+    },
+    {
+      "id": "p8-public-variable",
+      "title": "--sf-help-mark-background-color, set by the page on the element, paints the explanation",
+      "covers": "css-variables --sf-help-mark-background-color",
+      "steps": [
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#h-var"
+        },
+        {
+          "check": "getComputedStyle(document.querySelector('#h-var .sf-help-mark-panel')).backgroundColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

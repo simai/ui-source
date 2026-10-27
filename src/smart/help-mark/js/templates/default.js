@@ -9,7 +9,7 @@ export function renderHelpMarkTemplate(context) {
                       aria-expanded=${String(Boolean(context.open))} aria-controls=${panelId}
                       @click=${() => context.component.toggle()}></sf-icon-button>
       <div class="sf-help-mark-panel" id=${panelId} ?hidden=${!context.open}>
-        ${context.title ? html`<div class="sf-help-mark-title">${context.title}</div>` : nothing}
+        ${context.heading ? html`<div class="sf-help-mark-title">${context.heading}</div>` : nothing}
         <div class="sf-help-mark-body">${context.body ?? context.text}</div>
       </div>
       <span class="sf-help-mark-live" role="status" aria-live="polite" aria-atomic="true">${context.announcement}</span>

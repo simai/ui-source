@@ -73,6 +73,10 @@
       "template": {
         "type": "string",
         "default": "default"
+      },
+      "heading": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -224,15 +228,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/help-mark/index.js",
-        "sha256": "3ad3d817dc173556dd2493b01df2f4169140b8de00e1d101a25aadd1d6cad2ee"
+        "sha256": "28971f2f4359d3572cb76c4f2144b947388b60a8d597ff81d0c1effce678a872"
       },
       {
         "path": "src/smart/help-mark/js/templates/default.js",
-        "sha256": "f9cc3b9e4a5f5e6554a6fa104991b1e5bca11fc541b120a61977291f898e031d"
+        "sha256": "5e191a94dff008b2ea5c1f40992daceea92a6b28339a1f192536962e55688da5"
       },
       {
         "path": "src/smart/help-mark/scss/_smart__help_mark.scss",
-        "sha256": "f4ce5ff57016114a264d8dfd21185a80ec4717a3e7c4e1d9e791775d8ff22b1f"
+        "sha256": "da793e668a26c4154dee7a81961c316bf09947422e305ca6bec4710c3515716e"
       },
       {
         "path": "src/smart/help-mark/rule.js",
@@ -240,7 +244,7 @@
       },
       {
         "path": "src/smart/help-mark/docs.md",
-        "sha256": "4d2ca000a7868b6934a0a20341c825fe97e82b4da54da6d643784f88e0b5efc0"
+        "sha256": "7e9f9fbdea88b2249234818e92d9807b33491f92f0e73dd1439cc4ff91427e7c"
       }
     ],
     "generated_runtime": []

@@ -35,6 +35,7 @@ const FOLDERS = {
   'reference-link': 'reference-link',
   'download-file': 'download-file',
   'copy-button': 'smart/copy-button',
+  'help-mark': 'smart/help-mark',
 };
 
 const scss = async (folder) => {

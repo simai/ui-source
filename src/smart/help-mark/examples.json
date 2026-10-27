@@ -1,0 +1,51 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Пояснение к коду решения",
+      "settings": {
+        "label": "Подробнее: код решения",
+        "text": "Уникальное имя модуля латиницей."
+      },
+      "expect": {
+        "label": "Подробнее: код решения"
+      }
+    },
+    {
+      "name": "heading",
+      "title": "С заголовком",
+      "settings": {
+        "label": "Подробнее: код решения",
+        "heading": "Код решения",
+        "text": "Уникальное имя модуля латиницей, например simai.billing."
+      },
+      "expect": {
+        "heading": "Код решения"
+      }
+    },
+    {
+      "name": "content",
+      "title": "Со ссылкой в пояснении",
+      "children": "<div slot=\"content\">Подробнее — в <a href=\"/docs/access\">руководстве по доступу</a>.</div>",
+      "settings": {
+        "label": "Подробнее: уровни доступа"
+      },
+      "expect": {
+        "label": "Подробнее: уровни доступа"
+      }
+    },
+    {
+      "name": "small",
+      "title": "Маленький знак, сверху",
+      "settings": {
+        "text": "Можно оставить пустым.",
+        "size": "1/3",
+        "placement": "top"
+      },
+      "expect": {
+        "size": "1/3",
+        "placement": "top"
+      }
+    }
+  ]
+}

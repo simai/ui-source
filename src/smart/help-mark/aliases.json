@@ -1,0 +1,40 @@
+{
+  "$comment": "Dated aliases of sf-help-mark for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-help-mark",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-help-mark",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26",
+      "note": "title is a property of every element (§3.1); the shim maps the attribute, the browser keeps its title property"
+    },
+    {
+      "from": "sf-help-mark-open",
+      "to": "sf-help-mark-opened",
+      "kind": "event",
+      "component": "sf-help-mark",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, vocabulary §4",
+      "note": "sent after the explanation opened: a fact, so the past form"
+    },
+    {
+      "from": "sf-help-mark-close",
+      "to": "sf-help-mark-closed",
+      "kind": "event",
+      "component": "sf-help-mark",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, vocabulary §4",
+      "note": "sent after the explanation closed: a fact, so the past form"
+    }
+  ]
+}
