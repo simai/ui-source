@@ -688,7 +688,8 @@
         "to": "1.8.0",
         "changes": [
           "A docked drawer without the room (dock host or window narrower than its dock-breakpoint) floats over the page as a modal panel: scrim, focus kept inside, page lock, Escape, focus returned to its opener. A docked column is unchanged.",
-          "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before."
+          "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before.",
+          "A modal drawer's Tab cycle runs through the panel and then its edge (close, copy-link, open-full of sf-property-view); a focus on the edge counts as inside."
         ]
       }
     ]
@@ -699,7 +700,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "d39cfd50560d0dd812c4770161bedcea86f4a1b92c89f40b495661d1fb9c8670"
+        "sha256": "c8a7d5dcb910b921e524c836ae40b0e144ab498cffee5429970356b63765fbc6"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
