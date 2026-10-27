@@ -1,6 +1,6 @@
 {
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
-  "id": "smart.inputs",
+  "id": "smart.input",
   "tag": "sf-input",
   "version": "1.3.0",
   "kind": "leaf",
@@ -311,7 +311,7 @@
     }
   },
   "x-decisions": [
-    "folder: inputs -> input (§3, §21). The loader bundle is cl-input; cl-inputs stays a rule that loads it (until 2026-12-01). The id stays smart.inputs: the registry (and the parts catalogue the validator reads, §21.4), the larena package contract and three manifests name it; renaming an id is not a folder move.",
+    "folder and id: inputs -> input (§3, §21). The loader bundle is cl-input; the former bundle name cl-inputs is a dated Loader forward to it (src/core/contracts/smart-rule-forwards.v1.json, until 2026-12-01), not a rule of its own, so the registry counts one Smart component. The registry id follows the folder and the tag: smart.input; smart.inputs is its dated alias in the change journal (path-smart-inputs-to-input, until 2026-12-01).",
     "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
     "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",

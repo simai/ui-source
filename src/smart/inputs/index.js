@@ -13,8 +13,8 @@
 // - its sheet, css/inputs.css, is sf-input's sheet, built from the same
 //   sources as css/input.css.
 //
-// The Loader's own rule for the old bundle name, cl-inputs, forwards to
-// cl-input (src/smart/input/rule.js) and never fetches this file.
+// The Loader forwards the old bundle name, cl-inputs, to cl-input
+// (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import '../helpers/inherited-value.css';
 import '../input/js/templates/default.css';

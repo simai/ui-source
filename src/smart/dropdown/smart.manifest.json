@@ -24,7 +24,7 @@
     "uses": [
       "component.dropdown",
       "smart.list-item",
-      "smart.inputs",
+      "smart.input",
       "smart.icon-buttons"
     ],
     "public_parts": []

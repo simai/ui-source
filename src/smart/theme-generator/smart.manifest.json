@@ -27,7 +27,7 @@
   "composition": {
     "uses": [
       "smart.color",
-      "smart.inputs",
+      "smart.input",
       "smart.buttons",
       "smart.icon-buttons",
       "smart.icons"

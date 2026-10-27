@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.inputs",
+  "component": "smart.input",
   "title": "Inputs reference",
   "summary": "Deterministic reference fixture for sf-input.",
   "locale": "ru",

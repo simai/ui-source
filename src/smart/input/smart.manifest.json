@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "id": "smart.inputs",
+  "id": "smart.input",
   "version": "1.2.0",
   "title": "Inputs",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
@@ -549,7 +549,7 @@
       },
       {
         "path": "src/smart/input/rule.js",
-        "sha256": "dfe837b976e8a6670661e7ae342bfde7079e8fae34afa484a2068b21d104ccf4"
+        "sha256": "99572e435068fd03c271dd5f1225fce3b4f7d0919747829a3359978fed8b041f"
       },
       {
         "path": "src/smart/input/js/templates/default.js",

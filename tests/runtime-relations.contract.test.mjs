@@ -17,18 +17,14 @@ const ruleKeyOf = (source) => source.match(/SF\.RuleLoader\[['"]([^'"]+)/u)?.[1]
 const relationsOf = (source) => new Set([...source.matchAll(/name:\s*['"]([^'"]+)/gu)].map((m) => m[1]));
 
 // A rule that only forwards: a Smart folder renamed by standard 1.3.8 §3, §21
-// keeps its former bundle name as a dated rule with no tags of its own whose one
-// relation is the new name (src/smart/input/rule.js: cl-inputs -> cl-input).
-// The Loader follows it, so naming the former key fetches the new one.
-const forwardingRules = () => {
-  const forwards = new Map();
-  for (const entry of readdirSync(resolve(root, 'src/smart'), {withFileTypes: true})) {
-    const rule = resolve(root, `src/smart/${entry.name}/rule.js`);
-    if (!entry.isDirectory() || !existsSync(rule)) continue;
-    for (const match of readFileSync(rule, 'utf8').matchAll(/SF\.RuleLoader\[['"]([^'"]+)['"]\] = \{\s*tags: \[\],[\s\S]*?relation: \[\{ name: '([^']+)' \}\]/gu)) forwards.set(match[1], match[2]);
-  }
-  return forwards;
-};
+// keeps its former bundle name as a dated Loader forward whose one relation is
+// the new name (src/core/contracts/smart-rule-forwards.v1.json: cl-inputs ->
+// cl-input). The Loader installs it as a rule, so naming the former key fetches
+// the new one.
+const forwardingRules = () => new Map(
+  Object.entries(JSON.parse(readFileSync(resolve(root, 'src/core/contracts/smart-rule-forwards.v1.json'), 'utf8')).forwards)
+    .map(([name, forward]) => [name, forward.to]),
+);
 const followed = (relation, forwards = forwardingRules()) => new Set([...relation, ...[...relation].map((name) => forwards.get(name)).filter(Boolean)]);
 
 // A used id is matched by the id each manifest declares, not by its directory

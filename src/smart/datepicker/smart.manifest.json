@@ -31,7 +31,7 @@
   "composition": {
     "uses": [
       "component.datepicker",
-      "smart.inputs",
+      "smart.input",
       "smart.buttons",
       "smart.icon-buttons",
       "smart.icons"

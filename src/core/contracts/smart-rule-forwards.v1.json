@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "$comment": "Former Smart bundle names the Loader still answers to. A forward is not a rule in the distribution (a rule of type smart is a Smart component to the registry, and a forward has no element); the Loader installs it at start as a rule with no tags, no assets and one relation, the new name, unless a rule of that name is already defined. Each forward is dated and has a change journal record; remove it on remove_after.",
+  "forwards": {
+    "cl-inputs": {
+      "to": "cl-input",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "journal": "path-smart-inputs-to-input"
+    }
+  }
+}

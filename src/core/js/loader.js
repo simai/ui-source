@@ -3,6 +3,7 @@ import stableHash from './stableHash';
 import pageStorage from './page-storage.js';
 import { convertTailwindClasses } from './tailwind-map';
 import utilityModuleAliases from '../contracts/utility-module-aliases.v1.json';
+import smartRuleForwards from '../contracts/smart-rule-forwards.v1.json';
 import templateUtilities from './template-utilities.generated.json';
 import { resolveUtilityModule } from './utilityModuleAliases';
 import {
@@ -223,6 +224,22 @@ function SFLoaderPlugin(params) {
       ? params.frameworkPath
       : '/simai/asset/simai.framework/sf5.master/utility/';
   this.findPlugins = params.findPlugins ? params.findPlugins : {};
+  // A Smart bundle's former name (a folder renamed by standard 1.3.8 §3, §21)
+  // keeps loading the bundle until its remove_after: a rule with no element and
+  // no assets of its own whose one relation is the new name. It lives here, not
+  // in a rule.js, because the distribution's rule inventory counts every rule of
+  // type smart as a Smart component (contracts/smart-rule-forwards.v1.json).
+  Object.entries(smartRuleForwards.forwards || {}).forEach(([name, forward]) => {
+    if (!forward?.to || Object.hasOwn(this.findPlugins, name)) return;
+    this.findPlugins[name] = {
+      tags: [],
+      type: 'smart',
+      mode: 'smart',
+      js: false,
+      css: false,
+      relation: [{name: forward.to}],
+    };
+  });
   this.requiredPlugins = params.requiredPlugins ? params.requiredPlugins : [];
   this.isLoadPluginCookie = params.isLoadPluginCookie
       ? params.isLoadPluginCookie

@@ -214,6 +214,14 @@
   "cl-image-field": [
     "position/default"
   ],
+  "cl-input": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "position/default",
+    "text-align/default",
+    "transition-property/default"
+  ],
   "cl-list-item": [
     "align-items/default",
     "background-color/default",
