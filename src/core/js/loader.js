@@ -229,8 +229,12 @@ function SFLoaderPlugin(params) {
   // no assets of its own whose one relation is the new name. It lives here, not
   // in a rule.js, because the distribution's rule inventory counts every rule of
   // type smart as a Smart component (contracts/smart-rule-forwards.v1.json).
+  // A relation that names a forward is taken as its target (setRelation), so
+  // the element waits for the bundle itself, not for a rule with no assets.
+  this.ruleForwards = {};
   Object.entries(smartRuleForwards.forwards || {}).forEach(([name, forward]) => {
     if (!forward?.to || Object.hasOwn(this.findPlugins, name)) return;
+    this.ruleForwards[name] = forward.to;
     this.findPlugins[name] = {
       tags: [],
       type: 'smart',
@@ -2526,7 +2530,11 @@ SFLoaderPlugin.prototype.setRelation = function (
   }
   visited.add(name);
 
-  relation.forEach((rel) => {
+  relation.forEach((named) => {
+    const forwardTo = named?.name && this.ruleForwards?.[named.name];
+    const rel = forwardTo && this.findPlugins?.[named.name]?.package === undefined
+        ? {...named, name: forwardTo}
+        : named;
     if (!rel?.name || !this.isPluginResolvable(rel.name)) {
       return;
     }
