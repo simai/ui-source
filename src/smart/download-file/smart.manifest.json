@@ -232,7 +232,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "497a081882171aa36a3089c3235148998b5cebc7",
     "source_artifacts": [
       {
         "path": "src/smart/download-file/index.js",

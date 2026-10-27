@@ -251,7 +251,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "6ba77340e67ba45aa44a29e4ad79ea6d351fe9bc",
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",

@@ -306,7 +306,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "1418f39995ff5038509f8c2826f1016b23adb849",
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",

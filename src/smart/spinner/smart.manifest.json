@@ -268,7 +268,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "61b2997ca6849092c82b862fdf1b425b92156c51",
     "source_artifacts": [
       {
         "path": "src/smart/spinner/index.js",

@@ -413,7 +413,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "3611b57e08b6f316eb3e90510206f7e286ae1a45",
+    "source_revision": "b49854caf8449125bc790b0faf4105315e2d9985",
     "source_artifacts": [
       {
         "path": "src/smart/accordion/index.js",

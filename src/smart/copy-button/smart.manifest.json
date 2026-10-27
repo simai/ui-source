@@ -268,7 +268,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "b26e52222c029f1caa6258d719d93b101a2d3b5d",
     "source_artifacts": [
       {
         "path": "src/smart/copy-button/index.js",

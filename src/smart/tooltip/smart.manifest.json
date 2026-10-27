@@ -192,7 +192,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "88e07ddaf6d3881e52474fca81be23734ddeb6db",
     "source_artifacts": [
       {
         "path": "src/smart/tooltip/index.js",

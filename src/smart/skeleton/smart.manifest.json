@@ -228,7 +228,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "19d303ed6c52120533f926b1488891542b7760be",
     "source_artifacts": [
       {
         "path": "src/smart/skeleton/index.js",

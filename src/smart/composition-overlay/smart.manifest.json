@@ -581,7 +581,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "8809dea2bbb30e62d89f0348e0c002ee9b38370f",
     "source_artifacts": [
       {
         "path": "src/smart/composition-overlay/index.js",

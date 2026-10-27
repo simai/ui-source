@@ -687,7 +687,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "8d9e15c000801a845b232e6b3e8fefe9adfaf2dd",
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",

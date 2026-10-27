@@ -420,7 +420,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "6569767bc683088b7f88ece126cdeaf99341c7a4",
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",

@@ -227,7 +227,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "65f6a59b6134feea0c99c94e623d37f047219380",
     "source_artifacts": [
       {
         "path": "src/smart/progress-scale/index.js",

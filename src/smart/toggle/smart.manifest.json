@@ -327,7 +327,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "298e4fe32c37535a1605a609efdbd579f3848f4c",
     "source_artifacts": [
       {
         "path": "src/smart/toggle/index.js",

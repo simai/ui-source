@@ -185,7 +185,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
+    "source_revision": "9344c9536c90f46334f3bde499f4eeba99fd1959",
     "source_artifacts": [
       {
         "path": "src/smart/page-header/index.js",

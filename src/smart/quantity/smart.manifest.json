@@ -502,7 +502,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "3611b57e08b6f316eb3e90510206f7e286ae1a45",
+    "source_revision": "d949e0253f672652b706a70c107ed9c4711c3613",
     "source_artifacts": [
       {
         "path": "src/smart/quantity/index.js",
