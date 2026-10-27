@@ -1,0 +1,70 @@
+{
+  "$comment": "Dated aliases of sf-composition-overlay for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-composition-overlay",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-composition-overlay-action",
+      "to": "sf-composition-overlay-apply",
+      "kind": "event",
+      "component": "sf-composition-overlay",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-composition-overlay-action",
+        "to": "apply"
+      },
+      "section": "§8, vocabulary 1.1.5",
+      "note": "the old detail {action_id, node_id} is made by the element's adapter"
+    },
+    {
+      "from": "sf-composition-overlay-edit",
+      "to": "sf-composition-overlay-change",
+      "kind": "event",
+      "component": "sf-composition-overlay",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "manifest": {
+        "from": "sf-composition-overlay-edit",
+        "to": "change"
+      },
+      "section": "§8, vocabulary 1.1.5",
+      "note": "the old detail {node_id, value, previous} is made by the element's adapter; the cancel is shared"
+    },
+    {
+      "from": "sf-composition-overlay-select",
+      "to": "select",
+      "kind": "event",
+      "component": "sf-composition-overlay",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "note": "the DOM name is unchanged; the detail adds ids and id beside node_id"
+    },
+    {
+      "from": "sf-composition-overlay-move",
+      "to": "move",
+      "kind": "event",
+      "component": "sf-composition-overlay",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "note": "the DOM name is unchanged; the detail adds ids, id, parent and position beside node_id, parent_id and index"
+    },
+    {
+      "from": "sf-composition-overlay-insert",
+      "to": "insert",
+      "kind": "event",
+      "component": "sf-composition-overlay",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "note": "the manifest declares the verb; the DOM name is unchanged; the detail adds parent beside parent_id"
+    }
+  ]
+}

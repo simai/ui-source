@@ -50,11 +50,23 @@ overlay.setDropFilter((place, item) => place.slot === 'default');
 
 ## События
 
-- `sf-composition-overlay-select` — `{node_id}`;
-- `sf-composition-overlay-action` — `{action_id, node_id}`;
-- `sf-composition-overlay-insert` — `{parent_id, slot, index}`, из библиотеки ещё `{item, from, mode}`;
-- `sf-composition-overlay-move` — `{node_id, parent_id, slot, index}`.
-- `sf-composition-overlay-edit` — `{node_id, value, previous}`, только в рамочном режиме, отменяемое.
+- `sf-composition-overlay-select` — `{ids, id}` (словарь 1.1.5, `select`), и
+  прежнее `node_id`;
+- `sf-composition-overlay-apply` — `{action, scope: 'entry', ids}`: действие
+  панели для выбранного узла (словарь, `apply`). Прежнее
+  `sf-composition-overlay-action` (`{action_id, node_id}`) приходит следом до
+  2026-12-01;
+- `sf-composition-overlay-insert` — `{parent, slot, index}` и прежнее
+  `parent_id`, из библиотеки ещё `{item, from, mode}`;
+- `sf-composition-overlay-move` — `{ids, id, parent, position}` (словарь,
+  `move`: одно перемещение) и прежние `node_id`, `parent_id`, `slot`, `index`;
+- `sf-composition-overlay-change` — `{id, value, previous}`, только в рамочном
+  режиме, отменяемое. Прежнее `sf-composition-overlay-edit`
+  (`{node_id, value, previous}`) приходит следом до 2026-12-01; отмена любого
+  из двух отменяет оба.
+
+`SF.CompositionOverlay.OVERLAY_EVENTS` — новые имена,
+`OVERLAY_EVENTS_LEGACY` — прежние.
 
 События несут только намерение. Хост меняет Document, сохраняет его с
 ожидаемой ревизией, проверяет и перерисовывает; `setDropFilter` лишь скрывает
@@ -130,19 +142,22 @@ document's elements.
   click on no node clears the selection. A click never follows a link in the
   frame.
 - The toolbar (`setActions`) above the selection, or below it, inside the
-  visible part of the frame; `sf-composition-overlay-action` with
-  `{action_id, node_id}`.
+  visible part of the frame; `sf-composition-overlay-apply` with
+  `{action, scope: 'entry', ids}` (the former `sf-composition-overlay-action`
+  with `{action_id, node_id}` follows until 2026-12-01).
 - Insertion points among the selected node's siblings and at the end of its
-  children; `sf-composition-overlay-insert` with `{parent_id, slot, index}`,
-  where the top level is `parent_id: ""` and the slot is always `"default"`.
+  children; `sf-composition-overlay-insert` with `{parent, parent_id, slot,
+  index}`, where the top level is `parent: ""` and the slot is always
+  `"default"`.
   `setDropFilter((place) => boolean)` hides places the host would refuse.
 - Plain-string inline editing: Enter on a selected editable node (or a
   double-click) makes its element `contenteditable="plaintext-only"` and
   selects its text. Enter or leaving the field commits, Escape cancels and
   puts the text back. A commit with a changed value raises
-  `sf-composition-overlay-edit` with `{node_id, value, previous}` — strings
-  with whitespace collapsed. The event is cancelable: `preventDefault()` puts
-  the previous text back. Otherwise the typed text stays until the host
+  `sf-composition-overlay-change` with `{id, value, previous}` — strings
+  with whitespace collapsed (the former `sf-composition-overlay-edit` with
+  `{node_id, value, previous}` follows until 2026-12-01). The event is
+  cancelable: `preventDefault()` on either puts the previous text back. Otherwise the typed text stays until the host
   re-renders the frame from its model. `edit(id)` starts editing from script.
 
 The overlay never changes the host's model: every event is intent, and the
@@ -169,3 +184,16 @@ closes the innermost layer: while editing it cancels the edit (an edit in
 progress is an open surface, `isTopOpenSurface`); otherwise it clears the
 selection unless another open surface (a popover, a list) is above it. Nodes
 are not dragged or moved by keyboard (Space) in framed mode.
+
+## Интерфейс
+
+Интерфейс — `component.json` (стандарт simai.smart-component 1.3.8), слова —
+`lang/`, примеры — `examples.json`. Настройки — свойства элемента: `for`,
+`frame`, `accepts`, `label`, `actions` (через ту же проверку, что
+`setActions`), `messages`, `insertionTarget`. Методы `attach`, `attachFrame`,
+`setDocument`, `setNodes`, `setDropFilter`, `setActions`, `setMessages`,
+`setInsertionTarget`, `select`, `edit`, `refresh` по-прежнему возвращают
+элемент. Публичные переменные: `--sf-composition-overlay-frame-color`,
+`--sf-composition-overlay-z-index`,
+`--sf-composition-overlay-toolbar-background-color`,
+`--sf-composition-overlay-toolbar-radius`, `--sf-composition-overlay-toolbar-gap`.

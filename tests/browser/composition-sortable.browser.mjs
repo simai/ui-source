@@ -105,7 +105,7 @@ await page.mouse.up();
 await page.waitForTimeout(80);
 state = await lab();
 observations.canvasMove = state.overlay.at(-1);
-check(state.overlay.at(-1)?.type === 'sf-composition-overlay-move' && JSON.stringify(state.overlay.at(-1).detail) === JSON.stringify({ node_id: 'aside-text', parent_id: 'shell-main', slot: 'default', index: 0 }), 'dragging a node label reports a move intent', state.overlay.at(-1));
+check(state.overlay.at(-1)?.type === 'sf-composition-overlay-move' && JSON.stringify(state.overlay.at(-1).detail) === JSON.stringify({ node_id: 'aside-text', parent_id: 'shell-main', slot: 'default', index: 0, ids: ['aside-text'], id: 'aside-text', parent: 'shell-main', position: 0 }), 'dragging a node label reports a move intent', state.overlay.at(-1));
 
 // Releasing a node over itself is not a move.
 const beforeSelf = (await lab()).overlay.length;

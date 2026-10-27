@@ -1,0 +1,366 @@
+{
+  "$comment": "The source of sf-composition-overlay's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/composition-overlay (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.composition-overlay",
+  "tag": "sf-composition-overlay",
+  "version": "1.2.0",
+  "kind": "leaf",
+  "family": "editor",
+  "settings": {
+    "for": {
+      "type": "string",
+      "default": "",
+      "summary": "The id of the canvas element the overlay draws over"
+    },
+    "frame": {
+      "type": "string",
+      "default": "",
+      "summary": "The id of a same-origin iframe canvas (framed mode, fed by setNodes)"
+    },
+    "accepts": {
+      "type": "string",
+      "default": "",
+      "summary": "sf-sortable groups whose items may be dropped on the canvas, separated by spaces"
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The structure tree's name; the language file's runtime.tree otherwise"
+    },
+    "actions": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "string",
+        "label": "string"
+      },
+      "summary": "The selected node's actions: up to 16 {id, label}; written through the same check as setActions"
+    },
+    "messages": {
+      "type": "object",
+      "default": {},
+      "summary": "The host's own words over the language file's; written through setMessages"
+    },
+    "insertion-target": {
+      "type": "object",
+      "default": {},
+      "summary": "The insertion place the host keeps marked {parent_id, slot, index}; written through setInsertionTarget"
+    }
+  },
+  "values": {},
+  "events": {
+    "select": {
+      "carries": {
+        "ids": "list",
+        "id": {
+          "type": "id",
+          "nullable": true
+        }
+      },
+      "summary": "A node was selected (or the selection cleared): vocabulary 1.1.5 §5 select; the detail keeps node_id for the composition host"
+    },
+    "apply": {
+      "carries": {
+        "action": "string",
+        "scope": {
+          "type": "enum",
+          "values": [
+            "entry"
+          ]
+        },
+        "ids": "list"
+      },
+      "summary": "An action of the toolbar was chosen for the selected node: one entry's own action (vocabulary §5 apply, standard §18.3)"
+    },
+    "insert": {
+      "carries": {
+        "parent": "id",
+        "slot": "string",
+        "index": "number",
+        "item": "string",
+        "from": "string",
+        "mode": {
+          "type": "enum",
+          "values": [
+            "move",
+            "copy"
+          ]
+        }
+      },
+      "own-verb": true,
+      "summary": "An insertion point was chosen, or a library item dropped on the canvas: the place {parent, slot, index} and the item when one was dragged; the detail keeps parent_id for the composition host"
+    },
+    "move": {
+      "carries": {
+        "ids": "list",
+        "id": "id",
+        "parent": "id",
+        "position": "number",
+        "slot": "string"
+      },
+      "summary": "A node was moved to a place by pointer or keyboard: one manual move (vocabulary §5 move, {id, parent, position}); the detail keeps node_id, parent_id and index for the composition host"
+    },
+    "change": {
+      "carries": {
+        "id": "id",
+        "value": "string",
+        "previous": "string"
+      },
+      "cancelable": true,
+      "x-native": false,
+      "summary": "A plain-string edit was committed; cancelled, the text shows what it showed before"
+    }
+  },
+  "actions": {
+    "attach": {
+      "with": {
+        "canvas": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Draws over a canvas element; the canvas is never modified"
+    },
+    "attach-frame": {
+      "with": {
+        "iframe": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Draws over a same-origin iframe canvas fed by set-nodes"
+    },
+    "set-document": {
+      "with": {
+        "document": "object",
+        "options": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Reads a Composition Document's nodes"
+    },
+    "set-nodes": {
+      "with": {
+        "nodes": {
+          "type": "list",
+          "of": {
+            "id": "id",
+            "kind": "string",
+            "label": "string",
+            "parent": "id",
+            "editable": "boolean",
+            "rect": "object",
+            "element": "object"
+          }
+        },
+        "options": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Reads a flat node list (framed mode)"
+    },
+    "set-drop-filter": {
+      "with": {
+        "filter": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "filter({parent_id, slot, index}, item) hides the places a drop may not take"
+    },
+    "set-actions": {
+      "with": {
+        "actions": "list"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Writes the selected node's actions (the actions setting)"
+    },
+    "set-messages": {
+      "with": {
+        "messages": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Writes the host's own words (the messages setting)"
+    },
+    "set-insertion-target": {
+      "with": {
+        "target": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Writes the marked insertion place (the insertion-target setting)"
+    },
+    "select": {
+      "with": {
+        "id": "object",
+        "options": "object"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Selects a node; {focus, emit}"
+    },
+    "edit": {
+      "with": {
+        "id": "string"
+      },
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Starts a plain-string edit of an editable node"
+    },
+    "refresh": {
+      "x-returns": "the element, for chaining (the composition host's port)",
+      "summary": "Measures the canvas again"
+    }
+  },
+  "keyboard": {
+    "host": {
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "../../core/js/composition/overlay.mjs",
+      "$comment": "The overlay draws its frames, toolbar, insertion points and structure tree itself (core/js/composition/overlay.mjs); the canvas is the host's and is never changed."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The structure tree is the overlay's keyboard surface: role tree, named by label (the language file's «Структура страницы» otherwise), one Tab stop; the arrows walk the nodes, Enter or Space selects, Escape closes a move or an edit; the toolbar is role toolbar; each step is said in a polite live region.",
+    "role": "tree",
+    "name": {
+      "from": [
+        "label",
+        "runtime.tree"
+      ]
+    },
+    "keys": {
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "css-variables": {
+    "--sf-composition-overlay-frame-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-composition-overlay-z-index": {
+      "type": "number",
+      "state": "default"
+    },
+    "--sf-composition-overlay-toolbar-background-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-composition-overlay-toolbar-radius": {
+      "type": "length",
+      "state": "selected"
+    },
+    "--sf-composition-overlay-toolbar-gap": {
+      "type": "length",
+      "state": "selected"
+    }
+  },
+  "x-summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
+  "x-source": {
+    "package": "framework",
+    "folder": "composition-overlay",
+    "manifest": "simai/ui-source@5100227 src/smart/composition-overlay/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/composition-overlay.component.json"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-renamed": [
+    "events.sf-composition-overlay-action {action_id, node_id} → apply {action, scope: entry, ids}: one entry's own action (vocabulary 1.1.5 §5 apply, standard §18.3); sf-composition-overlay-apply, the old name a dated split alias",
+    "events.sf-composition-overlay-edit {node_id, value, previous} → change {id, value, previous}, cancelable: a committed value (vocabulary §5.1, as sf-inline-edit-commit and sf-theme-change); sf-composition-overlay-change, the old name a dated split alias sharing the cancel",
+    "events select and move keep their DOM names (vocabulary §5 select, move) and add the vocabulary's fields (ids, id; ids, id, parent, position) beside node_id, parent_id and index",
+    "methods setActions, setMessages, setInsertionTarget: also the settings actions, messages and insertion-target (properties)",
+    "lang runtime holds the words of the overlay module (MESSAGES of core/js/composition/overlay.mjs)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention",
+        "saving or reordering host data"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-composition-overlay on an editor page over SF.Composition.render output. Treat every event as intent: the host changes the Document, saves it with an expected revision, validates and re-renders. For a canvas isolated in a same-origin iframe (a mail letter), use attachFrame (or frame=\"id\") and setNodes with a flat node list; edits arrive as sf-composition-overlay-edit.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not write editor markup into the canvas HTML",
+        "Do not treat setDropFilter as validation; Document validation stays authoritative",
+        "Do not put the overlay after the canvas in Tab order",
+        "Do not expect the overlay to keep an edited text: it raises the intent, the host updates its model and re-renders the frame",
+        "Do not point the framed mode at a cross-origin frame"
+      ],
+      "required_reads": [
+        "inputs",
+        "contracts",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-composition-overlay id=\"overlay\" for=\"canvas\" accepts=\"blocks\"></sf-composition-overlay><div id=\"canvas\"></div>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "events (vocabulary 1.1.5): select {ids, id}, apply {action, scope: entry, ids} for the toolbar's action, insert (the component's own verb: a place chosen or a library item dropped -- a move or a copy, not §5 create), move {ids, id, parent, position} -- one manual move -- and change {id, value, previous}, cancelable, for a plain-string edit (x-native false: sf-composition-overlay-change).",
+    "the composition host's contract stays (larena composition-editor-next listens to -select, -action, -move and -insert): select, move and insert keep their DOM names and keep node_id, parent_id and index in the detail beside the vocabulary's fields; action and edit are followed by sf-composition-overlay-action {action_id, node_id} and -edit {node_id, value, previous} until 2026-12-01 through the overlay's aliases.json and the element's adapters, the cancel of the edit shared. An overlay defined without its manifest sends both itself. OVERLAY_EVENTS holds the new names, OVERLAY_EVENTS_LEGACY the former.",
+    "own-verb-words: insert -- its word is events.insert.label of the language files («Вставить», \"Insert\"); action became apply, edit became change.",
+    "setter: actions, messages and insertion-target are writable settings, properties written through the same checks as setActions, setMessages and setInsertionTarget, which stay the host's port.",
+    "the methods attach, attach-frame, set-document, set-nodes, set-drop-filter, set-actions, set-messages, set-insertion-target, select, edit and refresh are the composition host's port (simai.composition editor): they keep answering the element, for chaining, not an outcome (x-returns); the port stays as the composition editor uses it.",
+    "item-shape: actions name their fields with of ({id, label}, checkOverlayActions); set-nodes takes a list of nodes {id, kind, label, parent, editable, rect | element} (checkOverlayNodes).",
+    "element: the overlay stays the plain element the composition module defines; defineCompositionOverlay(registry, {base}) extends the class core/js/composition/manifest-host.mjs makes from this component.json (the settings' properties, the aliases.json shim, sfWord).",
+    "words (§11): the language files hold the overlay module's words; the module keeps its copy and reads them through the page's language; messages overrides them per instance.",
+    "version 1.2.0: events renamed behind dated aliases and detail fields added (§4.10).",
+    "examples: examples.json from studio.fixture.json (an overlay for a canvas) plus a framed canvas, a library that drops on the canvas and actions.",
+    "css-variables: five public variables of its sheet: the frames' and insertion points' colour (read into the overlay's own --sf-composition-overlay-color), the layer's z-index, the toolbar's fill, radius and gap. Not in src/core/contracts/public-variables.v1.json: the parts they colour exist only over a canvas with a selection, which its probe does not draw.",
+    "source-drift: the shipped manifest differs from 5100227 in the framed mode (frame, attach-frame, set-nodes, simai/ui-source#22) and the plain-string edit (sf-composition-overlay-edit); they are carried here by hand."
+  ]
+}

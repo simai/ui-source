@@ -1,0 +1,19 @@
+{
+  "title": "Слой редактора",
+  "runtime": {
+    "cancelled": "Перемещение отменено.",
+    "editing": "Редактирование: {label}. Enter — сохранить, Escape — отменить.",
+    "insert": "Вставить",
+    "insert-at": "Вставить в «{slot}», позиция {index}",
+    "picked": "Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.",
+    "position": "{index} из {total}",
+    "selected": "Выбрано: {label}",
+    "toolbar": "Действия",
+    "tree": "Структура страницы"
+  },
+  "events": {
+    "insert": {
+      "label": "Вставить"
+    }
+  }
+}

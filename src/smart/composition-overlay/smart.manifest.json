@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Composition overlay",
   "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML. A framed mode draws the same chrome over a same-origin iframe fed a flat node list, with plain-string inline editing.",
   "kind": "smart",
@@ -50,6 +50,10 @@
         "type": "string",
         "default": "",
         "description": "id of a same-origin iframe canvas (framed mode, fed by setNodes); used instead of for"
+      },
+      "actions": {
+        "type": "array",
+        "default": []
       }
     },
     "additionalProperties": false
@@ -343,6 +347,56 @@
     }
   },
   "events": {
+    "sf-composition-overlay-apply": {
+      "summary": "A toolbar action was chosen for the selected node: {action, scope: entry, ids} (vocabulary apply). The host performs it.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action",
+          "scope",
+          "ids"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "entry"
+            ]
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sf-composition-overlay-change": {
+      "summary": "A plain-string edit was committed: {id, value, previous}; cancelable, a cancelled change puts the text back.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "previous"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "sf-composition-overlay-select": {
       "summary": "A node was selected.",
       "payload": {
@@ -358,7 +412,7 @@
       }
     },
     "sf-composition-overlay-action": {
-      "summary": "A toolbar action was chosen.",
+      "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
       "payload": {
         "type": "object",
         "required": [
@@ -436,7 +490,7 @@
       }
     },
     "sf-composition-overlay-edit": {
-      "summary": "A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back.",
+      "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back.",
       "payload": {
         "type": "object",
         "required": [
@@ -585,11 +639,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/composition-overlay/index.js",
-        "sha256": "52b96a10f46ff4405631e61cdf7315b8a4fe9fcb9de25dfc3e86ca405ef3b52c"
+        "sha256": "3f54d4c0f11d5a20b44b511ee085fd9036ea2974e7d395f186dfdc57b6d656f4"
       },
       {
         "path": "src/smart/composition-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "d2de68fc3a34d6359fb8e766f5465b269168885c88b7c4a7d7b5000918731e01"
+        "sha256": "a5cda7d4673544f04f23012bcfe645345062e42438883b0e0d803a9681c04d4c"
       },
       {
         "path": "src/smart/composition-overlay/rule.js",
@@ -597,11 +651,11 @@
       },
       {
         "path": "src/smart/composition-overlay/docs.md",
-        "sha256": "482c92b3ffd470a1ea9c915ba45499f91e1d509b531bd51f62691eb9b89d2356"
+        "sha256": "7d2d58e74089fc263947d5c05beb56a306c807174e10879c2b31246f7c9f4990"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "5b64ed24bf02a528979f215dd54126fdb613e9a42143035c212a0095271649ae"
+        "sha256": "088ce4d6d16103985b9624b8e226c66374085cfad9cb3ffb51562c4f7d8f750f"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",

@@ -1,0 +1,19 @@
+{
+  "title": "Composition overlay",
+  "runtime": {
+    "cancelled": "Move cancelled.",
+    "editing": "Editing {label}. Enter saves, Escape cancels.",
+    "insert": "Insert",
+    "insert-at": "Insert into “{slot}”, position {index}",
+    "picked": "Moving {label}. Arrows choose a place, Enter drops, Escape cancels.",
+    "position": "{index} of {total}",
+    "selected": "Selected: {label}",
+    "toolbar": "Actions",
+    "tree": "Page structure"
+  },
+  "events": {
+    "insert": {
+      "label": "Insert"
+    }
+  }
+}

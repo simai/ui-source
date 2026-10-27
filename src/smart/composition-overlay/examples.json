@@ -1,0 +1,52 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Слой над холстом",
+      "markup": "<div id=\"canvas\"><section data-sf-composition-id=\"root\"><h2 data-sf-composition-id=\"h\">Заголовок</h2><p data-sf-composition-id=\"p\">Абзац</p></section></div>",
+      "settings": {
+        "for": "canvas",
+        "accepts": "blocks",
+        "label": "Структура страницы"
+      },
+      "expect": {
+        "for": "canvas"
+      }
+    },
+    {
+      "name": "actions",
+      "title": "Действия выбранного узла",
+      "markup": "<div id=\"canvas-2\"><section data-sf-composition-id=\"root\"><p data-sf-composition-id=\"p\">Абзац</p></section></div>",
+      "settings": {
+        "for": "canvas-2",
+        "actions": [{"id": "move-up", "label": "Выше"}, {"id": "remove", "label": "Удалить"}]
+      },
+      "expect": {
+        "for": "canvas-2"
+      }
+    },
+    {
+      "name": "frame",
+      "title": "Холст во фрейме",
+      "markup": "<iframe id=\"letter\" srcdoc=\"<p data-node='hero-title'>Летняя распродажа</p>\"></iframe>",
+      "settings": {
+        "frame": "letter"
+      },
+      "expect": {
+        "frame": "letter"
+      }
+    },
+    {
+      "name": "library",
+      "title": "Принимает блоки из библиотеки",
+      "markup": "<sf-sortable group=\"blocks\" mode=\"copy\" label=\"Библиотека\"><div data-sf-sortable-item=\"heading\">Заголовок</div></sf-sortable><div id=\"canvas-3\"><section data-sf-composition-id=\"root\"></section></div>",
+      "settings": {
+        "for": "canvas-3",
+        "accepts": "blocks"
+      },
+      "expect": {
+        "accepts": "blocks"
+      }
+    }
+  ]
+}

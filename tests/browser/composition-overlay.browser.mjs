@@ -66,7 +66,7 @@ const insertions = await page.locator('.sf-composition-overlay-insert').count();
 check(insertions === 5, 'insertion points between siblings and at the slot end', insertions);
 await page.locator('.sf-composition-overlay-insert[data-index="3"]').click();
 recorded = await events();
-check(recorded.at(-1)?.type === 'sf-composition-overlay-insert' && JSON.stringify(recorded.at(-1).detail) === JSON.stringify({ parent_id: 'shell-main', slot: 'default', index: 3 }), 'insert event carries parent, slot and index', recorded.at(-1));
+check(recorded.at(-1)?.type === 'sf-composition-overlay-insert' && JSON.stringify(recorded.at(-1).detail) === JSON.stringify({ parent_id: 'shell-main', slot: 'default', index: 3, parent: 'shell-main' }), 'insert event carries parent, slot and index', recorded.at(-1));
 check(await page.locator('.sf-composition-overlay-insert[aria-pressed="true"]').count() === 1, 'chosen insertion point is marked', null);
 
 // Keyboard navigation through the accessible tree.
@@ -307,7 +307,7 @@ const insertionCount = await page.locator('.sf-composition-overlay-insert').coun
 check(insertionCount === 7, 'insertion points between the selected node\'s siblings and at the end of its children', insertionCount);
 await page.locator('.sf-composition-overlay-insert[data-parent=""][data-index="2"] .sf-composition-overlay-insert-mark').click();
 event = await lastEvent('sf-composition-overlay-insert');
-check(JSON.stringify(event?.detail) === JSON.stringify({ parent_id: '', slot: 'default', index: 2 }), 'insert event names the top-level list and the index', event);
+check(JSON.stringify(event?.detail) === JSON.stringify({ parent_id: '', slot: 'default', index: 2, parent: '' }), 'insert event names the top-level list and the index', event);
 await page.locator('.sf-composition-overlay-action[data-action="remove"]').click();
 event = await lastEvent('sf-composition-overlay-action');
 check(event?.detail.action_id === 'remove' && event.detail.node_id === 'text', 'toolbar action reports intent for the selected node', event);
