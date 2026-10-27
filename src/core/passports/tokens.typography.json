@@ -29,6 +29,11 @@
   "content_sha256": "ef3ead84cb2f49b4c0eddde3d4ca7628760daf940696d8c1d2736b2c8d604685",
   "dependencies": [
     {
+      "id": "font.inter",
+      "range": "^1.0.0",
+      "manual": true
+    },
+    {
       "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
