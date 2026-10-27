@@ -1,0 +1,69 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Раздел с дочерним пунктом",
+      "children": "<sf-tree-item label=\"Дочерний пункт\" value=\"child\"></sf-tree-item>",
+      "settings": {
+        "label": "Раздел",
+        "value": "section",
+        "open": true
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "file",
+      "title": "Файл",
+      "settings": {
+        "label": "Договор.pdf",
+        "value": "contract",
+        "kind": "file"
+      },
+      "expect": {
+        "kind": "file"
+      }
+    },
+    {
+      "name": "link",
+      "title": "Ссылка",
+      "settings": {
+        "label": "Решения",
+        "value": "solutions",
+        "href": "#solutions",
+        "kind": "file",
+        "active": true
+      },
+      "expect": {
+        "active": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступный узел",
+      "settings": {
+        "label": "Архив",
+        "value": "archive",
+        "kind": "file",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "no-icon",
+      "title": "Без значка",
+      "settings": {
+        "label": "Раздел без значка",
+        "value": "plain",
+        "kind": "file",
+        "icon": false
+      },
+      "expect": {
+        "icon": false
+      }
+    }
+  ]
+}

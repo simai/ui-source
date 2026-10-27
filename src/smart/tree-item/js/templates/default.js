@@ -1,29 +1,11 @@
 import { html, nothing } from 'lit';
+import { renderTreeRow } from './row.js';
 
-function joinClasses(...tokens) {
-  return tokens.flat().filter(Boolean).join(' ');
-}
+export { renderIcon } from './row.js';
 
-// Regular, not filled. A filled glyph was how a tree's icons carried their
-// weight while they were painted at a quarter strength; at full strength the
-// fill is a solid block beside a regular name, which is heavier than anything
-// else in the row (owner, 2026-10-08).
-function renderIcon(icon, className = '') {
-  if (!icon) return nothing;
-
-  return html`
-    <sf-icon icon=${icon} class=${className || nothing}></sf-icon>
-  `;
-}
-
-function renderLabel(context) {
-  if (context.label) {
-    return html`<span>${context.label}</span>`;
-  }
-
-  return context.content !== nothing ? context.content : nothing;
-}
-
+// A standalone sf-tree-item: its own row (the row sf-tree draws every entry
+// with), then, open, its children as sf-tree-item elements in a group. Inside
+// an sf-tree the item is only read: the tree draws the rows itself.
 function renderTreeItemData(item = {}) {
   return html`
     <sf-tree-item
@@ -31,7 +13,7 @@ function renderTreeItemData(item = {}) {
       href=${item.href || nothing}
       target=${item.target || nothing}
       rel=${item.rel || nothing}
-      kind=${item.type || nothing}
+      kind=${item.type || item.kind || nothing}
       value=${item.value || nothing}
       open-icon=${item.openIcon || nothing}
       closed-icon=${item.closedIcon || nothing}
@@ -50,94 +32,36 @@ function renderTreeItemData(item = {}) {
 }
 
 export function renderTreeItemTemplate(context) {
-  const itemClasses = joinClasses(
-    'sf-tree-item flex flex-col',
-    context.type ? `sf-tree-item--${context.kind ?? context.type}` : '',
-    context.open ? 'open' : '',
-    context.hasChildren ? 'has-children' : '',
-    context.selected || context.active ? 'active' : '',
-    context.disabled ? 'disabled' : '',
-    context.rootClass,
-    context.itemClass,
-  );
-  const containerClasses = joinClasses(
-    'sf-tree-item-container flex items-cross-center relative',
-    context.containerClass,
-  );
-  const nameClasses = joinClasses('sf-tree-item-name', context.nameClass);
-  const nodeIcon = context.open ? context.openIcon : context.closedIcon;
-  const chevronIcon = context.open
-    ? context.chevronOpenIcon
-    : context.chevronClosedIcon;
   const canToggle = !context.isFile && context.hasChildren;
-
-  return html`
-    <div
-      class=${itemClasses}
-      style=${context.rootStyle || nothing}
-      role="treeitem"
-      tabindex="-1"
-      aria-expanded=${canToggle ? String(context.open) : nothing}
-      aria-selected=${String(Boolean(context.selected))}
-      aria-current=${context.active ? 'page' : nothing}
-      aria-disabled=${context.disabled ? 'true' : nothing}
-      data-open-icon=${context.openIcon || nothing}
-      data-closed-icon=${context.closedIcon || nothing}
-      data-value=${context.value || nothing}
-    >
-      <div class=${containerClasses}>
-        ${canToggle
-          ? html`
-              <button
-                type="button"
-                tabindex="-1"
-                class="sf-icon-button sf-tree-toggle"
-                ?disabled=${context.disabled}
-                aria-expanded=${String(context.open)}
-                aria-label=${context.open
-                  ? context.closeLabel
-                  : context.openLabel}
-                @click=${context.onToggle}
-              >
-                ${renderIcon(chevronIcon, 'sf-tree-chevron')}
-              </button>
-            `
-          : html`<span class="sf-tree-toggle-spacer" aria-hidden="true"></span>`}
-        ${context.icon
-          ? context.isFile
-            ? renderIcon('draft', 'sf-tree-node-icon')
-            : renderIcon(nodeIcon, 'sf-tree-node-icon')
-          : nothing}
-
-        ${context.href && !context.disabled
-          ? html`
-              <a
-                class=${nameClasses}
-                href=${context.href}
-                target=${context.target || nothing}
-                rel=${context.rel || nothing}
-                tabindex="-1"
-                @click=${context.onItemClick}
-              >
-                ${renderLabel(context)}
-              </a>
-            `
-          : html`
-              <span class=${nameClasses} @click=${context.onItemClick}>
-                ${renderLabel(context)}
-              </span>
-            `}
-      </div>
-
-      ${context.open && canToggle
-        ? html`
-            <div class="sf-tree-group flex flex-col" role="group">
-              ${(context.children || []).map((item) =>
-                renderTreeItemData(item),
-              )}
-            </div>
-          `
-        : nothing}
-    </div>
-  `;
+  const group = context.open && canToggle
+    ? html`<div class="sf-tree-group flex flex-col" role="group">${(context.children || []).map((item) => renderTreeItemData(item))}</div>`
+    : nothing;
+  return renderTreeRow({
+    value: context.value,
+    label: context.label,
+    content: context.content,
+    href: context.href,
+    target: context.target,
+    rel: context.rel,
+    kind: context.kind,
+    open: context.open,
+    selected: context.selected,
+    active: context.active,
+    disabled: context.disabled,
+    icon: context.icon,
+    openIcon: context.openIcon,
+    closedIcon: context.closedIcon,
+    chevronOpenIcon: context.chevronOpenIcon,
+    chevronClosedIcon: context.chevronClosedIcon,
+    openLabel: context.openLabel,
+    closeLabel: context.closeLabel,
+    hasChildren: context.hasChildren,
+    rootClass: context.rootClass,
+    rootStyle: context.rootStyle,
+    itemClass: context.itemClass,
+    containerClass: context.containerClass,
+    nameClass: context.nameClass,
+    onToggle: context.onToggle,
+    onName: context.onItemClick,
+  }, group);
 }

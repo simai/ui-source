@@ -1,0 +1,161 @@
+{
+  "component": "sf-tree-item",
+  "probe": "sf-tree-item against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-tree-item id=\"sec\" text=\"Раздел\" value=\"section\" open><sf-tree-item label=\"Дочерний пункт\" value=\"child\" type=\"file\"></sf-tree-item></sf-tree-item>",
+      "  <sf-tree-item id=\"file\" label=\"Договор.pdf\" value=\"contract\" kind=\"file\"></sf-tree-item>",
+      "  <sf-tree-item id=\"off\" label=\"Архив\" value=\"archive\" kind=\"file\" disabled></sf-tree-item>",
+      "  <div lang=\"en\"><sf-tree-item id=\"en\" label=\"Section\" value=\"en-section\" open><sf-tree-item label=\"Child\" value=\"en-child\"></sf-tree-item></sf-tree-item></div>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-row",
+      "title": "the node draws one row of class markup: a treeitem, its chevron, an icon of the icon font, its name; text is label's alias",
+      "covers": "settings.label, aliases.json text, settings.kind, aliases.json type, accessibility.role treeitem",
+      "steps": [
+        {
+          "check": "(() => { const row = document.querySelector('#sec > .sf-tree-item[role=treeitem]'); return row && row.dataset.value === 'section' && row.getAttribute('aria-expanded') === 'true' && row.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name').textContent.trim() === 'Раздел' && row.querySelector('.sf-tree-chevron').localName === 'i' && !document.querySelector('#sec sf-icon') && document.querySelector('#sec').label === 'Раздел' && document.querySelector('#sec sf-tree-item').kind === 'file'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-toggle",
+      "title": "the chevron closes the branch: sf-tree-item-toggle {id, open, value}; its name follows the language",
+      "covers": "events.toggle, settings.close-label (runtime word)",
+      "steps": [
+        {
+          "check": "document.querySelector('#sec .sf-tree-toggle').getAttribute('aria-label') === 'Свернуть' && document.querySelector('#en .sf-tree-toggle').getAttribute('aria-label') === 'Close item'"
+        },
+        {
+          "user": "click:#sec .sf-tree-toggle",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-item-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "section",
+                  "open": false,
+                  "value": "section"
+                }
+              }
+            ],
+            "values": {
+              "#sec.open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-open",
+      "title": "a press on the name asks to open the node: sf-tree-item-open {id, value}, then the dated sf-tree-item-click",
+      "covers": "events.open, aliases.json sf-tree-item-click",
+      "steps": [
+        {
+          "user": "click:#file .sf-tree-item-name",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-item-open",
+                "count": 1,
+                "detail": {
+                  "id": "contract",
+                  "value": "contract"
+                }
+              },
+              {
+                "name": "sf-tree-item-click",
+                "count": 1,
+                "detail": {
+                  "value": "contract",
+                  "item": "<sf-tree-item>"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-actions",
+      "title": "expand answers applied for a branch and refused for a file; activate sends open; a disabled node refuses",
+      "covers": "actions.expand, actions.activate, actions.focus-item, settings.disabled",
+      "steps": [
+        {
+          "action": {
+            "name": "expand"
+          },
+          "target": "#sec",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "values": {
+              "#sec.open": true
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "expand"
+          },
+          "target": "#file",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "leaf"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "activate"
+          },
+          "target": "#file",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-tree-item-open",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "name": "activate"
+          },
+          "target": "#off",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "disabled"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "focus-item"
+          },
+          "target": "#file",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "check": "document.activeElement === document.querySelector('#file > .sf-tree-item')"
+        }
+      ]
+    }
+  ]
+}

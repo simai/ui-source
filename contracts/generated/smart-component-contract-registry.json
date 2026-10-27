@@ -2192,8 +2192,9 @@
         "public_parts": [],
         "uses": [
           "component.icon-buttons",
+          "component.icons",
           "component.tree",
-          "smart.icon"
+          "component.tree-item"
         ]
       },
       "contract_schema": {
@@ -2205,7 +2206,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree-item/smart.manifest.json",
-      "manifest_sha256": "15de8d9f9e1da3aec105d7aa7ea593fe1f1145f9276182fe3da28f6cae45f427",
+      "manifest_sha256": "fc332744db982db6e1098cee4f4494aed39d7802a11819f3ff2cbeab164d634c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

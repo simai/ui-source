@@ -1,0 +1,58 @@
+{
+  "$comment": "Dated aliases of sf-tree-item for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-tree-item",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "text",
+      "to": "label",
+      "kind": "setting",
+      "component": "sf-tree-item",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "one name for the node's name; label wins when both are given"
+    },
+    {
+      "from": "type",
+      "to": "kind",
+      "kind": "setting",
+      "component": "sf-tree-item",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20, contracts/public-api-axes.json",
+      "note": "the legacy axis name; the shim maps the attribute and the property"
+    },
+    {
+      "from": "sf-tree-item-click",
+      "to": "sf-tree-item-open",
+      "kind": "event",
+      "component": "sf-tree-item",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-tree-item-click",
+        "to": "open"
+      },
+      "section": "§3.1, §8, vocabulary 1.1.5 §5 open",
+      "note": "the old detail {item, value, originalEvent} is made by the element's adapter"
+    },
+    {
+      "from": "sf-tree-item-toggle",
+      "to": "toggle",
+      "kind": "event",
+      "component": "sf-tree-item",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "manifest": {
+        "from": "sf-tree-item-toggle",
+        "to": "toggle"
+      },
+      "note": "the manifest declares the verb; the DOM name is unchanged, so the shim has nothing to send"
+    }
+  ]
+}

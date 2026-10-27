@@ -42,27 +42,28 @@ test('ordinary Tree exposes nested groups and token-owned interaction paint', as
 });
 
 test('Smart Tree mirrors navigation, selection and ARIA ownership', async () => {
-  const [tree, item, template] = await Promise.all([
+  const [tree, item, template, row] = await Promise.all([
     read('src/smart/tree/index.js'),
     read('src/smart/tree-item/index.js'),
     read('src/smart/tree-item/js/templates/default.js'),
+    read('src/smart/tree-item/js/templates/row.js'),
   ]);
 
   assert.match(tree, /getVisibleItems\(\)/);
   assert.match(tree, /moveTypeahead\(item, key\)/);
   assert.match(tree, /tree-selection-change/);
-  assert.match(item, /focusItem\(\)/);
+  assert.match(item, /'focus-item'\(\)/);
   assert.match(item, /activate\(\)/);
-  assert.match(template, /role="treeitem"/);
-  assert.match(template, /tabindex="-1"/);
+  assert.match(row, /role="treeitem"/);
+  assert.match(row, /tabindex=\$\{row\.tabStop \? '0' : '-1'\}/);
   assert.match(template, /class="sf-tree-group flex flex-col" role="group"/);
-  assert.match(template, /aria-selected=/);
-  assert.match(template, /aria-current=/);
+  assert.match(row, /aria-selected=/);
+  assert.match(row, /aria-current=/);
 });
 
 test('Smart Tree separates disclosure and node identity icons', async () => {
   const template = await read(
-    'src/smart/tree-item/js/templates/default.js',
+    'src/smart/tree-item/js/templates/row.js',
   );
 
   assert.match(template, /sf-tree-toggle/);

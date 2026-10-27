@@ -1,0 +1,343 @@
+{
+  "$comment": "The source of sf-tree-item's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tree-item (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.tree-item",
+  "tag": "sf-tree-item",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "tree",
+  "settings": {
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The node's name; without it the node's own text is"
+    },
+    "href": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "string",
+      "default": ""
+    },
+    "rel": {
+      "type": "string",
+      "default": ""
+    },
+    "kind": {
+      "type": "enum",
+      "values": [
+        "folder",
+        "file"
+      ],
+      "default": "folder"
+    },
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The node's id: data-value of its row, the id its events carry"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "items-data": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "label": "string",
+        "href": "string",
+        "target": "string",
+        "rel": "string",
+        "kind": {
+          "type": "enum",
+          "values": [
+            "folder",
+            "file"
+          ]
+        },
+        "value": "string",
+        "open": "boolean",
+        "selected": "boolean",
+        "active": "boolean",
+        "disabled": "boolean",
+        "icon": "boolean",
+        "open-icon": "icon",
+        "closed-icon": "icon",
+        "chevron-open-icon": "icon",
+        "chevron-closed-icon": "icon",
+        "open-label": "string",
+        "close-label": "string",
+        "revision": "string",
+        "children": "list"
+      },
+      "entries": {
+        "key": "id",
+        "changes": "content"
+      },
+      "summary": "The node's children as data (sf-tree's entry shape); children written inside are read once otherwise"
+    },
+    "open-icon": {
+      "type": "icon",
+      "default": "folder_open"
+    },
+    "closed-icon": {
+      "type": "icon",
+      "default": "folder"
+    },
+    "icon": {
+      "type": "boolean",
+      "default": true,
+      "summary": "false hides the folder or file icon"
+    },
+    "chevron-open-icon": {
+      "type": "icon",
+      "default": "keyboard_arrow_down"
+    },
+    "chevron-closed-icon": {
+      "type": "icon",
+      "default": "chevron_right"
+    },
+    "open-label": {
+      "type": "string",
+      "default-from": "runtime.open-label",
+      "summary": "The chevron's name while the branch is closed"
+    },
+    "close-label": {
+      "type": "string",
+      "default-from": "runtime.close-label",
+      "summary": "The chevron's name while the branch is open"
+    },
+    "item-class": {
+      "type": "string",
+      "default": "",
+      "summary": "Classes for the row's box"
+    },
+    "container-class": {
+      "type": "string",
+      "default": "",
+      "summary": "Classes for the row's line"
+    },
+    "name-class": {
+      "type": "string",
+      "default": "",
+      "summary": "Classes for the row's name"
+    }
+  },
+  "values": {
+    "open": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The branch is open"
+    },
+    "selected": {
+      "type": "boolean",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The node is the current page: aria-current"
+    }
+  },
+  "events": {
+    "open": {
+      "carries": {
+        "id": "string",
+        "value": "string"
+      },
+      "summary": "A press on the name, or Enter on a leaf without a link: open {id} of vocabulary 1.1.5 §5"
+    },
+    "toggle": {
+      "carries": {
+        "id": "string",
+        "open": "boolean",
+        "value": "string"
+      },
+      "summary": "The branch opened or closed (vocabulary §5 toggle); the DOM name sf-tree-item-toggle is unchanged"
+    }
+  },
+  "actions": {
+    "expand": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the branch; refused for a file, a leaf or a disabled node"
+    },
+    "collapse": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Closes the branch"
+    },
+    "toggle-open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens a closed branch, closes an open one"
+    },
+    "activate": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "What Enter does on a leaf: follows its link, or sends open"
+    },
+    "focus-item": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Moves the focus to the node's row"
+    }
+  },
+  "slots": {
+    "content": {
+      "replaces": "label"
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Enter": "open",
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16). The row itself is js/templates/row.js, which sf-tree draws every entry with."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The row is role treeitem with aria-expanded on a branch, aria-selected where the tree selects, aria-current for the current page; the chevron is a button named by open-label or close-label. Inside an sf-tree the tree draws the rows and owns the keys; a standalone node answers Enter on its name.",
+    "role": "treeitem",
+    "name": {
+      "from": [
+        "label",
+        "slot:content"
+      ]
+    },
+    "keys": {
+      "Enter": "open",
+      "Tab": "reach"
+    }
+  },
+  "css-variables": {
+    "--sf-tree-item-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tree-item-name-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tree-item-icon-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tree-item-drop-background-color": {
+      "type": "color",
+      "state": "drop-target"
+    },
+    "--sf-tree-item-drop-outline-color": {
+      "type": "color",
+      "state": "drop-target"
+    }
+  },
+  "x-summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
+  "x-source": {
+    "package": "framework",
+    "folder": "tree-item",
+    "manifest": "simai/ui-source@5100227 src/smart/tree-item/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/tree-item.component.json"
+  },
+  "x-words": [
+    "label",
+    "open-label",
+    "close-label"
+  ],
+  "x-renamed": [
+    "settings.text → label: one name for the node's name; text is a dated setting alias",
+    "settings.type → kind: the legacy axis name (contracts/public-api-axes.json); a dated setting alias",
+    "events.sf-tree-item-click {item, value, originalEvent} → open {id, value}: \"click\" is a prototype name (§3.1) and the request is the vocabulary's open (§5); sf-tree-item-open, the old name a dated split alias",
+    "events.sf-tree-item-toggle {item, open, value} → toggle {id, open, value}: the DOM name is unchanged; the element left the detail (§8, data only) -- event.target is the node",
+    "methods open(), close(), toggle() → actions expand, collapse, toggle-open answering outcomes: open is the branch's value (§4), a property, and cannot also be a method"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "line",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tree-item only as a node owned by sf-tree or a nested tree group.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use a standalone tree item as a generic list row",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-tree-item></sf-tree-item>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "rows (simai/ui-source#43, §18.4): the row is class markup drawn by js/templates/row.js -- icons are the icon font's <i class=\"sf-icon\">, not sf-icon elements -- and sf-tree draws every entry with the same function. Inside an sf-tree the node is read once as data and removed (as before); the tree does not draw sf-tree-item elements any more. Alone, the node draws its row and, open, its children as nested sf-tree-item elements.",
+    "events (vocabulary 1.1.5 §5): a press on the name, or Enter on a leaf without a link, asks to open the node: sf-tree-item-open {id, value}; sf-tree-item-click follows until 2026-12-01 as a split alias whose adapter gives {item, value, originalEvent: null}. The branch's change keeps its DOM name sf-tree-item-toggle with {id, open, value}; the element left the detail (§8: data only), event.target is the node.",
+    "actions: expand, collapse and toggle-open answer outcomes ({outcome: refused, reason: leaf | disabled} for a node that cannot open); activate follows the link or sends open; focus-item focuses the row. The old open()/close()/toggle() methods are gone: open is the branch's value and a property (§4); they returned the element for chaining and nothing outside the tree called them.",
+    "item-shape: items-data is a list of entries named with of (sf-tree's entry shape: id, label, href, target, rel, kind, value, open, selected, active, disabled, icon, the four icons, the two chevron names, revision, children), keyed by id with changes: content (§18.4). The camelCase fields (openIcon, …) and type are still read.",
+    "text and type leave the settings: text is label's dated alias, type kind's (aliases.json).",
+    "open-label and close-label default to the language files' runtime words (default-from); TREE_ITEM_TEXT is gone.",
+    "key-effects: a standalone node answers Enter on its name (open) and Tab reaches its row; the arrows, Home, End and Space are the tree's (sf-tree's keyboard), which owns the roving tab stop.",
+    "version 1.1.0: members renamed behind dated aliases (§4.10); the methods' retirement is recorded in x-renamed.",
+    "template: templates.default names the Lit template js/templates/default.js; the row is js/templates/row.js.",
+    "examples: examples.json from studio.fixture.json (a section with a child) plus a file, a link, a disabled node and a node without an icon.",
+    "css-variables: five public variables of the tree-item class sheet (component/tree-item): the line's gap, the name's ink (outside a tree; inside, the name takes the row's colour), the icons' ink, and a drop target's fill and ring. Listed in src/core/contracts/public-variables.v1.json.",
+    "source-drift: the shipped manifest differs from 5100227 in its provenance hashes and the rule's relation names; the interface is the same, nothing to carry."
+  ]
+}

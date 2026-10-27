@@ -149,6 +149,10 @@ const DRAW = {
   // have parts to reach; the row stands alone, so its divider is drawn.
   'list-item': {css: ['dropdown', 'icons'], js: 'list-item',
     html: '<sf-list-item text="Заголовок" supporting="Пояснение" sortable-item="a" interactive size="1"></sf-list-item>'},
+  // A standalone node marked as a drop target.
+  'tree-item': {css: ['tree-item', 'icons', 'icon-buttons'], js: 'tree-item',
+    html: '<sf-tree-item id="node" label="Папка" value="a" open><sf-tree-item label="Файл" value="b" kind="file"></sf-tree-item></sf-tree-item>',
+    open: 'document.querySelector("#node > .sf-tree-item").setAttribute("data-sf-drop-target", "")'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

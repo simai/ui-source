@@ -1,11 +1,11 @@
 @layer sf.components {
   .sf-tree-item .sf-tree-item-container {
-    gap: var(--sf-tree-item-container--gap, var(--sf-space-1\/3));
+    gap: var(--sf-tree-item-gap, var(--sf-tree-item-container--gap, var(--sf-space-1\/3)));
   }
 
 
   .sf-tree-item .sf-tree-item-name {
-    color: var(--sf-tree-item-name--color, var(--sf-primary));
+    color: var(--sf-tree-item-name-color, var(--sf-tree-item-name--color, var(--sf-primary)));
     font-size: var(--sf-tree-item-name--font-size, var(--sf-text-size-1));
     line-height: var(--sf-tree-item-name--line-height, var(--sf-text-height-1));
   }
@@ -18,7 +18,7 @@
    tree that wants something else. */
 @layer sf.override {
   .sf-tree-item .sf-icon {
-    --sf-icon--color: var(--sf-tree-item-icon--color, currentColor);
+    --sf-icon--color: var(--sf-tree-item-icon-color, var(--sf-tree-item-icon--color, currentColor));
   }
 }
 
@@ -26,8 +26,8 @@
    primary container's fill and a dashed ring. */
 @layer sf.states {
   .sf-tree-item[data-sf-drop-target] > .sf-tree-item-container {
-    background-color: var(--sf-primary-container);
-    outline: var(--sf-focus--width) dashed var(--sf-primary);
+    background-color: var(--sf-tree-item-drop-background-color, var(--sf-primary-container));
+    outline: var(--sf-focus--width) dashed var(--sf-tree-item-drop-outline-color, var(--sf-primary));
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
 }

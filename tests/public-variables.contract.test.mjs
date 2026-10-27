@@ -52,6 +52,8 @@ const FOLDERS = {
   'page-header': 'smart/page-header',
   // sf-list-item draws with the class sheet of the dropdown's rows.
   'list-item': 'dropdown',
+  // sf-tree-item draws its row with the tree-item class sheet.
+  'tree-item': 'tree-item',
 };
 
 const scss = async (folder) => {

@@ -9,6 +9,6 @@ import test from 'node:test';
 test('the tree names its items more specifically than the item names itself', () => {
   const tree = readFileSync(new URL('../src/component/tree/scss/_css__tree.scss', import.meta.url), 'utf8');
   const item = readFileSync(new URL('../src/component/tree-item/scss/_css__tree_item.scss', import.meta.url), 'utf8');
-  assert.match(item, /\.sf-tree-item \.sf-tree-item-name \{\s*color: var\(--sf-tree-item-name--color, var\(--sf-primary\)\)/u);
+  assert.match(item, /\.sf-tree-item \.sf-tree-item-name \{\s*color: var\(--sf-tree-item-name-color, var\(--sf-tree-item-name--color, var\(--sf-primary\)\)\)/u);
   assert.match(tree, /\.sf-tree \.sf-tree-item \.sf-tree-item-name,\s*\.sf-tree \.sf-tree-item-name \{[^}]*color: inherit;/u);
 });

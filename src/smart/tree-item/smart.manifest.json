@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Tree Item",
   "summary": "One accessible node in a Smart Tree hierarchy.",
   "kind": "smart",
@@ -25,8 +25,9 @@
   "composition": {
     "uses": [
       "component.icon-buttons",
+      "component.icons",
       "component.tree",
-      "smart.icon"
+      "component.tree-item"
     ],
     "public_parts": []
   },
@@ -425,19 +426,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree-item/index.js",
-        "sha256": "65abd84acb6b5092fd5b7a0a75187dd1c68bc91009755db70f91170025b5b7e7"
+        "sha256": "90455a627dce3da3f3688ccf76bf8be8de53c97b01ff568894646159780f387e"
       },
       {
         "path": "src/smart/tree-item/js/templates/default.js",
-        "sha256": "7210b5b24fef76a0b65526f2778346a524f90f4333e61056d0ce7bce99a8c7f7"
+        "sha256": "4e7acb47d3e12b801c3b4c4c29bd6593774f8775a24a8ef09443563b92a278a6"
       },
       {
         "path": "src/smart/tree-item/rule.js",
-        "sha256": "cd346c31b41063e878e3bb8a32c7005050faf02417e1ebe497ba3fadd6fad63d"
+        "sha256": "289dc72c6fe9fb9aa5138b255db8c53f70237adea82202edce6f3896aadf1ca7"
       },
       {
         "path": "src/smart/tree-item/docs/docs.md",
-        "sha256": "9611f3f54df7a4815068f0706bdc7995322b607b0deae8ca51fd6748ea535091"
+        "sha256": "643c7778cfd421e7706a438c41cca14c874857567f26d1c5d9f6383abbf748d9"
       }
     ],
     "generated_runtime": [
