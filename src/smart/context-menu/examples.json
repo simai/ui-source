@@ -1,0 +1,126 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Меню действий",
+      "settings": {
+        "aria-label": "Действия",
+        "entries": [
+          {
+            "id": "edit",
+            "text": "Изменить",
+            "icon": "edit"
+          },
+          {
+            "id": "copy",
+            "text": "Копировать"
+          },
+          {
+            "id": "delete",
+            "text": "Удалить",
+            "danger": true
+          }
+        ]
+      },
+      "expect": {
+        "name": "Действия"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "opened",
+      "title": "Открыто у кнопки",
+      "settings": {
+        "aria-label": "Действия",
+        "entries": [
+          {
+            "id": "edit",
+            "text": "Изменить"
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "open-for",
+          "with": {
+            "anchor": "#trigger"
+          }
+        }
+      ],
+      "expect": {
+        "events": [
+          "open",
+          "opened"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "checks",
+      "title": "Флажки",
+      "settings": {
+        "aria-label": "Колонки",
+        "entries": [
+          {
+            "id": "name",
+            "text": "Название",
+            "kind": "check",
+            "checked": true,
+            "keepOpen": true
+          },
+          {
+            "id": "date",
+            "text": "Дата",
+            "kind": "check",
+            "keepOpen": true
+          }
+        ]
+      },
+      "expect": {
+        "name": "Колонки"
+      }
+    },
+    {
+      "name": "submenu",
+      "title": "Подменю с поиском",
+      "settings": {
+        "aria-label": "Вставить",
+        "entries": [
+          {
+            "id": "block",
+            "text": "Блок",
+            "submenu": [
+              {
+                "id": "text",
+                "text": "Текст"
+              },
+              {
+                "id": "image",
+                "text": "Изображение"
+              }
+            ],
+            "search": {
+              "placeholder": "Найти"
+            }
+          }
+        ]
+      },
+      "expect": {
+        "name": "Вставить"
+      }
+    },
+    {
+      "name": "panel",
+      "title": "Панель с вкладками",
+      "settings": {
+        "aria-label": "Настройки",
+        "tabs": "Вид|Колонки",
+        "closable": true,
+        "size": "1"
+      },
+      "expect": {
+        "name": "Настройки"
+      }
+    }
+  ]
+}

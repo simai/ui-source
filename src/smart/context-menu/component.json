@@ -1,0 +1,500 @@
+{
+  "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.context-menu",
+  "tag": "sf-context-menu",
+  "version": "1.4.0",
+  "kind": "leaf",
+  "family": "menu",
+  "settings": {
+    "position": {
+      "type": "enum",
+      "values": [
+        "",
+        "inline-start",
+        "inline-start-top",
+        "inline-start-bottom",
+        "inline-end",
+        "inline-end-top",
+        "inline-end-bottom",
+        "top",
+        "top-inline-start",
+        "top-inline-end",
+        "bottom",
+        "bottom-inline-start",
+        "bottom-inline-end",
+        "start",
+        "end",
+        "top-start",
+        "top-end",
+        "bottom-start",
+        "bottom-end",
+        "left",
+        "left-top",
+        "left-bottom",
+        "right",
+        "right-top",
+        "right-bottom",
+        "top-left",
+        "top-center",
+        "top-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right",
+        "left-start",
+        "left-end",
+        "right-start",
+        "right-end",
+        "inline-start-start",
+        "inline-start-end",
+        "inline-end-start",
+        "inline-end-end"
+      ],
+      "default": ""
+    },
+    "tooltip": {
+      "type": "boolean",
+      "default": true
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "text": "string",
+        "value": "string"
+      },
+      "x-note": "the older list form; entries is the current one"
+    },
+    "content-class": {
+      "type": "string",
+      "default": ""
+    },
+    "entries": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "string",
+        "text": "string",
+        "caption": {
+          "type": "string",
+          "optional": true
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "avatar": {
+          "type": "string",
+          "optional": true
+        },
+        "initials": {
+          "type": "string",
+          "optional": true
+        },
+        "shortcut": {
+          "type": "string",
+          "optional": true
+        },
+        "kind": {
+          "type": "string",
+          "optional": true
+        },
+        "type": {
+          "type": "string",
+          "optional": true
+        },
+        "value": {
+          "type": "string",
+          "optional": true
+        },
+        "lang": {
+          "type": "string",
+          "optional": true
+        },
+        "keywords": {
+          "type": "string",
+          "optional": true
+        },
+        "checked": {
+          "type": "boolean",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "danger": {
+          "type": "boolean",
+          "optional": true
+        },
+        "current": {
+          "type": "boolean",
+          "optional": true
+        },
+        "href": {
+          "type": "string",
+          "optional": true
+        },
+        "keep-open": {
+          "type": "boolean",
+          "optional": true
+        },
+        "submenu": {
+          "type": "list",
+          "optional": true
+        },
+        "search": {
+          "type": "object",
+          "optional": true
+        },
+        "options": {
+          "type": "list",
+          "optional": true
+        }
+      }
+    },
+    "popup": {
+      "type": "boolean",
+      "default": false
+    },
+    "search": {
+      "type": "object",
+      "optional": true
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1/2"
+    },
+    "width": {
+      "type": "string",
+      "default": "content"
+    },
+    "tabs": {
+      "type": "string",
+      "default": "",
+      "x-note": "\"A|B\" in the attribute; the property also takes a list [{id, label}] (the component's own accessor), one member with one type (§4.2)"
+    },
+    "active-tab": {
+      "type": "string",
+      "default": ""
+    },
+    "closable": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "values": {},
+  "events": {
+    "select": {
+      "carries": {
+        "id": "string",
+        "entry": "object",
+        "checked": "boolean",
+        "group": "string"
+      },
+      "cancelable": true
+    },
+    "open": {
+      "carries": {},
+      "cancelable": true
+    },
+    "opened": {
+      "carries": {}
+    },
+    "close": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        },
+        "unsaved": "boolean"
+      },
+      "cancelable": true
+    },
+    "closed": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      }
+    },
+    "search": {
+      "carries": {
+        "query": "string"
+      },
+      "own-verb": true
+    },
+    "tab": {
+      "carries": {
+        "id": "string",
+        "index": "number"
+      },
+      "own-verb": true
+    }
+  },
+  "actions": {
+    "open-for": {
+      "with": {
+        "anchor": "object",
+        "options": {
+          "type": "object",
+          "optional": true
+        }
+      },
+      "waits": true,
+      "x-outcomes": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable",
+        "cancelled"
+      ],
+      "emits": "open"
+    },
+    "toggle-for": {
+      "with": {
+        "anchor": "object",
+        "options": {
+          "type": "object",
+          "optional": true
+        }
+      },
+      "waits": true,
+      "x-outcomes": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable",
+        "cancelled"
+      ]
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "emits": "close",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "choose-tab": {
+      "with": {
+        "index": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "request-close": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "layer": {
+    "kind": "surface",
+    "locks-page": false,
+    "traps-focus": false
+  },
+  "side-effects": [
+    "portal"
+  ],
+  "keyboard": {
+    "host": {
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "ArrowRight": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "menu",
+    "name": {
+      "from": [
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "ArrowRight": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "css-variables": {
+    "--sf-context-menu-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-context-menu-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-context-menu-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-context-menu-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-context-menu-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-context-menu-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-context-menu-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-context-menu-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
+  "x-source": {
+    "package": "framework",
+    "folder": "context-menu",
+    "manifest": "simai/ui-source@5100227 src/smart/context-menu/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/context-menu.component.json"
+  },
+  "x-words": [
+    "text"
+  ],
+  "x-renamed": [
+    "settings.aria-label, settings.role: host attributes, read from the host, never settings (§3.1); the menu's own role getter left the prototype's role alone",
+    "events sf-context-menu-open, sf-context-menu-close: were facts sent after the state changed (close was also the placed menu's request to its host); by §19.3 and vocabulary §4 they are the cancelable requests, and the facts are sf-context-menu-opened and sf-context-menu-closed"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "semantic-surface-radius",
+        "unclipped-tail-with-scrollable-content",
+        "logical-position-aliases",
+        "forced-colors-boundary"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not hand-make a menu of divs and buttons: the row geometry, roles, keyboard and focus return are this component's",
+        "Do not ask for a tail: position and tooltip are deprecated and draw nothing"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<button id=\"more\" type=\"button\">Ещё</button><sf-context-menu id=\"menu\" popup aria-label=\"Действия\"></sf-context-menu><script>menu.entries=[{id:\"rename\",text:\"Переименовать\",icon:\"edit\"},{type:\"separator\"},{id:\"delete\",text:\"Удалить\",icon:\"delete\",danger:true}];more.onclick=()=>menu.toggleFor(more);</script>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "own-verb-words: search (the host is told the query) and tab (a tab chosen) are verbs of the menu alone; their words are lang events.<verb>.label.",
+    "version: 1.3.1 → 1.4.0: added the facts opened and closed, the close reason and the entries' shape; nothing removed.",
+    "type-union: tabs is one string member (\"A|B\" in the attribute); the component's own property also takes a list [{id, label}], so the manifest declares the attribute form (§4.2).",
+    "item-shape: entries name their fields with `of` (the fields the template and the menu read: id, text, caption, icon, avatar, initials, shortcut, kind, type, value, lang, keywords, checked, disabled, danger, current, href, keep-open, submenu, search, options); items is the older list of {text, value}.",
+    "existing-aliases: compatibility.deprecations (position, tooltip: a menu has no tail since 1.3.0) fold into aliases.json as retired rows; both settings still answer until the date.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus entries with a check, a submenu, a search and a tabbed panel; probe.json drives the arrows, Home, End, Enter, Escape and Tab (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: portal -- an owned menu shows in the browser's top layer, and a submenu is drawn at the end of body (or of the open dialog).",
+    "layer: kind surface; it registers through core open-surface-mark while owned, so Escape and an outside press reach it only while it is the top layer; it does not trap focus (Tab leaves and closes it).",
+    "dismissing: an owned menu asks before it closes, sf-context-menu-close {reason, unsaved} (§19.3): escape, outside, close (its head's close button), api (a choice, Tab, a script). A placed menu's head button sends the same request for its host to close it, as before. The actions keep their boolean answers (openFor, toggleFor, close) until their callers move -- a leftover."
+  ]
+}

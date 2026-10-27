@@ -1,13 +1,23 @@
 import SfBaseElement from "../../core/js/smart-base";
+import { elementFromManifest } from "../../core/js/element-manifest";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
-import { pageText } from "../../core/js/page-language";
 import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
+import manifest from "./component.json";
+import aliases from "./aliases.json";
+import en from "./lang/en.json";
+import ru from "./lang/ru.json";
 
-const CONTEXT_MENU_TEXT = {
-  en: { close: "Close" },
-  ru: { close: "Закрыть" },
-};
+// sf-context-menu from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §19): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json, and its events
+// go out by their verbs through sfEmit. aria-label and role stay the host's.
+const ContextMenuElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: "ru",
+  aliases,
+});
 
 // Prefer the helper Core published; a bundle loaded without core.js still
 // positions with its own copy.
@@ -39,7 +49,7 @@ function normalizePosition(value = "") {
   return POSITION_ALIASES[normalized] || normalized;
 }
 
-class SfContextMenu extends SfBaseElement {
+class SfContextMenu extends ContextMenuElement {
   constructor() {
     super();
     this._itemAttributes = new Map();
@@ -66,7 +76,7 @@ class SfContextMenu extends SfBaseElement {
       if (path.includes(this) || path.includes(this._owned?.anchor)) return;
       // A press inside an open submenu is inside the menu.
       if (this._submenu && path.includes(this._submenu)) return;
-      this.close({restoreFocus: false});
+      this.close({restoreFocus: false, reason: "outside"});
     };
     this.addEventListener("focusin", (event) => {
       if (this.menuItems().includes(event.target)) {
@@ -93,7 +103,8 @@ class SfContextMenu extends SfBaseElement {
   }
 
   disconnectedCallback() {
-    if (this._owned) this.close({restoreFocus: false});
+    // Taken out of the page, it closes without asking: nothing is left to keep.
+    if (this._owned) this.close({restoreFocus: false, ask: false});
     this._itemObserver.disconnect();
     for (const item of this._itemAttributes.keys()) this.releaseItem(item);
     this._currentItem = null;
@@ -101,7 +112,7 @@ class SfContextMenu extends SfBaseElement {
   }
 
   menuItems() {
-    if (this.templateName !== "default" || this.role !== "menu") return [];
+    if (this.templateName !== "default" || this.menuRole !== "menu") return [];
     const content = this.querySelector(".sf-context-menu-content");
     // Rendered from entries, every row is an item and carries its own role
     // (menuitem, menuitemcheckbox or menuitemradio).
@@ -206,11 +217,7 @@ class SfContextMenu extends SfBaseElement {
     this._query = String(value ?? "");
     this.requestComponentUpdate("query");
     // A search the host answers: it is told the query and sets the entries.
-    if (this.search?.remote) {
-      this.dispatchEvent(new CustomEvent("sf-context-menu-search", {
-        bubbles: true, composed: true, detail: {query: this._query},
-      }));
-    }
+    if (this.search?.remote) this.sfEmit("search", {query: this._query});
   }
 
   searchField() {
@@ -224,10 +231,7 @@ class SfContextMenu extends SfBaseElement {
     const at = Number(row.dataset.sfOption);
     const option = entry.options?.[at];
     if (!option || option.disabled) return;
-    const selected = this.dispatchEvent(new CustomEvent("sf-context-menu-select", {
-      bubbles: true, composed: true, cancelable: true,
-      detail: {id: option.id ?? null, entry: option, checked: true, group: entry.id ?? null},
-    }));
+    const selected = this.sfEmit("select", {id: option.id ?? null, entry: option, checked: true, group: entry.id ?? null}, {cancelable: true});
     if (!selected) return;
     const index = this.entries.indexOf(entry);
     const next = {...entry, options: entry.options.map((item, i) => ({...item, checked: i === at}))};
@@ -253,9 +257,7 @@ class SfContextMenu extends SfBaseElement {
     }
     const checkable = entry.kind === "check" || entry.kind === "radio";
     const detail = {id: entry.id ?? null, entry, checked: checkable ? (entry.kind === "radio" ? true : !entry.checked) : null};
-    const selected = this.dispatchEvent(new CustomEvent("sf-context-menu-select", {
-      bubbles: true, composed: true, cancelable: true, detail,
-    }));
+    const selected = this.sfEmit("select", detail, {cancelable: true});
     // A choice ends the menu, unless the host cancelled the event to keep it
     // (a check list ticked several times) or the entry asked to stay.
     if (selected && !entry.keepOpen) this.closeAll({restoreFocus: !entry.href});
@@ -303,7 +305,10 @@ class SfContextMenu extends SfBaseElement {
   // in an ellipsis; a CSS length fixes it. The attribute gives the default.
   async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, width = this.width} = {}) {
     if (!(anchor instanceof Element)) throw new TypeError("A menu opens for an element");
-    if (this._owned) this.close({restoreFocus: false});
+    if (this._owned) this.close({restoreFocus: false, ask: false});
+    // The request first (§19, vocabulary §4): a listener that prevents it keeps
+    // the menu closed.
+    if (!this.sfEmit("open", {}, {cancelable: true})) return false;
     await this.whenRendered();
     const surface = this.surface();
     if (!surface) return false;
@@ -352,7 +357,7 @@ class SfContextMenu extends SfBaseElement {
     // panel listening on the document in capture runs before the menu's own
     // listener and would otherwise close with it.
     holdOpenSurfaceMark(this, true);
-    this.dispatchEvent(new CustomEvent("sf-context-menu-open", {bubbles: true, composed: true}));
+    this.sfEmit("opened", {});
     if (focus !== "none") {
       this.syncMenuItems();
       const items = this.availableMenuItems();
@@ -363,9 +368,14 @@ class SfContextMenu extends SfBaseElement {
     return true;
   }
 
-  close({restoreFocus = true} = {}) {
+  // reason says why (standard 1.3.8 §19.3): escape, outside, close (the head's
+  // close button) or api (a choice, Tab, a script). A listener that prevents
+  // sf-context-menu-close keeps the menu open; `ask: false` closes without
+  // asking (the menu is leaving the page, or reopening).
+  close({restoreFocus = true, reason = "api", ask = true} = {}) {
     const owned = this._owned;
     if (!owned) return false;
+    if (ask && !this.sfEmit("close", {reason, unsaved: false}, {cancelable: true})) return false;
     this.closeSubmenu({restoreFocus: false});
     this._owned = null;
     this._hoverRow = null;
@@ -395,17 +405,17 @@ class SfContextMenu extends SfBaseElement {
     if (owned.expanded === null) anchor.setAttribute("aria-expanded", "false");
     else anchor.setAttribute("aria-expanded", owned.expanded);
     if (restoreFocus) (owned.returnTo?.isConnected ? owned.returnTo : anchor)?.focus?.({preventScroll: true});
-    this.dispatchEvent(new CustomEvent("sf-context-menu-close", {bubbles: true, composed: true}));
+    this.sfEmit("closed", {reason});
     return true;
   }
 
   // A choice in a submenu closes the whole chain and returns focus to where
   // the first menu was opened from.
-  closeAll({restoreFocus = true} = {}) {
+  closeAll({restoreFocus = true, reason = "api"} = {}) {
     let root = this;
     while (root._owned?.parentMenu) root = root._owned.parentMenu;
-    if (root === this) return this.close({restoreFocus});
-    return root.close({restoreFocus});
+    if (root === this) return this.close({restoreFocus, reason});
+    return root.close({restoreFocus, reason});
   }
 
   async openSubmenu(row, entry, {focus = "first"} = {}) {
@@ -425,12 +435,10 @@ class SfContextMenu extends SfBaseElement {
     // on one element whatever depth the item sits at.
     child.addEventListener("sf-context-menu-select", (event) => {
       event.stopPropagation();
-      const forwarded = this.dispatchEvent(new CustomEvent("sf-context-menu-select", {
-        bubbles: true, composed: true, cancelable: true, detail: event.detail,
-      }));
+      const forwarded = this.sfEmit("select", event.detail, {cancelable: true});
       if (!forwarded) event.preventDefault();
     });
-    child.addEventListener("sf-context-menu-close", () => {
+    child.addEventListener("sf-context-menu-closed", () => {
       if (this._submenu === child) {
         this._submenu = null;
         child.remove();
@@ -451,7 +459,7 @@ class SfContextMenu extends SfBaseElement {
     const child = this._submenu;
     if (!child) return false;
     this._submenu = null;
-    child.close({restoreFocus});
+    child.close({restoreFocus, ask: false});
     child.remove();
     return true;
   }
@@ -486,7 +494,7 @@ class SfContextMenu extends SfBaseElement {
     if (event.key === "Escape" || (event.key === outward && this._owned.parentMenu)) {
       event.preventDefault();
       event.stopPropagation();
-      this.close();
+      this.close({reason: event.key === "Escape" ? "escape" : "api"});
       return;
     }
     if (event.key === "Tab") {
@@ -534,13 +542,15 @@ class SfContextMenu extends SfBaseElement {
     items[next].focus();
   }
 
+  // The manifest's settings, and what the menu reads more closely (its
+  // position's old words, the lists set as properties, the host's role).
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: "template", default: "default" },
       position: { default: "" },
       tooltip: { type: Boolean, default: true },
       text: { default: "" },
-      ariaLabel: { default: "" },
       items: {type: Array, default: []},
       entries: {type: Array, default: []},
       popup: {type: Boolean, default: false},
@@ -603,17 +613,15 @@ class SfContextMenu extends SfBaseElement {
     const tab = this.tabs[index];
     if (!tab || tab.id === this.activeTab?.id) return this;
     this.setState({activeTab: tab.id});
-    this.dispatchEvent(new CustomEvent("sf-context-menu-tab", {
-      bubbles: true, composed: true, detail: {id: tab.id, index: tab.index},
-    }));
+    this.sfEmit("tab", {id: tab.id, index: tab.index});
     return this;
   }
 
   // The head's close button: an owned menu closes itself; a menu its host
   // placed is closed by the host, which hears the same event either way.
   requestClose() {
-    if (this._owned) return this.close();
-    this.dispatchEvent(new CustomEvent("sf-context-menu-close", {bubbles: true, composed: true}));
+    if (this._owned) return this.close({reason: "close"});
+    this.sfEmit("close", {reason: "close", unsaved: false}, {cancelable: true});
     return true;
   }
 
@@ -625,32 +633,9 @@ class SfContextMenu extends SfBaseElement {
     return normalizePosition(this.getAttribute("position"));
   }
 
-  get tooltip() {
-    return this.getBooleanAttr("tooltip", true);
-  }
-
-  get text() {
-    return this.getAttribute("text") || "";
-  }
-
-  get ariaLabel() {
-    return this.getAttribute("aria-label") || "";
-  }
-
-  get role() {
+  // The host's role (§3.1): a menu unless the page says otherwise.
+  get menuRole() {
     return this.getAttribute("role") || "menu";
-  }
-
-  get size() {
-    return this.getAttribute("size") === "1" ? "1" : "1/2";
-  }
-
-  get width() {
-    return this.getAttribute("width") || "content";
-  }
-
-  get contentClass() {
-    return this.getAttribute("content-class") || "";
   }
 
   templateContext() {
@@ -664,7 +649,8 @@ class SfContextMenu extends SfBaseElement {
       tabs: this.tabs,
       activeTab: this.activeTab,
       closable: this.closable,
-      closeLabel: pageText(CONTEXT_MENU_TEXT, "close", this, "sf-context-menu"),
+      closeLabel: this.sfWord("close"),
+      role: this.menuRole,
       panel: this.panel,
       position: this.position,
       size: this.size,

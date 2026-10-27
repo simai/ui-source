@@ -302,7 +302,7 @@ export function createSortableInserter(list) {
     menu = document_().createElement('sf-context-menu');
     menu.setAttribute('popup', '');
     menu.addEventListener('sf-context-menu-select', onSelect);
-    menu.addEventListener('sf-context-menu-close', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
+    menu.addEventListener('sf-context-menu-closed', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
     // Enter in the search takes the first row it left: whoever typed the name
     // of what they want has chosen it. The menu's own Enter is a row's.
     menu.addEventListener('keydown', (event) => {

@@ -5,7 +5,8 @@ import test from 'node:test';
 const source = readFileSync(new URL('../src/smart/context-menu/index.js', import.meta.url), 'utf8');
 
 test('context menu scopes native item semantics to the default menu template', () => {
-  assert.match(source, /this\.templateName !== "default" \|\| this\.role !== "menu"/);
+  // The host's role (standard 1.3.8 §3.1), read without shadowing the element's own role.
+  assert.match(source, /this\.templateName !== "default" \|\| this\.menuRole !== "menu"/);
   assert.match(source, /content\?\.children/);
   assert.match(source, /child\.localName === "sf-button"/);
   assert.match(source, /this\.ownItemAttribute\(item, "role", "menuitem"\)/);

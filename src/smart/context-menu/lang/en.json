@@ -1,0 +1,14 @@
+{
+  "title": "Context Menu",
+  "runtime": {
+    "close": "Close"
+  },
+  "events": {
+    "search": {
+      "label": "Search the menu"
+    },
+    "tab": {
+      "label": "Choose a tab"
+    }
+  }
+}

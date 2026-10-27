@@ -1,0 +1,278 @@
+{
+  "component": "sf-context-menu",
+  "probe": "sf-context-menu against component.json (standard simai.smart-component 1.3.8 §12, §19, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <button id=\"anchor\" type=\"button\">Действия</button>",
+      "  <button id=\"outside\" type=\"button\">Снаружи</button>",
+      "  <div id=\"area\"><sf-context-menu id=\"cm\" aria-label=\"Действия\" popup entries=\"[{&quot;id&quot;: &quot;edit&quot;, &quot;text&quot;: &quot;Изменить&quot;}, {&quot;id&quot;: &quot;copy&quot;, &quot;text&quot;: &quot;Копировать&quot;}, {&quot;id&quot;: &quot;move&quot;, &quot;text&quot;: &quot;Переместить&quot;}, {&quot;id&quot;: &quot;delete&quot;, &quot;text&quot;: &quot;Удалить&quot;}]\"></sf-context-menu></div>",
+      "  <sf-context-menu id=\"placed\" aria-label=\"Настройки\" tabs=\"Вид|Колонки\" closable><button type=\"button\">Пункт</button></sf-context-menu>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-open-request-fact",
+      "title": "openFor: the request, then the fact; focus on the first row",
+      "covers": "events.open, events.opened, actions.open-for",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-open",
+                "count": 1
+              },
+              {
+                "name": "sf-context-menu-opened",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "document.activeElement?.textContent.trim() === 'Изменить' && document.getElementById('anchor').getAttribute('aria-expanded') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p2-arrows-home-end",
+      "title": "ArrowDown, ArrowUp, Home and End move between rows",
+      "covers": "keyboard.host ArrowDown/ArrowUp/Home/End",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60,
+          "check": "document.activeElement?.textContent.trim() === 'Копировать'"
+        },
+        {
+          "user": "keyboard:End",
+          "wait": 60,
+          "check": "document.activeElement?.textContent.trim() === 'Удалить'"
+        },
+        {
+          "user": "keyboard:Home",
+          "wait": 60,
+          "check": "document.activeElement?.textContent.trim() === 'Изменить'"
+        },
+        {
+          "user": "keyboard:ArrowUp",
+          "wait": 60,
+          "check": "document.activeElement?.textContent.trim() === 'Удалить'"
+        }
+      ]
+    },
+    {
+      "id": "p3-enter-selects",
+      "title": "Enter on a row: sf-context-menu-select {id}, then the menu closes with reason api",
+      "covers": "keyboard.host.Enter select, events.select, events.closed",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-select",
+                "count": 1,
+                "detail": {
+                  "id": "copy",
+                  "checked": null
+                }
+              },
+              {
+                "name": "sf-context-menu-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "api"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-escape-reason",
+      "title": "Escape closes with reason escape and returns focus to the anchor",
+      "covers": "keyboard.host.Escape close, events.close {reason, unsaved}",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-close",
+                "count": 1,
+                "detail": {
+                  "reason": "escape",
+                  "unsaved": false
+                }
+              },
+              {
+                "name": "sf-context-menu-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "escape"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "focus": "expect returned to #anchor"
+        }
+      ]
+    },
+    {
+      "id": "p5-outside-reason",
+      "title": "a press outside closes with reason outside",
+      "covers": "§19.3 outside",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "script": "(document.getElementById('outside').dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "outside"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.getElementById('cm').isOpen"
+        }
+      ]
+    },
+    {
+      "id": "p6-tab-leaves",
+      "title": "Tab leaves and closes the menu (it does not trap focus)",
+      "covers": "keyboard.host.Tab reach, layer traps-focus false",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "user": "keyboard:Tab",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-closed",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.getElementById('cm').isOpen"
+        }
+      ]
+    },
+    {
+      "id": "p7-refused-close",
+      "title": "a page that prevents the close request keeps the menu open",
+      "covers": "events.close cancelable",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "script": "(document.getElementById('cm').addEventListener('sf-context-menu-close', (event) => event.preventDefault()), true)"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200,
+          "check": "document.getElementById('cm').isOpen === true"
+        }
+      ]
+    },
+    {
+      "id": "p8-placed-head-close",
+      "title": "a placed menu's head close button asks its host: sf-context-menu-close {reason: close}",
+      "covers": "actions.request-close, §19.3 close",
+      "steps": [
+        {
+          "user": "click:#placed .sf-context-menu-close button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-close",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9-tab-own-verb",
+      "title": "choosing a tab sends sf-context-menu-tab {id, index}",
+      "covers": "events.tab (own verb), actions.choose-tab",
+      "steps": [
+        {
+          "action": {
+            "name": "choose-tab",
+            "with": 1
+          },
+          "target": "#placed",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-context-menu-tab",
+                "count": 1,
+                "detail": {
+                  "id": "Колонки",
+                  "index": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10-surface-layer",
+      "title": "an owned menu is a surface layer: the root's mark is held while open",
+      "covers": "layer surface, §19.1",
+      "steps": [
+        {
+          "script": "(document.getElementById('cm').openFor(document.getElementById('anchor')), true)"
+        },
+        {
+          "check": "document.documentElement.dataset.sfPopoverOpen === '1'"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200,
+          "check": "!document.documentElement.dataset.sfPopoverOpen"
+        }
+      ]
+    }
+  ]
+}
