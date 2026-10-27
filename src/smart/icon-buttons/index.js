@@ -34,7 +34,11 @@ function forward() {
     remove_after: '2026-12-01',
   });
   if (customElements.get('sf-icon-button')) return;
-  const own = doc.currentScript?.src || '';
+  // The old path this file was loaded by: document.currentScript while a
+  // classic script runs, else the page's script element that names it (a
+  // module script has no currentScript).
+  const own = [doc.currentScript?.src || '', ...[...doc.querySelectorAll('script[src]')].map((script) => script.src)]
+    .find((src) => OWN.test(src)) || '';
   let src = '';
   if (OWN.test(own)) {
     src = own.replace(OWN, '/icon-button/js/icon-button$1.js');
