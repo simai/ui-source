@@ -248,17 +248,19 @@ test('the appearances are part of the public API, and documented', () => {
 
   // On a tag the appearance is its own axis, because `type` there says what the
   // tag carries or reports, not how it looks.
-  const tag = JSON.parse(read('src/smart/tags/smart.manifest.json'));
+  const tag = JSON.parse(read('src/smart/tag/smart.manifest.json'));
   assert.deepEqual(tag.inputs.properties.appearance.enum, ['default', 'surface', 'ghost']);
   assert.ok(
     !tag.inputs.properties.type.enum.includes('surface'),
     'the tag type stays what it was: an appearance is not a content shape',
   );
-  const runtime = read('src/smart/tags/index.js');
-  assert.match(runtime, /getEnumAttr\('appearance', \['default', 'surface', 'ghost'\], 'default'\)/u);
-  const template = read('src/smart/tags/js/templates/default.js');
+  const runtime = read('src/smart/tag/index.js');
+  // The setting is made from component.json (core/js/element-manifest.js).
+  assert.match(runtime, /elementFromManifest\(manifest/u);
+  assert.deepEqual(JSON.parse(read('src/smart/tag/component.json')).settings.appearance.values, ['default', 'surface', 'ghost']);
+  const template = read('src/smart/tag/js/templates/default.js');
   assert.match(template, /sf-tag--appearance-\$\{context\.appearance\}/u, 'and it reaches the class list');
-  const docs = read('src/smart/tags/docs/docs.md');
+  const docs = read('src/smart/tag/docs/docs.md');
   assert.match(docs, /appearance="default\|surface\|ghost"/u);
   assert.match(docs, /alpha ramp/u);
 });

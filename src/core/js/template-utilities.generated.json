@@ -383,7 +383,7 @@
     "resize/default",
     "visibility/default"
   ],
-  "cl-tags": [
+  "cl-tag": [
     "background-size/default",
     "display/default",
     "flex-direction/default",

@@ -38,7 +38,7 @@ test('template context: the resolved names the templates read are passed', async
     input: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],
     skeleton: ['variant', 'type'],
-    tags: ['kind', 'type', 'size', 'inline', 'line'],
+    tag: ['kind', 'type', 'size', 'inline', 'line'],
     textarea: ['type', 'minlength', 'maxlength'],
     toggle: ['type'],
   };

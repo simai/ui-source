@@ -59,6 +59,6 @@ test('change event: one canonical name for every value control', async () => {
 /* A tag's template reads the resolved kind: kind="checkbox" rendered an inert
    box because the template read the raw `type`. */
 test('change event: a checkbox tag by kind is interactive', async () => {
-  const tags = await read('src/smart/tags/index.js');
+  const tags = await read('src/smart/tag/index.js');
   assert.match(tags, /templateContext\(\) \{[\s\S]*?kind: this\.kind,\n      type: this\.type,/);
 });

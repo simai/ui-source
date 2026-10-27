@@ -1,0 +1,208 @@
+{
+  "component": "sf-tag",
+  "probe": "sf-tag against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-tag id=\"t-check\" text=\"Новые\"></sf-tag>",
+      "  <sf-tag id=\"t-rm\" kind=\"default\" text=\"Дизайн\" closable></sf-tag>",
+      "  <sf-tag id=\"t-icon\" kind=\"icon\" icon=\"sell\" text=\"Акция\"></sf-tag>",
+      "  <sf-tag id=\"t-old\" type=\"success\" text=\"Тип как статус\"></sf-tag>",
+      "  <sf-tag id=\"t-qty\" kind=\"quantity\" text=\"Количество\" count=\"3\"></sf-tag>",
+      "  <sf-tag id=\"t-off\" text=\"Нельзя\" disabled></sf-tag>",
+      "  <sf-tag id=\"t-line\" kind=\"default\" text=\"Ждёт\" line=\"1\"></sf-tag>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-checkbox-toggle-button",
+      "title": "a checkbox tag is a native toggle button",
+      "covers": "settings.kind default checkbox, accessibility.role button",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#t-check button.sf-tag'); return b && b.getAttribute('aria-pressed') === 'false' && b.classList.contains('sf-tag--checkbox'); })()",
+          "expect": {
+            "values": {
+              "#t-check.kind": "checkbox",
+              "#t-check.active": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2-click-changes",
+      "title": "a press toggles active and sends change with {active}",
+      "covers": "events.change, values.active",
+      "steps": [
+        {
+          "user": "click:#t-check button",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "active": true
+                }
+              }
+            ],
+            "values": {
+              "#t-check.active": true
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('#t-check button').getAttribute('aria-pressed') === 'true' && document.querySelector('#t-check').hasAttribute('active')"
+        }
+      ]
+    },
+    {
+      "id": "p3-space-toggles",
+      "title": "Space on the focused tag toggles it",
+      "covers": "keyboard.host.Space toggle:active",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#t-check button').focus(); return true; })()"
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "change",
+                "count": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-close",
+      "title": "the remove action sends sf-tag-close, then the dated close, without the element",
+      "covers": "events.close, aliases.json close",
+      "steps": [
+        {
+          "user": "click:#t-rm sf-icon-button button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tag-close",
+                "count": 1
+              },
+              {
+                "name": "close",
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "check": "(() => { let detail = null; document.querySelector('#t-rm').addEventListener('sf-tag-close', (e) => { detail = e.detail; }, {once: true}); document.querySelector('#t-rm sf-icon-button button').click(); return detail && !('component' in detail); })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-closable-by-kind",
+      "title": "absent closable, the icon kind removes and the default kind does not",
+      "covers": "settings.closable optional",
+      "steps": [
+        {
+          "check": "Boolean(document.querySelector('#t-icon sf-icon-button')) && !document.querySelector('#t-line sf-icon-button')",
+          "expect": {
+            "values": {
+              "#t-icon.closable": true,
+              "#t-line.closable": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-type-split",
+      "title": "type still routes a status word to status, noted with its dates",
+      "covers": "x-decisions type split",
+      "steps": [
+        {
+          "check": "document.querySelector('#t-old .sf-tag').classList.contains('sf-tag--success') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-tag' && note.from === 'type' && note.remove_after === '2026-12-01')",
+          "expect": {
+            "values": {
+              "#t-old.status": "success"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-quantity-dated",
+      "title": "the kind quantity is default, noted with its dates",
+      "covers": "aliases.json value quantity",
+      "steps": [
+        {
+          "check": "document.querySelector('#t-qty').getAttribute('kind') === 'default' && document.querySelector('#t-qty .sf-tag-count').textContent.trim() === '3' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-tag' && note.from === 'quantity')",
+          "expect": {
+            "values": {
+              "#t-qty.kind": "default"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8-disabled-silent",
+      "title": "a disabled tag sends no change",
+      "covers": "settings.disabled",
+      "steps": [
+        {
+          "script": "(() => { window.__tagChanges = 0; document.querySelector('#t-off').addEventListener('change', () => { window.__tagChanges += 1; }); document.querySelector('#t-off button').click(); return true; })()"
+        },
+        {
+          "check": "window.__tagChanges === 0 && document.querySelector('#t-off button').disabled"
+        }
+      ]
+    },
+    {
+      "id": "p9-line",
+      "title": "on a line the tag is one size down and inline",
+      "covers": "settings.line",
+      "steps": [
+        {
+          "check": "document.querySelector('#t-line .sf-tag').classList.contains('sf-tag--line-1') && document.querySelector('#t-line .sf-tag').classList.contains('sf-tag--size-1/2')",
+          "expect": {
+            "values": {
+              "#t-line.size": "1/2",
+              "#t-line.inline": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10-close-label-word",
+      "title": "the remove action is named by the page's word",
+      "covers": "settings.close-label default-from runtime.remove",
+      "steps": [
+        {
+          "check": "document.querySelector('#t-rm sf-icon-button button').getAttribute('aria-label') === 'Удалить'"
+        }
+      ]
+    },
+    {
+      "id": "p11-public-variable",
+      "title": "--sf-tag-background-color fills the tag",
+      "covers": "css-variables --sf-tag-background-color",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#t-line').style.setProperty('--sf-tag-background-color', 'rgb(1, 2, 3)'); return true; })()"
+        },
+        {
+          "check": "getComputedStyle(document.querySelector('#t-line .sf-tag')).backgroundColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

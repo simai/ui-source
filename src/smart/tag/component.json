@@ -1,0 +1,300 @@
+{
+  "$comment": "The source of sf-tag's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tag (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.tags",
+  "tag": "sf-tag",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "tag",
+  "settings": {
+    "kind": {
+      "type": "enum",
+      "values": [
+        "checkbox",
+        "icon",
+        "default",
+        "color",
+        "avatar"
+      ],
+      "default": "checkbox"
+    },
+    "status": {
+      "type": "enum",
+      "values": [
+        "",
+        "info",
+        "success",
+        "warning",
+        "error"
+      ],
+      "default": ""
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "default",
+        "surface",
+        "ghost"
+      ],
+      "default": "default"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1/2"
+    },
+    "line": {
+      "type": "enum",
+      "values": [
+        "",
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": ""
+    },
+    "spacing": {
+      "type": "enum",
+      "values": [
+        "compact",
+        "normal",
+        "comfortable",
+        "spacious"
+      ],
+      "default": "normal"
+    },
+    "inline": {
+      "type": "boolean",
+      "default": false
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "count": {
+      "type": "string",
+      "default": "",
+      "summary": "The text of the count after the label: a number or a capped one such as 99+"
+    },
+    "icon": {
+      "type": "icon",
+      "default": ""
+    },
+    "color-class": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar-image-url": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar-text": {
+      "type": "string",
+      "default": ""
+    },
+    "avatar-status": {
+      "type": "string",
+      "default": ""
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "closable": {
+      "type": "boolean",
+      "optional": true,
+      "summary": "Absent: removable for the icon, color and avatar kinds, not for checkbox and default; present, it says so for any kind"
+    },
+    "interactive": {
+      "type": "boolean",
+      "default": false
+    },
+    "close-label": {
+      "type": "string",
+      "default-from": "runtime.remove"
+    }
+  },
+  "values": {
+    "active": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A checkbox tag is chosen; the tag toggles it and reports it with change"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "active": "boolean"
+      }
+    },
+    "close": {
+      "carries": {}
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Space": "toggle:active",
+      "Enter": "toggle:active"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A checkbox tag is a native toggle button (aria-pressed); an interactive one is a native button beside the remove action; any other kind is a static label. The remove action is a separate native button named by close-label.",
+    "role": "button",
+    "name": {
+      "from": [
+        "aria-label",
+        "text",
+        "slot:text"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Space": {
+        "effect": "toggle:active",
+        "when": {
+          "kind": "checkbox"
+        }
+      },
+      "Enter": {
+        "effect": "toggle:active",
+        "when": {
+          "kind": "checkbox"
+        }
+      }
+    }
+  },
+  "css-variables": {
+    "--sf-tag-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tag-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tag-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tag-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tag-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tag-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
+  "x-source": {
+    "package": "framework",
+    "folder": "tags",
+    "manifest": "simai/ui-source@5100227 src/smart/tags/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/tags.component.json"
+  },
+  "x-words": [
+    "text",
+    "avatar-text",
+    "close-label"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "events.change: 1 carried field(s) held the element, not data (§8)",
+    "events.close: 1 carried field(s) held the element, not data (§8)",
+    "events.sf-tag-close → close (the DOM name without sf-<tag>-)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tag for a compact category, filter, selected value or status with an explicit static, toggle or remove owner.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not make a static tag focusable",
+        "Do not nest a toggle and remove action in one tag surface"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-tag text=\"Documentation\"></sf-tag>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "a11y-role: button for the checkbox kind (a native toggle button with aria-pressed) and for an interactive tag (a native button beside the remove action); any other kind is a static label with no role, its remove action a separate native button named by close-label. accessibility.$comment says so; the name is aria-label, else the text.",
+    "key-effects: Space and Enter are toggle:active for the checkbox kind (the native button toggles, change follows), Tab reach; probe.json drives Space (gate 16).",
+    "events (§8): change keeps the browser's name and carries {active}; close is sf-tag-close and the old DOM name close its dated same-detail alias (aliases.json). The element (component) leaves both details, as §8 says; no Framework code read it.",
+    "existing-aliases: type, which answered kind and status from one list, stays routed in code -- a content word reaches kind, a status word status (journal attribute-tag-type-split, public-api-axes) -- and each use is now noted in SF.deprecations with its dates; a setting alias names one target and cannot split. The kind value quantity is a dated value alias of default (journal value-tag-quantity-to-default).",
+    "number-type: count stays a string -- it is the text after the label, a number or a capped one such as 99+ -- not a number (§4.2, §16 item 29).",
+    "closable is optional (§4.2): absent, the kind decides (icon, color and avatar remove, checkbox and default do not); present, it decides for any kind.",
+    "close-label defaults to the language file's runtime.remove (§11), read with sfWord; the module's TAG_TEXT is gone.",
+    "active moves to values: it is what the tag holds and reports with change; it keeps its default, so a page that wrote active still writes the attribute (§4, §4.3).",
+    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (Дизайн, default, removable) plus a chosen checkbox, a status, an icon tag, a count, the surface appearance, an interactive chip and a tag on a line.",
+    "css-variables: the six public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
+    "folder: tags takes the tag's name, tag (§3, §21, §16 item 16); the loader bundle is cl-tag, cl-tags stays a forwarding rule and smart/tags/js/tags.js a forwarding script (css/tags.css its sheet) until 2026-12-01 (change journal path-smart-tags-to-tag). The registry id stays smart.tags.",
+    "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20)."
+  ]
+}

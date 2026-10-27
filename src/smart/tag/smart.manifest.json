@@ -392,8 +392,8 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/tags/index.js",
-        "sha256": "284858a1f409efe1fab3c9e4ca19a707baaa155774d797aa02864314f92a7ead"
+        "path": "src/smart/tag/index.js",
+        "sha256": "2d412a418dcdf2423f9baf975e45b41be625d6d9f06b4987d657d6fa39366c5e"
       }
     ],
     "generated_runtime": [

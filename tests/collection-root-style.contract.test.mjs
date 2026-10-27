@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 const read = owner => readFile(new URL(`../src/smart/${owner}/js/templates/default.js`, import.meta.url), 'utf8');
 
-for (const owner of ['avatars', 'list-item', 'pagination', 'tags', 'tooltip', 'tree-item', 'tabs', 'file-upload']) {
+for (const owner of ['avatars', 'list-item', 'pagination', 'tag', 'tooltip', 'tree-item', 'tabs', 'file-upload']) {
   test(`${owner} consumes root class/style in its built-in template`, async () => {
     const template = await read(owner);
     assert.match(template, /context.rootClass/);

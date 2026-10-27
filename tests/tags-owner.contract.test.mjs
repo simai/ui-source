@@ -15,7 +15,7 @@ test('ordinary Tag uses compact semantic geometry and bounded motion', async () 
 });
 
 test('static Tag has no false action contract and selectable Tag is native', async () => {
-  const template = await source('src/smart/tags/js/templates/default.js');
+  const template = await source('src/smart/tag/js/templates/default.js');
   assert.match(template, /context\.type === 'checkbox'/);
   assert.match(template, /<button[\s\S]*?type="button"[\s\S]*?aria-pressed=/);
   assert.match(template, /<div[\s\S]*?class=\$\{classes\.join\(' '\)\}/);
@@ -24,8 +24,8 @@ test('static Tag has no false action contract and selectable Tag is native', asy
 });
 
 test('select and remove actions cannot be nested', async () => {
-  const runtime = await source('src/smart/tags/index.js');
-  const template = await source('src/smart/tags/js/templates/default.js');
+  const runtime = await source('src/smart/tag/index.js');
+  const template = await source('src/smart/tag/js/templates/default.js');
   // A checkbox tag removes only when closable is set; asked, the toggle and the
   // remove action stand side by side in a div, never one inside the other.
   assert.match(runtime, /if \(this\.type === 'checkbox'\) return this\.hasAttribute\('closable'\)/);
@@ -38,24 +38,28 @@ test('select and remove actions cannot be nested', async () => {
 });
 
 test('decorative leading visuals stay out of the accessibility tree', async () => {
-  const template = await source('src/smart/tags/js/templates/default.js');
+  const template = await source('src/smart/tag/js/templates/default.js');
   for (const className of ['sf-tag-check', 'sf-tag-icon', 'sf-tag-color-icon', 'sf-dot', 'sf-avatar']) {
     assert.match(template, new RegExp(`${className}[^>]*aria-hidden="true"`));
   }
 });
 
 test('Smart runtime emits exact change and close intents', async () => {
-  const runtime = await source('src/smart/tags/index.js');
-  assert.match(runtime, /new CustomEvent\('change',[\s\S]*detail: \{ active, component: this \}/);
-  assert.match(runtime, /new CustomEvent\('close',[\s\S]*detail: \{ component: this \}/);
+  const runtime = await source('src/smart/tag/index.js');
+  // §8: change keeps the browser's name with data only; close is sf-tag-close,
+  // the old DOM name close its dated alias (aliases.json).
+  assert.match(runtime, /this\.sfEmit\('change', \{ active \}\)/);
+  assert.match(runtime, /this\.sfEmit\('close', \{\}\)/);
+  const aliases = JSON.parse(await source('src/smart/tag/aliases.json')).aliases;
+  assert.ok(aliases.some((row) => row.kind === 'event' && row.from === 'close' && row.to === 'sf-tag-close'));
   assert.match(runtime, /this\.toggleAttribute\('active', active\)/);
   assert.match(runtime, /if \(this\.disabled \|\| !this\.closable\) return/);
 });
 
 test('source metadata, manifest and fixture describe the same owner', async () => {
-  const meta = await source('src/smart/tags/meta.mjs');
-  const manifest = JSON.parse(await source('src/smart/tags/smart.manifest.json'));
-  const fixture = JSON.parse(await source('src/smart/tags/studio.fixture.json'));
+  const meta = await source('src/smart/tag/meta.mjs');
+  const manifest = JSON.parse(await source('src/smart/tag/smart.manifest.json'));
+  const fixture = JSON.parse(await source('src/smart/tag/studio.fixture.json'));
   // The single list became two axes: what the tag carries and what it reports.
   assert.match(meta, /What the tag carries/);
   assert.match(meta, /What the tag reports/);

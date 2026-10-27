@@ -22,7 +22,7 @@ const styles = [
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/badge/js/badge.js',
-  'smart/smart/tags/js/tags.js', 'smart/smart/avatar/js/avatar.js',
+  'smart/smart/tag/js/tag.js', 'smart/smart/avatar/js/avatar.js',
   'smart/smart/reference-link/js/reference-link.js',
   'smart/smart/progress-scale/js/progress-scale.js',
   'smart/smart/file-preview/js/file-preview.js', 'smart/smart/input/js/input.js',

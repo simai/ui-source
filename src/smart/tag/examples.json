@@ -1,0 +1,105 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Дизайн, можно удалить",
+      "settings": {
+        "kind": "default",
+        "text": "Дизайн",
+        "closable": true,
+        "close-label": "Удалить тег Дизайн"
+      },
+      "expect": {
+        "kind": "default",
+        "closable": true
+      }
+    },
+    {
+      "name": "checkbox",
+      "title": "Выбранный фильтр",
+      "settings": {
+        "text": "Новые",
+        "active": true
+      },
+      "expect": {
+        "kind": "checkbox",
+        "active": true
+      }
+    },
+    {
+      "name": "status",
+      "title": "Статус",
+      "settings": {
+        "kind": "default",
+        "status": "success",
+        "text": "Оплачен"
+      },
+      "expect": {
+        "status": "success"
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Со значком",
+      "settings": {
+        "kind": "icon",
+        "icon": "sell",
+        "text": "Акция"
+      },
+      "expect": {
+        "kind": "icon",
+        "closable": true
+      }
+    },
+    {
+      "name": "count",
+      "title": "Со счётчиком",
+      "settings": {
+        "kind": "default",
+        "text": "Входящие",
+        "count": "12"
+      },
+      "expect": {
+        "count": "12"
+      }
+    },
+    {
+      "name": "surface",
+      "title": "На поверхности",
+      "settings": {
+        "text": "Черновик",
+        "appearance": "surface"
+      },
+      "expect": {
+        "appearance": "surface"
+      }
+    },
+    {
+      "name": "interactive",
+      "title": "Фильтр с меню",
+      "settings": {
+        "kind": "default",
+        "text": "Город: Москва",
+        "interactive": true,
+        "closable": true
+      },
+      "expect": {
+        "interactive": true
+      }
+    },
+    {
+      "name": "line",
+      "title": "В строке таблицы",
+      "settings": {
+        "kind": "default",
+        "status": "warning",
+        "text": "Ждёт",
+        "line": "1"
+      },
+      "expect": {
+        "line": "1",
+        "size": "1/2"
+      }
+    }
+  ]
+}

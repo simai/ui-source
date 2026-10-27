@@ -236,7 +236,7 @@
       "reason": "The page language's text when not set: \"Close item\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "tags",
+      "component": "tag",
       "prop": "closeLabel",
       "reason": "The page language's text when not set: \"Remove\" on an English page, the dictionary's word on another."
     },

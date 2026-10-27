@@ -2309,6 +2309,43 @@
       },
       "owner": "ui-source",
       "source": "src/smart/badges/index.js, src/smart/badge/rule.js"
+    },
+    {
+      "id": "path-smart-tags-to-tag",
+      "recorded_on": "2026-10-27",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-tag is served from smart/tag/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/tag.js and css/tag.css, loader bundle cl-tag. The old path keeps working until remove_after: smart/tags/js/tags.js is a forwarding script that notes the path in SF.deprecations and loads smart/tag/js/tag.js, smart/tags/css/tags.css is sf-tag's sheet, and the rule cl-tags loads cl-tag.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "smart/tags/js/tags.js",
+          "to": "smart/tag/js/tag.js",
+          "match": "smart/tags/js/tags(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-tag",
+          "from": "smart/tags/css/tags.css",
+          "to": "smart/tag/css/tag.css",
+          "match": "smart/tags/css/tags(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-tags",
+          "to": "cl-tag",
+          "match": "['\"]cl-tags['\"]"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Write smart/tag/ for smart/tags/ and tag for tags in the file names (js/tag.js, js/tag.min.js, css/tag.css, css/tag.min.css); in a product rule's relation write cl-tag for cl-tags. A page that lets the Loader fetch sf-tag needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/tags/js/tags.js\"></script>",
+        "after": "<script src=\"/distr/smart/tag/js/tag.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tags/index.js, src/smart/tag/rule.js"
     }
   ]
 }

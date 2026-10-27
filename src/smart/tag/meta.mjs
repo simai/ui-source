@@ -2,7 +2,7 @@ const BOOLEAN_VALUES = ['true', 'false'];
 
 const tagsMeta = {
   tag: 'sf-tag',
-  source: 'src/smart/tags/meta.mjs',
+  source: 'src/smart/tag/meta.mjs',
   attributes: {
     template: {
       kind: 'custom',

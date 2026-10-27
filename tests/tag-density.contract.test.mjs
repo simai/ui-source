@@ -44,11 +44,11 @@ test('tags: inline drops the block padding and sizes the remove button to the li
 });
 
 test('tags: the Smart tag exposes the sizes, spacing and inline', async () => {
-  const meta = await read('smart/tags/meta.mjs');
+  const meta = await read('smart/tag/meta.mjs');
   assert.match(meta, /values: \['1\/3', '1\/2', '1', '2', '3'\]/);
   assert.match(meta, /spacing: \{\s*kind: 'enum',\s*values: \['compact', 'normal', 'comfortable', 'spacious'\]/);
   assert.match(meta, /inline: \{\s*kind: 'boolean'/);
-  const template = await read('smart/tags/js/templates/default.js');
+  const template = await read('smart/tag/js/templates/default.js');
   assert.match(template, /context\.spacing && context\.spacing !== 'normal' \? `spacing-\$\{context\.spacing\}` : ''/);
   assert.match(template, /context\.inline \? 'sf-tag--inline' : ''/);
 });

@@ -56,7 +56,7 @@
       "state": "converted"
     },
     {
-      "component": "tags",
+      "component": "tag",
       "axis": "appearance",
       "legacy": [],
       "state": "canonical_from_the_start"
@@ -214,7 +214,7 @@
       "state": "converted"
     },
     {
-      "component": "tags",
+      "component": "tag",
       "axis": "kind",
       "legacy": [
         "type"
@@ -228,7 +228,7 @@
       }
     },
     {
-      "component": "tags",
+      "component": "tag",
       "axis": "status",
       "legacy": [
         "type"
@@ -375,7 +375,7 @@
       "radio",
       "range-slider",
       "switch",
-      "tags",
+      "tag",
       "textarea",
       "toggle"
     ],

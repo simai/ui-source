@@ -27,7 +27,9 @@ test('page language: no component falls back to Russian', async () => {
     'src/smart/pagination/index.js': [/this\.sfWord\("page-label"\)/, /import en from "\.\/lang\/en\.json";/],
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
     'src/smart/datepicker/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
-    'src/smart/tags/index.js': [/closeLabel: \{ default: '' \}/, /pageText\(TAG_TEXT, 'remove', this\)/],
+    // sf-tag's remove label is its language files' runtime.remove (standard 1.3.8 §11).
+    'src/smart/tag/component.json': [/"close-label": \{\s*"type": "string",\s*"default-from": "runtime.remove"\s*\}/],
+    'src/smart/tag/lang/en.json': [/"remove": "Remove"/],
     // The setting comes from the component's manifest (standard 1.3.8 §4).
     'src/smart/country-code/index.js': [/pageLanguage\(this\)/],
     'src/smart/country-code/component.json': [/"locale": \{\s*"type": "string",\s*"default": ""\s*\}/],
