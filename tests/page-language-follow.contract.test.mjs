@@ -62,6 +62,10 @@ test('a section [lang] wins over the page choice; the choice wins over <html lan
     assert.equal(pageLanguage(inSection), 'en', 'the nearest [lang] below <html> wins');
     assert.equal(pageLanguage(onPage), 'de', 'the choice wins over <html lang>');
     assert.equal(html.getAttribute('lang'), 'de', 'use() also sets <html lang>');
+    language.use('en');
+    language.use(null);
+    assert.equal(html.getAttribute('lang'), 'ru', 'use(null) gives the markup its own language back');
+    language.use('de');
     section.attrs.lang = 'pt-BR';
     assert.equal(pageLanguage(inSection), 'pt');
     assert.equal(pageLocale(inSection), 'pt-br');

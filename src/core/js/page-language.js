@@ -275,8 +275,19 @@ export const language = {
     STORE.chosen = next;
     // The choice is the page's language: <html lang> says it too (§11.1), so
     // the browser, a screen reader and CSS :lang() agree with the words.
+    // use(null) gives the markup's own language back.
     const root = globalThis.document?.documentElement;
-    if (next && root && root.getAttribute('lang') !== next) root.setAttribute('lang', next);
+    if (root) {
+      const holder = globalThis;
+      if (next) {
+        if (holder.__sfMarkupLanguage === undefined) holder.__sfMarkupLanguage = root.getAttribute('lang');
+        if (root.getAttribute('lang') !== next) root.setAttribute('lang', next);
+      } else if (holder.__sfMarkupLanguage !== undefined) {
+        if (holder.__sfMarkupLanguage === null) root.removeAttribute('lang');
+        else root.setAttribute('lang', holder.__sfMarkupLanguage);
+        holder.__sfMarkupLanguage = undefined;
+      }
+    }
     announce();
     return STORE.chosen;
   },
