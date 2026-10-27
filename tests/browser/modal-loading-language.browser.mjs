@@ -80,7 +80,9 @@ try {
       if (/Loading\.\.\.|Loading(?!…)/u.test(state.all) && lang === 'ru') failures.push(`${lang} ${kind}: English on a Russian page: ${state.all}`);
     };
 
-    await read('smart', '#smart-loading [data-sf-modal-state="loading"]');
+    // The window draws in its portal; its root no longer repeats the element's
+    // id (simai/ui-source#42), so the portal names it.
+    await read('smart', '[data-sf-modal-portal="smart-loading"] [data-sf-modal-state="loading"]');
 
     const opened = await tab.waitForFunction(() => !!window.SF?.Loader?.ComponentRegistry?.Modal, null, {timeout: 15000})
       .then(() => true, () => false);
@@ -94,7 +96,7 @@ try {
       });
       // The ordinary modal waits half a second before it shows loading, so a
       // fast answer does not flash it.
-      await read('ordinary', '.sf-modal-loading[data-sf-modal-state="loading"]:not(#smart-loading *)');
+      await read('ordinary', '.sf-modal-loading[data-sf-modal-state="loading"]:not([data-sf-modal-portal="smart-loading"] *)');
     }
     if (errors.length) failures.push(`${lang}: page errors: ${errors.join('; ')}`);
     await tab.close();

@@ -36,6 +36,26 @@ focus into the remaining one; removing a background window does not steal focus.
 Existing per-class registries and instance APIs remain separate. Cancelling
 `modal:before-close` leaves that window and the page lock intact.
 
+Since 1.3.0 the modal is a layer of the one document layer stack of the core
+(`core/js/layer-stack.js`, standard simai.smart-component 1.3.8 §19), with
+`sf-drawer`, the open surfaces (popover, dropdown list, menu, calendar) and the
+toast area. The layer opened last is on top and is drawn highest: z-index is
+`--sf-z-index-layer` (9000) plus its place times `--sf-z-index-layer-step` (2),
+across kinds, so a drawer opened from a modal is above it and a modal opened
+from a drawer is above the drawer. Only the top layer handles Escape, a press
+on the overlay and Tab; a layer below stands back. The page lock is one lease
+for the whole stack. `modal:before-close` (cancelable) and `modal:after-close`
+carry `reason`: `close` (the header button), `escape`, `outside` (the
+overlay), `cancelled` (a page control with `data-sf-modal-close`) or `api`
+(`close()` from a script, or `close({reason})`); the request also carries
+`unsaved: false`.
+
+Slot content is the page's: the window places the page's own nodes in its
+portal and never copies them, so a listener, a property and the node itself
+survive opening and closing (§4.5). The portal carries the element's resolved
+`lang` and `dir` and the theme of its nearest `.theme-dark`/`.theme-light`
+area. `<sf-modal id="x">` no longer gives the window's root the same id.
+
 Since 1.1.0 every `modal:*` event bubbles and is composed, as in the base modal
 component and `sf-drawer`, so a host can listen on `document`;
 `event.detail.modal` names the modal that emitted it. The `on*` helpers and

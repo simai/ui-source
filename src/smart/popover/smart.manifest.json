@@ -306,7 +306,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "7a5a5850e9bf5ba365faaca7c50d7b79154b0b09508f39fc34cafe39cdd22947"
+        "sha256": "5bba20cb93d1635263eb28c1a97207f9985c4a8c5bb894d5cf411ed2e2f89a5c"
       },
       {
         "path": "src/smart/popover/rule.js",

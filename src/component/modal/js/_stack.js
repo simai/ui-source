@@ -1,29 +1,35 @@
-// Ordinary and Smart Modal are separate bundles. Share only document-local
-// coordination, not their registries, public instance APIs or rendering.
+// Ordinary and Smart Modal are separate bundles. They share the one document
+// layer stack of the core (layer-stack.js, standard 1.3.8 §19), with every
+// other layer -- a drawer, a popover, a list -- not a list of their own: a
+// modal opened from a drawer is above it, takes Escape and Tab while it is,
+// and gives focus back into the drawer when it closes (simai/ui-source#36,
+// #37). Registries, public instance APIs and rendering stay separate.
 import { syncModalFocusGuards } from './_focus';
-const STACK_KEY = Symbol.for('simai.modal.document-stack');
+import { closeLayer, hasLayer, isTopLayer, landmarksAround, layerIndex, openLayers,
+  openLayer, raiseLayer, returnLayerFocus, topLayer } from '../../../core/js/layer-stack';
 
-function state() {
-  if (!document[STACK_KEY]) {
-    Object.defineProperty(document, STACK_KEY, {
-      value: { items: [], lockOwner: null },
-      configurable: true,
-    });
-  }
-  return document[STACK_KEY];
-}
+const modalRoot = (modal) => modal?.getModalRoot?.() || modal?.template || null;
 
+// The highest modal open: what Modal.getTopModal() names. A drawer or a list
+// may stand above it; isTopLayer answers whether it is the top of everything.
 function getTopModalLayer() {
-  return state().items.at(-1) || null;
+  return openLayers('modal').at(-1) || null;
 }
 
 function getModalLayerIndex(modal) {
-  return state().items.indexOf(modal);
+  return layerIndex(modal);
+}
+
+// Focus guards stand around the panel of a modal only while it is the top
+// layer; under a drawer or a list they would be tab stops of a layer below.
+function syncGuards() {
+  const top = topLayer();
+  syncModalFocusGuards(top?.kind === 'modal' ? top.owner : null);
 }
 
 function updateModalLayers() {
-  state().items.forEach((modal, index) => modal.applyStackPosition(index));
-  syncModalFocusGuards(getTopModalLayer());
+  for (const owner of openLayers('modal')) owner.applyStackPosition(layerIndex(owner));
+  syncGuards();
 }
 
 // A modal inside an overlay container covers that box, not the page, so the
@@ -31,100 +37,54 @@ function updateModalLayers() {
 const locksPage = (modal) => !modal.inContainer;
 
 function addModalLayer(modal, owner) {
-  const stack = state();
-  if (stack.items.includes(modal)) return;
-  if (locksPage(modal) && !stack.lockOwner) {
-    stack.lockOwner = owner;
-    owner.lockPage(modal.preserveScrollGap);
-  }
-  stack.items.push(modal);
-  updateModalLayers();
+  if (hasLayer(modal)) return;
+  openLayer(modal, {
+    kind: 'modal',
+    locksPage: locksPage(modal),
+    trapsFocus: true,
+    lockPage: () => {
+      owner.lockPage(modal.preserveScrollGap);
+      return () => owner.unlockPage();
+    },
+    returnTo: modal._lastActive ?? modal.lastActive ?? null,
+    root: () => modalRoot(modal),
+    focusIn: () => modal.focusFirst?.(),
+    onEscape: (event) => Boolean(modal.onKeyDown?.(event)),
+    onTab: (event) => modal.onKeyDown?.(event),
+    // Called on every change of the stack, a drawer's or a list's too.
+    place: ({index}) => {
+      modal.applyStackPosition(index);
+      syncGuards();
+    },
+  });
+  syncGuards();
 }
 
 function removeModalLayer(modal) {
-  const stack = state();
-  const index = stack.items.indexOf(modal);
-  if (index < 0) return;
-  stack.items.splice(index, 1);
-  if (stack.lockOwner && !stack.items.some(locksPage)) {
-    stack.lockOwner.unlockPage();
-    stack.lockOwner = null;
-  }
-  updateModalLayers();
+  if (!hasLayer(modal)) return;
+  // The modal gives focus back itself, after its closing transition.
+  closeLayer(modal, {restoreFocus: false});
+  modal.applyStackPosition?.(-1);
+  syncGuards();
 }
 
 function raiseModalLayer(modal) {
-  const stack = state();
-  const index = stack.items.indexOf(modal);
-  if (index < 0) return;
-  stack.items.splice(index, 1);
-  stack.items.push(modal);
-  updateModalLayers();
+  raiseLayer(modal);
+  syncGuards();
 }
 
 function captureModalFocusAncestors(node) {
-  const ancestors = [];
-  for (let parent = node?.parentElement; parent; parent = parent.parentElement) {
-    if (parent.matches('main, section, article, [role="main"], [role="region"]')) {
-      ancestors.push(parent);
-    }
-  }
-  return ancestors;
-}
-
-function tryReturnFocus(node, temporaryTabIndex = false) {
-  if (!node?.isConnected || typeof node.focus !== 'function' ||
-      node.matches(':disabled') || node.closest('[inert], [hidden], [aria-hidden="true"]') ||
-      !node.getClientRects().length ||
-      node.ownerDocument.defaultView.getComputedStyle(node).visibility !== 'visible') {
-    return false;
-  }
-  const addTabIndex = temporaryTabIndex && !node.hasAttribute('tabindex');
-  let observer;
-  const cleanup = () => {
-    observer?.disconnect();
-    node.removeEventListener('blur', cleanup);
-    // Preserve synchronous author changes to the temporary attribute.
-    if (addTabIndex && node.getAttribute('tabindex') === '-1') node.removeAttribute('tabindex');
-  };
-  if (addTabIndex) {
-    node.setAttribute('tabindex', '-1');
-    node.addEventListener('blur', cleanup, { once: true });
-    observer = new node.ownerDocument.defaultView.MutationObserver(() => {
-      if (!node.isConnected) cleanup();
-    });
-    observer.observe(node.ownerDocument.documentElement, { childList: true, subtree: true });
-  }
-  let focused = false;
-  try {
-    node.focus({ preventScroll: true });
-    focused = node.ownerDocument.activeElement === node;
-    return focused;
-  } catch {
-    return false;
-  } finally {
-    // Removing tabindex while a non-native target is focused blurs it in browsers.
-    if (addTabIndex && !focused) cleanup();
-  }
+  return landmarksAround(node);
 }
 
 function restoreModalLayerFocus(wasTop, lastActive, ancestors = []) {
-  if (!wasTop) return;
-  const top = getTopModalLayer();
-  const root = top?.getModalRoot?.() || top?.template;
-  if ((!top || root?.contains(lastActive)) && tryReturnFocus(lastActive)) {
-    return;
-  }
-  if (top) {
-    top.focusFirst();
-    return;
-  }
-  const candidates = new Set([...ancestors,
-    ...document.querySelectorAll('main, [role="main"]'), document.body]);
-  for (const candidate of candidates) {
-    if (tryReturnFocus(candidate, true)) return;
-  }
+  returnLayerFocus(wasTop, lastActive, ancestors);
+}
+
+function isTopModalLayer(modal) {
+  return isTopLayer(modal);
 }
 
 export { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
-  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus };
+  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
+  isTopModalLayer };

@@ -12,7 +12,9 @@ import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 // same attribute; the drawer's older name until 2026-12-01).
 const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
-  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus } from './_stack';
+  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
+  isTopModalLayer } from './_stack';
+import { layerZIndexAt } from '../../../core/js/layer-stack';
 
 function joinClasses(...parts) {
   return parts.filter(Boolean).join(' ').trim();
@@ -110,14 +112,18 @@ class Modal extends ComponentObserver {
   static openCount = 0;
   static uid = 0;
   static lockState = null;
+  // Kept for code that reads it; the z-index comes from the core's one layer
+  // scale (--sf-z-index-layer, default 9000).
   static baseZIndex = 9000;
 
   static getTopModal() {
     return getTopModalLayer();
   }
 
+  // Whether this modal is the top layer of the document (layer-stack.js): a
+  // drawer or a list opened from it stands above it.
   static isTopModal(modal) {
-    return Modal.getTopModal() === modal;
+    return isTopModalLayer(modal);
   }
 
   static addToStack(modal) {
@@ -852,8 +858,8 @@ class Modal extends ComponentObserver {
       return;
     }
 
+    // Escape and Tab come through the document layer stack, to the top layer.
     this.template.addEventListener('click', this.onOverlayClick);
-    document.addEventListener('keydown', this.onKeyDown);
 
     Modal.registry.set(this.modalId, this);
     Modal.bindGlobalEvents();
@@ -887,38 +893,37 @@ class Modal extends ComponentObserver {
     }
     Modal.removeFromStack(this);
     this.template.removeEventListener('click', this.onOverlayClick);
-    document.removeEventListener('keydown', this.onKeyDown);
     Modal.registry.delete(this.modalId);
   }
 
   onOverlayClick(event) {
     const isOverlay =
       event.target === this.template.querySelector('[data-sf-modal-overlay]');
-    if (isOverlay && this.closeOnOverlay) {
+    if (isOverlay && this.closeOnOverlay && Modal.isTopModal(this)) {
       this.close();
     }
   }
 
+  // Handed Escape and Tab by the layer stack while this is the top layer.
+  // Answers true when it took Escape.
   onKeyDown(event) {
     if (!this.isOpen && this._modalState !== 'closing') {
-      return;
+      return false;
     }
 
     if (!Modal.isTopModal(this)) {
-      return;
+      return false;
     }
 
-    // An open popover takes Escape first; the window behind it stays.
-    if (event.key === 'Escape' && this.closeOnEsc && this._modalState !== 'closing' && !event.defaultPrevented && !document.documentElement?.dataset?.sfPopoverOpen) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+    if (event.key === 'Escape' && this.closeOnEsc && this._modalState !== 'closing' && !event.defaultPrevented) {
       this.close();
-      return;
+      return true;
     }
 
     if (event.key === 'Tab') {
       this.trapFocus(event);
     }
+    return false;
   }
 
   trapFocus(event) {
@@ -957,7 +962,7 @@ class Modal extends ComponentObserver {
     }
 
     this.template.style.setProperty('--sf-modal-stack-index', String(index));
-    this.template.style.zIndex = String(Modal.baseZIndex + index * 2);
+    this.template.style.zIndex = String(layerZIndexAt(index));
     return this;
   }
 

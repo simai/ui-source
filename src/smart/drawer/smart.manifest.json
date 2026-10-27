@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -227,7 +227,7 @@
       }
     },
     "close": {
-      "summary": "Closes the Drawer and restores focus to the opener. Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false. Returns the element.",
+      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
       "arguments": [
         {
           "name": "options",
@@ -469,6 +469,21 @@
           },
           "root": {
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ],
+            "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+          },
+          "unsaved": {
+            "type": "boolean",
+            "description": "Whether something is unsaved; false until the component has an unsaved setting."
           }
         }
       }
@@ -489,6 +504,17 @@
           },
           "root": {
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ],
+            "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
           }
         }
       }
@@ -653,11 +679,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "2321a416edd59e199c5da99d38b472a881988e26209420d7e391da90fdb93ff6"
+        "sha256": "70f3e8a3f837199b5008fac19831cb450d261fc0b724fe12896e9cf9959d16e0"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "35c17d4211ddcab035f31f81b66fbf7444f6c632cf4815e3225ce57ebf2a1c6f"
+        "sha256": "64fcbbebba4874c798fc5a1c895089ed02614ebfabdf3289109d2109b31655fd"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -665,7 +691,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "56e2c2e6767c9176aee03aff0418f9ec38ec73b5e628b144700faa54d64821ef"
+        "sha256": "895a90411e65f187851a39c31fd1ed0974438d2e7695ef4dc29f6d6e8a984fc6"
       }
     ],
     "generated_runtime": [

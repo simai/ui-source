@@ -13,7 +13,9 @@ import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
 // name came first and is read until the change journal retires it.
 const OVERLAY_CONTAINER = "[data-sf-overlay-container], [data-sf-drawer-container]";
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
-  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus } from "../../component/modal/js/_stack";
+  removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
+  isTopModalLayer } from "../../component/modal/js/_stack";
+import { carryLayerOrigin, layerZIndexAt } from "../../core/js/layer-stack";
 
 // The header's two actions, named in the page's language: they were English on
 // every page (documentation trial, 2026-10-12). The loading state and its
@@ -54,6 +56,8 @@ class SfModal extends SfBaseElement {
   static stack = [];
   static openCount = 0;
   static lockState = null;
+  // Kept for code that reads it: the z-index comes from the one layer scale of
+  // the core now (--sf-z-index-layer, whose default is this same 9000).
   static baseZIndex = 9000;
 
   static defaultTrueAttributes = new Set([
@@ -70,8 +74,10 @@ class SfModal extends SfBaseElement {
     return getTopModalLayer();
   }
 
+  // Whether this modal is the top layer of the document: a drawer or a list
+  // opened from it stands above it and takes the keys while it does.
   static isTopModal(modal) {
-    return SfModal.getTopModal() === modal;
+    return isTopModalLayer(modal);
   }
 
   static getStackIndex(modal) {
@@ -525,7 +531,7 @@ class SfModal extends SfBaseElement {
       return "";
     }
 
-    return SfModal.baseZIndex + this._stackIndex * 2;
+    return layerZIndexAt(this._stackIndex);
   }
 
   get remoteContent() {
@@ -606,6 +612,10 @@ class SfModal extends SfBaseElement {
       // page language's word for an untitled window.
       title: this.title,
       modalId: this.modalId,
+      // The window's root takes the modal id only when the element does not
+      // already hold it: <sf-modal id="x"> gave the page two elements with id x
+      // (simai/ui-source#42).
+      rootId: this.id === this.modalId ? "" : this.modalId,
       open: this.renderOpenState,
       modalState: this.renderModalState,
       animate: this._animatePanel && this.display !== "inline",
@@ -619,15 +629,43 @@ class SfModal extends SfBaseElement {
       hasHeaderContent: this.hasSlotContent("header"),
       hasContentContent: this.hasSlotContent("content"),
       hasFooterContent: this.hasSlotContent("footer"),
-      headerContent: unsafeHTML(this.getSlotHtml("header")),
-      contentContent: unsafeHTML(this.getSlotHtml("content")),
-      footerContent: unsafeHTML(this.getSlotHtml("footer")),
+      // The page's own nodes, placed and not copied (standard 1.3.8 §4.5): a
+      // listener, a property and the node itself survive opening and closing
+      // (simai/ui-source#42). They used to be serialised through outerHTML.
+      headerContent: this.slotNodes("header"),
+      contentContent: this.slotNodes("content"),
+      footerContent: this.slotNodes("footer"),
       remoteContent: this.remoteContent,
       onCloseClick: this.handleCloseClick,
       onHideClick: this.handleHideClick,
     });
   }
 
+  // What a slot shows: the page's live nodes, then the content of a
+  // <template slot> stamped once and kept, so a redraw does not replace it.
+  slotNodes(name) {
+    const live = this._liveSlotNodes.get(name) || [];
+    const templates = this._slotTemplates.get(name) || [];
+    if (!templates.length) return live;
+    this._stampedSlots ??= new WeakMap();
+    if (!this._stampedSlots.has(templates)) {
+      this._stampedSlots.set(templates, templates.map((node) => node.cloneNode(true)));
+    }
+    return [...live, ...this._stampedSlots.get(templates)];
+  }
+
+  // The page's nodes go back into the element when it leaves the page, so
+  // they travel with it and are placed again when it returns.
+  returnSlotNodes() {
+    for (const nodes of this._liveSlotNodes.values()) {
+      for (const node of nodes) {
+        if (node.parentNode !== this) this.append(node);
+      }
+    }
+  }
+
+  // The HTML of a slot's content, for reading. Drawing does not use it: the
+  // window places the nodes themselves.
   getSlotHtml(name) {
     const slotContent = [
       ...(this._liveSlotNodes.get(name) || []),
@@ -737,6 +775,13 @@ class SfModal extends SfBaseElement {
     }
 
     this.dedupePortalRoots();
+    // The portal stands at the end of the body; it speaks and looks as the
+    // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
+    // theme of its area. Variables are carried by name once the manifest
+    // declares its css-variables; a prefix would also carry what an outer
+    // window sets on its own panel (--sf-modal-width) into a window opened
+    // from it.
+    carryLayerOrigin(this._portalRoot, this);
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }
@@ -837,6 +882,7 @@ class SfModal extends SfBaseElement {
     }
 
     this._isOpen = true;
+    this._closeReason = "";
     this._inlineClosed = false;
     this._animatePanel = Boolean(animate);
     this._modalState =
@@ -881,14 +927,19 @@ class SfModal extends SfBaseElement {
     return this;
   }
 
-  close() {
+  // options.reason says why (standard 1.3.8 §19.3): close (its own close
+  // control), escape, outside (the overlay), cancelled (a page control that
+  // closes it) or api, the default.
+  close(options = {}) {
     if (!this.openState || this._modalState === "closing") {
       return this;
     }
 
-    if (!this.emitBeforeClose()) {
+    const reason = typeof options?.reason === "string" ? options.reason : "api";
+    if (!this.emitBeforeClose(reason)) {
       return this;
     }
+    this._closeReason = reason;
 
     if (this.display === "inline") {
       this.finishClose();
@@ -1088,6 +1139,8 @@ class SfModal extends SfBaseElement {
     }
   }
 
+  // Escape and Tab reach the window through the document layer stack, and
+  // only while it is the top layer (layer-stack.js).
   bindRenderedEvents() {
     const root = this.getModalRoot();
     if (!root) {
@@ -1096,8 +1149,6 @@ class SfModal extends SfBaseElement {
 
     root.removeEventListener("click", this.handleOverlayClick);
     root.addEventListener("click", this.handleOverlayClick);
-    document.removeEventListener("keydown", this.onKeyDown);
-    document.addEventListener("keydown", this.onKeyDown);
   }
 
   bindSlotEventHandlers() {
@@ -1122,15 +1173,16 @@ class SfModal extends SfBaseElement {
     const isOverlay =
       event.target ===
       this.getModalRoot()?.querySelector("[data-sf-modal-overlay]");
-    if (isOverlay && this.closeOnOverlay && !this.unclose) {
-      this.close();
+    // A press outside is the top layer's only.
+    if (isOverlay && this.closeOnOverlay && !this.unclose && SfModal.isTopModal(this)) {
+      this.close({ reason: "outside" });
     }
   }
 
   handleCloseClick(event) {
     event.preventDefault();
     if (!this.unclose) {
-      this.close();
+      this.close({ reason: "close" });
     }
   }
 
@@ -1139,30 +1191,31 @@ class SfModal extends SfBaseElement {
     this.hide();
   }
 
+  // The layer stack hands the window Escape and Tab while it is the top layer
+  // -- above a drawer it was opened from, below a list or a drawer opened from
+  // it. Answers true when it took Escape; the stack then stops the press.
   onKeyDown(event) {
     if ((!this.openState && this._modalState !== "closing") || this.display === "inline") {
-      return;
+      return false;
     }
 
     if (!SfModal.isTopModal(this)) {
-      return;
+      return false;
     }
 
     if (this.hiddenState) {
-      return;
+      return false;
     }
 
-    // An open popover takes Escape first; the window behind it stays.
-    if (event.key === "Escape" && this.closeOnEsc && !this.unclose && this._modalState !== "closing" && !event.defaultPrevented && !document.documentElement?.dataset?.sfPopoverOpen) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      this.close();
-      return;
+    if (event.key === "Escape" && this.closeOnEsc && !this.unclose && this._modalState !== "closing" && !event.defaultPrevented) {
+      this.close({ reason: "escape" });
+      return true;
     }
 
     if (event.key === "Tab") {
       this.trapFocus(event);
     }
+    return false;
   }
 
   trapFocus(event) {
@@ -1342,16 +1395,18 @@ class SfModal extends SfBaseElement {
     });
   }
 
-  emitBeforeClose() {
+  // The close request carries why and whether something is unsaved
+  // (standard 1.3.8 §19.3); the window has no unsaved setting yet.
+  emitBeforeClose(reason = "api") {
     return this.emitModalEvent("modal:before-close", {
       cancelable: true,
-      detail: { phase: "before-close" },
+      detail: { phase: "before-close", reason, unsaved: false },
     });
   }
 
   emitAfterClose() {
     this.emitModalEvent("modal:after-close", {
-      detail: { phase: "after-close" },
+      detail: { phase: "after-close", reason: this._closeReason || "api" },
     });
   }
 
@@ -1431,7 +1486,6 @@ class SfModal extends SfBaseElement {
     const wasTop = SfModal.isTopModal(this);
     this.abortRemoteContent();
     this.cancelCloseTransition();
-    document.removeEventListener("keydown", this.onKeyDown);
 
     if (this.display !== "inline") {
       SfModal.removeFromStack(this);
@@ -1440,6 +1494,8 @@ class SfModal extends SfBaseElement {
     this._isOpen = false;
     this._modalState = "closed";
     this.clearPortal();
+    // An inline window draws in the element itself; its nodes are there.
+    if (this.display !== "inline") this.returnSlotNodes();
     this._releaseClosingContent?.();
     this._releaseClosingContent = null;
     restoreModalLayerFocus(wasTop, this._lastActive, this._focusReturnAncestors);
@@ -1572,7 +1628,9 @@ class SfModal extends SfBaseElement {
       const id =
         closeEl.getAttribute("data-sf-modal-close") ||
         closeEl.closest(".sf-modal")?.getAttribute("data-sf-modal-id");
-      SfModal.registry.get(id)?.close();
+      // The window's own close button closed it already, as `close`; a page
+      // control that closes it is a cancel.
+      SfModal.registry.get(id)?.close({ reason: "cancelled" });
     });
 
     SfModal.globalBound = true;

@@ -50,7 +50,7 @@ export function renderModalTemplate(context) {
 
     return html`
         <div
-                id=${context.modalId}
+                id=${context.rootId || nothing}
                 class=${joinClasses(
                         'sf-modal',
                         `sf-modal--position-${context.position}`,

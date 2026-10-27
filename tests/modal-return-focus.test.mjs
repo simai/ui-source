@@ -2,9 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const focusSource=await readFile(new URL('../src/component/modal/js/_focus.js',import.meta.url),'utf8');
-const source=(await readFile(new URL('../src/component/modal/js/_stack.js',import.meta.url),'utf8')).replace("'./_focus'",JSON.stringify(`data:text/javascript,${encodeURIComponent(focusSource)}`));
+const layerSource=await readFile(new URL('../src/core/js/layer-stack.js',import.meta.url),'utf8');
+const source=(await readFile(new URL('../src/component/modal/js/_stack.js',import.meta.url),'utf8')).replace("'./_focus'",JSON.stringify(`data:text/javascript,${encodeURIComponent(focusSource)}`))
+  .replace("'../../../core/js/layer-stack'",JSON.stringify(`data:text/javascript,${encodeURIComponent(layerSource)}`));
 const {captureModalFocusAncestors,restoreModalLayerFocus,addModalLayer}=await import(`data:text/javascript,${encodeURIComponent(source)}`);
 function setup(){
+  delete globalThis[Symbol.for('sf.layerStack')];
   const mains=[],observers=[];globalThis.document={activeElement:null,documentElement:{},querySelectorAll:()=>mains,defaultView:{getComputedStyle:n=>({visibility:n.visibility||'visible'}),MutationObserver:class{constructor(callback){this.callback=callback;observers.push(this);}observe(){}disconnect(){this.disconnected=true;}}}};
   const node=(options={})=>({isConnected:true,ownerDocument:document,attrs:new Map(),events:new Map(),visible:true,focusable:true,...options,
     matches(selector){return selector===':disabled'?!!this.disabled:!!this.landmark;},

@@ -12,6 +12,7 @@
 // pointer or the focus is on its toast; an error is announced at once, the rest
 // politely. The toast is the toast component, fetched the first time.
 import {pageText} from './page-language';
+import {closeLayer, openLayer} from './layer-stack';
 
 const NOTIFY_TEXT = {
   en: {region: 'Notifications'},
@@ -85,12 +86,21 @@ function showRegion() {
   if (typeof area.showPopover === 'function' && !area.matches(':popover-open')) {
     try { area.showPopover(); } catch { /* not in a document yet */ }
   }
+  // A layer of the one document stack (standard 1.3.8 §19.1), the kind that
+  // takes no keys: Escape and Tab stay with the window under it. Its height
+  // counts where the browser has no top layer.
+  openLayer(area, {
+    kind: 'toast',
+    returnTo: null,
+    place: ({zIndex}) => { area.style.zIndex = String(zIndex); },
+  });
 }
 
 function hideRegionWhenEmpty() {
   const area = state.region;
   if (!area || state.shown.length || state.waiting.length) return;
   if (typeof area.hidePopover === 'function' && area.matches(':popover-open')) area.hidePopover();
+  closeLayer(area, {restoreFocus: false});
 }
 
 function release(entry) {

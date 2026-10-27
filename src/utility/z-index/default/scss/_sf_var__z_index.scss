@@ -16,3 +16,7 @@ $z-index-array: (
 	9: 90,
 	0: 0,
 );
+// The layers above the page: modal, drawer, surface, toast (core/js/layer-stack.js
+// reads the same two tokens, with these values as its fallback).
+$z-index-layer: 9000;
+$z-index-layer-step: 2;

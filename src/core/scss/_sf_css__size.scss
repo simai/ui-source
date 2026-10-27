@@ -33,4 +33,13 @@
 	@each $z-index-name, $z-index-value in zIndexVars.$z-index-array {
 		--sf-z-index-#{$z-index-name}: #{$z-index-value};
 	}
+
+	// The one scale of layers above the page (standard simai.smart-component
+	// 1.3.8 §19.1): a modal, a drawer, a surface and the toast area take
+	// base + place * step in the order they opened (core/js/layer-stack.js).
+	// Page content stays under the base; 9000 is where the modal stack always
+	// started. The drawer started at --sf-z-index-9 (90), under any window
+	// (simai/ui-source#37).
+	--sf-z-index-layer: #{zIndexVars.$z-index-layer};
+	--sf-z-index-layer-step: #{zIndexVars.$z-index-layer-step};
 }

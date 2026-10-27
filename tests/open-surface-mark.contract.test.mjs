@@ -49,15 +49,21 @@ test('an open dropdown list raises the same mark, and releases it', async () => 
   assert.match(smart, /onDisconnected\(\)\s*\{\s*holdOpenSurfaceMark\(this, false\)/);
 });
 
-test('the components that own Escape for something larger read the same mark', async () => {
+// The drawer and the modal stood back on the mark alone, so a modal opened from
+// a drawer lost Escape to the drawer (simai/ui-source#36). They are layers of
+// the one document stack now, as every surface is: the stack hands Escape and
+// Tab to the top layer only, and nothing listens on the document for them.
+test('the components that own Escape for something larger take it from the one layer stack', async () => {
   for (const path of [
     'src/smart/drawer/index.js',
     'src/smart/modal/index.js',
     'src/component/modal/js/_modal.js',
   ]) {
     const source = await read(path);
-    assert.match(source, /dataset\?\.sfPopoverOpen/, `${path} must stand back while a surface is open`);
+    assert.doesNotMatch(source, /document\.addEventListener\(['"]keydown['"], this\.onKeyDown/, `${path} must not hear Escape on its own`);
   }
+  assert.match(await read('src/smart/drawer/index.js'), /onEscape: \(event\) => drawer\.onKeyDown\(event\)/);
+  assert.match(await read('src/component/modal/js/_stack.js'), /onEscape: \(event\) => Boolean\(modal\.onKeyDown\?\.\(event\)\)/);
 });
 
 // Escape over an open sf-datepicker calendar closed the record panel it sat in,
@@ -69,12 +75,22 @@ test('the components that own Escape for something larger read the same mark', a
 test('the holders are kept in the order they opened, and the innermost is known', async () => {
   const source = await read('src/core/js/open-surface-mark.js');
   assert.ok(source.includes('export function isTopOpenSurface'));
+  // The holders are layers of the one document stack, under and over a modal
+  // or a drawer alike.
+  assert.ok(source.includes("openLayer(owner, {kind: 'surface'})"));
+  assert.ok(source.includes('closeLayer(owner, {restoreFocus: false})'));
+  assert.ok(source.includes('if (!isTopLayer(owner)) return false;'));
+  // A holder only an older pair's bundle registered still stands above.
+  assert.ok(source.includes('return layer === owner || hasLayer(layer);'));
+  // The list a bundle of an older pair reads is kept in step.
   assert.ok(source.includes('layers.push(owner)'));
   assert.ok(source.includes('layers.splice(at, 1)'));
-  // A holder that left the document cannot hold every Escape on the page.
-  assert.ok(source.includes("layer?.isConnected === false"));
-  // Shared across bundles: each Smart bundle carries its own copy of the module.
   assert.ok(source.includes("Symbol.for('sf.openSurfaceLayers')"));
+  const stack = await read('src/core/js/layer-stack.js');
+  // A holder that left the document cannot hold every Escape on the page.
+  assert.ok(stack.includes('entry?.owner?.isConnected !== false'));
+  // Shared across bundles: each Smart bundle carries its own copy of the module.
+  assert.ok(stack.includes("Symbol.for('sf.layerStack')"));
 });
 
 test('an open calendar holds the mark and takes Escape in capture as the innermost layer', async () => {

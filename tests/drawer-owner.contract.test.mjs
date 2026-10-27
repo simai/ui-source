@@ -9,8 +9,9 @@ test('Smart Drawer separates modality from its visual overlay', async () => {
   assert.match(source, /modal:\s*\{type: Boolean, default: true\}/);
   assert.match(source, /get modal\(\)/);
   // A modal drawer locks the page, unless it stands in an overlay container.
-  assert.match(source, /drawerStack\.find\(drawer => drawer\.openState && drawer\.modal && !drawer\.closest\(OVERLAY_CONTAINER\)\)/);
-  assert.match(source, /if \(!this\.modal\) return;/);
+  // The one page lock of the layer stack (layer-stack.js) holds while it is open.
+  assert.match(source, /locksPage: drawer\.modal && !drawer\.closest\(OVERLAY_CONTAINER\)/);
+  assert.match(source, /if \(!this\.modal\) return false;/);
   assert.match(source, /aria-modal=\$\{context\.modal \? 'true' : nothing\}/);
   assert.match(source, /\?hidden=\$\{!context\.modal \|\| !context\.overlay\}/);
 });

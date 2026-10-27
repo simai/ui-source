@@ -1,6 +1,8 @@
 import {html, nothing, render} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
 import {pageText} from "../../core/js/page-language";
+import {carryLayerOrigin, closeLayer, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
+  raiseLayer, returnLayerFocus, landmarksAround, updateLayer} from '../../core/js/layer-stack';
 // Every word this component says, in the languages it ships with. A product
 // adds any other through SF.language.register("sf-drawer", code, words).
 const DRAWER_TEXT = {
@@ -38,7 +40,12 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-const drawerStack = [];
+// The open drawers, in the order they opened: the panels of the one document
+// layer stack (layer-stack.js, standard 1.3.8 §19.1). The drawer kept an array
+// of its own, so a modal opened from a drawer did not know it was above it
+// (simai/ui-source#36) and a drawer opened from a modal was drawn under it
+// (simai/ui-source#37).
+const openDrawers = () => openLayers('panel').filter((owner) => owner?.localName === DRAWER_SELECTOR);
 // Below this width of the dock host (or of the window, when the page names no
 // host) docked panels overlay the page instead of narrowing it, unless the
 // drawer names its own (dock-breakpoint, or --sf-drawer-dock-breakpoint).
@@ -74,35 +81,57 @@ const drawerManager = {
   globalBound: false,
   lockState: null,
 
+  // Opening raises a drawer that is open already: it is the last opened.
   add(drawer) {
-    this.remove(drawer, false);
-    drawerStack.push(drawer);
-    this.sync();
-    this.syncPageLock();
+    openLayer(drawer, {
+      kind: 'panel',
+      ...this.declares(drawer),
+      returnTo: drawer._lastActive ?? null,
+      lockPage: () => {
+        this.lockPage(drawer.preserveScrollGap);
+        return () => this.unlockPage();
+      },
+      root: () => drawer.getDrawerRoot(),
+      focusIn: () => drawer.focusFirst(),
+      onEscape: (event) => drawer.onKeyDown(event),
+      onTab: (event) => drawer.onKeyDown(event),
+      place: ({index}) => drawer.applyStackPosition(index),
+    });
+    this.syncDock();
     drawer.syncSwitches();
   },
 
-  remove(drawer, unlock = true) {
-    const index = drawerStack.indexOf(drawer);
-    if (index >= 0) drawerStack.splice(index, 1);
+  // What the drawer declares to the stack (§19.1): a modal drawer locks the
+  // page -- unless it stands in an overlay container, which it covers instead
+  // -- and holds the focus.
+  declares(drawer) {
+    return {
+      locksPage: drawer.modal && !drawer.closest(OVERLAY_CONTAINER),
+      trapsFocus: drawer.modal,
+    };
+  },
+
+  // Answers whether the drawer was the top layer.
+  remove(drawer) {
+    const wasTop = closeLayer(drawer, {restoreFocus: false});
+    drawer.applyStackPosition(-1);
     this.sync();
-    if (unlock) this.syncPageLock();
     drawer.syncSwitches();
+    return wasTop;
   },
 
   bringToFront(drawer) {
-    if (!drawerStack.includes(drawer)) return;
-    this.remove(drawer, false);
-    drawerStack.push(drawer);
+    if (layerIndex(drawer) < 0) return;
+    raiseLayer(drawer);
     this.sync();
   },
 
   isTop(drawer) {
-    return drawerStack.at(-1) === drawer;
+    return isTopLayer(drawer);
   },
 
   sync() {
-    drawerStack.forEach((drawer, index) => drawer.applyStackPosition(index));
+    for (const drawer of openDrawers()) drawer.applyStackPosition(layerIndex(drawer));
     this.syncDock();
   },
 
@@ -118,7 +147,7 @@ const drawerManager = {
     if (!root) return;
     this.bindDockMedia();
     const sides = {start: 0, end: 0};
-    for (const drawer of drawerStack) {
+    for (const drawer of openDrawers()) {
       if (!drawer.openState || !drawer.docked) continue;
       const column = this.reservesDock(drawer);
       drawer.setDockColumn(column);
@@ -151,7 +180,7 @@ const drawerManager = {
   // Redraws only when some open docked drawer's answer changed: syncDock pads
   // the host, and the padding must not wake the host's observer into a loop.
   syncDockIfChanged() {
-    if (drawerStack.some((drawer) => drawer.openState && drawer.docked && this.reservesDock(drawer) !== drawer.dockColumn)) {
+    if (openDrawers().some((drawer) => drawer.openState && drawer.docked && this.reservesDock(drawer) !== drawer.dockColumn)) {
       this.syncDock();
     }
   },
@@ -185,11 +214,11 @@ const drawerManager = {
     return media ? media.matches : true;
   },
 
+  // The page lock is the layer stack's one lease, taken while any layer that
+  // locks the page is open, a modal's too; a drawer whose `modal` or `docked`
+  // changed while open says so again.
   syncPageLock() {
-    // A drawer inside an overlay container covers that box, not the page.
-    const modalDrawer = drawerStack.find(drawer => drawer.openState && drawer.modal && !drawer.closest(OVERLAY_CONTAINER));
-    if (modalDrawer) this.lockPage(modalDrawer.preserveScrollGap);
-    else this.unlockPage();
+    for (const drawer of openDrawers()) updateLayer(drawer, this.declares(drawer));
   },
 
   lockPage(preserveScrollGap) {
@@ -341,7 +370,6 @@ class SfDrawer extends SfBaseElement {
     this.drawerId = this.resolveDrawerId();
     super.connectedCallback();
     drawerManager.bindGlobalEvents();
-    document.addEventListener('keydown', this.onKeyDown);
     globalThis.addEventListener?.('resize', this.onWindowResize, {passive: true});
     if (this.openState) {
       this._focusAfterRender = this.modal;
@@ -354,7 +382,6 @@ class SfDrawer extends SfBaseElement {
   disconnectedCallback() {
     this._areaObserver?.disconnect();
     this._areaObserver = null;
-    document.removeEventListener('keydown', this.onKeyDown);
     globalThis.removeEventListener?.('resize', this.onWindowResize);
     this._dockObserver?.disconnect();
     this._dockObserver = null;
@@ -570,9 +597,14 @@ class SfDrawer extends SfBaseElement {
     });
   }
 
+  // Its place in the one layer scale (--sf-z-index-layer, in opening order
+  // with every other layer); a page's --sf-drawer-z-index moves the base, the
+  // z-index attribute replaces it.
   get drawerZIndex() {
+    const base = layerZIndexAt(0);
+    const rise = this._stackIndex > 0 ? layerZIndexAt(this._stackIndex) - base : 0;
     return this.getAttribute('z-index')
-      || `calc(var(--sf-drawer-z-index, var(--sf-z-index-9)) + ${Math.max(0, this._stackIndex) * 2})`;
+      || `calc(var(--sf-drawer-z-index, ${base}) + ${rise})`;
   }
 
   // The shared rule, not a second reading of it. This asked the document
@@ -586,7 +618,11 @@ class SfDrawer extends SfBaseElement {
     const token = ++this._renderToken;
     const result = await this.resolveTemplateResult(changedAttributes);
     if (!this._isMounted || token !== this._renderToken) return;
-    render(result, this.resolvePortalRoot());
+    const portal = this.resolvePortalRoot();
+    // The portal stands at the end of the body; it speaks and looks as the
+    // drawer does where it stands (standard 1.3.8 §19.1).
+    carryLayerOrigin(portal, this);
+    render(result, portal);
     this.afterRender();
   }
 
@@ -748,6 +784,7 @@ class SfDrawer extends SfBaseElement {
     }
     if (options.emit !== false && !this.emitDrawerEvent('drawer:before-open', true)) return this;
     this._lastActive = document.activeElement;
+    this._focusReturnAncestors = landmarksAround(this._lastActive);
     this.syncOpenAttribute(true);
     drawerManager.add(this);
     this._focusAfterRender = this.modal;
@@ -756,15 +793,27 @@ class SfDrawer extends SfBaseElement {
     return this;
   }
 
+  // options.reason says why (standard 1.3.8 §19.3): close, escape, outside,
+  // cancelled or api, the default.
   close(options = {}) {
     if (!this.openState) return this;
-    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-close', true)) return this;
+    const reason = typeof options.reason === 'string' ? options.reason : 'api';
+    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-close', true, {reason, unsaved: false})) return this;
     this.syncOpenAttribute(false);
-    drawerManager.remove(this);
+    const wasTop = drawerManager.remove(this);
     this.requestComponentUpdate('close');
-    this.restoreFocus();
-    if (options.emit !== false) this.emitDrawerEvent('drawer:after-close');
+    this.returnFocus(wasTop);
+    if (options.emit !== false) this.emitDrawerEvent('drawer:after-close', false, {reason});
     return this;
+  }
+
+  // A drawer that closes under another layer moves no focus (§19.2). A modal
+  // drawer on top gives it back by the stack's rule; a modeless one to what
+  // was active when it opened, as before.
+  returnFocus(wasTop) {
+    if (!wasTop) return;
+    if (this.modal) returnLayerFocus(true, this._lastActive, this._focusReturnAncestors);
+    else this.restoreFocus();
   }
 
   toggle() {
@@ -787,11 +836,11 @@ class SfDrawer extends SfBaseElement {
   syncExternalOpenState(open) {
     if (open) {
       this._lastActive = document.activeElement;
+      this._focusReturnAncestors = landmarksAround(this._lastActive);
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
     } else {
-      drawerManager.remove(this);
-      this.restoreFocus();
+      this.returnFocus(drawerManager.remove(this));
     }
     this.requestComponentUpdate(open ? 'open' : 'close');
   }
@@ -820,7 +869,7 @@ class SfDrawer extends SfBaseElement {
     drawerManager.syncDock();
   }
 
-  applyStackPosition(index = drawerStack.indexOf(this)) {
+  applyStackPosition(index = layerIndex(this)) {
     this._stackIndex = index;
     const root = this.getDrawerRoot();
     if (root) {
@@ -828,8 +877,9 @@ class SfDrawer extends SfBaseElement {
       // Depth is the number of open, undocked drawers below this one at the
       // same edge; the panel stands that many stack offsets in from the edge.
       const edge = this.stackEdge;
-      const depth = this.docked || index < 0 ? 0 : drawerStack
-        .slice(0, index)
+      const drawers = openDrawers();
+      const depth = this.docked || index < 0 ? 0 : drawers
+        .slice(0, Math.max(0, drawers.indexOf(this)))
         .filter((drawer) => drawer.openState && !drawer.docked && drawer.stackEdge === edge)
         .length;
       root.style.setProperty('--sf-drawer-stack-depth', String(depth));
@@ -923,35 +973,36 @@ class SfDrawer extends SfBaseElement {
       this.setSnap(this.snap === 'full' ? 'half' : 'full');
       return;
     }
-    if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay) {
-      this.close();
+    // A press outside is the top layer's only.
+    if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay && drawerManager.isTop(this)) {
+      this.close({reason: 'outside'});
       return;
     }
     if (event.target instanceof Element && event.target.closest('[data-sf-drawer-close]')) {
       event.preventDefault();
-      this.close();
+      this.close({reason: 'close'});
     }
   }
 
+  // The layer stack hands the drawer Escape and Tab while it is the top layer:
+  // a modal, a list or a drawer opened from it takes them instead. Answers
+  // true when it took Escape; the stack then stops the press.
   onKeyDown(event) {
     // An editor or drag operation that handled Escape keeps it.
-    if (event.defaultPrevented || !this.openState || !drawerManager.isTop(this)) return;
-    // An open popover takes Escape first; the drawer behind it stays.
-    if (event.key === 'Escape' && this.closeOnEsc && !document.documentElement?.dataset?.sfPopoverOpen) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      this.close();
-      return;
+    if (event.defaultPrevented || !this.openState || !drawerManager.isTop(this)) return false;
+    if (event.key === 'Escape' && this.closeOnEsc) {
+      this.close({reason: 'escape'});
+      return true;
     }
-    if (!this.modal) return;
-    if (event.key !== 'Tab') return;
+    if (!this.modal) return false;
+    if (event.key !== 'Tab') return false;
     const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
     const focusable = Array.from(panel?.querySelectorAll(FOCUSABLE_SELECTOR) || [])
       .filter((element) => element.getClientRects().length > 0);
     if (focusable.length === 0) {
       event.preventDefault();
       panel?.focus();
-      return;
+      return false;
     }
     const first = focusable[0];
     const last = focusable.at(-1);
@@ -965,9 +1016,10 @@ class SfDrawer extends SfBaseElement {
       event.preventDefault();
       first.focus();
     }
+    return false;
   }
 
-  emitDrawerEvent(type, cancelable = false) {
+  emitDrawerEvent(type, cancelable = false, extra = {}) {
     // Drawer events bubble like other sf-* events, so hosts can listen on the
     // document. detail.drawer names the panel; nested drawers bubble through
     // their ancestors.
@@ -980,6 +1032,7 @@ class SfDrawer extends SfBaseElement {
         drawer: this,
         drawerId: this.drawerId,
         root: this.getDrawerRoot(),
+        ...extra,
       },
     }));
   }

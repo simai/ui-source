@@ -1,5 +1,6 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
+import {hasLayerAbove} from '../../core/js/layer-stack';
 import {renderPopoverTemplate} from './js/templates/default';
 
 // A surface anchored to a control the consumer supplies: a field's settings, a
@@ -191,6 +192,11 @@ class SfPopover extends SfBaseElement {
         this._onDocumentPointerDown = (event) => {
             const path = event.composedPath?.() ?? [];
             if (path.includes(this)) return;
+            // An outside press is the top layer's (standard 1.3.8 §19.3): a
+            // press inside a drawer or a window opened from this popover is
+            // theirs, and the popover under them stays. A list opened from it
+            // closes with it, as before.
+            if (hasLayerAbove(this)) return;
             this.close();
         };
         // Capture, and the press is stopped going further: a surface closing

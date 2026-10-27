@@ -2,10 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const focusSource=await readFile(new URL('../src/component/modal/js/_focus.js',import.meta.url),'utf8');
-const source=(await readFile(new URL('../src/component/modal/js/_stack.js',import.meta.url),'utf8')).replace("'./_focus'",JSON.stringify(`data:text/javascript,${encodeURIComponent(focusSource)}`));
-const load=suffix=>import(`data:text/javascript,${encodeURIComponent(source)}#${suffix}`);
+// Each bundle carries its own copy of the stack module too: the stack itself
+// lives on a shared global (layer-stack.js), so the copies still see one stack.
+const layerSource=await readFile(new URL('../src/core/js/layer-stack.js',import.meta.url),'utf8');
+const stackSource=await readFile(new URL('../src/component/modal/js/_stack.js',import.meta.url),'utf8');
+const source=suffix=>stackSource.replace("'./_focus'",JSON.stringify(`data:text/javascript,${encodeURIComponent(focusSource)}`))
+  .replace("'../../../core/js/layer-stack'",JSON.stringify(`data:text/javascript,${encodeURIComponent(`${layerSource}\n// ${suffix}`)}`));
+const load=suffix=>import(`data:text/javascript,${encodeURIComponent(source(suffix))}#${suffix}`);
 const a=await load('ordinary'),b=await load('smart');
 function setup(){
+  delete globalThis[Symbol.for('sf.layerStack')];
   globalThis.document={};const calls=[];
   const owner=name=>({lockPage:()=>calls.push(`${name}:lock`),unlockPage:()=>calls.push(`${name}:unlock`)});
   const item=name=>({name,preserveScrollGap:true,applyStackPosition(i){this.index=i;},focusFirst(){calls.push(`${name}:focus`);},template:{contains:node=>node.in===name}});

@@ -496,7 +496,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "525bc6a795dc88163a961d9bbf091bd1507f33843ef96e0db5e1ba861370aea3",
+      "manifest_sha256": "31d963d02f5b0dfb710a5d3b1588634ecde549db1aaed7755c01e8cf68febfe2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -719,7 +719,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "593c249213c217d61dc82940948f56470744cdec32bcb4cf348b97967d083506",
+      "manifest_sha256": "63f0f0a8f2ce74357afa9afecbacb8c108109e49fe53c2ea2354f4a44cd460fd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1239,13 +1239,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "aef22a45cafea4d5f21ee50e55eab33c10aa8197f9d0373baf13ca8f898802f6",
+      "manifest_sha256": "bf497b1527893fafffd4fa803f1e67fc89be70e7bc643ee58a3fc56b807d35f5",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
+      "summary": "A dialog window over the page in the one document layer stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
       "tags": [
         "modal"
       ],
@@ -1352,7 +1352,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "e5ac4cbf3c96a671d30221937688be2f4428f279c2d1e3faa5edae4dd0dee91b",
+      "manifest_sha256": "be05b819037c2a6cafe8bda300de2e691653563d88f7b78385e9e575fc6118a2",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
