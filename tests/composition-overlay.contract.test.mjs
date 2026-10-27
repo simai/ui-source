@@ -33,11 +33,11 @@ test('editor surfaces are Smart components, not part of Core', async () => {
   for (const name of ['defineCompositionOverlay', 'defineSortable', 'registerSortableDropTarget', 'overlayNodes']) assert.equal(name in Composition, false, name);
   assert.throws(() => Composition.startInlineEdit({}, {}), /inline_editor_not_loaded/u);
   const entries = {
-    // sf-sortable over the class its component.json makes (standard 1.3.8,
+    // sf-sortable and sf-inline-editor over the class their component.json makes (standard 1.3.8,
     // core/js/composition/manifest-host.mjs).
     'composition-overlay': ['sf-composition-overlay', /defineCompositionOverlay\(\)/u],
     sortable: ['sf-sortable', /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest/u],
-    'inline-editor': ['sf-inline-editor', /defineInlineEditor\(\)/u],
+    'inline-editor': ['sf-inline-editor', /defineInlineEditor\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
   };
   for (const [name, [tag, define]] of Object.entries(entries)) {
     const rule = await readFile(new URL(`../src/smart/${name}/rule.js`, import.meta.url), 'utf8');
@@ -108,9 +108,11 @@ test('Smart manifests declare every event state the code emits', async () => {
   const { OVERLAY_EVENTS } = await import('../src/core/js/composition/overlay.mjs');
   const overlayManifest = JSON.parse(await readFile(new URL('../src/smart/composition-overlay/smart.manifest.json', import.meta.url), 'utf8'));
   assert.deepEqual(Object.values(OVERLAY_EVENTS).sort(), Object.keys(overlayManifest.events).sort());
-  const { INLINE_EVENTS } = await import('../src/core/js/composition/inline-editor.mjs');
+  // The inline editor sends its names and, until 2026-12-01, the former ones
+  // after them (standard 1.3.8 §16.20): the manifest names both.
+  const { INLINE_EVENTS, INLINE_EVENTS_LEGACY } = await import('../src/core/js/composition/inline-editor.mjs');
   const inlineManifest = JSON.parse(await readFile(new URL('../src/smart/inline-editor/smart.manifest.json', import.meta.url), 'utf8'));
-  assert.deepEqual(Object.values(INLINE_EVENTS).sort(), Object.keys(inlineManifest.events).sort());
+  assert.deepEqual([...Object.values(INLINE_EVENTS), ...Object.values(INLINE_EVENTS_LEGACY)].sort(), Object.keys(inlineManifest.events).sort());
 });
 
 // Framed canvas (simai/ui-source#22): a same-origin iframe fed a flat node list.

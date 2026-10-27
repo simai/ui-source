@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Inline editor",
   "summary": "In-place editor for content.heading and content.paragraph text: strong, em, code and safe links, own history, safe paste; reports normalized content, never HTML.",
   "kind": "smart",
@@ -78,8 +78,67 @@
     }
   },
   "events": {
+    "sf-inline-editor-input": {
+      "summary": "Live normalized content after a change: {id, content}, id being the edit's nodeId. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "content"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "sf-inline-editor-change": {
+      "summary": "The edit was committed with Enter or the focus leaving; the host saves {id, content}. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "content"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "content": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "sf-inline-editor-cancel": {
+      "summary": "Escape put the element back as it was: {id}. Dispatched on the edited element; bubbles to document.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
     "sf-inline-edit-input": {
-      "summary": "Live normalized content after a change. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-input until 2026-12-01: Live normalized content after a change. Dispatched on the edited element; bubbles to document.",
       "payload": {
         "type": "object",
         "required": [
@@ -100,7 +159,7 @@
       }
     },
     "sf-inline-edit-commit": {
-      "summary": "Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-change until 2026-12-01: Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document.",
       "payload": {
         "type": "object",
         "required": [
@@ -121,7 +180,7 @@
       }
     },
     "sf-inline-edit-cancel": {
-      "summary": "Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document.",
+      "summary": "Dated alias of sf-inline-editor-cancel until 2026-12-01: Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document.",
       "payload": {
         "type": "object",
         "properties": {
@@ -255,11 +314,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/inline-editor/index.js",
-        "sha256": "1c72a35b36ecea8a70cdc97879042fd7bffc5da5bc080eeb2a8b2e1845e37246"
+        "sha256": "3f7df147f2621a2a641c09173ba7b980f592269c51040acd3dc8d3396600f8fe"
       },
       {
         "path": "src/smart/inline-editor/scss/_smart__inline-editor.scss",
-        "sha256": "7b68cc2115dc43757de62b217216304c9e3bdc8d84a86e8a80c6441bd7b46076"
+        "sha256": "0072faa02ada62fbe108e21bcc3955e97db0a5aeb6acab866c80f0755ab4b707"
       },
       {
         "path": "src/smart/inline-editor/rule.js",
@@ -267,11 +326,11 @@
       },
       {
         "path": "src/smart/inline-editor/docs.md",
-        "sha256": "bd938225d4d3fa8fdf3b1543f34d483c24a0894443a85ae84b601d0c20459966"
+        "sha256": "6af2bce6eade9c5f3e1fee5f3466c1da613f66375296baea2e8d4b59ebd96b74"
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "d7e9a6afcdc1dc121efe52283bdb6b5b4ae48943c29fa77a1f5920b7692982de"
+        "sha256": "97e90cce145c4e36dc2dfe017e661f053b32cf1f88ceb58b324e4f22996f518c"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",

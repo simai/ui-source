@@ -7,11 +7,30 @@ import { INLINE_MARKS, fromSegments, inlineText, marksIn, normalizeInline, repla
 // original DOM; commit restores it too and lets the host re-render the saved
 // value, so the canvas always returns to host-rendered HTML.
 
+// The names sf-inline-editor's component.json declares (standard 1.3.8 §8,
+// vocabulary 1.1.5): input while the text changes, change when it is
+// committed, cancel when it is put back -- {id, content}, data only. The
+// edited element is the host's, which carries no shim, so each event is
+// followed here by its former name with its former detail ({node_id,
+// content}) until 2026-12-01.
 export const INLINE_EVENTS = Object.freeze({
+  input: 'sf-inline-editor-input',
+  commit: 'sf-inline-editor-change',
+  cancel: 'sf-inline-editor-cancel',
+});
+
+export const INLINE_EVENTS_LEGACY = Object.freeze({
   input: 'sf-inline-edit-input',
   commit: 'sf-inline-edit-commit',
   cancel: 'sf-inline-edit-cancel',
 });
+
+function emitInline(element, key, id, content) {
+  const detail = content === undefined ? { id } : { id, content };
+  const legacy = content === undefined ? { node_id: id } : { node_id: id, content };
+  element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS[key], { bubbles: true, composed: true, detail: Object.freeze(detail) }));
+  element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS_LEGACY[key], { bubbles: true, composed: true, detail: Object.freeze(legacy) }));
+}
 
 const MESSAGES = {
   ru: { toolbar: 'Форматирование', strong: 'Полужирный', em: 'Курсив', code: 'Код', link: 'Ссылка', url: 'Адрес ссылки', apply: 'Применить', unlink: 'Убрать ссылку', editing: '{label}: редактирование. Enter — сохранить, Escape — отменить.', invalid: 'Недопустимый адрес ссылки' },
@@ -177,7 +196,7 @@ export function startInlineEdit(element, options = {}) {
       historyIndex = history.length - 1;
     }
   };
-  const emitInput = () => element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS.input, { bubbles: true, composed: true, detail: Object.freeze({ node_id: options.nodeId ?? null, content: read() }) }));
+  const emitInput = () => emitInline(element, 'input', options.nodeId ?? null, read());
   const apply = (content, start, end) => {
     draw(content, start, end);
     snapshot(false);
@@ -312,14 +331,14 @@ export function startInlineEdit(element, options = {}) {
     if (finished) return null;
     const content = normalizeInline(read());
     teardown();
-    element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS.commit, { bubbles: true, composed: true, detail: Object.freeze({ node_id: options.nodeId ?? null, content }) }));
+    emitInline(element, 'commit', options.nodeId ?? null, content);
     return content;
   }
 
   function cancel() {
     if (finished) return;
     teardown();
-    element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS.cancel, { bubbles: true, composed: true, detail: Object.freeze({ node_id: options.nodeId ?? null }) }));
+    emitInline(element, 'cancel', options.nodeId ?? null);
   }
 
   // Start ------------------------------------------------------------------
@@ -443,12 +462,16 @@ export function startInlineEdit(element, options = {}) {
  * on a page lets the Smart loader fetch this code on demand. It renders
  * nothing; edit(element, options) is startInlineEdit.
  */
-export function defineInlineEditor(registry = globalThis.customElements) {
+//
+// base: the class made from sf-inline-editor's component.json
+// (manifest-host.mjs); without it the carrier is a plain element.
+export function defineInlineEditor(registry = globalThis.customElements, { base = null } = {}) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
   const existing = registry.get('sf-inline-editor');
   if (existing) return existing;
-  class SfInlineEditor extends globalThis.HTMLElement {
+  class SfInlineEditor extends (base || globalThis.HTMLElement) {
     connectedCallback() {
+      super.connectedCallback?.();
       this.hidden = true;
     }
 
@@ -460,4 +483,4 @@ export function defineInlineEditor(registry = globalThis.customElements) {
   return SfInlineEditor;
 }
 
-export default { INLINE_EVENTS, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };
+export default { INLINE_EVENTS, INLINE_EVENTS_LEGACY, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };

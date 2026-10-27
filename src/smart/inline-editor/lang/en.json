@@ -1,0 +1,15 @@
+{
+  "title": "Inline editor",
+  "runtime": {
+    "apply": "Apply",
+    "code": "Code",
+    "editing": "{label}: editing. Enter saves, Escape cancels.",
+    "em": "Italic",
+    "invalid": "Invalid link address",
+    "link": "Link",
+    "strong": "Bold",
+    "toolbar": "Formatting",
+    "unlink": "Remove link",
+    "url": "Link address"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Носитель редактора на странице",
+      "settings": {},
+      "expect": {}
+    },
+    {
+      "name": "paragraph",
+      "title": "Правка абзаца",
+      "markup": "<p id=\"p1\" data-sf-composition-id=\"p1\">Текст <strong>абзаца</strong> на холсте.</p>",
+      "action": {
+        "name": "edit",
+        "with": {
+          "element": "#p1",
+          "options": {"nodeId": "p1", "label": "Абзац"}
+        }
+      },
+      "settings": {},
+      "expect": {}
+    },
+    {
+      "name": "heading",
+      "title": "Правка заголовка без ссылок",
+      "markup": "<h2 id=\"h1\" data-sf-composition-id=\"h1\">Заголовок раздела</h2>",
+      "action": {
+        "name": "edit",
+        "with": {
+          "element": "#h1",
+          "options": {"nodeId": "h1", "label": "Заголовок", "links": false, "marks": ["em"]}
+        }
+      },
+      "settings": {},
+      "expect": {}
+    }
+  ]
+}

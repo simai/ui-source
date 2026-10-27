@@ -23,7 +23,7 @@ canvas.addEventListener('dblclick', (event) => {
   const node = nodeById(element.dataset.sfCompositionId);
   SF.Composition.startInlineEdit(element, {content: node.data.content, nodeId: node.id, label: 'Абзац'});
 });
-document.addEventListener('sf-inline-edit-commit', (event) => save(event.detail.node_id, event.detail.content));
+document.addEventListener('sf-inline-editor-change', (event) => save(event.detail.id, event.detail.content));
 ```
 
 `document.querySelector('sf-inline-editor').edit(element, options)` — тот же
@@ -40,9 +40,14 @@ document.addEventListener('sf-inline-edit-commit', (event) => save(event.detail.
 
 ## События
 
-- `sf-inline-edit-input` — `{node_id, content}` после каждого изменения;
-- `sf-inline-edit-commit` — `{node_id, content}` по Enter или уходу фокуса;
-- `sf-inline-edit-cancel` — `{node_id}` по Escape, исходный HTML восстанавливается.
+- `sf-inline-editor-input` — `{id, content}` после каждого изменения;
+- `sf-inline-editor-change` — `{id, content}` по Enter или уходу фокуса;
+- `sf-inline-editor-cancel` — `{id}` по Escape, исходный HTML восстанавливается.
+
+`id` — это `nodeId` правки. Прежние `sf-inline-edit-input`, `-commit`
+(`{node_id, content}`) и `-cancel` (`{node_id}`) приходят следом за новыми до
+2026-12-01. `SF.InlineEditor.INLINE_EVENTS` — новые имена,
+`INLINE_EVENTS_LEGACY` — прежние.
 
 События отправляются на редактируемый элемент и всплывают до `document`;
 сам `<sf-inline-editor>` скрыт и роли не имеет.
@@ -55,3 +60,12 @@ mailto, tel, относительные и якорные; опасные адр
 элемент — подписанный `role="textbox"` с видимой рамкой, панель форматирования
 с `aria-pressed`. Вставка из Word и веб-страниц оставляет только разрешённое
 оформление; ввод через IME не прерывается.
+
+## Интерфейс
+
+Интерфейс — `component.json` (стандарт simai.smart-component 1.3.8), слова —
+`lang/`, примеры — `examples.json`. Публичные переменные (видны во время
+правки): `--sf-inline-editor-outline-color`,
+`--sf-inline-editor-toolbar-background-color`,
+`--sf-inline-editor-toolbar-radius`, `--sf-inline-editor-toolbar-gap`,
+`--sf-inline-editor-toolbar-padding`.
