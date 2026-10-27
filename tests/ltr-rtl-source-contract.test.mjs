@@ -105,7 +105,9 @@ test('modal keeps physical values and adds semantic inline variants', async () =
     read('src/smart/modal/js/templates/default.js'),
   ]);
 
-  assert.match(smartModal, /"left",\s*"right",\s*"inline-start",\s*"inline-end"/s);
+  // The positions are the manifest's (standard 1.3.8 §4).
+  assert.deepEqual(JSON.parse(await read('src/smart/modal/component.json')).settings.position.values.slice(1, 5), ['left', 'right', 'inline-start', 'inline-end']);
+  assert.match(smartModal, /from "\.\/component\.json"/);
   for (const value of ['left', 'right', 'inline-start', 'inline-end']) {
     assert.ok(componentCss.includes(`data-sf-modal-position='${value}'`));
   }

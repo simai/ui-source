@@ -1,0 +1,19 @@
+{
+  "title": "Modal",
+  "runtime": {
+    "close": "Close",
+    "frame-failed": "Failed to load iframe content",
+    "load-failed": "Failed to load content",
+    "loading": "Loading…",
+    "minimize": "Minimize",
+    "title": "Dialog"
+  },
+  "events": {
+    "content-upload": {
+      "label": "Load content"
+    },
+    "content-uploaded": {
+      "label": "Content loaded"
+    }
+  }
+}

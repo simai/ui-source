@@ -670,15 +670,29 @@ export interface HTMLSfSliderElement extends SmartComponentElement {
   refresh(): this;
 }
 
+/** An action's answer (standard simai.smart-component 1.3.8 §4.4). */
+export interface SmartOutcome {
+  outcome: 'applied' | 'refused' | 'cancelled' | 'conflict' | 'unavailable';
+  reason?: string;
+  value?: unknown;
+}
+
 export interface HTMLSfModalElement extends SmartComponentElement {
-  open(): this;
-  close(): this;
-  toggle(): this;
-  hide(): this;
-  show(): this;
+  /** Asked by an assembly (a signal given) it answers when the window closes, value {accepted, reason, value} (§19.4). */
+  open(options?: {animate?: boolean} | boolean, context?: {signal?: AbortSignal}): SmartOutcome | Promise<SmartOutcome>;
+  close(options?: {reason?: 'close' | 'escape' | 'outside' | 'cancelled' | 'api'}): SmartOutcome;
+  confirm(params?: {value?: unknown}): SmartOutcome;
+  minimize(): SmartOutcome;
+  expand(): SmartOutcome;
+  toggle(): SmartOutcome | Promise<SmartOutcome>;
+  /** @deprecated since 2026-10-27, until 2026-12-01: minimize(). */
+  hide(): SmartOutcome;
+  /** @deprecated since 2026-10-27, until 2026-12-01: expand(). */
+  show(): SmartOutcome;
+  /** @deprecated since 2026-10-27, until 2026-12-01: a reader retires (§4.4). */
   getModalRoot(): HTMLElement | null;
   setSrc(src: string): this;
-  reloadContent(): this;
+  reloadContent(): SmartOutcome;
   onModalReady(
       handler: (event: CustomEvent) => void,
       options?: AddEventListenerOptions | boolean,

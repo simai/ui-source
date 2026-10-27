@@ -43,16 +43,21 @@ test('no loading state writes its words out in English', () => {
 test('both modals take the loading words from the page language, as a named status', () => {
   const smart = read('src/smart/modal/index.js');
   const ordinary = read('src/component/modal/js/_modal.js');
-  for (const source of [smart, ordinary]) {
-    assert.match(source, /loading: ['"]Loading…['"]/u);
-    assert.match(source, /loading: ['"]Загрузка…['"]/u);
-    assert.match(source, /loadFailed: ['"]Не удалось загрузить содержимое['"]/u);
-    assert.match(source, /frameFailed: ['"]/u);
-  }
-  assert.match(smart, /const loading = pageText\(MODAL_TEXT, "loading", this\);/u);
+  assert.match(ordinary, /loading: ['"]Loading…['"]/u);
+  assert.match(ordinary, /loading: ['"]Загрузка…['"]/u);
+  assert.match(ordinary, /loadFailed: ['"]Не удалось загрузить содержимое['"]/u);
+  assert.match(ordinary, /frameFailed: ['"]/u);
+  // sf-modal's words are its language files (standard 1.3.8 §11).
+  const en = JSON.parse(read('src/smart/modal/lang/en.json')).runtime;
+  const ru = JSON.parse(read('src/smart/modal/lang/ru.json')).runtime;
+  assert.equal(en.loading, 'Loading…');
+  assert.equal(ru.loading, 'Загрузка…');
+  assert.equal(ru['load-failed'], 'Не удалось загрузить содержимое');
+  assert.ok(en['frame-failed'] && ru['frame-failed']);
+  assert.match(smart, /const loading = this\.sfWord\("loading"\);/u);
   assert.match(smart, /role="status"\s+aria-label=\$\{loading\}/u);
-  assert.match(smart, /pageText\(MODAL_TEXT, "loadFailed", this\)/u);
-  assert.match(smart, /pageText\(MODAL_TEXT, "frameFailed", this\)/u);
+  assert.match(smart, /this\.sfWord\("load-failed"\)/u);
+  assert.match(smart, /this\.sfWord\("frame-failed"\)/u);
   assert.match(ordinary, /pageText\(UNTITLED, key, [^)]*'sf-modal'\)/u);
   assert.match(ordinary, /const words = modalText\('loading', this\.template\);/u);
   assert.match(ordinary, /setAttribute\('role', 'status'\)/u);

@@ -510,7 +510,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "34351de8e066380ed5d9253497de3be97326a2807497b01c5b1fb48ebdffb079"
+        "sha256": "5b4dc2cc1bfe3b7e6aafdbb8b989df813915361d946e35b233667ea4c371d3ba"
       }
     ],
     "generated_runtime": [

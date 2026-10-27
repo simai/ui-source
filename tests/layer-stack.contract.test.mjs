@@ -236,6 +236,8 @@ test('sf-modal places the page nodes of its slots and never re-serialises them (
   assert.ok(modal.includes('rootId: this.id === this.modalId ? "" : this.modalId'));
   assert.match(await read('src/smart/modal/js/templates/default.js'), /id=\$\{context\.rootId \|\| nothing\}/);
   // The portal keeps lang, dir and theme of where the element stands (§19.1).
-  assert.ok(modal.includes('carryLayerOrigin(this._portalRoot, this)'));
+  // ... and the values of the public variables its manifest declares (§19.1).
+  assert.ok(modal.includes('carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES })'));
+  assert.ok(modal.includes('const MODAL_VARIABLES = Object.keys(manifest["css-variables"] || {});'));
   assert.ok((await read('src/smart/drawer/index.js')).includes('carryLayerOrigin(portal, this)'));
 });

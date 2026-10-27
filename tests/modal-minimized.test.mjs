@@ -7,7 +7,7 @@ function fixture(overrides={}) {
   const calls=[],root={inert:false,setAttribute:(name,value)=>calls.push(['attribute',name,value])};
   const owner={isTopModal:()=>true,bringToFront:()=>calls.push(['raise'])};
   const sync=new Function('SfModal','removeModalLayer','addModalLayer','restoreModalLayerFocus','requestAnimationFrame',`return ({${method}}).syncMinimizedLayer;`)(owner,()=>calls.push(['remove-visible-layer']),()=>calls.push(['add-visible-layer']),(top,target)=>calls.push(['restore',top,target]),fn=>fn());
-  const modal={_isMounted:true,openState:true,display:'modal',_modalState:'open',hiddenState:true,_lastActive:'opener',getModalRoot:()=>root,applyStackPosition:()=>calls.push(['position']),focusFirst:()=>calls.push(['focus']),...overrides};
+  const modal={_isMounted:true,openState:true,display:'modal',_modalState:'open',hiddenState:true,_lastActive:'opener',_root:()=>root,getModalRoot:()=>root,applyStackPosition:()=>calls.push(['position']),focusFirst:()=>calls.push(['focus']),...overrides};
   return{calls,root,run:()=>sync.call(modal)};
 }
 test('Minimizing releases only the visible layer and restores focus before making its root inert',()=>{

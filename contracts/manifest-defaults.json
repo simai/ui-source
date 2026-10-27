@@ -101,11 +101,6 @@
       "reason": "The page language's text when not set: \"Click to upload\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "modal",
-      "prop": "title",
-      "reason": "The page language's text when not set: \"Dialog\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "pagination",
       "prop": "ariaLabel",
       "reason": "The page language's text when not set: \"Result pages\" on an English page, the dictionary's word on another."

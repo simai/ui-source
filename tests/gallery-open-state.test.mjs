@@ -22,7 +22,7 @@ test('Gallery falls back to rendering when the modal is not yet available',()=>{
 
 test('Gallery binds new Modal projection once and ignores nested render events',()=>{
   const handler=new Function('event',source.split('  _handleModalAfterRender(event) {')[1].split('\n  }')[0]);
-  const slider={},calls=[],modal={getModalRoot:()=>({querySelector:()=>slider})};
+  const slider={},calls=[],modal={modalRoot:{querySelector:()=>slider}};
   const g={_modal:modal,_lightboxSlider:{},current:2,_detachNestedListeners:()=>calls.push('detach'),_attachNestedListeners:()=>calls.push('attach'),_syncSliderSlot:(s,m)=>calls.push([s,m]),_syncSliderToIndex:(s,i)=>calls.push([s,i]),_queueNestedDefinitionSync:()=>calls.push('definitions')};
   handler.call(g,{target:{}});assert.equal(calls.length,0);
   handler.call(g,{target:modal});assert.equal(g._lightboxSlider,slider);assert.deepEqual(calls,['detach','attach',[slider,'lightbox'],[slider,1],'definitions']);

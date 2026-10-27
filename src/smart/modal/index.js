@@ -1,13 +1,19 @@
 import { html, nothing, render } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import SfBaseElement from "../../core/js/smart-base";
-import { pageText } from "../../core/js/page-language";
+import { elementFromManifest } from "../../core/js/element-manifest";
+import { noteDeprecated } from "../../core/js/deprecations";
+import { instancePath, partId } from "../../core/js/instance-path";
 import { renderModalTemplate } from "./js/templates/default";
 import { trapModalFocus } from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import { lockModalScroll, unlockModalScroll } from "../../component/modal/js/_scroll";
 import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
+import manifest from "./component.json";
+import aliases from "./aliases.json";
+import en from "./lang/en.json";
+import ru from "./lang/ru.json";
 
 // A box that holds its own overlays (sf-modal, sf-drawer); the drawer's own
 // name came first and is read until the change journal retires it.
@@ -17,30 +23,56 @@ import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   isTopModalLayer } from "../../component/modal/js/_stack";
 import { carryLayerOrigin, layerZIndexAt } from "../../core/js/layer-stack";
 
-// The header's two actions, named in the page's language: they were English on
-// every page (documentation trial, 2026-10-12). The loading state and its
-// failure said "Loading..." and "Failed to load content" on every page too
-// (simai/ui-source#11 follow-up); they speak the page's language as well.
-const MODAL_TEXT = {
-  en: {
-    close: "Close",
-    minimize: "Minimize",
-    title: "Dialog",
-    loading: "Loading…",
-    loadFailed: "Failed to load content",
-    frameFailed: "Failed to load iframe content",
-  },
-  ru: {
-    close: "Закрыть",
-    minimize: "Свернуть",
-    title: "Окно",
-    loading: "Загрузка…",
-    loadFailed: "Не удалось загрузить содержимое",
-    frameFailed: "Не удалось загрузить встроенную страницу",
-  },
+// sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §8, §19): the settings are attributes and properties made by
+// core/js/element-manifest.js, the words are lang/<locale>.json (the header's
+// two actions, the untitled window's name and the loading state speak the
+// page's language), and the old names -- title, blur, hide, unclose, the
+// modal:* events, hide() and show() -- are dated aliases in aliases.json.
+const ModalElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: "ru",
+  aliases,
+});
+
+// The public variables the manifest declares; a window drawn at the end of the
+// body carries their values from where its host stands (§19.1).
+const MODAL_VARIABLES = Object.keys(manifest["css-variables"] || {});
+
+// What retires without a new name (aliases.json rows with `to: null`): kept
+// until the date, and each use is noted with it.
+function noteRetired(kind, from) {
+  noteDeprecated({ component: "sf-modal", tag: "sf-modal", kind, from, to: null,
+    since: aliases.since, remove_after: aliases.remove_after });
+}
+
+// A lifecycle copy (modal:ready, modal:update) is still sent until its date; a
+// listener that reads it is a use (§4.1, §16.13).
+function retiredEvent(type, detail) {
+  const event = new CustomEvent(type, { bubbles: true, composed: true, detail });
+  let used = false;
+  Object.defineProperty(event, "detail", {
+    configurable: true,
+    get() {
+      if (!used) { used = true; noteRetired("event", type); }
+      return detail;
+    },
+  });
+  return event;
+}
+
+const OLD_EVENT_NAMES = {
+  "modal:before-open": "open", "modal:after-open": "opened",
+  "modal:before-close": "close", "modal:after-close": "closed",
+  "modal:before-hide": "minimize", "modal:after-hide": "minimized",
+  "modal:before-show": "expand", "modal:after-show": "expanded",
+  "modal:before-content-upload": "content-upload",
+  "modal:after-content-upload": "content-uploaded",
 };
 
-let modalUid = 0;
+const applied = () => ({ outcome: "applied" });
+const refused = (reason) => ({ outcome: "refused", reason });
 
 function isBlurTypeValue(value) {
   return ["none", "small", "medium", "large"].includes(
@@ -50,7 +82,7 @@ function isBlurTypeValue(value) {
   );
 }
 
-class SfModal extends SfBaseElement {
+class SfModal extends ModalElement {
   static registry = new Map();
   static globalBound = false;
   static stack = [];
@@ -68,6 +100,7 @@ class SfModal extends SfBaseElement {
     "close-on-overlay",
     "preserve-scroll-gap",
     "preload",
+    "dismissible",
   ]);
 
   static getTopModal() {
@@ -129,64 +162,12 @@ class SfModal extends SfBaseElement {
     updateModalLayers();
   }
 
+  // The manifest's settings, and the base's own template name.
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: "template", default: "default" },
-      modalId: { default: "" },
-      title: { default: "" },
-      ariaLabel: { attribute: "aria-label", default: "" },
-      text: { default: "" },
-      open: { type: Boolean, default: false },
-      autoload: { type: Boolean, default: false },
-      unclose: { type: Boolean, default: false },
-      hide: { type: Boolean, default: false },
-      hideModifier: { default: "" },
-      minimized: { type: Boolean, default: false },
-      overlay: { type: Boolean, default: true },
-      showHeader: { type: Boolean, default: true },
-      showClose: { type: Boolean, default: true },
-      showFooter: { type: Boolean, default: true },
-      closeOnEsc: { type: Boolean, default: true },
-      closeOnOverlay: { type: Boolean, default: true },
-      preserveScrollGap: { type: Boolean, default: true },
-      position: {
-        default: "center",
-        values: [
-          "center",
-          "left",
-          "right",
-          "inline-start",
-          "inline-end",
-          "top",
-          "bottom",
-        ],
-      },
-      mode: { default: "inline", values: ["inline", "ajax", "iframe"] },
-      display: { default: "modal", values: ["modal", "inline"] },
-      src: { default: "" },
       rootClass: { default: "" },
-      preload: { type: Boolean, default: true },
-      fullscreen: { type: Boolean, default: false },
-      width: { default: "" },
-      height: { default: "" },
-      blur: { default: "" },
-      blurType: {
-        default: "medium",
-        values: ["none", "small", "medium", "large"],
-      },
-      overlayPreset: {
-        default: "default",
-        values: ["default", "focus"],
-      },
-      overlayClass: { default: "" },
-      closeClass: { default: "" },
-      surfaceClass: { default: "" },
-      surfacePadding: { default: "" },
-      panelClass: { default: "" },
-      headerClass: { default: "" },
-      bodyClass: { default: "" },
-      contentClass: { default: "" },
-      footerClass: { default: "" },
     };
   }
 
@@ -215,6 +196,8 @@ class SfModal extends SfBaseElement {
     this._remoteError = "";
     this._isLoadingRemote = false;
     this._remoteLoaded = false;
+    this._asks = [];
+    this._answer = null;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleOverlayClick = this.handleOverlayClick.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
@@ -223,13 +206,22 @@ class SfModal extends SfBaseElement {
 
   connectedCallback() {
     if (!this._modalId) {
+      // A window without modal-id or id takes its path id (§7.1.1): sf-modal-<n>
+      // in document order, not a module counter (simai/ui-source#41).
       this._modalId =
-        this.getAttribute("modal-id") || this.id || `sf-modal-${++modalUid}`;
+        this.getAttribute("modal-id") || this.id || partId(instancePath(this));
     }
 
     super.connectedCallback();
     SfModal.registry.set(this.modalId, this);
     SfModal.bindGlobalEvents();
+  }
+
+  // The old modal:* names keep their old detail (§16.20 split rows): the new
+  // names carry data only (§8), the old ones also the element and its window.
+  sfAliasAdapters() {
+    const add = (detail) => ({ ...detail, component: this, modal: this, root: this._root() });
+    return Object.fromEntries(Object.keys(OLD_EVENT_NAMES).map((name) => [name, add]));
   }
 
   // What the author writes inside <sf-modal> without a slot is the window's
@@ -264,20 +256,6 @@ class SfModal extends SfBaseElement {
     return this.getAttribute("modal-id") || this._modalId || this.id || "";
   }
 
-  get title() {
-    // An untitled window was headed and named «Modal» on every page; it
-    // takes the page language's word instead.
-    return this.getAttribute("title") || pageText(MODAL_TEXT, "title", this);
-  }
-
-  get ariaLabel() {
-    return this.getAttribute("aria-label") || "";
-  }
-
-  get text() {
-    return this.getAttribute("text") || "";
-  }
-
   // An inline window stands in the page's flow, so it is shown without
   // `open` until close() puts it away; it needed the attribute to show at all,
   // while the script Modal opens an inline one by itself (owner, 2026-10-18).
@@ -286,111 +264,55 @@ class SfModal extends SfBaseElement {
       (this.display === "inline" && !this._inlineClosed);
   }
 
-  get autoload() {
-    return this.getBooleanAttr("autoload", false);
+  // dismissible=false turns off Escape and the overlay (§19.3); `unclose` is
+  // its old, inverted name, read until its date.
+  get dismissible() {
+    if (this.hasAttribute("unclose") && this.getAttribute("unclose") !== "false") {
+      noteDeprecated({ component: "sf-modal", tag: "sf-modal", kind: "attribute", attribute: "unclose",
+        from: "unclose", to: "dismissible", since: aliases.since, remove_after: aliases.remove_after });
+      return false;
+    }
+    return this.getBooleanAttr("dismissible", true);
+  }
+
+  set dismissible(value) {
+    if (value === false) this.setAttribute("dismissible", "false");
+    else this.removeAttribute("dismissible");
   }
 
   get unclose() {
-    return this.getBooleanAttr("unclose", false);
-  }
-
-  get hideButton() {
-    return this.getBooleanAttr("hide", false);
-  }
-
-  get hideModifier() {
-    return this.getAttribute("hide-modifier") || "";
+    return !this.dismissible;
   }
 
   get hiddenState() {
     return this.display !== "inline" && (this._isHidden || this.hasAttribute("minimized"));
   }
 
-  get overlay() {
-    return this.getBooleanAttr("overlay", true);
+  // The value minimized (§4): the window is open but out of the visible stack.
+  // The attribute's presence says so, whatever it holds, as the template reads.
+  get minimized() {
+    return this.hiddenState;
   }
 
-  get closeOnEsc() {
-    return this.getBooleanAttr("close-on-esc", true);
+  set minimized(value) {
+    this.toggleAttribute("minimized", Boolean(value));
   }
 
   get showClose() {
     const showClose = this.getBooleanAttr("show-close", true);
-    return showClose && !this.unclose;
+    return showClose && this.dismissible;
   }
 
-  get showHeader() {
-    return this.getBooleanAttr("show-header", true);
-  }
-
-  get showFooter() {
-    return this.getBooleanAttr("show-footer", true);
-  }
-
-  get closeOnOverlay() {
-    return this.getBooleanAttr("close-on-overlay", true);
-  }
-
-  get preserveScrollGap() {
-    return this.getBooleanAttr("preserve-scroll-gap", true);
-  }
-
-  get position() {
-    return this.getEnumAttr(
-      "position",
-      [
-        "center",
-        "left",
-        "right",
-        "inline-start",
-        "inline-end",
-        "top",
-        "bottom",
-      ],
-      "center",
-    );
-  }
-
-  get mode() {
-    return this.getEnumAttr("mode", ["inline", "ajax", "iframe"], "inline");
-  }
-
-  get display() {
-    return this.getEnumAttr("display", ["modal", "inline"], "modal");
-  }
-
-  get src() {
-    return this.getAttribute("src") || "";
-  }
-
-  get preload() {
-    return this.getBooleanAttr("preload", true);
-  }
-
-  get fullscreen() {
-    return this.getBooleanAttr("fullscreen", false);
-  }
-
-  get width() {
-    return this.getAttribute("width") || "";
-  }
-
-  get height() {
-    return this.getAttribute("height") || "";
-  }
-
-  // blur="small" turns the blur on and names its type; blur="false" turns it
-  // off. The template used to read the raw attribute, so any value, "false"
-  // included, turned the blur on.
-  get blur() {
-    return (
-      isBlurTypeValue(this.getAttribute("blur")) ||
-      this.getBooleanAttr("blur", false)
-    );
+  // backdrop-blur="small" turns the blur on and names its type;
+  // backdrop-blur="false" turns it off. Its old name is `blur`, a method of
+  // every element (§3.1), mapped by the alias table.
+  get hasBackdropBlur() {
+    const value = this.getAttribute("backdrop-blur");
+    return isBlurTypeValue(value) || this.getBooleanAttr("backdrop-blur", false);
   }
 
   get blurType() {
-    const blurValue = this.getAttribute("blur");
+    const blurValue = this.getAttribute("backdrop-blur");
     const value =
       this.getAttribute("blur-type") ||
       (isBlurTypeValue(blurValue) ? blurValue : "medium");
@@ -404,68 +326,30 @@ class SfModal extends SfBaseElement {
   get hasCustomBlurType() {
     return (
       this.hasAttribute("blur-type") ||
-      isBlurTypeValue(this.getAttribute("blur"))
+      isBlurTypeValue(this.getAttribute("backdrop-blur"))
     );
   }
 
-  get overlayPreset() {
-    return this.normalizeEnum(
-      this.getAttribute("overlay-preset") || "default",
-      ["default", "focus"],
-      "default",
-    );
-  }
-
-  get headerClass() {
-    return this.getAttribute("header-class") || "";
-  }
-
-  get overlayClass() {
-    return this.getAttribute("overlay-class") || "";
-  }
-
-  get closeClass() {
-    return this.getAttribute("close-class") || "";
-  }
-
-  get surfaceClass() {
-    return this.getAttribute("surface-class") || "";
-  }
-
-  get surfacePadding() {
-    return this.getAttribute("surface-padding") || "";
-  }
-
-  get panelClass() {
-    return this.getAttribute("panel-class") || "";
-  }
-
-  get bodyClass() {
-    return this.getAttribute("body-class") || "";
-  }
-
-  get contentClass() {
-    return this.getAttribute("content-class") || "";
-  }
-
-  get footerClass() {
-    return this.getAttribute("footer-class") || "";
+  // The rendered window: the component's own, not a reader of the interface.
+  _root() {
+    return this._renderTarget?.querySelector?.(".sf-modal") || null;
   }
 
   get modalRoot() {
-    return this._renderTarget?.querySelector?.(".sf-modal") || null;
+    return this._root();
   }
 
   get state() {
     return {
       modalId: this.modalId,
-      title: this.title,
-      ariaLabel: this.ariaLabel,
+      heading: this.heading,
+      ariaLabel: this.getAttribute("aria-label") || "",
       text: this.text,
       open: this.openState,
       autoload: this.autoload,
-      unclose: this.unclose,
-      hide: this.hideButton,
+      dismissible: this.dismissible,
+      unsaved: this.unsaved,
+      minimizable: this.minimizable,
       hideModifier: this.hideModifier,
       minimized: this.hiddenState,
       overlay: this.overlay,
@@ -483,7 +367,7 @@ class SfModal extends SfBaseElement {
       fullscreen: this.fullscreen,
       width: this.width,
       height: this.height,
-      blur: this.blur,
+      backdropBlur: this.hasBackdropBlur,
       blurType: this.blurType,
       overlayPreset: this.overlayPreset,
       overlayClass: this.overlayClass,
@@ -574,7 +458,7 @@ class SfModal extends SfBaseElement {
       // kept across renders so its motion does not restart; the modal sheet
       // draws its slot. The words are the page's language's, and the state
       // is a status region named by them, so it is announced, not only seen.
-      const loading = pageText(MODAL_TEXT, "loading", this);
+      const loading = this.sfWord("loading");
       return html`
         <div
           class="sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4"
@@ -606,12 +490,14 @@ class SfModal extends SfBaseElement {
     return this.createTemplateContext({
       ...props,
       component: this,
-      closeText: pageText(MODAL_TEXT, "close", this),
-      minimizeText: pageText(MODAL_TEXT, "minimize", this),
-      // The props context holds the declared default; the getter holds the
-      // page language's word for an untitled window.
-      title: this.title,
+      closeText: this.sfWord("close"),
+      minimizeText: this.sfWord("minimize"),
+      // The heading, or the page language's word for an untitled window.
+      title: this.heading,
+      ariaLabel: this.getAttribute("aria-label") || "",
       modalId: this.modalId,
+      // The ids the template writes are the path's (§7.1.1), not the modal id's.
+      titleId: partId(instancePath(this), "title"),
       // The window's root takes the modal id only when the element does not
       // already hold it: <sf-modal id="x"> gave the page two elements with id x
       // (simai/ui-source#42).
@@ -620,10 +506,10 @@ class SfModal extends SfBaseElement {
       modalState: this.renderModalState,
       animate: this._animatePanel && this.display !== "inline",
       modalZIndex: this.modalZIndex,
-      hide: this.hideButton,
+      hide: this.minimizable,
       minimized: this.hiddenState,
       showClose: this.showClose,
-      blur: this.blur,
+      blur: this.hasBackdropBlur,
       blurType: this.blurType,
       hasCustomBlurType: this.hasCustomBlurType,
       hasHeaderContent: this.hasSlotContent("header"),
@@ -665,8 +551,10 @@ class SfModal extends SfBaseElement {
   }
 
   // The HTML of a slot's content, for reading. Drawing does not use it: the
-  // window places the nodes themselves.
+  // window places the nodes themselves. A reader retires (§4.4, §16.13): kept
+  // until its date, each call noted.
   getSlotHtml(name) {
+    noteRetired("action", "getSlotHtml");
     const slotContent = [
       ...(this._liveSlotNodes.get(name) || []),
       ...(this._slotTemplates.get(name) || []),
@@ -777,11 +665,10 @@ class SfModal extends SfBaseElement {
     this.dedupePortalRoots();
     // The portal stands at the end of the body; it speaks and looks as the
     // element does where it stands (standard 1.3.8 §19.1): lang, dir and the
-    // theme of its area. Variables are carried by name once the manifest
-    // declares its css-variables; a prefix would also carry what an outer
-    // window sets on its own panel (--sf-modal-width) into a window opened
-    // from it.
-    carryLayerOrigin(this._portalRoot, this);
+    // theme of its area, and the values of the public variables its manifest
+    // declares, by name: a prefix would also carry what an outer window sets
+    // on its own panel (--sf-modal-width) into a window opened from it.
+    carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES });
     this._renderTarget = this._portalRoot;
     return this._portalRoot;
   }
@@ -840,7 +727,7 @@ class SfModal extends SfBaseElement {
   applyStackPosition(index = SfModal.getStackIndex(this)) {
     this._stackIndex = index;
 
-    const root = this.getModalRoot();
+    const root = this._root();
     if (!root || this.display === "inline") {
       return this;
     }
@@ -856,19 +743,24 @@ class SfModal extends SfBaseElement {
     return this;
   }
 
-  open(options = {}) {
+  // Opens the window, or raises an open one to the top. Answers an outcome
+  // (§4.4): refused when a listener prevents sf-modal-open. Asked by an
+  // assembly -- a call that hands a signal -- it answers when the window
+  // closes, with the person's answer {accepted, reason, value} (§19.4).
+  open(options = {}, { signal } = {}) {
     const { animate = true } =
-      typeof options === "boolean" ? { animate: options } : options;
+      typeof options === "boolean" ? { animate: options } : (options || {});
     const wasClosing = this._modalState === "closing";
+    const asked = Boolean(signal);
 
     if ((this._isOpen || (this.display === "inline" && this.openState)) && !wasClosing) {
       this.cancelCloseTransition();
       SfModal.bringToFront(this);
-      return this;
+      return asked ? this.waitForAnswer(signal) : applied();
     }
 
-    if (!this.emitBeforeOpen()) {
-      return this;
+    if (!this.emitModalEvent("open", { cancelable: true, phase: "before-open" })) {
+      return refused("prevented");
     }
 
     if (!wasClosing) {
@@ -883,6 +775,7 @@ class SfModal extends SfBaseElement {
 
     this._isOpen = true;
     this._closeReason = "";
+    this._answer = null;
     this._inlineClosed = false;
     this._animatePanel = Boolean(animate);
     this._modalState =
@@ -919,75 +812,114 @@ class SfModal extends SfBaseElement {
           return;
         }
         this.focusFirst();
-        this.emitAfterOpen();
+        this.emitModalEvent("opened", { phase: "after-open" });
         this.loadRemoteContentIfNeeded();
       });
     });
 
-    return this;
+    return asked ? this.waitForAnswer(signal) : applied();
+  }
+
+  // The person's answer to an assembly's ask (§19.4), when the window closes:
+  // {accepted, reason, value}. A scope that ends first answers cancelled.
+  waitForAnswer(signal) {
+    return new Promise((resolve) => {
+      const ask = { resolve };
+      this._asks.push(ask);
+      signal?.addEventListener?.("abort", () => {
+        this._asks = this._asks.filter((one) => one !== ask);
+        resolve({ outcome: "cancelled" });
+      }, { once: true });
+    });
+  }
+
+  settleAsks(reason) {
+    const value = {
+      accepted: Boolean(this._answer?.accepted),
+      reason,
+      value: this._answer?.value ?? null,
+    };
+    const asks = this._asks;
+    this._asks = [];
+    for (const ask of asks) ask.resolve({ outcome: "applied", value });
   }
 
   // options.reason says why (standard 1.3.8 §19.3): close (its own close
   // control), escape, outside (the overlay), cancelled (a page control that
-  // closes it) or api, the default.
+  // closes it) or api, the default. A listener that prevents sf-modal-close
+  // keeps it open, and the action answers refused (§8).
   close(options = {}) {
     if (!this.openState || this._modalState === "closing") {
-      return this;
+      return refused("closed");
     }
 
     const reason = typeof options?.reason === "string" ? options.reason : "api";
-    if (!this.emitBeforeClose(reason)) {
-      return this;
+    if (!this.emitModalEvent("close", {
+      cancelable: true, phase: "before-close", reason, unsaved: Boolean(this.unsaved),
+    })) {
+      this._answer = null;
+      return refused("prevented");
     }
     this._closeReason = reason;
 
     if (this.display === "inline") {
       this.finishClose();
-      return this;
+      return applied();
     }
 
     this._modalState = "closing";
     this._isOpen = false;
     this.requestComponentUpdate("close");
 
-    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+    const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     this._releaseClosingContent = freezeModalContent(panel, SfModal.isTopModal(this));
     this._closeTransitionAbort = scheduleModalClose(
-      () => this.getModalRoot(), () => this.finishClose(),
+      () => this._root(), () => this.finishClose(),
     );
-    return this;
+    return applied();
   }
 
-  hide() {
+  // The person accepts: the window closes and an assembly's ask answers
+  // {accepted: true, reason: "close", value} (§19.4). A page button reaches it
+  // with data-sf-action="<id>.confirm".
+  confirm(params = {}) {
+    if (!this.openState) return refused("closed");
+    this._answer = { accepted: true, value: params?.value ?? null };
+    return this.close({ reason: "close" });
+  }
+
+  // Minimizes an open window (vocabulary §5 minimize; its old name is hide()).
+  minimize() {
     if (!this.openState || this.display === "inline" || this.hiddenState) {
-      return this;
+      return refused(this.openState ? "minimized" : "closed");
     }
 
-    if (!this.emitBeforeHide()) {
-      return this;
+    if (!this.emitModalEvent("minimize", { cancelable: true, phase: "before-hide" })) {
+      return refused("prevented");
     }
 
     this._isHidden = true;
     this.setAttribute("minimized", "");
     this.requestComponentUpdate("hide");
-    this.emitAfterHide();
-    return this;
+    this.emitModalEvent("minimized", { phase: "after-hide" });
+    return applied();
   }
 
-  show() {
+  // Brings a minimized window back (its old name is show()).
+  expand() {
     if (!this.openState || this.display === "inline" || !this.hiddenState) {
-      return this;
+      return refused(this.openState ? "expanded" : "closed");
     }
 
-    if (!this.emitBeforeShow()) {
-      return this;
+    if (!this.emitModalEvent("expand", { cancelable: true, phase: "before-show" })) {
+      return refused("prevented");
     }
 
     this._isHidden = false;
     this.removeAttribute("minimized");
     this.requestComponentUpdate("show");
-    this.emitAfterShow();
-    return this;
+    this.emitModalEvent("expanded", { phase: "after-show" });
+    return applied();
   }
 
   syncMinimizedLayer() {
@@ -995,7 +927,7 @@ class SfModal extends SfBaseElement {
         this._modalState === "closed" || this._modalState === "closing") {
       return;
     }
-    const root = this.getModalRoot();
+    const root = this._root();
     if (this.hiddenState) {
       const wasTop = SfModal.isTopModal(this);
       removeModalLayer(this);
@@ -1033,7 +965,7 @@ class SfModal extends SfBaseElement {
     this.removeAttribute("minimized");
     this.syncOpenAttribute(false);
 
-    const root = this.getModalRoot();
+    const root = this._root();
     if (root) {
       root.inert = true;
       root.setAttribute("aria-hidden", "true");
@@ -1050,7 +982,10 @@ class SfModal extends SfBaseElement {
     }
 
     this.requestComponentUpdate("after-close");
-    this.emitAfterClose();
+    const reason = this._closeReason || "api";
+    this.emitModalEvent("closed", { phase: "after-close", reason, accepted: Boolean(this._answer?.accepted) });
+    this.settleAsks(reason);
+    this._answer = null;
     return this;
   }
 
@@ -1076,11 +1011,13 @@ class SfModal extends SfBaseElement {
   reloadContent() {
     this.resetRemoteContent();
     this.loadRemoteContentIfNeeded(true);
-    return this;
+    return applied();
   }
 
+  // A reader retires (§4.4, §16.13): kept until its date, each call noted.
   getModalRoot() {
-    return this.modalRoot;
+    noteRetired("action", "getModalRoot");
+    return this._root();
   }
 
   afterRender() {
@@ -1089,7 +1026,7 @@ class SfModal extends SfBaseElement {
     if (this._modalState === "closing") {
       this._releaseClosingContent?.();
       this._releaseClosingContent = freezeModalContent(
-        this.getModalRoot()?.querySelector("[data-sf-modal-panel]"), SfModal.isTopModal(this),
+        this._root()?.querySelector("[data-sf-modal-panel]"), SfModal.isTopModal(this),
       );
     }
 
@@ -1097,26 +1034,17 @@ class SfModal extends SfBaseElement {
       component: this,
       modal: this,
       modalId: this.modalId,
-      root: this.getModalRoot(),
+      root: this._root(),
     };
 
+    // Lifecycle copies retire (§4.1, §16.13): sf-after-render is the base's.
+    // They are still sent until their date, and a listener that reads one is
+    // noted.
     if (!this._hasEmittedReady) {
       this._hasEmittedReady = true;
-      this.dispatchEvent(
-        new CustomEvent("modal:ready", {
-          bubbles: true,
-          composed: true,
-          detail: this._readyDetail,
-        }),
-      );
+      this.dispatchEvent(retiredEvent("modal:ready", this._readyDetail));
     } else {
-      this.dispatchEvent(
-        new CustomEvent("modal:update", {
-          bubbles: true,
-          composed: true,
-          detail: this._readyDetail,
-        }),
-      );
+      this.dispatchEvent(retiredEvent("modal:update", this._readyDetail));
     }
 
     if (this.hasAttribute("open") && !this._isOpen && this._modalState !== "closing") {
@@ -1142,7 +1070,7 @@ class SfModal extends SfBaseElement {
   // Escape and Tab reach the window through the document layer stack, and
   // only while it is the top layer (layer-stack.js).
   bindRenderedEvents() {
-    const root = this.getModalRoot();
+    const root = this._root();
     if (!root) {
       return;
     }
@@ -1152,7 +1080,7 @@ class SfModal extends SfBaseElement {
   }
 
   bindSlotEventHandlers() {
-    const root = this.getModalRoot();
+    const root = this._root();
     if (!root || !this._slotEventHandlers.size) {
       return;
     }
@@ -1172,23 +1100,23 @@ class SfModal extends SfBaseElement {
   handleOverlayClick(event) {
     const isOverlay =
       event.target ===
-      this.getModalRoot()?.querySelector("[data-sf-modal-overlay]");
+      this._root()?.querySelector("[data-sf-modal-overlay]");
     // A press outside is the top layer's only.
-    if (isOverlay && this.closeOnOverlay && !this.unclose && SfModal.isTopModal(this)) {
+    if (isOverlay && this.closeOnOverlay && this.dismissible && SfModal.isTopModal(this)) {
       this.close({ reason: "outside" });
     }
   }
 
   handleCloseClick(event) {
     event.preventDefault();
-    if (!this.unclose) {
+    if (this.dismissible) {
       this.close({ reason: "close" });
     }
   }
 
   handleHideClick(event) {
     event.preventDefault();
-    this.hide();
+    this.minimize();
   }
 
   // The layer stack hands the window Escape and Tab while it is the top layer
@@ -1207,7 +1135,7 @@ class SfModal extends SfBaseElement {
       return false;
     }
 
-    if (event.key === "Escape" && this.closeOnEsc && !this.unclose && this._modalState !== "closing" && !event.defaultPrevented) {
+    if (event.key === "Escape" && this.closeOnEsc && this.dismissible && this._modalState !== "closing" && !event.defaultPrevented) {
       this.close({ reason: "escape" });
       return true;
     }
@@ -1227,7 +1155,7 @@ class SfModal extends SfBaseElement {
       return;
     }
 
-    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+    const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     trapModalFocus(panel, event);
   }
 
@@ -1243,7 +1171,7 @@ class SfModal extends SfBaseElement {
       return;
     }
 
-    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+    const panel = this._root()?.querySelector("[data-sf-modal-panel]");
     if (panel) {
       panel.focus();
     }
@@ -1292,7 +1220,7 @@ class SfModal extends SfBaseElement {
     this._remoteError = "";
     let aborted = false;
     this.requestComponentUpdate("remote-loading");
-    this.emitContentEvent("modal:before-content-upload");
+    this.emitContentEvent("content-upload");
     const controller = new AbortController();
     this._fetchController = controller;
 
@@ -1321,7 +1249,7 @@ class SfModal extends SfBaseElement {
       if (error.name === "AbortError") {
         aborted = true;
       } else {
-        this._remoteError = error.message || pageText(MODAL_TEXT, "loadFailed", this);
+        this._remoteError = error.message || this.sfWord("load-failed");
       }
     } finally {
       // A load aborted by a newer one leaves the state to it: clearing it here
@@ -1332,7 +1260,7 @@ class SfModal extends SfBaseElement {
         this._isLoadingRemote = false;
         this.requestComponentUpdate("remote-content");
         if (!aborted) {
-          this.emitContentEvent("modal:after-content-upload");
+          this.emitContentEvent("content-uploaded");
         }
       }
     }
@@ -1340,100 +1268,25 @@ class SfModal extends SfBaseElement {
 
   handleIframeLoad = () => {
     this._remoteLoaded = true;
-    this.emitContentEvent("modal:after-content-upload");
+    this.emitContentEvent("content-uploaded");
   };
 
   handleIframeError = () => {
-    this._remoteError = pageText(MODAL_TEXT, "frameFailed", this);
+    this._remoteError = this.sfWord("frame-failed");
     this.requestComponentUpdate("remote-content");
   };
 
-  emitContentEvent(eventName) {
-    this.dispatchEvent(
-      new CustomEvent(eventName, {
-        bubbles: true,
-          composed: true,
-        detail: {
-          component: this,
-          modal: this,
-          modalId: this.modalId,
-          src: this.src,
-          remote: this.state.remote,
-        },
-      }),
-    );
+  // The content events are the component's own verbs (lang events.*.label).
+  emitContentEvent(verb) {
+    this.sfEmit(verb, { modalId: this.modalId, src: this.src, remote: this.state.remote });
   }
 
-  emitModalEvent(eventName, { cancelable = false, detail = {} } = {}) {
-    const event = new CustomEvent(eventName, {
-      bubbles: true,
-          composed: true,
-      cancelable,
-      detail: {
-        component: this,
-        modal: this,
-        modalId: this.modalId,
-        root: this.getModalRoot(),
-        ...detail,
-      },
-    });
-
-    this.dispatchEvent(event);
-    return !event.defaultPrevented;
-  }
-
-  emitBeforeOpen() {
-    return this.emitModalEvent("modal:before-open", {
-      cancelable: true,
-      detail: { phase: "before-open" },
-    });
-  }
-
-  emitAfterOpen() {
-    this.emitModalEvent("modal:after-open", {
-      detail: { phase: "after-open" },
-    });
-  }
-
-  // The close request carries why and whether something is unsaved
-  // (standard 1.3.8 §19.3); the window has no unsaved setting yet.
-  emitBeforeClose(reason = "api") {
-    return this.emitModalEvent("modal:before-close", {
-      cancelable: true,
-      detail: { phase: "before-close", reason, unsaved: false },
-    });
-  }
-
-  emitAfterClose() {
-    this.emitModalEvent("modal:after-close", {
-      detail: { phase: "after-close", reason: this._closeReason || "api" },
-    });
-  }
-
-  emitBeforeHide() {
-    return this.emitModalEvent("modal:before-hide", {
-      cancelable: true,
-      detail: { phase: "before-hide" },
-    });
-  }
-
-  emitAfterHide() {
-    this.emitModalEvent("modal:after-hide", {
-      detail: { phase: "after-hide" },
-    });
-  }
-
-  emitBeforeShow() {
-    return this.emitModalEvent("modal:before-show", {
-      cancelable: true,
-      detail: { phase: "before-show" },
-    });
-  }
-
-  emitAfterShow() {
-    this.emitModalEvent("modal:after-show", {
-      detail: { phase: "after-show" },
-    });
+  // Sends one of the window's events by its verb (§8): the new name
+  // (sf-modal-<verb>) first, then its old modal:* name with the old detail
+  // through the alias table. Data only in detail; answers false when a
+  // listener refused a cancelable one.
+  emitModalEvent(verb, { cancelable = false, ...detail } = {}) {
+    return this.sfEmit(verb, { modalId: this.modalId, ...detail }, { cancelable });
   }
 
   syncOpenAttribute(isOpen) {
@@ -1512,68 +1365,36 @@ class SfModal extends SfBaseElement {
   }
 
   // Modal events bubble like the base modal component and sf-drawer; the on*
-  // helpers keep their meaning and receive only this modal's own events.
+  // helpers keep their meaning and receive only this modal's own events, by
+  // their new names (§8).
   ownModalHandler(handler) {
     return (event) => {
-      if (event.detail?.modal === this) handler.call(this, event);
+      if (event.target === this) handler.call(this, event);
     };
   }
 
-  onBeforeOpen(handler, options) {
+  onModalEvent(verb, handler, options) {
     if (typeof handler === "function") {
-      this.addEventListener("modal:before-open", this.ownModalHandler(handler), options);
+      this.addEventListener(this.sfEventName(verb), this.ownModalHandler(handler), options);
     }
     return this;
   }
 
-  onAfterOpen(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:after-open", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onBeforeOpen(handler, options) { return this.onModalEvent("open", handler, options); }
 
-  onBeforeClose(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:before-close", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onAfterOpen(handler, options) { return this.onModalEvent("opened", handler, options); }
 
-  onAfterClose(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:after-close", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onBeforeClose(handler, options) { return this.onModalEvent("close", handler, options); }
 
-  onBeforeHide(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:before-hide", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onAfterClose(handler, options) { return this.onModalEvent("closed", handler, options); }
 
-  onAfterHide(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:after-hide", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onBeforeHide(handler, options) { return this.onModalEvent("minimize", handler, options); }
 
-  onBeforeShow(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:before-show", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onAfterHide(handler, options) { return this.onModalEvent("minimized", handler, options); }
 
-  onAfterShow(handler, options) {
-    if (typeof handler === "function") {
-      this.addEventListener("modal:after-show", this.ownModalHandler(handler), options);
-    }
-    return this;
-  }
+  onBeforeShow(handler, options) { return this.onModalEvent("expand", handler, options); }
+
+  onAfterShow(handler, options) { return this.onModalEvent("expanded", handler, options); }
 
   onModalReady(handler, options) {
     if (typeof handler !== "function") {
@@ -1581,7 +1402,7 @@ class SfModal extends SfBaseElement {
     }
 
     if (this._readyDetail) {
-      handler(new CustomEvent("modal:ready", { detail: this._readyDetail }));
+      handler(retiredEvent("modal:ready", this._readyDetail));
       return this;
     }
 
@@ -1601,6 +1422,8 @@ class SfModal extends SfBaseElement {
       return;
     }
 
+    // The window's own page triggers, aliases of data-sf-action (§8, §16.10):
+    // data-sf-modal-open="<modal id>" is data-sf-action="<id>.open", and so on.
     document.addEventListener("click", (event) => {
       const openEl = event.target.closest("[data-sf-modal-open]");
       if (openEl) {
@@ -1610,13 +1433,13 @@ class SfModal extends SfBaseElement {
 
       const showEl = event.target.closest("[data-sf-modal-show]");
       if (showEl) {
-        SfModal.registry.get(showEl.getAttribute("data-sf-modal-show"))?.show();
+        SfModal.registry.get(showEl.getAttribute("data-sf-modal-show"))?.expand();
         return;
       }
 
       const hideEl = event.target.closest("[data-sf-modal-hide]");
       if (hideEl) {
-        SfModal.registry.get(hideEl.getAttribute("data-sf-modal-hide"))?.hide();
+        SfModal.registry.get(hideEl.getAttribute("data-sf-modal-hide"))?.minimize();
         return;
       }
 

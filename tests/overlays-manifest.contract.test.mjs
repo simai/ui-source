@@ -44,6 +44,46 @@ test('every overlay is made from its component.json, language files and aliases'
   }
 });
 
+test('sf-modal: names by vocabulary 1.1.5, the old ones through split rows with the old detail', () => {
+  const manifest = json('src/smart/modal/component.json');
+  const read1 = readManifest(manifest);
+  assert.deepEqual(Object.keys(read1.events), ['open', 'opened', 'close', 'closed', 'minimize', 'minimized', 'expand', 'expanded', 'content-upload', 'content-uploaded']);
+  assert.equal(read1.events.close.name, 'sf-modal-close');
+  assert.equal(read1.events.close.cancelable, true);
+  assert.deepEqual(manifest.events.close.carries.reason.values, ['close', 'escape', 'outside', 'cancelled', 'api']);
+  assert.deepEqual(manifest.layer, {kind: 'modal', 'locks-page': true, 'traps-focus': true});
+  assert.ok(manifest['side-effects'].includes('portal'));
+  // §3.1: no prototype names; hide was a setting and an action at once.
+  for (const name of ['title', 'blur', 'hide', 'aria-label', 'unclose']) assert.ok(!(name in manifest.settings), name);
+  assert.ok(manifest.settings.heading && manifest.settings['backdrop-blur'] && manifest.settings.minimizable);
+  const {rows, refused} = readAliasTable(json('src/smart/modal/aliases.json'), {tag: 'sf-modal'});
+  const events = rows.filter((row) => row.kind === 'event').map((row) => [row.from, row.to, row.mode]);
+  assert.deepEqual(events.find(([from]) => from === 'modal:after-hide'), ['modal:after-hide', 'sf-modal-minimized', 'split']);
+  assert.deepEqual(events.find(([from]) => from === 'modal:before-show'), ['modal:before-show', 'sf-modal-expand', 'split']);
+  assert.deepEqual(events.find(([from]) => from === 'modal:after-content-upload'), ['modal:after-content-upload', 'sf-modal-content-uploaded', 'split']);
+  assert.ok(events.every(([, , mode]) => mode === 'split'));
+  assert.deepEqual(rows.filter((row) => row.kind === 'action').map((row) => [row.from, row.to]), [['hide', 'minimize'], ['show', 'expand']]);
+  assert.deepEqual(refused.map((one) => one.from), ['unclose', 'aria-label', 'getModalRoot', 'getSlotHtml', 'modal:ready', 'modal:update']);
+  const source = read('src/smart/modal/index.js');
+  assert.match(source, /sfAliasAdapters\(\) \{\s*const add = \(detail\) => \(\{ \.\.\.detail, component: this, modal: this, root: this\._root\(\) \}\);/);
+  assert.doesNotMatch(source, /let modalUid|\+\+modalUid/, 'no module counter (#41)');
+  assert.match(source, /partId\(instancePath\(this\)\)/);
+  assert.match(source, /noteRetired\("action", "getModalRoot"\)/);
+  assert.match(source, /retiredEvent\("modal:ready", this\._readyDetail\)/);
+  assert.doesNotMatch(source, /MODAL_TEXT|Закрыть/, 'words live in the language files');
+});
+
+test('sf-modal: an assembly\'s ask waits for the person\'s answer {accepted, reason, value} (§19.4)', () => {
+  const source = read('src/smart/modal/index.js');
+  assert.match(source, /open\(options = \{\}, \{ signal \} = \{\}\) \{/);
+  assert.match(source, /return asked \? this\.waitForAnswer\(signal\) : applied\(\);/);
+  assert.match(source, /accepted: Boolean\(this\._answer\?\.accepted\),\s*reason,\s*value: this\._answer\?\.value \?\? null,/);
+  assert.match(source, /confirm\(params = \{\}\) \{\s*if \(!this\.openState\) return refused\("closed"\);\s*this\._answer = \{ accepted: true, value: params\?\.value \?\? null \};\s*return this\.close\(\{ reason: "close" \}\);/);
+  // The assembly reads an element's {outcome} as its {answer}.
+  assert.match(read('src/core/js/assembly/values.mjs'), /typeof value\.outcome === 'string'\) return outcomeOf\(\{\.\.\.value, answer: value\.outcome\}\)/);
+  assert.match(read('src/core/js/element-manifest.js'), /static get sfInterface\(\) \{ return manifest; \}/);
+});
+
 test('one page trigger: data-sf-action="<id>.<action>" runs a declared action (§8)', async () => {
   const {readPageAction} = await import('../src/core/js/page-actions.js');
   assert.deepEqual(readPageAction('m1.confirm'), {id: 'm1', action: 'confirm'});

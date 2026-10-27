@@ -642,7 +642,7 @@ class SfGallery extends SfBaseElement {
     this._lightboxSlider =
       this.querySelector('[data-sf-gallery-slider="lightbox"]') ||
       this._modal
-        ?.getModalRoot?.()
+        ?.modalRoot
         ?.querySelector?.('[data-sf-gallery-slider="lightbox"]');
   }
 
@@ -675,11 +675,11 @@ class SfGallery extends SfBaseElement {
       true,
     );
     this._modal?.addEventListener?.(
-      'modal:after-open',
+      'sf-modal-opened',
       this._handleModalAfterOpen,
     );
     this._modal?.addEventListener?.(
-      'modal:after-close',
+      'sf-modal-closed',
       this._handleModalAfterClose,
     );
   }
@@ -713,11 +713,11 @@ class SfGallery extends SfBaseElement {
       true,
     );
     this._modal?.removeEventListener?.(
-      'modal:after-open',
+      'sf-modal-opened',
       this._handleModalAfterOpen,
     );
     this._modal?.removeEventListener?.(
-      'modal:after-close',
+      'sf-modal-closed',
       this._handleModalAfterClose,
     );
   }
@@ -980,7 +980,7 @@ class SfGallery extends SfBaseElement {
       return;
     }
 
-    const slider = this._modal?.getModalRoot?.()
+    const slider = this._modal?.modalRoot
       ?.querySelector?.('[data-sf-gallery-slider="lightbox"]');
     if (!slider || slider === this._lightboxSlider) {
       return;

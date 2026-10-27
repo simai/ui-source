@@ -24,7 +24,9 @@ export function renderModalTemplate(context) {
         (context.mode === 'ajax' || context.mode === 'iframe');
     const showHeader = context.showHeader !== false;
     const hasHeaderSlot = context.hasHeaderContent;
-    const titleId = `${context.modalId}-title`;
+    // A path id (standard 1.3.8 §7.1.1), not the modal id: two windows with
+    // one modal-id, or a page id equal to it, gave two elements one id (#41).
+    const titleId = context.titleId || `${context.modalId}-title`;
     const accessibleLabel =
         context.ariaLabel || (hasHeaderSlot || !showHeader ? context.title : '');
     const hasContentSlot = context.hasContentContent;

@@ -1,0 +1,128 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Подтверждение",
+      "settings": {
+        "open": true,
+        "heading": "Подтверждение"
+      },
+      "slots": {
+        "content": "<p>Сохранить внесённые изменения?</p>",
+        "footer": "<button data-sf-action=\"reference.confirm\">Сохранить</button>"
+      },
+      "expect": {
+        "open": true,
+        "name": "Подтверждение"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "toggled",
+      "title": "Открыть и закрыть",
+      "settings": {
+        "heading": "Подтверждение"
+      },
+      "script": [
+        {
+          "act": "toggle"
+        }
+      ],
+      "expect": {
+        "open": true,
+        "events": [
+          "open",
+          "opened"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "not-dismissible",
+      "title": "Без закрытия по Escape и подложке",
+      "settings": {
+        "open": true,
+        "heading": "Решите",
+        "dismissible": false
+      },
+      "expect": {
+        "open": true,
+        "keys": {
+          "Escape": "nothing"
+        }
+      }
+    },
+    {
+      "name": "unsaved",
+      "title": "С несохранённым",
+      "settings": {
+        "open": true,
+        "heading": "Письмо",
+        "unsaved": true
+      },
+      "script": [
+        {
+          "act": "close",
+          "with": {
+            "reason": "api"
+          }
+        }
+      ],
+      "expect": {
+        "events": [
+          "close"
+        ],
+        "detail": {
+          "close": {
+            "reason": "api",
+            "unsaved": true
+          }
+        }
+      }
+    },
+    {
+      "name": "minimizable",
+      "title": "Сворачивается",
+      "settings": {
+        "open": true,
+        "heading": "Черновик",
+        "minimizable": true
+      },
+      "script": [
+        {
+          "act": "minimize"
+        }
+      ],
+      "expect": {
+        "minimized": true,
+        "events": [
+          "minimize",
+          "minimized"
+        ]
+      }
+    },
+    {
+      "name": "side",
+      "title": "Панель у края",
+      "settings": {
+        "open": true,
+        "heading": "Фильтры",
+        "position": "inline-end"
+      },
+      "expect": {
+        "open": true
+      }
+    },
+    {
+      "name": "inline",
+      "title": "В потоке страницы",
+      "settings": {
+        "heading": "Встроенное окно",
+        "display": "inline"
+      },
+      "expect": {
+        "open": true
+      }
+    }
+  ]
+}

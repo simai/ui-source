@@ -8,7 +8,9 @@ import { syncModalFocusGuards } from './_focus';
 import { closeLayer, hasLayer, isTopLayer, landmarksAround, layerIndex, openLayers,
   openLayer, raiseLayer, returnLayerFocus, topLayer } from '../../../core/js/layer-stack';
 
-const modalRoot = (modal) => modal?.getModalRoot?.() || modal?.template || null;
+// sf-modal's window is its modalRoot (its reader getModalRoot retires, standard
+// 1.3.8 §16.13); the class Modal holds its markup in `template`.
+const modalRoot = (modal) => (modal && 'modalRoot' in modal ? modal.modalRoot : modal?.getModalRoot?.()) || modal?.template || null;
 
 // The highest modal open: what Modal.getTopModal() names. A drawer or a list
 // may stand above it; isTopLayer answers whether it is the top of everything.

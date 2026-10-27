@@ -7,7 +7,7 @@ const FOCUSABLE_SELECTOR = [
 const GUARDS_KEY = Symbol.for('simai.modal.focus-guards');
 
 function syncModalFocusGuards(modal) {
-  const root = modal?.getModalRoot?.() || modal?.template;
+  const root = (modal && 'modalRoot' in modal ? modal.modalRoot : modal?.getModalRoot?.()) || modal?.template;
   const panel = root?.querySelector?.('[data-sf-modal-panel]');
   const previous = document[GUARDS_KEY];
   if (previous && previous.panel === panel && previous.before.isConnected && previous.after.isConnected) return;

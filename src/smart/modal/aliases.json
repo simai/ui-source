@@ -1,0 +1,242 @@
+{
+  "$comment": "Dated aliases of sf-modal for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), attribute-and-property, host-attribute (no shim), inverted (read by the component), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-modal",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "blur",
+      "to": "backdrop-blur",
+      "kind": "setting",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §4.1, §16 item 26",
+      "note": "blur is a method of HTMLElement and the base action; the attribute is mapped, the property stays the browser's"
+    },
+    {
+      "from": "hide",
+      "to": "minimizable",
+      "kind": "attribute",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1",
+      "note": "the attribute only: the property name hide is the old method, an action alias of minimize"
+    },
+    {
+      "from": "unclose",
+      "to": "dismissible",
+      "kind": "attribute",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "inverted",
+      "section": "§19.3",
+      "note": "inverted: unclose present means dismissible false; the shim maps values one to one, so it refuses this row (mode-on-non-event) and sf-modal reads the attribute itself, noting it with these dates"
+    },
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1",
+      "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+    },
+    {
+      "from": "modal:before-open",
+      "to": "sf-modal-open",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:after-open",
+      "to": "sf-modal-opened",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:before-close",
+      "to": "sf-modal-close",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:after-close",
+      "to": "sf-modal-closed",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:before-hide",
+      "to": "sf-modal-minimize",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:after-hide",
+      "to": "sf-modal-minimized",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:before-show",
+      "to": "sf-modal-expand",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:after-show",
+      "to": "sf-modal-expanded",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:before-content-upload",
+      "to": "sf-modal-content-upload",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "modal:after-content-upload",
+      "to": "sf-modal-content-uploaded",
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5, §9",
+      "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it"
+    },
+    {
+      "from": "hide",
+      "to": "minimize",
+      "kind": "action",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "vocabulary §5 minimize"
+    },
+    {
+      "from": "show",
+      "to": "expand",
+      "kind": "action",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "vocabulary §5 expand"
+    },
+    {
+      "from": "getModalRoot",
+      "to": null,
+      "kind": "action",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4, §16.13",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    },
+    {
+      "from": "getSlotHtml",
+      "to": null,
+      "kind": "action",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4, §4.5, §16.13",
+      "note": "a reader retires; slots are placed, never copied; the method stays until the date and notes each call"
+    },
+    {
+      "from": "modal:ready",
+      "to": null,
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.1, §16.13",
+      "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it"
+    },
+    {
+      "from": "modal:update",
+      "to": null,
+      "kind": "event",
+      "component": "sf-modal",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.1, §16.13",
+      "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it"
+    }
+  ]
+}

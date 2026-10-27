@@ -1,0 +1,655 @@
+{
+  "component": "sf-modal",
+  "probe": "sf-modal against component.json (standard simai.smart-component 1.3.8 §12, §19, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main style=\"height:150vh\">",
+      "  <button id=\"opener\" data-sf-action=\"m1.open\">Открыть</button>",
+      "  <button id=\"opener-old\" data-sf-modal-open=\"m-old\">Старое имя</button>",
+      "  <button id=\"opener-locked\" data-sf-action=\"m-locked.open\">Обязательное</button>",
+      "  <button id=\"drawer-opener\" data-sf-drawer-open=\"d1\">Панель</button>",
+      "  <t-ask id=\"a1\"></t-ask>",
+      "</main>",
+      "<div id=\"area\"><sf-modal id=\"m1\" heading=\"Письмо\" minimizable>",
+      "  <div slot=\"content\"><input id=\"m1-field\" aria-label=\"Тема\"><button id=\"m1-open-second\" data-sf-action=\"m2.open\">Ещё окно</button></div>",
+      "  <button slot=\"footer\" id=\"m1-cancel\" data-sf-modal-close=\"m1\">Отмена</button>",
+      "  <button slot=\"footer\" id=\"m1-ok\" data-sf-action=\"m1.confirm\">Готово</button>",
+      "</sf-modal></div>",
+      "<sf-modal id=\"m2\" heading=\"Второе окно\"><p slot=\"content\">Поверх первого</p></sf-modal>",
+      "<sf-modal id=\"m-old\" modal-id=\"m-old\" title=\"Старое окно\" blur=\"small\" hide><p slot=\"content\">Старые имена</p></sf-modal>",
+      "<sf-modal id=\"m-locked\" heading=\"Решите\" dismissible=\"false\" unsaved><p slot=\"content\">Без закрытия</p><button slot=\"footer\" id=\"locked-ok\" data-sf-action=\"m-locked.close\">Понятно</button></sf-modal>",
+      "<sf-drawer id=\"d1\" label=\"Панель\"><button id=\"d1-open-modal\" data-sf-action=\"m3.open\">Окно из панели</button></sf-drawer>",
+      "<sf-modal id=\"m3\" heading=\"Над панелью\"><p slot=\"content\">Окно над панелью</p></sf-modal>",
+      "<script>",
+      "  // An assembly that asks a person (§19.4): its rule opens the confirm layer and waits for the answer. Defined once sf-modal is, so the part's interface is there.",
+      "  customElements.whenDefined('sf-modal').then(() => SF.Assembly.define({tag: 't-ask', kind: 'assembly', values: {answer: {type: 'object', value: 'answer'}}, actions: {ask: {}}, keys: {answer: {type: 'object', writer: 'logic', initial: null}}, roles: {dialog: {part: 'sf-modal', settings: {heading: 'Удалить запись?'}}}, rules: [{id: 'r-ask', on: 'outside.ask', steps: [{ask: 'dialog.open', answer: 'answer'}]}]}, {layouts: {default: '<x-role name=\"dialog\"><p slot=\"content\">Запись удалится.</p><button slot=\"footer\" id=\"ask-no\" data-sf-modal-close>Отмена</button><button slot=\"footer\" id=\"ask-yes\" data-sf-action=\"page/a1/dialog.confirm\">Удалить</button></x-role>'}}));",
+      "</script>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-open-focus-lock",
+      "title": "open moves focus inside and locks the page; the fact sf-modal-opened",
+      "covers": "layer.traps-focus, layer.locks-page, events.opened, data-sf-action",
+      "steps": [
+        {
+          "user": "click:#opener",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-opened",
+                "count": 1,
+                "detail": {
+                  "modalId": "m1",
+                  "phase": "after-open"
+                }
+              }
+            ],
+            "values": {
+              "#m1.open": true
+            }
+          }
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-modal-portal=\"m1\"] [data-sf-modal-panel]"
+        },
+        {
+          "check": "document.documentElement.classList.contains('overflow-hidden') && document.body.classList.contains('overflow-hidden')"
+        }
+      ]
+    },
+    {
+      "id": "p2-escape-reason-returns-focus",
+      "title": "Escape closes the top window with reason escape and returns focus to the opener",
+      "covers": "keyboard.host.Escape close, events.close {reason, unsaved}, events.closed",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-close",
+                "count": 1,
+                "detail": {
+                  "reason": "escape",
+                  "unsaved": false,
+                  "modalId": "m1"
+                }
+              },
+              {
+                "name": "sf-modal-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "escape",
+                  "accepted": false
+                }
+              }
+            ],
+            "values": {
+              "#m1.open": false
+            }
+          }
+        },
+        {
+          "focus": "expect returned to #opener"
+        },
+        {
+          "check": "!document.body.classList.contains('overflow-hidden')"
+        }
+      ]
+    },
+    {
+      "id": "p3-outside-reason",
+      "title": "a press on the overlay closes with reason outside",
+      "covers": "§19.3 outside",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m1\"] [data-sf-modal-overlay]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "outside"
+                }
+              }
+            ],
+            "values": {
+              "#m1.open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-own-close-and-cancel",
+      "title": "its own close button says close; a page control that closes it says cancelled",
+      "covers": "§19.3 close, cancelled",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m1\"] .sf-modal-close-button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-close",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              }
+            ],
+            "values": {
+              "#m1.open": false
+            }
+          }
+        },
+        {
+          "user": "click:#opener",
+          "wait": 600
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m1\"] #m1-cancel",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-close",
+                "count": 1,
+                "detail": {
+                  "reason": "cancelled"
+                }
+              }
+            ],
+            "values": {
+              "#m1.open": false
+            }
+          }
+        },
+        {
+          "focus": "expect returned to #opener"
+        }
+      ]
+    },
+    {
+      "id": "p5-focus-trap",
+      "title": "Tab and Shift+Tab stay inside the top window",
+      "covers": "keyboard.host.Tab, Shift+Tab reach",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-modal-portal=\"m1\"] [data-sf-modal-panel]"
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-modal-portal=\"m1\"] [data-sf-modal-panel]"
+        }
+      ]
+    },
+    {
+      "id": "p6-not-dismissible",
+      "title": "dismissible=false ignores Escape and the overlay; an explicit action closes; the request carries unsaved",
+      "covers": "settings.dismissible, settings.unsaved, §19.3",
+      "steps": [
+        {
+          "user": "click:#opener-locked"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "values": {
+              "#m-locked.open": true
+            }
+          }
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m-locked\"] [data-sf-modal-overlay]",
+          "expect": {
+            "values": {
+              "#m-locked.open": true
+            }
+          }
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m-locked\"] #locked-ok",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-close",
+                "count": 1,
+                "detail": {
+                  "reason": "api",
+                  "unsaved": true
+                }
+              }
+            ],
+            "values": {
+              "#m-locked.open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-refused-close",
+      "title": "a page that prevents the close request keeps the window; the action answers refused",
+      "covers": "events.close cancelable, §8 cancelable requests",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "script": "(document.getElementById('m1').addEventListener('sf-modal-close', (event) => event.preventDefault()), true)"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "values": {
+              "#m1.open": true
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "close",
+            "with": {
+              "reason": "api"
+            }
+          },
+          "target": "#m1",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            },
+            "values": {
+              "#m1.open": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8-two-modals-stack",
+      "title": "a modal over a modal: higher z-index, Escape closes only the top, focus goes back into the first",
+      "covers": "§19.1 one stack",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "user": "click:[data-sf-modal-portal=\"m1\"] #m1-open-second",
+          "expect": {
+            "values": {
+              "#m2.open": true,
+              "#m1.open": true
+            }
+          }
+        },
+        {
+          "check": "Number(document.querySelector('[data-sf-modal-portal=\"m2\"] .sf-modal').style.zIndex) > Number(document.querySelector('[data-sf-modal-portal=\"m1\"] .sf-modal').style.zIndex)"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "values": {
+              "#m2.open": false,
+              "#m1.open": true
+            }
+          }
+        },
+        {
+          "focus": "expect returned to [data-sf-modal-portal=\"m1\"] #m1-open-second"
+        }
+      ]
+    },
+    {
+      "id": "p9-modal-over-drawer",
+      "title": "a modal opened from a drawer: Escape closes the modal, not the drawer behind it",
+      "covers": "§19.1 top layer",
+      "steps": [
+        {
+          "user": "click:#drawer-opener",
+          "expect": {
+            "values": {
+              "#d1.open": true
+            }
+          }
+        },
+        {
+          "user": "click:#d1-open-modal",
+          "expect": {
+            "values": {
+              "#m3.open": true
+            }
+          }
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "values": {
+              "#m3.open": false,
+              "#d1.open": true
+            }
+          }
+        },
+        {
+          "focus": "expect returned to #d1-open-modal"
+        }
+      ]
+    },
+    {
+      "id": "p10-drawer-over-modal-z",
+      "title": "a drawer opened from inside a modal is drawn above it",
+      "covers": "§19.1 one z-index scale",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#d1",
+          "expect": {
+            "values": {
+              "#d1.open": true
+            }
+          }
+        },
+        {
+          "check": "Number(getComputedStyle(document.querySelector('[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-root]')).zIndex) > Number(document.querySelector('[data-sf-modal-portal=\"m1\"] .sf-modal').style.zIndex)"
+        }
+      ]
+    },
+    {
+      "id": "p11-old-names-once-dated",
+      "title": "old and new names fire once each; the old ones keep their detail and are noted with their dates",
+      "covers": "aliases.json split rows, §16.20",
+      "steps": [
+        {
+          "user": "click:#opener",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-open",
+                "count": 1
+              },
+              {
+                "name": "modal:before-open",
+                "count": 1,
+                "detail": {
+                  "modalId": "m1",
+                  "phase": "before-open",
+                  "modal": "<sf-modal>"
+                }
+              },
+              {
+                "name": "sf-modal-opened",
+                "count": 1
+              },
+              {
+                "name": "modal:after-open",
+                "count": 1,
+                "detail": {
+                  "modalId": "m1",
+                  "phase": "after-open",
+                  "modal": "<sf-modal>"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "modal:before-open",
+                "to": "sf-modal-open",
+                "kind": "event",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              },
+              {
+                "from": "modal:after-open",
+                "to": "sf-modal-opened",
+                "kind": "event",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-modal-closed",
+                "count": 1
+              },
+              {
+                "name": "modal:after-close",
+                "count": 1,
+                "detail": {
+                  "reason": "escape"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "modal:after-close",
+                "to": "sf-modal-closed",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p12-old-settings-and-triggers",
+      "title": "title, blur, hide and data-sf-modal-open still work and are noted with their dates",
+      "covers": "aliases.json setting and attribute rows, §16.10",
+      "steps": [
+        {
+          "user": "click:#opener-old",
+          "expect": {
+            "values": {
+              "#m-old.open": true,
+              "#m-old.heading": "Старое окно",
+              "#m-old.minimizable": true
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('[data-sf-modal-portal=\"m-old\"] h2').textContent === 'Старое окно' && document.querySelector('[data-sf-modal-portal=\"m-old\"] [data-sf-modal-overlay]').classList.contains('backdrop-blur-small') && Boolean(document.querySelector('[data-sf-modal-portal=\"m-old\"] .sf-modal-hide-button'))"
+        },
+        {
+          "check": "['title','blur','hide'].every((from) => SF.__deprecationNotes && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-modal' && note.from === from && note.remove_after === '2026-12-01'))"
+        }
+      ]
+    },
+    {
+      "id": "p13-minimize-expand",
+      "title": "minimize and expand, and their old names hide() and show()",
+      "covers": "actions.minimize, actions.expand, events.minimized, events.expanded, action aliases",
+      "steps": [
+        {
+          "user": "click:#opener"
+        },
+        {
+          "action": {
+            "name": "minimize"
+          },
+          "target": "#m1",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-modal-minimized",
+                "count": 1
+              },
+              {
+                "name": "modal:after-hide",
+                "count": 1
+              }
+            ],
+            "values": {
+              "#m1.minimized": true
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "show"
+          },
+          "target": "#m1",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-modal-expanded",
+                "count": 1
+              }
+            ],
+            "values": {
+              "#m1.minimized": false
+            },
+            "journal": [
+              {
+                "from": "show",
+                "to": "expand",
+                "kind": "action",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p14-ask-answer-accepted",
+      "title": "an assembly asks through the confirm layer: confirm answers accepted",
+      "covers": "§19.4 ask, actions.confirm, data-sf-action",
+      "steps": [
+        {
+          "script": "(document.getElementById('a1').ask(), true)",
+          "wait": 700,
+          "expect": {
+            "values": {
+              "[data-sf-instance=\"page/a1/dialog\"].open": true
+            }
+          }
+        },
+        {
+          "user": "click:[data-sf-modal-portal] #ask-yes",
+          "wait": 700,
+          "expect": {
+            "values": {
+              "#a1.answer": {
+                "accepted": true,
+                "reason": "close",
+                "value": null
+              },
+              "[data-sf-instance=\"page/a1/dialog\"].open": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p15-ask-answer-declined",
+      "title": "an assembly asks: Escape answers not accepted, with reason escape",
+      "covers": "§19.4 ask, §19.3 escape",
+      "steps": [
+        {
+          "script": "(document.getElementById('a1').ask(), true)",
+          "wait": 700
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 700,
+          "expect": {
+            "values": {
+              "#a1.answer": {
+                "accepted": false,
+                "reason": "escape",
+                "value": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p16-portal-carries-variables",
+      "title": "the portal carries the host's declared public variables, lang and theme",
+      "covers": "§19.1 css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-modal-radius', '3px'), true)",
+          "wait": 50
+        },
+        {
+          "user": "click:#opener"
+        },
+        {
+          "check": "document.querySelector('[data-sf-modal-portal=\"m1\"]').style.getPropertyValue('--sf-modal-radius') === '3px' && document.querySelector('[data-sf-modal-portal=\"m1\"]').getAttribute('lang') === 'ru'"
+        }
+      ]
+    }
+  ]
+}

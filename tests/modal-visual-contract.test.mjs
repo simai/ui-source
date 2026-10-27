@@ -45,9 +45,10 @@ test('modal overlay keeps a fixed scrim and composes optional backdrop blur', as
   assert.match(styles, /background-color: var\(--sf-modal-overlay-background\)/);
   assert.match(styles, /opacity: var\(--sf-modal-overlay-opacity\)/);
 
-  assert.match(component, /overlayPreset:/);
-  assert.match(component, /\["default", "focus"\]/);
-  assert.match(component, /this\.getAttribute\("overlay-preset"\) \|\| "default"/);
+  // overlay-preset is a setting of the manifest (standard 1.3.8 §4): an enum
+  // whose unknown value reads as its default.
+  const preset = JSON.parse(await read('src/smart/modal/component.json')).settings['overlay-preset'];
+  assert.deepEqual(preset, {type: 'enum', values: ['default', 'focus'], default: 'default'});
   assert.match(component, /overlayPreset: this\.overlayPreset/);
 
   assert.match(template, /context\.overlayPreset === 'focus'/);
@@ -89,8 +90,8 @@ test('modal surfaces use the semantic surface radius and logical edge positions'
   assert.doesNotMatch(styles, /--sf-modal-surface-radius: var\(--sf-radius-2\)/);
   assert.match(ordinary, /'inline-start'/);
   assert.match(ordinary, /'inline-end'/);
-  assert.match(smart, /"inline-start"/);
-  assert.match(smart, /"inline-end"/);
+  const positions = JSON.parse(await read('src/smart/modal/component.json')).settings.position.values;
+  assert.ok(positions.includes('inline-start') && positions.includes('inline-end'));
   assert.doesNotMatch(ordinary, /console\.log\(eventName\)/);
   assert.match(ordinary, /sf-modal-iframe w-full border-0 radius-surface/);
   assert.match(smart, /sf-modal-iframe w-full border-0 radius-surface/);

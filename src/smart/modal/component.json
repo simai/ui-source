@@ -1,0 +1,567 @@
+{
+  "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.modal",
+  "tag": "sf-modal",
+  "version": "1.4.0",
+  "kind": "leaf",
+  "family": "modal",
+  "settings": {
+    "modal-id": {
+      "type": "id",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default-from": "runtime.title"
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    },
+    "autoload": {
+      "type": "boolean",
+      "default": false
+    },
+    "minimizable": {
+      "type": "boolean",
+      "default": false
+    },
+    "hide-modifier": {
+      "type": "string",
+      "default": ""
+    },
+    "overlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-header": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-close": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-footer": {
+      "type": "boolean",
+      "default": true
+    },
+    "close-on-esc": {
+      "type": "boolean",
+      "default": true
+    },
+    "close-on-overlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "preserve-scroll-gap": {
+      "type": "boolean",
+      "default": true
+    },
+    "position": {
+      "type": "enum",
+      "values": [
+        "center",
+        "left",
+        "right",
+        "inline-start",
+        "inline-end",
+        "top",
+        "bottom"
+      ],
+      "default": "center"
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "inline",
+        "ajax",
+        "iframe"
+      ],
+      "default": "inline"
+    },
+    "display": {
+      "type": "enum",
+      "values": [
+        "modal",
+        "inline"
+      ],
+      "default": "modal"
+    },
+    "src": {
+      "type": "string",
+      "default": ""
+    },
+    "preload": {
+      "type": "boolean",
+      "default": true
+    },
+    "fullscreen": {
+      "type": "boolean",
+      "default": false
+    },
+    "width": {
+      "type": "string",
+      "default": ""
+    },
+    "height": {
+      "type": "string",
+      "default": ""
+    },
+    "backdrop-blur": {
+      "type": "string",
+      "default": ""
+    },
+    "blur-type": {
+      "type": "enum",
+      "values": [
+        "none",
+        "small",
+        "medium",
+        "large"
+      ],
+      "default": "medium"
+    },
+    "overlay-preset": {
+      "type": "enum",
+      "values": [
+        "default",
+        "focus"
+      ],
+      "default": "default"
+    },
+    "overlay-class": {
+      "type": "string",
+      "default": ""
+    },
+    "close-class": {
+      "type": "string",
+      "default": ""
+    },
+    "surface-class": {
+      "type": "string",
+      "default": ""
+    },
+    "surface-padding": {
+      "type": "string",
+      "default": ""
+    },
+    "panel-class": {
+      "type": "string",
+      "default": ""
+    },
+    "header-class": {
+      "type": "string",
+      "default": ""
+    },
+    "body-class": {
+      "type": "string",
+      "default": ""
+    },
+    "content-class": {
+      "type": "string",
+      "default": ""
+    },
+    "footer-class": {
+      "type": "string",
+      "default": ""
+    },
+    "unsaved": {
+      "type": "boolean",
+      "default": false
+    },
+    "dismissible": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "values": {
+    "open": {
+      "type": "boolean",
+      "default": false,
+      "reflect": true
+    },
+    "minimized": {
+      "type": "boolean",
+      "default": false,
+      "reflect": true
+    }
+  },
+  "events": {
+    "open": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      },
+      "cancelable": true
+    },
+    "opened": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      }
+    },
+    "close": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string",
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        },
+        "unsaved": "boolean"
+      },
+      "cancelable": true
+    },
+    "closed": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string",
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        },
+        "accepted": "boolean"
+      }
+    },
+    "minimize": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      },
+      "cancelable": true
+    },
+    "minimized": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      }
+    },
+    "expand": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      },
+      "cancelable": true
+    },
+    "expanded": {
+      "carries": {
+        "modal-id": "string",
+        "phase": "string"
+      }
+    },
+    "content-upload": {
+      "carries": {
+        "modal-id": "string",
+        "src": "string",
+        "remote": "object"
+      },
+      "own-verb": true
+    },
+    "content-uploaded": {
+      "carries": {
+        "modal-id": "string",
+        "src": "string",
+        "remote": "object"
+      },
+      "own-verb": true
+    }
+  },
+  "actions": {
+    "open": {
+      "with": {
+        "animate": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "emits": "open",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-answer": "asked by an assembly (ask, §19.4) it answers when the window closes, with value {accepted, reason, value}"
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "emits": "close",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "minimize": {
+      "emits": "minimize",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "expand": {
+      "emits": "expand",
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "reload-content": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "confirm": {
+      "with": {
+        "value": {
+          "type": "object",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-summary": "Closes the window as the person's acceptance: the answer of ask is {accepted: true, reason: close, value} (§19.4)"
+    }
+  },
+  "slots": {
+    "header": {
+      "replaces": "heading"
+    },
+    "content": {
+      "default": true
+    },
+    "footer": {}
+  },
+  "layer": {
+    "kind": "modal",
+    "locks-page": true,
+    "traps-focus": true
+  },
+  "side-effects": [
+    "network",
+    "locks-page",
+    "portal"
+  ],
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "dialog",
+    "name": {
+      "from": [
+        "aria-label",
+        "heading"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "Escape": {
+        "effect": "close",
+        "when": {
+          "dismissible": true,
+          "close-on-esc": true
+        }
+      }
+    }
+  },
+  "css-variables": {
+    "--sf-modal-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-modal-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-modal-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-modal-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-modal-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-modal-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-modal-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-modal-footer-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
+  "x-source": {
+    "package": "framework",
+    "folder": "modal",
+    "manifest": "simai/ui-source@5100227 src/smart/modal/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/modal.component.json"
+  },
+  "x-words": [
+    "text"
+  ],
+  "x-target": {
+    "added": {
+      "settings": [
+        "unsaved",
+        "dismissible",
+        "minimizable"
+      ],
+      "actions": [
+        "confirm",
+        "minimize",
+        "expand"
+      ]
+    },
+    "replaced": {
+      "events": [
+        "close",
+        "closed"
+      ],
+      "actions": [
+        "open",
+        "close"
+      ]
+    }
+  },
+  "x-renamed": [
+    "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated",
+    "settings.blur → backdrop-blur: \"blur\" is a method of HTMLElement.prototype and the base action (§3.1, §4.1, §16 item 26), alias dated",
+    "settings.hide → minimizable: one name meant a setting (show the minimize button) and an action (minimize); the attribute is a dated alias",
+    "settings.unclose → dismissible (inverted): §19.3; the attribute is read until 2026-12-01",
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "settings.minimized → values.minimized: a person changes it (the minimize button), §4",
+    "actions.hide → minimize, actions.show → expand: vocabulary §5 minimize; dated action aliases",
+    "events modal:before-open/after-open/before-close/after-close → sf-modal-open/-opened/-close/-closed (vocabulary §5, §7)",
+    "events modal:before-hide/after-hide → sf-modal-minimize/-minimized; modal:before-show/after-show → sf-modal-expand/-expanded",
+    "events modal:before-content-upload/after-content-upload → sf-modal-content-upload/-uploaded (own verbs)",
+    "events modal:ready, modal:update retire (§4.1, §16.13); readers getModalRoot, getSlotHtml retire (§4.4, §16.13)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-modal for one bounded task that temporarily owns the top interaction layer. It shares stack, focus return and scroll-lock ownership with ordinary Modal. Prefer center or logical inline-start/inline-end/top/bottom positions; left/right are compatibility aliases. The dialog and iframe are large surfaces on --sf-radius--surface, while compact header actions retain --sf-radius--ui. Inline display stays in document flow and does not capture focus. Minimized instances remain open but leave the visible interaction stack.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use Modal for a long independent workflow that belongs on its own page",
+        "Do not replace semantic spacing, motion, color or radius tokens with absolute design values",
+        "Do not assume remote or iframe content is trusted; the host owns CSP, permissions, errors and data decisions",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-modal></sf-modal>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "own-verb-words: minimize is a verb of vocabulary §5 (modal `hide`), so minimize/minimized are not own verbs; content-upload and content-uploaded stay own verbs with their words in lang events.<verb>.label (§8, vocabulary §5.1).",
+    "alias-conflict: vocabulary 1.1.5 decides. modal:after-hide → sf-modal-minimized and modal:after-show → sf-modal-expanded (the facts of minimize and expand, vocabulary §4; `change` reports a person's value change only, §8), modal:before-show → sf-modal-expand (the table's sf-modal-minimize is the reverse act), the content events → sf-modal-content-upload(ed) (loading is not a value change). The converter's sf-modal-hidden/-shown/-hide/-show never shipped and get no rows.",
+    "detail-adapter: §8 takes page elements out of detail, so the new names carry {modalId, phase, …} only; each old modal:* name keeps its old detail (component, modal, root added) through a split row and the element's detail adapter (sfAliasAdapters), sent after the new name with one shared cancel.",
+    "version: 1.3.0 → 1.4.0, a minor while the renamed members hold dated aliases (§4.10); the major comes with the sweep after 2026-12-01.",
+    "existing-aliases: compatibility.migrations lists no alias; its note (events bubble, detail.modal names the emitter) is kept by the old names' adapters. The undated page triggers data-sf-modal-open/close/show/hide stay as aliases of data-sf-action (§16.10).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json (the default window, an unclosable one, a minimizable one, a side panel); probe.json drives Tab, Shift+Tab and Escape (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json); the portal carries their computed values from the host (§19.1).",
+    "side-effects: the window draws at the end of body or of its [data-sf-overlay-container] (portal), locks the page (locks-page, one lease of the layer stack) and fetches src in mode ajax (network).",
+    "layer: kind modal, locks-page, traps-focus (§19.1, §19.2); Escape, an outside press and Tab reach it only while it is the top layer.",
+    "dismissing: the close request carries {reason, unsaved} (§19.3): close (its own button), escape, outside (the overlay), cancelled (a page control, data-sf-modal-close), api (a script); unsaved is the setting unsaved; dismissible=false (alias unclose) removes escape and outside, never an explicit action.",
+    "asking a person (§19.4): open asked by an assembly (a call with a signal) answers when the window closes with value {accepted, reason, value}; accepted is true only through the action confirm (data-sf-action=\"<id>.confirm\"). A page's own call answers at once.",
+    "instance ids (§7.1.1, simai/ui-source#41): a window without modal-id or id takes its path id (sf-modal-<n> in document order, not a module counter); the title id is <path>--title.",
+    "accessibility.name: aria-label on the host wins, else the heading (aria-labelledby the title, or aria-label when the header is a slot)."
+  ]
+}

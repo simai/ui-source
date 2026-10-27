@@ -37,7 +37,6 @@ test('template context: the resolved names the templates read are passed', async
     'icon-buttons': ['type', 'variant'],
     inputs: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],
-    modal: ['blur'],
     skeleton: ['variant', 'type'],
     tags: ['kind', 'type', 'size', 'inline', 'line'],
     textarea: ['type', 'minlength', 'maxlength'],
@@ -50,5 +49,8 @@ test('template context: the resolved names the templates read are passed', async
     for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.${name},`), `${component}.${name}`);
   }
   const modal = await read('src/smart/modal/index.js');
-  assert.match(modal, /isBlurTypeValue\(this\.getAttribute\("blur"\)\) \|\|\n {6}this\.getBooleanAttr\("blur", false\)/);
+  // The setting is backdrop-blur since standard 1.3.8 (blur is a method of
+  // every element, §3.1); the template still reads `blur`, resolved.
+  assert.match(modal, /blur: this\.hasBackdropBlur,/);
+  assert.match(modal, /return isBlurTypeValue\(value\) \|\| this\.getBooleanAttr\("backdrop-blur", false\);/);
 });
