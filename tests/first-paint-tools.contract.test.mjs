@@ -226,7 +226,8 @@ test('8. no size or place the code measured enters a snapshot', () => {
     for (const [, style] of html.matchAll(/ style="([^"]*)"/gu)) {
       for (const part of style.split(';')) {
         const at = part.indexOf(':');
-        if (at < 0 || !geometry.test(part.slice(0, at).trim())) continue;
+        const name = part.slice(0, at).trim();
+        if (at < 0 || !(geometry.test(name) || name.startsWith('--'))) continue;
         const px = [...part.slice(at + 1).matchAll(/(?<![\w.#-])(-?(?:\d+\.?\d*|\.\d+))px\b/gu)].filter((one) => Number(one[1]) !== 0);
         assert.equal(px.length, 0, `${file}: ${part.trim()}`);
       }
@@ -234,4 +235,5 @@ test('8. no size or place the code measured enters a snapshot', () => {
   }
   const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
   assert.match(page, /function unmeasured\(style\)/u);
+  assert.match(page, /name\.startsWith\('--'\)\) && measured/u, 'a measured custom property too');
 });

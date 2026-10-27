@@ -177,7 +177,8 @@ the next one.
   unseen, or a popup role that is `aria-hidden` or unseen -- is printed as its
   empty element (its id kept for `aria-controls`); the code draws its content
   when it opens. An inline geometry declaration (width, height, inset, clip,
-  transform) holding a non-zero px length is left out: a size the code
+  transform), or an inline custom property (`--sf-table--content-inline-size`),
+  holding a non-zero px length is left out: a size the code
   measured is the measuring page's, so the sheets hold the box until the
   element measures again (fixed layout or minimum sizes where gate 24 needs
   them). A snapshot over 8 KB fails the run, `--check` included, unless its

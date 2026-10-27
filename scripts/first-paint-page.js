@@ -103,7 +103,8 @@
   // A size or place the code measured in the browser (a column's width, an
   // overlay's clip) is the measuring page's, not the page that prints the
   // snapshot: it depends on the viewport and the fonts. A geometry declaration
-  // of an inline style that holds a non-zero px length is left out; the
+  // or a custom property of an inline style that holds a non-zero px length
+  // is left out (an authored size is written in rem or a token); the
   // sheets set the box until the element measures again. Percentages,
   // variables and zero stay: they are data, not measurements.
   const GEOMETRY = /^(?:(?:min-|max-)?(?:width|height|inline-size|block-size)|left|top|right|bottom|inset(?:-[\w-]+)?|clip-path|transform|translate)$/u;
@@ -121,7 +122,10 @@
     const kept = parts.filter((part) => {
       const at = part.indexOf(':');
       if (at < 0) return part.trim() !== '';
-      return !(GEOMETRY.test(part.slice(0, at).trim().toLowerCase()) && measured(part.slice(at + 1)));
+      const name = part.slice(0, at).trim();
+      // A custom property the code wrote from a measurement (sf-table's
+      // --sf-table--content-inline-size: 530px) is a measured size too.
+      return !((GEOMETRY.test(name.toLowerCase()) || name.startsWith('--')) && measured(part.slice(at + 1)));
     });
     // Untouched when nothing was measured: the attribute as the code wrote it.
     if (kept.length === parts.filter((part) => part.trim() !== '').length) return style;
