@@ -136,6 +136,10 @@ class SfProfilePicker extends ProfilePickerElement {
     this.state = {...this.state, open: true, mode: null, target: null};
     this.requestComponentUpdate('open');
     await this.whenRendered?.();
+    // Closed or taken out while it drew (§7.7): nothing is started, or the
+    // listeners, the placement and the layer it registers would outlive it.
+    // The action answers cancelled when its scope has ended (element-manifest.js).
+    if (!this.state.open || !this.isConnected) return {outcome: 'refused', reason: 'closed'};
     const panel = this.panel();
     const trigger = this.trigger();
     if (!panel || !trigger) return applied();
