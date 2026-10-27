@@ -37,14 +37,19 @@ export function renderAlertTemplate(context) {
 
   const iconName = resolveIcon(context);
   const titleContent =
-    context.component?.hasSlotContent?.('title') ? context.component.getSlotContent('title') : context.title;
+    context.component?.hasSlotContent?.('title') ? context.component.getSlotContent('title') : context.heading;
   const supportingTextContent =
     context.component?.hasSlotContent?.('supporting-text')
       ? context.component.getSlotContent('supporting-text')
       : context.supportingText;
 
   return html`
-    <div class=${rootClasses} style=${context.rootStyle || nothing}>
+    <div
+      class=${rootClasses}
+      style=${context.rootStyle || nothing}
+      role=${context.liveRole || nothing}
+      aria-label=${context.accessibleName || nothing}
+    >
       ${iconName ? html`<sf-icon icon="${iconName}" aria-hidden="true"></sf-icon>` : nothing}
 
       <div class="sf-alert-wrap flex flex-col flex-1">

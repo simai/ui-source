@@ -1,0 +1,66 @@
+{
+  "$comment": "Dated aliases of sf-alert for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-alert",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "type",
+      "to": "status",
+      "kind": "setting",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    },
+    {
+      "from": "variant",
+      "to": "appearance",
+      "kind": "setting",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    },
+    {
+      "from": "dismiss",
+      "to": "close",
+      "kind": "action",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§4.4: one action per act"
+    },
+    {
+      "from": "sf-alert-action",
+      "to": null,
+      "kind": "event",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§8",
+      "note": "the DOM name stays; detail keeps action and loses the element alert"
+    },
+    {
+      "from": "sf-alert-close",
+      "to": null,
+      "kind": "event",
+      "component": "sf-alert",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§8",
+      "note": "the DOM name stays and is cancelable now; detail is {reason}, without the element alert"
+    }
+  ]
+}

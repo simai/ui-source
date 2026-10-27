@@ -1,0 +1,164 @@
+{
+  "component": "sf-alert",
+  "probe": "sf-alert against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-alert id=\"a1\" heading=\"Изменения сохранены\" supporting-text=\"Новая версия уже доступна\" action-text=\"Открыть\" action=\"open-version\" status=\"success\" closable></sf-alert>",
+      "  <sf-alert id=\"a2\" heading=\"Не удалось сохранить\" status=\"error\" closable></sf-alert>",
+      "  <sf-alert id=\"a3\" aria-label=\"Подсказка\" supporting-text=\"Без заголовка\"></sf-alert>",
+      "  <sf-alert id=\"a-old\" title=\"Старое имя\" type=\"danger\" variant=\"outlined\"></sf-alert>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-live-region",
+      "title": "the root is a live region: status for success, alert for error, named by the heading",
+      "covers": "accessibility (role when status, name)",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#a1 .sf-alert'); const b = document.querySelector('#a2 .sf-alert'); return a.getAttribute('role') === 'status' && a.getAttribute('aria-label') === 'Изменения сохранены' && b.getAttribute('role') === 'alert'; })()"
+        },
+        {
+          "check": "document.querySelector('#a3 .sf-alert').getAttribute('aria-label') === 'Подсказка'"
+        }
+      ]
+    },
+    {
+      "id": "p2-action-data-only",
+      "title": "an action button: sf-alert-action {action} once, data only",
+      "covers": "events.action (own verb), §8",
+      "steps": [
+        {
+          "user": "click:#a1 [data-alert-action]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-alert-action",
+                "count": 1,
+                "detail": {
+                  "action": "open-version"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "script": "(() => { let seen = null; const el = document.getElementById('a1'); el.addEventListener('sf-alert-action', (e) => { seen = e.detail; }, {once: true}); el.querySelector('[data-alert-action]').click(); return Boolean(seen) && !('alert' in seen) && document.getElementById('a1').isConnected; })()",
+          "expect": {
+            "returns": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-close-button",
+      "title": "its close button: the request with reason close, then the alert leaves",
+      "covers": "events.close {reason}",
+      "steps": [
+        {
+          "user": "click:#a2 [data-alert-close]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-alert-close",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.getElementById('a2')",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "id": "p4-refused-close",
+      "title": "a page that prevents the request keeps the alert; close() answers refused",
+      "covers": "events.close cancelable, actions.close",
+      "steps": [
+        {
+          "script": "(document.getElementById('a1').addEventListener('sf-alert-close', (e) => e.preventDefault()), true)"
+        },
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#a1",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            }
+          }
+        },
+        {
+          "check": "Boolean(document.getElementById('a1'))"
+        }
+      ]
+    },
+    {
+      "id": "p5-close-api",
+      "title": "close() closes with reason api",
+      "covers": "actions.close",
+      "steps": [
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#a3",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-alert-close",
+                "count": 1,
+                "detail": {
+                  "reason": "api"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.getElementById('a3')",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "id": "p6-aliases",
+      "title": "title, type (danger) and variant answer; dismiss() calls close()",
+      "covers": "aliases.json",
+      "steps": [
+        {
+          "check": "(() => { const el = document.getElementById('a-old'); const r = el.querySelector('.sf-alert'); return el.getAttribute('heading') === 'Старое имя' && el.status === 'error' && el.appearance === 'outlined' && r.getAttribute('role') === 'alert' && r.textContent.includes('Старое имя'); })()"
+        },
+        {
+          "script": "document.getElementById('a-old').dismiss()",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "journal": [
+              {
+                "from": "dismiss",
+                "to": "close",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

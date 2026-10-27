@@ -1,0 +1,68 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Уведомление",
+      "settings": {
+        "heading": "Изменения сохранены",
+        "supporting-text": "Новая версия уже доступна участникам команды.",
+        "action-text": "Открыть",
+        "close-label": "Закрыть уведомление",
+        "status": "success",
+        "closable": true
+      },
+      "expect": {
+        "name": "Изменения сохранены",
+        "role": "status"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "closed",
+      "title": "Закрыть",
+      "settings": {
+        "heading": "Изменения сохранены",
+        "closable": true
+      },
+      "script": [
+        {
+          "act": "close"
+        }
+      ],
+      "expect": {
+        "events": [
+          "close"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "error",
+      "title": "Ошибка",
+      "settings": {
+        "heading": "Не удалось сохранить",
+        "supporting-text": "Проверьте соединение",
+        "status": "error"
+      },
+      "expect": {
+        "name": "Не удалось сохранить",
+        "role": "alert"
+      }
+    },
+    {
+      "name": "two-actions",
+      "title": "Два действия",
+      "settings": {
+        "heading": "Есть обновление",
+        "action-text": "Обновить",
+        "action": "update",
+        "secondary-action-text": "Позже",
+        "secondary-action": "later",
+        "status": "info"
+      },
+      "expect": {
+        "name": "Есть обновление"
+      }
+    }
+  ]
+}

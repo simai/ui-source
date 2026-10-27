@@ -1,0 +1,11 @@
+{
+  "title": "Alert",
+  "runtime": {
+    "close-label": "Close alert"
+  },
+  "events": {
+    "action": {
+      "label": "Do the alert's action"
+    }
+  }
+}

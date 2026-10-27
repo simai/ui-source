@@ -1,24 +1,37 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { dismissAlertElement } from '../../component/alerts/dismiss';
 import { renderAlertTemplate } from './js/templates/default';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-alert", code, words).
-const ALERT_TEXT = {
-  en: {
-    closeLabel: 'Close alert',
-  },
-  ru: {
-    closeLabel: 'Закрыть сообщение',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-alert from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §4.8, §8): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json (a product adds
+// a language through SF.language.register("sf-alert", code, words)), and the
+// old names title, type, variant and dismiss() are dated aliases.
+const AlertElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
+const applied = () => ({ outcome: 'applied' });
+const refused = (reason) => ({ outcome: 'refused', reason });
 
-class SfAlert extends SfBaseElement {
+// The live region a status speaks through (§4.8, §7.4.1): polite for news,
+// assertive for a warning or an error.
+const ASSERTIVE = new Set(['warning', 'error']);
+
+class SfAlert extends AlertElement {
   static get props() {
     return {
-      templateName: { attribute: 'template', default: 'default' },
+      ...super.props,
+      // The shared status vocabulary. `clear` and `danger` are the words this
+      // component used before it; both still work — see contracts/public-api-axes.json.
       status: {
         default: 'neutral',
         values: ['neutral', 'info', 'success', 'warning', 'error'],
@@ -30,79 +43,35 @@ class SfAlert extends SfBaseElement {
         values: ['default', 'outlined', 'flat'],
         aliases: ['variant'],
       },
-      icon: { default: '' },
-      title: { default: '' },
-      supportingText: { default: '' },
-      actionText: { default: '' },
-      action: { default: 'action' },
-      secondaryActionText: { default: '' },
-      secondaryAction: { default: 'secondary' },
-      closable: { type: Boolean, default: false },
-      closeLabel: { default: '' },
       rootClass: { default: '' },
     };
   }
-
 
   constructor() {
     super();
     this._boundRoot = null;
   }
 
-  // The shared status vocabulary. `clear` and `danger` are the words this
-  // component used before it; both still work — see contracts/public-api-axes.json.
   get status() {
     return this.getProp('status');
   }
 
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.status;
+  set status(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('status');
+    else this.setAttribute('status', String(value));
   }
 
   get appearance() {
     return this.getProp('appearance');
   }
 
-  // The legacy name for the appearance.
-  get variant() {
-    return this.appearance;
+  set appearance(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('appearance');
+    else this.setAttribute('appearance', String(value));
   }
 
-  get icon() {
-    return this.getAttribute('icon') || '';
-  }
-
-  get title() {
-    return this.getAttribute('title') || '';
-  }
-
-  get supportingText() {
-    return this.getAttribute('supporting-text') || '';
-  }
-
-  get actionText() {
-    return this.getAttribute('action-text') || '';
-  }
-
-  get action() {
-    return this.getAttribute('action') || 'action';
-  }
-
-  get secondaryActionText() {
-    return this.getAttribute('secondary-action-text') || '';
-  }
-
-  get secondaryAction() {
-    return this.getAttribute('secondary-action') || 'secondary';
-  }
-
-  get closable() {
-    return this.getBooleanAttr('closable', false);
-  }
-
-  get closeLabel() {
-    return this.getAttribute('close-label') || pageText(ALERT_TEXT, "closeLabel", this);
+  get liveRole() {
+    return ASSERTIVE.has(this.status) ? 'alert' : 'status';
   }
 
   templateContext() {
@@ -110,7 +79,13 @@ class SfAlert extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
-      closeLabel: this.getAttribute("close-label") || pageText(ALERT_TEXT, "closeLabel", this),
+      heading: this.heading,
+      status: this.status,
+      appearance: this.appearance,
+      closeLabel: this.closeLabel,
+      liveRole: this.liveRole,
+      // The name (§4.8): the heading, else the host's aria-label (§3.1).
+      accessibleName: this.heading || this.getAttribute('aria-label') || '',
       component: this,
       rootClass: this.getRootClass(),
     });
@@ -127,11 +102,7 @@ class SfAlert extends SfBaseElement {
     }
 
     this._boundRoot = this.querySelector('.sf-alert');
-    if (!this._boundRoot) {
-      return;
-    }
-
-    this.addAlertListeners(this._boundRoot);
+    if (this._boundRoot) this.addAlertListeners(this._boundRoot);
   }
 
   onDisconnected() {
@@ -156,57 +127,35 @@ class SfAlert extends SfBaseElement {
 
     // Nested Smart buttons transfer data attributes onto their native button.
     // Delegation survives that transfer and subsequent child renders.
-    if (trigger.matches('[data-close], [data-alert-close]')) this._handleCloseClick(event);
-    else this._handleActionClick(event, trigger);
+    if (trigger.matches('[data-close], [data-alert-close]')) {
+      event.preventDefault();
+      this._dismiss('close');
+      return;
+    }
+    // An action of the alert's own (§8 own verb): data only in detail.
+    this.sfEmit('action', {
+      action: trigger.getAttribute('data-action') || trigger.getAttribute('data-alert-action') || '',
+    });
   };
 
-  _handleCloseClick = (event) => {
-    event.preventDefault();
-    this.dismiss();
-  };
-
-  _handleActionClick = (event, trigger = event.currentTarget) => {
-    this.dispatchEvent(
-      new CustomEvent('sf-alert-action', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          action: trigger?.getAttribute('data-action')
-            || trigger?.getAttribute('data-alert-action')
-            || '',
-          alert: this,
-        },
-      }),
-    );
-  };
-
-  dismiss() {
-    this.dispatchEvent(
-      new CustomEvent('sf-alert-close', {
-        bubbles: true,
-        composed: true,
-        detail: { alert: this },
-      }),
-    );
-
+  // The request first (cancelable, §8); a page that prevents it keeps the alert.
+  _dismiss(reason) {
+    if (!this.isConnected) return refused('closed');
+    if (!this.sfEmit('close', { reason }, { cancelable: true })) return refused('prevented');
     dismissAlertElement(this._boundRoot || this, this);
-
-    return this;
+    return applied();
   }
 
+  // Dismisses the alert with reason api. Answers an outcome (§4.4).
   close() {
-    return this.dismiss();
+    return this._dismiss('api');
   }
 
   onAction(handler, options) {
     if (typeof handler === 'function') {
-      this.addEventListener(
-        'sf-alert-action',
-        (event) => {
-          handler(event.detail?.action, event.detail, event);
-        },
-        options,
-      );
+      this.addEventListener('sf-alert-action', (event) => {
+        if (event.target === this) handler(event.detail?.action, event.detail, event);
+      }, options);
     }
 
     return this;
@@ -214,13 +163,9 @@ class SfAlert extends SfBaseElement {
 
   onClose(handler, options) {
     if (typeof handler === 'function') {
-      this.addEventListener(
-        'sf-alert-close',
-        (event) => {
-          handler(event.detail, event);
-        },
-        options,
-      );
+      this.addEventListener('sf-alert-close', (event) => {
+        if (event.target === this) handler(event.detail, event);
+      }, options);
     }
 
     return this;
