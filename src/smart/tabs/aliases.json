@@ -1,0 +1,20 @@
+{
+  "$comment": "Dated aliases of sf-tabs for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+  "component": "sf-tabs",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-tab-change",
+      "to": "sf-tabs-change",
+      "kind": "event",
+      "component": "sf-tabs",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, §16 item 42",
+      "note": "the old detail adds component, tagName and template, which §8 takes out of the new one: the element's detail adapter makes it"
+    }
+  ]
+}

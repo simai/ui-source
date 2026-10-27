@@ -1,0 +1,339 @@
+{
+  "$comment": "The source of sf-tabs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tabs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.tabs",
+  "tag": "sf-tabs",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "tabs",
+  "settings": {
+    "type": {
+      "type": "enum",
+      "values": [
+        "underline",
+        "pills",
+        "full",
+        "vertical"
+      ],
+      "optional": true
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "variant": {
+      "type": "string",
+      "default": "buttons"
+    },
+    "scheme": {
+      "type": "string",
+      "default": "default"
+    },
+    "top-position": {
+      "type": "string",
+      "default": "start"
+    },
+    "active-index": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0
+    },
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "label": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "count": {
+          "type": "number",
+          "optional": true
+        },
+        "href": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "pinned": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "x-markup": "the attribute keeps the \"label::flags|label\" form or takes the list as JSON; key is read as an old name of id"
+    },
+    "top-class": {
+      "type": "string",
+      "default": ""
+    },
+    "panel-class": {
+      "type": "string",
+      "default": ""
+    },
+    "overflow": {
+      "type": "enum",
+      "values": [
+        "scroll",
+        "wrap",
+        "more"
+      ],
+      "default": "scroll"
+    },
+    "configurable": {
+      "type": "boolean",
+      "default": false
+    },
+    "settings": {
+      "type": "object"
+    }
+  },
+  "values": {
+    "selected": {
+      "type": "id",
+      "default": "",
+      "summary": "the id of the selected tab's entry (its key, else its place)"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "selected": "id",
+        "previous": "number",
+        "current": "number",
+        "item": "object",
+        "items": "list"
+      }
+    },
+    "settings-change": {
+      "carries": {
+        "order": "list",
+        "hidden": "list",
+        "reason": {
+          "type": "enum",
+          "values": [
+            "order",
+            "visibility"
+          ]
+        }
+      },
+      "own-verb": true
+    },
+    "settings-reset": {
+      "carries": {},
+      "own-verb": true
+    }
+  },
+  "actions": {
+    "set-data": {
+      "with": {
+        "data": "object",
+        "reason": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "set-panels": {
+      "with": {
+        "panels": "list",
+        "reason": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "go-to": {
+      "with": {
+        "index": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "tablist",
+    "name": {
+      "from": [
+        "aria-label",
+        "aria-labelledby"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "ArrowUp": {
+        "effect": "focus:prev",
+        "when": {
+          "type": "vertical"
+        }
+      },
+      "ArrowDown": {
+        "effect": "focus:next",
+        "when": {
+          "type": "vertical"
+        }
+      },
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select"
+    }
+  },
+  "css-variables": {
+    "--sf-tabs-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tabs-indicator-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-tabs-indicator-width": {
+      "type": "length",
+      "state": "selected"
+    },
+    "--sf-tabs-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-tabs-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-tabs-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
+  "x-source": {
+    "package": "framework",
+    "folder": "tabs",
+    "manifest": "simai/ui-source@5100227 src/smart/tabs/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/tabs.component.json"
+  },
+  "x-renamed": [
+    "settings.items: type string with a list default → list of {id, label, icon?, count?, href?, disabled?, pinned?} (§4.2, §16 item 42; key is read as id)",
+    "settings.size: the converter's number → enum 1/2, 1, 2 (the sheet's sizes; 1/2 is not a number)",
+    "events.sf-tab-change → change: the DOM name is sf-tabs-change (§8 <tag>-<verb>); the old name is a dated split alias whose detail keeps component, tagName and template",
+    "events.sf-tabs-settings-change, sf-tabs-settings-reset → settings-change, settings-reset: own verbs, the DOM names unchanged; component, tagName and template leave the detail (§8)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tabs when the interface needs the tabs behavior.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-tabs></sf-tabs>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-tab-change holds a dated alias (§4.10).",
+    "events: the person's choice is `change`, sent as sf-tabs-change with {selected, previous, current, item, items} (§8 <tag>-<verb>; a DOM change would also be heard from a field inside a panel); the old sf-tab-change follows once through a split row whose adapter adds component, tagName and template. The migration's row to the bare `change` is corrected.",
+    "change reports a person (§8): a press, a key or «Ещё» send it; go-to, writing selected or active-index do not. The studio scenario asserts the attribute instead of the event.",
+    "own-verb-words: settings-change and settings-reset are verbs of the tabs alone (the person arranged or reset the tabs); their words are lang events.<verb>.label. Their DOM names stay sf-tabs-settings-change and sf-tabs-settings-reset, so no alias row is needed; the element left their detail (§8) -- no Framework code read it.",
+    "values: selected is the id of the selected entry (§7.2.3 binds values.selected); writing it, as a property or the attribute `selected`, selects that tab, and active-index stays the place.",
+    "manual activation (§7.2.1, §16 item 42): over a panel that holds a part with a deferred start ([data-sf-start]) the arrows, Home and End only move the focus and Enter or Space opens; otherwise the tabs keep automatic activation, as before. No setting: the panels decide.",
+    "opened (§7.2.1): a closed panel carries `hidden`, the open one does not. A page's or an assembly's own <div role=\"tabpanel\"> children are the panels (§7.2.1 «A tab opens a part»): placed, never copied, shown by removing hidden and closed by setting it; a panel with data-entry=\"<id>\" is the panel of that entry (§7.2.3), the others follow in order, and panels the assembly adds later are taken as they arrive.",
+    "actions: set-data {data, reason?}, set-panels {panels, reason?} and go-to {index} answer outcomes (§4.4) instead of the element; setItems, addItems, addPanels and setState stay helpers. settings is a writable object setting (the property); setSettings stays its helper (x-todo setter).",
+    "key-effects: the tablist's own keys; ArrowUp and ArrowDown act when type is vertical, ArrowLeft and ArrowRight otherwise (RTL turns them), «Ещё» is reached past the last tab.",
+    "a11y-name: aria-label or aria-labelledby on the host, carried to the tablist (the converter's \"required\"); the role is tablist, the host itself is a group.",
+    "instance ids (§7.1.1, simai/ui-source#41): tab, panel and label ids came from a module counter (sf-smart-tabs-<n>); they are the host's path id and a local name now, <path>--tab-<n>, --panel-<n>, --label-<n>. The class tabs (component/tabs, component/tab) likewise: <path>--<part>-<n>.",
+    "item-shape: items name their fields with `of` (id, label, icon, count, href, disabled, pinned); a constant list in an assembly gives only the id, its label is lang roles.<role>.items.<id> (§11.3).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus «Ещё», configurable tabs and entries with ids; probe.json drives the arrows, Home, End, Enter, Space and Tab, automatic and manual (gate 16).",
+    "css-variables: the six public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: none; «Ещё» and the settings open sf-context-menu, whose own layer they are.",
+    "docs: docs/docs.md, where the folder keeps it (as sf-tooltip)."
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -43,7 +43,12 @@
       },
       "size": {
         "type": "string",
-        "default": "1"
+        "default": "1",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
       },
       "variant": {
         "type": "string",
@@ -93,6 +98,10 @@
         "type": "boolean",
         "default": false,
         "description": "A gear at the end of the tabs («Настроить вкладки») opens the standard menu with the tabs as a sortable list, a visibility checkbox per tab (pinned tabs fixed) and «Сбросить» in its footer. The choice is the host's: sf-tabs-settings-change {order, hidden}, sf-tabs-settings-reset, setSettings({order, hidden})."
+      },
+      "selected": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -415,7 +424,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "1175346be415afaad1376b91a7ef116da89f3e0f4fbbb8b8595f61fd28f78352"
+        "sha256": "42c9c6fa32a36402e03cc30b6bec7dc72ff2319de3dc9219d60f56de2691faed"
       }
     ],
     "generated_runtime": [

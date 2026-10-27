@@ -1,12 +1,29 @@
 import { html, nothing, render } from 'lit';
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
-import { pageText } from '../../core/js/page-language';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { instancePath, partId } from '../../core/js/instance-path';
 import { renderTabsTemplate } from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-const TABS_TEXT = {
-  en: {more: 'More', customize: 'Customize tabs', reset: 'Reset', visible: 'Shown', pinned: 'Always shown', moved: 'Moved'},
-  ru: {more: 'Ещё', customize: 'Настроить вкладки', reset: 'Сбросить', visible: 'Показывать', pinned: 'Всегда на месте', moved: 'Перемещено'},
-};
+// sf-tabs from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §7.2.1, §7.2.3, §8, §11): the settings are attributes and properties
+// made by core/js/element-manifest.js, the words are lang/<locale>.json, the
+// actions answer outcomes, and the old event name sf-tab-change is a dated
+// alias of sf-tabs-change.
+const TabsElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
+
+// A page's or an assembly's own panels: direct children of the host
+// (§7.2.1 «A tab opens a part», §7.2.3 a panel per entry).
+const isPagePanel = (node) => node?.nodeType === 1 && node.getAttribute('role') === 'tabpanel'
+  && !node.hasAttribute('slot') && !node.hasAttribute('data-sf-static');
 const OVERFLOWS = ['scroll', 'wrap', 'more'];
 
 // Which item a tab in the list draws. An sf-button moves its data attributes
@@ -17,9 +34,15 @@ function tabIndexOf(element) {
   return own !== undefined && Number.isInteger(index) ? index : null;
 }
 
-let tabsSequence = 0;
-
 function parseItems(items = '') {
+  // The list as JSON in the attribute reads like the property.
+  if (typeof items === 'string' && items.trim().startsWith('[')) {
+    try {
+      return parseItems(JSON.parse(items));
+    } catch {
+      // Not JSON: the "label::flags|label" form below.
+    }
+  }
   if (Array.isArray(items)) {
     return items
       .map((item) => (typeof item === 'string' ? { label: item } : item))
@@ -113,12 +136,14 @@ function normalizePanelItem(item = {}) {
   };
 }
 
-class SfTabs extends SfBaseElement {
+class SfTabs extends TabsElement {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
       type: { default: null },
-      size: { default: '1' },
+      // The sheet's sizes (component.json): an unknown one draws as 1.
+      size: { default: '1', values: ['1/2', '1', '2'] },
       variant: { default: 'buttons' },
       scheme: { default: 'default' },
       topPosition: {default: 'start'},
@@ -131,8 +156,9 @@ class SfTabs extends SfBaseElement {
       activeIndex: { type: Number, default: 0 },
       items: {
         default: [],
-        parser(value) {
-          return parseItems(value);
+        parser(value, fallback, element) {
+          if (value !== undefined && value !== null) return parseItems(value);
+          return parseItems(element?.__sfManifestData?.items ?? []);
         },
       },
       rootClass: { default: '' },
@@ -143,7 +169,8 @@ class SfTabs extends SfBaseElement {
 
   constructor() {
     super();
-    this._tabsId = `sf-smart-tabs-${++tabsSequence}`;
+    // The page's own panels, in their order (see capturePagePanels).
+    this._pagePanels = [];
     this._data = {
       tabs: [],
       panels: [],
@@ -160,6 +187,16 @@ class SfTabs extends SfBaseElement {
         this.syncTabSemantics();
       }
     });
+  }
+
+  // type is optional (component.json): absent is no type, not the first value.
+  get type() {
+    return this.getProp('type');
+  }
+
+  set type(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('type');
+    else this.setAttribute('type', String(value));
   }
 
   get tabList() {
@@ -206,7 +243,59 @@ class SfTabs extends SfBaseElement {
   }
 
   text(key) {
-    return pageText(TABS_TEXT, key, this, 'sf-tabs');
+    return this.sfWord(key);
+  }
+
+  // The host's path id (§7.1.1, simai/ui-source#41): the tab, panel and label
+  // ids are <path>--tab-<n>, --panel-<n> and --label-<n>. A module counter
+  // numbered them in creation order before.
+  get tabsId() {
+    return partId(instancePath(this, { kind: 'sf-tabs' }));
+  }
+
+  // ─── the page's panels (§7.2.1, §7.2.3) ───────────────────────────────────
+  // <div role="tabpanel"> written inside the host, or placed there by an
+  // assembly, are the panels: the same live nodes, moved into the panel row
+  // and never copied. A panel with data-entry="<id>" is the panel of that
+  // entry; the others follow in order. A closed one carries `hidden`, so a
+  // part with start opened inside it starts when its tab opens.
+  captureSlotTemplates() {
+    const first = !this._slotTemplatesCaptured;
+    super.captureSlotTemplates();
+    if (!first) return;
+    this.capturePagePanels();
+    if (typeof MutationObserver === 'function') {
+      this._panelObserver = new MutationObserver(() => {
+        if (this.capturePagePanels()) this.requestComponentUpdate('panels');
+      });
+      this._panelObserver.observe(this, { childList: true });
+    }
+  }
+
+  capturePagePanels() {
+    const found = Array.from(this.children).filter(isPagePanel);
+    for (const panel of found) {
+      panel.remove();
+      this._pagePanels.push(panel);
+    }
+    return found.length > 0;
+  }
+
+  // The page's panel of an entry: by data-entry, else by place among the ones
+  // without it.
+  pagePanelFor(item, index) {
+    if (!this._pagePanels.length) return null;
+    const byEntry = this._pagePanels.find((panel) => panel.getAttribute('data-entry') === item.key);
+    if (byEntry) return byEntry;
+    const loose = this._pagePanels.filter((panel) => !panel.hasAttribute('data-entry'));
+    return loose[index] ?? null;
+  }
+
+  // Manual activation over deferred panels (§7.2.1): a panel holding a part
+  // that starts later is opened by Enter or Space, never by the arrows alone.
+  get manualActivation() {
+    return this._pagePanels.some((panel) => panel.querySelector?.('[data-sf-start]'))
+      || Boolean(this.querySelector?.(':scope > .sf-tabs > .sf-tabs-main-container [data-sf-start]'));
   }
 
   // The menus the tabs open («Ещё», the settings) are a step the tabs are: 1/2
@@ -220,21 +309,22 @@ class SfTabs extends SfBaseElement {
     const shown = new Set(this.displayItems.map((item) => item.index));
     const tabStop = items.find(item => item.selected && !item.disabled && shown.has(item.index))
       || items.find(item => !item.disabled && shown.has(item.index));
+    const tabsId = this.tabsId;
     this.tabTargets.forEach((tab, index) => {
       const item = items[index];
       if (!tab || !item) return;
       if (item.href && item.selected) tab.setAttribute('aria-current', 'page');
       else tab.removeAttribute?.('aria-current');
-      tab.id = `${this._tabsId}-tab-${index}`;
+      tab.id = `${tabsId}--tab-${index}`;
       tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-controls', `${this._tabsId}-panel-${index}`);
+      tab.setAttribute('aria-controls', this.pagePanelFor(item, index)?.id || `${tabsId}--panel-${index}`);
       tab.setAttribute('aria-selected', item.selected ? 'true' : 'false');
       tab.setAttribute('aria-disabled', item.disabled ? 'true' : 'false');
       const label = tab.querySelector(':scope > .sf-button-text-container');
       if (label) {
         // Preserve authored text slots while excluding decorative icon ligatures
         // from the name. Icon-only buttons receive item.label in the template.
-        label.id = `${this._tabsId}-label-${index}`;
+        label.id = `${tabsId}--label-${index}`;
         tab.setAttribute('aria-labelledby', label.id);
       } else if (item.label) {
         // An icon-only tab is named on its inner button. On the sf-icon-button
@@ -284,7 +374,7 @@ class SfTabs extends SfBaseElement {
     const nextData = typeof data === 'function' ? data(currentData) : data;
 
     if (!nextData || typeof nextData !== 'object') {
-      return this;
+      return { outcome: 'refused', reason: 'invalid' };
     }
 
     this._data = this.normalizeData({
@@ -293,7 +383,7 @@ class SfTabs extends SfBaseElement {
     });
     this.requestComponentUpdate(reason);
 
-    return this;
+    return { outcome: 'applied' };
   }
 
   setItems(items = [], reason = 'items') {
@@ -341,6 +431,15 @@ class SfTabs extends SfBaseElement {
     return this.getProp('items');
   }
 
+  // A list setting is a property (§4, §16 item 42): the list given here wins
+  // until the attribute is written again.
+  set items(value) {
+    if (!this.__sfManifestData) this.__sfManifestData = {};
+    this.__sfManifestData.items = value;
+    if (this.hasAttribute('items')) this.removeAttribute('items');
+    else this.requestComponentUpdate('items');
+  }
+
   get dataTabs() {
     const data = this.getData();
 
@@ -376,6 +475,7 @@ class SfTabs extends SfBaseElement {
       this.dataPanels.length,
       this.items.length,
       this.panelSlotNames.length,
+      this._pagePanels.filter((panel) => !panel.hasAttribute('data-entry')).length,
     );
   }
 
@@ -390,7 +490,8 @@ class SfTabs extends SfBaseElement {
       return {
         ...item,
         label: item.label || `Tab ${index + 1}`,
-        key: String(item.key ?? index),
+        // The entry's id (§16 item 42); key is its old name.
+        key: String(item.id ?? item.key ?? index),
         pinned: Boolean(item.pinned),
         count: item.count ?? null,
         href: item.href || '',
@@ -411,6 +512,13 @@ class SfTabs extends SfBaseElement {
   }
 
   get activeIndex() {
+    // `selected` names the entry by its id (§7.2.3 values.selected).
+    const selectedId = this.getAttribute('selected');
+    if (selectedId) {
+      const items = this.dataTabs.length ? this.dataTabs : this.items;
+      const at = items.findIndex((item, index) => String(item?.id ?? item?.key ?? index) === selectedId);
+      if (at >= 0) return at;
+    }
     const rawValue =
       this.getAttribute('active-index') ||
       this.getAttribute('active') ||
@@ -418,6 +526,21 @@ class SfTabs extends SfBaseElement {
       0;
 
     return normalizeIndex(rawValue, Math.max(this.tabCount, 1));
+  }
+
+  set activeIndex(value) {
+    this.setAttribute('active-index', String(toNumber(value, 0)));
+  }
+
+  // The selected entry's id (§4 values): writing it selects that tab and is
+  // not reported (§8).
+  get selected() {
+    return this.computedItems[this.activeIndex]?.key ?? '';
+  }
+
+  set selected(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('selected');
+    else this.setAttribute('selected', String(value));
   }
 
   get overflow() {
@@ -435,6 +558,10 @@ class SfTabs extends SfBaseElement {
   // in its declared place; a pinned tab is never hidden.
   get settings() {
     return { order: [...this._settings.order], hidden: [...this._settings.hidden] };
+  }
+
+  set settings(value) {
+    this.setSettings(value);
   }
 
   setSettings(settings = {}) {
@@ -476,14 +603,14 @@ class SfTabs extends SfBaseElement {
     this._settings = { order: next.order.map(String), hidden: next.hidden.map(String).filter((key) => !pinned.has(key)) };
     this.requestComponentUpdate('settings');
     this.renderSettingsList();
-    this.emitComponentEvent('tabs-settings-change', { ...this.settings, reason });
+    this.sfEmit('settings-change', { ...this.settings, reason });
   }
 
   resetSettings() {
     this._settings = { order: [], hidden: [] };
     this.requestComponentUpdate('settings-reset');
     this.renderSettingsList();
-    this.emitComponentEvent('tabs-settings-reset', {});
+    this.sfEmit('settings-reset', {});
   }
 
   // ─── «Ещё» ────────────────────────────────────────────────────────────────
@@ -574,7 +701,7 @@ class SfTabs extends SfBaseElement {
       value: item.count === null || item.count === undefined ? undefined : String(item.count),
     }));
     if (!entries.length) return;
-    const menu = await this.standardMenu('_moreMenu', (id) => this.activate(Number(id)));
+    const menu = await this.standardMenu('_moreMenu', (id) => this.activate(Number(id), null, { person: true }));
     menu.setAttribute('aria-label', this.text('more'));
     menu.setAttribute('size', this.menuSize());
     menu.entries = entries;
@@ -597,7 +724,7 @@ class SfTabs extends SfBaseElement {
 
   // A tab chosen anywhere -- its own button, «Ещё» -- is activated the same
   // way; a tab that is a link goes to its address.
-  activate(index, event = null) {
+  activate(index, event = null, { person = true } = {}) {
     const item = this.computedItems[index];
     if (!item || item.disabled) return;
     if (item.href) {
@@ -605,11 +732,11 @@ class SfTabs extends SfBaseElement {
         globalThis.open?.(item.href, '_blank', 'noopener');
         return;
       }
-      this.goTo(index);
+      this.selectTab(index, { person });
       if (globalThis.location && item.href !== globalThis.location.href) globalThis.location.assign(item.href);
       return;
     }
-    this.goTo(index);
+    this.selectTab(index, { person });
   }
 
   // ─── the settings ─────────────────────────────────────────────────────────
@@ -696,7 +823,8 @@ class SfTabs extends SfBaseElement {
     return this.createTemplateContext({
       ...props,
       component: this,
-      tabsId: this._tabsId,
+      tabsId: this.tabsId,
+      pagePanel: (item, index) => this.pagePanelFor(item, index),
       activeIndex: this.activeIndex,
       displayItems: this.displayItems,
       overflow: this.overflow,
@@ -777,30 +905,50 @@ class SfTabs extends SfBaseElement {
     return this;
   }
 
+  // The action go-to {index} (§4.4): selects the tab and answers an outcome.
+  // It reports nothing: `change` is what a person did (§8).
   goTo(index) {
-    const items = this.computedItems;
-    const nextIndex = normalizeIndex(index, Math.max(items.length, 1));
-    const item = items[nextIndex];
+    return this.selectTab(index?.index ?? index, { person: false });
+  }
 
-    if (!item || item.disabled || nextIndex === this.activeIndex) {
-      return this;
+  selectTab(index, { person = false } = {}) {
+    const items = this.computedItems;
+    const requested = toNumber(index, Number.NaN);
+    if (!Number.isInteger(requested) || requested < 0 || requested >= items.length) {
+      return { outcome: 'refused', reason: 'out-of-range' };
     }
+    const item = items[requested];
+
+    if (item.disabled) return { outcome: 'refused', reason: 'disabled' };
+    if (requested === this.activeIndex) return { outcome: 'refused', reason: 'current' };
 
     const previous = this.activeIndex;
-    this.setAttribute('active-index', String(nextIndex));
-    this.emitComponentEvent('tab-change', {
-      previous,
-      current: nextIndex,
-      item,
-      items,
-    });
-    return this;
+    // The attribute the page uses keeps being the one written.
+    if (this.hasAttribute('selected')) this.setAttribute('selected', item.key);
+    else this.setAttribute('active-index', String(requested));
+    if (person) {
+      this.sfEmit('change', { selected: item.key, previous, current: requested, item, items });
+    }
+    return { outcome: 'applied' };
+  }
+
+  // The old name keeps its old detail (§16.20 split row): the element and its
+  // template were in it.
+  sfAliasAdapters() {
+    return {
+      'sf-tab-change': (detail) => ({
+        component: this,
+        tagName: this.componentTagName,
+        template: this.componentTemplateName,
+        ...detail,
+      }),
+    };
   }
 
   onTabChange(handler, options) {
     if (typeof handler === 'function') {
       this.addEventListener(
-        'sf-tab-change',
+        this.sfEventName('change'),
         (event) => {
           handler(event.detail?.current, event.detail, event);
         },
@@ -823,6 +971,15 @@ class SfTabs extends SfBaseElement {
     if (!tab) return;
     this.activate(Number(tab.dataset.sfTabIndex), event);
   };
+
+  // The focus on a tab; with manual activation the tab stop follows it, so Tab
+  // leaves from where the person is.
+  focusTab(index) {
+    const target = this.tabTargets[index];
+    if (!target) return;
+    if (this.manualActivation) for (const tab of this.tabTargets) if (tab) tab.tabIndex = tab === target ? 0 : -1;
+    target.focus();
+  }
 
   // «Ещё», when it stands: the arrows reach it after the last tab in the row
   // and leave it back to the tabs (docs trial 5: only Tab reached it).
@@ -848,9 +1005,9 @@ class SfTabs extends SfBaseElement {
       const target = back ? shown[shown.length - 1] : shown[0];
       if (!target) return;
       event.preventDefault();
-      this.goTo(target.index);
+      if (!this.manualActivation) this.selectTab(target.index, { person: true });
       this.syncTabSemantics();
-      this.tabTargets[target.index]?.focus();
+      this.focusTab(target.index);
       return;
     }
     const tab = this.ownedTab(event);
@@ -864,7 +1021,7 @@ class SfTabs extends SfBaseElement {
     event.preventDefault();
 
     if (event.key === 'Enter' || event.key === ' ') {
-      this.goTo(tab.dataset.sfTabIndex);
+      this.selectTab(tab.dataset.sfTabIndex, { person: true });
       return;
     }
 
@@ -890,9 +1047,10 @@ class SfTabs extends SfBaseElement {
       : event.key === 'End' ? enabledItems.length - 1
         : (currentEnabledIndex + direction + enabledItems.length) % enabledItems.length;
     const nextIndex = enabledItems[nextEnabledIndex].index;
-    this.goTo(nextIndex);
+    // Over deferred panels the arrows only move the focus (§7.2.1).
+    if (!this.manualActivation) this.selectTab(nextIndex, { person: true });
     this.syncTabSemantics();
-    this.tabTargets[nextIndex]?.focus();
+    this.focusTab(nextIndex);
   };
 }
 

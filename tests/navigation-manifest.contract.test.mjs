@@ -115,3 +115,27 @@ test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it
   assert.match(source, /id: partId\(instancePath\(this, \{kind: 'sf-menu'\}\)\)/u);
   assert.doesNotMatch(read('src/component/menu/js/_menu.js'), /submenuId/u, 'the class menu has no module counter either');
 });
+
+test('sf-tabs: sf-tabs-change with data only, manual activation over deferred panels, the page\'s panels placed, path ids', () => {
+  const manifest = json('src/smart/tabs/component.json');
+  const events = readManifest(manifest).events;
+  assert.equal(events.change.name, 'sf-tabs-change');
+  assert.equal(events['settings-change'].name, 'sf-tabs-settings-change', 'the DOM name it always had');
+  assert.equal(manifest.settings.items.type, 'list');
+  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'label', 'icon', 'count', 'href', 'disabled', 'pinned']);
+  assert.equal(manifest.values.selected.type, 'id');
+  const {rows} = readAliasTable(json('src/smart/tabs/aliases.json'), {tag: 'sf-tabs'});
+  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-tab-change', 'sf-tabs-change', 'split']]);
+  const source = read('src/smart/tabs/index.js');
+  assert.match(source, /if \(!this\.manualActivation\) this\.selectTab\(nextIndex, \{ person: true \}\);/u);
+  assert.match(source, /goTo\(index\) \{\s*return this\.selectTab\(index\?\.index \?\? index, \{ person: false \}\);/u);
+  assert.match(source, /key: String\(item\.id \?\? item\.key \?\? index\)/u);
+  assert.doesNotMatch(source, /tabsSequence|emitComponentEvent\(/u, 'no module counter (#41); events through sfEmit');
+  const template = read('src/smart/tabs/js/templates/default.js');
+  assert.match(template, /panel\.hidden = !item\.selected;/u);
+  assert.match(template, /data-entry=\$\{item\.key\}/u);
+  for (const file of ['src/component/tabs/js/_tabs.js', 'src/component/tab/js/_tabs.js']) {
+    assert.doesNotMatch(read(file), /Identity\b/u, `${file}: no module counter`);
+    assert.match(read(file), /partId\(instancePath\(root, \{ kind: 'sf-tabs?' \}\), `\$\{part\}-\$\{index\}`\)/u, file);
+  }
+});

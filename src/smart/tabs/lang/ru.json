@@ -1,0 +1,19 @@
+{
+  "title": "Вкладки",
+  "events": {
+    "settings-change": {
+      "label": "Вкладки настроены"
+    },
+    "settings-reset": {
+      "label": "Вкладки сброшены"
+    }
+  },
+  "runtime": {
+    "customize": "Настроить вкладки",
+    "more": "Ещё",
+    "moved": "Перемещено",
+    "pinned": "Всегда на месте",
+    "reset": "Сбросить",
+    "visible": "Показывать"
+  }
+}

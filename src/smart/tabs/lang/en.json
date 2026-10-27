@@ -1,0 +1,19 @@
+{
+  "title": "Tabs",
+  "events": {
+    "settings-change": {
+      "label": "Tabs arranged"
+    },
+    "settings-reset": {
+      "label": "Tabs reset"
+    }
+  },
+  "runtime": {
+    "customize": "Customize tabs",
+    "more": "More",
+    "moved": "Moved",
+    "pinned": "Always shown",
+    "reset": "Reset",
+    "visible": "Shown"
+  }
+}

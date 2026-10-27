@@ -14,7 +14,22 @@ function renderComponent(component, owner) {
   return owner.renderSmartElement(component.type, component.props || {});
 }
 
+// The page's own panel of an entry (§7.2.1, §7.2.3): the same live node, its
+// ids and `hidden` written on it, never copied or wrapped.
+function placePagePanel(panel, item, context) {
+  panel.id ||= `${context.tabsId}--panel-${item.index}`;
+  panel.setAttribute('aria-labelledby', `${context.tabsId}--tab-${item.index}`);
+  if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '0');
+  panel.setAttribute('data-sf-tab-panel', String(item.index));
+  panel.classList.add('sf-tabs-main-tab');
+  panel.classList.toggle('selected', Boolean(item.selected));
+  panel.hidden = !item.selected;
+  return panel;
+}
+
 function renderPanel(item, context) {
+  const pagePanel = context.pagePanel?.(item, item.index);
+  if (pagePanel) return placePagePanel(pagePanel, item, context);
   const panelContent = context.component?.hasSlotContent?.(item.slotName)
     ? context.component.getSlotContent(item.slotName)
     : nothing;
@@ -32,10 +47,11 @@ function renderPanel(item, context) {
         context.panelClass,
       )}
       role="tabpanel"
-      id=${`${context.tabsId}-panel-${item.index}`}
-      aria-labelledby=${`${context.tabsId}-tab-${item.index}`}
+      id=${`${context.tabsId}--panel-${item.index}`}
+      aria-labelledby=${`${context.tabsId}--tab-${item.index}`}
       tabindex="0"
       data-sf-tab-panel=${String(item.index)}
+      data-entry=${item.key}
       ?hidden=${!item.selected}
     >
       ${panelContent === nothing ? dataContent : panelContent}

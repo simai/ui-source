@@ -18,8 +18,9 @@
       "type": "upgraded"
     },
     {
-      "type": "event",
-      "name": "sf-tab-change"
+      "type": "attribute",
+      "name": "active-index",
+      "value": "1"
     },
     {
       "type": "no-console-error"

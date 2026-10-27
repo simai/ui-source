@@ -1,0 +1,121 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Обзор и история",
+      "settings": {
+        "aria-label": "Разделы",
+        "items": [
+          {
+            "id": "overview",
+            "label": "Обзор"
+          },
+          {
+            "id": "history",
+            "label": "История"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Разделы",
+        "values": {
+          "selected": "overview"
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "go-to",
+      "title": "Переход к вкладке",
+      "settings": {
+        "aria-label": "Разделы",
+        "items": [
+          {
+            "id": "overview",
+            "label": "Обзор"
+          },
+          {
+            "id": "history",
+            "label": "История"
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "go-to",
+          "with": {
+            "index": 1
+          }
+        }
+      ],
+      "expect": {
+        "name": "Разделы",
+        "values": {
+          "selected": "history"
+        },
+        "events": []
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "more",
+      "title": "Лишние — в «Ещё»",
+      "settings": {
+        "aria-label": "Карточка",
+        "overflow": "more",
+        "items": [
+          {
+            "id": "main",
+            "label": "Основное"
+          },
+          {
+            "id": "deals",
+            "label": "Сделки",
+            "count": 12
+          },
+          {
+            "id": "tasks",
+            "label": "Задачи"
+          },
+          {
+            "id": "files",
+            "label": "Файлы"
+          },
+          {
+            "id": "history",
+            "label": "История"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Карточка"
+      }
+    },
+    {
+      "name": "configurable",
+      "title": "Настраиваемые",
+      "settings": {
+        "aria-label": "Карточка",
+        "configurable": true,
+        "items": [
+          {
+            "id": "main",
+            "label": "Основное",
+            "pinned": true
+          },
+          {
+            "id": "deals",
+            "label": "Сделки"
+          },
+          {
+            "id": "tasks",
+            "label": "Задачи"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Карточка"
+      }
+    }
+  ]
+}

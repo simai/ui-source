@@ -21,11 +21,20 @@ The built-in text/icon templates have one enabled native tab stop, unique stable
 tab/panel IDs and reciprocal `aria-controls` / `aria-labelledby` relationships.
 Panels are keyboard-focusable. Horizontal navigation uses Left/Right (mirrored
 in RTL); `type="vertical"` uses Up/Down. Home/End select enabled endpoints.
-Arrows skip disabled tabs, wrap and move focus while activating the panel.
+Arrows skip disabled tabs, wrap and move focus while activating the panel --
+unless a panel holds a part that starts later (`data-sf-start`, an assembly's
+`start: opened`): then the arrows only move the focus and Enter or Space opens
+the tab (manual activation, standard 1.3.8 §7.2.1).
 Perpendicular arrows retain browser behavior. Keyboard events in panel content
 and nested Tabs do not navigate an outer Tabs instance.
 
-`active-index`, `goTo()` and the `sf-tab-change` payload remain compatible.
+A person's choice (a press, a key, «Ещё») sends `sf-tabs-change` with
+`{selected, previous, current, item, items}` -- data only. The old name
+`sf-tab-change` follows until 2026-12-01 with its old detail (`component`,
+`tagName`, `template` added), each use noted in `SF.deprecations` with its
+dates. `goTo(index)` (the action `go-to`), `active-index` and `selected` (the
+entry's id) select a tab without the event, as a native field does, and
+`goTo()` answers `{outcome: 'applied'}` or `{outcome: 'refused', reason}`.
 Programmatic selection does not move focus. Rendering style changes preserves
 tab identity, IDs and selection. If an author selects a disabled item, its panel
 selection is preserved, but the first enabled tab is the tablist entry point;
@@ -33,6 +42,12 @@ an entirely disabled list has no tab stop. Prefer an enabled initial selection.
 Use the Smart host's `goTo()` method for imperative selection, not the ordinary
 `SF.Tabs.activate()` helper. The ordinary runtime skips the built-in Smart root
 and restricts its queries/clicks to the nearest ordinary Tabs owner.
+
+A panel can be the page's own `<div role="tabpanel">` written inside the host
+(or placed there by an assembly, with `data-entry="<id>"` per entry): it is
+moved, not copied, into the panel row, and shown or closed by its `hidden`
+attribute. Tab, panel and label ids are the host's path id and a local name
+(`<id>--tab-1`), never a counter.
 
 `root-class`, author `style` and `root-style` apply to the visible root. Use
 Framework semantic tokens and utilities rather than fixed sizes or colors.
@@ -98,17 +113,18 @@ a value.
 
 ## Значок, счётчик и ссылка
 
-У вкладки, заданной через `setItems`, могут быть `icon`, `count` (небольшой
+У вкладки, заданной через свойство `items` (или `setItems`), есть `id`
+(прежнее имя — `key`), а также могут быть `icon`, `count` (небольшой
 счётчик после подписи) и `href`. Вкладка с `href` — ссылка: при выборе она
 переходит по адресу, с Cmd/Ctrl — в новой вкладке браузера, а у активной стоит
 `aria-current="page"`.
 
 ```js
-tabs.setItems([
-  {key: 'all', label: 'Все', count: 128},
-  {key: 'mine', label: 'Мои', count: 7, icon: 'person'},
-  {key: 'archive', label: 'Архив', href: '/archive'},
-]);
+tabs.items = [
+  {id: 'all', label: 'Все', count: 128},
+  {id: 'mine', label: 'Мои', count: 7, icon: 'person'},
+  {id: 'archive', label: 'Архив', href: '/archive'},
+];
 ```
 
 ## Настройка вкладок
@@ -120,7 +136,8 @@ tabs.setItems([
 сразу, в подвале меню только «Сбросить».
 
 Компонент выбор не хранит. Он сообщает `sf-tabs-settings-change {order,
-hidden}` и `sf-tabs-settings-reset`, а сохранённое берёт от сайта через
+hidden, reason}` и `sf-tabs-settings-reset` (в `detail` только данные), а
+сохранённое берёт от сайта через свойство `settings` или
 `setSettings({order, hidden})`. Ключ, которого уже нет среди вкладок,
 пропускается. Вкладка, которой нет в сохранённом порядке, встаёт на своё место
 и видна. Скрытая вкладка в «Ещё» не попадает — её возвращают в настройках. Но

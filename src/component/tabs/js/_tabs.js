@@ -1,12 +1,12 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
+import { instancePath, partId } from '../../../core/js/instance-path.js';
 
 const TABS_SELECTOR = '.sf-tabs';
 const TABS_BOUND_FLAG = 'sfTabsBound';
 const SELECTED_CLASS = 'selected';
 const boundTabs = new WeakSet();
 const generatedLabels = new WeakMap();
-let tabsIdentity = 0;
 
 function isSmartTabsRoot(root) {
   return root?.parentElement?.localName === 'sf-tabs';
@@ -25,13 +25,15 @@ function isDisabled(button) {
     || button.getAttribute('aria-disabled') === 'true';
 }
 
-function ensureId(element, part) {
-  const duplicateGeneratedId = /^sf-tabs-(?:tab|panel|label)-\d+$/.test(element.id)
+// A part's id is the tab group's path id and a local name (standard 1.3.8
+// §7.1.1, simai/ui-source#41): <path>--tab-<n>, --panel-<n>, --label-<n>, the
+// same in every bundle and in server markup. A module counter numbered them
+// in creation order; an id the counter gave that repeats is replaced.
+function ensureId(root, element, part, index) {
+  const duplicateGeneratedId = /^sf-tabs-(?:tab|panel|label)-\d+$|--(?:tab|panel|label)-\d+$/.test(element.id)
     && document.querySelectorAll(`#${CSS.escape(element.id)}`).length > 1;
   if (!element.id || duplicateGeneratedId) {
-    let id;
-    do { id = `sf-tabs-${part}-${++tabsIdentity}`; } while (document.getElementById(id));
-    element.id = id;
+    element.id = partId(instancePath(root, { kind: 'sf-tabs' }), `${part}-${index}`);
   }
   return element.id;
 }
@@ -49,15 +51,15 @@ function syncSemantics(root, buttons, panels) {
   setIndex(buttons);
   setIndex(panels);
   buttons.forEach((button, index) => {
-    ensureId(button, 'tab');
+    ensureId(root, button, 'tab', index);
     button.setAttribute('role', 'tab');
-    if (panels[index]) button.setAttribute('aria-controls', ensureId(panels[index], 'panel'));
+    if (panels[index]) button.setAttribute('aria-controls', ensureId(root, panels[index], 'panel', index));
     const label = button.querySelector('.sf-button-text-container');
     const previous = generatedLabels.get(button);
     if (label && !button.hasAttribute('aria-label')
       && (!button.hasAttribute('aria-labelledby') || button.getAttribute('aria-labelledby') === previous
-        || /^sf-tabs-label-\d+$/.test(button.getAttribute('aria-labelledby')))) {
-      const labelId = ensureId(label, 'label');
+        || /^sf-tabs-label-\d+$|--label-\d+$/.test(button.getAttribute('aria-labelledby')))) {
+      const labelId = ensureId(root, label, 'label', index);
       button.setAttribute('aria-labelledby', labelId);
       generatedLabels.set(button, labelId);
     }

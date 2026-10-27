@@ -6,7 +6,9 @@ const source = await readFile(new URL('../src/component/tabs/js/_tabs.js', impor
 const css = await readFile(new URL('../src/component/tabs/scss/_css__tabs.scss', import.meta.url), 'utf8');
 function runtime() {
   const nodes = [];
-  const context = vm.createContext({CSS: {escape: x => x}, document: {
+  // Path ids (standard 1.3.8 §7.1.1): a stand-in that names a root by its id.
+  const context = vm.createContext({CSS: {escape: x => x},
+    instancePath: (root) => `page/${root.id}`, partId: (path, local) => `${path.replace(/\W+/gu, '-')}--${local}`, document: {
     getElementById: id => nodes.find(e => e.id === id),
     querySelectorAll: selector => nodes.filter(e => `#${e.id}` === selector),
   }});
@@ -22,9 +24,11 @@ test('ordinary Tabs respects native, ARIA and legacy disabled controls', () => {
 test('ordinary Tabs stable generated IDs repair copied IDs but retain unique author IDs', () => {
   const {context, nodes} = runtime();
   const first = {id: ''}, second = {id: ''}, author = {id: 'project-tab'}; nodes.push(first, second, author);
-  const id = context.ensureId(first, 'tab'); assert.equal(context.ensureId(first, 'tab'), id);
-  second.id = id; context.ensureId(second, 'tab'); assert.notEqual(second.id, first.id);
-  assert.equal(context.ensureId(author, 'tab'), 'project-tab');
+  const one = {id: 'one'}, two = {id: 'two'};
+  const id = context.ensureId(one, first, 'tab', 0); assert.equal(context.ensureId(one, first, 'tab', 0), id);
+  assert.equal(id, 'page-one--tab-0', 'the tab group\'s path id and the local name, not a counter (#41)');
+  second.id = id; context.ensureId(two, second, 'tab', 0); assert.notEqual(second.id, first.id);
+  assert.equal(context.ensureId(one, author, 'tab', 1), 'project-tab');
 });
 test('ordinary Tabs initial configured index and selection remain backward compatible', () => {
   const {context} = runtime();

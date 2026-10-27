@@ -21,6 +21,10 @@ function setup({vertical = false, rtl = false, selected = 0, disabled = [1]} = {
   }
   vm.runInNewContext(source.replace(/^import .*;\n/gm, ''), {
     SfBaseElement: Base, HTMLElement: Element,
+    // The manifest's plumbing (core/js/element-manifest.js) and the path ids
+    // (core/js/instance-path.js) are out of these tests' scope.
+    elementFromManifest: (manifest, {base}) => base, manifest: {}, aliases: {}, en: {}, ru: {},
+    instancePath: () => 'page/tabs', partId: (path) => path.replace(/\W+/gu, '-'),
     getComputedStyle: () => ({direction: rtl ? 'rtl' : 'ltr'}),
   });
   const host = new Constructor(), list = {getAttribute: () => vertical ? 'vertical' : 'horizontal'};
@@ -35,7 +39,9 @@ function setup({vertical = false, rtl = false, selected = 0, disabled = [1]} = {
     computedItems: {get: () => tabs.map((_, index) => ({index, selected: index === selected, disabled: disabled.includes(index)}))},
   });
   const changes = [];
-  host.goTo = index => {if (!disabled.includes(index) && index !== selected) {selected = index; changes.push(index);}};
+  // The person's choice (keys, a press) goes through selectTab; goTo is the
+  // action, which reports nothing (standard 1.3.8 §8).
+  host.selectTab = (index) => {index = Number(index); if (!disabled.includes(index) && index !== selected) {selected = index; changes.push(index);}};
   const press = (index, key, extra = {}) => {
     let prevented = false;
     host.handleRootKeyDown({target: tabs[index], key, preventDefault() {prevented = true;}, ...extra});
@@ -91,7 +97,7 @@ test('Tabs all-disabled and independent instances keep valid local semantics', (
   const id = second.tabs[0].id; second.host.syncTabSemantics(); assert.equal(second.tabs[0].id, id);
 });
 test('Tabs template links panels and gives icon-only tabs their text name, without host tabstops', () => {
-  assert.match(template, /aria-labelledby=\$\{`\$\{context.tabsId\}-tab-\$\{item.index\}`\}/);
+  assert.match(template, /aria-labelledby=\$\{`\$\{context.tabsId\}--tab-\$\{item.index\}`\}/);
   assert.match(template, /aria-label=\$\{item.label\}/);
   for (const tag of ['sf-button', 'sf-icon-button']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];

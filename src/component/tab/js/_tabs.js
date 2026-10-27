@@ -1,9 +1,9 @@
 import registerComponent from '../../register-helper';
+import { instancePath, partId } from '../../../core/js/instance-path.js';
 
 const ROOT_SELECTOR = '.sf-tab';
 const ACTIVE_CLASS = 'active';
 const boundRoots = new WeakSet();
-let tabIdentity = 0;
 
 function owned(root, selector) {
   return Array.from(root.querySelectorAll(selector)).filter((item) => item.closest(ROOT_SELECTOR) === root);
@@ -17,8 +17,10 @@ function getParts(root) {
   };
 }
 
-function ensureId(element, part) {
-  if (!element.id) element.id = `sf-tab-${part}-${++tabIdentity}`;
+// <path>--<part>-<n> (standard 1.3.8 §7.1.1, simai/ui-source#41), not a module
+// counter that numbered the parts in creation order.
+function ensureId(root, element, part, index) {
+  if (!element.id) element.id = partId(instancePath(root, { kind: 'sf-tab' }), `${part}-${index}`);
   return element.id;
 }
 
@@ -53,8 +55,8 @@ function syncSemantics(root, start) {
   const index = initialIndex(root, tabs, panels, start);
   tabs.forEach((tab, itemIndex) => {
     tab.setAttribute('role', 'tab');
-    ensureId(tab, 'trigger');
-    if (panels[itemIndex]) tab.setAttribute('aria-controls', ensureId(panels[itemIndex], 'panel'));
+    ensureId(root, tab, 'trigger', itemIndex);
+    if (panels[itemIndex]) tab.setAttribute('aria-controls', ensureId(root, panels[itemIndex], 'panel', itemIndex));
   });
   activate(root, index, false);
   return {list, tabs, panels};
