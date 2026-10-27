@@ -135,6 +135,73 @@ export function pageText(dictionary, key, node, component) {
   return key;
 }
 
+// Missing words are said once per component, word and language: a page that
+// draws a hundred rows must not print a hundred warnings. The marks are kept on
+// the shared global, because every bundle carries this module.
+function warnWord(owner, key, locale, said) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  if (!(root.__sfWordWarnings instanceof Set)) root.__sfWordWarnings = new Set();
+  const mark = `${owner}|${key}|${locale}|${said}`;
+  if (root.__sfWordWarnings.has(mark)) return;
+  root.__sfWordWarnings.add(mark);
+  globalThis.console?.warn?.(`[SIMAI Framework] ${owner || 'component'}: no word "${key}" for ${locale}${said === 'key' ? '; the key is shown' : `; said in ${said}`}`);
+}
+
+function fill(text, locale, count, vars) {
+  return String(text).replace(/\{([a-z][\w-]*)\}/giu, (whole, name) => {
+    if (name === 'n' && count !== undefined) {
+      try {
+        return new Intl.NumberFormat(locale).format(count);
+      } catch {
+        return String(count);
+      }
+    }
+    return vars && Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole;
+  });
+}
+
+/**
+ * A component's own word (standard simai.smart-component 1.3.8 §11, §11.1).
+ *
+ * `dictionary` is `{<locale>: {<key>: word}}` from the component's language
+ * files. A word given on the element itself is the caller's to prefer; this
+ * resolves the rest: words registered for the element's language, then the
+ * shipped ones, the language without its region, English, the component's
+ * source language and, last, the key. The last two warn once. A word that
+ * takes a number is an object of plural forms chosen by Intl.PluralRules of
+ * the language the word was found in; `{n}` is the number in that language's
+ * format and `{name}` takes `vars.name`.
+ */
+export function pageWord(dictionary, key, node, {component, source = '', count, vars} = {}) {
+  const owner = component ?? componentOf(node);
+  const locale = pageLocale(node);
+  const order = chain(locale);
+  const sourceLanguage = normalise(source);
+  if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
+  for (const candidate of order) {
+    const added = owner ? REGISTERED.get(owner)?.get(candidate)?.[key] : undefined;
+    const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
+    if (word === undefined || word === null) continue;
+    if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
+    if (typeof word === 'object') {
+      let form = 'other';
+      if (count !== undefined) {
+        try {
+          form = new Intl.PluralRules(candidate).select(Number(count));
+        } catch {
+          form = 'other';
+        }
+      }
+      const picked = word[form] ?? word.other;
+      if (picked === undefined) continue;
+      return fill(picked, candidate, count, vars);
+    }
+    return fill(word, candidate, count, vars);
+  }
+  warnWord(owner, key, locale, 'key');
+  return key;
+}
+
 export const language = {
   /** What the page resolves to for this node, region and all. */
   current(node = globalThis.document?.documentElement ?? null) {

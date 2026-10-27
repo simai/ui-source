@@ -447,8 +447,9 @@ class SfBaseElement extends HTMLElement {
     // installed once per element and kept while it is detached, so a page
     // that moves it keeps its old names. Before onConnected, so the old
     // attributes in the markup have filled the new ones when it draws.
+    this.sfOpenScope();
     if (this.constructor.aliases && !this.__sfAliases) {
-      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName});
+      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName, signal: this.sfScope});
     }
     this.onConnected();
     // A component chooses its words when it draws and would otherwise keep
@@ -463,8 +464,37 @@ class SfBaseElement extends HTMLElement {
     this.requestComponentUpdate("connected");
   }
 
+  // The instance's scope (standard 1.3.8 §7.7): one abort signal for
+  // everything the instance starts -- listeners on other nodes, timers,
+  // requests, observers, its aliases. It ends when the instance is removed:
+  // taken out and not placed again before the next task, so a page that
+  // moves an element keeps it. A new scope opens when it is placed again.
+  get sfScope() {
+    if (!this.__sfScope) this.__sfScope = new AbortController();
+    return this.__sfScope.signal;
+  }
+
+  sfOpenScope() {
+    clearTimeout(this.__sfScopeEnd);
+    this.__sfScopeEnd = null;
+    if (this.__sfScope?.signal.aborted) {
+      this.__sfScope = null;
+      this.__sfAliases = null;
+    }
+    return this.sfScope;
+  }
+
+  sfCloseScope() {
+    clearTimeout(this.__sfScopeEnd);
+    this.__sfScopeEnd = setTimeout(() => {
+      this.__sfScopeEnd = null;
+      if (!this.isConnected) this.__sfScope?.abort();
+    }, 0);
+  }
+
   disconnectedCallback() {
     this._isMounted = false;
+    this.sfCloseScope?.();
     this.__sfLanguageOff?.();
     this.__sfLanguageOff = null;
     try {
