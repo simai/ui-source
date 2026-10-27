@@ -1,0 +1,654 @@
+{
+ "schema": "simai.aliases",
+ "note": "The 72 event renames of vocabulary 1.1.5 §9 (stand 18 alias-table.json, generated 2026-10-25), in the aliases.json row shape; one table for all tags, a test fixture only.",
+ "aliases": [
+  {
+   "from": "sf-accordion:toggle",
+   "to": "sf-accordion-toggle",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-accordion"
+  },
+  {
+   "from": "sf-admin-menu-intent",
+   "to": "sf-admin-menu",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-admin-menu"
+  },
+  {
+   "from": "sf-button-group-change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-button-group"
+  },
+  {
+   "from": "sf-code-input:complete",
+   "to": "sf-code-input-complete",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-code-input"
+  },
+  {
+   "from": "sf-field:reset",
+   "to": "sf-field-reset",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-color"
+  },
+  {
+   "from": "sf-data-view-saved-view-intent",
+   "to": "sf-data-view-saved-view",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-data-view"
+  },
+  {
+   "from": "sf-table-action-intent",
+   "to": "sf-table-apply",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "split",
+   "tag": "sf-data-view"
+  },
+  {
+   "from": "sf-table-create-intent",
+   "to": "sf-table-create",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-data-view"
+  },
+  {
+   "from": "sf-table-query-intent",
+   "to": "sf-table-query",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-data-view"
+  },
+  {
+   "from": "sf-table-tree-intent",
+   "to": "sf-table-tree",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-data-view"
+  },
+  {
+   "from": "sf-change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-datepicker"
+  },
+  {
+   "from": "sf-datepicker-change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-datepicker"
+  },
+  {
+   "from": "sf-download-file:click",
+   "to": "sf-download-file-click",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-download-file"
+  },
+  {
+   "from": "drawer:after-close",
+   "to": "sf-drawer-closed",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:after-open",
+   "to": "sf-drawer-opened",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:before-close",
+   "to": "sf-drawer-close",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:before-open",
+   "to": "sf-drawer-open",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:ready",
+   "to": "sf-drawer-ready",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:snap",
+   "to": "sf-drawer-snap",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "drawer:update",
+   "to": "sf-drawer-update",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-drawer"
+  },
+  {
+   "from": "sf-dropdown:change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-dropdown"
+  },
+  {
+   "from": "sf-file-preview:download",
+   "to": "sf-file-preview-download",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-preview"
+  },
+  {
+   "from": "sf-file-preview:remove",
+   "to": "sf-file-preview-remove",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-preview"
+  },
+  {
+   "from": "sf-file-upload:complete",
+   "to": "sf-file-upload-complete",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:file-add",
+   "to": "sf-file-upload-file-add",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:file-complete",
+   "to": "sf-file-upload-file-complete",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:file-error",
+   "to": "sf-file-upload-file-error",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:reject",
+   "to": "sf-file-upload-reject",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:remove",
+   "to": "sf-file-upload-remove",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:retry",
+   "to": "sf-file-upload-retry",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-file-upload:select",
+   "to": "sf-file-upload-select",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-file-upload"
+  },
+  {
+   "from": "sf-hide-show:change",
+   "to": "sf-hide-show-change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-hide-show"
+  },
+  {
+   "from": "sf-icons-subset:ready",
+   "to": "sf-icons-subset-ready",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-icons-subset"
+  },
+  {
+   "from": "sf-image-field:reject",
+   "to": "sf-image-field-reject",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-image-field"
+  },
+  {
+   "from": "sf-image-field:remove",
+   "to": "sf-image-field-remove",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-image-field"
+  },
+  {
+   "from": "sf-image-field:select",
+   "to": "sf-image-field-select",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-image-field"
+  },
+  {
+   "from": "sf-menu:navigate",
+   "to": "sf-menu-navigate",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-menu"
+  },
+  {
+   "from": "sf-menu:toggle",
+   "to": "sf-menu-toggle",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-menu"
+  },
+  {
+   "from": "modal:after-close",
+   "to": "sf-modal-closed",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:after-content-upload",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:after-hide",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:after-open",
+   "to": "sf-modal-opened",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:after-show",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:before-close",
+   "to": "sf-modal-close",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:before-content-upload",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:before-hide",
+   "to": "sf-modal-minimize",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:before-open",
+   "to": "sf-modal-open",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:before-show",
+   "to": "sf-modal-minimize",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:ready",
+   "to": "sf-after-render",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "modal:update",
+   "to": "sf-after-render",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "SFModalBeforeCloseWindow",
+   "to": "modal:before-close",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "SFModalBeforeOpenWindow",
+   "to": "modal:before-open",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-modal"
+  },
+  {
+   "from": "input",
+   "to": null,
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-quantity"
+  },
+  {
+   "from": "onSliderChange",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-range-slider"
+  },
+  {
+   "from": "sf-range-slider-change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-09",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-range-slider"
+  },
+  {
+   "from": "sf-sortable-intent",
+   "to": "sf-sortable",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-sortable"
+  },
+  {
+   "from": "sf-port-output",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "split",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-cell-set",
+   "to": "sf-table-save",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-reference-open",
+   "to": "sf-table-open",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-retry",
+   "to": "sf-table-refresh",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-rows-drag",
+   "to": null,
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-rows-reorder",
+   "to": "sf-table-move",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-sort-change",
+   "to": "change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-tree-more",
+   "to": "sf-table-load-more",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "detail-adds",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table-tree-toggle",
+   "to": "sf-table-expand",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "split",
+   "tag": "sf-table"
+  },
+  {
+   "from": "sf-table:column-settings-change",
+   "to": "sf-table-column-settings-change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-table"
+  },
+  {
+   "from": "close",
+   "to": "sf-tag-close",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-tag"
+  },
+  {
+   "from": "sf-theme-apply",
+   "to": "sf-theme-generator-apply",
+   "kind": "event",
+   "since": "2026-10-18",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-theme-generator"
+  },
+  {
+   "from": "sf-theme-change",
+   "to": "sf-theme-generator-change",
+   "kind": "event",
+   "since": "2026-10-18",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-theme-generator"
+  },
+  {
+   "from": "sf-tree:activate",
+   "to": "sf-tree-activate",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-tree"
+  },
+  {
+   "from": "sf-tree:selection-change",
+   "to": "sf-tree-selection-change",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-tree"
+  },
+  {
+   "from": "sf-tree:toggle",
+   "to": "sf-tree-toggle",
+   "kind": "event",
+   "since": "2026-10-26",
+   "remove_after": "2026-12-01",
+   "mode": "same-detail",
+   "tag": "sf-tree"
+  }
+ ]
+}
