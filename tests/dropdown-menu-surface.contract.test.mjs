@@ -12,7 +12,8 @@ const block = css.slice(css.indexOf('.sf-dropdown .sf-list,'));
 
 test('dropdown popup: lifted like the context menu, not bordered', () => {
   assert.match(block, /--sf-list--border-width: 0;/);
-  assert.match(block, /--sf-list--background-color: var\(--sf-elevation-2--surface\);/);
+  // The open list's public variable over the elevation (standard 1.3.8 §6).
+  assert.match(block, /--sf-list--background-color: var\(--sf-dropdown-list-background-color, var\(--sf-elevation-2--surface\)\);/);
   assert.match(block, /--sf-list--box-shadow: var\(--sf-elevation-2--shadow\);/);
 });
 

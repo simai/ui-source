@@ -7,7 +7,7 @@ test('dropdown indicator synchronization is silent and uses the Checkbox owner A
   const source=await read('src/component/dropdown/interaction.js');
   const calls=[],checkbox={checked:false,dispatchEvent(){throw new Error('synthetic event');}};
   const runtime=vm.createContext({SF:{Checkbox:{setState(input,state){calls.push([input,state.checked]);}}}});
-  vm.runInContext(source.replaceAll(/^export /gm,''),runtime);
+  vm.runInContext(source.replaceAll(/^export /gm,'').replace(/^import .*$/gm,''),runtime); // the path-id import (§7.1.1) is not used here
   runtime.syncDropdownCheckbox({querySelector:()=>checkbox},true);
   assert.equal(checkbox.checked,true);assert.deepEqual(calls,[[checkbox,true]]);
   delete runtime.SF;
@@ -24,7 +24,7 @@ test('checkbox synchronization does not rewrite an already correct indicator',as
   const source=await read('src/component/dropdown/interaction.js');
   const icon={textContent:''},checkbox={checked:false,indeterminate:false};let calls=0;
   const runtime=vm.createContext({SF:{Checkbox:{setState(input,state){calls++;icon.textContent=state.checked?'check':'';}}}});
-  vm.runInContext(source.replaceAll(/^export /gm,''),runtime);
+  vm.runInContext(source.replaceAll(/^export /gm,'').replace(/^import .*$/gm,''),runtime); // the path-id import (§7.1.1) is not used here
   const item={querySelector:selector=>selector.includes('input')?checkbox:icon};
   runtime.syncDropdownCheckbox(item,true);runtime.syncDropdownCheckbox(item,true);
   assert.equal(calls,1);

@@ -1,5 +1,5 @@
 import SfBaseElement, { toBoolean } from '../../core/js/smart-base';
-import { pageText } from '../../core/js/page-language';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
@@ -7,8 +7,23 @@ import { bindFormReset } from '../../component/form-reset-helper';
 import { openDropdownPortal, closeDropdownPortal } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 import { InheritedValueField } from '../helpers/inherited-value';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-const DROPDOWN_TEXT = { en: { search: 'Search' }, ru: { search: 'Поиск' } };
+// sf-dropdown from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §19): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json, and the old
+// names -- type, sf-dropdown:change -- are dated aliases. It still submits
+// through its hidden input (§16 item 11); the manifest keeps the form contract
+// as x-form until the field family's ElementInternals mixin takes it.
+const DropdownElement = elementFromManifest(manifest, {
+  base: InheritedValueField(SfBaseElement),
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
 function normalizeSize(value) {
   return fieldSize(value, 'sf-dropdown');
@@ -108,7 +123,7 @@ function getOptionLabel(option = {}) {
   return option.text || option.avatarTitle || option.value || '';
 }
 
-class SfDropdown extends InheritedValueField(SfBaseElement) {
+class SfDropdown extends DropdownElement {
   constructor() {
     super();
     this._options = [];
@@ -123,8 +138,11 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
     this._viewportHandler = this.positionPortalList.bind(this);
   }
 
+  // The manifest's settings, and what the dropdown reads more closely (the
+  // size ladder's words, columns as text, the trait's settings).
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
       size: { default: '1' },
       // The axis is called appearance, because that is the question it answers.
@@ -146,7 +164,6 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
       layout: { default: 'list', values: ['list', 'grid'] },
       columns: { default: '6' },
       disabled: { type: Boolean, default: false },
-      ariaLabel: { default: '' },
       // The option value the field falls back to while nothing is chosen
       // (simai/ui-source#28): its label is shown as inherited, in select mode.
       inheritedValue: { attribute: 'inherited-value', default: '' },
@@ -188,11 +205,6 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
 
   get appearance() {
     return this.getProp('appearance');
-  }
-
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.appearance;
   }
 
   get mode() {
@@ -259,7 +271,7 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
     // The search field read «Placeholder» on every page; a native change it
     // fires when left is stopped in the template, so the dropdown's own change
     // is the only one a listener on it hears.
-    return this.getAttribute('search-placeholder') || pageText(DROPDOWN_TEXT, 'search', this);
+    return this.getAttribute('search-placeholder') || this.sfWord('search');
   }
 
   get layout() {
@@ -277,10 +289,6 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
 
   get disabled() {
     return this.getBooleanAttr('disabled', false);
-  }
-
-  get ariaLabel() {
-    return this.getAttribute('aria-label') || '';
   }
 
   get selectedValues() {
@@ -619,31 +627,21 @@ class SfDropdown extends InheritedValueField(SfBaseElement) {
     return this;
   }
 
+  // The person's change (§8): `change` on the host with data only, then its old
+  // name sf-dropdown:change with root added, through the alias table.
   dispatchDropdownChange(option = null, values = this.selectedValues) {
-    const detail = {
+    this.sfEmit('change', {
       value: option?.value || '',
       label: option ? getOptionLabel(option) : '',
       values,
       item: option,
-      root: this,
       multiple: this.multiple,
-    };
+    });
+  }
 
-    this.dispatchEvent(
-      new CustomEvent('sf-dropdown:change', {
-        bubbles: true,
-        composed: true,
-        detail,
-      }),
-    );
-
-    this.dispatchEvent(
-      new CustomEvent('change', {
-        bubbles: true,
-        composed: true,
-        detail,
-      }),
-    );
+  // The old name keeps its old detail (§16.20 split row): root was the element.
+  sfAliasAdapters() {
+    return { 'sf-dropdown:change': (detail) => ({ ...detail, root: this }) };
   }
 
   // An open list owns Escape, so the root says a surface is open and a drawer, a

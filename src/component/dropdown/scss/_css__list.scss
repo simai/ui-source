@@ -56,9 +56,10 @@
   .sf-dropdown .sf-list,
   .sf-list--menu {
     --sf-list--border-width: 0;
-    --sf-list--background-color: var(--sf-elevation-2--surface);
+    /* The open list's public variable (sf-dropdown component.json, §6). */
+    --sf-list--background-color: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
     --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
-    --sf-badge--surface: var(--sf-elevation-2--surface);
+    --sf-badge--surface: var(--sf-dropdown-list-background-color, var(--sf-elevation-2--surface));
     --sf-list--padding-top: var(--sf-space-1\/4);
     --sf-list--padding-bottom: var(--sf-space-1\/4);
     --sf-list--padding-left: var(--sf-space-1\/4);

@@ -1,0 +1,133 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Город",
+      "settings": {
+        "label": "Город",
+        "name": "city",
+        "value": "kazan",
+        "options": [
+          {
+            "value": "kazan",
+            "text": "Казань"
+          },
+          {
+            "value": "moscow",
+            "text": "Москва"
+          }
+        ]
+      },
+      "expect": {
+        "value": "kazan",
+        "name": "Город"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "opened",
+      "title": "Открыть список",
+      "settings": {
+        "label": "Город",
+        "options": [
+          {
+            "value": "kazan",
+            "text": "Казань"
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "open-dropdown"
+        }
+      ],
+      "expect": {
+        "value": ""
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "multiple",
+      "title": "Несколько значений",
+      "settings": {
+        "label": "Теги",
+        "multiple": true,
+        "value": "a,b",
+        "options": [
+          {
+            "value": "a",
+            "text": "Альфа"
+          },
+          {
+            "value": "b",
+            "text": "Бета"
+          },
+          {
+            "value": "c",
+            "text": "Гамма"
+          }
+        ]
+      },
+      "expect": {
+        "value": "a,b"
+      }
+    },
+    {
+      "name": "tags",
+      "title": "Метки",
+      "settings": {
+        "label": "Метки",
+        "mode": "tag",
+        "options": [
+          {
+            "value": "a",
+            "text": "Альфа"
+          }
+        ]
+      },
+      "expect": {
+        "value": ""
+      }
+    },
+    {
+      "name": "grid",
+      "title": "Сетка значков",
+      "settings": {
+        "label": "Значок",
+        "layout": "grid",
+        "columns": 6,
+        "options": [
+          {
+            "value": "home",
+            "text": "home",
+            "icon": "home"
+          }
+        ]
+      },
+      "expect": {
+        "value": ""
+      }
+    },
+    {
+      "name": "inherited",
+      "title": "Наследуемое значение",
+      "settings": {
+        "label": "Город",
+        "inherited-value": "moscow",
+        "options": [
+          {
+            "value": "kazan",
+            "text": "Казань"
+          },
+          {
+            "value": "moscow",
+            "text": "Москва"
+          }
+        ]
+      },
+      "expect": {
+        "value": ""
+      }
+    }
+  ]
+}

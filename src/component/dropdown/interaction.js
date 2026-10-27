@@ -1,4 +1,4 @@
-let sequence = 0;
+import { instancePath, partId } from '../../core/js/instance-path.js';
 
 // Option checkboxes are selection indicators, not independent form controls.
 // Use Checkbox's silent public state adapter when it is available; late-loaded
@@ -16,12 +16,12 @@ export function syncDropdownCheckbox(item, selected) {
   globalThis.SF?.Checkbox?.setState?.(checkbox, { checked: selected, indeterminate: false });
 }
 
-function identify(node, prefix) {
-  if (!node.id) {
-    let id;
-    do { id = `${prefix}-${++sequence}`; } while (document.getElementById(id));
-    node.id = id;
-  }
+// A part's id is its owner's path id and its local name (standard 1.3.8
+// §7.1.1, simai/ui-source#41): <path>--<local>, the same in every bundle and
+// in server markup. A module counter gave a class and a Smart dropdown on one
+// page ids that followed creation order.
+function identify(node, owner, local) {
+  if (!node.id) node.id = partId(instancePath(owner, {kind: 'sf-dropdown'}), local);
   return node.id;
 }
 
@@ -96,8 +96,9 @@ export function createDropdownInteraction(root, adapter) {
       if(!released&&adapter.isOpen()&&!pending&&!contains(document.activeElement)){adapter.close();refresh();}
     });
   };
+  const owner=adapter.owner||root;
   let summary = document.createElement('span');
-  summary.className='sf-dropdown-value';root.append(summary);identify(summary,'sf-dropdown-value');
+  summary.className='sf-dropdown-value';root.append(summary);identify(summary,owner,'value');
   const refresh = () => {
     if(released)return;
     const next=adapter.getList();
@@ -109,11 +110,10 @@ export function createDropdownInteraction(root, adapter) {
     if(!button||!container)return;
     if(!summary.isConnected)root.append(summary);
     const label=root.querySelector('.sf-dropdown-label .sf-dropdown-text');
-    const owner=adapter.owner||root;
-    const labelId=label?.textContent.trim()?identify(label,'sf-dropdown-label'):'';
+    const labelId=label?.textContent.trim()?identify(label,owner,'label'):'';
     const ownerLabel=owner.getAttribute('aria-label')||root.getAttribute('aria-label');
     const ownerRefs=owner.getAttribute('aria-labelledby')||root.getAttribute('aria-labelledby');
-    const buttonId=identify(button,'sf-dropdown-trigger');
+    const buttonId=identify(button,owner,'trigger');
     const authorButtonLabel=button.hasAttribute('aria-label')&&assigned.get(button)?.['aria-label']!==button.getAttribute('aria-label');
     own(button,'aria-labelledby',ownerRefs||(!ownerLabel&&labelId?(authorButtonLabel?`${buttonId} ${labelId}`:labelId):''));
     own(button,'aria-label',ownerLabel);
@@ -121,7 +121,7 @@ export function createDropdownInteraction(root, adapter) {
     button.tabIndex=adapter.isDisabled()?-1:0;
     button.setAttribute('aria-expanded',String(adapter.isOpen()));
     button.setAttribute('aria-haspopup','listbox');
-    button.setAttribute('aria-controls',identify(container,'sf-dropdown-listbox'));
+    button.setAttribute('aria-controls',identify(container,owner,'listbox'));
     button.querySelectorAll('.sf-icon').forEach(icon=>icon.setAttribute('aria-hidden','true'));
     if(field()!==button)field().tabIndex=-1;
     if(input())input().tabIndex=-1;

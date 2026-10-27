@@ -122,3 +122,15 @@ test('sf-popover: requests before, facts after; role on the host is a dated alia
   assert.match(source, /this\.close\(\{reason: 'outside'\}\)/);
   assert.match(read('src/smart/popover/js/templates/default.css'), /background-color: var\(--sf-popover-background-color, var\(--sf-elevation-2--surface\)\);/);
 });
+
+test('sf-dropdown: change carries data only; sf-dropdown:change keeps root through its adapter; no module counter ids', () => {
+  const manifest = json('src/smart/dropdown/component.json');
+  assert.deepEqual(manifest.events, {change: {carries: 'native', 'x-detail': {value: 'string', label: 'string', values: 'list', item: 'object', multiple: 'boolean'}}});
+  assert.ok(!('form' in manifest) && manifest['x-form'], 'the hidden input submits until the FormField mixin (§16 item 11)');
+  const source = read('src/smart/dropdown/index.js');
+  assert.match(source, /return \{ 'sf-dropdown:change': \(detail\) => \(\{ \.\.\.detail, root: this \}\) \};/);
+  assert.doesNotMatch(source, /new CustomEvent\('sf-dropdown:change'/);
+  const interaction = read('src/component/dropdown/interaction.js');
+  assert.doesNotMatch(interaction, /\+\+sequence/);
+  assert.match(interaction, /node\.id = partId\(instancePath\(owner, \{kind: 'sf-dropdown'\}\), local\)/);
+});

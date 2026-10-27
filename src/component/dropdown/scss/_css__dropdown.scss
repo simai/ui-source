@@ -2,7 +2,7 @@
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-dropdown {
   background-color: var(--sf-dropdown--background-color, transparent);
-  gap: var(--sf-dropdown--gap, var(--sf-space-1\/4));
+  gap: var(--sf-dropdown-gap, var(--sf-dropdown--gap, var(--sf-space-1\/4)));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) gap/var(--sf-dropdown-field--gap) */
@@ -11,10 +11,10 @@
   background-color: var(--sf-dropdown-field--background-color);
   border: var(--sf-dropdown-field--border);
   border-color: var(--sf-dropdown-field--border-color, transparent);
-  border-end-end-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
-  border-end-start-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
-  border-start-end-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
-  border-start-start-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  border-end-end-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
+  border-end-start-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
+  border-start-end-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
+  border-start-start-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
   box-shadow: var(--sf-dropdown-field--box-shadow);
   gap: var(--sf-dropdown-field--gap);
   padding-bottom: var(--sf-dropdown-field--padding-bottom);
@@ -114,9 +114,12 @@
   padding-inline-start: var(--sf-tag-alt--padding-inline-start);
 }
 
+/* The resting look reads the public variables (standard 1.3.8 §6:
+   --sf-dropdown-background-color, --sf-dropdown-border-color) over the role
+   tokens; hover, focus, disabled and error keep their own. */
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
-  --sf-dropdown-field--background-color: var(--sf-surface-0);
-  --sf-dropdown-field--border-color: var(--sf-outline);
+  --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-0));
+  --sf-dropdown-field--border-color: var(--sf-dropdown-border-color, var(--sf-outline));
 }
 
 /* utility-hint: display/flex (.flex) */
@@ -171,9 +174,9 @@
 }
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
-  --sf-dropdown-field--background-color: var(--sf-surface-container);
+  --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-  --sf-dropdown-field--border-color: var(--sf-transparent-for-focus);
+  --sf-dropdown-field--border-color: var(--sf-dropdown-border-color, var(--sf-transparent-for-focus));
 }
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {

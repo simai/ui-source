@@ -1,0 +1,322 @@
+{
+  "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.dropdown",
+  "tag": "sf-dropdown",
+  "version": "1.4.0",
+  "kind": "leaf",
+  "family": "dropdown",
+  "traits": [
+    "field-inherit@1"
+  ],
+  "settings": {
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "filled",
+        "outlined"
+      ],
+      "default": "outlined"
+    },
+    "columns": {
+      "type": "number",
+      "default": 6
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "layout": {
+      "type": "enum",
+      "values": [
+        "list",
+        "grid"
+      ],
+      "default": "list"
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "tag",
+        "select"
+      ],
+      "default": "select"
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "options": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "value": "string",
+        "text": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "group": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-shape": "ui-source 5100227 src/smart/dropdown/smart.manifest.json inputs.options; a string or a number is both the text and the value; constant options in a manifest give only the value, the text lives in lang roles.<role>.items.<value> (standard 1.3.8 §11.3)"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "portal": {
+      "type": "boolean",
+      "default": true
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "search": {
+      "type": "boolean",
+      "default": true
+    },
+    "search-placeholder": {
+      "type": "string",
+      "default-from": "runtime.search"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "events": {
+    "change": {
+      "carries": "native",
+      "x-detail": {
+        "value": "string",
+        "label": "string",
+        "values": "list",
+        "item": "object",
+        "multiple": "boolean"
+      }
+    }
+  },
+  "actions": {
+    "open-dropdown": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "close-dropdown": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "toggle-dropdown": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "layer": {
+    "kind": "surface",
+    "locks-page": false,
+    "traps-focus": false
+  },
+  "side-effects": [
+    "portal"
+  ],
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "combobox",
+    "name": {
+      "from": [
+        "label",
+        "aria-label",
+        "aria-labelledby",
+        "label[for]"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-inherited": "boolean"
+  },
+  "css-variables": {
+    "--sf-dropdown-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-dropdown-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-dropdown-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-dropdown-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-dropdown-list-background-color": {
+      "type": "color",
+      "state": "open"
+    }
+  },
+  "x-summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
+  "x-source": {
+    "package": "framework",
+    "folder": "dropdown",
+    "manifest": "simai/ui-source@5100227 src/smart/dropdown/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/dropdown.component.json"
+  },
+  "x-words": [
+    "label",
+    "placeholder",
+    "search-placeholder"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "settings.columns: type string with the numeral default \"6\" → number (§16 item 29)",
+    "settings.type → appearance: the axis's old name (contracts/public-api-axes.json), alias dated",
+    "events.sf-dropdown:change → change: vocabulary §5.1 (a value changed), the colon name a dated alias"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-dropdown when a form needs one or several values from a concealed option set. Use direct sf-list-item children with stable machine values and visible labels. Use portal only when an ancestor clips the popup.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use the visible label as the submitted value when a stable machine identifier exists",
+        "Do not make decorative checkbox, avatar or icon content independently focusable inside an option"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-dropdown label=\"Статус\" name=\"status\" placeholder=\"Выберите статус\"><sf-list-item value=\"open\" text=\"Открыт\"></sf-list-item><sf-list-item value=\"done\" text=\"Готов\"></sf-list-item></sf-dropdown>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "x-decisions": [
+    "trait-words: the shared field words (inherited, reset, described) stay with the trait field-inherit@1, as sf-switch keeps them (x-trait-words in the language files); where a trait's words live is Annex A item 13.",
+    "version: 1.3.0 → 1.4.0: type and sf-dropdown:change are dated aliases; change carries no element (root leaves its detail, §8).",
+    "a11y-role: combobox, one role: the trigger is a read-only box that opens a listbox (the list's own role); the name is the drawn label, then what the page said of the host (aria-label, aria-labelledby, a label[for]).",
+    "existing-aliases: compatibility.migrations lists the move to appearance; type folds into aliases.json as a dated setting row, sf-dropdown:change as a split event row whose old detail keeps root.",
+    "form: the dropdown still submits through its hidden input, which §16 item 11 allows until 1.4.0; the form contract of §17.1 is kept as x-form and moves in with the field family's FormField mixin (ElementInternals). Declaring `form` now would make the host a form control beside the hidden input.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus multiple, tags, a grid, search and an inherited value; probe.json drives the arrows, Home, End, Enter, Space, Escape and Tab (gate 16).",
+    "css-variables: five public variables read by the sheet with the role tokens as fallbacks (§6): the field's resting background and border, its radius, the gap, and the open list's background. They are not in src/core/contracts/public-variables.v1.json yet: that file and its test are shared with the field family's branches.",
+    "side-effects: portal -- the open list is shown in the browser's top layer, or, without it, moved to the end of body (or of the open modal dialog).",
+    "layer: kind surface; the open list registers through core open-surface-mark, so Escape reaches it while it is the top layer; it does not trap focus.",
+    "change: the change the person made is sent as `change` on the host (a CustomEvent with {value, label, values, item, multiple}); the old name sf-dropdown:change follows with root added, once per change."
+  ]
+}

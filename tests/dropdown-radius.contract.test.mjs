@@ -7,7 +7,8 @@ test('dropdown defaults are fallbacks, so inherited radius overrides survive',as
   const source=await read('src/component/dropdown/scss/_css__dropdown.scss');
   assert.doesNotMatch(source,/--sf-dropdown--radius:\s*var/);
   for(const corner of ['start-start','start-end','end-start','end-end']){
-    assert.ok(source.includes(`border-${corner}-radius: var(--sf-dropdown-field--border-${corner}-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)))`));
+    // The public --sf-dropdown-radius (standard 1.3.8 §6) stands between the corner and the internal fallback.
+    assert.ok(source.includes(`border-${corner}-radius: var(--sf-dropdown-field--border-${corner}-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))))`));
   }
 });
 
