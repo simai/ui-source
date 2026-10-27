@@ -1,0 +1,56 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Секции страницы",
+      "children": "<div data-sf-sortable-item=\"s1\">Секция 1</div><div data-sf-sortable-item=\"s2\">Секция 2</div><div data-sf-sortable-item=\"s3\">Секция 3</div>",
+      "settings": {
+        "group": "sections",
+        "label": "Секции"
+      },
+      "expect": {
+        "group": "sections"
+      }
+    },
+    {
+      "name": "horizontal",
+      "title": "Вкладки в ряд",
+      "children": "<span data-sf-sortable-item=\"a\">Обзор</span><span data-sf-sortable-item=\"b\">Настройки</span><span data-sf-sortable-item=\"c\">История</span>",
+      "settings": {
+        "group": "tabs",
+        "label": "Вкладки",
+        "orientation": "horizontal",
+        "preview": "line"
+      },
+      "expect": {
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "name": "library",
+      "title": "Библиотека блоков (копирование)",
+      "children": "<div data-sf-sortable-item=\"heading\">Заголовок</div><div data-sf-sortable-item=\"text\">Текст</div>",
+      "settings": {
+        "group": "blocks",
+        "label": "Библиотека",
+        "mode": "copy"
+      },
+      "expect": {
+        "mode": "copy"
+      }
+    },
+    {
+      "name": "inserter",
+      "title": "Со вставкой между блоками",
+      "children": "<div data-sf-sortable-item=\"hero\">Заголовок</div><div data-sf-sortable-item=\"body\">Текст</div>",
+      "settings": {
+        "group": "blocks",
+        "label": "Блоки письма",
+        "inserter-items": "[{\"item\":\"heading\",\"label\":\"Заголовок\",\"icon\":\"title\"},{\"item\":\"text\",\"label\":\"Текст\",\"icon\":\"notes\"}]"
+      },
+      "expect": {
+        "group": "blocks"
+      }
+    }
+  ]
+}

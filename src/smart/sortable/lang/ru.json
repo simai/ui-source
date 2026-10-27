@@ -1,0 +1,25 @@
+{
+  "title": "Перетаскивание",
+  "runtime": {
+    "cancelled": "Перемещение отменено.",
+    "dropped": "Положено: {item}, позиция {index} в «{list}».",
+    "empty": "Ничего не найдено",
+    "hint": "Плюс — вставить после.",
+    "inserted": "Вставлено: {item}, позиция {index} в «{list}».",
+    "instructions": "Пробел или Enter — взять, стрелки — переместить, Пробел или Enter — положить, Escape — отменить.",
+    "menu": "Вставить",
+    "moved": "Позиция {index} из {total} в «{list}».",
+    "picked": "Взято: {item}. Позиция {index} из {total} в «{list}».",
+    "point": "Вставить: позиция {index} из {total}",
+    "search": "Найти",
+    "target": "Цель: {target}."
+  },
+  "events": {
+    "state": {
+      "label": "Шаг перетаскивания"
+    },
+    "insert": {
+      "label": "Вставить"
+    }
+  }
+}

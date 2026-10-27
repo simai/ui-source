@@ -1,0 +1,263 @@
+{
+  "$comment": "The source of sf-sortable's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/sortable (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.sortable",
+  "tag": "sf-sortable",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "sortable",
+  "settings": {
+    "group": {
+      "type": "string",
+      "default": "",
+      "summary": "The list's group: an item moves between lists of one group; required for a list whose items move"
+    },
+    "accepts": {
+      "type": "string",
+      "default": "",
+      "summary": "Other groups whose items this list takes, separated by spaces"
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "move",
+        "copy"
+      ],
+      "default": "move",
+      "summary": "copy: a library list; its items are copied out and stay"
+    },
+    "orientation": {
+      "type": "enum",
+      "values": [
+        "vertical",
+        "horizontal"
+      ],
+      "default": "vertical"
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The list's name in what is announced"
+    },
+    "preview": {
+      "type": "enum",
+      "values": [
+        "silhouette",
+        "line"
+      ],
+      "default": "silhouette",
+      "summary": "silhouette opens a gap the size of the item; line draws a line"
+    },
+    "inserter-items": {
+      "type": "string",
+      "default": "",
+      "summary": "The items an insertion point offers, as JSON [{item, label, icon?, description?}]; empty: no insertion point"
+    }
+  },
+  "values": {},
+  "events": {
+    "move": {
+      "carries": {
+        "item": "string",
+        "from": "string",
+        "to": "string",
+        "index": "number",
+        "mode": {
+          "type": "enum",
+          "values": [
+            "move",
+            "copy"
+          ]
+        }
+      },
+      "summary": "The request to move (or copy) an item to a place: one manual move of vocabulary 1.1.5 §5 move, {id, parent, position} named item, to and index; the host applies it"
+    },
+    "state": {
+      "carries": {
+        "state": {
+          "type": "enum",
+          "values": [
+            "picked",
+            "dropped",
+            "cancelled"
+          ]
+        },
+        "item": "string"
+      },
+      "own-verb": true,
+      "summary": "A drag's step: picked up, dropped or cancelled"
+    },
+    "insert": {
+      "carries": {
+        "index": "number",
+        "item": "string",
+        "to": "string"
+      },
+      "cancelable": true,
+      "own-verb": true,
+      "summary": "The inserter's request to put a new item of the palette at a place; cancelable"
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "row": {
+      "Space": "select",
+      "Enter": "select",
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Escape": "revert",
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "../../core/js/composition/sortable.mjs",
+      "$comment": "The list draws nothing of its own besides its live region and instructions: the host's items are its markup. The behaviour is the composition module (core/js/composition/sortable.mjs, the inserter sortable-inserter.mjs)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "No role of its own: the host's list keeps its role. Each item is a Tab stop described by the list's instructions; Space or Enter picks it up, the arrows move it, Home and End move it to the ends, Space or Enter drops it, Escape puts it back. Each step is said in a polite live region.",
+    "role": "none",
+    "name": {
+      "from": [
+        "label",
+        "aria-label",
+        "group"
+      ]
+    },
+    "keys": {
+      "Space": "select",
+      "Enter": "select",
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Escape": "revert",
+      "Tab": "reach"
+    }
+  },
+  "css-variables": {
+    "--sf-sortable-dragging-opacity": {
+      "type": "number",
+      "state": "dragging"
+    },
+    "--sf-sortable-ghost-opacity": {
+      "type": "number",
+      "state": "dragging"
+    },
+    "--sf-sortable-ghost-z-index": {
+      "type": "number",
+      "state": "dragging"
+    },
+    "--sf-sortable-indicator-color": {
+      "type": "color",
+      "state": "dragging"
+    },
+    "--sf-sortable-placeholder-border-color": {
+      "type": "color",
+      "state": "dragging"
+    }
+  },
+  "x-summary": "A list whose items move by pointer, touch and keyboard, between lists of a group and onto registered drop targets; it asks the host to move and never moves the host's DOM or data.",
+  "x-source": {
+    "package": "framework",
+    "folder": "sortable",
+    "manifest": "simai/ui-source@5100227 src/smart/sortable/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/sortable.component.json"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-renamed": [
+    "events.sf-sortable-intent → move: the vocabulary's move (§5.1 alias table row sf-sortable-intent → sf-sortable-move); sf-sortable-move, the old name a dated same-detail alias",
+    "events sf-sortable-state and sf-sortable-insert keep their DOM names (state and insert, own verbs)",
+    "lang runtime holds the words of the drag module and the inserter (MESSAGES of core/js/composition/sortable.mjs and sortable-inserter.mjs)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention",
+        "saving or reordering host data",
+        "creating the inserted item"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-sortable when people reorder or move host items, or drag library entries onto an editor canvas. Apply sf-sortable-intent to the host model with an expected revision; a refusal leaves the page unchanged. Give inserter-items when people insert new items at a place in the list; create the item on sf-sortable-insert.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not let the component move host DOM or save data",
+        "Do not rely on pointer dragging alone; keep the keyboard path",
+        "Do not bundle a private drag session; use SF.Sortable.registerSortableDropTarget",
+        "Do not let the component create the inserted item; add it on sf-sortable-insert"
+      ],
+      "required_reads": [
+        "inputs",
+        "item_contract",
+        "events",
+        "ownership",
+        "provenance",
+        "contracts"
+      ],
+      "minimal_example": "<sf-sortable id=\"sections\" group=\"sections\" label=\"Sections\"><div data-sf-sortable-item=\"s1\">Section 1</div><div data-sf-sortable-item=\"s2\">Section 2</div></sf-sortable>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "alias-conflict: the alias table's planned sf-sortable-intent → sf-sortable and this conversion's sf-sortable-move -- the vocabulary decides (1.1.5 §5.1, sf-sortable-intent → sf-sortable-move): sf-sortable-move, with the old sf-sortable-intent following as a same-detail alias until 2026-12-01. An sf-sortable list sends it through its aliases.json; a container the column mode attached to (SF.Sortable.attach), which has no shim, sends both names. sf-tabs, which arranges its tabs with a list, listens to the new name. The legacy manifest's event key sf-sortable was never a DOM name: no alias.",
+    "move's detail stays {item, from, to, index, mode}: one manual move, the form vocabulary §5 move keeps ({id, parent, position}); a same-detail alias needs the old fields, and the host gets no new field to learn.",
+    "own-verb-words: state (picked, dropped, cancelled -- one fact of a drag's steps, its DOM name kept) and insert (the inserter's cancelable request to put a palette item at a place: not §5 create, the host may create nothing, only place) are this component's verbs; their words are events.<name>.label of the language files.",
+    "element: sf-sortable stays the plain element the composition module defines (the overlay's bundle defines the same list without an inserter); defineSortable takes the class core/js/composition/manifest-host.mjs makes from this component.json -- the settings' properties, sfEmit and sfWord, the aliases.json shim installed when the list is placed. group and mode keep the module's readings (a group that is no name is no group; any mode but copy is move).",
+    "a11y-role: none -- the host's list keeps its own role; the items are Tab stops described by the list's instructions.",
+    "key-effects: on an item Space and Enter pick up and drop (select), the arrows and Home/End move the picked item (focus:prev/next/first/last stand for the place it moves to), Escape puts it back (revert), Tab reaches the next item.",
+    "item-shape: the list holds the host's elements, not a list setting; item_contract (description, properties) describes inserter-items, a JSON setting of {item, label, icon?, description?} the inserter reads -- a string attribute, so no of.",
+    "words (§11): the language files hold the drag module's and the inserter's words; the composition modules keep their own copy because the overlay's bundle and the column mode draw with them without this component, and read them through the page's language as before.",
+    "version 1.1.0: an event renamed behind a dated alias (§4.10).",
+    "examples: examples.json from studio.fixture.json (a list of blocks) plus a horizontal list, a copy library and a list with an inserter.",
+    "css-variables: five public variables of its sheet, all of a drag in progress: the dragged item's and the ghost's opacity, the ghost's layer, the drop line's colour and the silhouette's border. They are not in src/core/contracts/public-variables.v1.json: its browser probe measures a component at rest, where none of these parts exist.",
+    "source-drift: the shipped manifest differs from 5100227 in the inserter (inserter-items, sf-sortable-insert) and its provenance; the conversion here carries them by hand."
+  ]
+}

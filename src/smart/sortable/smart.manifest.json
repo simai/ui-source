@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.sortable",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Sortable",
   "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard, with an optional insertion point that opens a searchable inserter; reports intent only.",
   "kind": "smart",
@@ -36,7 +36,8 @@
     "properties": {
       "group": {
         "type": "string",
-        "pattern": "^[a-z][a-z0-9-]{0,31}$"
+        "pattern": "^[a-z][a-z0-9-]{0,31}$",
+        "default": ""
       },
       "accepts": {
         "type": "string",
@@ -342,11 +343,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/sortable/index.js",
-        "sha256": "298c463e0d0c1634783614a4bbab59757767e984027041319f14dadb1cff2c61"
+        "sha256": "c807f90dfbc0064c497bf43aae9238eb7c19e2d7114c0828cff6b436cc34cf34"
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",
-        "sha256": "4f85a0e023d17b1f7a6fd191fd12f4c87e5609e70476c69559c2e04dc7b1f0a2"
+        "sha256": "dff4655fc5611feafee44ce1f77b3b5f00405a4add5a2b8efae11d6336613748"
       },
       {
         "path": "src/smart/sortable/rule.js",
@@ -354,11 +355,11 @@
       },
       {
         "path": "src/smart/sortable/docs.md",
-        "sha256": "42b58f27a3bb1a34faf147ea1bf6eba31c9c944c6777a583b18fc0f0195371e9"
+        "sha256": "edda4c7303b5995ab46d40fbccb28c81dd5cd665b0262853ca283e9091f1e4ad"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "871e5e7c95e47ce43dbe7616a984cfdc0e7a048900f6d438121bd84f7a6bf056"
+        "sha256": "8bc6974d8ccf1ff35103592eb8046667f5e6938886a28ffc0ecf87a035d908c9"
       },
       {
         "path": "src/core/js/composition/sortable-inserter.mjs",

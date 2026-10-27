@@ -1,0 +1,25 @@
+{
+  "title": "Drag and drop",
+  "runtime": {
+    "cancelled": "Move cancelled.",
+    "dropped": "Dropped {item} at position {index} in “{list}”.",
+    "empty": "Nothing found",
+    "hint": "Plus to insert after.",
+    "inserted": "Inserted {item} at position {index} in “{list}”.",
+    "instructions": "Space or Enter to pick up, arrows to move, Space or Enter to drop, Escape to cancel.",
+    "menu": "Insert",
+    "moved": "Position {index} of {total} in “{list}”.",
+    "picked": "Picked up {item}. Position {index} of {total} in “{list}”.",
+    "point": "Insert: position {index} of {total}",
+    "search": "Find",
+    "target": "Target: {target}."
+  },
+  "events": {
+    "state": {
+      "label": "Drag step"
+    },
+    "insert": {
+      "label": "Insert"
+    }
+  }
+}

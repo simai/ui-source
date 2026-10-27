@@ -4,6 +4,10 @@
 // the component never moves host DOM or data. The host applies the change.
 import { pageText } from '../page-language.js';
 
+// The request to move an item (simai.smart-vocabulary 1.1.5 §5 move): the
+// name sf-sortable's component.json declares. The former sf-sortable-intent
+// follows it with the same detail until 2026-12-01.
+export const SORTABLE_MOVE_EVENT = 'sf-sortable-move';
 export const SORTABLE_INTENT_EVENT = 'sf-sortable-intent';
 export const SORTABLE_STATE_EVENT = 'sf-sortable-state';
 
@@ -252,8 +256,13 @@ function listIndicatorRect(list, all, index, horizontal) {
   return { left: box.left, top: y - 1, width: box.width, height: 2 };
 }
 
+// An sf-sortable list sends the new name and its aliases.json sends the old
+// one after it; a container the column mode attached to, or a list defined
+// without its manifest, sends both here.
 function emitIntent(target, detail) {
-  target.dispatchEvent(new globalThis.CustomEvent(SORTABLE_INTENT_EVENT, { bubbles: true, composed: true, detail: Object.freeze(detail) }));
+  const frozen = Object.freeze(detail);
+  target.dispatchEvent(new globalThis.CustomEvent(SORTABLE_MOVE_EVENT, { bubbles: true, composed: true, detail: frozen }));
+  if (!target.__sfAliases) target.dispatchEvent(new globalThis.CustomEvent(SORTABLE_INTENT_EVENT, { bubbles: true, composed: true, detail: frozen }));
 }
 
 // A keyboard move ends with the person's focus on the item they moved. The
@@ -296,12 +305,14 @@ function finish(list, reason) {
   if (reason === 'dropped' && ended.input === 'keyboard') restoreFocusAfterDrop(ended);
 }
 
-export function defineSortable(registry = globalThis.customElements) {
+// base: the class made from sf-sortable's component.json (manifest-host.mjs);
+// without it the list is a plain element, as the overlay's bundle defines it.
+export function defineSortable(registry = globalThis.customElements, { base = null } = {}) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
   const existing = registry.get('sf-sortable');
   if (existing) return existing;
 
-  class SfSortable extends globalThis.HTMLElement {
+  class SfSortable extends (base || globalThis.HTMLElement) {
     constructor() {
       super();
       this.connection = null;
@@ -310,6 +321,7 @@ export function defineSortable(registry = globalThis.customElements) {
     }
 
     connectedCallback() {
+      super.connectedCallback?.();
       if (this.connection) return;
       this.connection = new AbortController();
       const options = { signal: this.connection.signal };
@@ -336,6 +348,7 @@ export function defineSortable(registry = globalThis.customElements) {
     }
 
     disconnectedCallback() {
+      super.disconnectedCallback?.();
       this.observer?.disconnect();
       this.observer = null;
       this.connection?.abort();
@@ -829,4 +842,4 @@ export function attachSortable(container, options = {}) {
   };
 }
 
-export default { activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };
+export default { SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };

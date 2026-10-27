@@ -801,7 +801,7 @@ class SfTabs extends TabsElement {
     };
     render(html`
       <sf-sortable class="sf-tabs-settings-list" group="sf-tabs-settings" label=${this.text('customize')}
-                   @sf-sortable-intent=${onIntent}>
+                   @sf-sortable-move=${onIntent}>
         ${items.map((item) => html`
           <div class=${item.pinned ? 'sf-tabs-settings-row sf-tabs-settings-row--pinned' : 'sf-tabs-settings-row'}
                data-sf-sortable-item=${item.pinned ? nothing : item.key}>

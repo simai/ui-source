@@ -3,7 +3,7 @@
 Smart Sortable — примитив перетаскивания для списков: переставить элементы
 внутри списка, перенести между списками одной группы или скопировать из
 библиотеки. Работает мышью, пером, касанием и клавиатурой. Компонент только
-сообщает намерение событием `sf-sortable-intent`; DOM и данные меняет хост.
+просит переместить событием `sf-sortable-move` (словарь 1.1.5, `move`); DOM и данные меняет хост.
 
 Код загружается по требованию: загрузчик Framework подключает
 `smart/sortable` только на страницах с тегом `sf-sortable`.
@@ -18,7 +18,7 @@ Smart Sortable — примитив перетаскивания для спис
 ```
 
 ```js
-document.addEventListener('sf-sortable-intent', (event) => {
+document.addEventListener('sf-sortable-move', (event) => {
   const {item, from, to, index, mode} = event.detail; // index — итоговая позиция
   // Применить к своей модели с ожидаемой ревизией; при отказе ничего не менять.
 });
@@ -52,7 +52,7 @@ document.addEventListener('sf-sortable-intent', (event) => {
 Компонент сообщает намерение, список перерисовывает хост. Четыре правила —
 из первого редактора на этом компоненте (ui-mail, 21.10.2026):
 
-1. **У каждого списка свой `id`.** `from` и `to` в `sf-sortable-intent` — это
+1. **У каждого списка свой `id`.** `from` и `to` в `sf-sortable-move` — это
    `id` элемента списка (имя группы — только если `id` нет), поэтому хост,
    который ищет по `to` нужный список, без `id` его не найдёт.
 2. **Перерисовывать элементы, а не список.** `list.replaceChildren(…)` удаляет
@@ -72,7 +72,7 @@ document.addEventListener('sf-sortable-intent', (event) => {
    не переместил.
 
 ```js
-list.addEventListener('sf-sortable-intent', (event) => {
+list.addEventListener('sf-sortable-move', (event) => {
   const {item, from, to, index, mode} = event.detail;
   if (!model.apply({item, from, to, index, mode})) return; // отказ — без перерисовки
   for (const element of list.querySelectorAll('[data-sf-sortable-item]')) element.remove();
@@ -162,10 +162,23 @@ const detach = SF.Sortable.attach(table.tHead.rows[0], {
 
 ## События
 
-- `sf-sortable-intent` — `{item, from, to, index, mode}`;
+- `sf-sortable-move` — `{item, from, to, index, mode}`: просьба переместить
+  (или скопировать) элемент. Прежнее `sf-sortable-intent` приходит следом с тем
+  же `detail` до 2026-12-01 (`aliases.json`); контейнер в режиме колонок
+  (`SF.Sortable.attach`) шлёт оба имени сам;
 - `sf-sortable-state` — `{state: 'picked' | 'dropped' | 'cancelled', item}`: начало и конец сеанса;
 - `sf-sortable-insert` — `{index, item, to}`: выбор во вставщике, отменяемое.
 
 Внешние цели (например, `sf-composition-overlay`) подключаются через
 `SF.Sortable.registerSortableDropTarget`. Сеанс перетаскивания общий для всех
 Smart-бандлов.
+
+## Интерфейс
+
+Интерфейс — `component.json` (стандарт simai.smart-component 1.3.8), слова —
+`lang/`, примеры — `examples.json`. Настройки — свойства элемента (`group`,
+`accepts`, `mode`, `orientation`, `label`, `preview`, `inserterItems`).
+Публичные переменные (видны во время перетаскивания):
+`--sf-sortable-dragging-opacity`, `--sf-sortable-ghost-opacity`,
+`--sf-sortable-ghost-z-index`, `--sf-sortable-indicator-color`,
+`--sf-sortable-placeholder-border-color`.

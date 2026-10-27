@@ -424,7 +424,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "42c9c6fa32a36402e03cc30b6bec7dc72ff2319de3dc9219d60f56de2691faed"
+        "sha256": "730078bff6a6e311d13980626d690f070085f7ed27f3801a1a2b0a5f162fc6b5"
       }
     ],
     "generated_runtime": [

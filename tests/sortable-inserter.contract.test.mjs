@@ -113,7 +113,7 @@ test('the drag module is unchanged: the sortable bundle defines the element exte
   assert.match(inserter, /ensureAccessibilityNodes\(\) \{\s*super\.ensureAccessibilityNodes\(\);[\s\S]{0,120}this\.inserterController\?\.ensure\(\);/);
   // Instructions are written only when they change: the list observes itself.
   assert.match(inserter, /if \(next !== current\) this\.instructions\.textContent = next;/);
-  assert.match(entry, /defineSortable\(inserterRegistry\(\)\);/);
+  assert.match(entry, /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest, /);
   assert.match(entry, /SORTABLE_INSERT_EVENT, SORTABLE_INTENT_EVENT/);
   assert.doesNotMatch(overlay, /sortable-inserter/);
 });
