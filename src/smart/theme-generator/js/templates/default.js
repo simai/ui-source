@@ -17,7 +17,7 @@ export function renderThemeGeneratorTemplate(context) {
 
   return html`
     <div class=${['sf-theme-generator', `sf-theme-generator--size-${size}`, context.rootClass].filter(Boolean).join(' ')}
-         style=${context.rootStyle || nothing}>
+         style=${context.rootStyle || nothing} role="group" aria-label=${context.label || nothing}>
       <div class="sf-theme-generator-choice">
         <div class="sf-theme-generator-color">
           <span class="sf-theme-generator-label" aria-hidden="true">${text.color}</span>

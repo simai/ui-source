@@ -1,0 +1,89 @@
+{
+  "component": "sf-theme-generator",
+  "probe": "sf-theme-generator against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-theme-generator id=\"g\"></sf-theme-generator>",
+      "  <sf-theme-generator id=\"t\" value=\"#2e7d32\" hue=\"400\" chroma=\"60\" aria-label=\"Тема сайта\"></sf-theme-generator>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-unset",
+      "title": "unset, it is SIMAI Framework's colour: a group named by its title, eight palettes, nothing applied",
+      "covers": "settings.value, values.theme, accessibility group and name, lang runtime.title, runtime.preview",
+      "steps": [
+        {
+          "check": "(() => { const g = document.querySelector('#g'); const root = g.querySelector('.sf-theme-generator'); return g.value === '' && root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Генератор темы' && g.querySelectorAll('.sf-theme-generator-row').length === 8 && g.querySelector('.sf-theme-generator-preview').getAttribute('aria-label') === 'Предпросмотр темы' && typeof g.theme === 'object' && !document.documentElement.style.getPropertyValue('--sf-primary-40'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-numbers",
+      "title": "hue and chroma are numbers: out of range at the edge, unset the colour's own",
+      "covers": "settings.hue, settings.chroma (number, nullable)",
+      "steps": [
+        {
+          "check": "(() => { const t = document.querySelector('#t'); const g = document.querySelector('#g'); return t.hue === 360 && t.chroma === 60 && typeof g.hue === 'number' && typeof g.chroma === 'number' && t.querySelector('.sf-theme-generator').getAttribute('aria-label') === 'Тема сайта'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p3-reset",
+      "title": "reset answers applied: the browser's change and sf-theme-generator-committed with the theme, the four former names after them",
+      "covers": "actions.reset, events.change, events.committed, aliases.json sf-theme-generator-change, sf-theme-change, sf-theme-generator-apply, sf-theme-apply",
+      "steps": [
+        {
+          "action": {
+            "name": "reset"
+          },
+          "target": "#t",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "change",
+                "count": 1,
+                "detail": {
+                  "value": ""
+                }
+              },
+              {
+                "name": "sf-theme-generator-change",
+                "count": 1
+              },
+              {
+                "name": "sf-theme-change",
+                "count": 1
+              },
+              {
+                "name": "sf-theme-generator-committed",
+                "count": 1,
+                "detail": {
+                  "value": ""
+                }
+              },
+              {
+                "name": "sf-theme-generator-apply",
+                "count": 1
+              },
+              {
+                "name": "sf-theme-apply",
+                "count": 1
+              }
+            ],
+            "values": {
+              "#t.value": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

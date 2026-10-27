@@ -1,0 +1,60 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Тема из зелёного",
+      "settings": {
+        "value": "#2e7d32"
+      },
+      "expect": {
+        "value": "#2e7d32"
+      }
+    },
+    {
+      "name": "framework",
+      "title": "Цвет SIMAI Framework",
+      "settings": {},
+      "expect": {
+        "value": ""
+      }
+    },
+    {
+      "name": "tuned",
+      "title": "Свой тон и насыщенность",
+      "settings": {
+        "value": "#2e7d32",
+        "hue": 200,
+        "chroma": 60
+      },
+      "expect": {
+        "hue": 200,
+        "chroma": 60
+      }
+    },
+    {
+      "name": "swatches",
+      "title": "Цвета продукта",
+      "settings": {
+        "swatches": "#2e7d32|Лес, #c62828|Кирпич, #6a1b9a|Слива",
+        "size": "1/2"
+      },
+      "expect": {
+        "size": "1/2"
+      }
+    },
+    {
+      "name": "apply",
+      "title": "Тема на части страницы",
+      "markup": "<div class=\"site-main theme-light\">Содержимое</div>",
+      "settings": {
+        "value": "#6a1b9a",
+        "apply": true,
+        "target": ".site-main",
+        "selector": ".site-main"
+      },
+      "expect": {
+        "apply": true
+      }
+    }
+  ]
+}

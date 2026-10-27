@@ -2,23 +2,25 @@
 /* A colour and a reset on one row, the fine tuning folded below them, and the
    palettes under that: one row each, a name and six tones. Sizes follow the
    control ladder; the swatches are the step's control height tall, so a
-   preview at 1/2 is as dense as the fields beside it. */
+   preview at 1/2 is as dense as the fields beside it. The public variables
+   (standard 1.3.8 §6): the gap, the text's and the labels' ink, the
+   swatches' radius and border. */
 sf-theme-generator {
   display: block;
 }
 
 .sf-theme-generator {
   --sf-theme-generator--control-height: var(--sf-ui-1--control-height);
-  --sf-theme-generator--gap: var(--sf-space-1);
+  --sf-theme-generator--gap: var(--sf-theme-generator-gap, var(--sf-space-1));
   display: flex;
   flex-direction: column;
   gap: var(--sf-theme-generator--gap);
-  color: var(--sf-on-surface);
+  color: var(--sf-theme-generator-color, var(--sf-on-surface));
 }
 
 .sf-theme-generator--size-1\/2 {
   --sf-theme-generator--control-height: var(--sf-ui-1\/2--control-height);
-  --sf-theme-generator--gap: var(--sf-space-1\/2);
+  --sf-theme-generator--gap: var(--sf-theme-generator-gap, var(--sf-space-1\/2));
 }
 
 .sf-theme-generator--size-2 {
@@ -44,7 +46,7 @@ sf-theme-generator {
 .sf-theme-generator-name {
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
 }
 
 .sf-theme-generator-summary {
@@ -90,8 +92,8 @@ sf-theme-generator {
 .sf-theme-generator-swatches {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  border: var(--sf-px) solid var(--sf-outline-variant);
-  border-radius: var(--sf-radius--ui);
+  border: var(--sf-px) solid var(--sf-theme-generator-swatch-border-color, var(--sf-outline-variant));
+  border-radius: var(--sf-theme-generator-swatch-radius, var(--sf-radius--ui));
   overflow: hidden;
 }
 

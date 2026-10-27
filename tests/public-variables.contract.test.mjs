@@ -55,6 +55,7 @@ const FOLDERS = {
   // sf-tree draws its rows with the tree and tree-item class sheets.
   tree: 'tree',
   'tree-item': 'tree-item',
+  'theme-generator': 'smart/theme-generator',
 };
 
 const scss = async (folder) => {

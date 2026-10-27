@@ -1,0 +1,28 @@
+{
+  "title": "Theme generator",
+  "runtime": {
+    "advanced": "Advanced",
+    "chroma": "Chroma",
+    "chroma-hint": "0 to 150",
+    "color": "Main colour",
+    "error": "Error",
+    "hue": "Hue",
+    "hue-hint": "0 to 360",
+    "info": "Information",
+    "inherited": "SIMAI Framework colour",
+    "neutral": "Neutral",
+    "preview": "Theme preview",
+    "primary": "Primary",
+    "reset": "Reset",
+    "secondary": "Secondary",
+    "success": "Success",
+    "tertiary": "Tertiary",
+    "title": "Theme generator",
+    "warning": "Warning"
+  },
+  "events": {
+    "committed": {
+      "label": "Theme committed"
+    }
+  }
+}

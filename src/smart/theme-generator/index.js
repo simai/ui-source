@@ -9,8 +9,14 @@
 // the Framework's own colour. It stores nothing -- the host keeps the choice
 // (Docara settings, Larena site settings) -- and changes nothing on the page
 // unless it is asked to with `apply`.
+//
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// the settings are made by core/js/element-manifest.js, reset is the action,
+// the words are the language files'; the choice is the browser's change and
+// the commit sf-theme-generator-committed, the former -change, sf-theme-change,
+// -apply and sf-theme-apply following until 2026-12-01 (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import {
   applyTheme,
   colorToHct,
@@ -23,53 +29,15 @@ import {
   THEME_PALETTES,
 } from '../../core/js/theme-palette.js';
 import {renderThemeGeneratorTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import './scss/index.scss';
 
-const SIZES = ['1/2', '1', '2'];
 // The tones the preview shows: light to dark, the brand tone (40) among them.
 const PREVIEW_TONES = [90, 70, 50, 40, 30, 10];
 const LIMITS = {hue: [0, 360], chroma: [0, 150]};
-
-const THEME_TEXT = {
-  en: {
-    color: 'Main colour',
-    inherited: 'Framework colour',
-    advanced: 'Advanced',
-    hue: 'Hue',
-    hueHint: '0 to 360',
-    chroma: 'Chroma',
-    chromaHint: '0 to 150',
-    reset: 'Reset',
-    preview: 'Theme preview',
-    primary: 'Primary',
-    secondary: 'Secondary',
-    tertiary: 'Tertiary',
-    neutral: 'Neutral',
-    error: 'Error',
-    warning: 'Warning',
-    success: 'Success',
-    info: 'Information',
-  },
-  ru: {
-    color: 'Основной цвет',
-    inherited: 'цвет Framework',
-    advanced: 'Тонкая настройка',
-    hue: 'Тон',
-    hueHint: 'От 0 до 360',
-    chroma: 'Насыщенность',
-    chromaHint: 'От 0 до 150',
-    reset: 'Сбросить',
-    preview: 'Предпросмотр темы',
-    primary: 'Основная',
-    secondary: 'Вторичная',
-    tertiary: 'Дополнительная',
-    neutral: 'Нейтральная',
-    error: 'Ошибка',
-    warning: 'Предупреждение',
-    success: 'Успех',
-    info: 'Информация',
-  },
-};
 
 // A hex the calculation accepts, as #rrggbb, or '' for none. The colour
 // control also holds #rrggbbaa; a theme has no transparency, so it is dropped.
@@ -94,7 +62,17 @@ const readNumber = (value, [min, max], clamp = false) => {
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
 
-class SfThemeGenerator extends SfBaseElement {
+const ThemeGeneratorElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+  actions: {
+    reset() { return this.runReset(); },
+  },
+});
+
+class SfThemeGenerator extends ThemeGeneratorElement {
   constructor() {
     super();
     this._themeKey = null;
@@ -103,21 +81,6 @@ class SfThemeGenerator extends SfBaseElement {
     this._applied = {target: null, key: null};
     this._quiet = false;
     this._committedKey = null;
-  }
-
-  static get props() {
-    return {
-      templateName: {attribute: 'template', default: 'default'},
-      value: {default: ''},
-      hue: {default: ''},
-      chroma: {default: ''},
-      size: {default: '1', values: ['1/2', '1', '2']},
-      swatches: {default: ''},
-      apply: {type: Boolean, default: false},
-      target: {default: ''},
-      selector: {default: ':root'},
-      rootClass: {default: ''},
-    };
   }
 
   // The main colour, #rrggbb, or '' while the Framework's own one applies.
@@ -136,25 +99,29 @@ class SfThemeGenerator extends SfBaseElement {
     return this.value || DEFAULT_THEME_COLOR;
   }
 
+  // Unset, the colour's own reading; out of range, the edge (§4.2 nullable).
   get hue() {
     return readNumber(this.getAttribute('hue'), LIMITS.hue, true) ?? colorToHct(this.color).hue;
+  }
+
+  set hue(next) {
+    super.hue = next;
   }
 
   get chroma() {
     return readNumber(this.getAttribute('chroma'), LIMITS.chroma, true) ?? colorToHct(this.color).chroma;
   }
 
-  get size() {
-    const value = this.getAttribute('size');
-    return SIZES.includes(value) ? value : '1';
+  set chroma(next) {
+    super.chroma = next;
   }
 
   get selector() {
     return this.getAttribute('selector') || ':root';
   }
 
-  get swatches() {
-    return this.getAttribute('swatches') || '';
+  set selector(next) {
+    super.selector = next;
   }
 
   /** The theme shown now (a copy: changing it changes nothing). */
@@ -172,8 +139,8 @@ class SfThemeGenerator extends SfBaseElement {
     return copy(this._currentTheme());
   }
 
-  /** Back to the Framework's own colour; a committed choice. */
-  reset() {
+  /** The action reset: back to SIMAI Framework's own colour; a committed choice. */
+  runReset() {
     this._batch(() => {
       this.removeAttribute('value');
       this.removeAttribute('hue');
@@ -181,6 +148,7 @@ class SfThemeGenerator extends SfBaseElement {
     });
     this._emitChange();
     this._commit(true);
+    return {outcome: 'applied'};
   }
 
   _key() {
@@ -215,12 +183,11 @@ class SfThemeGenerator extends SfBaseElement {
   }
 
   _emitChange() {
-    // sf-theme-generator-change, and its first name sf-theme-change, which the
-    // Loader's own light/dark event also bears (journal
-    // event-theme-generator-names, until 2026-12-01).
-    const detail = this._detail();
-    this.emitComponentEvent('theme-generator-change', detail);
-    this.emitComponentEvent('theme-change', detail);
+    // The browser's change with the theme in the detail (vocabulary 1.1.5
+    // §5.1); sf-theme-generator-change and its first name sf-theme-change,
+    // which the Loader's own light/dark event also bears, follow it until
+    // 2026-12-01 (aliases.json).
+    this.sfEmit('change', this._detail());
   }
 
   // Committed once per distinct theme: Enter and the field's own change that
@@ -229,9 +196,8 @@ class SfThemeGenerator extends SfBaseElement {
     const key = this._key();
     if (!force && key === this._committedKey) return;
     this._committedKey = key;
-    const detail = this._detail();
-    this.emitComponentEvent('theme-generator-apply', detail);
-    this.emitComponentEvent('theme-apply', detail);
+    // sf-theme-generator-committed; -apply and sf-theme-apply follow.
+    this.sfEmit('committed', this._detail());
   }
 
   // Several attributes as one change: the page is re-themed once.
@@ -348,7 +314,7 @@ class SfThemeGenerator extends SfBaseElement {
   }
 
   templateContext() {
-    const text = (key) => pageText(THEME_TEXT, key, this, 'sf-theme-generator');
+    const text = (key) => this.sfWord(key);
     const theme = this._currentTheme();
     return this.createTemplateContext({
       ...this.getPropsContext(),
@@ -364,9 +330,9 @@ class SfThemeGenerator extends SfBaseElement {
         inherited: text('inherited'),
         advanced: text('advanced'),
         hue: text('hue'),
-        hueHint: text('hueHint'),
+        hueHint: text('hue-hint'),
         chroma: text('chroma'),
-        chromaHint: text('chromaHint'),
+        chromaHint: text('chroma-hint'),
         reset: text('reset'),
         preview: text('preview'),
       },
@@ -376,6 +342,8 @@ class SfThemeGenerator extends SfBaseElement {
         swatches: PREVIEW_TONES.map((tone) => ({tone, hex: theme.palettes[name].tones[tone]})),
       })),
       rootClass: this.getRootClass(),
+      // A group named by the host's aria-label, else the generator's title.
+      label: this.getAttribute('aria-label') || text('title'),
     });
   }
 

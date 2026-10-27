@@ -393,9 +393,6 @@
     "position/default",
     "transition-property/default"
   ],
-  "cl-theme-generator": [
-    "position/default"
-  ],
   "cl-toast": [
     "align-items/default",
     "display/default",

@@ -1,0 +1,28 @@
+{
+  "title": "Генератор темы",
+  "runtime": {
+    "advanced": "Тонкая настройка",
+    "chroma": "Насыщенность",
+    "chroma-hint": "От 0 до 150",
+    "color": "Основной цвет",
+    "error": "Ошибка",
+    "hue": "Тон",
+    "hue-hint": "От 0 до 360",
+    "info": "Информация",
+    "inherited": "цвет SIMAI Framework",
+    "neutral": "Нейтральная",
+    "preview": "Предпросмотр темы",
+    "primary": "Основная",
+    "reset": "Сбросить",
+    "secondary": "Вторичная",
+    "success": "Успех",
+    "tertiary": "Дополнительная",
+    "title": "Генератор темы",
+    "warning": "Предупреждение"
+  },
+  "events": {
+    "committed": {
+      "label": "Тема выбрана"
+    }
+  }
+}

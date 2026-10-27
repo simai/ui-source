@@ -1,0 +1,72 @@
+{
+  "$comment": "Dated aliases of sf-theme-generator for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-theme-generator",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-theme-generator-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-theme-generator",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-theme-generator-change",
+        "to": "change"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1",
+      "note": "the vocabulary's change; the alias table's sf-theme-generator-change (2026-10-18) is itself dated now"
+    },
+    {
+      "from": "sf-theme-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-theme-generator",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-theme-change",
+        "to": "change"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1",
+      "note": "the first name (journal event-theme-generator-names); the Loader's light/dark event bears the same name"
+    },
+    {
+      "from": "sf-theme-generator-apply",
+      "to": "sf-theme-generator-committed",
+      "kind": "event",
+      "component": "sf-theme-generator",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-theme-generator-apply",
+        "to": "committed"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1",
+      "note": "the commit is a fact; apply is the vocabulary's action on entries"
+    },
+    {
+      "from": "sf-theme-apply",
+      "to": "sf-theme-generator-committed",
+      "kind": "event",
+      "component": "sf-theme-generator",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-theme-apply",
+        "to": "committed"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1",
+      "note": "the first name (journal event-theme-generator-names)"
+    }
+  ]
+}

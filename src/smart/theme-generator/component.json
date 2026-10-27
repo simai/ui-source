@@ -1,0 +1,242 @@
+{
+  "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.theme-generator",
+  "tag": "sf-theme-generator",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "theme",
+  "settings": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "The main colour, #rrggbb; empty while SIMAI Framework's own colour applies"
+    },
+    "hue": {
+      "type": "number",
+      "nullable": true,
+      "integer": true,
+      "min": 0,
+      "max": 360,
+      "default": null,
+      "summary": "The generator's own hue; unset, the colour's"
+    },
+    "chroma": {
+      "type": "number",
+      "nullable": true,
+      "integer": true,
+      "min": 0,
+      "max": 150,
+      "default": null,
+      "summary": "The generator's own chroma; unset, the colour's"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "swatches": {
+      "type": "string",
+      "default": "",
+      "summary": "The product's colours beside the picker, as sf-color takes them: #hex|Name, #hex"
+    },
+    "apply": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Put the theme on target as inline variables at every change; without it the page is not changed"
+    },
+    "target": {
+      "type": "string",
+      "default": "",
+      "summary": "A CSS selector of the element apply themes; empty, the document's root"
+    },
+    "selector": {
+      "type": "string",
+      "default": ":root",
+      "summary": "The rule's selector in the events and in toCSS()"
+    }
+  },
+  "values": {
+    "theme": {
+      "type": "object",
+      "summary": "The theme shown now (simai.framework.theme.v1), a copy"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "value": "string",
+        "hue": "number",
+        "chroma": "number",
+        "theme": "object",
+        "variables": "object",
+        "css": "string"
+      },
+      "summary": "The choice changed -- a drag in the picker, a swatch, a number typed (vocabulary 1.1.5 §5.1: sf-theme-change → change on the theme generator); the browser's name, with the theme in the detail"
+    },
+    "committed": {
+      "carries": {
+        "value": "string",
+        "hue": "number",
+        "chroma": "number",
+        "theme": "object",
+        "variables": "object",
+        "css": "string"
+      },
+      "own-verb": true,
+      "summary": "The choice was committed -- the picker's change, a swatch, Enter or leaving a field, Reset: the theme the host keeps"
+    }
+  },
+  "actions": {
+    "reset": {
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Back to SIMAI Framework's own colour; a committed choice"
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "commit"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The generator is a group named by its aria-label or the language file's runtime.title; its controls are sf-color (the main colour), two sf-input number fields in a <details> and an sf-button, each with its own name; the preview is a section named «Предпросмотр темы» whose swatches are images named by palette, tone and hex. Enter in a field commits.",
+    "role": "group",
+    "name": {
+      "from": [
+        "aria-label",
+        "runtime.title"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "commit"
+    }
+  },
+  "css-variables": {
+    "--sf-theme-generator-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-theme-generator-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-theme-generator-label-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-theme-generator-swatch-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-theme-generator-swatch-border-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+  "x-source": {
+    "package": "framework",
+    "folder": "theme-generator",
+    "manifest": "simai/ui-source@5100227 src/smart/theme-generator/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/theme-generator.component.json"
+  },
+  "x-words": [
+    "swatches"
+  ],
+  "x-renamed": [
+    "events.sf-theme-generator-change and its first name sf-theme-change → change (vocabulary 1.1.5 §5.1: sf-theme-change → change on the theme generator); both dated same-detail aliases",
+    "events.sf-theme-generator-apply and its first name sf-theme-apply → committed: the choice was committed, a fact (the vocabulary's apply is an action on entries, {action, scope}, not this); both dated same-detail aliases",
+    "settings hue, chroma: strings → numbers, nullable (§16 item 29)",
+    "methods toCSS(), toJSON(): reads of the value theme, kept as methods; reset() is the action reset"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "storing the chosen theme"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-theme-generator where a person chooses a site's or a product's main colour and the rest of its palette should follow.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not copy the palette calculation; import core theme-palette",
+        "Do not expect the component to store the choice; the host keeps it"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "methods",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-theme-generator value=\"#2e7d32\" apply></sf-theme-generator>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "assembly: a leaf, with reasons. It draws sf-color, two sf-input fields and an sf-button, but they are the controls of its own one value -- the colour, and the hue and chroma that tune it -- with no data or rule between them beyond the calculation the element makes; written as an assembly it would gain keys, roles and bindings for nothing it does. The parts are migrated (the fields family) and it uses them through their public interface.",
+    "alias-conflict: the alias table's sf-theme-change → sf-theme-generator-change (shipped 2026-10-18, journal event-theme-generator-names) and this conversion's change -- the vocabulary decides (1.1.5 §5.1, sf-theme-change → change on the theme generator): the event is the browser's change, with the theme in the detail, and both sf-theme-generator-change and sf-theme-change follow it with the same detail until 2026-12-01. As before, it is sent at every change of the choice, not only at the commit.",
+    "the commit is committed (a fact, the past form, its word in the language files): sf-theme-generator-committed. The vocabulary's apply is an action on entries {action, scope}, so the old name would have read as that verb with another payload; sf-theme-generator-apply and sf-theme-apply follow with the same detail until 2026-12-01. The setting apply (whether the theme is put on the page) keeps its name: a setting, not an event.",
+    "hue and chroma are numbers (integer, nullable, 0–360 and 0–150): unset, the colour's reading; out of range they read at the edge, as before.",
+    "reset is the action (answers applied); toCSS(selector) and toJSON() stay methods: they read the value theme and change nothing, which is no action (§4.4).",
+    "a11y-name: the generator is a group named by its aria-label, else the language file's runtime.title («Генератор темы», \"Theme generator\"); its root carries role group.",
+    "key-effects: Tab reaches its controls; Enter in a number field commits (commit), without submitting a form around it.",
+    "words (§11): the language files' runtime words, read with sfWord; THEME_TEXT is gone (hueHint and chromaHint are hue-hint and chroma-hint).",
+    "version 1.1.0: events renamed behind dated aliases, hue and chroma typed (§4.10).",
+    "examples: examples.json from studio.fixture.json (a green theme) plus SIMAI Framework's colour, a tuned hue and chroma, product swatches and apply to a part of the page.",
+    "css-variables: five public variables of its sheet: the gap, the text's ink, the labels' ink, the swatches' radius and border. Listed in src/core/contracts/public-variables.v1.json.",
+    "source-drift: the shipped manifest differs from 5100227 in the alias rows and its provenance; the interface converted is the shipped one."
+  ]
+}

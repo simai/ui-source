@@ -156,6 +156,9 @@ const DRAW = {
   'tree-item': {css: ['tree-item', 'icons', 'icon-buttons'], js: 'tree-item',
     html: '<sf-tree-item id="node" label="Папка" value="a" open><sf-tree-item label="Файл" value="b" kind="file"></sf-tree-item></sf-tree-item>',
     open: 'document.querySelector("#node > .sf-tree-item").setAttribute("data-sf-drop-target", "")'},
+  // The generator's own markup at rest: the labels and the palettes' rows.
+  'theme-generator': {css: ['smart/smart/theme-generator/css/theme-generator.css'], js: 'theme-generator',
+    html: '<sf-theme-generator value="#2e7d32"></sf-theme-generator>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

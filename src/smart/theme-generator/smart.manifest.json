@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Theme generator",
   "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads and the 98 translucent steps core derives from them, with a preview, events carrying the CSS, and an optional live application to the page.",
   "kind": "smart",
@@ -357,15 +357,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "514e405f20084aa7debee6194cb3d27f0b259870d4d5d661bcce52d5f3e8f13a"
+        "sha256": "d4a1630534af9295cf9e10c9344cd617526fcf61f0e462004f6a3dbd4daae9df"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
-        "sha256": "9adbb26fd16a779b524187e047ffd2c244198bb238962571b52603b1a5e132b8"
+        "sha256": "efd4d96b902194e1e2aff942f264e93d7ec2b1c9547de69d86c23b619b1ad240"
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "9c1a2e0dbd5cb4db72b295d28de0ace0e234b9a0b5a5b57bd378153aab0a4f75"
+        "sha256": "174a67a4865f5b445ab65dd9244617ce0464404dc95b6ac625f33e98ddef8ab7"
       },
       {
         "path": "src/smart/theme-generator/rule.js",
@@ -373,7 +373,7 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "f81fad2013c6d6848dee4d103da8b2127236470bc87076f38fb29f9379407ad8"
+        "sha256": "11d2b9dabd2f615ad5d9ad464f628ab4e25a24466717dd35cc9cc8fdf90bd57d"
       },
       {
         "path": "src/core/js/theme-palette.js",

@@ -2963,6 +2963,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "theme-generator",
+      "selector": "sf-theme-generator, .sf-theme-generator",
+      "variables": [
+        {
+          "name": "--sf-theme-generator-gap",
+          "role": "gap",
+          "summary": "The space between the choice, the fine tuning and the preview, and inside them.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-theme-generator-color",
+          "role": "color",
+          "summary": "The text's ink.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-theme-generator-label-color",
+          "role": "color",
+          "summary": "The labels' and the palette names' ink.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-theme-generator-swatch-radius",
+          "role": "radius",
+          "summary": "The corner radius of a palette's row of tones.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-theme-generator-swatch-border-color",
+          "role": "border-color",
+          "summary": "The border of a palette's row of tones.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }
