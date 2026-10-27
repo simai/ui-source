@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.flex-shrink",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/flex-shrink/default/index.js",
+    "src/utility/flex-shrink/default/index.scss",
+    "src/utility/flex-shrink/default/rule.js",
+    "src/utility/flex-shrink/default/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/default/scss/_sf_var__flex_shrink.scss",
+    "src/utility/flex-shrink/default/scss/index.scss",
+    "src/utility/flex-shrink/lg/index.js",
+    "src/utility/flex-shrink/lg/index.scss",
+    "src/utility/flex-shrink/lg/rule.js",
+    "src/utility/flex-shrink/lg/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/lg/scss/index.scss",
+    "src/utility/flex-shrink/md/index.js",
+    "src/utility/flex-shrink/md/index.scss",
+    "src/utility/flex-shrink/md/rule.js",
+    "src/utility/flex-shrink/md/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/md/scss/index.scss",
+    "src/utility/flex-shrink/sm/index.js",
+    "src/utility/flex-shrink/sm/index.scss",
+    "src/utility/flex-shrink/sm/rule.js",
+    "src/utility/flex-shrink/sm/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/sm/scss/index.scss",
+    "src/utility/flex-shrink/xl/index.js",
+    "src/utility/flex-shrink/xl/index.scss",
+    "src/utility/flex-shrink/xl/rule.js",
+    "src/utility/flex-shrink/xl/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/xl/scss/index.scss",
+    "src/utility/flex-shrink/xxl/index.js",
+    "src/utility/flex-shrink/xxl/index.scss",
+    "src/utility/flex-shrink/xxl/rule.js",
+    "src/utility/flex-shrink/xxl/scss/_sf_css__flex_shrink.scss",
+    "src/utility/flex-shrink/xxl/scss/index.scss"
+  ],
+  "content_sha256": "1bd3fd1c4c3a28b9f6a2ec051924897afd69b4e0730f1330c728957562f073f6",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

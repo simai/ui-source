@@ -1,0 +1,58 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.badges",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/badges/docs/docs.md",
+    "src/component/badges/index.js",
+    "src/component/badges/js/_anchored-state.js",
+    "src/component/badges/js/_anchored.js",
+    "src/component/badges/js/_badges.js",
+    "src/component/badges/js/contract.js",
+    "src/component/badges/js/index.js",
+    "src/component/badges/json/badge.utility.json",
+    "src/component/badges/rule.js",
+    "src/component/badges/scss/_anchored-geometry.scss",
+    "src/component/badges/scss/_css__badges.scss",
+    "src/component/badges/scss/_css__badges_anchored.scss",
+    "src/component/badges/scss/index.scss"
+  ],
+  "content_sha256": "3fc8564c0e14ea76a30c1a22860694e3b15ac0454b04002285cf655c280a84c3",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

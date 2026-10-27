@@ -1,0 +1,49 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.fab",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/fab/docs/docs.md",
+    "src/component/fab/index.js",
+    "src/component/fab/js/_fab.js",
+    "src/component/fab/js/index.js",
+    "src/component/fab/json/fab.utility.json",
+    "src/component/fab/rule.js",
+    "src/component/fab/scss/_css_fab.scss",
+    "src/component/fab/scss/index.scss"
+  ],
+  "content_sha256": "5c2c6b03888755ccab198a464218040652f5c394817941fc5b8b98cdf59eccfa",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.pagination",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/pagination/docs/docs.md",
+    "src/component/pagination/index.js",
+    "src/component/pagination/js/_pagination.js",
+    "src/component/pagination/js/index.js",
+    "src/component/pagination/rule.js",
+    "src/component/pagination/scss/_css__page_number.scss",
+    "src/component/pagination/scss/_css__pagination.scss",
+    "src/component/pagination/scss/_css__pagination_custom.scss",
+    "src/component/pagination/scss/_var__pagination.scss",
+    "src/component/pagination/scss/index.scss"
+  ],
+  "content_sha256": "8d668c6348c7018a018a6d0513ee929707e2017a36093b9b73efd8ae8cb25bf2",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

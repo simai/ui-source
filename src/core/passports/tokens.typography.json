@@ -1,0 +1,68 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.typography",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Text sizes, line heights, the typography roles and styles, and links.",
+  "includes": [
+    "src/core/figma_variables/figma_text_body_text_height.scss",
+    "src/core/figma_variables/figma_text_text_size.scss",
+    "src/core/figma_variables/figma_text_title_height.scss",
+    "src/core/figma_variables/figma_typography_roles.scss",
+    "src/core/figma_variables/figma_typography_styles.scss",
+    "src/core/scss/_sf_css__typograpy.scss",
+    "src/core/scss/_sf_css__link.scss",
+    "src/core/scss/vars/_sf_var__link.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_text_body_text_height.scss",
+    "src/core/figma_variables/figma_text_text_size.scss",
+    "src/core/figma_variables/figma_text_title_height.scss",
+    "src/core/figma_variables/figma_typography_roles.scss",
+    "src/core/figma_variables/figma_typography_styles.scss",
+    "src/core/scss/_sf_css__link.scss",
+    "src/core/scss/_sf_css__typograpy.scss",
+    "src/core/scss/vars/_sf_var__link.scss"
+  ],
+  "content_sha256": "ef3ead84cb2f49b4c0eddde3d4ca7628760daf940696d8c1d2736b2c8d604685",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.font-weight",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.letter-spacing",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.line-height",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.text-max-width",
+      "range": "^1.0.0"
+    }
+  ]
+}

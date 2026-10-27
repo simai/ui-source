@@ -1,0 +1,17 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "plugin.plugin3",
+  "kind": "plugin",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/plugin/plugin3/index.js",
+    "src/plugin/plugin3/js/index.js",
+    "src/plugin/plugin3/js/libs/lib.js",
+    "src/plugin/plugin3/scss/color/color.scss",
+    "src/plugin/plugin3/scss/index.scss"
+  ],
+  "content_sha256": "5835b77e7a7b79745e406a1e03f3f3d69a8fbdbb99c8a0b48cf169b73fb8efa4",
+  "dependencies": []
+}

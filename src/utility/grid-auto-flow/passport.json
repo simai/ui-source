@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-auto-flow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-auto-flow/default/index.js",
+    "src/utility/grid-auto-flow/default/index.scss",
+    "src/utility/grid-auto-flow/default/rule.js",
+    "src/utility/grid-auto-flow/default/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/default/scss/_sf_var__grid_flow.scss",
+    "src/utility/grid-auto-flow/default/scss/index.scss",
+    "src/utility/grid-auto-flow/lg/index.js",
+    "src/utility/grid-auto-flow/lg/index.scss",
+    "src/utility/grid-auto-flow/lg/rule.js",
+    "src/utility/grid-auto-flow/lg/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/lg/scss/index.scss",
+    "src/utility/grid-auto-flow/md/index.js",
+    "src/utility/grid-auto-flow/md/index.scss",
+    "src/utility/grid-auto-flow/md/rule.js",
+    "src/utility/grid-auto-flow/md/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/md/scss/index.scss",
+    "src/utility/grid-auto-flow/sm/index.js",
+    "src/utility/grid-auto-flow/sm/index.scss",
+    "src/utility/grid-auto-flow/sm/rule.js",
+    "src/utility/grid-auto-flow/sm/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/sm/scss/index.scss",
+    "src/utility/grid-auto-flow/xl/index.js",
+    "src/utility/grid-auto-flow/xl/index.scss",
+    "src/utility/grid-auto-flow/xl/rule.js",
+    "src/utility/grid-auto-flow/xl/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/xl/scss/index.scss",
+    "src/utility/grid-auto-flow/xxl/index.js",
+    "src/utility/grid-auto-flow/xxl/index.scss",
+    "src/utility/grid-auto-flow/xxl/rule.js",
+    "src/utility/grid-auto-flow/xxl/scss/_sf_css__grid_flow.scss",
+    "src/utility/grid-auto-flow/xxl/scss/index.scss"
+  ],
+  "content_sha256": "1f55493806e34b8d69e4cbe32f5bb473c2cee71dff6945c6f1c15b0f409cc07f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

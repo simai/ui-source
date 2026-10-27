@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.place-self",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/place-self/default/index.js",
+    "src/utility/place-self/default/index.scss",
+    "src/utility/place-self/default/rule.js",
+    "src/utility/place-self/default/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/default/scss/_sf_var__place_self.scss",
+    "src/utility/place-self/default/scss/index.scss",
+    "src/utility/place-self/lg/index.js",
+    "src/utility/place-self/lg/index.scss",
+    "src/utility/place-self/lg/rule.js",
+    "src/utility/place-self/lg/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/lg/scss/index.scss",
+    "src/utility/place-self/md/index.js",
+    "src/utility/place-self/md/index.scss",
+    "src/utility/place-self/md/rule.js",
+    "src/utility/place-self/md/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/md/scss/index.scss",
+    "src/utility/place-self/sm/index.js",
+    "src/utility/place-self/sm/index.scss",
+    "src/utility/place-self/sm/rule.js",
+    "src/utility/place-self/sm/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/sm/scss/index.scss",
+    "src/utility/place-self/xl/index.js",
+    "src/utility/place-self/xl/index.scss",
+    "src/utility/place-self/xl/rule.js",
+    "src/utility/place-self/xl/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/xl/scss/index.scss",
+    "src/utility/place-self/xxl/index.js",
+    "src/utility/place-self/xxl/index.scss",
+    "src/utility/place-self/xxl/rule.js",
+    "src/utility/place-self/xxl/scss/_sf_css__place_self.scss",
+    "src/utility/place-self/xxl/scss/index.scss"
+  ],
+  "content_sha256": "5ae335d9a0c4d3144a8f62e058dda6a57809077bef441671931e387a992d487e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

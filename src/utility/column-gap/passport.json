@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.column-gap",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/column-gap/default/index.js",
+    "src/utility/column-gap/default/index.scss",
+    "src/utility/column-gap/default/rule.js",
+    "src/utility/column-gap/default/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/default/scss/index.scss",
+    "src/utility/column-gap/lg/index.js",
+    "src/utility/column-gap/lg/index.scss",
+    "src/utility/column-gap/lg/rule.js",
+    "src/utility/column-gap/lg/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/lg/scss/index.scss",
+    "src/utility/column-gap/md/index.js",
+    "src/utility/column-gap/md/index.scss",
+    "src/utility/column-gap/md/rule.js",
+    "src/utility/column-gap/md/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/md/scss/index.scss",
+    "src/utility/column-gap/sm/index.js",
+    "src/utility/column-gap/sm/index.scss",
+    "src/utility/column-gap/sm/rule.js",
+    "src/utility/column-gap/sm/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/sm/scss/index.scss",
+    "src/utility/column-gap/xl/index.js",
+    "src/utility/column-gap/xl/index.scss",
+    "src/utility/column-gap/xl/rule.js",
+    "src/utility/column-gap/xl/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/xl/scss/index.scss",
+    "src/utility/column-gap/xxl/index.js",
+    "src/utility/column-gap/xxl/index.scss",
+    "src/utility/column-gap/xxl/rule.js",
+    "src/utility/column-gap/xxl/scss/_sf_css__column_gap.scss",
+    "src/utility/column-gap/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2314306fabb62bfc9e784de14c509f4ad515d6c9a51eab11a55423ed6e054add",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.padding",
+      "range": "^1.0.0"
+    }
+  ]
+}

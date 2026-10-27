@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.font-style",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/font-style/default/index.js",
+    "src/utility/font-style/default/index.scss",
+    "src/utility/font-style/default/rule.js",
+    "src/utility/font-style/default/scss/_sf_css__font_style.scss",
+    "src/utility/font-style/default/scss/_sf_var__font_style.scss",
+    "src/utility/font-style/default/scss/index.scss"
+  ],
+  "content_sha256": "7b2b4faa2e03f6b20f68ed560ffc3069f1880651a96f2d282937ed5ba1ba42c3",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

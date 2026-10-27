@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.flex-grow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/flex-grow/default/index.js",
+    "src/utility/flex-grow/default/index.scss",
+    "src/utility/flex-grow/default/rule.js",
+    "src/utility/flex-grow/default/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/default/scss/_sf_var__flex_grow.scss",
+    "src/utility/flex-grow/default/scss/index.scss",
+    "src/utility/flex-grow/lg/index.js",
+    "src/utility/flex-grow/lg/index.scss",
+    "src/utility/flex-grow/lg/rule.js",
+    "src/utility/flex-grow/lg/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/lg/scss/index.scss",
+    "src/utility/flex-grow/md/index.js",
+    "src/utility/flex-grow/md/index.scss",
+    "src/utility/flex-grow/md/rule.js",
+    "src/utility/flex-grow/md/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/md/scss/index.scss",
+    "src/utility/flex-grow/sm/index.js",
+    "src/utility/flex-grow/sm/index.scss",
+    "src/utility/flex-grow/sm/rule.js",
+    "src/utility/flex-grow/sm/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/sm/scss/index.scss",
+    "src/utility/flex-grow/xl/index.js",
+    "src/utility/flex-grow/xl/index.scss",
+    "src/utility/flex-grow/xl/rule.js",
+    "src/utility/flex-grow/xl/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/xl/scss/index.scss",
+    "src/utility/flex-grow/xxl/index.js",
+    "src/utility/flex-grow/xxl/index.scss",
+    "src/utility/flex-grow/xxl/rule.js",
+    "src/utility/flex-grow/xxl/scss/_sf_css__flex_grow.scss",
+    "src/utility/flex-grow/xxl/scss/index.scss"
+  ],
+  "content_sha256": "52387ccc6ae48bb1200e6426cbb4f2aa50eb15e23ba1b3fa961ef54ae2bcd5d1",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.textarea",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/textarea/docs/docs.md",
+    "src/component/textarea/index.js",
+    "src/component/textarea/js/_textarea.js",
+    "src/component/textarea/js/index.js",
+    "src/component/textarea/json/textarea.utility.json",
+    "src/component/textarea/rule.js",
+    "src/component/textarea/scss/_css__textarea.scss",
+    "src/component/textarea/scss/index.scss"
+  ],
+  "content_sha256": "d6e36e05f8c340c4d0774c440e4bebc31a40c710f9750d1f92146597721aca20",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

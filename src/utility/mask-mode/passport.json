@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.mask-mode",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/mask-mode/default/index.js",
+    "src/utility/mask-mode/default/index.scss",
+    "src/utility/mask-mode/default/rule.js",
+    "src/utility/mask-mode/default/scss/_sf_css__mask_mode.scss",
+    "src/utility/mask-mode/default/scss/_sf_var__mask_mode.scss",
+    "src/utility/mask-mode/default/scss/index.scss"
+  ],
+  "content_sha256": "be7143947607ce9333ebf9915972c8006101079d2d545edcd92fa37bb8db04dd",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.elevation",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Elevation: shadows, layer styles, blur and filters.",
+  "includes": [
+    "src/core/scss/_sf_css__shadow.scss",
+    "src/core/figma_variables/figma_layer_styles.scss",
+    "src/core/figma_variables/figma_blur.scss",
+    "src/core/scss/_sf_css__filter.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_blur.scss",
+    "src/core/figma_variables/figma_layer_styles.scss",
+    "src/core/scss/_sf_css__filter.scss",
+    "src/core/scss/_sf_css__shadow.scss"
+  ],
+  "content_sha256": "6bbd3ecda2c9b8e8a00c6bf1ac53a55cfa8fa91e047f63d10309f1943cf20da0",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

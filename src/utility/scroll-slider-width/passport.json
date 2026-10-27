@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-slider-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-slider-width/default/index.js",
+    "src/utility/scroll-slider-width/default/index.scss",
+    "src/utility/scroll-slider-width/default/rule.js",
+    "src/utility/scroll-slider-width/default/scss/_sf_css__scroll_slider_width.scss",
+    "src/utility/scroll-slider-width/default/scss/_sf_var__scroll_slider_width.scss",
+    "src/utility/scroll-slider-width/default/scss/index.scss"
+  ],
+  "content_sha256": "67b0badc9a828e335fe34fec6e2b67055176c7642b787e089cddc3e897c8111f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

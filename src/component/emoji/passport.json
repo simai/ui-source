@@ -1,0 +1,32 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.emoji",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/emoji/index.js",
+    "src/component/emoji/js/_emoji.js",
+    "src/component/emoji/js/index.js",
+    "src/component/emoji/rule.js",
+    "src/component/emoji/scss/_css_emoji.scss",
+    "src/component/emoji/scss/_css_emoji_custom.scss",
+    "src/component/emoji/scss/index.scss"
+  ],
+  "content_sha256": "fe8caa1413198a2e0aa86b44643934ecaeabe46e72632a97968a5abcfa1c7341",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

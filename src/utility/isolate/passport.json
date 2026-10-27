@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.isolate",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/isolate/default/index.js",
+    "src/utility/isolate/default/index.scss",
+    "src/utility/isolate/default/rule.js",
+    "src/utility/isolate/default/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/default/scss/_sf_var__isolation.scss",
+    "src/utility/isolate/default/scss/index.scss",
+    "src/utility/isolate/lg/index.js",
+    "src/utility/isolate/lg/index.scss",
+    "src/utility/isolate/lg/rule.js",
+    "src/utility/isolate/lg/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/lg/scss/index.scss",
+    "src/utility/isolate/md/index.js",
+    "src/utility/isolate/md/index.scss",
+    "src/utility/isolate/md/rule.js",
+    "src/utility/isolate/md/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/md/scss/index.scss",
+    "src/utility/isolate/sm/index.js",
+    "src/utility/isolate/sm/index.scss",
+    "src/utility/isolate/sm/rule.js",
+    "src/utility/isolate/sm/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/sm/scss/index.scss",
+    "src/utility/isolate/xl/index.js",
+    "src/utility/isolate/xl/index.scss",
+    "src/utility/isolate/xl/rule.js",
+    "src/utility/isolate/xl/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/xl/scss/index.scss",
+    "src/utility/isolate/xxl/index.js",
+    "src/utility/isolate/xxl/index.scss",
+    "src/utility/isolate/xxl/rule.js",
+    "src/utility/isolate/xxl/scss/_sf_css__isolation.scss",
+    "src/utility/isolate/xxl/scss/index.scss"
+  ],
+  "content_sha256": "fa106ff9fc2a40ad44aef783637918db35008fd43d08542a301f36d0f30a38b9",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

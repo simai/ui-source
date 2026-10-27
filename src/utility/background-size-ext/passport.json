@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-size-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-size-ext/default/index.js",
+    "src/utility/background-size-ext/default/index.scss",
+    "src/utility/background-size-ext/default/rule.js",
+    "src/utility/background-size-ext/default/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/default/scss/_sf_var_background_size_ext.scss",
+    "src/utility/background-size-ext/default/scss/index.scss",
+    "src/utility/background-size-ext/lg/index.js",
+    "src/utility/background-size-ext/lg/index.scss",
+    "src/utility/background-size-ext/lg/rule.js",
+    "src/utility/background-size-ext/lg/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/lg/scss/index.scss",
+    "src/utility/background-size-ext/md/index.js",
+    "src/utility/background-size-ext/md/index.scss",
+    "src/utility/background-size-ext/md/rule.js",
+    "src/utility/background-size-ext/md/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/md/scss/index.scss",
+    "src/utility/background-size-ext/sm/index.js",
+    "src/utility/background-size-ext/sm/index.scss",
+    "src/utility/background-size-ext/sm/rule.js",
+    "src/utility/background-size-ext/sm/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/sm/scss/index.scss",
+    "src/utility/background-size-ext/xl/index.js",
+    "src/utility/background-size-ext/xl/index.scss",
+    "src/utility/background-size-ext/xl/rule.js",
+    "src/utility/background-size-ext/xl/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/xl/scss/index.scss",
+    "src/utility/background-size-ext/xxl/index.js",
+    "src/utility/background-size-ext/xxl/index.scss",
+    "src/utility/background-size-ext/xxl/rule.js",
+    "src/utility/background-size-ext/xxl/scss/_sf_css_background_size_ext.scss",
+    "src/utility/background-size-ext/xxl/scss/index.scss"
+  ],
+  "content_sha256": "34da305462bddc2ffa53b280d896aa2d87cb5e2dd10574eb5a591fa15f9a22cb",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

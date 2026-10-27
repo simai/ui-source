@@ -1,0 +1,55 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.range-slider",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/range-slider/docs/docs.md",
+    "src/component/range-slider/index.js",
+    "src/component/range-slider/js/_range_slider.js",
+    "src/component/range-slider/js/index.js",
+    "src/component/range-slider/js/native-slider.js",
+    "src/component/range-slider/rule.js",
+    "src/component/range-slider/scss/_css__range_slider.scss",
+    "src/component/range-slider/scss/_css__range_slider_custom.scss",
+    "src/component/range-slider/scss/_css__thumbs.scss",
+    "src/component/range-slider/scss/index.scss"
+  ],
+  "content_sha256": "ab68c9dc0bd536e55d3949b876e7dafa6f0bf167886a63822fcb430c54fdc206",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

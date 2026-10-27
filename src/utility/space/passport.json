@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.space",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/space/default/index.js",
+    "src/utility/space/default/index.scss",
+    "src/utility/space/default/rule.js",
+    "src/utility/space/default/scss/_sf_css__space.scss",
+    "src/utility/space/default/scss/_sf_var__space.scss",
+    "src/utility/space/default/scss/index.scss",
+    "src/utility/space/lg/index.js",
+    "src/utility/space/lg/index.scss",
+    "src/utility/space/lg/rule.js",
+    "src/utility/space/lg/scss/_sf_css__space.scss",
+    "src/utility/space/lg/scss/index.scss",
+    "src/utility/space/md/index.js",
+    "src/utility/space/md/index.scss",
+    "src/utility/space/md/rule.js",
+    "src/utility/space/md/scss/_sf_css__space.scss",
+    "src/utility/space/md/scss/index.scss",
+    "src/utility/space/sm/index.js",
+    "src/utility/space/sm/index.scss",
+    "src/utility/space/sm/rule.js",
+    "src/utility/space/sm/scss/_sf_css__space.scss",
+    "src/utility/space/sm/scss/index.scss",
+    "src/utility/space/xl/index.js",
+    "src/utility/space/xl/index.scss",
+    "src/utility/space/xl/rule.js",
+    "src/utility/space/xl/scss/_sf_css__space.scss",
+    "src/utility/space/xl/scss/index.scss",
+    "src/utility/space/xxl/index.js",
+    "src/utility/space/xxl/index.scss",
+    "src/utility/space/xxl/rule.js",
+    "src/utility/space/xxl/scss/_sf_css__space.scss",
+    "src/utility/space/xxl/scss/index.scss"
+  ],
+  "content_sha256": "6f657bc08d40b6bb6e92f9d1024a5931a6c7a6dd96dbef6ac98ac22179c64a50",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

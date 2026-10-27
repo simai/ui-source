@@ -1,0 +1,15 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.overcard",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/overcard/index.js",
+    "src/component/overcard/scss/_css__overcard.scss",
+    "src/component/overcard/scss/index.scss"
+  ],
+  "content_sha256": "68068683041f0f5fb7ac1b2f6419bd5107bad1202ee086ac151889825086ba4e",
+  "dependencies": []
+}

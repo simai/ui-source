@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "font.inter",
+  "kind": "font",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Inter Variable, shipped with the Framework: the font files, their licence and the @font-face rules.",
+  "includes": [
+    "src/core/fonts/inter/",
+    "src/core/scss/_sf_css__fonts.scss"
+  ],
+  "files": [
+    "src/core/fonts/inter/OFL.txt",
+    "src/core/fonts/inter/inter-cyrillic-ext-wght-normal.woff2",
+    "src/core/fonts/inter/inter-cyrillic-wght-normal.woff2",
+    "src/core/fonts/inter/inter-greek-ext-wght-normal.woff2",
+    "src/core/fonts/inter/inter-greek-wght-normal.woff2",
+    "src/core/fonts/inter/inter-latin-ext-wght-normal.woff2",
+    "src/core/fonts/inter/inter-latin-wght-normal.woff2",
+    "src/core/fonts/inter/inter-vietnamese-wght-normal.woff2",
+    "src/core/scss/_sf_css__fonts.scss"
+  ],
+  "content_sha256": "7345240d9de42bb1d21f4b6fab6a45e9c90457ac28b61bac2f4e0c7fd34bef8f",
+  "dependencies": []
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.max-height",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/max-height/default/index.js",
+    "src/utility/max-height/default/index.scss",
+    "src/utility/max-height/default/rule.js",
+    "src/utility/max-height/default/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/default/scss/_sf_var__height_max.scss",
+    "src/utility/max-height/default/scss/index.scss",
+    "src/utility/max-height/lg/index.js",
+    "src/utility/max-height/lg/index.scss",
+    "src/utility/max-height/lg/rule.js",
+    "src/utility/max-height/lg/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/lg/scss/index.scss",
+    "src/utility/max-height/md/index.js",
+    "src/utility/max-height/md/index.scss",
+    "src/utility/max-height/md/rule.js",
+    "src/utility/max-height/md/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/md/scss/index.scss",
+    "src/utility/max-height/sm/index.js",
+    "src/utility/max-height/sm/index.scss",
+    "src/utility/max-height/sm/rule.js",
+    "src/utility/max-height/sm/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/sm/scss/index.scss",
+    "src/utility/max-height/xl/index.js",
+    "src/utility/max-height/xl/index.scss",
+    "src/utility/max-height/xl/rule.js",
+    "src/utility/max-height/xl/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/xl/scss/index.scss",
+    "src/utility/max-height/xxl/index.js",
+    "src/utility/max-height/xxl/index.scss",
+    "src/utility/max-height/xxl/rule.js",
+    "src/utility/max-height/xxl/scss/_sf_css__height_max.scss",
+    "src/utility/max-height/xxl/scss/index.scss"
+  ],
+  "content_sha256": "6eac780dcf09261f341e1201899013d2425be9b5e0d01e206c79651cfe365bd4",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

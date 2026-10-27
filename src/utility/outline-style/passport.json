@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.outline-style",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/outline-style/default/index.js",
+    "src/utility/outline-style/default/index.scss",
+    "src/utility/outline-style/default/rule.js",
+    "src/utility/outline-style/default/scss/_sf_css__outline_style.scss",
+    "src/utility/outline-style/default/scss/_sf_var__outline_style.scss",
+    "src/utility/outline-style/default/scss/index.scss"
+  ],
+  "content_sha256": "199ba2c01fbf891204d3513d492419762fac618d11de0507bfe42c7300446ef5",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

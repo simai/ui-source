@@ -1,0 +1,33 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.icons",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/icons/docs/docs.md",
+    "src/component/icons/index.js",
+    "src/component/icons/js/index.js",
+    "src/component/icons/rule.js",
+    "src/component/icons/scss/_css__icons.scss",
+    "src/component/icons/scss/_sf_icon_rotate.scss",
+    "src/component/icons/scss/_var__icons.scss",
+    "src/component/icons/scss/index.scss"
+  ],
+  "content_sha256": "37b120d7f4874fbd9ccc748af3e513f1ad1bc663c2ce8ad84f38bddb52fea9d1",
+  "dependencies": [
+    {
+      "id": "icons.material-symbols",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

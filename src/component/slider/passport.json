@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.slider",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/slider/docs/docs.md",
+    "src/component/slider/index.js",
+    "src/component/slider/js/_slide-content.js",
+    "src/component/slider/js/_slider.js",
+    "src/component/slider/js/index.js",
+    "src/component/slider/rule.js",
+    "src/component/slider/scss/_css__slider.scss",
+    "src/component/slider/scss/_css__slider_arrows.scss",
+    "src/component/slider/scss/_css__slider_dots.scss",
+    "src/component/slider/scss/_var__slider.scss",
+    "src/component/slider/scss/index.scss"
+  ],
+  "content_sha256": "600dff54f920f6d61242ff70a1b862f8bea45d60eb86a3f03848adff761d2cc8",
+  "dependencies": [
+    {
+      "id": "component.swiper",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    }
+  ]
+}

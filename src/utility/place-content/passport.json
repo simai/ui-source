@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.place-content",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/place-content/default/index.js",
+    "src/utility/place-content/default/index.scss",
+    "src/utility/place-content/default/rule.js",
+    "src/utility/place-content/default/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/default/scss/_sf_var__place_content.scss",
+    "src/utility/place-content/default/scss/index.scss",
+    "src/utility/place-content/lg/index.js",
+    "src/utility/place-content/lg/index.scss",
+    "src/utility/place-content/lg/rule.js",
+    "src/utility/place-content/lg/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/lg/scss/index.scss",
+    "src/utility/place-content/md/index.js",
+    "src/utility/place-content/md/index.scss",
+    "src/utility/place-content/md/rule.js",
+    "src/utility/place-content/md/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/md/scss/index.scss",
+    "src/utility/place-content/sm/index.js",
+    "src/utility/place-content/sm/index.scss",
+    "src/utility/place-content/sm/rule.js",
+    "src/utility/place-content/sm/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/sm/scss/index.scss",
+    "src/utility/place-content/xl/index.js",
+    "src/utility/place-content/xl/index.scss",
+    "src/utility/place-content/xl/rule.js",
+    "src/utility/place-content/xl/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/xl/scss/index.scss",
+    "src/utility/place-content/xxl/index.js",
+    "src/utility/place-content/xxl/index.scss",
+    "src/utility/place-content/xxl/rule.js",
+    "src/utility/place-content/xxl/scss/_sf_css__place_content.scss",
+    "src/utility/place-content/xxl/scss/index.scss"
+  ],
+  "content_sha256": "84bd4a2115e77418a6457850ebdd64a4c878d21c6ed9a89e60726f08846b9814",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

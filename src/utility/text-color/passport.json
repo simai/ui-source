@@ -1,0 +1,42 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-color/active/index.js",
+    "src/utility/text-color/active/index.scss",
+    "src/utility/text-color/active/rule.js",
+    "src/utility/text-color/active/scss/_sf_css__color_base.scss",
+    "src/utility/text-color/active/scss/index.scss",
+    "src/utility/text-color/default/index.js",
+    "src/utility/text-color/default/index.scss",
+    "src/utility/text-color/default/rule.js",
+    "src/utility/text-color/default/scss/_sf_css__color_base.scss",
+    "src/utility/text-color/default/scss/_sf_var__color_base.scss",
+    "src/utility/text-color/default/scss/index.scss",
+    "src/utility/text-color/focus/index.js",
+    "src/utility/text-color/focus/index.scss",
+    "src/utility/text-color/focus/rule.js",
+    "src/utility/text-color/focus/scss/_sf_css__color_base.scss",
+    "src/utility/text-color/focus/scss/index.scss",
+    "src/utility/text-color/hover/index.js",
+    "src/utility/text-color/hover/index.scss",
+    "src/utility/text-color/hover/rule.js",
+    "src/utility/text-color/hover/scss/_sf_css__color_base.scss",
+    "src/utility/text-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "4fa2f75d68c82292945d52dc3c345f48558a719371662cdb9926a9a864bfc9ca",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    }
+  ]
+}

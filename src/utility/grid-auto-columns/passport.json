@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-auto-columns",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-auto-columns/default/index.js",
+    "src/utility/grid-auto-columns/default/index.scss",
+    "src/utility/grid-auto-columns/default/rule.js",
+    "src/utility/grid-auto-columns/default/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/default/scss/_sf_var__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/default/scss/index.scss",
+    "src/utility/grid-auto-columns/lg/index.js",
+    "src/utility/grid-auto-columns/lg/index.scss",
+    "src/utility/grid-auto-columns/lg/rule.js",
+    "src/utility/grid-auto-columns/lg/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/lg/scss/index.scss",
+    "src/utility/grid-auto-columns/md/index.js",
+    "src/utility/grid-auto-columns/md/index.scss",
+    "src/utility/grid-auto-columns/md/rule.js",
+    "src/utility/grid-auto-columns/md/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/md/scss/index.scss",
+    "src/utility/grid-auto-columns/sm/index.js",
+    "src/utility/grid-auto-columns/sm/index.scss",
+    "src/utility/grid-auto-columns/sm/rule.js",
+    "src/utility/grid-auto-columns/sm/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/sm/scss/index.scss",
+    "src/utility/grid-auto-columns/xl/index.js",
+    "src/utility/grid-auto-columns/xl/index.scss",
+    "src/utility/grid-auto-columns/xl/rule.js",
+    "src/utility/grid-auto-columns/xl/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/xl/scss/index.scss",
+    "src/utility/grid-auto-columns/xxl/index.js",
+    "src/utility/grid-auto-columns/xxl/index.scss",
+    "src/utility/grid-auto-columns/xxl/rule.js",
+    "src/utility/grid-auto-columns/xxl/scss/_sf_css__grid_auto_columns.scss",
+    "src/utility/grid-auto-columns/xxl/scss/index.scss"
+  ],
+  "content_sha256": "beaae646ece0e16fc8b84afedaf312d966e914b02ce4277a0bca8e30f68fcac6",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.max-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/max-width/default/index.js",
+    "src/utility/max-width/default/index.scss",
+    "src/utility/max-width/default/rule.js",
+    "src/utility/max-width/default/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/default/scss/_sf_var__width_max.scss",
+    "src/utility/max-width/default/scss/index.scss",
+    "src/utility/max-width/lg/index.js",
+    "src/utility/max-width/lg/index.scss",
+    "src/utility/max-width/lg/rule.js",
+    "src/utility/max-width/lg/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/lg/scss/index.scss",
+    "src/utility/max-width/md/index.js",
+    "src/utility/max-width/md/index.scss",
+    "src/utility/max-width/md/rule.js",
+    "src/utility/max-width/md/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/md/scss/index.scss",
+    "src/utility/max-width/sm/index.js",
+    "src/utility/max-width/sm/index.scss",
+    "src/utility/max-width/sm/rule.js",
+    "src/utility/max-width/sm/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/sm/scss/index.scss",
+    "src/utility/max-width/xl/index.js",
+    "src/utility/max-width/xl/index.scss",
+    "src/utility/max-width/xl/rule.js",
+    "src/utility/max-width/xl/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/xl/scss/index.scss",
+    "src/utility/max-width/xxl/index.js",
+    "src/utility/max-width/xxl/index.scss",
+    "src/utility/max-width/xxl/rule.js",
+    "src/utility/max-width/xxl/scss/_sf_css__width_max.scss",
+    "src/utility/max-width/xxl/scss/index.scss"
+  ],
+  "content_sha256": "0f93796adcf018b3137c2c73d827d4ec3376245bf06529f0ebaab4bc37de4475",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

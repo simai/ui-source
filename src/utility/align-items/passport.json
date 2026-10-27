@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.align-items",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/align-items/default/index.js",
+    "src/utility/align-items/default/index.scss",
+    "src/utility/align-items/default/rule.js",
+    "src/utility/align-items/default/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/default/scss/_sf_var__align_items.scss",
+    "src/utility/align-items/default/scss/index.scss",
+    "src/utility/align-items/lg/index.js",
+    "src/utility/align-items/lg/index.scss",
+    "src/utility/align-items/lg/rule.js",
+    "src/utility/align-items/lg/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/lg/scss/index.scss",
+    "src/utility/align-items/md/index.js",
+    "src/utility/align-items/md/index.scss",
+    "src/utility/align-items/md/rule.js",
+    "src/utility/align-items/md/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/md/scss/index.scss",
+    "src/utility/align-items/sm/index.js",
+    "src/utility/align-items/sm/index.scss",
+    "src/utility/align-items/sm/rule.js",
+    "src/utility/align-items/sm/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/sm/scss/index.scss",
+    "src/utility/align-items/xl/index.js",
+    "src/utility/align-items/xl/index.scss",
+    "src/utility/align-items/xl/rule.js",
+    "src/utility/align-items/xl/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/xl/scss/index.scss",
+    "src/utility/align-items/xxl/index.js",
+    "src/utility/align-items/xxl/index.scss",
+    "src/utility/align-items/xxl/rule.js",
+    "src/utility/align-items/xxl/scss/_sf_css__align_items.scss",
+    "src/utility/align-items/xxl/scss/index.scss"
+  ],
+  "content_sha256": "73c6bba770823c97a5e9212e7b3b7d9da5b26b75454f51655fc2b9b7bdd74e6e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

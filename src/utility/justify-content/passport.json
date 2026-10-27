@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.justify-content",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/justify-content/default/index.js",
+    "src/utility/justify-content/default/index.scss",
+    "src/utility/justify-content/default/rule.js",
+    "src/utility/justify-content/default/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/default/scss/_sf_var__justify_content.scss",
+    "src/utility/justify-content/default/scss/index.scss",
+    "src/utility/justify-content/lg/index.js",
+    "src/utility/justify-content/lg/index.scss",
+    "src/utility/justify-content/lg/rule.js",
+    "src/utility/justify-content/lg/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/lg/scss/index.scss",
+    "src/utility/justify-content/md/index.js",
+    "src/utility/justify-content/md/index.scss",
+    "src/utility/justify-content/md/rule.js",
+    "src/utility/justify-content/md/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/md/scss/index.scss",
+    "src/utility/justify-content/sm/index.js",
+    "src/utility/justify-content/sm/index.scss",
+    "src/utility/justify-content/sm/rule.js",
+    "src/utility/justify-content/sm/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/sm/scss/index.scss",
+    "src/utility/justify-content/xl/index.js",
+    "src/utility/justify-content/xl/index.scss",
+    "src/utility/justify-content/xl/rule.js",
+    "src/utility/justify-content/xl/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/xl/scss/index.scss",
+    "src/utility/justify-content/xxl/index.js",
+    "src/utility/justify-content/xxl/index.scss",
+    "src/utility/justify-content/xxl/rule.js",
+    "src/utility/justify-content/xxl/scss/_sf_css__justify_content.scss",
+    "src/utility/justify-content/xxl/scss/index.scss"
+  ],
+  "content_sha256": "90f0316b08aa0c94c443dca34cc5ca865e925d51acba3979ae1ccd4f9938db30",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

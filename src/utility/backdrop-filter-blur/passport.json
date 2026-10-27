@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-blur",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-blur/default/index.js",
+    "src/utility/backdrop-filter-blur/default/index.scss",
+    "src/utility/backdrop-filter-blur/default/rule.js",
+    "src/utility/backdrop-filter-blur/default/scss/_sf_css__backdrop_blur.scss",
+    "src/utility/backdrop-filter-blur/default/scss/_sf_var__backdrop_blur.scss",
+    "src/utility/backdrop-filter-blur/default/scss/index.scss",
+    "src/utility/backdrop-filter-blur/hover/index.js",
+    "src/utility/backdrop-filter-blur/hover/index.scss",
+    "src/utility/backdrop-filter-blur/hover/rule.js",
+    "src/utility/backdrop-filter-blur/hover/scss/_sf_css__backdrop_blur.scss",
+    "src/utility/backdrop-filter-blur/hover/scss/index.scss"
+  ],
+  "content_sha256": "94e8aae76508ddf6fd5fd9d754c226cd8f99788e698ab439ca0cc1aa7e6c628f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

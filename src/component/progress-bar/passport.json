@@ -1,0 +1,44 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.progress-bar",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/progress-bar/index.js",
+    "src/component/progress-bar/js/_progressbar.js",
+    "src/component/progress-bar/js/index.js",
+    "src/component/progress-bar/rule.js",
+    "src/component/progress-bar/scss/_css__progressbar.scss",
+    "src/component/progress-bar/scss/_css__progressbar_custom.scss",
+    "src/component/progress-bar/scss/index.scss"
+  ],
+  "content_sha256": "9c310c3d54bae1dd5a5f28dadf0f5a1e10767b7bb3f4a9d2779bc1d06191903d",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

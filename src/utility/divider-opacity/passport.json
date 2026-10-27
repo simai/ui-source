@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.divider-opacity",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/divider-opacity/default/index.js",
+    "src/utility/divider-opacity/default/index.scss",
+    "src/utility/divider-opacity/default/rule.js",
+    "src/utility/divider-opacity/default/scss/_sf_css__divider_opacity.scss",
+    "src/utility/divider-opacity/default/scss/index.scss"
+  ],
+  "content_sha256": "36e87fcb734d9210de17eda69d1f23af2571ec11e0ec29e85e401c25f4d07d5a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.opacity",
+      "range": "^1.0.0"
+    }
+  ]
+}

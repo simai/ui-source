@@ -1,0 +1,35 @@
+{
+  "schema": "simai.framework.unit-inventory",
+  "schema_version": 1,
+  "source": "simai/ui-source",
+  "revision": "2222222222222222222222222222222222222222",
+  "release": "ui-222222222222",
+  "units": [
+    {
+      "id": "component.alpha",
+      "kind": "component",
+      "version": "1.0.0",
+      "content_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "dependencies": [
+        {
+          "id": "tokens.colour",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "tokens.colour",
+      "kind": "tokens",
+      "version": "1.0.0",
+      "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "dependencies": []
+    },
+    {
+      "id": "utility.gap",
+      "kind": "utility",
+      "version": "1.2.0",
+      "content_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "dependencies": []
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-invert",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-invert/default/index.js",
+    "src/utility/backdrop-filter-invert/default/index.scss",
+    "src/utility/backdrop-filter-invert/default/rule.js",
+    "src/utility/backdrop-filter-invert/default/scss/_sf_css__backdrop_invert.scss",
+    "src/utility/backdrop-filter-invert/default/scss/_sf_var__backdrop_invert.scss",
+    "src/utility/backdrop-filter-invert/default/scss/index.scss",
+    "src/utility/backdrop-filter-invert/hover/index.js",
+    "src/utility/backdrop-filter-invert/hover/index.scss",
+    "src/utility/backdrop-filter-invert/hover/rule.js",
+    "src/utility/backdrop-filter-invert/hover/scss/_sf_css__backdrop_invert.scss",
+    "src/utility/backdrop-filter-invert/hover/scss/index.scss"
+  ],
+  "content_sha256": "9a2d8c1201489dfa2be51728ab7f5bbf07685fbd0465631e7271cb4ab093f2d6",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

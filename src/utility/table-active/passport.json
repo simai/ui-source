@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.table-active",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/table-active/default/index.js",
+    "src/utility/table-active/default/index.scss",
+    "src/utility/table-active/default/rule.js",
+    "src/utility/table-active/default/scss/_sf_css__table_active.scss",
+    "src/utility/table-active/default/scss/index.scss"
+  ],
+  "content_sha256": "ccc77eef2070fd67105ecbb687cdb35e1e9c5aa407dfbe8ef33ebc39d22d03bf",
+  "dependencies": [
+    {
+      "id": "utility.table",
+      "range": "^1.0.0"
+    }
+  ]
+}

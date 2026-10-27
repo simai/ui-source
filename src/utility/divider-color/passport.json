@@ -1,0 +1,32 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.divider-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/divider-color/default/index.js",
+    "src/utility/divider-color/default/index.scss",
+    "src/utility/divider-color/default/rule.js",
+    "src/utility/divider-color/default/scss/_sf_css__divider_color.scss",
+    "src/utility/divider-color/default/scss/_sf_var__divider_color.scss",
+    "src/utility/divider-color/default/scss/index.scss",
+    "src/utility/divider-color/hover/index.js",
+    "src/utility/divider-color/hover/index.scss",
+    "src/utility/divider-color/hover/rule.js",
+    "src/utility/divider-color/hover/scss/_sf_css__divider_color.scss",
+    "src/utility/divider-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "b2f850619d4fda36f39987ddadacb12f36730aa4112bc5299ff10ca8c80b3d2a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-align",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-align/default/index.js",
+    "src/utility/text-align/default/index.scss",
+    "src/utility/text-align/default/rule.js",
+    "src/utility/text-align/default/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/default/scss/_sf_var__text_align.scss",
+    "src/utility/text-align/default/scss/index.scss",
+    "src/utility/text-align/lg/index.js",
+    "src/utility/text-align/lg/index.scss",
+    "src/utility/text-align/lg/rule.js",
+    "src/utility/text-align/lg/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/lg/scss/index.scss",
+    "src/utility/text-align/md/index.js",
+    "src/utility/text-align/md/index.scss",
+    "src/utility/text-align/md/rule.js",
+    "src/utility/text-align/md/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/md/scss/index.scss",
+    "src/utility/text-align/sm/index.js",
+    "src/utility/text-align/sm/index.scss",
+    "src/utility/text-align/sm/rule.js",
+    "src/utility/text-align/sm/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/sm/scss/index.scss",
+    "src/utility/text-align/xl/index.js",
+    "src/utility/text-align/xl/index.scss",
+    "src/utility/text-align/xl/rule.js",
+    "src/utility/text-align/xl/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/xl/scss/index.scss",
+    "src/utility/text-align/xxl/index.js",
+    "src/utility/text-align/xxl/index.scss",
+    "src/utility/text-align/xxl/rule.js",
+    "src/utility/text-align/xxl/scss/_sf_css__text_align.scss",
+    "src/utility/text-align/xxl/scss/index.scss"
+  ],
+  "content_sha256": "6cf120f7d734826868483a16a9e96e67441ed338a4ca801a1e9f89e8fb32412b",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.padding",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/padding/default/index.js",
+    "src/utility/padding/default/index.scss",
+    "src/utility/padding/default/rule.js",
+    "src/utility/padding/default/scss/_sf_css__padding.scss",
+    "src/utility/padding/default/scss/_sf_var__padding.scss",
+    "src/utility/padding/default/scss/index.scss",
+    "src/utility/padding/lg/index.js",
+    "src/utility/padding/lg/index.scss",
+    "src/utility/padding/lg/rule.js",
+    "src/utility/padding/lg/scss/_sf_css__padding.scss",
+    "src/utility/padding/lg/scss/index.scss",
+    "src/utility/padding/md/index.js",
+    "src/utility/padding/md/index.scss",
+    "src/utility/padding/md/rule.js",
+    "src/utility/padding/md/scss/_sf_css__padding.scss",
+    "src/utility/padding/md/scss/index.scss",
+    "src/utility/padding/sm/index.js",
+    "src/utility/padding/sm/index.scss",
+    "src/utility/padding/sm/rule.js",
+    "src/utility/padding/sm/scss/_sf_css__padding.scss",
+    "src/utility/padding/sm/scss/index.scss",
+    "src/utility/padding/xl/index.js",
+    "src/utility/padding/xl/index.scss",
+    "src/utility/padding/xl/rule.js",
+    "src/utility/padding/xl/scss/_sf_css__padding.scss",
+    "src/utility/padding/xl/scss/index.scss",
+    "src/utility/padding/xxl/index.js",
+    "src/utility/padding/xxl/index.scss",
+    "src/utility/padding/xxl/rule.js",
+    "src/utility/padding/xxl/scss/_sf_css__padding.scss",
+    "src/utility/padding/xxl/scss/index.scss"
+  ],
+  "content_sha256": "79c3064c24434ea5eac29d12a3afdaa8b8355eef0be490e6fd9e578144de2237",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

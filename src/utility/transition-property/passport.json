@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.transition-property",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/transition-property/default/index.js",
+    "src/utility/transition-property/default/index.scss",
+    "src/utility/transition-property/default/rule.js",
+    "src/utility/transition-property/default/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/default/scss/_sf_var__transition_property.scss",
+    "src/utility/transition-property/default/scss/index.scss",
+    "src/utility/transition-property/lg/index.js",
+    "src/utility/transition-property/lg/index.scss",
+    "src/utility/transition-property/lg/rule.js",
+    "src/utility/transition-property/lg/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/lg/scss/index.scss",
+    "src/utility/transition-property/md/index.js",
+    "src/utility/transition-property/md/index.scss",
+    "src/utility/transition-property/md/rule.js",
+    "src/utility/transition-property/md/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/md/scss/index.scss",
+    "src/utility/transition-property/sm/index.js",
+    "src/utility/transition-property/sm/index.scss",
+    "src/utility/transition-property/sm/rule.js",
+    "src/utility/transition-property/sm/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/sm/scss/index.scss",
+    "src/utility/transition-property/xl/index.js",
+    "src/utility/transition-property/xl/index.scss",
+    "src/utility/transition-property/xl/rule.js",
+    "src/utility/transition-property/xl/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/xl/scss/index.scss",
+    "src/utility/transition-property/xxl/index.js",
+    "src/utility/transition-property/xxl/index.scss",
+    "src/utility/transition-property/xxl/rule.js",
+    "src/utility/transition-property/xxl/scss/_sf_css__transition_property.scss",
+    "src/utility/transition-property/xxl/scss/index.scss"
+  ],
+  "content_sha256": "52cd6458388cd509f1191459e08b87ba8cbd0c54f3f707962ab957b847fb8ca0",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    }
+  ]
+}

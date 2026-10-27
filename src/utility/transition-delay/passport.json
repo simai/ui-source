@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.transition-delay",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/transition-delay/default/index.js",
+    "src/utility/transition-delay/default/index.scss",
+    "src/utility/transition-delay/default/rule.js",
+    "src/utility/transition-delay/default/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/default/scss/_sf_var__transition_delay.scss",
+    "src/utility/transition-delay/default/scss/index.scss",
+    "src/utility/transition-delay/lg/index.js",
+    "src/utility/transition-delay/lg/index.scss",
+    "src/utility/transition-delay/lg/rule.js",
+    "src/utility/transition-delay/lg/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/lg/scss/index.scss",
+    "src/utility/transition-delay/md/index.js",
+    "src/utility/transition-delay/md/index.scss",
+    "src/utility/transition-delay/md/rule.js",
+    "src/utility/transition-delay/md/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/md/scss/index.scss",
+    "src/utility/transition-delay/sm/index.js",
+    "src/utility/transition-delay/sm/index.scss",
+    "src/utility/transition-delay/sm/rule.js",
+    "src/utility/transition-delay/sm/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/sm/scss/index.scss",
+    "src/utility/transition-delay/xl/index.js",
+    "src/utility/transition-delay/xl/index.scss",
+    "src/utility/transition-delay/xl/rule.js",
+    "src/utility/transition-delay/xl/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/xl/scss/index.scss",
+    "src/utility/transition-delay/xxl/index.js",
+    "src/utility/transition-delay/xxl/index.scss",
+    "src/utility/transition-delay/xxl/rule.js",
+    "src/utility/transition-delay/xxl/scss/_sf_css__transition_delay.scss",
+    "src/utility/transition-delay/xxl/scss/index.scss"
+  ],
+  "content_sha256": "f8df870c8a1633df27206aa4badc7d7f3ccb10520a28fdacede1a59bae472557",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

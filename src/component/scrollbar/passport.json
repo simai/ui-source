@@ -1,0 +1,37 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.scrollbar",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/scrollbar/docs/docs.md",
+    "src/component/scrollbar/index.js",
+    "src/component/scrollbar/js/_scrollbar.js",
+    "src/component/scrollbar/js/index.js",
+    "src/component/scrollbar/rule.js",
+    "src/component/scrollbar/scss/_css__scrollbar.scss",
+    "src/component/scrollbar/scss/_var__scrollbar.scss",
+    "src/component/scrollbar/scss/index.scss"
+  ],
+  "content_sha256": "28232007b577df4e50812e6a7de017efa42bca572169453272c98aff4391c726",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    }
+  ]
+}

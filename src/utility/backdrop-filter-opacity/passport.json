@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-opacity",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-opacity/default/index.js",
+    "src/utility/backdrop-filter-opacity/default/index.scss",
+    "src/utility/backdrop-filter-opacity/default/rule.js",
+    "src/utility/backdrop-filter-opacity/default/scss/_sf_css__backdrop_opacity.scss",
+    "src/utility/backdrop-filter-opacity/default/scss/_sf_var__backdrop_opacity.scss",
+    "src/utility/backdrop-filter-opacity/default/scss/index.scss",
+    "src/utility/backdrop-filter-opacity/hover/index.js",
+    "src/utility/backdrop-filter-opacity/hover/index.scss",
+    "src/utility/backdrop-filter-opacity/hover/rule.js",
+    "src/utility/backdrop-filter-opacity/hover/scss/_sf_css__backdrop_opacity.scss",
+    "src/utility/backdrop-filter-opacity/hover/scss/index.scss"
+  ],
+  "content_sha256": "4e685076e370894384749250b6a0782c05cfb53ec71db1ab55aa3b57af5132c3",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

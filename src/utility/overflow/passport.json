@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.overflow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/overflow/default/index.js",
+    "src/utility/overflow/default/index.scss",
+    "src/utility/overflow/default/rule.js",
+    "src/utility/overflow/default/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/default/scss/_sf_var__overflow.scss",
+    "src/utility/overflow/default/scss/index.scss",
+    "src/utility/overflow/lg/index.js",
+    "src/utility/overflow/lg/index.scss",
+    "src/utility/overflow/lg/rule.js",
+    "src/utility/overflow/lg/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/lg/scss/index.scss",
+    "src/utility/overflow/md/index.js",
+    "src/utility/overflow/md/index.scss",
+    "src/utility/overflow/md/rule.js",
+    "src/utility/overflow/md/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/md/scss/index.scss",
+    "src/utility/overflow/sm/index.js",
+    "src/utility/overflow/sm/index.scss",
+    "src/utility/overflow/sm/rule.js",
+    "src/utility/overflow/sm/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/sm/scss/index.scss",
+    "src/utility/overflow/xl/index.js",
+    "src/utility/overflow/xl/index.scss",
+    "src/utility/overflow/xl/rule.js",
+    "src/utility/overflow/xl/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/xl/scss/index.scss",
+    "src/utility/overflow/xxl/index.js",
+    "src/utility/overflow/xxl/index.scss",
+    "src/utility/overflow/xxl/rule.js",
+    "src/utility/overflow/xxl/scss/_sf_css__overflow.scss",
+    "src/utility/overflow/xxl/scss/index.scss"
+  ],
+  "content_sha256": "0886b2e650901202c59e1a75f0dcb6cf44b7b9cbcc0e9f13cacf9c365c81c6a0",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

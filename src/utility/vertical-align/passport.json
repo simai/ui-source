@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.vertical-align",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/vertical-align/default/index.js",
+    "src/utility/vertical-align/default/index.scss",
+    "src/utility/vertical-align/default/rule.js",
+    "src/utility/vertical-align/default/scss/_sf_css__vertical_align.scss",
+    "src/utility/vertical-align/default/scss/_sf_var__vertical_align.scss",
+    "src/utility/vertical-align/default/scss/index.scss"
+  ],
+  "content_sha256": "cc26ecbdeee34e176e3406d7aeeb8ccd54be6539a2f51af88b55cf699ceff9fa",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

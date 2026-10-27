@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.transition-duration",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/transition-duration/default/index.js",
+    "src/utility/transition-duration/default/index.scss",
+    "src/utility/transition-duration/default/rule.js",
+    "src/utility/transition-duration/default/scss/_sf_css__transition_duration.scss",
+    "src/utility/transition-duration/default/scss/_sf_var__transition_duration.scss",
+    "src/utility/transition-duration/default/scss/index.scss"
+  ],
+  "content_sha256": "fd1d70a73a01172d35e19527c6bf173566828d903e5252adda74d967b2d08fe9",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

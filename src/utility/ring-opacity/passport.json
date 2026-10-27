@@ -1,0 +1,41 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.ring-opacity",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/ring-opacity/default/index.js",
+    "src/utility/ring-opacity/default/index.scss",
+    "src/utility/ring-opacity/default/rule.js",
+    "src/utility/ring-opacity/default/scss/_sf_css__ring_opacity.scss",
+    "src/utility/ring-opacity/default/scss/index.scss",
+    "src/utility/ring-opacity/focus-visible/index.js",
+    "src/utility/ring-opacity/focus-visible/index.scss",
+    "src/utility/ring-opacity/focus-visible/rule.js",
+    "src/utility/ring-opacity/focus-visible/scss/_sf_css__ring_opacity.scss",
+    "src/utility/ring-opacity/focus-visible/scss/index.scss",
+    "src/utility/ring-opacity/focus/index.js",
+    "src/utility/ring-opacity/focus/index.scss",
+    "src/utility/ring-opacity/focus/rule.js",
+    "src/utility/ring-opacity/focus/scss/_sf_css__ring_opacity.scss",
+    "src/utility/ring-opacity/focus/scss/index.scss",
+    "src/utility/ring-opacity/hover/index.js",
+    "src/utility/ring-opacity/hover/index.scss",
+    "src/utility/ring-opacity/hover/rule.js",
+    "src/utility/ring-opacity/hover/scss/_sf_css__ring_opacity.scss",
+    "src/utility/ring-opacity/hover/scss/index.scss"
+  ],
+  "content_sha256": "95374c93582b8f324fff2a23c82cf1efe37374f199f172d9f26d693d5013c62c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.opacity",
+      "range": "^1.0.0"
+    }
+  ]
+}

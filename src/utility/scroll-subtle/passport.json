@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-subtle",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-subtle/default/index.js",
+    "src/utility/scroll-subtle/default/index.scss",
+    "src/utility/scroll-subtle/default/rule.js",
+    "src/utility/scroll-subtle/default/scss/_sf_css__scroll_subtle.scss",
+    "src/utility/scroll-subtle/default/scss/index.scss"
+  ],
+  "content_sha256": "2d1bbaf7793fb5d028d2452b8ca7cf91df8c2e5075a08f201bf8335b58d8c01f",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    }
+  ]
+}

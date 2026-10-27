@@ -1,0 +1,46 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.alerts",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/alerts/dismiss.js",
+    "src/component/alerts/docs/docs.md",
+    "src/component/alerts/index.js",
+    "src/component/alerts/js/_alerts.js",
+    "src/component/alerts/js/index.js",
+    "src/component/alerts/rule.js",
+    "src/component/alerts/scss/_css__alerts.scss",
+    "src/component/alerts/scss/_var__alerts.scss",
+    "src/component/alerts/scss/index.scss"
+  ],
+  "content_sha256": "323d4e8f6697ec2ecf3771ff83ebd075ac6e334c3c727073176f73c9a9d0a7ec",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

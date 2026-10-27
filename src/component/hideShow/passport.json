@@ -1,0 +1,24 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.hide-show",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/hideShow/docs/docs.md",
+    "src/component/hideShow/index.js",
+    "src/component/hideShow/js/_hide-show.js",
+    "src/component/hideShow/js/index.js",
+    "src/component/hideShow/rule.js",
+    "src/component/hideShow/scss/_css__hide_show.scss",
+    "src/component/hideShow/scss/index.scss"
+  ],
+  "content_sha256": "72454de4238c4499e4cc90fe2a2017a558534373657cf535f9a7f17a565d03e1",
+  "dependencies": [
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    }
+  ]
+}

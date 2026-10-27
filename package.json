@@ -46,7 +46,10 @@
     "test": "bash scripts/run-content-spacing-ci-gate.sh",
     "utility-loader:audit": "node scripts/audit-utility-loader-contract.mjs",
     "utility-rules:generate": "node scripts/generate-exact-utility-rules.mjs",
-    "dimensions:audit": "node scripts/audit-dimensions.mjs --summary"
+    "dimensions:audit": "node scripts/audit-dimensions.mjs --summary",
+    "linkage:check": "node scripts/linkage.mjs passports --check",
+    "linkage:write": "node scripts/linkage.mjs passports --write",
+    "test:linkage": "node --test tests/linkage.contract.test.mjs"
   },
   "author": "Rim Zabarov",
   "license": "Apache-2.0",

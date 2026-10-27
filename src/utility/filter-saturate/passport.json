@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-saturate",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-saturate/default/index.js",
+    "src/utility/filter-saturate/default/index.scss",
+    "src/utility/filter-saturate/default/rule.js",
+    "src/utility/filter-saturate/default/scss/_sf_css__filter_saturate.scss",
+    "src/utility/filter-saturate/default/scss/_sf_var__filter_saturate.scss",
+    "src/utility/filter-saturate/default/scss/index.scss",
+    "src/utility/filter-saturate/hover/index.js",
+    "src/utility/filter-saturate/hover/index.scss",
+    "src/utility/filter-saturate/hover/rule.js",
+    "src/utility/filter-saturate/hover/scss/_sf_css__filter_saturate.scss",
+    "src/utility/filter-saturate/hover/scss/index.scss"
+  ],
+  "content_sha256": "6b7aad301cd19876343d7b79d6c30f838111ba0e36cf4bad1e590ad89596b21a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

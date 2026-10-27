@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-slider-radius",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-slider-radius/default/index.js",
+    "src/utility/scroll-slider-radius/default/index.scss",
+    "src/utility/scroll-slider-radius/default/rule.js",
+    "src/utility/scroll-slider-radius/default/scss/_sf_css__scroll_slider_radius.scss",
+    "src/utility/scroll-slider-radius/default/scss/_sf_var__scroll_slider_radius.scss",
+    "src/utility/scroll-slider-radius/default/scss/index.scss"
+  ],
+  "content_sha256": "8e5983e5aeaca9ab6edc6c7336d3ce06f2aedca4a5fd6808487bb38166188c04",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

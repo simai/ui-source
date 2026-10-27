@@ -1,0 +1,14 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "plugin.plugin1",
+  "kind": "plugin",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/plugin/plugin1/index.js",
+    "src/plugin/plugin1/js/index.js"
+  ],
+  "content_sha256": "b5d89bc68a0d971111f40ac20fa147cc39538baa8397d0920d53f4d153d3e669",
+  "dependencies": []
+}

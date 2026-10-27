@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-template-rows",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-template-rows/default/index.js",
+    "src/utility/grid-template-rows/default/index.scss",
+    "src/utility/grid-template-rows/default/rule.js",
+    "src/utility/grid-template-rows/default/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/default/scss/_sf_var__grid_template_rows.scss",
+    "src/utility/grid-template-rows/default/scss/index.scss",
+    "src/utility/grid-template-rows/lg/index.js",
+    "src/utility/grid-template-rows/lg/index.scss",
+    "src/utility/grid-template-rows/lg/rule.js",
+    "src/utility/grid-template-rows/lg/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/lg/scss/index.scss",
+    "src/utility/grid-template-rows/md/index.js",
+    "src/utility/grid-template-rows/md/index.scss",
+    "src/utility/grid-template-rows/md/rule.js",
+    "src/utility/grid-template-rows/md/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/md/scss/index.scss",
+    "src/utility/grid-template-rows/sm/index.js",
+    "src/utility/grid-template-rows/sm/index.scss",
+    "src/utility/grid-template-rows/sm/rule.js",
+    "src/utility/grid-template-rows/sm/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/sm/scss/index.scss",
+    "src/utility/grid-template-rows/xl/index.js",
+    "src/utility/grid-template-rows/xl/index.scss",
+    "src/utility/grid-template-rows/xl/rule.js",
+    "src/utility/grid-template-rows/xl/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/xl/scss/index.scss",
+    "src/utility/grid-template-rows/xxl/index.js",
+    "src/utility/grid-template-rows/xxl/index.scss",
+    "src/utility/grid-template-rows/xxl/rule.js",
+    "src/utility/grid-template-rows/xxl/scss/_sf_css__grid_template_rows.scss",
+    "src/utility/grid-template-rows/xxl/scss/index.scss"
+  ],
+  "content_sha256": "c76f7bdd4ebb610c138024ff435c7814336dc327a2a7ad687cf5ce976ab5f46a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

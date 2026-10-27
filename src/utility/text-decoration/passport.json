@@ -1,0 +1,33 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-decoration",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-decoration/active/index.js",
+    "src/utility/text-decoration/active/index.scss",
+    "src/utility/text-decoration/active/rule.js",
+    "src/utility/text-decoration/active/scss/_sf_css__text_decoration_line.scss",
+    "src/utility/text-decoration/active/scss/index.scss",
+    "src/utility/text-decoration/default/index.js",
+    "src/utility/text-decoration/default/index.scss",
+    "src/utility/text-decoration/default/rule.js",
+    "src/utility/text-decoration/default/scss/_sf_css__text_decoration_line.scss",
+    "src/utility/text-decoration/default/scss/_sf_var__text_decoration_line.scss",
+    "src/utility/text-decoration/default/scss/index.scss",
+    "src/utility/text-decoration/focus/index.js",
+    "src/utility/text-decoration/focus/index.scss",
+    "src/utility/text-decoration/focus/rule.js",
+    "src/utility/text-decoration/focus/scss/_sf_css__text_decoration_line.scss",
+    "src/utility/text-decoration/focus/scss/index.scss",
+    "src/utility/text-decoration/hover/index.js",
+    "src/utility/text-decoration/hover/index.scss",
+    "src/utility/text-decoration/hover/rule.js",
+    "src/utility/text-decoration/hover/scss/_sf_css__text_decoration_line.scss",
+    "src/utility/text-decoration/hover/scss/index.scss"
+  ],
+  "content_sha256": "be1cd6edaa8375f50a50150ab24627c5fa825106931f98f98fc7f5b552f13ef7",
+  "dependencies": []
+}

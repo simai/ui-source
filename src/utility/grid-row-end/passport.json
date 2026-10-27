@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-row-end",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-row-end/default/index.js",
+    "src/utility/grid-row-end/default/index.scss",
+    "src/utility/grid-row-end/default/rule.js",
+    "src/utility/grid-row-end/default/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/default/scss/_sf_var__grid_row_end.scss",
+    "src/utility/grid-row-end/default/scss/index.scss",
+    "src/utility/grid-row-end/lg/index.js",
+    "src/utility/grid-row-end/lg/index.scss",
+    "src/utility/grid-row-end/lg/rule.js",
+    "src/utility/grid-row-end/lg/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/lg/scss/index.scss",
+    "src/utility/grid-row-end/md/index.js",
+    "src/utility/grid-row-end/md/index.scss",
+    "src/utility/grid-row-end/md/rule.js",
+    "src/utility/grid-row-end/md/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/md/scss/index.scss",
+    "src/utility/grid-row-end/sm/index.js",
+    "src/utility/grid-row-end/sm/index.scss",
+    "src/utility/grid-row-end/sm/rule.js",
+    "src/utility/grid-row-end/sm/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/sm/scss/index.scss",
+    "src/utility/grid-row-end/xl/index.js",
+    "src/utility/grid-row-end/xl/index.scss",
+    "src/utility/grid-row-end/xl/rule.js",
+    "src/utility/grid-row-end/xl/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/xl/scss/index.scss",
+    "src/utility/grid-row-end/xxl/index.js",
+    "src/utility/grid-row-end/xxl/index.scss",
+    "src/utility/grid-row-end/xxl/rule.js",
+    "src/utility/grid-row-end/xxl/scss/_sf_css__grid_row_end.scss",
+    "src/utility/grid-row-end/xxl/scss/index.scss"
+  ],
+  "content_sha256": "e1b24baec4fe8a5e1e12eaab0711226ea1f179d7ed875aa2b5b546d846ea8a30",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

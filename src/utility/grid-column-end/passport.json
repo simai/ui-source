@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-column-end",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-column-end/default/index.js",
+    "src/utility/grid-column-end/default/index.scss",
+    "src/utility/grid-column-end/default/rule.js",
+    "src/utility/grid-column-end/default/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/default/scss/_sf_var__grid_column_end.scss",
+    "src/utility/grid-column-end/default/scss/index.scss",
+    "src/utility/grid-column-end/lg/index.js",
+    "src/utility/grid-column-end/lg/index.scss",
+    "src/utility/grid-column-end/lg/rule.js",
+    "src/utility/grid-column-end/lg/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/lg/scss/index.scss",
+    "src/utility/grid-column-end/md/index.js",
+    "src/utility/grid-column-end/md/index.scss",
+    "src/utility/grid-column-end/md/rule.js",
+    "src/utility/grid-column-end/md/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/md/scss/index.scss",
+    "src/utility/grid-column-end/sm/index.js",
+    "src/utility/grid-column-end/sm/index.scss",
+    "src/utility/grid-column-end/sm/rule.js",
+    "src/utility/grid-column-end/sm/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/sm/scss/index.scss",
+    "src/utility/grid-column-end/xl/index.js",
+    "src/utility/grid-column-end/xl/index.scss",
+    "src/utility/grid-column-end/xl/rule.js",
+    "src/utility/grid-column-end/xl/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/xl/scss/index.scss",
+    "src/utility/grid-column-end/xxl/index.js",
+    "src/utility/grid-column-end/xxl/index.scss",
+    "src/utility/grid-column-end/xxl/rule.js",
+    "src/utility/grid-column-end/xxl/scss/_sf_css__grid_column_end.scss",
+    "src/utility/grid-column-end/xxl/scss/index.scss"
+  ],
+  "content_sha256": "9b0a032565f5c515113fc41b0e4fbba8d02f932a35192d0eb4e93735c85c1da0",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

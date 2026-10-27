@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-style",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-style/default/index.js",
+    "src/utility/border-style/default/index.scss",
+    "src/utility/border-style/default/rule.js",
+    "src/utility/border-style/default/scss/_sf_css__border_style.scss",
+    "src/utility/border-style/default/scss/_sf_var__border_style.scss",
+    "src/utility/border-style/default/scss/index.scss"
+  ],
+  "content_sha256": "adbd69f2380fab570e614289997ea5f9d7e51017ea93acabd2f94c089c21f118",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

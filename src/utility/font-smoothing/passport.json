@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.font-smoothing",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/font-smoothing/default/index.js",
+    "src/utility/font-smoothing/default/index.scss",
+    "src/utility/font-smoothing/default/rule.js",
+    "src/utility/font-smoothing/default/scss/_sf_css__font_smoothing.scss",
+    "src/utility/font-smoothing/default/scss/_sf_var__font_smoothing.scss",
+    "src/utility/font-smoothing/default/scss/index.scss"
+  ],
+  "content_sha256": "0f079dd4a97d232094a949c2071f63328cb98c3a14bc48cd17107121438c679b",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

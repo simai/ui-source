@@ -1,0 +1,24 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.letter-spacing",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/letter-spacing/default/index.js",
+    "src/utility/letter-spacing/default/index.scss",
+    "src/utility/letter-spacing/default/rule.js",
+    "src/utility/letter-spacing/default/scss/_sf_css__letter_spacing.scss",
+    "src/utility/letter-spacing/default/scss/_sf_var__font_size.scss",
+    "src/utility/letter-spacing/default/scss/_sf_var__letter_spacing.scss",
+    "src/utility/letter-spacing/default/scss/index.scss"
+  ],
+  "content_sha256": "562726316f1ce106372fcde00d09f2cc07ce5ba6dad32fa7967395ad38342fbd",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

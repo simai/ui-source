@@ -1,0 +1,15 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.lazy-load",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/lazy-load/index.js",
+    "src/component/lazy-load/js/_lazy-load.js",
+    "src/component/lazy-load/js/index.js"
+  ],
+  "content_sha256": "2116f27f411624f58a02b288933bab3cfba390f7189e722ff883f6ea89d733a3",
+  "dependencies": []
+}

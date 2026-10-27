@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.flex",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/flex/default/index.js",
+    "src/utility/flex/default/index.scss",
+    "src/utility/flex/default/rule.js",
+    "src/utility/flex/default/scss/_sf_css__flex.scss",
+    "src/utility/flex/default/scss/_sf_var__flex.scss",
+    "src/utility/flex/default/scss/index.scss",
+    "src/utility/flex/lg/index.js",
+    "src/utility/flex/lg/index.scss",
+    "src/utility/flex/lg/rule.js",
+    "src/utility/flex/lg/scss/_sf_css__flex.scss",
+    "src/utility/flex/lg/scss/index.scss",
+    "src/utility/flex/md/index.js",
+    "src/utility/flex/md/index.scss",
+    "src/utility/flex/md/rule.js",
+    "src/utility/flex/md/scss/_sf_css__flex.scss",
+    "src/utility/flex/md/scss/index.scss",
+    "src/utility/flex/sm/index.js",
+    "src/utility/flex/sm/index.scss",
+    "src/utility/flex/sm/rule.js",
+    "src/utility/flex/sm/scss/_sf_css__flex.scss",
+    "src/utility/flex/sm/scss/index.scss",
+    "src/utility/flex/xl/index.js",
+    "src/utility/flex/xl/index.scss",
+    "src/utility/flex/xl/rule.js",
+    "src/utility/flex/xl/scss/_sf_css__flex.scss",
+    "src/utility/flex/xl/scss/index.scss",
+    "src/utility/flex/xxl/index.js",
+    "src/utility/flex/xxl/index.scss",
+    "src/utility/flex/xxl/rule.js",
+    "src/utility/flex/xxl/scss/_sf_css__flex.scss",
+    "src/utility/flex/xxl/scss/index.scss"
+  ],
+  "content_sha256": "74cf92959e1b3f8cc24d7f67f61290c768740045282bb6556ebc52296ff94413",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

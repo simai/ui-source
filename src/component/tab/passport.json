@@ -1,0 +1,32 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.tab",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/tab/docs/docs.md",
+    "src/component/tab/index.js",
+    "src/component/tab/js/_tabs.js",
+    "src/component/tab/js/index.js",
+    "src/component/tab/rule.js",
+    "src/component/tab/scss/_css__sf_tab.scss",
+    "src/component/tab/scss/index.scss"
+  ],
+  "content_sha256": "9604739c71726d4d8d27897590096fe5de6b60eeb9600c689c8fa71096fc7524",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    }
+  ]
+}

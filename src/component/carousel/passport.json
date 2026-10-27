@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.carousel",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/carousel/index.js",
+    "src/component/carousel/js/_carousel.js",
+    "src/component/carousel/js/index.js",
+    "src/component/carousel/rule.js",
+    "src/component/carousel/scss/_css__carousel.scss",
+    "src/component/carousel/scss/_var__carousel.scss",
+    "src/component/carousel/scss/index.scss"
+  ],
+  "content_sha256": "67089466521d353ace8aeca7ba2add4d9babf3865748e51bc1c43aab71ac1801",
+  "dependencies": [
+    {
+      "id": "component.swiper",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    }
+  ]
+}

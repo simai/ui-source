@@ -1,0 +1,53 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.button-group",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/button-group/docs/docs.md",
+    "src/component/button-group/index.js",
+    "src/component/button-group/js/_button-group.js",
+    "src/component/button-group/js/index.js",
+    "src/component/button-group/json/button-group.utility.json",
+    "src/component/button-group/rule.js",
+    "src/component/button-group/scss/_css__button-group.scss",
+    "src/component/button-group/scss/index.scss"
+  ],
+  "content_sha256": "baccf400f3cdf1fa842157f6530dc8df701c2f651d8e416e4ec35e0a15be96ae",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

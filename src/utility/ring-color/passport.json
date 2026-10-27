@@ -1,0 +1,41 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.ring-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/ring-color/default/index.js",
+    "src/utility/ring-color/default/index.scss",
+    "src/utility/ring-color/default/rule.js",
+    "src/utility/ring-color/default/scss/_sf_css__ring_color.scss",
+    "src/utility/ring-color/default/scss/index.scss",
+    "src/utility/ring-color/focus-visible/index.js",
+    "src/utility/ring-color/focus-visible/index.scss",
+    "src/utility/ring-color/focus-visible/rule.js",
+    "src/utility/ring-color/focus-visible/scss/_sf_css__ring_color.scss",
+    "src/utility/ring-color/focus-visible/scss/index.scss",
+    "src/utility/ring-color/focus/index.js",
+    "src/utility/ring-color/focus/index.scss",
+    "src/utility/ring-color/focus/rule.js",
+    "src/utility/ring-color/focus/scss/_sf_css__ring_color.scss",
+    "src/utility/ring-color/focus/scss/index.scss",
+    "src/utility/ring-color/hover/index.js",
+    "src/utility/ring-color/hover/index.scss",
+    "src/utility/ring-color/hover/rule.js",
+    "src/utility/ring-color/hover/scss/_sf_css__ring_color.scss",
+    "src/utility/ring-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "b7d0ee2fde8ad988389413f2c1a3e9d575cb6dc5e820705a265e9e6b0b8be72a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.border-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

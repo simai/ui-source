@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-repeat",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-repeat/default/index.js",
+    "src/utility/background-repeat/default/index.scss",
+    "src/utility/background-repeat/default/rule.js",
+    "src/utility/background-repeat/default/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/default/scss/_sf_var_background_repeat.scss",
+    "src/utility/background-repeat/default/scss/index.scss",
+    "src/utility/background-repeat/lg/index.js",
+    "src/utility/background-repeat/lg/index.scss",
+    "src/utility/background-repeat/lg/rule.js",
+    "src/utility/background-repeat/lg/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/lg/scss/index.scss",
+    "src/utility/background-repeat/md/index.js",
+    "src/utility/background-repeat/md/index.scss",
+    "src/utility/background-repeat/md/rule.js",
+    "src/utility/background-repeat/md/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/md/scss/index.scss",
+    "src/utility/background-repeat/sm/index.js",
+    "src/utility/background-repeat/sm/index.scss",
+    "src/utility/background-repeat/sm/rule.js",
+    "src/utility/background-repeat/sm/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/sm/scss/index.scss",
+    "src/utility/background-repeat/xl/index.js",
+    "src/utility/background-repeat/xl/index.scss",
+    "src/utility/background-repeat/xl/rule.js",
+    "src/utility/background-repeat/xl/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/xl/scss/index.scss",
+    "src/utility/background-repeat/xxl/index.js",
+    "src/utility/background-repeat/xxl/index.scss",
+    "src/utility/background-repeat/xxl/rule.js",
+    "src/utility/background-repeat/xxl/scss/_sf_css_background_repeat.scss",
+    "src/utility/background-repeat/xxl/scss/index.scss"
+  ],
+  "content_sha256": "8a67281b334e60965fcf61216c4b90e3526f8ffccb1ef4724d21cd1a358b53b3",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

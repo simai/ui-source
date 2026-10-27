@@ -1,0 +1,77 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.modal",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/modal/index.js",
+    "src/component/modal/js/_closing.js",
+    "src/component/modal/js/_focus.js",
+    "src/component/modal/js/_modal.js",
+    "src/component/modal/js/_motion.js",
+    "src/component/modal/js/_scroll.js",
+    "src/component/modal/js/_stack.js",
+    "src/component/modal/js/index.js",
+    "src/component/modal/rule.js",
+    "src/component/modal/scss/_css__modal_buttons.scss",
+    "src/component/modal/scss/_css__modal_custom.scss",
+    "src/component/modal/scss/index.scss"
+  ],
+  "content_sha256": "52ff27684537f49ca094a941d1eb512f65452dd52c448f13570dca73463f5e51",
+  "dependencies": [
+    {
+      "id": "component.close",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.icon-buttons",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.spinner",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.backdrop-filter-blur",
+      "range": "^1.0.0"
+    }
+  ]
+}

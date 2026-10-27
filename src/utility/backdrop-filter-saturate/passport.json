@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-saturate",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-saturate/default/index.js",
+    "src/utility/backdrop-filter-saturate/default/index.scss",
+    "src/utility/backdrop-filter-saturate/default/rule.js",
+    "src/utility/backdrop-filter-saturate/default/scss/_sf_css__backdrop_saturate.scss",
+    "src/utility/backdrop-filter-saturate/default/scss/_sf_var__backdrop_saturate.scss",
+    "src/utility/backdrop-filter-saturate/default/scss/index.scss",
+    "src/utility/backdrop-filter-saturate/hover/index.js",
+    "src/utility/backdrop-filter-saturate/hover/index.scss",
+    "src/utility/backdrop-filter-saturate/hover/rule.js",
+    "src/utility/backdrop-filter-saturate/hover/scss/_sf_css__backdrop_saturate.scss",
+    "src/utility/backdrop-filter-saturate/hover/scss/index.scss"
+  ],
+  "content_sha256": "5f0f0615634ebd2c201f6a23deed2267bc58814489eaac4d51520e6072e33088",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

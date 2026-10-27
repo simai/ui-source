@@ -1,0 +1,53 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.query-layout",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/query-layout/default/index.js",
+    "src/utility/query-layout/default/index.scss",
+    "src/utility/query-layout/default/rule.js",
+    "src/utility/query-layout/default/scss/index.scss"
+  ],
+  "content_sha256": "ccbc801b28849cdd555218230c430b357789e7b1b8d25ed3e6f1c60b43566795",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.align-items",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.display",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.flex-direction",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.flex-wrap",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.grid-template-columns",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.justify-content",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.query-container",
+      "range": "^1.0.0"
+    }
+  ]
+}

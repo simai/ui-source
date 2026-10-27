@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-width/default/index.js",
+    "src/utility/border-width/default/index.scss",
+    "src/utility/border-width/default/rule.js",
+    "src/utility/border-width/default/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/default/scss/_sf_var__border_width.scss",
+    "src/utility/border-width/default/scss/index.scss",
+    "src/utility/border-width/lg/index.js",
+    "src/utility/border-width/lg/index.scss",
+    "src/utility/border-width/lg/rule.js",
+    "src/utility/border-width/lg/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/lg/scss/index.scss",
+    "src/utility/border-width/md/index.js",
+    "src/utility/border-width/md/index.scss",
+    "src/utility/border-width/md/rule.js",
+    "src/utility/border-width/md/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/md/scss/index.scss",
+    "src/utility/border-width/sm/index.js",
+    "src/utility/border-width/sm/index.scss",
+    "src/utility/border-width/sm/rule.js",
+    "src/utility/border-width/sm/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/sm/scss/index.scss",
+    "src/utility/border-width/xl/index.js",
+    "src/utility/border-width/xl/index.scss",
+    "src/utility/border-width/xl/rule.js",
+    "src/utility/border-width/xl/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/xl/scss/index.scss",
+    "src/utility/border-width/xxl/index.js",
+    "src/utility/border-width/xxl/index.scss",
+    "src/utility/border-width/xxl/rule.js",
+    "src/utility/border-width/xxl/scss/_sf_css__border_width.scss",
+    "src/utility/border-width/xxl/scss/index.scss"
+  ],
+  "content_sha256": "b5353cb6e9daa20a5420fade0c62976fd1677f9b8a3447917ec0aa732445d912",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

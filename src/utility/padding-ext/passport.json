@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.padding-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/padding-ext/default/index.js",
+    "src/utility/padding-ext/default/index.scss",
+    "src/utility/padding-ext/default/rule.js",
+    "src/utility/padding-ext/default/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/default/scss/index.scss",
+    "src/utility/padding-ext/lg/index.js",
+    "src/utility/padding-ext/lg/index.scss",
+    "src/utility/padding-ext/lg/rule.js",
+    "src/utility/padding-ext/lg/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/lg/scss/index.scss",
+    "src/utility/padding-ext/md/index.js",
+    "src/utility/padding-ext/md/index.scss",
+    "src/utility/padding-ext/md/rule.js",
+    "src/utility/padding-ext/md/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/md/scss/index.scss",
+    "src/utility/padding-ext/sm/index.js",
+    "src/utility/padding-ext/sm/index.scss",
+    "src/utility/padding-ext/sm/rule.js",
+    "src/utility/padding-ext/sm/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/sm/scss/index.scss",
+    "src/utility/padding-ext/xl/index.js",
+    "src/utility/padding-ext/xl/index.scss",
+    "src/utility/padding-ext/xl/rule.js",
+    "src/utility/padding-ext/xl/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/xl/scss/index.scss",
+    "src/utility/padding-ext/xxl/index.js",
+    "src/utility/padding-ext/xxl/index.scss",
+    "src/utility/padding-ext/xxl/rule.js",
+    "src/utility/padding-ext/xxl/scss/_sf_css__padding_ext.scss",
+    "src/utility/padding-ext/xxl/scss/index.scss"
+  ],
+  "content_sha256": "6fdd3f2bcc6d9a44463cf5325bbce5a38b0fe7ff2b0d0353fb5e1f516011adae",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

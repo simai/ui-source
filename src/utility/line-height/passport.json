@@ -1,0 +1,49 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.line-height",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/line-height/default/index.js",
+    "src/utility/line-height/default/index.scss",
+    "src/utility/line-height/default/rule.js",
+    "src/utility/line-height/default/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/default/scss/_sf_var__font_size.scss",
+    "src/utility/line-height/default/scss/_sf_var__line_height.scss",
+    "src/utility/line-height/default/scss/index.scss",
+    "src/utility/line-height/lg/index.js",
+    "src/utility/line-height/lg/index.scss",
+    "src/utility/line-height/lg/rule.js",
+    "src/utility/line-height/lg/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/lg/scss/index.scss",
+    "src/utility/line-height/md/index.js",
+    "src/utility/line-height/md/index.scss",
+    "src/utility/line-height/md/rule.js",
+    "src/utility/line-height/md/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/md/scss/index.scss",
+    "src/utility/line-height/sm/index.js",
+    "src/utility/line-height/sm/index.scss",
+    "src/utility/line-height/sm/rule.js",
+    "src/utility/line-height/sm/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/sm/scss/index.scss",
+    "src/utility/line-height/xl/index.js",
+    "src/utility/line-height/xl/index.scss",
+    "src/utility/line-height/xl/rule.js",
+    "src/utility/line-height/xl/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/xl/scss/index.scss",
+    "src/utility/line-height/xxl/index.js",
+    "src/utility/line-height/xxl/index.scss",
+    "src/utility/line-height/xxl/rule.js",
+    "src/utility/line-height/xxl/scss/_sf_css__line_height.scss",
+    "src/utility/line-height/xxl/scss/index.scss"
+  ],
+  "content_sha256": "b71dcaf03315ef5a16784d84657c59c983dda8e4e1b3f75bb36528d0595fde5a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

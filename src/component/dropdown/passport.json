@@ -1,0 +1,69 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.dropdown",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/dropdown/docs/docs.md",
+    "src/component/dropdown/index.js",
+    "src/component/dropdown/interaction.js",
+    "src/component/dropdown/js/_dropdown.js",
+    "src/component/dropdown/js/index.js",
+    "src/component/dropdown/portal.js",
+    "src/component/dropdown/rule.js",
+    "src/component/dropdown/scss/_css__custom.scss",
+    "src/component/dropdown/scss/_css__dropdown.scss",
+    "src/component/dropdown/scss/_css__list-item.scss",
+    "src/component/dropdown/scss/_css__list.scss",
+    "src/component/dropdown/scss/index.scss"
+  ],
+  "content_sha256": "83abb5f8b7506b40864ba85ab785b4c3b7451992fbd9d89f206d57fef653e160",
+  "dependencies": [
+    {
+      "id": "component.icon-buttons",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.gradient-type",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/gradient-type/default/index.js",
+    "src/utility/gradient-type/default/index.scss",
+    "src/utility/gradient-type/default/rule.js",
+    "src/utility/gradient-type/default/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/default/scss/index.scss",
+    "src/utility/gradient-type/lg/index.js",
+    "src/utility/gradient-type/lg/index.scss",
+    "src/utility/gradient-type/lg/rule.js",
+    "src/utility/gradient-type/lg/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/lg/scss/index.scss",
+    "src/utility/gradient-type/md/index.js",
+    "src/utility/gradient-type/md/index.scss",
+    "src/utility/gradient-type/md/rule.js",
+    "src/utility/gradient-type/md/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/md/scss/index.scss",
+    "src/utility/gradient-type/sm/index.js",
+    "src/utility/gradient-type/sm/index.scss",
+    "src/utility/gradient-type/sm/rule.js",
+    "src/utility/gradient-type/sm/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/sm/scss/index.scss",
+    "src/utility/gradient-type/xl/index.js",
+    "src/utility/gradient-type/xl/index.scss",
+    "src/utility/gradient-type/xl/rule.js",
+    "src/utility/gradient-type/xl/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/xl/scss/index.scss",
+    "src/utility/gradient-type/xxl/index.js",
+    "src/utility/gradient-type/xxl/index.scss",
+    "src/utility/gradient-type/xxl/rule.js",
+    "src/utility/gradient-type/xxl/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2e68cfa97f7fbf0d4205198c0cbb6e0ea5af40cb94d2f3ed9d8efb725f41d77f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    }
+  ]
+}

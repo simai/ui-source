@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.svg-size",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/svg-size/default/index.js",
+    "src/utility/svg-size/default/index.scss",
+    "src/utility/svg-size/default/rule.js",
+    "src/utility/svg-size/default/scss/_css__svg_size.scss",
+    "src/utility/svg-size/default/scss/_var__svg_size.scss",
+    "src/utility/svg-size/default/scss/index.scss",
+    "src/utility/svg-size/lg/index.js",
+    "src/utility/svg-size/lg/index.scss",
+    "src/utility/svg-size/lg/rule.js",
+    "src/utility/svg-size/lg/scss/_css__svg_size.scss",
+    "src/utility/svg-size/lg/scss/index.scss",
+    "src/utility/svg-size/md/index.js",
+    "src/utility/svg-size/md/index.scss",
+    "src/utility/svg-size/md/rule.js",
+    "src/utility/svg-size/md/scss/_css__svg_size.scss",
+    "src/utility/svg-size/md/scss/index.scss",
+    "src/utility/svg-size/sm/index.js",
+    "src/utility/svg-size/sm/index.scss",
+    "src/utility/svg-size/sm/rule.js",
+    "src/utility/svg-size/sm/scss/_css__svg_size.scss",
+    "src/utility/svg-size/sm/scss/index.scss",
+    "src/utility/svg-size/xl/index.js",
+    "src/utility/svg-size/xl/index.scss",
+    "src/utility/svg-size/xl/rule.js",
+    "src/utility/svg-size/xl/scss/_css__svg_size.scss",
+    "src/utility/svg-size/xl/scss/index.scss",
+    "src/utility/svg-size/xxl/index.js",
+    "src/utility/svg-size/xxl/index.scss",
+    "src/utility/svg-size/xxl/rule.js",
+    "src/utility/svg-size/xxl/scss/_css__svg_size.scss",
+    "src/utility/svg-size/xxl/scss/index.scss"
+  ],
+  "content_sha256": "d33f5bd61dcc85d5af84b3e9d3d240e5d0efb300296b118d05a759c7a5c40429",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

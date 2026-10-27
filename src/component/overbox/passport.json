@@ -1,0 +1,20 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.overbox",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/overbox/index.js",
+    "src/component/overbox/scss/_css__overbox.scss",
+    "src/component/overbox/scss/index.scss"
+  ],
+  "content_sha256": "38e53d733ce89ba0ba371059d46104357989ae267f0334f0074027a855abf948",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    }
+  ]
+}

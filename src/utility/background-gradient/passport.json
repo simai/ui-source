@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-gradient",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-gradient/default/index.js",
+    "src/utility/background-gradient/default/index.scss",
+    "src/utility/background-gradient/default/rule.js",
+    "src/utility/background-gradient/default/scss/_sf_css__background_gradient.scss",
+    "src/utility/background-gradient/default/scss/index.scss"
+  ],
+  "content_sha256": "9feec747ca480a397ae11a70f529cb903431e2f73eb4a7dbe6be22639f5e2234",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

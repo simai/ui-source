@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.max-height-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/max-height-ext/default/index.js",
+    "src/utility/max-height-ext/default/index.scss",
+    "src/utility/max-height-ext/default/rule.js",
+    "src/utility/max-height-ext/default/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/default/scss/index.scss",
+    "src/utility/max-height-ext/lg/index.js",
+    "src/utility/max-height-ext/lg/index.scss",
+    "src/utility/max-height-ext/lg/rule.js",
+    "src/utility/max-height-ext/lg/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/lg/scss/index.scss",
+    "src/utility/max-height-ext/md/index.js",
+    "src/utility/max-height-ext/md/index.scss",
+    "src/utility/max-height-ext/md/rule.js",
+    "src/utility/max-height-ext/md/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/md/scss/index.scss",
+    "src/utility/max-height-ext/sm/index.js",
+    "src/utility/max-height-ext/sm/index.scss",
+    "src/utility/max-height-ext/sm/rule.js",
+    "src/utility/max-height-ext/sm/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/sm/scss/index.scss",
+    "src/utility/max-height-ext/xl/index.js",
+    "src/utility/max-height-ext/xl/index.scss",
+    "src/utility/max-height-ext/xl/rule.js",
+    "src/utility/max-height-ext/xl/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/xl/scss/index.scss",
+    "src/utility/max-height-ext/xxl/index.js",
+    "src/utility/max-height-ext/xxl/index.scss",
+    "src/utility/max-height-ext/xxl/rule.js",
+    "src/utility/max-height-ext/xxl/scss/_sf_css__height_max.scss",
+    "src/utility/max-height-ext/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2373186c47807278dfc44f3db8377edae4bce4ca44c9f8a947b52bec9d187471",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

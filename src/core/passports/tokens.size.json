@@ -1,0 +1,58 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.size",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The size ladder: control heights, icon sizes, the tightness steps, floating labels, the viewport and container sizes.",
+  "includes": [
+    "src/core/scss/vars/_sf_var__size.scss",
+    "src/core/scss/_sf_css__size.scss",
+    "src/core/figma_variables/figma_ui_control_height.scss",
+    "src/core/figma_variables/figma_icon_sizes.scss",
+    "src/core/figma_variables/figma_ui_tightness_default.scss",
+    "src/core/figma_variables/figma_ui_tightness_high.scss",
+    "src/core/figma_variables/figma_ui_tightness_highest.scss",
+    "src/core/figma_variables/figma_ui_tightness_low.scss",
+    "src/core/figma_variables/figma_input_floating_active.scss",
+    "src/core/figma_variables/figma_input_floating_the_others.scss",
+    "src/core/scss/_sf_css__viewport.scss",
+    "src/core/scss/_sf_css__max_container.scss",
+    "src/core/scss/vars/_sf_var__max_container.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_icon_sizes.scss",
+    "src/core/figma_variables/figma_input_floating_active.scss",
+    "src/core/figma_variables/figma_input_floating_the_others.scss",
+    "src/core/figma_variables/figma_ui_control_height.scss",
+    "src/core/figma_variables/figma_ui_tightness_default.scss",
+    "src/core/figma_variables/figma_ui_tightness_high.scss",
+    "src/core/figma_variables/figma_ui_tightness_highest.scss",
+    "src/core/figma_variables/figma_ui_tightness_low.scss",
+    "src/core/scss/_sf_css__max_container.scss",
+    "src/core/scss/_sf_css__size.scss",
+    "src/core/scss/_sf_css__viewport.scss",
+    "src/core/scss/vars/_sf_var__max_container.scss",
+    "src/core/scss/vars/_sf_var__size.scss"
+  ],
+  "content_sha256": "c1f177cffe17b7c880851281e87f908fb39ed07f01f801ef186fc5c4b59a85e7",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.z-index",
+      "range": "^1.0.0"
+    }
+  ]
+}

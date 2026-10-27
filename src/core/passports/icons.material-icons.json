@@ -1,0 +1,25 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "icons.material-icons",
+  "kind": "icons",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The Material Icons fonts (regular, outlined, round, sharp, two-tone) behind the rounded and sharp icon families.",
+  "includes": [
+    "src/component/icons/fonts/MaterialIcons-Regular.ttf",
+    "src/component/icons/fonts/MaterialIconsOutlined-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsRound-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsSharp-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsTwoTone-Regular.otf"
+  ],
+  "files": [
+    "src/component/icons/fonts/MaterialIcons-Regular.ttf",
+    "src/component/icons/fonts/MaterialIconsOutlined-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsRound-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsSharp-Regular.otf",
+    "src/component/icons/fonts/MaterialIconsTwoTone-Regular.otf"
+  ],
+  "content_sha256": "389039a51619006a74f74dd280bd6f3463ebc2a5a33617df24c536407fcf57a6",
+  "dependencies": []
+}

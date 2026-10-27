@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.aspect-ratio",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/aspect-ratio/default/index.js",
+    "src/utility/aspect-ratio/default/index.scss",
+    "src/utility/aspect-ratio/default/rule.js",
+    "src/utility/aspect-ratio/default/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/default/scss/_var__aspect_ratio.scss",
+    "src/utility/aspect-ratio/default/scss/index.scss",
+    "src/utility/aspect-ratio/lg/index.js",
+    "src/utility/aspect-ratio/lg/index.scss",
+    "src/utility/aspect-ratio/lg/rule.js",
+    "src/utility/aspect-ratio/lg/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/lg/scss/index.scss",
+    "src/utility/aspect-ratio/md/index.js",
+    "src/utility/aspect-ratio/md/index.scss",
+    "src/utility/aspect-ratio/md/rule.js",
+    "src/utility/aspect-ratio/md/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/md/scss/index.scss",
+    "src/utility/aspect-ratio/sm/index.js",
+    "src/utility/aspect-ratio/sm/index.scss",
+    "src/utility/aspect-ratio/sm/rule.js",
+    "src/utility/aspect-ratio/sm/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/sm/scss/index.scss",
+    "src/utility/aspect-ratio/xl/index.js",
+    "src/utility/aspect-ratio/xl/index.scss",
+    "src/utility/aspect-ratio/xl/rule.js",
+    "src/utility/aspect-ratio/xl/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/xl/scss/index.scss",
+    "src/utility/aspect-ratio/xxl/index.js",
+    "src/utility/aspect-ratio/xxl/index.scss",
+    "src/utility/aspect-ratio/xxl/rule.js",
+    "src/utility/aspect-ratio/xxl/scss/_css__aspect_ratio.scss",
+    "src/utility/aspect-ratio/xxl/scss/index.scss"
+  ],
+  "content_sha256": "ff2dd462115ce85700dfc47dddb034a38be08474a1f9f7fe5f4a5e12627eea01",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

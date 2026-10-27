@@ -1,0 +1,21 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.elevation",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/elevation/default/index.js",
+    "src/utility/elevation/default/index.scss",
+    "src/utility/elevation/default/rule.js",
+    "src/utility/elevation/default/scss/_sf_css__elevation.scss"
+  ],
+  "content_sha256": "151e4a874e2e7dfb6f408c85b9bc5226e5245094e5d8470505ac3b16d83e4d09",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    }
+  ]
+}

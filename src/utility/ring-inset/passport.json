@@ -1,0 +1,37 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.ring-inset",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/ring-inset/default/index.js",
+    "src/utility/ring-inset/default/index.scss",
+    "src/utility/ring-inset/default/rule.js",
+    "src/utility/ring-inset/default/scss/_sf_css__ring_inset.scss",
+    "src/utility/ring-inset/default/scss/index.scss",
+    "src/utility/ring-inset/focus-visible/index.js",
+    "src/utility/ring-inset/focus-visible/index.scss",
+    "src/utility/ring-inset/focus-visible/rule.js",
+    "src/utility/ring-inset/focus-visible/scss/_sf_css__ring_inset.scss",
+    "src/utility/ring-inset/focus-visible/scss/index.scss",
+    "src/utility/ring-inset/focus/index.js",
+    "src/utility/ring-inset/focus/index.scss",
+    "src/utility/ring-inset/focus/rule.js",
+    "src/utility/ring-inset/focus/scss/_sf_css__ring_inset.scss",
+    "src/utility/ring-inset/focus/scss/index.scss",
+    "src/utility/ring-inset/hover/index.js",
+    "src/utility/ring-inset/hover/index.scss",
+    "src/utility/ring-inset/hover/rule.js",
+    "src/utility/ring-inset/hover/scss/_sf_css__ring_inset.scss",
+    "src/utility/ring-inset/hover/scss/index.scss"
+  ],
+  "content_sha256": "68b37e88e2cd89aeb19d1dd2b7bcbd893ea3c2638eacf3d7a85dacceadab5423",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

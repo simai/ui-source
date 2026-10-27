@@ -1,0 +1,27 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.space",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The space ladder and the controls' inline and block spacing.",
+  "includes": [
+    "src/core/figma_variables/figma_space.scss",
+    "src/core/scss/_sf_css__space.scss",
+    "src/core/scss/vars/_sf_var__space.scss",
+    "src/core/figma_variables/figma_ui_space_x.scss",
+    "src/core/figma_variables/figma_ui_text_space_x.scss",
+    "src/core/figma_variables/figma_uncategorized.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_space.scss",
+    "src/core/figma_variables/figma_ui_space_x.scss",
+    "src/core/figma_variables/figma_ui_text_space_x.scss",
+    "src/core/figma_variables/figma_uncategorized.scss",
+    "src/core/scss/_sf_css__space.scss",
+    "src/core/scss/vars/_sf_var__space.scss"
+  ],
+  "content_sha256": "a4b5560f11822c0fffbe73737f9101ad203cc87f1a37ee2dcf1214bad0be7218",
+  "dependencies": []
+}

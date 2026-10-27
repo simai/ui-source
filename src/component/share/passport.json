@@ -1,0 +1,15 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.share",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/share/index.js",
+    "src/component/share/scss/_css__share.scss",
+    "src/component/share/scss/index.scss"
+  ],
+  "content_sha256": "d0a16d60090fe3251140e5175d506981f8c2c40ada0b64a87193b07fd6313851",
+  "dependencies": []
+}

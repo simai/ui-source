@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-spacing",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-spacing/default/index.js",
+    "src/utility/border-spacing/default/index.scss",
+    "src/utility/border-spacing/default/rule.js",
+    "src/utility/border-spacing/default/scss/_sf_css__border_spacing.scss",
+    "src/utility/border-spacing/default/scss/index.scss"
+  ],
+  "content_sha256": "67d061c05347309e0aca422709c8ff9309824b90cb1befae12b4588735673429",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.space",
+      "range": "^1.0.0"
+    }
+  ]
+}

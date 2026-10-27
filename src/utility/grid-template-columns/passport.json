@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-template-columns",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-template-columns/default/index.js",
+    "src/utility/grid-template-columns/default/index.scss",
+    "src/utility/grid-template-columns/default/rule.js",
+    "src/utility/grid-template-columns/default/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/default/scss/_sf_var__grid_template_columns.scss",
+    "src/utility/grid-template-columns/default/scss/index.scss",
+    "src/utility/grid-template-columns/lg/index.js",
+    "src/utility/grid-template-columns/lg/index.scss",
+    "src/utility/grid-template-columns/lg/rule.js",
+    "src/utility/grid-template-columns/lg/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/lg/scss/index.scss",
+    "src/utility/grid-template-columns/md/index.js",
+    "src/utility/grid-template-columns/md/index.scss",
+    "src/utility/grid-template-columns/md/rule.js",
+    "src/utility/grid-template-columns/md/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/md/scss/index.scss",
+    "src/utility/grid-template-columns/sm/index.js",
+    "src/utility/grid-template-columns/sm/index.scss",
+    "src/utility/grid-template-columns/sm/rule.js",
+    "src/utility/grid-template-columns/sm/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/sm/scss/index.scss",
+    "src/utility/grid-template-columns/xl/index.js",
+    "src/utility/grid-template-columns/xl/index.scss",
+    "src/utility/grid-template-columns/xl/rule.js",
+    "src/utility/grid-template-columns/xl/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/xl/scss/index.scss",
+    "src/utility/grid-template-columns/xxl/index.js",
+    "src/utility/grid-template-columns/xxl/index.scss",
+    "src/utility/grid-template-columns/xxl/rule.js",
+    "src/utility/grid-template-columns/xxl/scss/_sf_css__grid_template_columns.scss",
+    "src/utility/grid-template-columns/xxl/scss/index.scss"
+  ],
+  "content_sha256": "e78fc583a36fc7bca33a96b7a6a6a939ea3dbe495ffbadcdf6b08d9ff5bed7ca",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

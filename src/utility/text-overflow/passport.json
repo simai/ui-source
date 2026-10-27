@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-overflow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-overflow/default/index.js",
+    "src/utility/text-overflow/default/index.scss",
+    "src/utility/text-overflow/default/rule.js",
+    "src/utility/text-overflow/default/scss/_sf_css__text_overflow.scss",
+    "src/utility/text-overflow/default/scss/_sf_var__text_overflow.scss",
+    "src/utility/text-overflow/default/scss/index.scss"
+  ],
+  "content_sha256": "3dc15243ee54d52b5a0486aeb7f42cb0cda82e9cf5fdd98d5ec98e70d939c2b7",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-contrast",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-contrast/default/index.js",
+    "src/utility/filter-contrast/default/index.scss",
+    "src/utility/filter-contrast/default/rule.js",
+    "src/utility/filter-contrast/default/scss/_sf_css__filter_contrast.scss",
+    "src/utility/filter-contrast/default/scss/_sf_var__filter_contrast.scss",
+    "src/utility/filter-contrast/default/scss/index.scss",
+    "src/utility/filter-contrast/hover/index.js",
+    "src/utility/filter-contrast/hover/index.scss",
+    "src/utility/filter-contrast/hover/rule.js",
+    "src/utility/filter-contrast/hover/scss/_sf_css__filter_contrast.scss",
+    "src/utility/filter-contrast/hover/scss/index.scss"
+  ],
+  "content_sha256": "14fcc75a2abf25a0149d2f9ab4433147b1d83dfb04fdb4866886181025f24056",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.object-position",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/object-position/default/index.js",
+    "src/utility/object-position/default/index.scss",
+    "src/utility/object-position/default/rule.js",
+    "src/utility/object-position/default/scss/_sf_css__object.scss",
+    "src/utility/object-position/default/scss/_sf_var__object.scss",
+    "src/utility/object-position/default/scss/index.scss",
+    "src/utility/object-position/lg/index.js",
+    "src/utility/object-position/lg/index.scss",
+    "src/utility/object-position/lg/rule.js",
+    "src/utility/object-position/lg/scss/_sf_css__object.scss",
+    "src/utility/object-position/lg/scss/index.scss",
+    "src/utility/object-position/md/index.js",
+    "src/utility/object-position/md/index.scss",
+    "src/utility/object-position/md/rule.js",
+    "src/utility/object-position/md/scss/_sf_css__object.scss",
+    "src/utility/object-position/md/scss/index.scss",
+    "src/utility/object-position/sm/index.js",
+    "src/utility/object-position/sm/index.scss",
+    "src/utility/object-position/sm/rule.js",
+    "src/utility/object-position/sm/scss/_sf_css__object.scss",
+    "src/utility/object-position/sm/scss/index.scss",
+    "src/utility/object-position/xl/index.js",
+    "src/utility/object-position/xl/index.scss",
+    "src/utility/object-position/xl/rule.js",
+    "src/utility/object-position/xl/scss/_sf_css__object.scss",
+    "src/utility/object-position/xl/scss/index.scss",
+    "src/utility/object-position/xxl/index.js",
+    "src/utility/object-position/xxl/index.scss",
+    "src/utility/object-position/xxl/rule.js",
+    "src/utility/object-position/xxl/scss/_sf_css__object.scss",
+    "src/utility/object-position/xxl/scss/index.scss"
+  ],
+  "content_sha256": "d0b05c96ea40c3340387f4a173e89a62102c297245f647034f6505c06fccd2fe",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.fill-rule",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/fill-rule/default/index.js",
+    "src/utility/fill-rule/default/index.scss",
+    "src/utility/fill-rule/default/rule.js",
+    "src/utility/fill-rule/default/scss/_sf_css__fill_rule.scss",
+    "src/utility/fill-rule/default/scss/_sf_var__fill_rule.scss",
+    "src/utility/fill-rule/default/scss/index.scss"
+  ],
+  "content_sha256": "2fe627f81ffeb29c67c17bb887aae834f2d4acbb9e4697c0152eba20a18d0eb0",
+  "dependencies": []
+}

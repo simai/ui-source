@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-snap-align",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-snap-align/default/index.js",
+    "src/utility/scroll-snap-align/default/index.scss",
+    "src/utility/scroll-snap-align/default/rule.js",
+    "src/utility/scroll-snap-align/default/scss/_sf_css__scroll_snap_align.scss",
+    "src/utility/scroll-snap-align/default/scss/_sf_var__scroll_snap_align.scss",
+    "src/utility/scroll-snap-align/default/scss/index.scss"
+  ],
+  "content_sha256": "f76bc090135762af01a54c55568e44797e822e974d9b28dadf819093c93223c9",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "simai.framework.unit-inventory",
+  "schema_version": 1,
+  "source": "simai/ui-source",
+  "revision": "3333333333333333333333333333333333333333",
+  "release": "ui-333333333333",
+  "units": [
+    {
+      "id": "component.alpha",
+      "kind": "component",
+      "version": "1.0.1",
+      "content_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "dependencies": [
+        {
+          "id": "tokens.colour",
+          "range": "^1.1.0"
+        },
+        {
+          "id": "utility.space",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "tokens.colour",
+      "kind": "tokens",
+      "version": "1.1.0",
+      "content_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "dependencies": []
+    },
+    {
+      "id": "utility.space",
+      "kind": "utility",
+      "version": "1.0.0",
+      "content_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "dependencies": []
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.verification",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/verification/docs/docs.md",
+    "src/component/verification/index.js",
+    "src/component/verification/js/_verification.js",
+    "src/component/verification/js/index.js",
+    "src/component/verification/json/verification-form.utility.json",
+    "src/component/verification/json/verification.utility.json",
+    "src/component/verification/rule.js",
+    "src/component/verification/scss/_css__verification-form.scss",
+    "src/component/verification/scss/_css__verification.scss",
+    "src/component/verification/scss/_css__verification_custom.scss",
+    "src/component/verification/scss/index.scss"
+  ],
+  "content_sha256": "2857b9cd401d1889d52d8c2de08e750f0878dfa2ec55456b9b63e4ef15c022e4",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

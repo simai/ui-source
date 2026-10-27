@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.accent-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/accent-color/default/index.js",
+    "src/utility/accent-color/default/index.scss",
+    "src/utility/accent-color/default/rule.js",
+    "src/utility/accent-color/default/scss/_sf_css__accent_color.scss",
+    "src/utility/accent-color/default/scss/_sf_var__accent_color.scss",
+    "src/utility/accent-color/default/scss/index.scss",
+    "src/utility/accent-color/hover/index.js",
+    "src/utility/accent-color/hover/index.scss",
+    "src/utility/accent-color/hover/rule.js",
+    "src/utility/accent-color/hover/scss/_sf_css__accent_color.scss",
+    "src/utility/accent-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "4bf1ff750e3f41e8bfe59495b7069c55899745ddc1eb1bcae70349ba002bb086",
+  "dependencies": []
+}

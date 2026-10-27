@@ -1,0 +1,76 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "core.styles",
+  "kind": "core",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions, placeholders and touch fields.",
+  "includes": [
+    "src/core/scss/",
+    "src/core/figma_variables/"
+  ],
+  "files": [
+    "src/core/figma_variables/img.png",
+    "src/core/scss/_base.scss",
+    "src/core/scss/_sf_css__composition.scss",
+    "src/core/scss/_sf_css__loader.scss",
+    "src/core/scss/_sf_css__logo.scss",
+    "src/core/scss/_sf_css__placeholder.scss",
+    "src/core/scss/_sf_css__preset.scss",
+    "src/core/scss/_sf_css__scroll.scss",
+    "src/core/scss/_sf_css__touch_fields.scss",
+    "src/core/scss/_sf_ext__common.scss",
+    "src/core/scss/_sf_layer_order.scss",
+    "src/core/scss/index.scss",
+    "src/core/scss/mix/_mix__common.scss",
+    "src/core/scss/vars/_sf_var__display.scss"
+  ],
+  "content_sha256": "037866d6b25ee4943caf60d263bb8c8d8fd8d604b0c1dfda3012947029b789f6",
+  "dependencies": [
+    {
+      "id": "font.inter",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

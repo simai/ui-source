@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.min-height",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/min-height/default/index.js",
+    "src/utility/min-height/default/index.scss",
+    "src/utility/min-height/default/rule.js",
+    "src/utility/min-height/default/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/default/scss/_sf_var__height_min.scss",
+    "src/utility/min-height/default/scss/index.scss",
+    "src/utility/min-height/lg/index.js",
+    "src/utility/min-height/lg/index.scss",
+    "src/utility/min-height/lg/rule.js",
+    "src/utility/min-height/lg/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/lg/scss/index.scss",
+    "src/utility/min-height/md/index.js",
+    "src/utility/min-height/md/index.scss",
+    "src/utility/min-height/md/rule.js",
+    "src/utility/min-height/md/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/md/scss/index.scss",
+    "src/utility/min-height/sm/index.js",
+    "src/utility/min-height/sm/index.scss",
+    "src/utility/min-height/sm/rule.js",
+    "src/utility/min-height/sm/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/sm/scss/index.scss",
+    "src/utility/min-height/xl/index.js",
+    "src/utility/min-height/xl/index.scss",
+    "src/utility/min-height/xl/rule.js",
+    "src/utility/min-height/xl/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/xl/scss/index.scss",
+    "src/utility/min-height/xxl/index.js",
+    "src/utility/min-height/xxl/index.scss",
+    "src/utility/min-height/xxl/rule.js",
+    "src/utility/min-height/xxl/scss/_sf_css__height_min.scss",
+    "src/utility/min-height/xxl/scss/index.scss"
+  ],
+  "content_sha256": "a00ac95137049ef14493695c4a805fd79621989767d115132fa7145ad166ed91",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

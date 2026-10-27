@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-hue-rotate",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-hue-rotate/default/index.js",
+    "src/utility/filter-hue-rotate/default/index.scss",
+    "src/utility/filter-hue-rotate/default/rule.js",
+    "src/utility/filter-hue-rotate/default/scss/_sf_css__filter_hue_rotate.scss",
+    "src/utility/filter-hue-rotate/default/scss/_sf_var__filter_hue_rotate.scss",
+    "src/utility/filter-hue-rotate/default/scss/index.scss",
+    "src/utility/filter-hue-rotate/hover/index.js",
+    "src/utility/filter-hue-rotate/hover/index.scss",
+    "src/utility/filter-hue-rotate/hover/rule.js",
+    "src/utility/filter-hue-rotate/hover/scss/_sf_css__filter_hue_rotate.scss",
+    "src/utility/filter-hue-rotate/hover/scss/index.scss"
+  ],
+  "content_sha256": "9840baa35ecbd452f8209f863d5dc44e93d7eecd67891115a1da64794c08feb0",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

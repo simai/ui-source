@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.pointer-events",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/pointer-events/default/index.js",
+    "src/utility/pointer-events/default/index.scss",
+    "src/utility/pointer-events/default/rule.js",
+    "src/utility/pointer-events/default/scss/_sf_css__pointer_events.scss",
+    "src/utility/pointer-events/default/scss/_sf_var__pointer_events.scss",
+    "src/utility/pointer-events/default/scss/index.scss"
+  ],
+  "content_sha256": "4d75294d2ecc156e60f6dfd1eb4f58fd81817dc867643f633241ecae45667926",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

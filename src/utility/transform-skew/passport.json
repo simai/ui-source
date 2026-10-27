@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.transform-skew",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/transform-skew/default/index.js",
+    "src/utility/transform-skew/default/index.scss",
+    "src/utility/transform-skew/default/rule.js",
+    "src/utility/transform-skew/default/scss/_sf_css__transform_skew.scss",
+    "src/utility/transform-skew/default/scss/_sf_var__transform_skew.scss",
+    "src/utility/transform-skew/default/scss/index.scss",
+    "src/utility/transform-skew/hover/index.js",
+    "src/utility/transform-skew/hover/index.scss",
+    "src/utility/transform-skew/hover/rule.js",
+    "src/utility/transform-skew/hover/scss/_sf_css__transform_skew.scss",
+    "src/utility/transform-skew/hover/scss/index.scss"
+  ],
+  "content_sha256": "1ed0e8620b77cdb2657e1b9e689ea73867ca74ed022d7fa99c73547e373b4b8b",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

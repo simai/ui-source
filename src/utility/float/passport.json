@@ -1,0 +1,47 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.float",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/float/default/index.js",
+    "src/utility/float/default/index.scss",
+    "src/utility/float/default/rule.js",
+    "src/utility/float/default/scss/_sf_css__float.scss",
+    "src/utility/float/default/scss/index.scss",
+    "src/utility/float/lg/index.js",
+    "src/utility/float/lg/index.scss",
+    "src/utility/float/lg/rule.js",
+    "src/utility/float/lg/scss/_sf_css__float.scss",
+    "src/utility/float/lg/scss/index.scss",
+    "src/utility/float/md/index.js",
+    "src/utility/float/md/index.scss",
+    "src/utility/float/md/rule.js",
+    "src/utility/float/md/scss/_sf_css__float.scss",
+    "src/utility/float/md/scss/index.scss",
+    "src/utility/float/sm/index.js",
+    "src/utility/float/sm/index.scss",
+    "src/utility/float/sm/rule.js",
+    "src/utility/float/sm/scss/_sf_css__float.scss",
+    "src/utility/float/sm/scss/index.scss",
+    "src/utility/float/xl/index.js",
+    "src/utility/float/xl/index.scss",
+    "src/utility/float/xl/rule.js",
+    "src/utility/float/xl/scss/_sf_css__float.scss",
+    "src/utility/float/xl/scss/index.scss",
+    "src/utility/float/xxl/index.js",
+    "src/utility/float/xxl/index.scss",
+    "src/utility/float/xxl/rule.js",
+    "src/utility/float/xxl/scss/_sf_css__float.scss",
+    "src/utility/float/xxl/scss/index.scss"
+  ],
+  "content_sha256": "a40683df79bd61770cb94400ab55701077625e4847663346a892e4e7b830bdd7",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}
