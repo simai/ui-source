@@ -197,18 +197,26 @@ breadcrumbs.onItemClick((item, detail, event) => {
 - `sf-updated`
 - `sf-disconnected`
 
-Событие клика по хлебной крошке:
+Нажатие на хлебную крошку:
 
-- `sf-breadcrumb-click`
+- `sf-breadcrumbs-press`
 
-Событие `sf-breadcrumb-click` является cancelable. Если вызвать `event.preventDefault()` во внешнем обработчике, дефолтное раскрытие `ellipsis` не выполнится.
+Событие `sf-breadcrumbs-press` является cancelable. Если вызвать `event.preventDefault()` во внешнем обработчике, дефолтное раскрытие `ellipsis` не выполнится.
 
-`event.detail`:
+`event.detail` — только данные:
 
 - `item`
 - `index`
 - `items`
-- `originalEvent`
+
+Старое имя `sf-breadcrumb-click` работает до 2026-12-01: оно приходит следом
+с прежним `detail` (`component`, `tagName`, `template`, `originalEvent`) и тем
+же отказом — `preventDefault()` на любом из имён отменяет раскрытие. Каждое
+использование старого имени записывается в `SF.deprecations` с датами.
+
+Публичные переменные: `--sf-breadcrumbs-gap`, `--sf-breadcrumbs-color`,
+`--sf-breadcrumbs-link-color`, `--sf-breadcrumbs-link-hover-color`,
+`--sf-breadcrumbs-current-color`, `--sf-breadcrumbs-separator-color`.
 
 ## Ellipsis
 
@@ -254,13 +262,13 @@ breadcrumbs.onItemClick((item, detail, event) => {
 ## Доступность
 
 - Корень рендерится как `<nav>`.
-- `aria-label` по умолчанию равен `Breadcrumb`.
+- `aria-label` по умолчанию — слово языка страницы: «Хлебные крошки», `Breadcrumb`.
 - Текущий элемент получает `aria-current="page"`.
 - Разделители рендерятся с `aria-hidden="true"`.
 - Для элемента с одной иконкой нужно задавать `aria-label`.
 - Предкам с реальным URL задавайте `href`: они остаются нативными ссылками.
   URL-less item сохраняет legacy Button fallback для host-owned client-side
-  navigation intent и требует обработчика `sf-breadcrumb-click`.
+  navigation intent и требует обработчика `sf-breadcrumbs-press`.
 - Arrow-key модель не добавляется: ссылки используют Tab/Enter, ellipsis-кнопка
   — Tab/Enter/Space.
 - Рамка базового компонента включается через `:focus-visible`, не обычный клик.

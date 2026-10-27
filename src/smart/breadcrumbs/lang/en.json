@@ -1,0 +1,7 @@
+{
+  "title": "Breadcrumbs",
+  "runtime": {
+    "aria-label": "Breadcrumb",
+    "expand-label": "Show hidden breadcrumbs"
+  }
+}

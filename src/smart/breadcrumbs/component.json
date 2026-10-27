@@ -1,0 +1,269 @@
+{
+  "$comment": "The source of sf-breadcrumbs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/breadcrumbs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.breadcrumbs",
+  "tag": "sf-breadcrumbs",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "navigation",
+  "settings": {
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "label": "string",
+        "href": {
+          "type": "string",
+          "optional": true
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "current": {
+          "type": "boolean",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "ellipsis": {
+          "type": "boolean",
+          "optional": true
+        },
+        "target": {
+          "type": "string",
+          "optional": true
+        },
+        "rel": {
+          "type": "string",
+          "optional": true
+        },
+        "value": {
+          "type": "string",
+          "optional": true
+        },
+        "aria-label": {
+          "type": "string",
+          "optional": true
+        },
+        "item-class": {
+          "type": "string",
+          "optional": true
+        },
+        "container-class": {
+          "type": "string",
+          "optional": true
+        },
+        "hidden-items": {
+          "type": "list",
+          "optional": true
+        }
+      },
+      "x-markup": "the attribute takes the list as JSON or the \"label::flag,key=value|label\" form; without it the sf-breadcrumbs-item children are the list"
+    },
+    "separator-icon": {
+      "type": "icon",
+      "default": "chevron_right"
+    },
+    "home-icon": {
+      "type": "icon",
+      "default": "home"
+    },
+    "home-label": {
+      "type": "string",
+      "default": ""
+    },
+    "item-class": {
+      "type": "string",
+      "default": ""
+    },
+    "link-class": {
+      "type": "string",
+      "default": ""
+    },
+    "current-class": {
+      "type": "string",
+      "default": ""
+    },
+    "separator-class": {
+      "type": "string",
+      "default": ""
+    },
+    "container-class": {
+      "type": "string",
+      "default": ""
+    },
+    "expand-label": {
+      "type": "string",
+      "default-from": "runtime.expand-label"
+    },
+    "expand-on-ellipsis": {
+      "type": "boolean",
+      "default": true
+    },
+    "max-items": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 4
+    }
+  },
+  "values": {},
+  "events": {
+    "press": {
+      "carries": {
+        "item": "object",
+        "index": "number",
+        "items": "list"
+      },
+      "cancelable": true
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "select"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "navigation",
+    "name": {
+      "from": [
+        "aria-label",
+        "runtime.aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "select"
+    }
+  },
+  "css-variables": {
+    "--sf-breadcrumbs-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-breadcrumbs-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-breadcrumbs-link-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-breadcrumbs-link-hover-color": {
+      "type": "color",
+      "state": "hover"
+    },
+    "--sf-breadcrumbs-current-color": {
+      "type": "color",
+      "state": "current"
+    },
+    "--sf-breadcrumbs-separator-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
+  "x-source": {
+    "package": "framework",
+    "folder": "breadcrumbs",
+    "manifest": "simai/ui-source@5100227 src/smart/breadcrumbs/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/breadcrumbs.component.json"
+  },
+  "x-words": [
+    "home-label",
+    "expand-label"
+  ],
+  "x-renamed": [
+    "settings.items: type string with a list default → list (§4.2)",
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "events.sf-breadcrumb-click: \"click\" is a prototype name (§3.1) → press",
+    "events.press: 3 carried field(s) held the element, not data (§8)",
+    "events.sf-breadcrumb-click → press: the DOM name is sf-breadcrumbs-press (§8 <tag>-<verb>); the old name is a dated split alias whose detail keeps component, tagName, template and originalEvent",
+    "settings.max-items: a number with integer and min (§4.2)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "line",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-breadcrumbs to show the current page location in a hierarchy and provide native links to ancestor pages.",
+      "do_not": [
+        "Do not use Breadcrumbs as browsing history, tabs, a menu or a stepper",
+        "Do not omit href when an ancestor has a real URL",
+        "Do not expose separator icons to assistive technology",
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-breadcrumbs></sf-breadcrumbs>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-breadcrumb-click holds a dated alias (§4.10).",
+    "events: a press on a crumb is `press` (click is a prototype name, §3.1), sent as sf-breadcrumbs-press, cancelable: a page that refuses it keeps the ellipsis closed, as it did with the old name.",
+    "detail-adapter: §8 takes the element and the browser's event out of detail, so sf-breadcrumbs-press carries {item, index, items}; sf-breadcrumb-click follows once with its old detail (component, tagName, template, originalEvent) through a split row and sfAliasAdapters, sharing one cancel.",
+    "key-effects: crumbs are native links and the ellipsis a native button: Tab reaches them, Enter follows a link or opens the hidden crumbs (select). No roving focus.",
+    "a11y-name: aria-label on the host, else the language file's runtime word «Хлебные крошки» / «Breadcrumb» (aria-label stays a host attribute, §3.1, alias row host-attribute).",
+    "item-shape: items name their fields with `of` (label, href, icon, current, disabled, ellipsis, target, rel, value, aria-label, item-class, container-class, hidden-items); the attribute keeps its JSON and \"label::flags|\" forms, and sf-breadcrumbs-item children stay the markup form.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus a long trail with the ellipsis, an icon home and children in the markup; probe.json drives Tab and Enter (gate 16).",
+    "css-variables: six public variables read by the class sheets (component/breadcrumbs) over the role tokens (§6): the gap, a crumb's colour, a link's colour at rest and on hover, the current crumb's colour and the separator's. They are not in src/core/contracts/public-variables.v1.json yet: that file is shared with the field family's branches.",
+    "side-effects: none.",
+    "docs: docs/docs.md, where the folder keeps it (as sf-tooltip)."
+  ]
+}

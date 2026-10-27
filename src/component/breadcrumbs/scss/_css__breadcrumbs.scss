@@ -6,7 +6,7 @@
     max-inline-size: 100%;
     flex-wrap: wrap;
     background-color: var(--sf-breadcrumbs--background-color, transparent);
-    gap: var(--sf-breadcrumbs--gap, var(--sf-space-1\/3));
+    gap: var(--sf-breadcrumbs-gap, var(--sf-breadcrumbs--gap, var(--sf-space-1\/3)));
     overscroll-behavior-inline: contain;
   }
 

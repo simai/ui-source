@@ -1,0 +1,139 @@
+{
+  "component": "sf-breadcrumbs",
+  "probe": "sf-breadcrumbs against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs (SF_OVERLAYS names the folders)",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\"><sf-breadcrumbs id=\"bc\" aria-label=\"Путь к товару\" max-items=\"4\" items='[{\"label\": \"Главная\", \"href\": \"#home\"}, {\"label\": \"Каталог\", \"href\": \"#catalog\"}, {\"label\": \"Мебель\", \"href\": \"#furniture\"}, {\"label\": \"Столы\", \"href\": \"#tables\"}, {\"label\": \"Письменные\", \"href\": \"#desks\"}, {\"label\": \"Стол Nord\"}]'></sf-breadcrumbs></div>",
+      "  <sf-breadcrumbs id=\"bc-kids\"><a data-sf-breadcrumb-item href=\"#a\">Раздел</a><span data-sf-breadcrumb-item>Страница</span></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-stop\" max-items=\"3\" items=\"Один|Два|Три|Четыре\"></sf-breadcrumbs>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-enter-opens-hidden",
+      "title": "Tab reaches the ellipsis, Enter opens the hidden crumbs: sf-breadcrumbs-press once, sf-breadcrumb-click once, noted with its dates",
+      "covers": "keyboard.host Tab reach, Enter select, events.press, aliases sf-breadcrumb-click",
+      "steps": [
+        {
+          "script": "(document.querySelector('#bc [data-sf-breadcrumb-index=\"0\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement?.textContent.trim() === '…'"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-breadcrumbs-press",
+                "count": 1,
+                "detail": {
+                  "index": 1,
+                  "item": {
+                    "ellipsis": true
+                  }
+                }
+              },
+              {
+                "name": "sf-breadcrumb-click",
+                "count": 1,
+                "detail": {
+                  "index": 1,
+                  "component": "<sf-breadcrumbs>",
+                  "tagName": "sf-breadcrumbs"
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "sf-breadcrumb-click",
+                "to": "sf-breadcrumbs-press",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "document.querySelectorAll('#bc a.sf-breadcrumbs-item').length === 5 && !document.querySelector('#bc .sf-breadcrumbs-item-container')?.textContent.includes('…') && !('originalEvent' in (window.__heard.find((one) => one.name === 'sf-breadcrumbs-press')?.detail ?? {originalEvent: 1}))"
+        }
+      ]
+    },
+    {
+      "id": "p2-refused-press",
+      "title": "a page that refuses the press keeps the ellipsis closed, through either name",
+      "covers": "events.press cancelable",
+      "steps": [
+        {
+          "script": "(document.addEventListener('sf-breadcrumbs-press', (event) => event.preventDefault(), {once: true}), document.querySelector('#bc-stop button[aria-label]').click(), true)",
+          "wait": 200,
+          "check": "Boolean(document.querySelector('#bc-stop button[aria-label]'))"
+        },
+        {
+          "script": "(document.addEventListener('sf-breadcrumb-click', (event) => event.preventDefault(), {once: true}), document.querySelector('#bc-stop button[aria-label]').click(), true)",
+          "wait": 200,
+          "check": "Boolean(document.querySelector('#bc-stop button[aria-label]'))"
+        },
+        {
+          "user": "click:#bc-stop button[aria-label]",
+          "wait": 200,
+          "check": "!document.querySelector('#bc-stop button[aria-label]') && document.querySelectorAll('#bc-stop .sf-breadcrumbs-item:not(.sf-breadcrumbs-item--separator)').length === 4"
+        }
+      ]
+    },
+    {
+      "id": "p3-name-current",
+      "title": "the trail is named by aria-label, else by the language file; the last crumb is the page",
+      "covers": "accessibility.name, lang runtime",
+      "steps": [
+        {
+          "check": "document.querySelector('#bc nav').getAttribute('aria-label') === 'Путь к товару' && document.querySelector('#bc-kids nav').getAttribute('aria-label') === 'Хлебные крошки' && document.querySelector('#bc [aria-current=\"page\"]')?.textContent.trim() === 'Стол Nord' && document.querySelector('#bc button.sf-breadcrumbs-item').getAttribute('aria-label') === 'Показать скрытые крошки'"
+        },
+        {
+          "script": "(document.getElementById('bc-kids').setAttribute('lang', 'en'), true)",
+          "wait": 300,
+          "check": "document.querySelector('#bc-kids nav').getAttribute('aria-label') === 'Breadcrumb'"
+        }
+      ]
+    },
+    {
+      "id": "p4-children",
+      "title": "item children ([data-sf-breadcrumb-item], like sf-breadcrumbs-item) are the list",
+      "covers": "settings.items (markup form)",
+      "steps": [
+        {
+          "check": "document.querySelector('#bc-kids a.sf-breadcrumbs-item')?.getAttribute('href') === '#a' && document.querySelector('#bc-kids [aria-current=\"page\"]')?.textContent.trim() === 'Страница'"
+        }
+      ]
+    },
+    {
+      "id": "p5-list-property",
+      "title": "items as a property draws the trail",
+      "covers": "settings.items (list)",
+      "steps": [
+        {
+          "script": "(document.getElementById('bc-kids').items = [{label: 'А', href: '#1'}, {label: 'Б'}], true)",
+          "wait": 200,
+          "check": "document.querySelector('#bc-kids a.sf-breadcrumbs-item')?.textContent.trim() === 'А'"
+        }
+      ]
+    },
+    {
+      "id": "p6-public-variables",
+      "title": "a public variable on an ancestor reaches the crumbs",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-breadcrumbs-current-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-breadcrumbs-gap', '17px'), true)",
+          "wait": 400,
+          "check": "getComputedStyle(document.querySelector('#bc [aria-current=\"page\"] .sf-breadcrumbs-item-container')).color === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#bc nav')).columnGap === '17px'"
+        }
+      ]
+    }
+  ]
+}

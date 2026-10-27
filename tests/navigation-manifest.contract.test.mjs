@@ -65,3 +65,18 @@ test('sf-steps: the person\'s move is sf-steps-change with data only; the action
   assert.match(source, /goToStep\(index\) \{\s*return this\.moveToStep\(index, \{ person: false \}\);/u);
   assert.doesNotMatch(source, /emitComponentEvent\('step-change'/u);
 });
+
+test('sf-breadcrumbs: a press is sf-breadcrumbs-press, cancelable, with data only; the old click keeps its detail', () => {
+  const manifest = json('src/smart/breadcrumbs/component.json');
+  const event = readManifest(manifest).events.press;
+  assert.equal(event.name, 'sf-breadcrumbs-press');
+  assert.equal(event.cancelable, true);
+  assert.deepEqual(Object.keys(manifest.events.press.carries), ['item', 'index', 'items']);
+  assert.ok(!('aria-label' in manifest.settings), 'aria-label is a host attribute (§3.1)');
+  const {rows} = readAliasTable(json('src/smart/breadcrumbs/aliases.json'), {tag: 'sf-breadcrumbs'});
+  assert.deepEqual(rows.filter((row) => row.kind === 'event').map((row) => [row.from, row.to, row.mode]), [['sf-breadcrumb-click', 'sf-breadcrumbs-press', 'split']]);
+  const source = read('src/smart/breadcrumbs/index.js');
+  assert.match(source, /allowed = this\.sfEmit\('press', \{/u);
+  assert.match(source, /originalEvent: this\._pressOrigin \?\? null/u);
+  assert.doesNotMatch(source, /new CustomEvent\('sf-breadcrumb-click'/u);
+});

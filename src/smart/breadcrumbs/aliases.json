@@ -1,0 +1,31 @@
+{
+  "$comment": "Dated aliases of sf-breadcrumbs for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+  "component": "sf-breadcrumbs",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-breadcrumbs",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1, §4.8",
+      "note": "stays a host attribute, read for the accessible name; no shim"
+    },
+    {
+      "from": "sf-breadcrumb-click",
+      "to": "sf-breadcrumbs-press",
+      "kind": "event",
+      "component": "sf-breadcrumbs",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": true,
+      "section": "§3.1 (click), §8",
+      "note": "the old detail adds component, tagName, template and originalEvent, which §8 takes out of the new one: the element's detail adapter makes it"
+    }
+  ]
+}

@@ -1,19 +1,23 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderBreadcrumbsTemplate } from './js/templates/default';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-breadcrumbs", code, words).
-const BREADCRUMBS_TEXT = {
-  en: {
-    ariaLabel: 'Breadcrumb',
-    expandLabel: 'Show hidden breadcrumbs',
-  },
-  ru: {
-    ariaLabel: 'Хлебные крошки',
-    expandLabel: 'Показать скрытые крошки',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-breadcrumbs from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §11): its settings are attributes and properties made by
+// core/js/element-manifest.js, its words are lang/<locale>.json (a product adds
+// another language through SF.language.register("sf-breadcrumbs", code,
+// words)), and the old event name sf-breadcrumb-click is a dated alias of
+// sf-breadcrumbs-press.
+const BreadcrumbsElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
 function parseItemFlags(flagsPart = '') {
   const flags = String(flagsPart || '')
@@ -120,16 +124,20 @@ function parseItems(items = '', options = {}) {
   });
 }
 
-class SfBreadcrumbs extends SfBaseElement {
+class SfBreadcrumbs extends BreadcrumbsElement {
   static itemTemplateSlot = '__items';
 
+  // The manifest's settings, and what the trail reads more closely: items from
+  // the attribute's own forms or the property.
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
       items: {
         default: [],
-        parser(value) {
-          return parseItems(value);
+        parser(value, fallback, element) {
+          if (value !== undefined && value !== null) return parseItems(value);
+          return parseItems(element?.__sfManifestData?.items ?? []);
         },
       },
       separatorIcon: { default: 'chevron_right' },
@@ -180,6 +188,17 @@ class SfBreadcrumbs extends SfBaseElement {
 
   get items() {
     return this.getProp('items');
+  }
+
+  // A list setting is a property (§4): the list given here wins until the
+  // attribute is written again.
+  set items(value) {
+    if (!this.__sfManifestData) this.__sfManifestData = {};
+    this.__sfManifestData.items = value;
+    this._ellipsisExpanded = false;
+    if (this.hasAttribute('items')) this.removeAttribute('items');
+    else if (this._isMounted) this.requestComponentUpdate('items');
+    else this.mountComponent();
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -350,7 +369,7 @@ class SfBreadcrumbs extends SfBaseElement {
 
   getDisplayItems(items = []) {
     const maxItems = this.getNumberAttr('maxItems', 4);
-    const expandLabel = this.getAttribute('expand-label') || pageText(BREADCRUMBS_TEXT, 'expandLabel', this);
+    const expandLabel = this.getAttribute('expand-label') || this.sfWord('expand-label');
 
     if (
       this._ellipsisExpanded ||
@@ -413,8 +432,8 @@ class SfBreadcrumbs extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
-      ariaLabel: this.getAttribute("aria-label") || pageText(BREADCRUMBS_TEXT, "ariaLabel", this),
-      expandLabel: this.getAttribute("expand-label") || pageText(BREADCRUMBS_TEXT, "expandLabel", this),
+      ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
+      expandLabel: this.getAttribute('expand-label') || this.sfWord('expand-label'),
       component: this,
       items,
       rootClass: this.getRootClass(),
@@ -459,7 +478,7 @@ class SfBreadcrumbs extends SfBaseElement {
   onItemClick(handler, options) {
     if (typeof handler === 'function') {
       this.addEventListener(
-        'sf-breadcrumb-click',
+        this.sfEventName('press'),
         (event) => {
           handler(event.detail?.item, event.detail, event);
         },
@@ -509,36 +528,48 @@ class SfBreadcrumbs extends SfBaseElement {
     return true;
   }
 
+  // A press on a crumb (§8): sf-breadcrumbs-press with data only, cancelable;
+  // the old name sf-breadcrumb-click follows through the alias table with its
+  // old detail and the same cancel.
   handleItemClick = (event, item) => {
     if (item.disabled || item.current) {
       event.preventDefault();
     }
 
-    const clickEvent = new CustomEvent('sf-breadcrumb-click', {
-      bubbles: true,
-      composed: true,
-      cancelable: true,
-      detail: {
-        component: this,
-        tagName: this.componentTagName,
-        template: this.componentTemplateName,
+    this._pressOrigin = event;
+    let allowed;
+    try {
+      allowed = this.sfEmit('press', {
         item,
         index: item.index,
         items: this.normalizedItems,
-        originalEvent: event,
-      },
-    });
-
-    this.dispatchEvent(clickEvent);
+      });
+    } finally {
+      this._pressOrigin = null;
+    }
 
     if (
       item.ellipsis &&
       this.getBooleanAttr('expandOnEllipsis', true) &&
-      !clickEvent.defaultPrevented
+      allowed
     ) {
       this.expandEllipsis(item);
     }
   };
+
+  // The old name keeps its old detail (§16.20 split row): the element, its
+  // template and the browser's event were in it.
+  sfAliasAdapters() {
+    return {
+      'sf-breadcrumb-click': (detail) => ({
+        component: this,
+        tagName: this.componentTagName,
+        template: this.componentTemplateName,
+        ...detail,
+        originalEvent: this._pressOrigin ?? null,
+      }),
+    };
+  }
 }
 
 SfBreadcrumbs.define('sf-breadcrumbs');

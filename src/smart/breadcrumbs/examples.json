@@ -1,0 +1,103 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Навигация",
+      "settings": {
+        "aria-label": "Навигация",
+        "items": [
+          {
+            "label": "Главная",
+            "href": "#"
+          },
+          {
+            "label": "Компоненты"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Навигация"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "display",
+      "title": "Видимые крошки",
+      "settings": {
+        "items": [
+          {
+            "label": "Главная",
+            "href": "#"
+          },
+          {
+            "label": "Компоненты"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Хлебные крошки"
+      },
+      "from": "studio.scenario.json",
+      "x-note": "the scenario calls getDisplayItems, a helper of the element and not an action: the example draws the same trail"
+    },
+    {
+      "name": "long-trail",
+      "title": "Длинный путь",
+      "settings": {
+        "aria-label": "Путь к товару",
+        "items": [
+          {
+            "label": "Главная",
+            "href": "#home"
+          },
+          {
+            "label": "Каталог",
+            "href": "#catalog"
+          },
+          {
+            "label": "Мебель",
+            "href": "#furniture"
+          },
+          {
+            "label": "Столы",
+            "href": "#tables"
+          },
+          {
+            "label": "Письменные",
+            "href": "#desks"
+          },
+          {
+            "label": "Стол Nord"
+          }
+        ],
+        "max-items": 4
+      },
+      "expect": {
+        "name": "Путь к товару"
+      }
+    },
+    {
+      "name": "home-icon",
+      "title": "Домой иконкой",
+      "settings": {
+        "items": [
+          {
+            "label": "",
+            "href": "/"
+          },
+          {
+            "label": "Документы",
+            "href": "/docs/"
+          },
+          {
+            "label": "Отчёт"
+          }
+        ],
+        "home-label": "Главная"
+      },
+      "expect": {
+        "name": "Хлебные крошки"
+      }
+    }
+  ]
+}

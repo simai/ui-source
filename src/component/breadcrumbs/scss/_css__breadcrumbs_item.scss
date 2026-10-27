@@ -18,7 +18,9 @@
     min-inline-size: 0;
     overflow-wrap: anywhere;
     --sf-breadcrumbs-item-container--background-color: transparent;
-    --sf-breadcrumbs-item-container--color: var(--sf-on-surface-variant);
+    /* The public variables of sf-breadcrumbs (component.json css-variables,
+       standard 1.3.8 §6) over the role tokens. */
+    --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-color, var(--sf-on-surface-variant));
     --sf-breadcrumbs-item-container--font-family: var(--sf-text--family);
     --sf-breadcrumbs-item-container--font-size: var(--sf-text-size-1\/2);
     --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-regular);
@@ -45,12 +47,16 @@
   }
 
   .sf-breadcrumbs-item.sf-breadcrumbs-item--link .sf-breadcrumbs-item-container {
-    --sf-breadcrumbs-item-container--color: var(--sf-primary);
+    --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-link-color, var(--sf-primary));
+  }
+
+  .sf-breadcrumbs-item.sf-breadcrumbs-item--separator .sf-breadcrumbs-item-container {
+    --sf-icon--color: var(--sf-breadcrumbs-separator-color, var(--sf-on-surface-variant));
   }
 
   .sf-breadcrumbs-item[aria-current="page"] .sf-breadcrumbs-item-container,
   .sf-breadcrumbs-item .sf-breadcrumbs-item-container[aria-current="page"] {
-    --sf-breadcrumbs-item-container--color: var(--sf-on-surface);
+    --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-current-color, var(--sf-on-surface));
     --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-medium);
   }
 }
@@ -61,7 +67,7 @@
   }
 
   .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):hover .sf-breadcrumbs-item-container {
-    --sf-breadcrumbs-item-container--color: var(--sf-primary-hover);
+    --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-link-hover-color, var(--sf-primary-hover));
   }
 
   .sf-breadcrumbs-item:not(:disabled):not(.disabled):active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item:not(:disabled):not(.disabled):active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > sf-icon > .sf-icon, .sf-breadcrumbs-item.active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item.active.sf-breadcrumbs-item--link > .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
