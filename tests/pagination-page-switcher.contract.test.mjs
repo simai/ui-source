@@ -8,12 +8,12 @@ const read = (path) => readFile(new URL(path, root), 'utf8');
 
 // The switcher is read out of the component rather than rendered, so the window
 // itself is checked: the owner of the consumer stated it page by page.
-const pageItems = async (current, pageCount, {countKnown = true, hasNextPage = false} = {}) => {
+const pageItems = async (current, pageCount, {countKnown = true, totalExact = true, hasNextPage = false} = {}) => {
   const source = await read('src/smart/pagination/index.js');
   const body = source.slice(source.indexOf('get pageItems()'));
   const end = body.indexOf('\n  }\n');
   const code = body.slice(body.indexOf('{') + 1, end);
-  const component = {total: pageCount * 10, current, pageCount, countKnown, hasNextPage};
+  const component = {total: pageCount * 10, current, pageCount, countKnown, totalExact, exactCount: countKnown && totalExact, hasNextPage};
   // eslint-disable-next-line no-new-func
   return new Function('component', code.replace(/this\./gu, 'component.'))(component);
 };
@@ -58,11 +58,27 @@ test('without a count only the page that is known to exist is offered', async ()
   );
 });
 
+// Gate 29: an estimated total (total-exact false) is no count to stop at. The
+// window reaches as far as the estimate or the next page has_next promises,
+// whichever is further, and an estimate of none still shows the page read.
+test('an estimate is not taken for the end', async () => {
+  assert.deepEqual(shape(await pageItems(3, 45, {totalExact: false})), [1, 2, 3, 4, 5]);
+  assert.deepEqual(shape(await pageItems(45, 45, {totalExact: false, hasNextPage: true})), [42, 43, 44, 45, 46],
+    'has_next goes past the estimate');
+  assert.deepEqual(shape(await pageItems(1, 0, {totalExact: false})), [1], 'an estimate of none is not an empty set');
+});
+
 test('the ends are buttons, hidden where they lead nowhere', async () => {
-  const markup = await read('src/smart/pagination/js/templates/default.js');
+  const [source, markup] = await Promise.all([
+    read('src/smart/pagination/index.js'),
+    read('src/smart/pagination/js/templates/default.js'),
+  ]);
 
   assert.match(markup, /\$\{context\.hasPrev\s*\?\s*html`[\s\S]*?kind: "first",[\s\S]*?icon: "first_page",[\s\S]*?kind: "prev",/u);
-  assert.match(markup, /\$\{context\.hasNext\s*\?\s*html`[\s\S]*?kind: "next",[\s\S]*?kind: "last",[\s\S]*?icon: "last_page",/u);
+  assert.match(markup, /\$\{context\.hasNext\s*\?\s*html`[\s\S]*?kind: "next",[\s\S]*?\$\{context\.canJumpToLast[\s\S]*?kind: "last",[\s\S]*?icon: "last_page",/u);
+  // The last page is offered when there is a number to jump to, or a count to
+  // ask for first; an estimate the host cannot count offers none (gate 29).
+  assert.match(source, /canJumpToLast: this\.exactCount \|\| this\.canCount \|\| !this\.countKnown,/u);
   // Each carries a tooltip and the same text as its accessible name.
   assert.match(
     markup,

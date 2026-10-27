@@ -88,6 +88,13 @@ function parseActions(value, fallback = []) {
   return parsed.length ? parsed : fallback;
 }
 
+// The boolean settings that are on by default (component.json).
+const DEFAULT_ON = new Set(
+  Object.entries(manifest.settings)
+    .filter(([, spec]) => spec.type === "boolean" && spec.default === true)
+    .map(([name]) => name),
+);
+
 class SfPagination extends PaginationElement {
   static get props() {
     return {
@@ -128,6 +135,7 @@ class SfPagination extends PaginationElement {
       },
       showMoreText: { attribute: "show-more-text", default: "" },
       countKnown: { attribute: "count-known", type: Boolean, default: true },
+      totalExact: { attribute: "total-exact", type: Boolean, default: true },
       canCount: { attribute: "can-count", type: Boolean, default: false },
       counting: { type: Boolean, default: false },
       hasNextPage: { attribute: "has-next", type: Boolean, default: false },
@@ -276,7 +284,7 @@ class SfPagination extends PaginationElement {
     }
     const atLeastNone = Math.max(parsed, 0);
 
-    return this.countKnown ? Math.min(atLeastNone, this.total) : atLeastNone;
+    return this.countKnown && this.totalExact ? Math.min(atLeastNone, this.total) : atLeastNone;
   }
 
   get total() {
@@ -289,6 +297,26 @@ class SfPagination extends PaginationElement {
   // and asks what is behind it only when someone wants it.
   get countKnown() {
     return this.getBooleanAttr("count-known", true);
+  }
+
+  // Whether the total is the number itself or an estimate (vocabulary 1.1.5
+  // total-exact; standard 1.3.8 gate 29). sf-data-view says false from the
+  // port's `total_exact`: the row then reads «~N», and neither the last page
+  // nor the page count is offered as a fact; the count link asks for the
+  // number when the host can count.
+  get totalExact() {
+    return this.getBooleanAttr("total-exact", true);
+  }
+
+  // The number is known and exact: the only case in which the view derives a
+  // last page and a page count from it.
+  get exactCount() {
+    return this.countKnown && this.totalExact;
+  }
+
+  // The total as it is shown: «~450» for an estimate.
+  get shownTotal() {
+    return this.totalExact ? String(this.total) : `~${this.total}`;
   }
 
   // Whether the host can count when asked. Without it the view offers nothing:
@@ -308,8 +336,12 @@ class SfPagination extends PaginationElement {
     return this.getBooleanAttr("has-next", false);
   }
 
+  // With an estimate the estimated page count says there is more, and so does
+  // has_next: the estimate may be short of the truth.
   get hasNext() {
-    return this.countKnown ? this.current < this.pageCount : this.hasNextPage;
+    if (this.exactCount) return this.current < this.pageCount;
+    if (this.countKnown) return this.current < this.pageCount || this.hasNextPage;
+    return this.hasNextPage;
   }
 
   get showCountLabel() {
@@ -421,7 +453,7 @@ class SfPagination extends PaginationElement {
     }
     const atLeastFirst = Math.max(parsed, 1);
 
-    return this.countKnown ? Math.min(atLeastFirst, this.pageCount) : atLeastFirst;
+    return this.exactCount ? Math.min(atLeastFirst, this.pageCount) : atLeastFirst;
   }
 
   // The page as a setting (§4.3): written from outside it is not reported (§8).
@@ -432,8 +464,10 @@ class SfPagination extends PaginationElement {
   // How many pages there are, when that is known at all. Said out loud rather
   // than reported as one page, so a host is not told a count the view does not
   // have.
+  // An estimate gives no page count either: a count derived from «~450» would
+  // be reported to the host as fact.
   get knownPageCount() {
-    return this.countKnown ? this.pageCount : null;
+    return this.exactCount ? this.pageCount : null;
   }
 
   // A window of at most five numbers around the page being read, the current one
@@ -450,7 +484,7 @@ class SfPagination extends PaginationElement {
     // Without a count there is no empty-set case to answer: the host has said
     // there are records and whether more follow, and the window is built from
     // the page being read, so the row is the same in both modes.
-    if (this.countKnown && this.total === 0) {
+    if (this.exactCount && this.total === 0) {
       return [];
     }
 
@@ -458,9 +492,12 @@ class SfPagination extends PaginationElement {
     const current = this.current;
     // The last page a number may name: the last one there is when it is known,
     // and otherwise the next one, which `has_next` says exists.
-    const furthest = this.countKnown
+    // With an estimate, as far as the estimate reaches or the next page.
+    const furthest = this.exactCount
       ? this.pageCount
-      : current + (this.hasNextPage ? 1 : 0);
+      : this.countKnown
+        ? Math.max(this.pageCount, current + (this.hasNextPage ? 1 : 0))
+        : current + (this.hasNextPage ? 1 : 0);
     const start = Math.max(1, Math.min(current - 2, furthest - window + 1));
     const end = Math.min(furthest, start + window - 1);
 
@@ -484,7 +521,7 @@ class SfPagination extends PaginationElement {
     if (!Number.isFinite(parsed)) {
       return this;
     }
-    const furthest = this.countKnown ? this.pageCount : parsed;
+    const furthest = this.exactCount ? this.pageCount : parsed;
 
     return this.goToPage(Math.min(Math.max(parsed, 1), Math.max(1, furthest)));
   }
@@ -555,6 +592,12 @@ class SfPagination extends PaginationElement {
       hasPrev: this.current > 1,
       hasNext: this.hasNext,
       countKnown: this.countKnown,
+      totalExact: this.totalExact,
+      shownTotal: this.shownTotal,
+      // The last page is a jump to a number: offered when the number is
+      // exact, or when the host can count it first. Without a count at all
+      // the button asks for one, as it always has.
+      canJumpToLast: this.exactCount || this.canCount || !this.countKnown,
       canCount: this.canCount,
       counting: this.counting,
       showCountLabel: this.showCountLabel,
@@ -600,7 +643,7 @@ class SfPagination extends PaginationElement {
   // person started (the last page once the count arrives) is reported as
   // sf-pagination-change.
   goToPage(page) {
-    if (this.countKnown && this.total === 0) {
+    if (this.exactCount && this.total === 0) {
       return { outcome: "refused", reason: "empty" };
     }
 
@@ -613,7 +656,7 @@ class SfPagination extends PaginationElement {
     // With no count there is no last page to clamp against. The host answers a
     // page that has run out with no records, which is honest; clamping to a
     // page count derived from nothing would not be.
-    const next = this.countKnown
+    const next = this.exactCount
       ? Math.min(Math.max(parsed, 1), this.pageCount)
       : Math.max(parsed, 1);
 
@@ -638,16 +681,18 @@ class SfPagination extends PaginationElement {
   // the number is asked for, and the jump happens when it arrives — which is
   // why the request carries the reason. Counting on every answer instead is
   // exactly what this mode exists to avoid.
+  // An estimate is no number to jump to either: the jump waits for the count.
   lastPage() {
-    if (!this.countKnown) {
+    if (!this.exactCount) {
       return this.requestCount("last-page");
     }
 
     return this.goToPage(this.pageCount);
   }
 
+  // Asked when there is no number, or only an estimate of it.
   requestCount(reason = "total") {
-    if (this.countKnown || !this.canCount || this.counting) {
+    if (this.exactCount || !this.canCount || this.counting) {
       return this;
     }
 
@@ -706,7 +751,7 @@ class SfPagination extends PaginationElement {
     }
 
     const pageCount = Math.max(1, Math.ceil(this.total / parsed));
-    const current = Math.min(this.current, pageCount);
+    const current = this.exactCount ? Math.min(this.current, pageCount) : this.current;
 
     this.setState({
       pageSize: parsed,
@@ -718,7 +763,7 @@ class SfPagination extends PaginationElement {
       "page-size": parsed,
       current,
       total: this.total,
-      "page-count": pageCount,
+      "page-count": this.exactCount ? pageCount : null,
     });
 
     return this;
@@ -806,6 +851,7 @@ class SfPagination extends PaginationElement {
       showMoreText: this.showMoreText,
       current: this.current,
       total: this.total,
+      totalExact: this.totalExact,
       pageCount: this.knownPageCount,
       pageSize: this.pageSize,
       pageSizes: this.pageSizes,
@@ -826,6 +872,14 @@ class SfPagination extends PaginationElement {
     Object.entries(nextState || {}).forEach(([key, value]) => {
       const attr = toAttributeName(key);
       if (!attr) {
+        return;
+      }
+
+      // Off for a boolean that is on by default is written, not removed:
+      // without the attribute it reads as on again. sf-data-view sends
+      // countKnown and totalExact false this way.
+      if (value === false && DEFAULT_ON.has(attr)) {
+        this.setAttribute(attr, "false");
         return;
       }
 

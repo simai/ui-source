@@ -21,7 +21,7 @@
 // its properties, events as DOM events (`<tag>-<verb>`, or the native name for
 // a native event, §8), actions as its methods.
 
-import {camel, isObject, outcomeOf, same, typeOf} from './values.mjs';
+import {camel, isObject, outcomeOf, portOfParams, same, typeOf} from './values.mjs';
 
 export const PART_LINK = Symbol.for('sf.assembly.part-link');
 
@@ -132,7 +132,7 @@ export function adaptElement(element, iface, context) {
     if (value === null || value === undefined) { element.removeAttribute(name); return; }
     if (type === 'boolean') {
       if (value === true) element.setAttribute(name, '');
-      else if (def?.optional) element.setAttribute(name, 'false');
+      else if (def?.optional || def?.default === true) element.setAttribute(name, 'false'); // off, not the default on
       else element.removeAttribute(name);
       return;
     }
@@ -144,7 +144,7 @@ export function adaptElement(element, iface, context) {
     get: (name) => element[camel(name)],
     valid: () => (element.validity ? element.validity.valid : undefined),
     act(action, args = {}, options = {}) {
-      if (action === 'connect-port') { this.connectPort(args?.port ?? args); return {answer: 'applied'}; }
+      if (action === 'connect-port') return this.connectPort(portOfParams(args));
       const method = element[camel(action)];
       if (typeof method !== 'function') {
         if (action === 'focus' || action === 'blur') { element[action]?.(); return {answer: 'applied'}; }
@@ -161,9 +161,13 @@ export function adaptElement(element, iface, context) {
       const answer = method.call(element, given, {signal: options.signal});
       return answer && typeof answer.then === 'function' ? answer.then(outcomeOf) : outcomeOf(answer);
     },
+    // The part's base action connect-port (§4.1, §4.9): an element made by
+    // elementFromManifest or on the Smart base keeps the port and runs its
+    // hook; an older element without it is handed the port by setHostPort.
     connectPort(port) {
-      const connect = element.connectPort ?? element.setHostPort;
-      if (typeof connect === 'function') connect.call(element, port);
+      const connect = typeof element.connectPort === 'function' ? element.connectPort : element.setHostPort;
+      if (typeof connect !== 'function') return {answer: 'refused', reason: 'no-action', message: ''};
+      return outcomeOf(connect.call(element, port));
     },
     start: () => readValues('start'), // the part's first values are not a person's change (§8)
     dispose() {},

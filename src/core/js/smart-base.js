@@ -1,6 +1,7 @@
 import { noteDeprecated } from './deprecations.js';
 import './internal.js';
 import { installAliases } from './aliases.js';
+import { connectPort as connectHostPort, portOf } from './host-port.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
@@ -480,6 +481,23 @@ class SfBaseElement extends HTMLElement {
   get sfScope() {
     if (!this.__sfScope) this.__sfScope = new AbortController();
     return this.__sfScope.signal;
+  }
+
+  // The base action connect-port {port} (standard 1.3.8 §4.1, §4.9), with
+  // setHostPort as its alias: the port is kept on the instance's scope and the
+  // component's optional onPortConnected(port, {signal}) runs; a component's
+  // own older setHostPort override runs in its place (core/js/host-port.js).
+  connectPort(port) {
+    return connectHostPort(this, port, SfBaseElement.prototype.setHostPort);
+  }
+
+  setHostPort(port) {
+    return this.connectPort(port);
+  }
+
+  /** The host port the instance holds now (§4.9), or null. */
+  get sfPort() {
+    return portOf(this);
   }
 
   sfOpenScope() {

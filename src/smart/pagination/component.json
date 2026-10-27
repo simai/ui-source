@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pagination's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/pagination (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.pagination",
   "tag": "sf-pagination",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "pagination",
   "settings": {
@@ -142,6 +142,11 @@
       "type": "boolean",
       "default": true
     },
+    "total-exact": {
+      "type": "boolean",
+      "default": true,
+      "summary": "false when total is an estimate: the row reads «~N», the last page and the page count are not offered as exact, and the count link asks for the number (vocabulary 1.1.5 total-exact; gate 29)"
+    },
     "can-count": {
       "type": "boolean",
       "default": false
@@ -212,7 +217,10 @@
         "page-size": "number",
         "current": "number",
         "total": "number",
-        "page-count": "number"
+        "page-count": {
+          "type": "number",
+          "nullable": true
+        }
       }
     },
     "count": {
@@ -472,11 +480,11 @@
   },
   "x-decisions": [
     "shape: leaf, with reasons. The checkbox, the dropdowns and the page field are drawn by its template as controls of the pagination's own settings (action-for-all, page-size, action, the typed page); no rule runs between them, so keys, roles and rules would restate the same three bindings. And the parts it would place (sf-checkbox, sf-dropdown, sf-input) are migrating in the field family's branches now: an assembly binds to their 1.3.8 interfaces, which this branch does not have (report.md order check: an assembly moves after its parts). The assembly is a later step once the field family has landed.",
-    "version: 1.0.1 → 1.1.0, a minor while the eight old event names hold dated aliases (§4.10).",
+    "version: 1.0.1 → 1.1.0, a minor while the eight old event names hold dated aliases (§4.10). 1.1.0 → 1.2.0, a minor: the setting total-exact (an estimated total reads «~N», gate 29), and size-change's page-count is null when the count is not exact, as change, load-more and apply already say.",
     "events: names by vocabulary 1.1.5 -- sf-page-change → sf-pagination-change {current, …}, sf-page-size-change → sf-pagination-size-change, sf-count-request → sf-pagination-count (§5 count), sf-show-more → sf-pagination-load-more {direction: after, …} (§5 load-more), sf-selection-clear → sf-pagination-selection-clear (an own verb), sf-action-change and sf-action-for-all-change → sf-pagination-action-change and -action-for-all-change, sf-action-apply → sf-pagination-apply {action, scope} (§5 apply). The migration's row to the bare `change` is corrected: a DOM change would also be heard from the page-size and action dropdowns inside.",
     "detail-adapter: §8 takes the element out of detail, so each new name carries data only; each old name follows once with its old detail (component, tagName, template, camelCase fields; apply's actionForAll, load-more's item) through a split row and sfAliasAdapters. sf-data-view (ui-pro data-view index.js:1952-1982) listens to the old names and keeps working until it moves.",
     "change reports a person (§8): the page buttons, the field, the arrows and the dropdowns are a person's; goToPage, lastPage and setPageSize keep sending their events when a host calls them, because the host calls them to finish what a person started -- sf-data-view jumps to the last page once the count it asked for arrives (data-view index.js:1878). Writing current or page-size as a setting sends nothing, as before.",
-    "x-target: page, total-exact, has-more, selection and state are not added: current is the page (vocabulary 1.1.5 binds the key page to it), count-known and has-next say what total-exact and has-more would, and the pagination holds no selection or data state (the rows do, selected-count is their count). query is not added: the source reads change and size-change.",
+    "x-target: page, has-more, selection and state are not added: current is the page (vocabulary 1.1.5 binds the key page to it), has-next says what has-more would, and the pagination holds no selection or data state (the rows do, selected-count is their count). query is not added: the source reads change and size-change. total-exact is added in 1.2.0 (gate 29): count-known says whether there is a number at all, total-exact whether the number is exact; sf-data-view sets it from the port's total_exact.",
     "actions: go-to-page {page} answers an outcome (applied; refused empty, invalid, current) and show-more answers applied (§4.4); firstPage, lastPage, goToTypedPage, setPageSize, setAction, setActionForAll, applyAction, clearSelection and requestCount stay the element's helpers.",
     "own-verb-words: selection-clear is a verb of the pagination alone (the panel's cross); its word is lang events.selection-clear.label.",
     "item-shape: the list settings stay strings in markup (page-sizes \"10,20\", actions \"value:text::flags|\"), as the template and hosts write them; the page items it draws are {type: page, value, selected, edge}.",

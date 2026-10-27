@@ -9,6 +9,7 @@
       "  <div id=\"area\"><sf-pagination id=\"pg\" current=\"2\" total=\"80\" page-size=\"10\" page-sizes=\"10,20,40\" top=\"false\" bottom=\"false\"></sf-pagination></div>",
       "  <sf-pagination id=\"pg-more\" aria-label=\"Ещё записи\" current=\"1\" total=\"40\" page-size=\"10\" bottom=\"false\"></sf-pagination>",
       "  <sf-pagination id=\"pg-unknown\" current=\"3\" count-known=\"false\" can-count has-next top=\"false\" bottom=\"false\"></sf-pagination>",
+      "  <sf-pagination id=\"pg-estimate\" current=\"2\" total=\"450\" total-exact=\"false\" can-count page-size=\"10\" top=\"false\" bottom=\"false\"></sf-pagination>",
       "</main>"
     ]
   },
@@ -268,6 +269,53 @@
           "script": "(document.getElementById('area').style.setProperty('--sf-pagination-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-pagination-gap', '17px'), true)",
           "wait": 500,
           "check": "getComputedStyle(document.querySelector('#pg .sf-pagination-container')).color === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#pg .sf-pagination-container')).columnGap === '17px'"
+        }
+      ]
+    },
+    {
+      "id": "p9-estimated-total",
+      "title": "an estimated total (total-exact false) reads «~N» with the count link and gives no page count; the last page asks for the count first, and is not offered when the host cannot count; an exact total reads N again",
+      "covers": "settings.total-exact, events.count (gate 29)",
+      "steps": [
+        {
+          "wait": 200,
+          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return /~450/u.test(text) && Boolean(el.querySelector('.sf-pagination-total .sf-pagination-count-request')) && Boolean(el.querySelector('.sf-pagination-direction--last')) && Boolean(el.querySelector('.sf-pagination-direction--next')) && el.knownPageCount === null; })()"
+        },
+        {
+          "script": "(document.getElementById('pg-estimate').removeAttribute('can-count'), true)",
+          "wait": 200,
+          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return /~450/u.test(text) && !el.querySelector('.sf-pagination-count-request') && !el.querySelector('.sf-pagination-direction--last') && Boolean(el.querySelector('.sf-pagination-direction--next')); })()"
+        },
+        {
+          "script": "(document.getElementById('pg-estimate').setAttribute('can-count', ''), true)",
+          "wait": 200,
+          "check": "Boolean(document.querySelector('#pg-estimate .sf-pagination-count-request'))"
+        },
+        {
+          "script": "(document.querySelector('#pg-estimate .sf-pagination-count-request button')?.click(), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-count",
+                "count": 1,
+                "detail": {
+                  "reason": "total",
+                  "current": 2,
+                  "page-size": 10
+                }
+              }
+            ]
+          }
+        },
+        {
+          "script": "(() => { const el = document.getElementById('pg-estimate'); el.setState({counting: false, totalExact: true, total: 452}); return true; })()",
+          "wait": 200,
+          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return !/~/u.test(text) && /452/u.test(text) && !el.querySelector('.sf-pagination-count-request') && Boolean(el.querySelector('.sf-pagination-direction--last')) && el.knownPageCount === 46; })()"
+        },
+        {
+          "script": "(() => { const el = document.getElementById('pg-estimate'); el.setState({totalExact: false}); return el.getAttribute('total-exact') === 'false' && el.totalExact === false; })()",
+          "wait": 200,
+          "check": "/~452/u.test(document.querySelector('#pg-estimate .sf-pagination-total')?.textContent ?? '')"
         }
       ]
     }
