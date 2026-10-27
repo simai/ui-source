@@ -48,6 +48,7 @@ test('template context: the resolved names the templates read are passed', async
     // A component built from its component.json passes the canonical axis
     // under the legacy name: `type` itself is a dated alias (aliases.json), and
     // reading it would note a use of the old name on every render.
+    // sf-skeleton's variant is a dated alias of kind the same way.
     for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.(?:${name}${name === 'type' || name === 'variant' ? '|kind|appearance' : ''}),`), `${component}.${name}`);
   }
   // sf-toast's type is a dated alias of status (standard 1.3.8 §16.20): the

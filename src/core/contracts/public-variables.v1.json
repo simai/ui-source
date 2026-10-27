@@ -2461,6 +2461,53 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "skeleton",
+      "selector": ".sf-skeleton",
+      "variables": [
+        {
+          "name": "--sf-skeleton-background-color",
+          "role": "background",
+          "summary": "The placeholder bars and shapes.",
+          "default": "var(--sf-ui-skeleton)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-skeleton-highlight-color",
+          "role": "background",
+          "summary": "The light that runs over a bar in the wave animation.",
+          "default": "var(--sf-surface-container-active)",
+          "varies_with": [
+            "animation"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-skeleton-radius",
+          "role": "radius",
+          "summary": "The corners of a bar; a circle stays round.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-skeleton-gap",
+          "role": "gap",
+          "summary": "Space between repeated bars (lines follow one another with none).",
+          "default": "0",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-skeleton-animation-duration",
+          "role": "animation-duration",
+          "summary": "One pulse or one wave.",
+          "default": "calc(var(--sf-duration-slow) * 3)",
+          "varies_with": [
+            "animation"
+          ],
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

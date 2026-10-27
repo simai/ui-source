@@ -40,6 +40,7 @@ const FOLDERS = {
   'progress-bar': 'progress-bar',
   'progress-scale': 'progress-scale',
   spinner: 'spinner',
+  skeleton: 'skeleton',
 };
 
 const scss = async (folder) => {

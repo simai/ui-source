@@ -17,9 +17,10 @@
 - `size`
 - `width`
 - `height`
-- `count`
+- `count` — число от 1 до 20
 - `animation`
-- `variant`
+- `kind` — `text`, `circle`, `square`, `rounded` (прежнее имя `variant`
+  читается до 2026-12-01)
 - `type`
 - `items`
 - `root-class`
@@ -28,3 +29,7 @@
 проценты или dimension-токены, для `height` — dimension-токены. Доступные
 анимации: `pulse`, `wave`, `none`; системная настройка reduced motion отключает
 декоративное движение автоматически.
+
+Публичные переменные: `--sf-skeleton-background-color`,
+`--sf-skeleton-highlight-color`, `--sf-skeleton-radius`, `--sf-skeleton-gap`,
+`--sf-skeleton-animation-duration`.

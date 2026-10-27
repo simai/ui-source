@@ -1,0 +1,17 @@
+{
+  "$comment": "Dated aliases of sf-skeleton for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-skeleton",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "variant",
+      "to": "kind",
+      "kind": "setting",
+      "component": "sf-skeleton",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    }
+  ]
+}

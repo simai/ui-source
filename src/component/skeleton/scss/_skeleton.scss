@@ -6,7 +6,7 @@
   --sf-skeleton-duration: calc(var(--sf-duration-slow) * 3);
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--sf-skeleton-gap, 0);
 }
 
 /* A bar stands for a line of text, so it takes a line's room: the text's
@@ -18,8 +18,8 @@
 .sf-skeleton-text {
   position: relative;
   overflow: hidden;
-  background: var(--sf-skeleton-base);
-  border-radius: var(--sf-radius--ui);
+  background: var(--sf-skeleton-background-color, var(--sf-skeleton-base));
+  border-radius: var(--sf-skeleton-radius, var(--sf-radius--ui));
   block-size: var(--sf-skeleton-text--height);
   flex: none;
 }
@@ -31,7 +31,7 @@
 }
 
 .sf-skeleton--animation-pulse .sf-skeleton-text {
-  animation: sf-skeleton-pulse var(--sf-skeleton-duration) var(--sf-animation) infinite;
+  animation: sf-skeleton-pulse var(--sf-skeleton-animation-duration, var(--sf-skeleton-duration)) var(--sf-animation) infinite;
 }
 
 .sf-skeleton--animation-wave .sf-skeleton-text::after {
@@ -42,10 +42,10 @@
   background-image: linear-gradient(
     90deg,
     var(--sf-transparent),
-    var(--sf-skeleton-highlight),
+    var(--sf-skeleton-highlight-color, var(--sf-skeleton-highlight)),
     var(--sf-transparent)
   );
-  animation: sf-skeleton-wave var(--sf-skeleton-duration) var(--sf-animation) infinite;
+  animation: sf-skeleton-wave var(--sf-skeleton-animation-duration, var(--sf-skeleton-duration)) var(--sf-animation) infinite;
 }
 
 .sf-skeleton--animation-none .sf-skeleton-text,

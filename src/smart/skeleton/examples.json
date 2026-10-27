@@ -1,0 +1,53 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Строки текста",
+      "settings": {
+        "count": 3,
+        "height": "b4",
+        "kind": "text"
+      },
+      "expect": {
+        "aria-hidden": true,
+        "items": 3
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "circle",
+      "title": "Круг",
+      "settings": {
+        "kind": "circle",
+        "width": "b10",
+        "height": "b10"
+      },
+      "expect": {
+        "aria-hidden": true
+      }
+    },
+    {
+      "name": "wave",
+      "title": "Волна",
+      "settings": {
+        "animation": "wave",
+        "count": 2,
+        "width": "100%, 60%"
+      },
+      "expect": {
+        "items": 2
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Иконка",
+      "settings": {
+        "type": "icon",
+        "size": "2"
+      },
+      "expect": {
+        "items": 1
+      }
+    }
+  ]
+}
