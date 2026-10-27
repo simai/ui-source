@@ -141,6 +141,26 @@ the next one.
   attribute it is kept whole, so a listener on the carrier itself goes with
   it.
 
+- **Static markup is replaced in the first render** (standard
+  simai.smart-component 1.3.8 §5.4, simai/ui-source#40). What a server or a
+  static page printed inside the host before the code arrived -- each top node
+  marked `data-sf-static` -- is the element's first paint, and the base removes
+  it right before lit draws the template, in the same task: no frame shows
+  both and none shows neither. The element reads its first values from the
+  host's attributes, never from those nodes, and `captureChildTemplates`
+  skips them; a child with `slot` is page content, not static markup.
+  Until the tag is defined Core hides only an element that has neither static
+  markup nor a `data-sf-skeleton` shape (`src/core/js/pending-tags.js`), in its
+  own box; the page itself is never hidden.
+
+- **A Smart element in a closed container loads when it opens** (§7.2.1,
+  simai/ui-source#47). Inside `[hidden]`, `[inert]`, a closed `<details>` (past
+  its summary) or a closed `<dialog>`, the Loader does not fetch the tag's code;
+  it watches the container and fetches once when it opens. A container part
+  shows and closes a panel with `hidden`.
+  `tests/core-first-paint.contract.test.mjs`;
+  `tests/browser/core-first-paint.browser.mjs`.
+
 - **A component that takes a host port asks for one** with
   `sf-host-port-request`: bubbling and composed, `detail: {component, context:
   {owner, record, group}}`. `owner` names the composite that embedded it; a page

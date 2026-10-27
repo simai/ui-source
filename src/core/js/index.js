@@ -9,6 +9,7 @@ import './region-navigation.js';
 import './effects.js';
 import './notify.js';
 import {installReady} from './ready.js';
+import {holdUndefinedElements, installPendingTags} from './pending-tags.js';
 import {
   createPreloaderContent,
   DEFAULT_PRELOADER,
@@ -188,34 +189,22 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 
   ensureDirAttribute();
 
-  const hideBodyUntilReady = () => {
+  // The page is never hidden (simai/ui-source#39): what the server printed
+  // is the first paint. Only the undefined Smart elements that have nothing
+  // to show until their code arrives are, each in its own box (pending-tags.js).
+  // A page that ships its modules preloaded (SF_PRELOADED, Docara) defines
+  // them at once and is left alone, as it was.
+  const holdUndefinedUntilDefined = () => {
     if (
       window.SF_PRELOADED &&
       Object.keys(window.SF_PRELOADED.modules || {}).length
     ) {
       return;
     }
-    const setHidden = () => {
-      if (!document.body) return false;
-      document.body.style.opacity = '0';
-      return true;
-    };
-
-    if (!setHidden()) {
-      const mo = new MutationObserver((muts, obs) => {
-        if (setHidden()) obs.disconnect();
-      });
-      mo.observe(document.documentElement, { childList: true });
-    }
-    window.addEventListener(
-      'sf-loader-ready',
-      () => {
-        if (document.body) document.body.style.opacity = '1';
-      },
-      { once: true },
-    );
+    installPendingTags(window);
+    holdUndefinedElements(window);
   };
-  hideBodyUntilReady();
+  holdUndefinedUntilDefined();
 
   const mountPreloader = () => {
     const cfg = {

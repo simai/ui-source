@@ -33,6 +33,13 @@ The group accepts `sf-skeleton--animation-pulse`,
 preferences stop decorative movement without removing the reserved geometry.
 Forced-colors mode keeps the shapes visible using a system color.
 
+## Loading
+
+Skeleton bars are CSS only: a page that uses the classes fetches the skeleton
+sheet and no script, because a skeleton is what shows before any code. The
+constructor below is fetched when it is called -- the `[!skeleton]` shortcode
+or `SF.Loader.ensurePlugin('skeleton')`.
+
 ## Constructor compatibility
 
 The existing `Skeleton` constructor keeps `size`, `width`, `height`, `count`,

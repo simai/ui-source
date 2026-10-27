@@ -105,11 +105,14 @@ SF.RuleLoader.registerPackage('larena', {
 - A relation the element renders only later -- a filter editor, a date
   picker, a cell renderer for a type a page may not hold -- is marked
   `{name: 'cl-datepicker', lazy: true}`. The element does not wait for it and
-  the page does not hold its first paint for it: the Loader fetches it after
-  `sf-loader-ready`, in the browser's idle time, and at once when it is asked
-  for (`SF.Loader.ensurePlugin('cl-datepicker')`, or the element appearing in
-  the document). An element that creates a lazy one and calls it straight away
-  waits for `customElements.whenDefined` first.
+  the page does not hold its first paint for it: the Loader fetches it when it
+  is first used -- asked for (`SF.Loader.ensurePlugin('cl-datepicker')`) or
+  met in the document -- and never in idle time on the chance it is needed
+  (standard simai.smart-component 1.3.8 §7.2.1, simai/ui-source#47). A page
+  that wants the old warm-up after `sf-loader-ready` sets
+  `SF_BOOT_CONFIG.prefetchLazyRelations = true`. An element that creates a
+  lazy one and calls it straight away waits for `customElements.whenDefined`
+  first.
 - A package's elements may carry its owner's prefix (`lr-records-list`)
   rather than the Framework's `sf-`, and a new element should (standard
   `simai.component-package`, own-element-prefix). The Loader loads any tag a

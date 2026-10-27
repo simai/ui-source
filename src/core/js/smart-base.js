@@ -2153,8 +2153,9 @@ class SfBaseElement extends HTMLElement {
             node instanceof Element &&
             typeof matcher === "string" &&
             node.matches?.(matcher);
+    // Static markup is a picture of the element, not its content (§5.4).
     const nodes = Array.from(this.childNodes || []).filter((child) =>
-      matches(child),
+      !child.hasAttribute?.("data-sf-static") && matches(child),
     );
 
     if (!nodes.length) {
@@ -2509,12 +2510,32 @@ class SfBaseElement extends HTMLElement {
     return this.constructor.clearLightDomBeforeFirstRender === true;
   }
 
+  // Static markup is the element's first paint: what a server, a static page
+  // or the docs printed inside the host before the code arrived, each top node
+  // marked data-sf-static (standard simai.smart-component 1.3.8 §5.4;
+  // simai/ui-source#40). The first render replaces it in the same task as it
+  // draws the template, so the page shows one or the other in every frame:
+  // never both (two switches, the text below pushed down) and never neither.
+  // The element takes its first values from the host's attributes, never from
+  // these nodes. Page content (anything with slot="...") is not static markup:
+  // the slots took it before this.
+  staticMarkup() {
+    return Array.from(this.children).filter(
+      (child) => child.hasAttribute("data-sf-static") && !child.hasAttribute("slot"),
+    );
+  }
+
   prepareRenderContainer() {
-    if (this._hasRendered || !this.shouldClearLightDomBeforeFirstRender()) {
+    if (this._hasRendered) {
       return;
     }
 
-    this.replaceChildren();
+    if (this.shouldClearLightDomBeforeFirstRender()) {
+      this.replaceChildren();
+      return;
+    }
+
+    this.staticMarkup().forEach((node) => node.remove());
   }
 
   template() {

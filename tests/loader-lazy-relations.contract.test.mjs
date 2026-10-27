@@ -4,9 +4,12 @@ import vm from 'node:vm';
 import test from 'node:test';
 
 // A relation marked lazy does not hold up the page: it is not a relation the
-// component waits for, it is fetched after sf-loader-ready in idle time, and
-// it can be asked for at once (2026-10-12: the table's filter editors were a
-// third of the admin's script at boot).
+// component waits for, and it is fetched when it is first used -- asked for
+// (SF.Loader.ensurePlugin) or met in the document (2026-10-12: the table's
+// filter editors were a third of the admin's script at boot). Since standard
+// simai.smart-component 1.3.8 §7.2.1 (simai/ui-source#47) it is no longer
+// fetched in idle time after sf-loader-ready unless the page asks for that
+// with SF_BOOT_CONFIG.prefetchLazyRelations = true.
 
 const source = fs.readFileSync(new URL('../src/core/js/loader.js', import.meta.url), 'utf8');
 const slice = (from, to) => source.slice(source.indexOf(from), source.indexOf(to, source.indexOf(from)));
@@ -31,7 +34,7 @@ ${slice('SFLoaderPlugin.prototype.ensurePlugin =', 'SFLoaderPlugin.prototype.ens
   return new SFLoaderPlugin();
 }
 
-test('a lazy relation is not waited for and is fetched after the page is ready', () => {
+test('a lazy relation is not waited for, and the opt-in prefetch fetches it', () => {
   const plugin = loader({'cl-table': {}, 'cl-buttons': {}, 'cl-datepicker': {}});
   const output = {smart: {}, component: {}, utility: {}, relation: {}};
   plugin.setRelation([{name: 'cl-buttons'}, {name: 'cl-datepicker', lazy: true}], 'cl-table', output);
@@ -42,8 +45,9 @@ test('a lazy relation is not waited for and is fetched after the page is ready',
   assert.equal(JSON.stringify(plugin.loaded), JSON.stringify(['cl-datepicker']));
 });
 
-test('the page announces ready before the lazy relations are fetched', () => {
+test('ready prefetches nothing unless the page asks, and then after the announcement, in idle time', () => {
   const ready = slice('SFLoaderPlugin.prototype.dispatchReadyOnce =', 'SFLoaderPlugin.prototype.getAssets =');
   assert.ok(ready.indexOf('createReadyEvent()') < ready.indexOf('this.prefetchLazyRelations()'));
+  assert.match(ready, /if \(this\.params\?\.prefetchLazyRelations === true\s*\|\| window\.SF_BOOT_CONFIG\?\.prefetchLazyRelations === true\) \{\s*this\.prefetchLazyRelations\(\);\s*\}/u);
   assert.match(slice('SFLoaderPlugin.prototype.prefetchLazyRelations =', 'SFLoaderPlugin.prototype.ensureSmartElementLoaded ='), /requestIdleCallback/u);
 });
