@@ -274,12 +274,22 @@
     },
     {
       "id": "p9-estimated-total",
-      "title": "an estimated total (total-exact false) reads «~N» with the count link, offers no last page and no page count, and asks for the number; an exact one reads N again",
+      "title": "an estimated total (total-exact false) reads «~N» with the count link and gives no page count; the last page asks for the count first, and is not offered when the host cannot count; an exact total reads N again",
       "covers": "settings.total-exact, events.count (gate 29)",
       "steps": [
         {
           "wait": 200,
-          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return /~450/u.test(text) && Boolean(el.querySelector('.sf-pagination-total .sf-pagination-count-request')) && !el.querySelector('.sf-pagination-direction--last') && Boolean(el.querySelector('.sf-pagination-direction--next')) && el.knownPageCount === null; })()"
+          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return /~450/u.test(text) && Boolean(el.querySelector('.sf-pagination-total .sf-pagination-count-request')) && Boolean(el.querySelector('.sf-pagination-direction--last')) && Boolean(el.querySelector('.sf-pagination-direction--next')) && el.knownPageCount === null; })()"
+        },
+        {
+          "script": "(document.getElementById('pg-estimate').removeAttribute('can-count'), true)",
+          "wait": 200,
+          "check": "(() => { const el = document.getElementById('pg-estimate'); const text = el.querySelector('.sf-pagination-total')?.textContent.replace(/\\s+/gu, ' ').trim() ?? ''; return /~450/u.test(text) && !el.querySelector('.sf-pagination-count-request') && !el.querySelector('.sf-pagination-direction--last') && Boolean(el.querySelector('.sf-pagination-direction--next')); })()"
+        },
+        {
+          "script": "(document.getElementById('pg-estimate').setAttribute('can-count', ''), true)",
+          "wait": 200,
+          "check": "Boolean(document.querySelector('#pg-estimate .sf-pagination-count-request'))"
         },
         {
           "script": "(document.querySelector('#pg-estimate .sf-pagination-count-request button')?.click(), true)",
