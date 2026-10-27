@@ -105,7 +105,7 @@ export function renderImageFieldTemplate(context) {
       <input type="file"
              class="sf-image-field-input"
              id=${field.controlId}
-             name=${context.name || nothing}
+             name=${context.controlName || nothing}
              accept=${context.accept || nothing}
              tabindex="-1"
              aria-hidden="true"

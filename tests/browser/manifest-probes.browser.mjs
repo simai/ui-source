@@ -35,6 +35,7 @@
 //   returns                what the action returned (subset for an object)
 //   deprecations           records in SF.deprecations.list() (subset each)
 //   evaluate               {<expression>: expected}, each run in the page with `el`
+//   fileChooser            whether the trigger opened the platform file dialog
 import {createServer} from 'node:http';
 import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs';
 import {dirname, extname, join, resolve} from 'node:path';
@@ -202,7 +203,12 @@ try {
 
         for (const step of [].concat(check.given || [])) await run(step);
         await page.evaluate(() => { window.__log = []; window.__submits = []; globalThis.SF?.deprecations?.clear?.(); });
+        // expect.fileChooser: whether the trigger opened the platform file dialog.
+        const chooser = 'fileChooser' in (check.expect || {})
+          ? page.waitForEvent('filechooser', {timeout: 2000}).then(() => true, () => false)
+          : null;
         const returns = await run(check);
+        const chose = chooser ? await chooser : null;
         const expect = check.expect || {};
         const seen = await page.evaluate(({name, expect}) => {
           const el = document.querySelector(name);
@@ -266,6 +272,7 @@ try {
           const ok = seen.log.length === expect.events.length && expect.events.every((one, index) => matches(seen.log[index], one));
           if (!ok) problems.push(`events ${JSON.stringify(seen.log)} != ${JSON.stringify(expect.events)}`);
         }
+        if ('fileChooser' in expect && chose !== expect.fileChooser) problems.push(`fileChooser ${chose} != ${expect.fileChooser}`);
         if ('returns' in expect && !matches(returns, expect.returns)) problems.push(`returns ${JSON.stringify(returns)} != ${JSON.stringify(expect.returns)}`);
         if (expect.deprecations) {
           for (const one of expect.deprecations) {

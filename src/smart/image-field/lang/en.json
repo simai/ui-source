@@ -1,0 +1,24 @@
+{
+  "title": "Image field",
+  "runtime": {
+    "bytes": "B",
+    "choose": "Choose…",
+    "choose-name": "Choose an image",
+    "chosen": "Image chosen",
+    "drop": "Drop the file to use it",
+    "empty": "No image chosen",
+    "empty-hint": "Drop a file here or choose one",
+    "gigabytes": "GB",
+    "group": "Image",
+    "kilobytes": "KB",
+    "megabytes": "MB",
+    "quoted": "“%s”",
+    "rejected": "This file is not accepted",
+    "remove": "Remove",
+    "remove-name": "Remove the image",
+    "removed": "Image removed",
+    "replace": "Replace…",
+    "replace-name": "Replace the image",
+    "value-missing": "Choose an image."
+  }
+}

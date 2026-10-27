@@ -17,6 +17,7 @@ const COMPONENTS = {
   color: {class: 'SfColor', sheets: 'src/smart/color/js/templates'},
   'range-slider': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss'},
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
+  'image-field': {class: 'SfImageField', sheets: 'src/smart/image-field/scss'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -149,4 +150,25 @@ test('sf-button-group: select and clear are the manifest\'s actions; change once
   assert.deepEqual(Object.keys(manifest.actions), ['select', 'clear']);
   assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'value', 'label', 'icon', 'count', 'icon-only', 'loading', 'disabled']);
   assert.equal(json('src/smart/button-group/lang/ru.json').runtime.system, 'Как в системе');
+});
+
+test('sf-image-field: vocabulary names with dated colon aliases, error is invalid, ids from the instance path (§7.1.1, §16.20, §17.2)', () => {
+  const source = read('src/smart/image-field/index.js');
+  assert.match(source, /class SfImageField extends FormField\(ImageFieldElement\)/u);
+  for (const verb of ['attach', 'detach', 'rejected']) assert.match(source, new RegExp(`this\\.sfEmit\\('${verb}', `, 'u'), verb);
+  assert.doesNotMatch(source, /new CustomEvent\('sf-image-field:/u, 'the colon names are the shim\'s');
+  assert.doesNotMatch(source, /let sequence|\+\+sequence/u, 'no counter ids');
+  assert.match(source, /partId\(instancePath\(this, \{kind: 'sf-image-field'\}\)\)/u);
+  assert.doesNotMatch(source, /IMAGE_FIELD_TEXT/u);
+  const manifest = json('src/smart/image-field/component.json');
+  assert.equal(manifest.settings.error, undefined, 'error is a dated alias of invalid');
+  assert.deepEqual(Object.keys(manifest.actions), ['clear', 'choose', 'remove-image', 'take-file', 'set-error']);
+  assert.deepEqual(manifest['host-states'], {'data-dragged-over': 'boolean'});
+  const rows = json('src/smart/image-field/aliases.json').aliases.filter((row) => row.to);
+  assert.deepEqual(rows.map((row) => [row.from, row.to]), [
+    ['sf-image-field:select', 'sf-image-field-attach'],
+    ['sf-image-field:remove', 'sf-image-field-detach'],
+    ['sf-image-field:reject', 'sf-image-field-rejected'],
+    ['error', 'invalid'],
+  ]);
 });

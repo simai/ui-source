@@ -1,0 +1,7 @@
+[
+  {"name": "reference", "title": "Логотип", "settings": {"label": "Логотип", "name": "logo", "hint": "PNG или SVG, до 1 МБ"}, "expect": {"values": {"value": null}}},
+  {"name": "stored", "title": "Сохранённое изображение", "settings": {"label": "Логотип", "name": "logo", "value": "{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}"}, "expect": {"values": {"value": {"value": "42", "label": "logo.png"}}, "form": {"logo": "42"}}},
+  {"name": "required", "title": "Обязательное", "settings": {"label": "Обложка", "name": "cover", "required": true}, "expect": {"validity": {"valueMissing": true}}},
+  {"name": "error", "title": "С ошибкой", "settings": {"label": "Логотип", "invalid": true, "error-message": "Файл больше 1 МБ"}, "expect": {"message": "Файл больше 1 МБ"}},
+  {"name": "readonly", "title": "Только просмотр", "settings": {"label": "Логотип", "readonly": true, "value": "/upload/logo.png"}, "expect": {"values": {"value": {"href": "/upload/logo.png"}}}}
+]

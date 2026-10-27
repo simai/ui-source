@@ -295,8 +295,8 @@
         }
       }
     },
-    "sf-image-field:select": {
-      "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value.",
+    "sf-image-field-attach": {
+      "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:select follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -319,8 +319,32 @@
         }
       }
     },
-    "sf-image-field:remove": {
-      "summary": "The person removed the image; detail carries the value it held.",
+    "sf-image-field:select": {
+      "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value. Legacy name: sent after sf-image-field-attach with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "input",
+              "drop"
+            ]
+          },
+          "value": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-image-field-detach": {
+      "summary": "The person removed the image; detail carries the value it held. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:remove follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -333,8 +357,39 @@
         }
       }
     },
+    "sf-image-field:remove": {
+      "summary": "The person removed the image; detail carries the value it held. Legacy name: sent after sf-image-field-detach with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-image-field-rejected": {
+      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array"
+          },
+          "accept": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "sf-image-field:reject": {
-      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely.",
+      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Legacy name: sent after sf-image-field-rejected with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -470,7 +525,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/image-field/index.js",
-        "sha256": "edde1fb9b0271a7adb1032da4cd82306ffa0908f713780613c4a027d5e4d845a"
+        "sha256": "9e0ce3515102a4c3da9bef5d1146df65979b191ab13825b453725d69e5dc0754"
       },
       {
         "path": "src/smart/image-field/value.mjs",
@@ -478,7 +533,7 @@
       },
       {
         "path": "src/smart/image-field/js/templates/default.js",
-        "sha256": "d3cf5807ddadf3ab09a673f192400c1603911e6a97e7e93df5a9c167b3cfa9b0"
+        "sha256": "ac26343dcabea7bf346c49fcf542c1ad25fb27dffdfcd73a98171fe729ea444a"
       },
       {
         "path": "src/smart/image-field/scss/_smart__image_field.scss",

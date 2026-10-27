@@ -1,0 +1,351 @@
+{
+  "$comment": "The source of sf-image-field's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/image-field (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/image-field/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
+  "id": "smart.image-field",
+  "tag": "sf-image-field",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "hint": {
+      "type": "string",
+      "default": ""
+    },
+    "accept": {
+      "type": "string",
+      "default": "image/*"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "meta": {
+      "type": "string",
+      "default": ""
+    },
+    "empty-text": {
+      "type": "string",
+      "default": ""
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error-message": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "values": {
+    "value": {
+      "type": "object",
+      "nullable": true,
+      "default": null,
+      "summary": "The image in the file shape {value, label, mime, size, href, file?}, or null; the attribute takes an address or the shape as JSON"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "value": "object",
+        "file": "object",
+        "source": {
+          "type": "enum",
+          "values": [
+            "input",
+            "drop",
+            "remove"
+          ]
+        },
+        "name": "string"
+      }
+    },
+    "input": {
+      "carries": {
+        "value": "object",
+        "file": "object",
+        "source": {
+          "type": "enum",
+          "values": [
+            "input",
+            "drop",
+            "remove"
+          ]
+        },
+        "name": "string"
+      }
+    },
+    "attach": {
+      "carries": {
+        "files": "list",
+        "file": "object",
+        "source": {
+          "type": "enum",
+          "values": [
+            "input",
+            "drop"
+          ]
+        },
+        "value": "object",
+        "name": "string"
+      }
+    },
+    "detach": {
+      "carries": {
+        "value": "object",
+        "name": "string"
+      }
+    },
+    "rejected": {
+      "carries": {
+        "files": "list",
+        "accept": "string",
+        "source": "string"
+      }
+    }
+  },
+  "actions": {
+    "clear": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "choose": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "remove-image": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "take-file": {
+      "with": {
+        "file": "object",
+        "source": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "set-error": {
+      "with": {
+        "message": "string"
+      },
+      "x-outcomes": [
+        "applied"
+      ]
+    }
+  },
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "readonly": "readonly",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js"
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "group",
+    "name": {
+      "from": [
+        "label",
+        "aria-label",
+        "runtime.group"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open"
+    }
+  },
+  "host-states": {
+    "data-dragged-over": "boolean"
+  },
+  "css-variables": {
+    "--sf-image-field-background-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-image-field-border-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-image-field-border-width": {
+      "type": "length"
+    },
+    "--sf-image-field-radius": {
+      "type": "length"
+    },
+    "--sf-image-field-padding-inline": {
+      "type": "length"
+    },
+    "--sf-image-field-padding-block": {
+      "type": "length"
+    },
+    "--sf-image-field-gap": {
+      "type": "length"
+    },
+    "--sf-image-field-thumbnail-size": {
+      "type": "length"
+    },
+    "--sf-image-field-thumbnail-radius": {
+      "type": "length"
+    },
+    "--sf-image-field-thumbnail-background-color": {
+      "type": "color",
+      "state": "rest"
+    }
+  },
+  "x-summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
+  "x-source": {
+    "package": "framework",
+    "folder": "image-field",
+    "manifest": "simai/ui-source@5100227 src/smart/image-field/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/image-field.component.json"
+  },
+  "x-words": [
+    "label",
+    "hint",
+    "empty-text"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "events.sf-image-field-remove → detach (vocabulary §5.1)",
+    "events.sf-image-field-reject → rejected (vocabulary §5.1)",
+    "events.sf-image-field:select -> attach (vocabulary §5 attach {files}: the File the person chose, which the host uploads)",
+    "settings.error -> invalid (§17.2: error is a dated alias of invalid)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children",
+        "dropped files"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "uploading the file",
+        "choosing where the file is stored"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-image-field for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use it for several files or a transfer list: that is sf-file-upload",
+        "Do not expect it to upload: it raises the File and the host uploads it"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "methods",
+        "accessibility",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-image-field label=\"Логотип\" name=\"logo\" value='{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}'></sf-image-field>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "alias-conflict: vocabulary 1.1.5 §9.1 decides -- sf-image-field:remove is sf-image-field-detach and sf-image-field:reject is sf-image-field-rejected; stand 18's planned sf-image-field-remove and -reject never shipped, so they get no alias",
+    "sf-image-field:select is sf-image-field-attach (vocabulary §5 attach {files}); its detail keeps file, source, value and name and adds files",
+    "version: 1.1.0 -- three events and the setting error move behind dated aliases, set-error is added; a minor while the aliases hold (§4.10)",
+    "key-effects: Enter and Space on «Выбрать…» or «Заменить…» open the platform file dialog; on «Убрать» they remove the image (a button's own press)",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json and docs.md",
+    "css-variables: the ten public variables the field already had (2026-10-24), now declared in the manifest",
+    "value: an object, nullable (§4.2): the file shape; the attribute stays as the class adds it -- an address or the shape as JSON",
+    "form: the host is the form control through ElementInternals (§17.1): the chosen File, or the stored image's id (else its address); nothing while empty or disabled, and while read-only it still submits; the native file input carries no name",
+    "validity: value-missing while required and empty; set-error {message} sets custom-error, so the form does not submit (§17.2)",
+    "actions answer outcomes (§4.4): choose, remove-image, take-file and clear are applied or refused (inactive, empty, rejected, unchanged); set-error is applied",
+    "host-states: data-dragged-over while a file is held over the field (§5.3)",
+    "ids: the part ids come from the instance path (§7.1.1), not a module counter",
+    "empty-text: default \"\" -- a host-written text wins, and without one the template says the language file's runtime.empty itself; a setting that defaulted to the word would differ from what the template reads (the template-context probe)"
+  ]
+}

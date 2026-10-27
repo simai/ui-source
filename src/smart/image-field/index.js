@@ -16,80 +16,87 @@
 // is the one every Framework field has (component/field-contract.js), so the
 // field reads, sizes and announces itself as sf-input and sf-textarea do.
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText, pageLocale} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {pageLocale} from '../../core/js/page-language';
+import {instancePath, partId} from '../../core/js/instance-path';
 import {createFieldContract} from '../../component/field-contract';
 import {FIELD_SIZES, fieldSize} from '../../component/field-size';
+import {FormField} from '../helpers/form-field';
 import {renderImageFieldTemplate} from './js/templates/default';
 import {acceptsFile, formatFileSize, normaliseImageValue} from './value.mjs';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// Every word this component says. A product adds any other language through
-// SF.language.register('sf-image-field', code, words). `quoted` wraps a file
-// name the way the language quotes: «…» in Russian, “…” in English.
-const IMAGE_FIELD_TEXT = {
-  en: {
-    group: 'Image',
-    choose: 'Choose…',
-    chooseName: 'Choose an image',
-    replace: 'Replace…',
-    replaceName: 'Replace the image',
-    remove: 'Remove',
-    removeName: 'Remove the image',
-    empty: 'No image chosen',
-    emptyHint: 'Drop a file here or choose one',
-    drop: 'Drop the file to use it',
-    chosen: 'Image chosen',
-    removed: 'Image removed',
-    rejected: 'This file is not accepted',
-    quoted: '“%s”',
-    bytes: 'B',
-    kilobytes: 'KB',
-    megabytes: 'MB',
-    gigabytes: 'GB',
-  },
-  ru: {
-    group: 'Изображение',
-    choose: 'Выбрать…',
-    chooseName: 'Выбрать изображение',
-    replace: 'Заменить…',
-    replaceName: 'Заменить изображение',
-    remove: 'Убрать',
-    removeName: 'Убрать изображение',
-    empty: 'Изображение не выбрано',
-    emptyHint: 'Перетащите файл сюда или выберите его',
-    drop: 'Отпустите файл, чтобы поставить его',
-    chosen: 'Выбрано изображение',
-    removed: 'Изображение убрано',
-    rejected: 'Этот файл не подходит',
-    quoted: '«%s»',
-    bytes: 'Б',
-    kilobytes: 'КБ',
-    megabytes: 'МБ',
-    gigabytes: 'ГБ',
-  },
-};
+// Every word this component says is lang/<locale>.json runtime (standard
+// 1.3.8 §11). `quoted` wraps a file name the way the language quotes: «…» in
+// Russian, “…” in English.
+const WORD_KEYS = Object.keys(en.runtime);
+const camel = (key) => key.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+const kebab = (key) => key.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
 
 const DEFAULT_ACCEPT = 'image/*';
-let sequence = 0;
 
-class SfImageField extends SfBaseElement {
+// sf-image-field from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §4.4, §8, §16.20, §17.1, §17.2): the settings are attributes
+// and properties made by core/js/element-manifest.js, the actions answer an
+// outcome, the events have their vocabulary names (the shim sends the colon
+// names after them), and the host is the form control through
+// ElementInternals.
+const ImageFieldElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+  actions: {
+    // Opens the platform's file dialog, as «Заменить…» and «Выбрать…» do.
+    choose() {
+      if (!this.interactive) return 'inactive';
+      const input = this.input();
+      if (!input) return 'not-drawn';
+      input.click();
+      return 'applied';
+    },
+    'take-file'({file, source = 'input'} = {}) {
+      return this._takeFile(file, source || 'input');
+    },
+    'remove-image'() {
+      return this._removeImage();
+    },
+    clear() {
+      if (!this.value) return 'unchanged';
+      this.setValue(null);
+      return 'applied';
+    },
+    // §17.2: the message shows in place of the hint and the form does not
+    // submit until it is cleared. It is the error-message and invalid
+    // attributes, which is what a host writing them by hand gets too.
+    'set-error'({message = ''} = {}) {
+      const text = String(message ?? '');
+      if (text) {
+        this.setAttribute('error-message', text);
+        this.setAttribute('invalid', '');
+      } else {
+        this.removeAttribute('error-message');
+        this.removeAttribute('invalid');
+      }
+      this.setCustomValidity(text);
+      return 'applied';
+    },
+  },
+});
+
+class SfImageField extends FormField(ImageFieldElement) {
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
+      // The value is an object (§4.2); its attribute -- an address, or the
+      // shape as JSON -- stays as the field had it.
       value: {default: ''},
-      name: {default: ''},
-      label: {default: ''},
-      hint: {default: ''},
-      accept: {default: DEFAULT_ACCEPT},
       size: {default: '1', values: FIELD_SIZES},
-      meta: {default: ''},
-      emptyText: {attribute: 'empty-text', default: ''},
-      required: {type: Boolean, default: false},
-      disabled: {type: Boolean, default: false},
-      readonly: {type: Boolean, default: false},
-      error: {type: Boolean, default: false},
-      invalid: {type: Boolean, default: false},
-      errorMessage: {attribute: 'error-message', default: ''},
       // The group's name when no label is drawn: a field renderer's panel
       // prints the label beside the field, and a second, visible one inside it
       // would say it twice (the rule tests/field-control-accessible-name holds
@@ -101,7 +108,6 @@ class SfImageField extends SfBaseElement {
 
   constructor() {
     super();
-    this._id = `sf-image-field-${++sequence}`;
     // undefined: follow the attribute. Set by the property, a chosen file or a
     // removal; an attribute written later takes over again.
     this._value = undefined;
@@ -131,19 +137,12 @@ class SfImageField extends SfBaseElement {
   }
 
   get size() { return fieldSize(this.getAttribute('size') || '1', 'sf-image-field'); }
-  get name() { return this.getAttribute('name') || ''; }
-  get label() { return this.getAttribute('label') || ''; }
-  get hint() { return this.getAttribute('hint') || ''; }
   get accept() { return this.hasAttribute('accept') ? this.getAttribute('accept') || '' : DEFAULT_ACCEPT; }
-  get meta() { return this.getAttribute('meta') || ''; }
-  get emptyText() { return this.getAttribute('empty-text') || ''; }
-  get required() { return this.getBooleanAttr('required', false); }
-  get disabled() { return this.getBooleanAttr('disabled', false); }
-  get readonly() { return this.getBooleanAttr('readonly', false); }
-  get error() { return this.getBooleanAttr('error', false); }
-  get invalid() { return this.getBooleanAttr('invalid', false); }
-  get errorMessage() { return this.getAttribute('error-message') || ''; }
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }
+
+  // The ids the template writes come from the instance path (§7.1.1), never
+  // from a counter.
+  get _id() { return partId(instancePath(this, {kind: 'sf-image-field'})); }
 
   // The image the field holds, in the file shape, or null when it is empty.
   get value() {
@@ -161,26 +160,37 @@ class SfImageField extends SfBaseElement {
     if (value?.href !== this._objectUrl) this._releaseObjectUrl();
     this._value = value;
     this.requestComponentUpdate('value');
+    this.fieldSyncForm();
     return this;
   }
 
-  clear() {
-    return this.setValue(null);
+  // What the form gets (§17.1): the File the person chose, or the stored
+  // image's id (else its address); nothing while empty or disabled. Read-only
+  // still submits.
+  sfFormValue() {
+    if (this.disabled) return null;
+    const value = this.value;
+    if (!value) return null;
+    if (value.file && typeof File === 'function' && value.file instanceof File) return value.file;
+    return String(value.value || value.href || '') || null;
   }
 
-  // The audit's setError: an error message the field shows in place of its
-  // hint, or none. It is the error-message and invalid attributes, which is what a
-  // host writing them by hand gets too.
-  setError(message = '') {
-    const text = String(message ?? '');
-    if (text) {
-      this.setAttribute('error-message', text);
-      this.setAttribute('invalid', '');
-    } else {
-      this.removeAttribute('error-message');
-      this.removeAttribute('invalid');
-    }
-    return this;
+  fieldValidity() {
+    return {
+      valueMissing: this.required && !this.disabled && !this.value,
+      message: this.sfWord('value-missing'),
+      anchor: this.focusDelegate(),
+    };
+  }
+
+  // form.reset(): back to the image the field was written with, without
+  // events (§17.1 item 4).
+  fieldReset() {
+    this._releaseObjectUrl();
+    this._value = undefined;
+    const input = this.input();
+    if (input) input.value = '';
+    this.requestComponentUpdate('value');
   }
 
   get interactive() {
@@ -188,7 +198,7 @@ class SfImageField extends SfBaseElement {
   }
 
   text(key) {
-    return pageText(IMAGE_FIELD_TEXT, key, this, 'sf-image-field');
+    return this.sfWord(kebab(key));
   }
 
   quote(name) {
@@ -221,24 +231,17 @@ class SfImageField extends SfBaseElement {
     return this.querySelector(':scope .sf-image-field-actions button:not([disabled])');
   }
 
-  // Opens the platform's file dialog, as «Заменить…» and «Выбрать…» do.
-  choose() {
-    if (!this.interactive) return false;
-    const input = this.input();
-    if (!input) return false;
-    input.click();
-    return true;
-  }
-
   // The person chose a file: from the dialog (source input) or by dropping it
   // (source drop). The thumbnail shows it at once from an object URL; the host
-  // hears of it in input, change and sf-image-field:select, each carrying the
-  // File, and uploads it.
-  takeFile(file, source = 'input') {
-    if (!file || !this.interactive) return false;
+  // hears of it in input, change and attach (sf-image-field:select after it),
+  // each carrying the File, and uploads it. The action take-file answers
+  // its outcome (§4.4).
+  _takeFile(file, source = 'input') {
+    if (!file) return 'no-file';
+    if (!this.interactive) return 'inactive';
     if (!acceptsFile(this.accept, file)) {
       this.reject([file], source);
-      return false;
+      return 'rejected';
     }
     this._releaseObjectUrl();
     let href = '';
@@ -253,20 +256,17 @@ class SfImageField extends SfBaseElement {
     this.announce(`${this.text('chosen')} ${this.quote(file.name)}`);
     this.requestComponentUpdate('value');
     this._emitValue({value, file, source});
-    this.dispatchEvent(new CustomEvent('sf-image-field:select', {
-      bubbles: true,
-      composed: true,
-      detail: {file, source, value, name: this.name},
-    }));
-    return true;
+    this.sfEmit('attach', {files: [file], file, source, value, name: this.name});
+    return 'applied';
   }
 
   // The person removed the image. Focus goes to «Выбрать…», which is where the
   // removed button stood, so the keyboard does not fall back to the page. Not
   // called remove(): that is the element's own removal from the document.
-  removeImage() {
+  _removeImage() {
     const previous = this.value;
-    if (!previous || !this.interactive) return false;
+    if (!previous) return 'empty';
+    if (!this.interactive) return 'inactive';
     this._releaseObjectUrl();
     this._value = null;
     const input = this.input();
@@ -275,22 +275,14 @@ class SfImageField extends SfBaseElement {
     this.announce(this.text('removed'));
     this.requestComponentUpdate('value');
     this._emitValue({value: null, file: null, source: 'remove'});
-    this.dispatchEvent(new CustomEvent('sf-image-field:remove', {
-      bubbles: true,
-      composed: true,
-      detail: {value: previous, name: this.name},
-    }));
-    return true;
+    this.sfEmit('detach', {value: previous, name: this.name});
+    return 'applied';
   }
 
   reject(files, source) {
     const names = files.map((file) => this.quote(file.name)).join(', ');
     this.announce(`${this.text('rejected')}: ${names}`);
-    this.dispatchEvent(new CustomEvent('sf-image-field:reject', {
-      bubbles: true,
-      composed: true,
-      detail: {files, accept: this.accept, source},
-    }));
+    this.sfEmit('rejected', {files, accept: this.accept, source});
   }
 
   // Said in the polite status, as sf-help-mark and sf-copy-button say theirs.
@@ -308,6 +300,7 @@ class SfImageField extends SfBaseElement {
   // `input` and `change` once each per choice or removal, as a native file
   // input sends them, on the host with the value, the File and the form name.
   _emitValue({value, file, source}) {
+    this.fieldSyncForm();
     for (const type of ['input', 'change']) {
       this.dispatchEvent(new CustomEvent(type, {
         bubbles: true,
@@ -334,7 +327,7 @@ class SfImageField extends SfBaseElement {
   onInputChange(event) {
     event.stopPropagation();
     const file = event.target?.files?.[0];
-    if (file) this.takeFile(file, 'input');
+    if (file) this._takeFile(file, 'input');
   }
 
   onInputEvent(event) {
@@ -354,6 +347,7 @@ class SfImageField extends SfBaseElement {
     event.dataTransfer.dropEffect = 'copy';
     if (!this.dragging) {
       this.dragging = true;
+      this.sfHostState('data-dragged-over', true);
       this.requestComponentUpdate('drag');
     }
   }
@@ -363,6 +357,7 @@ class SfImageField extends SfBaseElement {
     if (event.relatedTarget && well.contains(event.relatedTarget)) return;
     if (!this.dragging) return;
     this.dragging = false;
+    this.sfHostState('data-dragged-over', false);
     this.requestComponentUpdate('drag');
   }
 
@@ -373,6 +368,7 @@ class SfImageField extends SfBaseElement {
     event.preventDefault();
     if (this.dragging) {
       this.dragging = false;
+      this.sfHostState('data-dragged-over', false);
       this.requestComponentUpdate('drag');
     }
     if (!this.interactive || !files.length) return;
@@ -394,7 +390,7 @@ class SfImageField extends SfBaseElement {
         // A browser without a settable FileList still raises the File.
       }
     }
-    this.takeFile(accepted, 'drop');
+    this._takeFile(accepted, 'drop');
   }
 
   onImageLoad(event, href) {
@@ -420,6 +416,7 @@ class SfImageField extends SfBaseElement {
       // render has not drawn its own yet, and the host's focus() waits for it.
       this.querySelector(':scope .sf-image-field-actions sf-button:not([disabled])')?.focus({preventScroll: true});
     }
+    this.fieldSyncForm();
     return undefined;
   }
 
@@ -433,14 +430,15 @@ class SfImageField extends SfBaseElement {
     const field = createFieldContract(this, {
       prefix: 'sf-image-field',
       required: this.required,
-      invalid: this.invalid || this.error,
+      // error is a dated alias of invalid (§17.2, aliases.json).
+      invalid: this.invalid || this.hasAttribute('error'),
       hint: this.hint,
       errorMessage: this.errorMessage,
     });
     const errorContent = this.hasSlotContent?.('error') ? this.getSlotContent('error') : this.errorMessage;
     const hintContent = this.hasSlotContent?.('hint') ? this.getSlotContent('hint') : this.hint;
     const fileName = value?.label || '';
-    const words = Object.fromEntries(Object.keys(IMAGE_FIELD_TEXT.en).map((key) => [key, this.text(key)]));
+    const words = Object.fromEntries(WORD_KEYS.map((key) => [camel(key), this.sfWord(key)]));
 
     return this.createTemplateContext({
       ...props,
@@ -466,6 +464,9 @@ class SfImageField extends SfBaseElement {
         remove: fileName ? `${words.removeName} ${this.quote(fileName)}` : words.removeName,
       },
       rootClass: this.getRootClass(),
+      // The host is the form control where the browser has ElementInternals,
+      // so the native file input carries no name (§17.1 item 6).
+      controlName: this.sfInternals ? '' : this.name,
     });
   }
 
