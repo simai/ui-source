@@ -630,7 +630,7 @@
         "public_parts": [],
         "uses": [
           "component.datepicker",
-          "smart.input",
+          "smart.inputs",
           "smart.buttons",
           "smart.icon-buttons",
           "smart.icons"
@@ -645,7 +645,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/datepicker/smart.manifest.json",
-      "manifest_sha256": "b931d63ccef2496ca2978cc4a59e780dca1b86bea90812d232ba21b030139226",
+      "manifest_sha256": "3885ff75ef89152da487e1c4ce40fe19e6247c4636f8cb193f682dbaf1d33a6d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -743,7 +743,7 @@
         "uses": [
           "component.dropdown",
           "smart.list-item",
-          "smart.input",
+          "smart.inputs",
           "smart.icon-buttons"
         ]
       },
@@ -756,7 +756,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "e83ed9092766360bf9424107824359fc33d06a027244b18da3ef9be3ddf19da5",
+      "manifest_sha256": "fb1f7a49c5e7562a1067017de6bf463af3696ad0bea568e79c79c3c3bff6d587",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1123,11 +1123,11 @@
         "version": 2
       },
       "custom_element": "sf-input",
-      "id": "smart.input",
+      "id": "smart.inputs",
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "7bdfe6c55be7c7105bcd8cab93ae4e8d57a140e12732ffa885d48b74aad26551",
+      "manifest_sha256": "501ede6cd93517c5a6f0e22579ad5c82aae55584282220b176db8154ee4c42c7",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1306,7 +1306,7 @@
           "smart.checkbox",
           "smart.dropdown",
           "smart.icon-buttons",
-          "smart.input",
+          "smart.inputs",
           "smart.list-item",
           "smart.spinner"
         ]
@@ -1320,7 +1320,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "604788fde42ea8f3c9130aa8983787a54d7617f36e5150f4c479b65b4619b1f1",
+      "manifest_sha256": "aa0aeaaae374ea3efedc66de8df29bf3cc217856f910f2c852c0abe2db1d6089",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2003,7 +2003,7 @@
         "public_parts": [],
         "uses": [
           "smart.color",
-          "smart.input",
+          "smart.inputs",
           "smart.buttons",
           "smart.icon-buttons",
           "smart.icons"
@@ -2018,7 +2018,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "6305f84b0ca2ce8cfdfa2ec2967f4b99d058bbf9119e4d7559000bbc62cbfc2b",
+      "manifest_sha256": "ee48cfefec71b6b3aeb6e1b682f5dd3d60b6de660fcf800ff5212034f03fc3d2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

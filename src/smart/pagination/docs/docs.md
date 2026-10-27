@@ -1,7 +1,7 @@
 # sf-pagination
 
 `sf-pagination` navigates a collection split into numbered pages. The host owns
-data loading and reacts to `sf-page-change`; the component owns only presentation,
+data loading and reacts to `sf-pagination-change`; the component owns only presentation,
 bounded page state and user interaction.
 
 The visible root is a named `nav`. Page actions are native buttons because the
@@ -63,14 +63,39 @@ numeric order does not.
 
 ## Runtime API
 
-- `goToPage(page)` and `lastPage()` update bounded local state and emit
-  `sf-page-change` only when the page changes;
-- `showMore(item)` emits `sf-show-more` and performs no network request;
-- `setPageSize(size)` emits `sf-page-size-change` and clamps the current page;
+- `goToPage(page)` (the action `go-to-page`) and `lastPage()` update bounded
+  local state and emit `sf-pagination-change {previous, current, total,
+  page-count, page-size}` only when the page changes; `goToPage` answers
+  `{outcome: 'applied'}` or `{outcome: 'refused', reason}` (`empty`,
+  `invalid`, `current`). Writing `current` or `page-size` as a setting sends
+  nothing;
+- `showMore()` (the action `show-more`) emits `sf-pagination-load-more
+  {direction: 'after', current, total, page-size, page-count, has-next}` and
+  performs no network request;
+- `setPageSize(size)` emits `sf-pagination-size-change` and clamps the current
+  page;
+- without a count, `lastPage()` and «for all» ask for it with
+  `sf-pagination-count {reason, current, page-size}`;
 - `setAction(action)`, `setActionForAll(value)` and `applyAction()` support the
-  compatible optional batch-action region;
+  compatible optional batch-action region: `sf-pagination-action-change`,
+  `sf-pagination-action-for-all-change`, `sf-pagination-apply {action, scope:
+  selection | filter, …}`; the panel's cross sends
+  `sf-pagination-selection-clear`;
 - `onPageChange(handler)` and `onShowMore(handler)` register convenience
-  listeners.
+  listeners; their detail also carries the old camelCase names.
+
+Every detail is data only. The old names -- `sf-page-change`,
+`sf-page-size-change`, `sf-count-request`, `sf-show-more`, `sf-selection-clear`,
+`sf-action-change`, `sf-action-for-all-change`, `sf-action-apply` -- follow
+each new one until 2026-12-01 with their old detail (`component`, `tagName`,
+`template` and the camelCase fields), each use noted in `SF.deprecations` with
+its dates.
+
+Public variables: `--sf-pagination-background-color`, `--sf-pagination-color`,
+`--sf-pagination-gap`, `--sf-pagination-divider-color`,
+`--sf-pagination-page-background-color`, `--sf-pagination-page-color`,
+`--sf-pagination-page-radius`, `--sf-pagination-current-background-color`,
+`--sf-pagination-current-color`.
 
 Focus is shown with the shared `:focus-visible` treatment, including forced
 colors. Disabled actions are not operable, ellipses are not focusable, and

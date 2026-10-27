@@ -1,0 +1,275 @@
+{
+  "component": "sf-pagination",
+  "probe": "sf-pagination against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs (SF_OVERLAYS names the folders)",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\"><sf-pagination id=\"pg\" current=\"2\" total=\"80\" page-size=\"10\" page-sizes=\"10,20,40\" top=\"false\" bottom=\"false\"></sf-pagination></div>",
+      "  <sf-pagination id=\"pg-more\" aria-label=\"Ещё записи\" current=\"1\" total=\"40\" page-size=\"10\" bottom=\"false\"></sf-pagination>",
+      "  <sf-pagination id=\"pg-unknown\" current=\"3\" count-known=\"false\" can-count has-next top=\"false\" bottom=\"false\"></sf-pagination>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-enter-next",
+      "title": "Enter on «next» goes one page on: sf-pagination-change once with current, sf-page-change once with its old detail, noted with its dates",
+      "covers": "keyboard.host Enter select, events.change, aliases sf-page-change",
+      "steps": [
+        {
+          "script": "(document.querySelector('#pg button[aria-label=\"Следующая страница\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-change",
+                "count": 1,
+                "detail": {
+                  "previous": 2,
+                  "current": 3,
+                  "page-size": 10,
+                  "page-count": 8
+                }
+              },
+              {
+                "name": "sf-page-change",
+                "count": 1,
+                "detail": {
+                  "current": 3,
+                  "pageSize": 10,
+                  "pageCount": 8,
+                  "component": "<sf-pagination>"
+                }
+              }
+            ],
+            "values": {
+              "#pg.current": 3
+            },
+            "journal": [
+              {
+                "from": "sf-page-change",
+                "to": "sf-pagination-change",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "!('component' in (window.__heard.find((one) => one.name === 'sf-pagination-change')?.detail ?? {component: 1}))"
+        }
+      ]
+    },
+    {
+      "id": "p2-tab-space-prev",
+      "title": "Tab from «first» reaches «previous»; Space on it goes back a page",
+      "covers": "keyboard.host Tab reach, Space select",
+      "steps": [
+        {
+          "script": "(document.querySelector('#pg button[aria-label=\\\"В начало\\\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement === document.querySelector('#pg button[aria-label=\\\"Предыдущая страница\\\"]')"
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-change",
+                "count": 1,
+                "detail": {
+                  "previous": 2,
+                  "current": 1
+                }
+              }
+            ],
+            "values": {
+              "#pg.current": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-field-enter",
+      "title": "Enter in the page field goes to the typed page",
+      "covers": "keyboard.host Enter select (the page field)",
+      "steps": [
+        {
+          "script": "(() => { const input = document.querySelector('#pg .sf-pagination-page-field input'); if (!input) return false; input.focus(); input.value = '5'; input.dispatchEvent(new Event('input', {bubbles: true})); return true; })()",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-change",
+                "count": 1,
+                "detail": {
+                  "current": 5
+                }
+              }
+            ],
+            "values": {
+              "#pg.current": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-load-more",
+      "title": "«Show more» sends sf-pagination-load-more {direction: after} with data only; sf-show-more keeps its item",
+      "covers": "events.load-more, aliases sf-show-more",
+      "steps": [
+        {
+          "user": "click:#pg-more .sf-pagination-more button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-load-more",
+                "count": 1,
+                "detail": {
+                  "direction": "after",
+                  "current": 1,
+                  "has-next": true
+                }
+              },
+              {
+                "name": "sf-show-more",
+                "count": 1,
+                "detail": {
+                  "current": 1,
+                  "hasNext": true
+                }
+              }
+            ],
+            "journal": [
+              {
+                "from": "sf-show-more",
+                "to": "sf-pagination-load-more",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "(window.__heard.find((one) => one.name === 'sf-pagination-load-more')?.detail?.item ?? null) === null"
+        }
+      ]
+    },
+    {
+      "id": "p5-count",
+      "title": "without a count, «last» asks for it: sf-pagination-count {reason: last-page}",
+      "covers": "events.count, aliases sf-count-request",
+      "steps": [
+        {
+          "action": {
+            "name": "last-page"
+          },
+          "target": "#pg-unknown",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-count",
+                "count": 1,
+                "detail": {
+                  "reason": "last-page",
+                  "current": 3
+                }
+              },
+              {
+                "name": "sf-count-request",
+                "count": 1,
+                "detail": {
+                  "reason": "last-page",
+                  "pageSize": 10
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-action-outcome",
+      "title": "go-to-page answers an outcome; current as a setting sends nothing",
+      "covers": "actions.go-to-page, values.current",
+      "steps": [
+        {
+          "action": {
+            "name": "go-to-page",
+            "with": {
+              "page": 4
+            }
+          },
+          "target": "#pg",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "values": {
+              "#pg.current": 4
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "go-to-page",
+            "with": 4
+          },
+          "target": "#pg",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "current"
+            }
+          }
+        },
+        {
+          "script": "(document.getElementById('pg').current = 6, true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-pagination-change",
+                "count": 0
+              }
+            ],
+            "values": {
+              "#pg.current": 6
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-name-words",
+      "title": "named by aria-label, else by the language file",
+      "covers": "accessibility.name, lang runtime",
+      "steps": [
+        {
+          "check": "document.querySelector('#pg-more nav, #pg-more [aria-label]')?.getAttribute('aria-label') === 'Ещё записи' && [...document.querySelectorAll('#pg [aria-label]')].some((n) => n.getAttribute('aria-label') === 'Страницы результатов')"
+        }
+      ]
+    },
+    {
+      "id": "p8-public-variables",
+      "title": "a public variable on an ancestor reaches the pagination",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-pagination-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-pagination-gap', '17px'), true)",
+          "wait": 500,
+          "check": "getComputedStyle(document.querySelector('#pg .sf-pagination-container')).color === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#pg .sf-pagination-container')).columnGap === '17px'"
+        }
+      ]
+    }
+  ]
+}

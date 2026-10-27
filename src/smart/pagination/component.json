@@ -1,0 +1,491 @@
+{
+  "$comment": "The source of sf-pagination's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/pagination (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.pagination",
+  "tag": "sf-pagination",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "pagination",
+  "settings": {
+    "top": {
+      "type": "boolean",
+      "default": true
+    },
+    "middle": {
+      "type": "boolean",
+      "default": true
+    },
+    "bottom": {
+      "type": "boolean",
+      "default": true
+    },
+    "top-class": {
+      "type": "string",
+      "default": ""
+    },
+    "main-class": {
+      "type": "string",
+      "default": ""
+    },
+    "bottom-class": {
+      "type": "string",
+      "default": ""
+    },
+    "pages-label": {
+      "type": "string",
+      "default-from": "runtime.pages-label"
+    },
+    "page-label": {
+      "type": "string",
+      "default-from": "runtime.page-label"
+    },
+    "previous-label": {
+      "type": "string",
+      "default-from": "runtime.previous-label"
+    },
+    "next-label": {
+      "type": "string",
+      "default-from": "runtime.next-label"
+    },
+    "last-label": {
+      "type": "string",
+      "default-from": "runtime.last-label"
+    },
+    "total-label": {
+      "type": "string",
+      "default-from": "runtime.total-label"
+    },
+    "selected-label": {
+      "type": "string",
+      "default-from": "runtime.selected-label"
+    },
+    "selected-count": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0
+    },
+    "show-more-text": {
+      "type": "string",
+      "default-from": "runtime.show-more-text"
+    },
+    "total": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 10
+    },
+    "page-size": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "default": 10
+    },
+    "page-sizes": {
+      "type": "string",
+      "default": "10,20,30,40",
+      "x-markup": "comma-separated page sizes, positive whole numbers; the property also takes a list of numbers"
+    },
+    "show-page-size": {
+      "type": "boolean",
+      "default": true
+    },
+    "page-size-label": {
+      "type": "string",
+      "default-from": "runtime.page-size-label"
+    },
+    "show-actions": {
+      "type": "boolean",
+      "default": true
+    },
+    "actions": {
+      "type": "string",
+      "default": "",
+      "x-markup": "\"value:text::flags|value:text\"; the property also takes a list of {value, text, disabled?, selected?}"
+    },
+    "action": {
+      "type": "string",
+      "default": ""
+    },
+    "action-apply-text": {
+      "type": "string",
+      "default-from": "runtime.action-apply-text"
+    },
+    "show-action-for-all": {
+      "type": "boolean",
+      "default": false
+    },
+    "action-for-all": {
+      "type": "boolean",
+      "default": false
+    },
+    "action-for-all-label": {
+      "type": "string",
+      "default-from": "runtime.action-for-all-label"
+    },
+    "actions-label": {
+      "type": "string",
+      "default-from": "runtime.actions-label"
+    },
+    "action-choose-label": {
+      "type": "string",
+      "default-from": "runtime.action-choose-label"
+    },
+    "actions-region-label": {
+      "type": "string",
+      "default-from": "runtime.actions-region-label"
+    },
+    "clear-selection-label": {
+      "type": "string",
+      "default-from": "runtime.clear-selection-label"
+    },
+    "count-known": {
+      "type": "boolean",
+      "default": true
+    },
+    "can-count": {
+      "type": "boolean",
+      "default": false
+    },
+    "counting": {
+      "type": "boolean",
+      "default": false
+    },
+    "has-next": {
+      "type": "boolean",
+      "default": false
+    },
+    "show-count-label": {
+      "type": "string",
+      "default-from": "runtime.show-count-label"
+    },
+    "counting-label": {
+      "type": "string",
+      "default-from": "runtime.counting-label"
+    },
+    "first-label": {
+      "type": "string",
+      "default-from": "runtime.first-label"
+    },
+    "page-field-label": {
+      "type": "string",
+      "default-from": "runtime.page-field-label"
+    },
+    "show-more-busy": {
+      "type": "boolean",
+      "default": false
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1"
+    }
+  },
+  "values": {
+    "current": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "default": 1,
+      "summary": "the page being read, from 1 (vocabulary 1.1.5 page)"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "previous": "number",
+        "current": "number",
+        "total": "number",
+        "page-count": {
+          "type": "number",
+          "nullable": true
+        },
+        "page-size": "number"
+      }
+    },
+    "size-change": {
+      "carries": {
+        "previous": "number",
+        "page-size": "number",
+        "current": "number",
+        "total": "number",
+        "page-count": "number"
+      }
+    },
+    "count": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "total",
+            "last-page",
+            "action-for-all"
+          ]
+        },
+        "current": "number",
+        "page-size": "number"
+      }
+    },
+    "load-more": {
+      "carries": {
+        "direction": {
+          "type": "enum",
+          "values": [
+            "after"
+          ]
+        },
+        "current": "number",
+        "total": "number",
+        "page-size": "number",
+        "page-count": {
+          "type": "number",
+          "nullable": true
+        },
+        "has-next": "boolean"
+      }
+    },
+    "selection-clear": {
+      "carries": {
+        "selected-count": "number",
+        "total": "number"
+      },
+      "own-verb": true
+    },
+    "action-change": {
+      "carries": {
+        "previous": "string",
+        "action": "string"
+      }
+    },
+    "action-for-all-change": {
+      "carries": {
+        "previous": "boolean",
+        "action-for-all": "boolean"
+      }
+    },
+    "apply": {
+      "carries": {
+        "action": "string",
+        "scope": {
+          "type": "enum",
+          "values": [
+            "selection",
+            "filter"
+          ]
+        },
+        "current": "number",
+        "total": "number",
+        "page-size": "number",
+        "page-count": {
+          "type": "number",
+          "nullable": true
+        }
+      }
+    }
+  },
+  "actions": {
+    "go-to-page": {
+      "with": {
+        "page": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "show-more": {
+      "x-outcomes": [
+        "applied"
+      ]
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "select",
+      "Space": "select"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "navigation",
+    "name": {
+      "from": [
+        "aria-label",
+        "runtime.aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "select",
+      "Space": "select"
+    }
+  },
+  "css-variables": {
+    "--sf-pagination-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pagination-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pagination-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-pagination-divider-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pagination-page-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pagination-page-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pagination-page-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-pagination-current-background-color": {
+      "type": "color",
+      "state": "current"
+    },
+    "--sf-pagination-current-color": {
+      "type": "color",
+      "state": "current"
+    }
+  },
+  "x-summary": "Source-driven navigation for a collection split into numbered pages.",
+  "x-source": {
+    "package": "framework",
+    "folder": "pagination",
+    "manifest": "simai/ui-source@5100227 src/smart/pagination/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/pagination.component.json"
+  },
+  "x-words": [
+    "pages-label",
+    "page-label",
+    "previous-label",
+    "next-label",
+    "last-label",
+    "total-label",
+    "selected-label",
+    "show-more-text",
+    "page-size-label",
+    "action-apply-text",
+    "action-for-all-label",
+    "actions-label",
+    "action-choose-label",
+    "actions-region-label",
+    "clear-selection-label",
+    "show-count-label",
+    "counting-label",
+    "first-label",
+    "page-field-label"
+  ],
+  "x-renamed": [
+    "events.sf-action-apply → apply (vocabulary §5 apply)",
+    "events.sf-action-change → action-change (the DOM name without sf-<tag>-)",
+    "events.sf-action-for-all-change → action-for-all-change (the DOM name without sf-<tag>-)",
+    "events.sf-count-request → count (vocabulary §5 count)",
+    "events.sf-page-change → change (the DOM name without sf-<tag>-)",
+    "events.sf-page-size-change → size-change (the DOM name without sf-<tag>-)",
+    "events.sf-selection-clear → selection-clear (the DOM name without sf-<tag>-)",
+    "events.sf-show-more → load-more (vocabulary §5 load-more)",
+    "events: every old name keeps its old detail (component, tagName, template and the camelCase fields) through a split row; the new details carry data only, in the vocabulary's kebab-case (page-size, page-count, has-next, selected-count, action-for-all)",
+    "events.apply: actionForAll → scope (selection | filter), vocabulary §5 apply",
+    "settings.page-size, total, selected-count: numbers with integer and min (vocabulary 1.1.5 page-size)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-pagination for a collection divided into numbered pages when the host owns data loading and reacts to pagination events.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use Pagination for semantic steps or short content that can be shown at once",
+        "Do not make an ellipsis interactive or put the pagination row on multiple lines",
+        "Do not treat the optional batch-action section as the core pagination contract"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-pagination aria-label=\"Страницы результатов поиска\" current=\"2\" total=\"96\" page-size=\"10\" top=\"false\" bottom=\"false\" show-page-size=\"false\"></sf-pagination>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "shape: leaf, with reasons. The checkbox, the dropdowns and the page field are drawn by its template as controls of the pagination's own settings (action-for-all, page-size, action, the typed page); no rule runs between them, so keys, roles and rules would restate the same three bindings. And the parts it would place (sf-checkbox, sf-dropdown, sf-input) are migrating in the field family's branches now: an assembly binds to their 1.3.8 interfaces, which this branch does not have (report.md order check: an assembly moves after its parts). The assembly is a later step once the field family has landed.",
+    "version: 1.0.1 → 1.1.0, a minor while the eight old event names hold dated aliases (§4.10).",
+    "events: names by vocabulary 1.1.5 -- sf-page-change → sf-pagination-change {current, …}, sf-page-size-change → sf-pagination-size-change, sf-count-request → sf-pagination-count (§5 count), sf-show-more → sf-pagination-load-more {direction: after, …} (§5 load-more), sf-selection-clear → sf-pagination-selection-clear (an own verb), sf-action-change and sf-action-for-all-change → sf-pagination-action-change and -action-for-all-change, sf-action-apply → sf-pagination-apply {action, scope} (§5 apply). The migration's row to the bare `change` is corrected: a DOM change would also be heard from the page-size and action dropdowns inside.",
+    "detail-adapter: §8 takes the element out of detail, so each new name carries data only; each old name follows once with its old detail (component, tagName, template, camelCase fields; apply's actionForAll, load-more's item) through a split row and sfAliasAdapters. sf-data-view (ui-pro data-view index.js:1952-1982) listens to the old names and keeps working until it moves.",
+    "change reports a person (§8): the page buttons, the field, the arrows and the dropdowns are a person's; goToPage, lastPage and setPageSize keep sending their events when a host calls them, because the host calls them to finish what a person started -- sf-data-view jumps to the last page once the count it asked for arrives (data-view index.js:1878). Writing current or page-size as a setting sends nothing, as before.",
+    "x-target: page, total-exact, has-more, selection and state are not added: current is the page (vocabulary 1.1.5 binds the key page to it), count-known and has-next say what total-exact and has-more would, and the pagination holds no selection or data state (the rows do, selected-count is their count). query is not added: the source reads change and size-change.",
+    "actions: go-to-page {page} answers an outcome (applied; refused empty, invalid, current) and show-more answers applied (§4.4); firstPage, lastPage, goToTypedPage, setPageSize, setAction, setActionForAll, applyAction, clearSelection and requestCount stay the element's helpers.",
+    "own-verb-words: selection-clear is a verb of the pagination alone (the panel's cross); its word is lang events.selection-clear.label.",
+    "item-shape: the list settings stay strings in markup (page-sizes \"10,20\", actions \"value:text::flags|\"), as the template and hosts write them; the page items it draws are {type: page, value, selected, edge}.",
+    "existing-aliases: compatibility.migrations holds a changelog line (1.0.0 → 1.0.1), no alias; nothing to fold.",
+    "key-effects: native buttons, links and the page field: Tab reaches each, Enter and Space press a button, Enter in the page field goes to the typed page (select).",
+    "a11y-name: aria-label on the host, else the language file's runtime word «Страницы результатов» / «Result pages».",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the unknown count, the half size and the bulk panel; probe.json drives Tab, Enter and Space (gate 16).",
+    "css-variables: nine public variables read by the class sheets (component/pagination) over the role tokens (§6): the fill, the words' colour, the gap, the divider, a page number's fill, colour and radius, the current page's fill and colour. They are not in src/core/contracts/public-variables.v1.json yet: that file is shared with the field family's branches.",
+    "side-effects: none.",
+    "docs: docs/docs.md, where the folder keeps it (as sf-tooltip)."
+  ]
+}

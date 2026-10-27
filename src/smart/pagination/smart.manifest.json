@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "title": "Pagination",
   "summary": "Source-driven navigation for a collection split into numbered pages.",
   "kind": "smart",
@@ -882,7 +882,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "5bd5a0bb2a26c582d436f25d0cc428017bbc20370a614a0a8bafcf74c9f43a34"
+        "sha256": "e6ac0cb86e8021a0d708bfe4a3b5f261e588fac77628c182ede7695ce268534e"
       }
     ],
     "generated_runtime": [

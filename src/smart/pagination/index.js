@@ -1,58 +1,34 @@
 import SfBaseElement, {
   toAttributeName,
 } from "../../core/js/smart-base";
-import { pageText } from "../../core/js/page-language";
+import { elementFromManifest } from "../../core/js/element-manifest";
 import { renderPaginationTemplate } from "./js/templates/default";
-// Every word this pagination says, in the two languages the Framework speaks.
-// The rule is the shared one in src/core/js/page-language; this component said
-// only Russian, so an English page read «Всего:» and «Показать ещё» under a
-// list that had switched (owner, 2026-10-10).
-const PAGINATION_TEXT = {
-  en: {
-    ariaLabel: "Result pages",
-    pagesLabel: "Pages:",
-    pageLabel: "Page",
-    previousLabel: "Previous page",
-    nextLabel: "Next page",
-    lastLabel: "Last",
-    totalLabel: "Total:",
-    selectedLabel: "Selected:",
-    showMoreText: "Show more",
-    pageSizeLabel: "Per page:",
-    actionApplyText: "Apply",
-    actionForAllLabel: "For all",
-    actionsLabel: "Action for the selected records",
-    actionChooseLabel: "Choose an action",
-    actionsRegionLabel: "Actions for the selected",
-    clearSelectionLabel: "Clear the selection",
-    showCountLabel: "Show the number",
-    countingLabel: "Counting",
-    firstLabel: "First",
-    pageFieldLabel: "Page:",
-  },
-  ru: {
-    ariaLabel: "Страницы результатов",
-    pagesLabel: "Страницы:",
-    pageLabel: "Страница",
-    previousLabel: "Предыдущая страница",
-    nextLabel: "Следующая страница",
-    lastLabel: "Последняя",
-    totalLabel: "Всего:",
-    selectedLabel: "Отмечено:",
-    showMoreText: "Показать ещё",
-    pageSizeLabel: "На странице:",
-    actionApplyText: "Применить",
-    actionForAllLabel: "Для всех",
-    actionsLabel: "Действие с выбранными элементами",
-    actionChooseLabel: "Выберите действие",
-    actionsRegionLabel: "Действия с отмеченными",
-    clearSelectionLabel: "Снять выделение",
-    showCountLabel: "Показать количество",
-    countingLabel: "Считаем",
-    firstLabel: "В начало",
-    pageFieldLabel: "Страница:",
-  },
-};
+import manifest from "./component.json";
+import aliases from "./aliases.json";
+import en from "./lang/en.json";
+import ru from "./lang/ru.json";
+
+// sf-pagination from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §11): its settings are attributes and properties made by
+// core/js/element-manifest.js, every word it says is lang/<locale>.json (an
+// English page used to read «Всего:» under a list that had switched, owner
+// 2026-10-10), and its events take the vocabulary's names; the old ones --
+// sf-page-change, sf-show-more, … -- follow with their old detail until
+// 2026-12-01 (aliases.json).
+const PaginationElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: "ru",
+  aliases,
+});
+
+// A word's key in the language files: pagesLabel → pages-label.
+const wordKey = (key) => String(key).replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
+
+// An old event's detail (§16.20 split rows): the camelCase fields it had.
+const camelDetail = (detail) => Object.fromEntries(
+  Object.entries(detail).map(([key, value]) => [key.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase()), value]),
+);
 
 function parsePageSizes(value, fallback = [10, 20, 30, 40]) {
   const valid = (size) => Number.isInteger(size) && size > 0;
@@ -112,9 +88,10 @@ function parseActions(value, fallback = []) {
   return parsed.length ? parsed : fallback;
 }
 
-class SfPagination extends SfBaseElement {
+class SfPagination extends PaginationElement {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: "template", default: "default" },
       // The step of the size ladder its controls and labels take: 1, or the
       // dense 1/2 of an admin, where a page row stands beside 32px controls.
@@ -246,47 +223,47 @@ class SfPagination extends SfBaseElement {
   }
 
   get showMoreText() {
-    return this.getAttribute("show-more-text") || pageText(PAGINATION_TEXT, "showMoreText", this);
+    return this.getAttribute("show-more-text") || this.sfWord("show-more-text");
   }
 
   get ariaLabel() {
-    return this.getAttribute("aria-label") || pageText(PAGINATION_TEXT, "ariaLabel", this);
+    return this.getAttribute("aria-label") || this.sfWord("aria-label");
   }
 
   get pagesLabel() {
-    return this.getAttribute("pages-label") || pageText(PAGINATION_TEXT, "pagesLabel", this);
+    return this.getAttribute("pages-label") || this.sfWord("pages-label");
   }
 
   get pageLabel() {
-    return this.getAttribute("page-label") || pageText(PAGINATION_TEXT, "pageLabel", this);
+    return this.getAttribute("page-label") || this.sfWord("page-label");
   }
 
   get previousLabel() {
-    return this.getAttribute("previous-label") || pageText(PAGINATION_TEXT, "previousLabel", this);
+    return this.getAttribute("previous-label") || this.sfWord("previous-label");
   }
 
   get nextLabel() {
-    return this.getAttribute("next-label") || pageText(PAGINATION_TEXT, "nextLabel", this);
+    return this.getAttribute("next-label") || this.sfWord("next-label");
   }
 
   get firstLabel() {
-    return this.getAttribute("first-label") || pageText(PAGINATION_TEXT, "firstLabel", this);
+    return this.getAttribute("first-label") || this.sfWord("first-label");
   }
 
   get pageFieldLabel() {
-    return this.getAttribute("page-field-label") || pageText(PAGINATION_TEXT, "pageFieldLabel", this);
+    return this.getAttribute("page-field-label") || this.sfWord("page-field-label");
   }
 
   get lastLabel() {
-    return this.getAttribute("last-label") || pageText(PAGINATION_TEXT, "lastLabel", this);
+    return this.getAttribute("last-label") || this.sfWord("last-label");
   }
 
   get totalLabel() {
-    return this.getAttribute("total-label") || pageText(PAGINATION_TEXT, "totalLabel", this);
+    return this.getAttribute("total-label") || this.sfWord("total-label");
   }
 
   get selectedLabel() {
-    return this.getAttribute("selected-label") || pageText(PAGINATION_TEXT, "selectedLabel", this);
+    return this.getAttribute("selected-label") || this.sfWord("selected-label");
   }
 
   // How many rows are marked. It is capped by the total only when there is a
@@ -336,7 +313,7 @@ class SfPagination extends SfBaseElement {
   }
 
   get showCountLabel() {
-    return this.getAttribute("show-count-label") || pageText(PAGINATION_TEXT, "showCountLabel", this);
+    return this.getAttribute("show-count-label") || this.sfWord("show-count-label");
   }
 
   // The next portion is on its way. It is answered inside the button that asked
@@ -347,12 +324,16 @@ class SfPagination extends SfBaseElement {
   }
 
   get countingLabel() {
-    return this.getAttribute("counting-label") || pageText(PAGINATION_TEXT, "countingLabel", this);
+    return this.getAttribute("counting-label") || this.sfWord("counting-label");
   }
 
   get pageSize() {
     const parsed = Math.trunc(this.getNumberAttr("page-size", 10));
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+  }
+
+  set pageSize(value) {
+    this.setAttribute("page-size", String(Math.trunc(Number(value)) || 10));
   }
 
   get pageCount() {
@@ -368,7 +349,7 @@ class SfPagination extends SfBaseElement {
   }
 
   get pageSizeLabel() {
-    return this.getAttribute("page-size-label") || pageText(PAGINATION_TEXT, "pageSizeLabel", this);
+    return this.getAttribute("page-size-label") || this.sfWord("page-size-label");
   }
 
   get showActions() {
@@ -394,7 +375,7 @@ class SfPagination extends SfBaseElement {
   }
 
   get actionApplyText() {
-    return this.getAttribute("action-apply-text") || pageText(PAGINATION_TEXT, "actionApplyText", this);
+    return this.getAttribute("action-apply-text") || this.sfWord("action-apply-text");
   }
 
   get showActionForAll() {
@@ -406,11 +387,11 @@ class SfPagination extends SfBaseElement {
   }
 
   get actionForAllLabel() {
-    return this.getAttribute("action-for-all-label") || pageText(PAGINATION_TEXT, "actionForAllLabel", this);
+    return this.getAttribute("action-for-all-label") || this.sfWord("action-for-all-label");
   }
 
   get actionsLabel() {
-    return this.getAttribute("actions-label") || pageText(PAGINATION_TEXT, "actionsLabel", this);
+    return this.getAttribute("actions-label") || this.sfWord("actions-label");
   }
 
   // The labels are read through getters, like every other word this component
@@ -418,15 +399,15 @@ class SfPagination extends SfBaseElement {
   // without a getter reaches the template as undefined. The first attempt at
   // the panel left the list's placeholder empty for exactly that reason.
   get actionChooseLabel() {
-    return this.getAttribute("action-choose-label") || pageText(PAGINATION_TEXT, "actionChooseLabel", this);
+    return this.getAttribute("action-choose-label") || this.sfWord("action-choose-label");
   }
 
   get actionsRegionLabel() {
-    return this.getAttribute("actions-region-label") || pageText(PAGINATION_TEXT, "actionsRegionLabel", this);
+    return this.getAttribute("actions-region-label") || this.sfWord("actions-region-label");
   }
 
   get clearSelectionLabel() {
-    return this.getAttribute("clear-selection-label") || pageText(PAGINATION_TEXT, "clearSelectionLabel", this);
+    return this.getAttribute("clear-selection-label") || this.sfWord("clear-selection-label");
   }
 
   // The page being read. It is held inside the page count only when there is a
@@ -441,6 +422,11 @@ class SfPagination extends SfBaseElement {
     const atLeastFirst = Math.max(parsed, 1);
 
     return this.countKnown ? Math.min(atLeastFirst, this.pageCount) : atLeastFirst;
+  }
+
+  // The page as a setting (§4.3): written from outside it is not reported (§8).
+  set current(value) {
+    this.setAttribute("current", String(Math.trunc(Number(value)) || 1));
   }
 
   // How many pages there are, when that is known at all. Said out loud rather
@@ -520,7 +506,7 @@ class SfPagination extends SfBaseElement {
    * over both: a consumer who names a word has named it.
    */
   text(key, attribute) {
-    return (attribute && this.getAttribute(attribute)) || pageText(PAGINATION_TEXT, key, this);
+    return (attribute && this.getAttribute(attribute)) || this.sfWord(wordKey(key));
   }
 
   templateContext() {
@@ -609,14 +595,18 @@ class SfPagination extends SfBaseElement {
     return this.querySelector(".sf-pagination-bottom");
   }
 
+  // The action go-to-page {page} (§4.4): answers an outcome. A page the person
+  // asked for (a number, an arrow, the field) or a host finishing what a
+  // person started (the last page once the count arrives) is reported as
+  // sf-pagination-change.
   goToPage(page) {
     if (this.countKnown && this.total === 0) {
-      return this;
+      return { outcome: "refused", reason: "empty" };
     }
 
-    const parsed = Number.parseInt(String(page || ""), 10);
+    const parsed = Number.parseInt(String(page?.page ?? page ?? ""), 10);
     if (!Number.isFinite(parsed)) {
-      return this;
+      return { outcome: "refused", reason: "invalid" };
     }
 
     const previous = this.current;
@@ -628,20 +618,20 @@ class SfPagination extends SfBaseElement {
       : Math.max(parsed, 1);
 
     if (next === previous) {
-      return this;
+      return { outcome: "refused", reason: "current" };
     }
 
     this.setState({ current: next });
 
-    this.emitComponentEvent("page-change", {
+    this.sfEmit("change", {
       previous,
       current: next,
       total: this.total,
-      pageCount: this.knownPageCount,
-      pageSize: this.pageSize,
+      "page-count": this.knownPageCount,
+      "page-size": this.pageSize,
     });
 
-    return this;
+    return { outcome: "applied" };
   }
 
   // The last page needs a number, and without a count nobody has one yet. So
@@ -662,10 +652,10 @@ class SfPagination extends SfBaseElement {
     }
 
     this.setState({ counting: true });
-    this.emitComponentEvent("count-request", {
+    this.sfEmit("count", {
       reason,
       current: this.current,
-      pageSize: this.pageSize,
+      "page-size": this.pageSize,
     });
 
     return this;
@@ -675,25 +665,33 @@ class SfPagination extends SfBaseElement {
   // the rows do — so this is an announcement, not a mutation, and the view
   // passes it to the table.
   clearSelection() {
-    this.emitComponentEvent("selection-clear", {
-      selectedCount: this.selectedCount,
+    this.sfEmit("selection-clear", {
+      "selected-count": this.selectedCount,
       total: this.total,
     });
 
     return this;
   }
 
+  // The action show-more (§4.4), vocabulary §5 load-more {direction: after}.
+  // The button the person pressed was `item`; it is no data (§8), so only
+  // the old name sf-show-more still carries it.
   showMore(item = null) {
-    this.emitComponentEvent("show-more", {
-      current: this.current,
-      total: this.total,
-      pageSize: this.pageSize,
-      pageCount: this.knownPageCount,
-      hasNext: this.hasNext,
-      item,
-    });
+    this._showMoreItem = item;
+    try {
+      this.sfEmit("load-more", {
+        direction: "after",
+        current: this.current,
+        total: this.total,
+        "page-size": this.pageSize,
+        "page-count": this.knownPageCount,
+        "has-next": this.hasNext,
+      });
+    } finally {
+      this._showMoreItem = null;
+    }
 
-    return this;
+    return { outcome: "applied" };
   }
 
   setPageSize(size) {
@@ -715,12 +713,12 @@ class SfPagination extends SfBaseElement {
       current,
     });
 
-    this.emitComponentEvent("page-size-change", {
+    this.sfEmit("size-change", {
       previous,
-      pageSize: parsed,
+      "page-size": parsed,
       current,
       total: this.total,
-      pageCount,
+      "page-count": pageCount,
     });
 
     return this;
@@ -737,7 +735,7 @@ class SfPagination extends SfBaseElement {
     }
 
     this.setState({ action: value });
-    this.emitComponentEvent("action-change", {
+    this.sfEmit("action-change", {
       previous,
       action: value,
     });
@@ -753,9 +751,9 @@ class SfPagination extends SfBaseElement {
     }
 
     this.setState({ actionForAll: next });
-    this.emitComponentEvent("action-for-all-change", {
+    this.sfEmit("action-for-all-change", {
       previous,
-      actionForAll: next,
+      "action-for-all": next,
     });
     // An action under the filter is applied against a confirmed total, so
     // marking the box is the moment the number is needed. Asking for it here
@@ -773,13 +771,15 @@ class SfPagination extends SfBaseElement {
       return this;
     }
 
-    this.emitComponentEvent("action-apply", {
+    // vocabulary §5 apply: the scope is the marked rows, or everything under
+    // the filter when «for all» is on.
+    this.sfEmit("apply", {
       action: this.action,
-      actionForAll: this.actionForAll,
+      scope: this.actionForAll ? "filter" : "selection",
       current: this.current,
       total: this.total,
-      pageSize: this.pageSize,
-      pageCount: this.knownPageCount,
+      "page-size": this.pageSize,
+      "page-count": this.knownPageCount,
     });
 
     return this;
@@ -850,12 +850,35 @@ class SfPagination extends SfBaseElement {
     return this;
   }
 
+  // The old names keep their old detail (§16.20 split rows): the element, its
+  // template and the camelCase fields were in it.
+  sfAliasAdapters() {
+    const old = (detail) => ({
+      component: this,
+      tagName: this.componentTagName,
+      template: this.componentTemplateName,
+      ...camelDetail(detail),
+    });
+    return {
+      "sf-page-change": old,
+      "sf-page-size-change": old,
+      "sf-count-request": old,
+      "sf-selection-clear": old,
+      "sf-action-change": old,
+      "sf-action-for-all-change": old,
+      "sf-action-apply": (detail) => ({ ...old(detail), actionForAll: detail.scope === "filter" }),
+      "sf-show-more": (detail) => ({ ...old(detail), item: this._showMoreItem ?? null }),
+    };
+  }
+
   onPageChange(handler, options) {
     if (typeof handler === "function") {
       this.addEventListener(
-        "sf-page-change",
+        this.sfEventName("change"),
+        // The new detail, with the camelCase names a handler of the old one
+        // read (pageSize, pageCount) beside the vocabulary's.
         (event) => {
-          handler(event.detail?.current, event.detail, event);
+          handler(event.detail?.current, { ...camelDetail(event.detail ?? {}), ...event.detail }, event);
         },
         options,
       );
@@ -867,9 +890,9 @@ class SfPagination extends SfBaseElement {
   onShowMore(handler, options) {
     if (typeof handler === "function") {
       this.addEventListener(
-        "sf-show-more",
+        this.sfEventName("load-more"),
         (event) => {
-          handler(event.detail, event);
+          handler({ ...camelDetail(event.detail ?? {}), ...event.detail }, event);
         },
         options,
       );

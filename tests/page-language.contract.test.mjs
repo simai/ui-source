@@ -23,7 +23,8 @@ test('page language: no component falls back to Russian', async () => {
     // The page row and the renderer set spoke only Russian until
     // 2026-10-10, so an English page came out a patchwork: a record panel that
     // had switched above a toolbar that had not.
-    'src/smart/pagination/index.js': [/const PAGINATION_TEXT = \{/, /pageText\(PAGINATION_TEXT, "\w+", this\)/],
+    // Its words are its language files now (standard 1.3.8 §11).
+    'src/smart/pagination/index.js': [/this\.sfWord\("page-label"\)/, /import en from "\.\/lang\/en\.json";/],
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
     'src/smart/datepicker/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
     'src/smart/tags/index.js': [/closeLabel: \{ default: '' \}/, /pageText\(TAG_TEXT, 'remove', this\)/],

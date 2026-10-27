@@ -1,0 +1,30 @@
+{
+  "title": "Pagination",
+  "runtime": {
+    "action-apply-text": "Apply",
+    "action-choose-label": "Choose an action",
+    "action-for-all-label": "For all",
+    "actions-label": "Action for the selected records",
+    "actions-region-label": "Actions for the selected",
+    "aria-label": "Result pages",
+    "clear-selection-label": "Clear the selection",
+    "counting-label": "Counting",
+    "first-label": "First",
+    "last-label": "Last",
+    "next-label": "Next page",
+    "page-field-label": "Page:",
+    "page-label": "Page",
+    "page-size-label": "Per page:",
+    "pages-label": "Pages:",
+    "previous-label": "Previous page",
+    "selected-label": "Selected:",
+    "show-count-label": "Show the number",
+    "show-more-text": "Show more",
+    "total-label": "Total:"
+  },
+  "events": {
+    "selection-clear": {
+      "label": "Selection cleared"
+    }
+  }
+}

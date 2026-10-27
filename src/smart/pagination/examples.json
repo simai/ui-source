@@ -1,0 +1,87 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Страницы результатов",
+      "settings": {
+        "current": 2,
+        "total": 80,
+        "page-size": 10,
+        "selected-count": 3,
+        "page-sizes": "10,20,40",
+        "aria-label": "Страницы результатов",
+        "top": false,
+        "bottom": false
+      },
+      "expect": {
+        "name": "Страницы результатов",
+        "values": {
+          "current": 2
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "go-to-page",
+      "title": "Переход на страницу",
+      "settings": {
+        "current": 2,
+        "total": 80,
+        "page-size": 10,
+        "top": false,
+        "bottom": false
+      },
+      "script": [
+        {
+          "act": "go-to-page",
+          "with": {
+            "page": 3
+          }
+        }
+      ],
+      "expect": {
+        "name": "Страницы результатов",
+        "values": {
+          "current": 3
+        },
+        "events": [
+          "change"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "unknown-count",
+      "title": "Без общего числа",
+      "settings": {
+        "current": 3,
+        "count-known": false,
+        "can-count": true,
+        "has-next": true,
+        "top": false,
+        "bottom": false
+      },
+      "expect": {
+        "name": "Страницы результатов",
+        "values": {
+          "current": 3
+        }
+      }
+    },
+    {
+      "name": "bulk",
+      "title": "Действия с отмеченными",
+      "settings": {
+        "size": "1/2",
+        "total": 120,
+        "selected-count": 4,
+        "actions": "archive:В архив|delete:Удалить",
+        "show-action-for-all": true,
+        "top": false
+      },
+      "expect": {
+        "name": "Страницы результатов"
+      }
+    }
+  ]
+}

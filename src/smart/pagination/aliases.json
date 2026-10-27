@@ -1,0 +1,115 @@
+{
+  "$comment": "Dated aliases of sf-pagination for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+  "component": "sf-pagination",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1, §4.8",
+      "note": "stays a host attribute, read for the accessible name; no shim"
+    },
+    {
+      "from": "sf-page-change",
+      "to": "sf-pagination-change",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-page-size-change",
+      "to": "sf-pagination-size-change",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-count-request",
+      "to": "sf-pagination-count",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5 count",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-show-more",
+      "to": "sf-pagination-load-more",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5 load-more",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-selection-clear",
+      "to": "sf-pagination-selection-clear",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, an own verb",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-action-change",
+      "to": "sf-pagination-action-change",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-action-for-all-change",
+      "to": "sf-pagination-action-for-all-change",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-action-apply",
+      "to": "sf-pagination-apply",
+      "kind": "event",
+      "component": "sf-pagination",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "split",
+      "cancelable": false,
+      "section": "§8, vocabulary §5 apply",
+      "note": "the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element's detail adapter makes it"
+    }
+  ]
+}

@@ -22,10 +22,11 @@ test('setActionForAll stays idempotent, so a repeated state emits nothing', () =
     const owner = {actionForAll: false, events: [], counts: [],
         setState(patch) { Object.assign(this, patch); },
         requestCount(reason) { this.counts.push(reason); },
-        emitComponentEvent(name, detail) { this.events.push({name, detail}); }};
+        // The manifest's event sender (core element-manifest.js); the detail is the vocabulary's.
+        sfEmit(verb, detail) { this.events.push({name: verb, detail}); return true; }};
     setActionForAll.call(owner, true);
     setActionForAll.call(owner, true);
     setActionForAll.call(owner, false);
-    assert.deepEqual(owner.events.map((event) => event.detail.actionForAll), [true, false]);
+    assert.deepEqual(owner.events.map((event) => event.detail['action-for-all']), [true, false]);
     assert.deepEqual(owner.counts, ['action-for-all'], 'asked once, and not when the box is cleared');
 });

@@ -139,3 +139,24 @@ test('sf-tabs: sf-tabs-change with data only, manual activation over deferred pa
     assert.match(read(file), /partId\(instancePath\(root, \{ kind: 'sf-tabs?' \}\), `\$\{part\}-\$\{index\}`\)/u, file);
   }
 });
+
+test('sf-pagination: a leaf with reasons; vocabulary 1.1.5 names, numbers for the page and its size, the old names through split rows', () => {
+  const manifest = json('src/smart/pagination/component.json');
+  assert.equal(manifest.kind, 'leaf');
+  assert.ok(manifest['x-decisions'][0].startsWith('shape: leaf, with reasons.'));
+  const events = readManifest(manifest).events;
+  assert.equal(events.change.name, 'sf-pagination-change');
+  assert.ok('current' in manifest.events.change.carries);
+  assert.equal(events['load-more'].name, 'sf-pagination-load-more');
+  assert.equal(events.count.name, 'sf-pagination-count');
+  assert.deepEqual(manifest.events.apply.carries.scope.values, ['selection', 'filter']);
+  assert.equal(manifest.values.current.type, 'number');
+  assert.equal(manifest.settings['page-size'].type, 'number');
+  const {rows} = readAliasTable(json('src/smart/pagination/aliases.json'), {tag: 'sf-pagination'});
+  const split = rows.filter((row) => row.kind === 'event');
+  assert.equal(split.length, 8);
+  assert.ok(split.every((row) => row.mode === 'split'));
+  const source = read('src/smart/pagination/index.js');
+  for (const row of split) assert.match(source, new RegExp(`"${row.from}": `), `${row.from} has its adapter`);
+  assert.doesNotMatch(source, /emitComponentEvent\(|PAGINATION_TEXT|pageText\(/u);
+});

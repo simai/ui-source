@@ -1,0 +1,30 @@
+{
+  "title": "Пагинация",
+  "events": {
+    "selection-clear": {
+      "label": "Выделение снято"
+    }
+  },
+  "runtime": {
+    "action-apply-text": "Применить",
+    "action-choose-label": "Выберите действие",
+    "action-for-all-label": "Для всех",
+    "actions-label": "Действие с выбранными элементами",
+    "actions-region-label": "Действия с отмеченными",
+    "aria-label": "Страницы результатов",
+    "clear-selection-label": "Снять выделение",
+    "counting-label": "Считаем",
+    "first-label": "В начало",
+    "last-label": "Последняя",
+    "next-label": "Следующая страница",
+    "page-field-label": "Страница:",
+    "page-label": "Страница",
+    "page-size-label": "На странице:",
+    "pages-label": "Страницы:",
+    "previous-label": "Предыдущая страница",
+    "selected-label": "Отмечено:",
+    "show-count-label": "Показать количество",
+    "show-more-text": "Показать ещё",
+    "total-label": "Всего:"
+  }
+}

@@ -37,8 +37,9 @@
   transition-property: background-color, border-color, box-shadow, color;
   transition-duration: var(--sf-duration-fast);
   transition-timing-function: var(--sf-animation);
-  --sf-page-number--background-color: var(--sf-surface-0);
-  --sf-page-number--color: var(--sf-on-surface-variant);
+  /* sf-pagination's public variables (standard 1.3.8 §6) over the role tokens. */
+  --sf-page-number--background-color: var(--sf-pagination-page-background-color, var(--sf-surface-0));
+  --sf-page-number--color: var(--sf-pagination-page-color, var(--sf-on-surface-variant));
   --sf-page-number--border-top-width: var(--sf-px);
   --sf-page-number--border-bottom-width: var(--sf-px);
   --sf-page-number--border-inline-start-width: var(--sf-px);
@@ -46,10 +47,10 @@
 }
 
 .sf-page-number--square {
-  --sf-page-number--border-end-end-radius: var(--sf-radius--ui);
-  --sf-page-number--border-end-start-radius: var(--sf-radius--ui);
-  --sf-page-number--border-start-end-radius: var(--sf-radius--ui);
-  --sf-page-number--border-start-start-radius: var(--sf-radius--ui);
+  --sf-page-number--border-end-end-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
+  --sf-page-number--border-end-start-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
+  --sf-page-number--border-start-end-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
+  --sf-page-number--border-start-start-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
 }
 
 .sf-page-number--circle {
@@ -71,11 +72,11 @@
 }
 
 .sf-page-number:not(:disabled):not(.disabled):active, .sf-page-number.selected {
-  --sf-page-number--background-color: var(--sf-primary-container-active);
+  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container-active));
   --sf-page-number--border-color: var(--sf-primary-active);
   --sf-page-number--border-style: solid;
   --sf-page-number--border-width: var(--sf-px);
-  --sf-page-number--color: var(--sf-primary-active);
+  --sf-page-number--color: var(--sf-pagination-current-color, var(--sf-primary-active));
   --sf-page-number--font-weight: var(--sf-font-weight-medium);
 }
 

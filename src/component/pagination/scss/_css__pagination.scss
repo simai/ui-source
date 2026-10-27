@@ -4,7 +4,9 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-pagination {
-  background-color: var(--sf-pagination--background-color, transparent);
+  /* The public variables of sf-pagination (component.json css-variables,
+     standard 1.3.8 §6) over the role tokens. */
+  background-color: var(--sf-pagination-background-color, var(--sf-pagination--background-color, transparent));
   min-inline-size: 0;
 }
 
@@ -29,7 +31,7 @@
 .sf-pagination .sf-pagination-top {
   --sf-pagination-top--background-color: transparent;
   --sf-pagination-top--border-bottom-width: var(--sf-px);
-  --sf-pagination-top--border-color: var(--sf-outline-variant);
+  --sf-pagination-top--border-color: var(--sf-pagination-divider-color, var(--sf-outline-variant));
   --sf-pagination-top--border-style: solid;
   /* The row with Show more sits between the table above it and the page row
      below it, and the two gaps have to read the same. A card spaces its parts
@@ -109,7 +111,7 @@
   --sf-pagination-total--background-color: transparent;
   --sf-pagination-total--gap: var(--sf-space-1\/3);
   background-color: var(--sf-pagination-total--background-color);
-  color: var(--sf-pagination-total--color, var(--sf-on-surface-variant));
+  color: var(--sf-pagination-total--color, var(--sf-pagination-color, var(--sf-on-surface-variant)));
   font-family: var(--sf-pagination-total--font-family, var(--sf-text--family));
   font-size: var(--sf-pagination-total--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-pagination-total--font-weight, var(--sf-font-weight-regular));
@@ -123,9 +125,9 @@
 .sf-pagination .sf-pagination-container {
   flex-wrap: wrap;
   --sf-pagination-container--background-color: transparent;
-  --sf-pagination-container--gap: var(--sf-space-1\/3);
+  --sf-pagination-container--gap: var(--sf-pagination-gap, var(--sf-space-1\/3));
   background-color: var(--sf-pagination-container--background-color);
-  color: var(--sf-pagination-container--color, var(--sf-on-surface-variant));
+  color: var(--sf-pagination-container--color, var(--sf-pagination-color, var(--sf-on-surface-variant)));
   font-family: var(--sf-pagination-container--font-family, var(--sf-text--family));
   font-size: var(--sf-pagination-container--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-pagination-container--font-weight, var(--sf-font-weight-regular));

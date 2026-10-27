@@ -76,7 +76,8 @@ test("Pagination handles an empty set without a fake page action", async () => {
   // no count at all there is no empty set to answer: it has said there are
   // records and whether more follow.
   assert.match(runtime, /get pageItems\(\) \{[\s\S]*?if \(this\.countKnown && this\.total === 0\) \{\s*return \[\]/);
-  assert.match(runtime, /goToPage\(page\) \{\s*if \(this\.countKnown && this\.total === 0\) \{\s*return this/);
+  // The action go-to-page answers an outcome (standard 1.3.8 §4.4).
+  assert.match(runtime, /goToPage\(page\) \{\s*if \(this\.countKnown && this\.total === 0\) \{\s*return \{ outcome: "refused", reason: "empty" \}/);
   assert.match(await read("src/smart/pagination/js/templates/default.js"), /!context\.countKnown \|\| context\.total > 0/);
   assert.match(runtime, /getBooleanAttr\("show-page-size", true\)/);
 });
