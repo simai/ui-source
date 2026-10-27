@@ -154,6 +154,20 @@
       ]
     },
     {
+      "name": "SF.sanitizeHtml",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "Cleans untrusted HTML into a DocumentFragment from an allowlist: SF.sanitizeHtml(html, {elements?, codeLanguage?, document?}). Scripts and foreign content are dropped with their content, other unknown elements unwrapped, and only safe links and table spans kept."
+    },
+    {
+      "name": "SF.safeHref",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The href SF.sanitizeHtml keeps, or null: http, https and mailto URLs and root-relative paths, never //host or /\\host."
+    },
+    {
       "name": "SF.language",
       "status": "public",
       "kind": "object",

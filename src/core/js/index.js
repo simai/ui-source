@@ -10,6 +10,7 @@ import './preferences.js';
 import './region-navigation.js';
 import './effects.js';
 import './notify.js';
+import './sanitize.js';
 import {installReady} from './ready.js';
 import {holdUndefinedElements, installPendingTags} from './pending-tags.js';
 import {
