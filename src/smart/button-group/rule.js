@@ -4,5 +4,5 @@ SF.RuleLoader['cl-button-group'] = {
   mode: 'smart',
   js: true,
   // spinner: a loading item shows it, fetched after the page is ready.
-  relation: [{ name: 'button-group' }, { name: 'cl-buttons' }, { name: 'cl-icons' }, { name: 'spinner', lazy: true }],
+  relation: [{ name: 'button-group' }, { name: 'cl-buttons' }, { name: 'cl-icon' }, { name: 'spinner', lazy: true }],
 };

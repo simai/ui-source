@@ -1,199 +1,55 @@
-import SfBaseElement from "../../core/js/smart-base";
-import { renderIconTemplate } from "./js/templates/default";
-import { elementBadge } from "../helpers/anchored-badge";
+// The distribution path of sf-icon until 2026-12-01 (change journal
+// path-smart-icons-to-icon). The folder took the tag's name with standard
+// simai.smart-component 1.3.8 §3, §21: sf-icon is served from smart/icon/
+// (js/icon.js). A page or a doc that still names
+// smart/icons/js/icons.js keeps loading a working sf-icon:
+//
+// - this bundle carries no element of its own (every bundle carries its own
+//   copy of the modules it imports, so a second copy of sf-icon here would
+//   be a second class for one tag); it notes the old path in SF.deprecations
+//   and adds the script of smart/icon/ beside its own, unless sf-icon is
+//   defined or that script is already on the page;
+// - sf-icon has no sheet of its own in the bundle (the class component's sheet
+//   is fetched by the rule), so there is no css/icons.css to keep.
+//
+// The Loader's own rule for the old bundle name, cl-icons, forwards to
+// cl-icon (src/smart/icon/rule.js) and never fetches this file.
+import {noteDeprecated} from '../../core/js/deprecations.js';
 
-const weightClasses = new Map([
-  [100, "thin"],
-  [200, "extra-light"],
-  [300, "light"],
-  [400, "regular"],
-  [500, "medium"],
-  [600, "semi-bold"],
-  [700, "bold"],
-]);
-const iconTypes = ["outlined", "rounded", "sharp"];
-const iconSizes = ["1/4", "1/3", "1/2", "1", "2", "3", "4", "5", "6", "7"];
+const FROM = 'smart/icons/';
+const TO = 'smart/icon/';
+const OWN = /\/icons\/js\/icons(\.min)?\.js(?=$|[?#])/u;
 
-function clampAxis(value, fallback, minimum, maximum) {
-  const numericValue = Number(value);
-  if (!Number.isFinite(numericValue)) return fallback;
-
-  return Math.min(maximum, Math.max(minimum, numericValue));
+function forward() {
+  const doc = globalThis.document;
+  if (!doc || !globalThis.customElements) return;
+  noteDeprecated({
+    component: 'sf-icon',
+    kind: 'path',
+    from: FROM,
+    to: TO,
+    tag: 'sf-icon',
+    since: '2026-10-27',
+    remove_after: '2026-12-01',
+  });
+  if (customElements.get('sf-icon')) return;
+  const own = doc.currentScript?.src || '';
+  let src = '';
+  if (OWN.test(own)) {
+    src = own.replace(OWN, '/icon/js/icon$1.js');
+  } else {
+    // Loaded as a module or by a script of the page: the smart root the
+    // Loader uses (sfSmartPath, else sfPath), as it composes <root>/smart/.
+    const root = String(globalThis.sfSmartPath || globalThis.sfPath || '').trim().replace(/\/+$/u, '');
+    if (!root) return;
+    src = `${root}/smart/icon/js/icon.js`;
+  }
+  const loaded = [...doc.querySelectorAll('script[src]')].some((script) => /\/icon\/js\/icon(\.min)?\.js(?=$|[?#])/u.test(script.src));
+  if (loaded) return;
+  const script = doc.createElement('script');
+  script.src = src;
+  script.dataset.sfForwardedFrom = FROM;
+  (doc.currentScript?.parentNode || doc.head || doc.documentElement).appendChild(script);
 }
 
-class SfIcon extends SfBaseElement {
-  static clearLightDomBeforeFirstRender = true;
-
-  constructor() {
-    super();
-
-    this.onIconSubsetReady = (event) => {
-      const icon = this.getProp("icon");
-      const icons = event.detail?.icons || [];
-
-      const hasIcon =
-        icons instanceof Set
-          ? icons.has(icon)
-          : Array.isArray(icons) && icons.includes(icon);
-      // The local full font (icons.enabled = false) draws every icon at once.
-      if (icon && !hasIcon && !event.detail?.all) return;
-
-      this.syncLoadedState();
-    };
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
-    this.requestIconLoad();
-    this.syncLoadedState();
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
-    super.disconnectedCallback();
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (
-      ["icon", "filled", "weight", "grade", "optical-size", "type"].includes(
-        name,
-      ) &&
-      oldValue !== newValue
-    ) {
-      window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
-      this.requestIconLoad();
-      this.syncLoadedState();
-    }
-  }
-
-  requestIconLoad() {
-    const loader = window.SF?.Loader;
-    const iconCount = loader?.trackIconElement?.(this) || 0;
-
-    if (iconCount > 0) {
-      loader.mutate?.(() => loader.loadFonts?.());
-    }
-  }
-
-  syncLoadedState() {
-    const loader = window.SF?.Loader;
-    const tracked = loader?.getTrackedIconAttrs?.(this) || null;
-    const loaded = Boolean(
-      tracked?.icon && loader?.isTrackedIconLoaded?.(tracked),
-    );
-
-    if (loaded) {
-      window.removeEventListener(
-        "sf-icons-subset:ready",
-        this.onIconSubsetReady,
-      );
-    } else {
-      window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
-    }
-    if (this.getProp("loaded") === loaded) return;
-
-    this.setState({ loaded });
-  }
-
-  static get props() {
-    return {
-      icon: "",
-      loaded: { type: Boolean, default: false },
-      filled: { type: Boolean, default: false },
-      weight: { type: Number, default: 400 },
-      size: { type: String, default: "" },
-      type: { type: String, default: "" },
-      grade: { type: Number, default: 0 },
-      opticalSize: { type: Number, default: 24 },
-      label: { type: String, default: "" },
-      // A count or a dot on the icon (simai/ui-source#12).
-      badgeCount: { type: String, default: "" },
-      badgeDot: { type: Boolean, default: false },
-      badgeCap: { type: Number, default: 99 },
-      badgeLabel: { type: String, default: "" },
-    };
-  }
-
-  static get observedAttributes() {
-    return Array.from(
-      new Set([
-        ...super.observedAttributes,
-        "icon",
-        "size",
-        "weight",
-        "filled",
-        "loaded",
-        "type",
-        "grade",
-        "optical-size",
-        "label",
-        "badge-count",
-        "badge-dot",
-        "badge-cap",
-        "badge-label",
-      ]),
-    );
-  }
-
-  get weightClass() {
-    let weight = this.getProp("weight");
-    weight = this.toNumber(weight, 400);
-    return weightClasses.get(weight) || weightClasses.get(400);
-  }
-
-  get iconType() {
-    const requestedType = String(this.getProp("type") || "")
-      .trim()
-      .toLowerCase();
-    const type =
-      requestedType ||
-      window.SF?.Loader?.getDefaultIconType?.() ||
-      window.SF_BOOT_CONFIG?.icons?.type ||
-      window.SF_ICON_TYPE ||
-      "outlined";
-    const normalizedType = type === "shape" ? "sharp" : type;
-
-    return iconTypes.includes(normalizedType) ? normalizedType : "outlined";
-  }
-
-  get iconSize() {
-    const size = String(this.getProp("size") || "").trim();
-    return iconSizes.includes(size) ? size : "";
-  }
-
-  get iconGrade() {
-    return clampAxis(this.getProp("grade"), 0, -50, 200);
-  }
-
-  get iconOpticalSize() {
-    return clampAxis(this.getProp("opticalSize"), 24, 20, 48);
-  }
-
-  get templateData() {
-    return {
-      icon: this.getProp("icon"),
-      loaded: this.getProp("loaded"),
-      filled: this.getProp("filled"),
-      rounded: this.iconType === "rounded",
-      sharp: this.iconType === "sharp",
-      weightClass: this.weightClass,
-      size: this.iconSize,
-      grade: this.iconGrade,
-      opticalSize: this.iconOpticalSize,
-      label: String(this.getProp("label") || "").trim(),
-      badge: elementBadge(this),
-    };
-  }
-
-  template() {
-    return renderIconTemplate({
-      ...this.templateContext(),
-      ...this.templateData,
-    });
-  }
-}
-
-SfIcon.define("sf-icon");
+forward();

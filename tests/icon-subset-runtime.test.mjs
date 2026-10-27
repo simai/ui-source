@@ -289,7 +289,7 @@ test('initial Smart component discovery schedules both runtime and icon font', (
   loader.loadFonts = () => {};
 
   const result = loader.handleCustomElementScanResult({
-    keys: ['cl-icons'],
+    keys: ['cl-icon'],
     count: 1,
     iconCount: 1,
   });

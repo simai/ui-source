@@ -31,7 +31,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/badges/css/badges.css', 'component/component/menu/css/menu.css',
   'component/component/admin-menu/css/admin-menu.css', 'component/component/context-menu/css/context-menu.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/badges/js/badges.js',
-  'smart/smart/icons/js/icons.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/icon-buttons/js/icon-buttons.js'];
+  'smart/smart/icon/js/icon.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/icon-buttons/js/icon-buttons.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const SHAPES = ['round', 'square', 'rounded'];
 const KINDS = ['avatar', 'icon', 'icon-button'];

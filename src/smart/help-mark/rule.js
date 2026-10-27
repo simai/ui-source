@@ -6,6 +6,6 @@ SF.RuleLoader['cl-help-mark'] = {
   css: true,
   relation: [
     { name: 'cl-icon-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
   ],
 };

@@ -7,7 +7,7 @@ SF.RuleLoader['cl-toast'] = {
     { name: 'toast' },
     { name: 'buttons' },
     { name: 'cl-icon-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
     { name: 'close' },
   ],
 };

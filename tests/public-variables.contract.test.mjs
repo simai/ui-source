@@ -31,6 +31,7 @@ const FOLDERS = {
   breadcrumbs: 'breadcrumbs',
   steps: 'step',
   close: 'close',
+  icon: 'icons',
 };
 
 const scss = async (folder) => {

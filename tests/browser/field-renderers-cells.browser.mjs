@@ -21,7 +21,7 @@ const styles = [
   'component/component/inputs/css/inputs.css',
 ].map((p) => join(out, p));
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/badges/js/badges.js',
+  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/badges/js/badges.js',
   'smart/smart/tags/js/tags.js', 'smart/smart/avatar/js/avatar.js',
   'smart/smart/reference-link/js/reference-link.js',
   'smart/smart/progress-scale/js/progress-scale.js',

@@ -16,7 +16,7 @@ async page => {
           await page.emulateMedia({ forcedColors, reducedMotion: 'reduce' });
           await page.goto('http://127.0.0.1:8765/ui-source/tests/fixtures/action-focus-lab.html');
           await page.addStyleTag({ url: `${candidate}/component/step/css/step.css` });
-          await page.addScriptTag({ url: `${candidate}/smart/icons/js/icons.js` });
+          await page.addScriptTag({ url: `${candidate}/smart/icon/js/icon.js` });
           await page.addScriptTag({ url: `${candidate}/smart/steps/js/steps.js` });
 
           await page.evaluate(({ theme, dir }) => {

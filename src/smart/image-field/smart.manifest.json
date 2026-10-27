@@ -541,7 +541,7 @@
       },
       {
         "path": "src/smart/image-field/rule.js",
-        "sha256": "2e6c8fae618bfe538306bd8de8aa1515f1ff24f33fa7d42ac575693c3d807291"
+        "sha256": "6ff13fcaad5d777761779ed1ebe6de02e1765383b47342c2248df2ca2dc7df40"
       },
       {
         "path": "src/smart/image-field/docs.md",

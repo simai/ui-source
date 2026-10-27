@@ -22,7 +22,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/inputs/css/inputs.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/input/css/input.css',
   'smart/smart/color/css/color.css', 'smart/smart/theme-generator/css/theme-generator.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js',
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/buttons/js/buttons.js', 'smart/smart/input/js/input.js',
   'smart/smart/color/js/color.js', 'smart/smart/theme-generator/js/theme-generator.js'];
 const absent = modules.filter((path) => !existsSync(join(out, path)));

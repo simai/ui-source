@@ -53,7 +53,10 @@ const smartRoot = join(root, 'src/smart');
 for (const folder of readdirSync(smartRoot, {withFileTypes: true}).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort()) {
   const ruleFile = join(smartRoot, folder, 'rule.js');
   if (!existsSync(ruleFile)) continue;
-  const names = Object.keys(readRules([ruleFile]));
+  // A folder renamed by standard 1.3.8 §3, §21 keeps its former bundle name as
+  // a forwarding rule with no tags (src/smart/input/rule.js: cl-inputs); the
+  // element's own rule is the one that names tags.
+  const names = Object.entries(readRules([ruleFile])).filter(([, rule]) => rule?.tags?.length).map(([name]) => name);
   if (names.length !== 1) continue;
   const tokens = new Set();
   for (const file of sources(join(smartRoot, folder))) for (const token of tokensOf(readFileSync(file, 'utf8'))) tokens.add(token);

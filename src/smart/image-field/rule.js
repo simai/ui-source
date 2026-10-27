@@ -11,6 +11,6 @@ SF.RuleLoader['cl-image-field'] = {
   css: true,
   relation: [
     { name: 'cl-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
   ],
 };

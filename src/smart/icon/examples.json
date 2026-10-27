@@ -1,0 +1,75 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Дом, размер 1",
+      "settings": {
+        "icon": "home",
+        "size": "1"
+      },
+      "expect": {
+        "icon": "home",
+        "size": "1"
+      }
+    },
+    {
+      "name": "labelled",
+      "title": "Значок с подписью",
+      "settings": {
+        "icon": "verified",
+        "label": "Проверено"
+      },
+      "expect": {
+        "label": "Проверено"
+      }
+    },
+    {
+      "name": "filled-rounded",
+      "title": "Заливка, скруглённый",
+      "settings": {
+        "icon": "favorite",
+        "filled": true,
+        "type": "rounded"
+      },
+      "expect": {
+        "filled": true,
+        "type": "rounded"
+      }
+    },
+    {
+      "name": "weight",
+      "title": "Жирный",
+      "settings": {
+        "icon": "settings",
+        "weight": 700
+      },
+      "expect": {
+        "weight": 700
+      }
+    },
+    {
+      "name": "count",
+      "title": "Со счётчиком",
+      "settings": {
+        "icon": "mail",
+        "label": "Почта",
+        "badge-count": "5",
+        "size": "3"
+      },
+      "expect": {
+        "badge-count": "5"
+      }
+    },
+    {
+      "name": "dot",
+      "title": "С точкой",
+      "settings": {
+        "icon": "notifications",
+        "badge-dot": true
+      },
+      "expect": {
+        "badge-dot": true
+      }
+    }
+  ]
+}

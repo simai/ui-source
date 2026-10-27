@@ -2004,6 +2004,56 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "icon",
+      "selector": ".sf-icon",
+      "variables": [
+        {
+          "name": "--sf-icon-color",
+          "role": "color",
+          "summary": "The glyph's ink where no component around it sets its own (a button, a field and a menu give their icons their ink); currentColor otherwise.",
+          "default": "currentColor",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-icon-glyph-size",
+          "role": "size",
+          "summary": "The glyph's font size, width and height together.",
+          "default": "var(--sf-icon-size-3)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-icon-weight",
+          "role": "weight",
+          "summary": "The font's weight axis (wght), 100 to 700.",
+          "default": "var(--sf-weight--regular)",
+          "varies_with": [
+            "weight"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-icon-fill",
+          "role": "fill",
+          "summary": "The font's fill axis (FILL): 0 outlined, 1 filled.",
+          "default": "0",
+          "varies_with": [
+            "filled"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-icon-line-height",
+          "role": "line-height",
+          "summary": "The glyph's line box.",
+          "default": "1",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

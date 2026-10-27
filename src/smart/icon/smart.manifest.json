@@ -217,20 +217,20 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/icons/index.js",
-        "sha256": "9c1a00450be17564c5898e1b352a4f41fc724501d84d899f99e281ff1ccb5e26"
+        "path": "src/smart/icon/index.js",
+        "sha256": "a57a8de0ce5619e10e03d04739d6d75b3e7f32da71f704f792f2687cbe890a19"
       },
       {
-        "path": "src/smart/icons/js/templates/default.js",
+        "path": "src/smart/icon/js/templates/default.js",
         "sha256": "54a6e3f82fdf3ad9c971570de2e01bd7546620f11a7793d46ece422f2c7ee342"
       },
       {
-        "path": "src/smart/icons/rule.js",
-        "sha256": "a15cd7b9af2ac3c9e41cb5b0fcab05c244ff7a954172334531667f4fd5edabbc"
+        "path": "src/smart/icon/rule.js",
+        "sha256": "cb184abc51993b9faec2cfeeffb5dfeb16ae594c45b447c7f262796357a656a6"
       },
       {
-        "path": "src/smart/icons/docs.md",
-        "sha256": "b957f87913d6d05c38500c16b422329ef1cba337e8afd2aeeb342a84b5066220"
+        "path": "src/smart/icon/docs.md",
+        "sha256": "257bd3a459de0c016d2caec3f7078c645172e233c5b1c24db5393b833a506923"
       }
     ],
     "generated_runtime": [

@@ -67,7 +67,7 @@ test("the colour of a glyph is layered, so a utility and a component can answer 
   // Unlayered CSS outranks every layer. With the colour declared there, a
   // colour utility on a glyph did nothing at all: the class read as applied
   // and the glyph drew in currentColor regardless.
-  assert.match(icons, /@layer sf\.base \{\s*\.sf-icon \{\s*color: var\(--sf-icon--color, currentColor\);/);
+  assert.match(icons, /@layer sf\.base \{\s*\.sf-icon \{\s*color: var\(--sf-icon--color, var\(--sf-icon-color, currentColor\)\);/);
   const unlayered = icons.slice(0, icons.indexOf('@layer sf.base'));
   assert.doesNotMatch(unlayered, /^\s*color:/mu,
     'the base rule must not also set a colour outside the layer, which would outrank it again');

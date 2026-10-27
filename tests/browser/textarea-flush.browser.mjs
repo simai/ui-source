@@ -23,7 +23,7 @@ const out = resolve(process.argv[2]);
 
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/textarea/css/textarea.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
+const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js',
   'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
 const SIZES = ['1/2', '1', '2'];
 const MAX = 8;

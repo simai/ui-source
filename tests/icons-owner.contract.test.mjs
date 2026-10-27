@@ -17,8 +17,8 @@ test('ordinary Icons has valid semantic defaults and token geometry', async () =
   assert.match(styles, /--sf-icon--weight: var\(--sf-weight--regular\)/);
   assert.match(styles, /--sf-icon--optical-size: 24/);
   assert.match(styles, /--sf-icon--line-height: 1/);
-  assert.match(styles, /color: var\(--sf-icon--color, currentColor\)/);
-  assert.match(styles, /font-size: var\(--sf-icon--font-size, var\(--sf-icon-size-3\)\)/);
+  assert.match(styles, /color: var\(--sf-icon--color, var\(--sf-icon-color, currentColor\)\)/);
+  assert.match(styles, /font-size: var\(--sf-icon-glyph-size, var\(--sf-icon--font-size, var\(--sf-icon-size-3\)\)\)/);
   assert.doesNotMatch(styles, /--sf-icon--optical-size:\s*inherit/);
   assert.doesNotMatch(styles, /(?<![-\w])\d+(?:\.\d+)?(?:px|rem|em)(?![-\w])/);
 });
@@ -52,8 +52,8 @@ test('Loader tracks canonical and legacy ordinary icon descriptors', async () =>
 
 test('Smart Icons projects the canonical ordinary vocabulary', async () => {
   const [source, template] = await Promise.all([
-    read('src/smart/icons/index.js'),
-    read('src/smart/icons/js/templates/default.js'),
+    read('src/smart/icon/index.js'),
+    read('src/smart/icon/js/templates/default.js'),
   ]);
 
   assert.match(source, /sharp: this\.iconType === "sharp"/);

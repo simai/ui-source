@@ -1987,7 +1987,7 @@ SFLoaderPlugin.prototype.scanCustomElements = function (
     }
 
     const componentName = tagRules[tagName];
-    if (componentName === 'cl-icons') {
+    if (componentName === 'cl-icon') {
       iconItemCount += this.trackIconElement(el);
     }
     if (
@@ -2118,7 +2118,7 @@ SFLoaderPlugin.prototype.scanDom = function (root = null, autoLoad = true) {
     const tagName = el.tagName?.toLowerCase?.();
     if (tagName?.includes('-')) {
       const componentName = tagRules[tagName];
-      if (componentName === 'cl-icons') {
+      if (componentName === 'cl-icon') {
         customIconCount += this.trackIconElement(el);
       }
       if (

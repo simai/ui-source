@@ -4,5 +4,5 @@ SF.RuleLoader['cl-checkbox'] = {
   mode: 'smart',
   js: true,
   css: true,
-  relation: [{ name: 'checkbox' }, { name: 'cl-icons' }],
+  relation: [{ name: 'checkbox' }, { name: 'cl-icon' }],
 };

@@ -29,7 +29,7 @@ const out = resolve(process.argv[2]);
 const SPINNER_SHEET = 'component/component/spinner/css/spinner.css';
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/button-group/css/button-group.css', SPINNER_SHEET];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
+const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js',
   'smart/smart/icon-buttons/js/icon-buttons.js', 'component/component/button-group/js/button-group.js', 'smart/smart/button-group/js/button-group.js',
   'component/component/buttons/js/buttons.js', 'component/component/icon-buttons/js/icon-buttons.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];

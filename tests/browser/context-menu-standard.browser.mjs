@@ -16,7 +16,7 @@ const styles = [
   'component/component/context-menu/css/context-menu.css',
 ].map((p) => join(out, p));
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js',
+  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/buttons/js/buttons.js',
   'smart/smart/context-menu/js/context-menu.js',
 ].map((p) => join(out, p));

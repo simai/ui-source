@@ -1,0 +1,19 @@
+{
+  "$comment": "Dated aliases of sf-icon for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-icon",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "shape",
+      "to": "sharp",
+      "kind": "value",
+      "setting": "type",
+      "section": "§16 item 20",
+      "note": "the family's old name; the attribute is written with sharp",
+      "component": "sf-icon",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    }
+  ]
+}

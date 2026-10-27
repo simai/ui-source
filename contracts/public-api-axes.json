@@ -308,7 +308,7 @@
       "kept_for": "sf-table lives with Larena (package larena, the component folder in simai/larena-ui) since 2026-10-11, and no free component declares data-state. The exemption stays here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
     },
     {
-      "component": "icons",
+      "component": "icon",
       "property": "type",
       "reason": "the value names which icon set the glyph comes from — outlined, rounded, sharp — and the same word keys the loader's global default in SF_BOOT_CONFIG.icons.type, SF.Loader.getDefaultIconType and SF_ICON_TYPE. Renaming only the attribute would split one concept across two names, so this one is left alone deliberately."
     },

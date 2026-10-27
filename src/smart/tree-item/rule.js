@@ -6,6 +6,6 @@ SF.RuleLoader['cl-tree-item'] = {
   relation: [
     { name: 'tree-item' },
     { name: 'icon-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
   ],
 };

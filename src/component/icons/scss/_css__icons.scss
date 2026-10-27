@@ -18,16 +18,16 @@
   --sf-icon--line-height: 1;
 
   font-variation-settings:
-    'FILL' var(--sf-icon--fill),
-    'wght' var(--sf-icon--weight),
+    'FILL' var(--sf-icon-fill, var(--sf-icon--fill)),
+    'wght' var(--sf-icon-weight, var(--sf-icon--weight)),
     'GRAD' var(--sf-icon--grade),
     'opsz' var(--sf-icon--optical-size);
 
   font-family: var(--sf-icon--font-family, 'Material Symbols Outlined');
-  font-weight: var(--sf-icon--weight);
+  font-weight: var(--sf-icon-weight, var(--sf-icon--weight));
   font-style: normal;
-  font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
-  line-height: var(--sf-icon--line-height, 1);
+  font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3)));
+  line-height: var(--sf-icon-line-height, var(--sf-icon--line-height, 1));
   letter-spacing: normal;
   text-transform: none;
   justify-content: center;
@@ -39,8 +39,8 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
   vertical-align: bottom;
-  height: var(--sf-icon--height, var(--sf-icon-size-3));
-  width: var(--sf-icon--width, var(--sf-icon-size-3));
+  height: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-icon-size-3)));
+  width: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-icon-size-3)));
   &:not(.hidden) {
     display: inline-flex;
   }
@@ -122,7 +122,7 @@
    it, which is the order the rest of the Framework is written in. */
 @layer sf.base {
   .sf-icon {
-    color: var(--sf-icon--color, currentColor);
+    color: var(--sf-icon--color, var(--sf-icon-color, currentColor));
   }
 }
 

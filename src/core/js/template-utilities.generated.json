@@ -77,8 +77,7 @@
   "cl-close": [
     "display/default",
     "justify-content/default",
-    "place-items/default",
-    "position/default"
+    "place-items/default"
   ],
   "cl-code-input": [
     "position/default",
@@ -201,14 +200,14 @@
     "isolate/default",
     "position/default"
   ],
+  "cl-icon": [
+    "font-weight/default",
+    "position/default"
+  ],
   "cl-icon-buttons": [
     "align-items/default",
     "display/default",
     "pointer-events/default",
-    "position/default"
-  ],
-  "cl-icons": [
-    "font-weight/default",
     "position/default"
   ],
   "cl-image-field": [

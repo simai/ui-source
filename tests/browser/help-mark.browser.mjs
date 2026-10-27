@@ -14,7 +14,7 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/inputs/css/inputs.css', 'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/help-mark/css/help-mark.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/help-mark/js/help-mark.js'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/help-mark/js/help-mark.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();

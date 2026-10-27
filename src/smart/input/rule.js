@@ -6,7 +6,7 @@ SF.RuleLoader['cl-input'] = {
     css: true,
     relation: [
     { name: 'inputs' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
     // The reset back to an inherited value is an icon button (simai/ui-source#28).
     { name: 'icon-buttons' },
   ]

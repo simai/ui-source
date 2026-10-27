@@ -6,6 +6,6 @@ SF.RuleLoader['cl-download-file'] = {
   relation: [
     { name: 'download-file' },
     { name: 'icons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
   ],
 };

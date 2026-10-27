@@ -63,7 +63,7 @@ test('the sheets size the badge from tokens and logical sides only', async () =>
 });
 
 test('Smart avatar, icon and icon button declare the badge inputs and the sheet that places them', async () => {
-  for (const [folder, rule] of [['avatar', /name: 'badges' \}/u], ['icon-buttons', /name: 'badges' \}/u], ['icons', /name: 'badges', lazy: true/u]]) {
+  for (const [folder, rule] of [['avatar', /name: 'badges' \}/u], ['icon-buttons', /name: 'badges' \}/u], ['icon', /name: 'badges', lazy: true/u]]) {
     const manifest = JSON.parse(await read(`src/smart/${folder}/smart.manifest.json`));
     for (const input of ['badge-count', 'badge-dot', 'badge-cap', 'badge-label']) {
       assert.ok(manifest.inputs.properties[input], `${folder} declares ${input}`);
