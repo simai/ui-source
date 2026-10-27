@@ -34,6 +34,8 @@ const needsLab = new Set([
   'composition-editor-field-kinds', 'composition-inline-editor', 'composition-overlay',
   'composition-regions', 'composition-sortable',
   'position', 'position-surfaces', 'drawer-docked',
+  // Takes a distribution URL (a published pair by default), not a build root.
+  'aliases',
 ]);
 
 // Each probe states what it wants, in the error it throws when it is not given it.
