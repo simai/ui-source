@@ -167,10 +167,34 @@ the next one.
   `.html` and `.json` of its folder); `--check` fails on a stale one, and
   `tests/browser/first-paint-snapshots.browser.mjs` runs it on the candidate.
   An overlay is printed closed: its first paint is its trigger, or nothing.
+  The JSON island is printed once, as the island (never again as a held
+  child), and the icon runtime's font state -- `sf-icon`'s `loaded`
+  attribute, the `sf-icon-loaded` class -- is left out: the live element sets
+  it, and a snapshot is the same on every run.
+- **Snapshots are measured in Inter** (decision 2026-10-27). On a page the
+  Inter faces are `font-display: optional`: a cold visit keeps the metric
+  fallback ("Inter Fallback", Arial bent to Inter's metrics) for the visit
+  rather than move its layout when Inter arrives, and that stays as it is.
+  But a snapshot page set its text in whichever face won the race, and a
+  width the code measured (a column, a truncated label) moved 1-2 px between
+  runs. The snapshot and gate server (`scripts/first-paint-lib.mjs`
+  `measuredFonts`) serves the sheets with the Inter faces `block`, and the
+  snapshot waits for every Inter face the stage's text needs and refuses to
+  serialise without it (`fontsReady`). Metric overrides cannot close the gap
+  instead: Arial's glyph widths differ from Inter's per letter, not by a
+  scale. Two independent write runs give byte-identical snapshots.
+- **A component package runs the same tools** over its own build: a JSON file
+  given as `--config=<file>` (or `FIRST_PAINT_CONFIG`) declares
+  `{"packages": {"<name>": {"output": "<built smart/ dir>", "base":
+  "/distr/package/<name>/"}}}`; each package's output is served under its base
+  after the free output and declared on every page as
+  `SF_BOOT_CONFIG.packages.<name>`.
 - **Late data has a skeleton.** Settings that arrive after the first paint
   are declared: `"presentation": {"skeleton": {"late": ["items"]}}` (sf-tree,
   sf-menu, sf-profile-picker). For an example that gives them, the snapshot
-  also writes `<example>.skeleton.html`: every text a bar of the same length
+  also writes `<example>.skeleton.html` (an example that gives an empty list
+  gives the empty state, which is data: it has no skeleton, and a printed
+  skeleton whose late list arrives empty leaves): every text a bar of the same length
   (`.sf-first-paint-bar`, the text kept transparent), every image a fill,
   values cleared, the late settings left out of the island, the host marked
   `data-sf-first-paint="skeleton" aria-busy="true"`. The element keeps a
@@ -179,7 +203,15 @@ the next one.
   (`presentation.skeleton.file`, with `{{setting}}` and `<template
   data-sf-repeat="rows">` repeated from `presentation.skeleton.repeat`)
   overrides the derived one, and is what a part whose data is unknown when an
-  assembly is composed is printed with.
+  assembly is composed is printed with. Repeats nest (a row, and in it
+  `<template data-sf-repeat="cells">` a cell per column), and a count is a
+  setting (`"rows": "items"`), a setting with a default for when it is not
+  given (`"rows": {"setting": "items", "default": 5}`), or a number.
+- **A component fed through a host port** declares in an example what a fake
+  port answers: `"port": {"answers": {"<intent>": <answer>, "*": <answer>},
+  "methods": {...}, "capabilities": ..., "delay": 0}`. The snapshot is taken
+  before any port is handed over; gate 24 hands the fake port over
+  (`connectPort`) as phase 3 and checks the box holds while the answers draw.
 - **Adoption is the base's**, not a component's: the JSON island is read
   before the first render (`sfReadIsland()`, a component that reads children
   before `super.connectedCallback()` calls it first); a Smart element drawn

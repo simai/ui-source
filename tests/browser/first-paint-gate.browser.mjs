@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node this-file /absolute/path/to/output [folder ...]
+// Usage: node this-file /absolute/path/to/output [--config=<file>] [folder ...]
 // Build output root is required: the directory holding core/, smart/, component/, utility/.
 //
 // Gate 24 of standard simai.smart-component 1.3.8 (§5.4, §7.3; gate 23 with
@@ -13,7 +13,9 @@
 //      SCRIPT_DELAY ms);
 //   2. the code: the element adopts its printed markup;
 //   3. the data: a skeleton's late settings are set (presentation.skeleton.late)
-//      and it turns into content.
+//      and it turns into content; a component fed through a host port is
+//      handed the fake port its example declares (example.port,
+//      scripts/first-paint-lib.mjs portOf) and draws its answers.
 //
 // At the desktop and the phone width, the element's box is the same in the
 // three phases (±0.5 px), the text below it never moves, no layout shift is
@@ -35,7 +37,7 @@
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
-import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule} from '../../scripts/first-paint-lib.mjs';
+import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT} from '../../scripts/first-paint-lib.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
@@ -180,16 +182,25 @@ ${assembly ? assemblyModule(component) : ''}
     await page.waitForFunction(() => window.__fp?.drawnAt !== null, null, {timeout: 20000}).catch(() => problems.push('the element never drew'));
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(400);
-    if (kind === 'skeleton' || (assembly && example.late)) {
-      // Phase 3: the data arrives -- the late settings, as the host sets them.
-      const late = assembly ? example.late : Object.fromEntries(component.late.filter((name) => name in (example.settings ?? {})).map((name) => [name, example.settings[name]]));
-      await page.evaluate(({tag, late}) => {
+    const port = assembly ? null : portOf(component, example);
+    if (kind === 'skeleton' || (assembly && example.late) || port) {
+      // Phase 3: the data arrives -- the late settings, as the host sets them,
+      // or the example's port, as the host hands it over.
+      const late = assembly ? example.late : kind === 'skeleton' && givesLateData(component, example)
+        ? Object.fromEntries(component.late.filter((name) => name in (example.settings ?? {})).map((name) => [name, example.settings[name]])) : {};
+      const outcome = await page.evaluate(({tag, late, port, fake}) => {
         const host = document.querySelector(`#stage ${tag}`);
         window.__fp.dataAt = performance.now();
         const camel = (name) => name.replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
         for (const [name, value] of Object.entries(late)) host[camel(name)] = value;
-      }, {tag: component.tag, late});
-      await page.waitForTimeout(500);
+        if (!port) return null;
+        // eslint-disable-next-line no-eval
+        window.__fpPort = (0, eval)(fake)(port);
+        return host.connectPort(window.__fpPort);
+      }, {tag: component.tag, late, port, fake: FAKE_PORT});
+      if (port && outcome?.outcome !== 'applied') problems.push(`the example's port was not taken: ${JSON.stringify(outcome)}`);
+      await page.waitForTimeout(500 + (port?.delay ?? 0));
+      if (port && !(await page.evaluate(() => window.__fpPort.calls.length))) problems.push('the element never asked the example\'s port');
     }
     await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
     const fp = await page.evaluate(() => window.__fp);

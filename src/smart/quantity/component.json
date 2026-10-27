@@ -2,7 +2,7 @@
   "$comment": "The source of sf-quantity's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/quantity (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.quantity",
   "tag": "sf-quantity",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -397,6 +397,7 @@
     "form: the host submits the number with a point through ElementInternals; the hidden input is not drawn then and the box has no name (§17.1 items 2, 6).",
     "focus: the pointer-focus class is no longer written by the element; the ring follows :focus-visible (§5.3, §16 item 9). The class component's binder still writes it for hand-written markup.",
     "words: decrement and increment are lang runtime words (settings default-from them); range-underflow, range-overflow and step-mismatch are new runtime words for the validity message.",
-    "version 1.1.0: set-error and the host states are added members, error is renamed behind a dated alias (§4.10)."
+    "version 1.1.0: set-error and the host states are added members, error is renamed behind a dated alias (§4.10).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
   ]
 }

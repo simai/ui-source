@@ -1,10 +1,6 @@
 {
   "$comment": "Gate 24 measurements (tests/browser/first-paint-gate.browser.mjs) that fail for a reason outside the first paint, each with that reason. Reported by every run, not counted; an entry that passes again is reported under knownNowPassing and is taken out.",
   "known": {
-    "copy-button/link": "The line holding an inline icon button grows by 1 px when Core's icon subset font arrives (the same with or without static markup); the arrival is timed by the icon request, after the component's code. Icon pipeline, not the first paint.",
-    "copy-button/reference": "As copy-button/link: the icon subset's arrival moves the line by 1 px.",
-    "copy-button/target": "As copy-button/link: the icon subset's arrival moves the line by 1 px.",
-    "copy-button/text": "As copy-button/link: the icon subset's arrival moves the line by 1 px.",
     "page-header/path-and-action": "The page gives the header a <sf-button> with its label as text («Создать»); text cannot be held out of view beside a picture, so the action button shows its text for the frames until its own code draws it (shift 0.0006). A server prints the label as the button's text setting."
   }
 }

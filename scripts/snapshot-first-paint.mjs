@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node scripts/snapshot-first-paint.mjs <build output root> [--check] [folder ...]
+// Usage: node scripts/snapshot-first-paint.mjs <build output root> [--check] [--config=<file>] [folder ...]
 //
 // The first paint of every Smart component, as a build snapshot (standard
 // simai.smart-component 1.3.8 §5.4; owner decision 2026-10-27). Each example
@@ -18,6 +18,13 @@
 // that template, filled from the example's settings, in place of the derived
 // skeleton: it overrides the snapshot where the snapshot is wrong.
 //
+// A component fed through a host port gets its port's answers in phase 3 of
+// the gate (an example's `port`, first-paint-lib.mjs portOf); its snapshot is
+// taken before any port is handed over, as a page prints it.
+//
+// A component package declares its build output with --config=<file> or
+// FIRST_PAINT_CONFIG (first-paint-lib.mjs readConfig).
+//
 // The snapshots are committed, so the builder and CI need no browser. With
 // --check nothing is written and the run fails when a committed snapshot is
 // not what this build renders (stale) or is missing. --fresh writes the
@@ -29,7 +36,7 @@
 import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync} from 'node:fs';
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -85,7 +92,8 @@ ${coreScript}
       if (overlay) return host.hasAttribute('data-sf-started') || !host.constructor.manifest;
       return 'isRendered' in host ? host.isRendered === true : true;
     }, component.overlay, {timeout: 20000});
-    await page.evaluate(() => document.fonts.ready);
+    // Measured in Inter, never the fallback (first-paint-lib.mjs measuredFonts).
+    await page.evaluate(fontsReady);
     const quiet = Date.now() + 15000;
     while ((inflight > 0 || Date.now() - last < 600) && Date.now() < quiet) await new Promise((settle) => setTimeout(settle, 50));
     // Settled: three snapshots 250 ms apart agree (a measured style, such as
@@ -102,8 +110,10 @@ ${coreScript}
     }
     let skeleton = null;
     // A skeleton stands for data the example gives late: an example that
-    // gives none of the late settings (a tree of item elements) has none.
-    if (component.late.some((name) => name in (example.settings ?? {}))) {
+    // gives none of the late settings (a tree of item elements) has none, and
+    // neither has one that gives an empty list -- that is the empty state,
+    // data that has arrived (element-manifest.js sfAwaitingData).
+    if (givesLateData(component, example)) {
       skeleton = component.skeletonFile
         ? renderSkeletonTemplate(component, example, html)
         : await page.evaluate((prefix) => window.__sfFirstPaintSerialize({skeleton: true, prefix}), prefix);
@@ -152,7 +162,8 @@ ${assemblyModule(assembly)}
       const parts = [...host.querySelectorAll('[data-sf-role]')];
       return parts.length > 0 && parts.every((part) => customElements.get(part.localName) && (!('isRendered' in part) || part.isRendered));
     }, null, {timeout: 20000});
-    await page.evaluate(() => document.fonts.ready);
+    // Measured in Inter, never the fallback (first-paint-lib.mjs measuredFonts).
+    await page.evaluate(fontsReady);
     await page.waitForLoadState('networkidle');
     const prefix = `sf-${assembly.folder}-${example.name}`;
     let got = null;
@@ -227,6 +238,9 @@ async function worker() {
       entry.examples[example.name] = sheets;
     } catch (error) {
       results.failed.push({example: `${component.folder}/${example.name}`, error: String(error.message ?? error).slice(0, 400)});
+      // A failed example is not a gone one: its committed files stay.
+      const files = exampleFiles(component, example);
+      entry.files.add(files.html).add(files.skeleton);
     }
   }
 }

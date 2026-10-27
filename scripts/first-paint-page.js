@@ -74,12 +74,15 @@
     // Everything the page gave the host, at every depth: page content, never
     // static markup. The original markup of each element that holds page
     // content is kept, so a child the element takes away is printed again.
+    // A JSON island is not page content: the element reads it and takes it
+    // out, and the printed host carries it once, as its island (§5.4).
+    const island = (node) => node.nodeType === 1 && node.matches('script[data-sf-settings]');
     const mark = (el) => {
-      originals.set(el, [...el.childNodes].map((node) => ({node, html: node.nodeType === 1 ? node.outerHTML : node.nodeType === 3 ? escText(node.data) : ''})));
+      originals.set(el, [...el.childNodes].filter((node) => !island(node))
+        .map((node) => ({node, html: node.nodeType === 1 ? node.outerHTML : node.nodeType === 3 ? escText(node.data) : ''})));
       for (const node of el.childNodes) {
         if (node.nodeType === 3) pageText.add(node);
-        if (node.nodeType !== 1) continue;
-        if (node.matches('script[data-sf-settings]')) continue;
+        if (node.nodeType !== 1 || island(node)) continue;
         node.setAttribute(PAGE, '');
         mark(node);
       }
@@ -92,10 +95,20 @@
     return true;
   }
 
+  // What the icon runtime writes once the icon font has arrived: on one run
+  // it has, on the next not yet. The live element sets it again; a snapshot
+  // never holds it, so it is the same on every run.
+  const ICON_LOADED = 'sf-icon-loaded';
   function attributes(el, extra = []) {
     const out = [];
     for (const {name, value} of el.attributes) {
       if (RUNTIME.has(name)) continue;
+      if (name === 'loaded' && el.localName === 'sf-icon') continue;
+      if (name === 'class' && value.split(/\s+/u).includes(ICON_LOADED)) {
+        const kept = value.split(/\s+/u).filter((one) => one && one !== ICON_LOADED).join(' ');
+        if (kept) out.push([name, kept]);
+        continue;
+      }
       out.push([name, value]);
     }
     for (const one of extra) if (!out.some(([name]) => name === one[0])) out.push(one);
@@ -269,8 +282,12 @@
   const lateMissing = (el) => {
     const late = el.constructor?.manifest?.presentation?.skeleton?.late ?? [];
     const camel = (name) => name.replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
+    const store = el.__sfManifestData ?? {};
     return late.filter((name) => {
       if (el.hasAttribute(name)) return false;
+      // Given, even an empty list: data (the empty state), as the element
+      // reads it (element-manifest.js sfAwaitingData).
+      if (Object.prototype.hasOwnProperty.call(store, name) && store[name] !== undefined && store[name] !== null) return false;
       const value = el[camel(name)];
       return value === undefined || value === null || (Array.isArray(value) && !value.length);
     });

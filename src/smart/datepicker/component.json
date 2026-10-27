@@ -2,7 +2,7 @@
   "$comment": "The source of sf-datepicker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.datepicker",
   "tag": "sf-datepicker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -451,6 +451,7 @@
     "side-effects: none -- with portal the panel is positioned as fixed in place; it is never moved to the end of body",
     "form: the host is the form control through ElementInternals (§17.1): the ISO date (a range as start/end), never the display text; nothing while disabled; read-only submits; form.reset() returns the written value without events. The inner sf-input carries no name. value-missing while required and empty",
     "actions: open-panel, close-panel, toggle-panel, choose-preset {item} and choose-custom-range answer outcomes (§4.4)",
-    "ids: the panel id comes from the instance path (§7.1.1), not a module counter"
+    "ids: the panel id comes from the instance path (§7.1.1), not a module counter",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
   ]
 }

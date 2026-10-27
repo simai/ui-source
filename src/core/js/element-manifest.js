@@ -438,12 +438,20 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
      * the host was printed with data-sf-first-paint="skeleton" and a setting
      * declared late (presentation.skeleton.late) has not arrived. The first
      * render waits for it, so the skeleton turns into content in one frame.
+     * A list given explicitly, even empty, has arrived: an empty list is
+     * data (the empty state), not data still to come. Only a list nobody set
+     * -- its default -- keeps the skeleton waiting.
      * A component whose data comes another way (a port) overrides this.
      */
     sfAwaitingData() {
       if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return false;
       return late.some((member) => {
         if (member.attribute && this.hasAttribute(member.attribute)) return false;
+        const store = this.__sfManifestData;
+        if (!member.attribute && store && Object.prototype.hasOwnProperty.call(store, member.name)) {
+          const given = store[member.name];
+          if (given !== undefined && given !== null) return false;
+        }
         // Read through the property: a component may keep the setting itself.
         const value = this[member.property];
         return value === undefined || value === null || (Array.isArray(value) && !value.length);

@@ -9,9 +9,18 @@
 // The template's syntax, small on purpose and without a browser:
 //   {{name}}                                  a setting (given, else its default), escaped
 //   <template data-sf-repeat="rows">…</template>
-//                                             its content once per row: the setting
-//                                             `repeat.rows` names, a number or a
-//                                             list's length
+//                                             its content once per row: the count
+//                                             `repeat.rows` gives
+//   <template data-sf-repeat="rows"><tr><template data-sf-repeat="cells">…</template></tr></template>
+//                                             nested: a row, and in each row a cell
+//                                             per column
+//
+// A count in `repeat` is one of:
+//   "<setting>"                               the setting's number, or its list's length
+//   {"setting": "<setting>", "default": n}    the same; n when the setting is not
+//                                             given (a part placed in an assembly
+//                                             before its data is known)
+//   n, or {"default": n}                      always n
 // Comments are dropped. The result is put in the host as a server prints it:
 // its attributes, its JSON island without the late settings, and
 // data-sf-first-paint="skeleton" aria-busy="true".
@@ -24,16 +33,53 @@ const valueOf = (component, settings, name) => {
   return member?.default ?? '';
 };
 
+const countOf = (value) => (Array.isArray(value) ? value.length : Math.max(0, Math.floor(Number(value) || 0)));
+
+/** How many times `key` repeats, from presentation.skeleton.repeat. */
+export function repeatCount(component, settings, key) {
+  const declared = (component.skeletonRepeat ?? {})[key];
+  if (declared === undefined || declared === null || declared === '') {
+    throw new Error(`${component.folder}/skeleton.html repeats "${key}", which presentation.skeleton.repeat does not name`);
+  }
+  if (typeof declared === 'number') return countOf(declared);
+  const {setting, default: fallback} = typeof declared === 'string' ? {setting: declared} : declared;
+  if (setting) {
+    const given = settings[setting];
+    if (given !== undefined && given !== null) return countOf(given);
+    if (fallback !== undefined) return countOf(fallback);
+    return countOf(valueOf(component, settings, setting));
+  }
+  if (fallback === undefined) throw new Error(`${component.folder}: presentation.skeleton.repeat.${key} names neither a setting nor a default`);
+  return countOf(fallback);
+}
+
+// The repeats, outermost first; a template inside a repeat is repeated with
+// it, once per outer repetition.
+const OPEN = /<template data-sf-repeat="([\w-]+)">/u;
+function repeatAll(component, settings, body) {
+  let out = '';
+  let rest = body;
+  for (let found = OPEN.exec(rest); found; found = OPEN.exec(rest)) {
+    out += rest.slice(0, found.index);
+    // The matching </template>: count the templates opened inside.
+    const tags = /<template\b[^>]*>|<\/template>/gu;
+    tags.lastIndex = found.index + found[0].length;
+    let depth = 1;
+    let end = -1;
+    for (let tag = tags.exec(rest); tag; tag = tags.exec(rest)) {
+      depth += tag[0] === '</template>' ? -1 : 1;
+      if (!depth) { end = tag.index; break; }
+    }
+    if (end < 0) throw new Error(`${component.folder}/skeleton.html: <template data-sf-repeat="${found[1]}"> is not closed`);
+    const inner = repeatAll(component, settings, rest.slice(found.index + found[0].length, end));
+    out += inner.repeat(repeatCount(component, settings, found[1]));
+    rest = rest.slice(end + '</template>'.length);
+  }
+  return out + rest;
+}
+
 export function fillSkeleton(component, settings, template) {
-  const repeat = component.skeletonRepeat ?? {};
-  let body = template.replace(/<!--[\s\S]*?-->/gu, '');
-  body = body.replace(/<template data-sf-repeat="([\w-]+)">([\s\S]*?)<\/template>/gu, (_, key, inner) => {
-    const setting = repeat[key];
-    if (!setting) throw new Error(`${component.folder}/skeleton.html repeats "${key}", which presentation.skeleton.repeat does not name`);
-    const value = valueOf(component, settings, setting);
-    const count = Array.isArray(value) ? value.length : Math.max(0, Math.floor(Number(value) || 0));
-    return inner.repeat(count);
-  });
+  const body = repeatAll(component, settings, template.replace(/<!--[\s\S]*?-->/gu, ''));
   return body.replace(/\{\{\s*([\w-]+)\s*\}\}/gu, (_, name) => {
     const value = valueOf(component, settings, name);
     return esc(typeof value === 'object' ? JSON.stringify(value) : value);

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-download-file's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/download-file (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.download-file",
   "tag": "sf-download-file",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -195,6 +195,7 @@
     "size takes the ladder the class binder draws (1/3 to 3); a value off it reads as 1.",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
     "examples: examples.json from studio.fixture.json (Отчёт за август.pdf, 2,4 МБ, a download) plus a link that opens, a size, an icon and disabled.",
-    "css-variables: seven public variables (fill and border at rest, radius, padding, gap, icon size and colour), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json."
+    "css-variables: seven public variables (fill and border at rest, radius, padding, gap, icon size and colour), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json.",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), and the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, so a snapshot is the same on every run."
   ]
 }

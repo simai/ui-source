@@ -21,9 +21,13 @@
 //
 // An assembly's first paint is composed the same way per layout:
 // static/<layout>/<example>.html.
+//
+// A component package (standard simai.component-package; ui-pro's) runs the
+// same tools over its own build output: it declares its packages in a JSON
+// file given as --config=<file> or FIRST_PAINT_CONFIG (see readConfig).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, readdirSync, statSync} from 'node:fs';
-import {extname, join, resolve, sep} from 'node:path';
+import {dirname, extname, isAbsolute, join, resolve, sep} from 'node:path';
 
 export const repo = resolve(new URL('..', import.meta.url).pathname);
 export const smartRoot = join(repo, 'src', 'smart');
@@ -40,6 +44,48 @@ export const RUNTIME_ATTRIBUTES = [
 ];
 
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
+
+/**
+ * The run's configuration: --config=<file> on the command line, else the file
+ * FIRST_PAINT_CONFIG names, else none. A package declares itself there instead
+ * of editing these tools:
+ *
+ *   {
+ *     "packages": {
+ *       "larena": {
+ *         "output": "<the package's built smart/ directory: rule.js and its component folders>",
+ *         "base": "/distr/package/larena/"
+ *       }
+ *     }
+ *   }
+ *
+ * Each package's output is served under its base (default
+ * /distr/package/<name>/) and declared on every page as
+ * SF_BOOT_CONFIG.packages.<name> = {base}, so the Loader fetches its rule.js
+ * before the first scan, as on a page that uses the package. A base under a
+ * free mount (/distr/smart/) is served after the free output: a package adds
+ * to the Framework and never shadows it. Relative paths are read from the
+ * file's folder.
+ */
+export function readConfig(argv = process.argv, env = process.env) {
+  const flag = argv.find((one) => one.startsWith('--config='));
+  const file = flag ? flag.slice('--config='.length) : env.FIRST_PAINT_CONFIG;
+  if (!file) return {packages: {}};
+  const config = readJson(file);
+  const from = dirname(resolve(file));
+  const packages = {};
+  for (const [name, one] of Object.entries(config.packages ?? {})) {
+    if (!/^[a-z][a-z0-9-]*$/u.test(name)) throw new Error(`${file}: "${name}" is not a package name`);
+    if (!one?.output) throw new Error(`${file}: package ${name} names no output`);
+    const output = isAbsolute(one.output) ? one.output : resolve(from, one.output);
+    if (!existsSync(join(output, 'rule.js'))) throw new Error(`${file}: package ${name}: no rule.js in ${output}`);
+    const base = `/${String(one.base ?? `/distr/package/${name}/`).replace(/^\/+|\/+$/gu, '')}/`;
+    if (!base.startsWith('/distr/')) throw new Error(`${file}: package ${name}: its base must be under /distr/`);
+    packages[name] = {output, base};
+  }
+  return {packages};
+}
+export const config = readConfig();
 
 // Assemblies whose composed first paint is snapshotted and gated besides the
 // components' own: src/smart/<folder> with "kind": "assembly", and the test
@@ -83,6 +129,57 @@ export function describe(root, folder) {
     hasPort: Boolean(manifest.port),
   };
 }
+
+/**
+ * Whether an example gives late data (§5.4): a late setting with a value. An
+ * explicitly empty list is data too -- the empty state -- but nothing to hold a
+ * box for: its first paint is its static markup, and it has no skeleton.
+ */
+export function givesLateData(component, example) {
+  const settings = example.settings ?? {};
+  return component.late.some((name) => name in settings && settings[name] !== null && settings[name] !== undefined
+    && !(Array.isArray(settings[name]) && !settings[name].length));
+}
+
+/**
+ * An example's port answers (§4.9): a component fed through a host port, not
+ * a setting, declares in its example what a fake port answers, and the gate
+ * hands that port over as the late data of phase 3. The example's `port`:
+ *
+ *   {"id": "<port id, default the manifest's>", "version": "...", "capabilities": ...,
+ *    "answers": {"<intent>": <answer>, "*": <any other intent>},
+ *    "methods": {"<method>": <answer>}, "delay": <ms, default 0>}
+ *
+ * `raise(intent, payload)` answers answers[intent] (else answers["*"], else
+ * {outcome: "refused", reason: "not-in-example"}); every name of `methods` is a
+ * method answering its value. Answers are copied, so a component may keep them.
+ */
+export function portOf(component, example) {
+  const port = example.port;
+  if (!port) return null;
+  if (typeof port !== 'object' || Array.isArray(port)) throw new Error(`${component.folder}/${example.name}: port must be an object`);
+  if (!component.hasPort) throw new Error(`${component.folder}/${example.name}: gives a port, the manifest declares none`);
+  const id = port.id ?? component.manifest.port?.id ?? '';
+  return {id, version: port.version ?? component.manifest.port?.version ?? '', capabilities: port.capabilities ?? null,
+    answers: port.answers ?? {}, methods: port.methods ?? {}, delay: Number(port.delay ?? 0)};
+}
+
+// The page side of portOf: a function source that builds the fake port from
+// its description in the page.
+export const FAKE_PORT = `(spec) => {
+  const copy = (value) => (value === undefined ? undefined : JSON.parse(JSON.stringify(value)));
+  const later = (value) => new Promise((settle) => setTimeout(() => settle(copy(value)), spec.delay || 0));
+  const port = {id: spec.id, port: spec.id, version: spec.version, calls: [],
+    raise(intent, payload) {
+      port.calls.push(intent);
+      const answers = spec.answers || {};
+      return later(Object.prototype.hasOwnProperty.call(answers, intent) ? answers[intent]
+        : Object.prototype.hasOwnProperty.call(answers, '*') ? answers['*'] : {outcome: 'refused', reason: 'not-in-example'});
+    }};
+  if (spec.capabilities !== null && spec.capabilities !== undefined) port.capabilities = copy(spec.capabilities);
+  for (const [name, answer] of Object.entries(spec.methods || {})) port[name] = () => { port.calls.push(name); return later(answer); };
+  return port;
+}`;
 
 /** The member of a setting or value name, or null for a plain attribute (aria-label). */
 export function memberOf(manifest, name) {
@@ -151,7 +248,7 @@ const TYPES = new Map([
  * put in `pages` (path -> html). `onRequest(path)` hears every request;
  * `delay(path)` holds a response back (ms). Port 0: never a fixed port.
  */
-export async function serveOutput(out, {pages = new Map(), onRequest = () => {}, delay = () => 0} = {}) {
+export async function serveOutput(out, {pages = new Map(), onRequest = () => {}, delay = () => 0, packages = config.packages, fonts = 'measured'} = {}) {
   const mounts = [
     ['/distr/core/', join(out, 'core', 'core')],
     ['/distr/rule/', join(out, 'core', 'rule')],
@@ -160,6 +257,8 @@ export async function serveOutput(out, {pages = new Map(), onRequest = () => {},
     ['/distr/smart/', join(out, 'smart', 'smart')],
   ];
   for (const [, path] of mounts) if (!existsSync(path)) throw new Error(`${path} not found: the build output root holds core/, component/, utility/, smart/`);
+  // The declared packages, after the free output (never in its place).
+  for (const {base, output} of Object.values(packages)) mounts.push([base, output]);
   const server = createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
     const path = decodeURIComponent(url.pathname);
@@ -172,26 +271,74 @@ export async function serveOutput(out, {pages = new Map(), onRequest = () => {},
       response.end(pages.get(path));
       return;
     }
-    const mount = mounts.find(([prefix]) => path.startsWith(prefix));
-    const file = mount ? resolve(mount[1], path.slice(mount[0].length)) : '';
-    if (!file || !file.startsWith(mount[1] + sep) || !existsSync(file) || statSync(file).isDirectory()) {
+    // The first mount that holds the file: the free output, then a package.
+    let file = '';
+    for (const [prefix, root] of mounts) {
+      if (!path.startsWith(prefix)) continue;
+      const one = resolve(root, path.slice(prefix.length));
+      if (one.startsWith(root + sep) && existsSync(one) && !statSync(one).isDirectory()) { file = one; break; }
+    }
+    if (!file) {
       response.writeHead(404);
       response.end();
       return;
     }
     const type = TYPES.get(extname(file)) ?? 'application/octet-stream';
     response.writeHead(200, {'content-type': /^(text|application\/json|image\/svg)/u.test(type) ? `${type}; charset=utf-8` : type});
-    response.end(readFileSync(file));
+    const bytes = readFileSync(file);
+    response.end(type === 'text/css' && fonts === 'measured' ? measuredFonts(bytes.toString('utf8')) : bytes);
   });
   await new Promise((settle) => server.listen(0, '127.0.0.1', settle));
   return {server, origin: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((settle) => server.close(settle))};
 }
+
+/**
+ * The text faces a snapshot is measured in (decision 2026-10-27, recorded in
+ * docs/developer/first-paint-snapshots.md): Inter, always. On a page the faces
+ * are `font-display: optional` -- a cold visit stays on the metric fallback
+ * rather than move its layout late -- so which face a snapshot page set its
+ * text in was a race, and a width the code measured moved by 1-2 px from run
+ * to run. The server of these tools serves the sheets with the text faces
+ * `block` instead, and the pages wait for them (fontsReady), so the snapshots
+ * and the gate are measured in the face the page is designed in. The sheets a
+ * page gets are not touched. `fonts: 'as-shipped'` serves them unchanged.
+ */
+export function measuredFonts(css) {
+  return css.replace(/@font-face\s*\{[^}]*\}/gu, (face) => (/font-family:\s*["']?Inter Variable/u.test(face)
+    ? face.replace(/font-display:\s*optional/u, 'font-display: block') : face));
+}
+
+/**
+ * In the page: every Inter face the stage's text needs is loaded, and the
+ * text is set in it. Fails (an Error) when Inter is not there, so a snapshot
+ * is never taken in the fallback.
+ */
+export const fontsReady = async (selector = '#stage') => {
+  const root = document.querySelector(selector) ?? document.body;
+  const text = root.textContent || '';
+  // No text at all (an icon-only control): no face to wait for.
+  if (!text.trim()) return 0;
+  const styles = new Set([...root.querySelectorAll('*')].concat(root).map((el) => {
+    const style = getComputedStyle(el);
+    return /Inter Variable/u.test(style.fontFamily) ? `${style.fontStyle} ${style.fontWeight} 16px "Inter Variable"` : null;
+  }).filter(Boolean));
+  await Promise.all([...styles].map((font) => document.fonts.load(font, text)));
+  await document.fonts.ready;
+  const inter = [...document.fonts].filter((face) => face.family.replace(/["']/gu, '') === 'Inter Variable');
+  const used = inter.filter((face) => face.status !== 'unloaded');
+  if (styles.size && (!used.length || used.some((face) => face.status !== 'loaded'))) {
+    throw new Error(`Inter is not loaded (${used.map((face) => face.status).join(', ') || 'no face asked for'})`);
+  }
+  return used.length;
+};
 
 /** The boot of a page with the Framework: core.css, the theme class, core.js. */
 export const BOOT_CONFIG = {
   cacheVersion: 'first-paint',
   pluginListVersion: 'first-paint',
   preloader: {enabled: false},
+  ...(Object.keys(config.packages).length
+    ? {packages: Object.fromEntries(Object.entries(config.packages).map(([name, {base}]) => [name, {base}]))} : {}),
 };
 export const head = ({sheets = ['/distr/core/css/core.css'], scripts = true, title = 'first paint', extra = ''} = {}) => `<!doctype html>
 <html lang="ru" class="theme-light"><head><meta charset="utf-8">
