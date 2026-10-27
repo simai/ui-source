@@ -1,0 +1,74 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Включён, с подписью",
+      "settings": {
+        "label": "Автоматически",
+        "checked": true
+      },
+      "expect": {
+        "checked": true
+      }
+    },
+    {
+      "name": "off",
+      "title": "Выключен",
+      "settings": {
+        "label": "Автоматически"
+      },
+      "expect": {
+        "checked": false
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Со значком",
+      "settings": {
+        "label": "Отметить",
+        "kind": "icon",
+        "icon": "check",
+        "checked": true
+      },
+      "expect": {
+        "checked": true,
+        "kind": "icon"
+      }
+    },
+    {
+      "name": "short",
+      "title": "Короткий",
+      "settings": {
+        "label": "Коротко",
+        "kind": "short"
+      },
+      "expect": {
+        "kind": "short"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "label": "Только чтение",
+        "checked": true,
+        "disabled": true
+      },
+      "expect": {
+        "checked": true,
+        "disabled": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупный",
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}

@@ -419,7 +419,6 @@
     "display/default",
     "justify-content/default",
     "place-items/default",
-    "position/default",
     "transition-property/default"
   ],
   "cl-tooltip": [

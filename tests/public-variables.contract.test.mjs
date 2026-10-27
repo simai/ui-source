@@ -18,6 +18,8 @@ const FOLDERS = {
   'image-field': 'smart/image-field',
   // sf-quantity draws the class component's markup, so the class sheet reads them.
   quantity: 'quantity',
+  // sf-toggle from its component.json (standard 1.3.8 §6, 2026-10-27).
+  toggle: 'toggle',
 };
 
 const scss = async (folder) => {

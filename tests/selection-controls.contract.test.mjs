@@ -69,7 +69,7 @@ test('long selection labels can wrap without shrinking the indicator', async () 
 
 test('Toggle off-state has a role-colored boundary and visible simple/icon thumb', async () => {
   const css = await source('component/toggle/scss/_css_toggle.scss');
-  assert.match(css, /outline: var\(--sf-px\) solid var\(--sf-toggle-container--outline-color, var\(--sf-outline\)\)/);
+  assert.match(css, /outline: var\(--sf-px\) solid var\(--sf-toggle-container--outline-color, var\(--sf-toggle-border-color, var\(--sf-outline\)\)\)/);
   assert.match(css, /\.sf-toggle\.sf-toggle--simple \.sf-toggle-inner \{\s*--sf-toggle-inner--background-color: var\(--sf-on-surface-variant\)/);
   assert.match(css, /\.sf-toggle\.sf-toggle--icon \.sf-toggle-inner-wrap \{\s*--sf-toggle-inner-wrap--background-color: var\(--sf-on-surface-variant\)/);
   assert.match(css, /--sf-toggle-container--outline-color: var\(--sf-outline-disable\)/);

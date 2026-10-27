@@ -1,0 +1,202 @@
+{
+  "$comment": "The source of sf-toggle's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/toggle (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.toggle",
+  "tag": "sf-toggle",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "toggle",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "kind": {
+      "type": "enum",
+      "values": [
+        "simple",
+        "icon",
+        "short"
+      ],
+      "default": "simple"
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "icon",
+      "default": ""
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "value": {
+      "type": "string",
+      "default": "on"
+    }
+  },
+  "values": {
+    "checked": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": {
+    "change": {
+      "carries": "native"
+    }
+  },
+  "actions": {},
+  "form": {
+    "value": "checked",
+    "name": "name",
+    "default": "checked",
+    "submits": "value",
+    "reset": "default",
+    "disabled": "disabled",
+    "validity": [
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Space": "toggle:checked"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "switch",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Space": "toggle:checked"
+    }
+  },
+  "css-variables": {
+    "--sf-toggle-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-toggle-checked-background-color": {
+      "type": "color",
+      "state": "checked"
+    },
+    "--sf-toggle-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-toggle-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-toggle-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
+  "x-source": {
+    "package": "framework",
+    "folder": "toggle",
+    "manifest": "simai/ui-source@5100227 src/smart/toggle/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/toggle.component.json"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Do not use sf-toggle for new work; use sf-switch, which draws the same control (sf-switch--short and sf-switch--icon give Toggle's two looks). Keep sf-toggle only in markup already written until it is moved.",
+      "do_not": [
+        "Do not use sf-toggle for new work; use sf-switch",
+        "Do not use Toggle for multiple-choice selection or a deferred form option",
+        "Do not use an unexplained icon as the only accessible name",
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-toggle></sf-toggle>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-replaced-by": {
+    "tag": "sf-switch",
+    "journal": "contracts/changes/journal.json component-toggle-to-switch",
+    "note": "the component itself is deprecated; aliases.json carries member renames only, the shim has no row for a tag"
+  },
+  "x-decisions": [
+    "existing-aliases: the legacy axis name `type` leaves the settings and is a dated setting alias of `kind` (aliases.json, until 2026-12-01); the component-level replacement by sf-switch has no alias kind in the shim, so it stays in the change journal and x-replaced-by.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (the checked reference) plus the three kinds, disabled and size 2; probe.json drives Space (gate 16).",
+    "css-variables: five public variables, one per recolourable state (off track, checked track, border, label, gap); the state rules read them with the role token as fallback (§6). Also in src/core/contracts/public-variables.v1.json.",
+    "value defaults to \"on\": a checked toggle without value submits \"on\", as a native checkbox (§17.1 item 2, simai/ui-source#38 as for sf-switch).",
+    "form: the host is the form control through ElementInternals; the inner checkbox carries no name (§17.1 item 6); the checked look reads :has(input:checked) and the thumb side is written by the template, not by a script class (§5.3).",
+    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20)."
+  ]
+}

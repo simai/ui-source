@@ -1,91 +1,32 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { bindToggle, setToggleState, unbindToggle } from '../../component/toggle/js/_toggle';
 import { renderToggleTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
+import { FormField, innerControlName } from '../helpers/form-field';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-toggle from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §17.1). Deprecated: sf-switch draws the same control and carries both of
+// its looks (contracts/changes/journal.json component-toggle-to-switch). The
+// settings are made by core/js/element-manifest.js, the legacy axis name
+// `type` is a dated alias of `kind` (aliases.json), and the host is the form
+// control through ElementInternals: a checked toggle submits its value, "on"
+// without one, as a native checkbox does (§17.1 item 2).
+const ToggleElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-class SfToggle extends SfBaseElement {
-  static get props() {
-    return {
-      size: { default: '1' },
-      // The axis is called kind, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      kind: {default: 'simple', values: ['simple', 'icon', 'short'], aliases: ['type']},
-      label: { default: '' },
-      icon: { default: '' },
-      checked: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
-      name: { default: '' },
-      value: { default: '' },
-    };
-  }
-
-
+class SfToggle extends FormField(ToggleElement) {
   constructor() {
     super();
     this._boundRoot = null;
-  }
-
-  get size() {
-    return this.getAttribute('size') || '1';
-  }
-
-  get kind() {
-    return this.getProp('kind');
-  }
-
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.kind;
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
-  get icon() {
-    return this.getAttribute('icon') || '';
-  }
-
-  get checked() {
-    return this.getBooleanAttr('checked', false);
-  }
-
-  set checked(nextValue) {
-    if (nextValue) {
-      this.setAttribute('checked', '');
-    } else {
-      this.removeAttribute('checked');
-    }
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  set disabled(nextValue) {
-    if (nextValue) {
-      this.setAttribute('disabled', '');
-    } else {
-      this.removeAttribute('disabled');
-    }
-  }
-
-  get name() {
-    return this.getAttribute('name') || '';
-  }
-
-  get value() {
-    return this.getAttribute('value') || '';
-  }
-
-  set value(nextValue) {
-    if (nextValue === null || nextValue === undefined) {
-      this.removeAttribute('value');
-      return;
-    }
-
-    this.setAttribute('value', String(nextValue));
   }
 
   templateContext() {
@@ -95,8 +36,11 @@ class SfToggle extends SfBaseElement {
       ...props,
       component: this,
       rootClass: this.getRootClass(),
+      // The host is the form control where the browser has ElementInternals,
+      // so the inner checkbox carries no name (§17.1 item 6).
+      checkboxName: innerControlName(this, props.name),
       // Resolved names the template reads (contracts/template-context.json).
-      type: this.type,
+      type: this.kind,
     });
   }
 
@@ -127,6 +71,7 @@ class SfToggle extends SfBaseElement {
         this._releaseReset = bindCheckableReset(this, input);
       }
     }
+    this.sfSyncFormState();
   }
 
   onDisconnected() {
@@ -152,6 +97,7 @@ class SfToggle extends SfBaseElement {
     } else {
       this.removeAttribute('checked');
     }
+    this.sfSyncFormState();
   };
 
   getInputElement() {
@@ -177,12 +123,12 @@ class SfToggle extends SfBaseElement {
   get state() {
     const input = this.getInputElement();
     return {
-      type: this.type,
+      type: this.kind,
       size: this.size,
       checked: !!input?.checked,
       disabled: !!input?.disabled,
-      name: input?.name || '',
-      value: input?.value || '',
+      name: this.name,
+      value: this.value,
       icon: this.icon,
       label: this.label,
     };
@@ -214,7 +160,11 @@ class SfToggle extends SfBaseElement {
     }
 
     if (Object.prototype.hasOwnProperty.call(nextState, 'type')) {
-      this.setAttribute('type', String(nextState.type || 'simple'));
+      this.setAttribute('kind', String(nextState.type || 'simple'));
+    }
+
+    if (Object.prototype.hasOwnProperty.call(nextState, 'kind')) {
+      this.setAttribute('kind', String(nextState.kind || 'simple'));
     }
 
     if (Object.prototype.hasOwnProperty.call(nextState, 'size')) {
@@ -237,6 +187,7 @@ class SfToggle extends SfBaseElement {
       }
     }
 
+    this.sfSyncFormState();
     return this;
   }
 

@@ -2097,7 +2097,7 @@
       "kind": "smart",
       "lifecycle": "deprecated",
       "manifest_path": "src/smart/toggle/smart.manifest.json",
-      "manifest_sha256": "ab5fc65bed8e4c7039aec7f6c7b1f1f19621452be03f54c140346b6dbade50e5",
+      "manifest_sha256": "e8678fb6d69b4e1c856ead1382127ed7ec922b980e4270728158f02f9d62f5e9",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

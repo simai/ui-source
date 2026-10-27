@@ -330,7 +330,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toggle/index.js",
-        "sha256": "8d8f3da88b687d4f1bee35a3d879028fd5e59a1ebeb5aec0ff7dea5745d45084"
+        "sha256": "6fceea8749acbd18e783da4b25910c9ce1d9c4493c76e4814598c7d0bd844494"
       }
     ],
     "generated_runtime": [

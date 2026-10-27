@@ -35,12 +35,12 @@ export function renderToggleTemplate(context) {
         <input
           type="checkbox"
           role="switch"
-          name=${context.name || ''}
-          .value=${context.value || ''}
+          name=${context.checkboxName || nothing}
+          .value=${context.value || 'on'}
           .checked=${context.checked}
           ?disabled=${context.disabled}
         />
-        <span class="sf-toggle-container transition flex items-center content-main-start">
+        <span class="sf-toggle-container transition flex items-center ${context.checked ? 'content-main-end' : 'content-main-start'}">
           <span class="sf-toggle-inner-wrap transition flex items-center content-main-center">
             ${renderIconContent(context)}
           </span>

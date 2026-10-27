@@ -92,8 +92,14 @@ test('a converted component carries the canonical name, and the legacy name stil
       `${entry.axis}: \\{[\\s\\S]{0,320}?parser:`,
       'u',
     ).test(runtime) && entry.legacy.every((legacy) => runtime.includes(`getAttribute?.('${legacy}')`));
+    // Standard 1.3.8 §16.20: a component built from its component.json keeps
+    // the legacy name as a dated setting alias in aliases.json, which the
+    // shim maps to the axis (attribute and property).
+    const aliasFile = resolve(root, `src/smart/${entry.component}/aliases.json`);
+    const datedAlias = existsSync(aliasFile) && entry.legacy.every((legacy) => (JSON.parse(read(`src/smart/${entry.component}/aliases.json`)).aliases ?? [])
+      .some((row) => row.kind === 'setting' && row.from === legacy && row.to === entry.axis && row.remove_after));
     assert.ok(
-      declaresAlias || resolvesItself,
+      declaresAlias || resolvesItself || datedAlias,
       `${entry.component}: the runtime prop must answer to ${entry.legacy.join(', ')}, by alias or by resolving it`,
     );
     // A renamed value is only non-breaking if the old word is still accepted.

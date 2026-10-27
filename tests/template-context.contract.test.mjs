@@ -45,7 +45,10 @@ test('template context: the resolved names the templates read are passed', async
   for (const [component, names] of Object.entries(expected)) {
     const source = await read(`src/smart/${component}/index.js`);
     const body = source.match(/^ {2}templateContext\(\) \{[\s\S]*?^ {2}\}/m)?.[0] || '';
-    for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.${name},`), `${component}.${name}`);
+    // A component built from its component.json passes the canonical axis
+    // under the legacy name: `type` itself is a dated alias (aliases.json), and
+    // reading it would note a use of the old name on every render.
+    for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.(?:${name}${name === 'type' ? '|kind|appearance' : ''}),`), `${component}.${name}`);
   }
   // sf-toast's type is a dated alias of status (standard 1.3.8 §16.20): the
   // template reads the resolved status under its old name.
