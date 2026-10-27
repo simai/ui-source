@@ -1,11 +1,11 @@
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-close {
-    background-color: var(--sf-close--background-color, transparent);
-    padding-inline-start: var(--sf-close--padding-inline-start);
-    padding-top: var(--sf-close--padding-top);
-    padding-inline-end: var(--sf-close--padding-inline-end);
-    padding-bottom: var(--sf-close--padding-bottom);
+    background-color: var(--sf-close--background-color, var(--sf-close-background-color, transparent));
+    padding-inline-start: var(--sf-close-padding-inline, var(--sf-close--padding-inline-start));
+    padding-top: var(--sf-close-padding-block, var(--sf-close--padding-top));
+    padding-inline-end: var(--sf-close-padding-inline, var(--sf-close--padding-inline-end));
+    padding-bottom: var(--sf-close-padding-block, var(--sf-close--padding-bottom));
   }
 
   .sf-close .sf-close-icon {
@@ -15,7 +15,7 @@
        boundary, 4.47:1, and a theme retuning its borders would have moved it.
        The paler of the two roles for what stands on a surface is 6.47:1 light
        and 5.95:1 dark (owner, 2026-10-08). */
-    --sf-close-icon--background-color: var(--sf-on-surface-variant);
+    --sf-close-icon--background-color: var(--sf-close-color, var(--sf-on-surface-variant));
     --sf-close-icon--mask-repeat: no-repeat;
     --sf-close-icon--mask-size: contain;
     -webkit-mask-image: var(--sf-close-icon---webkit-mask-image);
@@ -24,11 +24,11 @@
     background-color: var(--sf-close-icon--background-color);
     border-color: var(--sf-close-icon--border-color, transparent);
     font-size: var(--sf-close-icon--font-size);
-    height: var(--sf-close-icon--height);
+    height: var(--sf-close-glyph-size, var(--sf-close-icon--height));
     mask-image: var(--sf-close-icon--mask-image);
     mask-repeat: var(--sf-close-icon--mask-repeat);
     mask-size: var(--sf-close-icon--mask-size);
-    width: var(--sf-close-icon--width);
+    width: var(--sf-close-glyph-size, var(--sf-close-icon--width));
   }
 
   .sf-close.sf-close--size-1 .sf-close-icon {

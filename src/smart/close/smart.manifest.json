@@ -150,7 +150,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/close/index.js",
-        "sha256": "875cd8ef7b5fe9ccbfba204889206d0959ff390c415a9e1d1d7e4961761b4799"
+        "sha256": "25348873f7287bdc8283adadc0f5507d4ea80a3b12029d99185fc61f3fb1c64d"
       }
     ],
     "generated_runtime": [

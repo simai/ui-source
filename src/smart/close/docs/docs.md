@@ -33,3 +33,15 @@ Example:
   <sf-close size="1"></sf-close>
 </button>
 ```
+
+## Public variables
+
+A page recolours or resizes the cross without touching its classes (standard
+simai.smart-component 1.3.8 §6); each falls back to the ladder's value:
+
+- `--sf-close-color` — the cross;
+- `--sf-close-background-color` — the fill behind it, none by default;
+- `--sf-close-glyph-size` — its width and height;
+- `--sf-close-padding-inline`, `--sf-close-padding-block` — the space around it.
+
+The interface is `component.json`; examples are `examples.json`.

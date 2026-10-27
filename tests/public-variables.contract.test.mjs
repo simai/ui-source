@@ -30,6 +30,7 @@ const FOLDERS = {
   // The navigation family, with its move to standard 1.3.8 (2026-10-27).
   breadcrumbs: 'breadcrumbs',
   steps: 'step',
+  close: 'close',
 };
 
 const scss = async (folder) => {

@@ -18,12 +18,16 @@ test('Close remains a decorative glyph and the native Icon Button owns the actio
 });
 
 test('Smart Close closes the complete released size axis and rejects unknown input', async () => {
+  // The element's size is made from component.json (core/js/element-manifest.js):
+  // the attribute, the property, and an unknown value read as the default.
   const runtime = await source('src/smart/close/index.js');
   const manifest = JSON.parse(await source('src/smart/close/smart.manifest.json'));
+  const component = JSON.parse(await source('src/smart/close/component.json'));
   const sizes = ['1/4', '1/3', '1/2', '1', '2', '3', '4', '5', '6', '7'];
   assert.deepEqual(manifest.inputs.properties.size.enum, sizes);
-  for (const size of sizes) assert.match(runtime, new RegExp(`'${size.replace('/', '\\/')}'`));
-  assert.match(runtime, /return this\.getProp\('size'\)/);
+  assert.deepEqual(component.settings.size, {type: 'enum', values: sizes, default: '1/3'});
+  assert.match(runtime, /elementFromManifest\(manifest/);
+  assert.match(runtime, /size: this\.size/);
 });
 
 test('Close rendered geometry and colour are token-owned and font-independent', async () => {
@@ -34,7 +38,7 @@ test('Close rendered geometry and colour are token-owned and font-independent', 
   // The glyph takes the paler of the two roles for what stands on a surface.
   // It was --sf-outline, the role of a boundary: 4.47:1, and moved with a
   // theme's borders rather than with its text.
-  assert.match(css, /--sf-close-icon--background-color: var\(--sf-on-surface-variant\)/);
+  assert.match(css, /--sf-close-icon--background-color: var\(--sf-close-color, var\(--sf-on-surface-variant\)\)/);
   assert.match(css, /@media \(forced-colors: active\)/);
   assert.doesNotMatch(css, /font-family|Material Symbols/);
 });
