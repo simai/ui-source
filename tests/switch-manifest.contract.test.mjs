@@ -41,7 +41,7 @@ test('the manifest makes the settings the base reads; value defaults to "on" (#3
   assert.equal(json('src/smart/switch/smart.manifest.json').inputs.properties.value.default, 'on');
   const template = read('src/smart/switch/js/templates/default.js');
   assert.match(template, /\.value=\$\{value \|\| 'on'\}/);
-  assert.match(template, /name=\$\{name \|\| nothing\}/);
+  assert.match(template, /name=\$\{checkboxName \|\| nothing\}/);
 });
 
 test('the language files say every runtime word in ru and en', () => {
@@ -67,7 +67,7 @@ test('the on look follows the checked checkbox in the markup, not a script class
 
 test('the host is the form control; the inner checkbox carries no name where ElementInternals exist (§17.1)', () => {
   const source = read('src/smart/switch/index.js');
-  assert.match(source, /name: this\.sfInternals \|\| inherited \? '' : props\.name/);
+  assert.match(source, /checkboxName: this\.sfInternals \|\| inherited \? '' : props\.name/);
   assert.match(source, /this\.syncInheritedState\(\);\s*this\.sfSyncForm\(\);/);
   assert.match(source, /this\._writeChecked\(input\.checked\);[\s\S]*?this\.sfSyncForm\(\);\s*\};/);
 });

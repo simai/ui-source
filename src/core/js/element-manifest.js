@@ -61,6 +61,9 @@ const RESERVED = new Set([
 
 const PROPERTY_ONLY = new Set(['list', 'object', 'state']);
 
+// core/js/smart-base.js toBoolean: what an attribute value means as true.
+const TRUE_WORDS = new Set(['1', 'true', 'yes', 'on', 'checked', 'disabled', 'download', 'indeterminate', 'multiple']);
+
 export const camelName = (name) => String(name).replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
 
 const isPlainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -197,7 +200,9 @@ function readAttribute(element, member) {
   const raw = element.getAttribute(member.attribute);
   if (member.type === 'boolean') {
     if (raw === null) return member.optional && member.default === undefined ? undefined : Boolean(member.default);
-    return raw !== 'false';
+    // The base's reading, so the template and the property agree: present
+    // and empty is true, then the words the base takes for true.
+    return raw === '' || TRUE_WORDS.has(raw.toLowerCase());
   }
   if (raw === null) return member.word ? element.sfWord(member.word) : member.default;
   if (member.type === 'number') {

@@ -90,7 +90,7 @@ test('the form gets nothing while the value is inherited', () => {
   // ElementInternals the checkbox is not named while inherited. «off» chosen by
   // a person is its own value, kept as checked="false".
   const toggle = read('src/smart/switch/index.js');
-  assert.match(toggle, /name: this\.sfInternals \|\| inherited \? '' : props\.name/u);
+  assert.match(toggle, /checkboxName: this\.sfInternals \|\| inherited \? '' : props\.name/u);
   assert.match(toggle, /sfFormValue\(\) \{\s*if \(this\.isInherited\) return null;/u);
   assert.match(toggle, /else if \(this\.hasInheritedValue\) this\.setAttribute\('checked', 'false'\);/u);
   // The text fields and the dropdown show it as their placeholder, never as

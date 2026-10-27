@@ -120,7 +120,7 @@ class SfSwitch extends SwitchElement {
       // ElementInternals, so the inner checkbox carries no name (§17.1 item
       // 6); elsewhere the checkbox is named, and not while inherited.
       checked: inherited ? this.inheritedOn : props.checked,
-      name: this.sfInternals || inherited ? '' : props.name,
+      checkboxName: this.sfInternals || inherited ? '' : props.name,
       component: this,
     });
   }

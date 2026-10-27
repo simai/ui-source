@@ -2,7 +2,7 @@ import { html, nothing } from 'lit';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
 export function renderSwitchTemplate(context) {
-  const { size, label, description, help, checked, disabled, name, value, ariaLabel } = context;
+  const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
 
   const rootClasses = ['sf-switch', `sf-switch--size-${size}`, 'flex', context.rootClass];
 
@@ -35,7 +35,7 @@ export function renderSwitchTemplate(context) {
         <input
           type="checkbox"
           role="switch"
-          name=${name || nothing}
+          name=${checkboxName || nothing}
           .value=${value || 'on'}
           .checked=${checked}
           ?disabled=${disabled}
