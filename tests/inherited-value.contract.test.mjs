@@ -58,7 +58,8 @@ for (const [folder, {tag, relation}] of Object.entries(CONTROLS)) {
     const rule = read(`src/smart/${folder}/rule.js`);
     const manifest = JSON.parse(read(`src/smart/${folder}/smart.manifest.json`));
 
-    assert.match(source, /extends InheritedValueField\(SfBaseElement\)/u);
+    // sf-switch takes its plumbing from component.json over the same base.
+    assert.match(source, /extends InheritedValueField\(SfBaseElement\)|base: InheritedValueField\(SfBaseElement\)/u);
     assert.match(source, /inheritedValue: \{\s*attribute: ['"]inherited-value['"]/u);
     assert.match(source, /resetLabel: \{\s*attribute: ['"]reset-label['"]/u);
     assert.match(source, /inheritedFocusTarget\(\) \{/u);
@@ -84,10 +85,13 @@ for (const [folder, {tag, relation}] of Object.entries(CONTROLS)) {
 }
 
 test('the form gets nothing while the value is inherited', () => {
-  // A switch's checkbox is not named while inherited, so it submits nothing;
-  // «off» chosen by a person is its own value, kept as checked="false".
+  // A switch submits nothing while inherited: the host is the form control
+  // (ElementInternals) and its checkbox is never named; without
+  // ElementInternals the checkbox is not named while inherited. «off» chosen by
+  // a person is its own value, kept as checked="false".
   const toggle = read('src/smart/switch/index.js');
-  assert.match(toggle, /name: inherited \? '' : props\.name/u);
+  assert.match(toggle, /name: this\.sfInternals \|\| inherited \? '' : props\.name/u);
+  assert.match(toggle, /sfFormValue\(\) \{\s*if \(this\.isInherited\) return null;/u);
   assert.match(toggle, /else if \(this\.hasInheritedValue\) this\.setAttribute\('checked', 'false'\);/u);
   // The text fields and the dropdown show it as their placeholder, never as
   // their value; the dropdown shows its options' labels.

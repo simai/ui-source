@@ -35,8 +35,8 @@ export function renderSwitchTemplate(context) {
         <input
           type="checkbox"
           role="switch"
-          name=${name || ''}
-          .value=${value || ''}
+          name=${name || nothing}
+          .value=${value || 'on'}
           .checked=${checked}
           ?disabled=${disabled}
           aria-label=${!labelContent && ariaLabel ? ariaLabel : nothing}

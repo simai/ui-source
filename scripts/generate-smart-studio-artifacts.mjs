@@ -183,7 +183,29 @@ function topLevelEntries(block) {
   return entries;
 }
 
-function inputProperties(source) {
+// A component whose plumbing comes from its component.json (standard 1.3.8,
+// core/js/element-manifest.js) spreads the generated props into its own:
+// `...super.props`. The settings and writable values are read from the
+// component.json instead.
+function componentJsonProperties(componentJson) {
+  const result = {};
+  if (!componentJson) return result;
+  const take = (name, spec = {}) => {
+    const type = spec.type === 'boolean' ? 'boolean' : spec.type === 'number' ? 'number' : spec.type === 'list' ? 'array' : 'string';
+    if (['object', 'state'].includes(spec.type)) return;
+    const property = {type};
+    if (spec.default !== undefined) property.default = spec.default;
+    if (Array.isArray(spec.values)) property.enum = [...spec.values];
+    result[name] = property;
+  };
+  for (const [name, spec] of Object.entries(componentJson.settings ?? {})) take(name, spec);
+  for (const [name, spec] of Object.entries(componentJson.values ?? {})) {
+    if (!name.startsWith('effective-') && (spec?.default !== undefined || spec?.['default-from'])) take(name, spec);
+  }
+  return result;
+}
+
+function inputProperties(source, {spreadsManifest = false} = {}) {
   const body = balancedBlock(source, 'static get props()');
   const returnIndex = body.indexOf('return');
   const objectStart = returnIndex < 0 ? -1 : body.indexOf('{', returnIndex);
@@ -199,6 +221,7 @@ function inputProperties(source) {
   const result = {};
   const unparsed = [];
   for (const entry of topLevelEntries(block)) {
+    if (spreadsManifest && entry.trim() === '...super.props') continue;
     const match = entry.trim().match(/^([A-Za-z][A-Za-z0-9_]*):\s*([\s\S]+)$/);
     if (!match) {
       if (entry.trim()) unparsed.push(entry.trim().slice(0, 60));
@@ -276,8 +299,8 @@ function metadataInputProperties(metadata) {
 // prop (sf-sortable's attributes, sf-context-menu's search property). meta.mjs
 // is written for the purpose and wins over both. Inputs only the manifest
 // names are kept, in the manifest's order.
-function mergedInputProperties(source, existing = {}, metadata = null) {
-  const inferred = inputProperties(source);
+function mergedInputProperties(source, existing = {}, metadata = null, componentJson = null) {
+  const inferred = {...componentJsonProperties(componentJson), ...inputProperties(source, {spreadsManifest: Boolean(componentJson)})};
   const described = metadataInputProperties(metadata);
   const names = [...new Set([...Object.keys(existing), ...Object.keys(inferred), ...Object.keys(described)])];
   const result = {};
@@ -333,7 +356,9 @@ for (const {name} of directories) {
     if (!refreshMetadata && !verify) continue;
     const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
     if (manifest.schema_version !== 2) continue;
-    manifest.inputs.properties = mergedInputProperties(source, manifest.inputs?.properties, metadata);
+    const componentJsonFile = path.join(componentRoot, 'component.json');
+    const componentJson = await fileExists(componentJsonFile) ? JSON.parse(await readFile(componentJsonFile, 'utf8')) : null;
+    manifest.inputs.properties = mergedInputProperties(source, manifest.inputs?.properties, metadata, componentJson);
     manifest.templates = templateNames(source);
     openTemplateInput(manifest);
     const content = `${JSON.stringify(manifest, null, 2)}\n`;

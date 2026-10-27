@@ -58,8 +58,8 @@ test('the switch track is as tall as its line and twice as long', () => {
 
 test('the thumb moves by transform, which a browser can animate', () => {
   const source = sources('switch');
-  assert.match(source, /\.sf-switch\.active \.sf-switch-inner \{[^}]*--sf-switch-inner--travel/u,
-    'the active state sets the travel');
+  assert.match(source, /\.sf-switch:has\(input:checked\) \.sf-switch-inner \{[^}]*--sf-switch-inner--travel/u,
+    'the checked state, read from the markup, sets the travel (#46)');
   assert.match(source, /transform: translateX\(/u, 'and the thumb is moved with it');
 
   const script = read('src/component/switch/js/_switch.js');

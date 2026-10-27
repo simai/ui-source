@@ -1,27 +1,31 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { bindSwitch, setSwitchState, unbindSwitch } from '../../component/switch/js/_switch';
 import { renderSwitchTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
-import { pageText } from '../../core/js/page-language';
 import { InheritedValueField } from '../helpers/inherited-value';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-const SWITCH_TEXT = {
-  en: { on: 'on', off: 'off' },
-  ru: { on: 'включено', off: 'выключено' },
-};
+// The first component whose element plumbing comes from its component.json
+// (standard simai.smart-component 1.3.8 §3, §4): the settings size, label,
+// description, help, disabled, name and value are attributes and properties
+// made by core/js/element-manifest.js, its words are lang/<locale>.json, its
+// dated aliases are aliases.json, and a form gets its value from the host
+// through ElementInternals (§17.1). What stays here is behaviour.
+const SwitchElement = elementFromManifest(manifest, {
+  base: InheritedValueField(SfBaseElement),
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-
-class SfSwitch extends InheritedValueField(SfBaseElement) {
+class SfSwitch extends SwitchElement {
   static get props() {
     return {
-      size: { default: '1' },
-      label: { default: '' },
-      description: { default: '' },
-      help: { default: '' },
-      checked: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
-      name: { default: '' },
-      value: { default: '' },
+      ...super.props,
       ariaLabel: { attribute: 'aria-label', default: '' },
       // Whether the switch is on while it holds no value of its own
       // (simai/ui-source#28): `true`/`on` or `false`/`off`.
@@ -37,28 +41,12 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
     this._boundRoot = null;
   }
 
-  get size() {
-    return this.getAttribute('size') || '1';
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
   // A switch inside a field that is already labelled -- a record panel draws the
   // label beside the control -- still needs a name. Like sf-checkbox and
   // sf-button, it comes from the host's aria-label or the ariaLabel prop and
   // lands on the native input, so the label is not printed a second time.
   get ariaLabel() {
     return this.getProp('ariaLabel') || '';
-  }
-
-  get description() {
-    return this.getAttribute('description') || '';
-  }
-
-  get help() {
-    return this.getAttribute('help') || '';
   }
 
   get checked() {
@@ -91,7 +79,20 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
   }
 
   inheritedDisplayValue() {
-    return pageText(SWITCH_TEXT, this.inheritedOn ? 'on' : 'off', this);
+    return this.sfWord(this.inheritedOn ? 'on' : 'off');
+  }
+
+  // What the person sees, the inherited state included (§4.3).
+  get effectiveChecked() {
+    return this.isInherited ? this.inheritedOn : this.checked;
+  }
+
+  // While the inherited state applies the form gets nothing (§20.2); a
+  // checked switch without `value` submits "on", as a native checkbox does
+  // (simai/ui-source#38).
+  sfFormValue() {
+    if (this.isInherited) return null;
+    return super.sfFormValue();
   }
 
   inheritedFocusTarget() {
@@ -104,36 +105,8 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
     this.removeAttribute('checked');
     const input = this.getInputElement();
     if (input) input.checked = this.inheritedOn;
+    this.sfSyncForm();
     this.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  set disabled(nextValue) {
-    if (nextValue) {
-      this.setAttribute('disabled', '');
-    } else {
-      this.removeAttribute('disabled');
-    }
-  }
-
-  get name() {
-    return this.getAttribute('name') || '';
-  }
-
-  get value() {
-    return this.getAttribute('value') || '';
-  }
-
-  set value(nextValue) {
-    if (nextValue === null || nextValue === undefined) {
-      this.removeAttribute('value');
-      return;
-    }
-
-    this.setAttribute('value', String(nextValue));
   }
 
   templateContext() {
@@ -143,9 +116,11 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
     return this.createTemplateContext({
       ...props,
       // While the inherited state applies the knob shows it, and the form gets
-      // nothing: the checkbox is not named, so it submits no value.
+      // nothing. The host is the form control where the browser has
+      // ElementInternals, so the inner checkbox carries no name (§17.1 item
+      // 6); elsewhere the checkbox is named, and not while inherited.
       checked: inherited ? this.inheritedOn : props.checked,
-      name: inherited ? '' : props.name,
+      name: this.sfInternals || inherited ? '' : props.name,
       component: this,
     });
   }
@@ -177,6 +152,7 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
       }
     }
     this.syncInheritedState();
+    this.sfSyncForm();
   }
 
   onDisconnected() {
@@ -200,7 +176,8 @@ class SfSwitch extends InheritedValueField(SfBaseElement) {
     this._writeChecked(input.checked);
     // The first flip of an inherited switch gives it a value of its own, and the
     // form its name back.
-    if (this.hasInheritedValue && this.name && input.name !== this.name) input.name = this.name;
+    if (!this.sfInternals && this.hasInheritedValue && this.name && input.name !== this.name) input.name = this.name;
+    this.sfSyncForm();
   };
 
   getInputElement() {
