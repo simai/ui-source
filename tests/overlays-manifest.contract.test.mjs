@@ -5,7 +5,7 @@ import test from 'node:test';
 // The overlay family from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §8, §16.20, §19): sf-modal, sf-drawer, sf-popover, sf-dropdown,
 // sf-context-menu, sf-toast, sf-tooltip. The browser half, on the built bytes,
-// is tests/browser/overlays-manifest.browser.mjs (each folder's probe.json).
+// is tests/browser/manifest-probes.browser.mjs (each folder's probe.json).
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
