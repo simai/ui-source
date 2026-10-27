@@ -1,0 +1,102 @@
+import assert from 'node:assert/strict';
+import {existsSync, readFileSync, readdirSync} from 'node:fs';
+import test from 'node:test';
+
+// Group B of the form fields, built from their component.json (standard
+// simai.smart-component 1.3.8 §3, §4, §6, §11, §12, §16.20, §17.1): what each
+// folder holds and how its index.js uses it. The browser half, on the built
+// bytes, is each folder's probe.json, run by tests/browser/manifest-probes.browser.mjs.
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const json = (path) => JSON.parse(read(path));
+const {readManifest} = await import('../src/core/js/element-manifest.js');
+const {readAliasTable} = await import('../src/core/js/alias-table.js');
+
+const COMPONENTS = {
+  'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
+};
+
+const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
+  .filter((name) => /\.s?css$/u.test(name))
+  .map((name) => read(`${dir}/${name}`))
+  .join('\n');
+
+for (const [folder, spec] of Object.entries(COMPONENTS)) {
+  const base = `src/smart/${folder}`;
+
+  test(`${folder}: the element is made from its component.json, language files and aliases`, () => {
+    const source = read(`${base}/index.js`);
+    for (const file of ['./component.json', './aliases.json', './lang/en.json', './lang/ru.json']) {
+      assert.ok(source.includes(`from '${file}'`), `${folder} imports ${file}`);
+    }
+    assert.match(source, /elementFromManifest\(manifest, \{/u);
+    assert.match(source, new RegExp(`class ${spec.class} extends `, 'u'));
+  });
+
+  test(`${folder}: the manifest has no open to-do, its decisions are written, and it names its files`, () => {
+    const manifest = json(`${base}/component.json`);
+    assert.equal(manifest.tag, `sf-${folder}`);
+    assert.equal(manifest['x-todo'], undefined, 'every x-todo is decided');
+    assert.ok(Array.isArray(manifest['x-decisions']) && manifest['x-decisions'].length > 0, 'decisions are recorded');
+    for (const file of [manifest.examples, 'probe.json', manifest.templates.default.file]) {
+      assert.ok(existsSync(new URL(`../${base}/${file}`, import.meta.url)), `${folder}/${file} exists`);
+    }
+    const examples = json(`${base}/${manifest.examples}`);
+    assert.ok(Array.isArray(examples) && examples.length >= 3, 'named examples');
+    for (const example of examples) assert.ok(example.name && example.settings && example.expect, JSON.stringify(example));
+    const probe = json(`${base}/probe.json`);
+    assert.equal(probe.component, manifest.tag);
+    assert.ok(probe.checks.length >= 3);
+    const ids = probe.checks.map((check) => check.id);
+    assert.equal(new Set(ids).size, ids.length, 'check ids are unique');
+    // Every declared key is driven by a check (gate 16).
+    const keys = new Set(Object.values(manifest.keyboard || {}).flatMap((map) => Object.keys(map)).filter((key) => key !== 'Tab'));
+    const driven = JSON.stringify(probe.checks);
+    for (const key of keys) assert.ok(driven.includes(`keyboard:${key}`) || driven.includes(`'${key}'`) || driven.includes(`\\"${key}\\"`), `${folder}: key ${key} is driven by a check`);
+  });
+
+  test(`${folder}: five to ten public variables, each read by the sheet with a fallback (§6)`, () => {
+    const manifest = json(`${base}/component.json`);
+    const names = Object.keys(manifest['css-variables']);
+    assert.ok(names.length >= 5 && names.length <= 10, `${folder}: ${names.length}`);
+    const source = sheets(spec.sheets);
+    for (const name of names) assert.ok(source.includes(`var(${name},`), `${name} is read with a fallback`);
+    const contract = json('src/core/contracts/public-variables.v1.json').components.find((entry) => entry.component === folder);
+    assert.ok(contract, `${folder} is in public-variables.v1.json`);
+    assert.deepEqual(contract.variables.map((one) => one.name).sort(), [...names].sort());
+  });
+
+  test(`${folder}: the language files say every runtime word in ru and en`, () => {
+    const en = json(`${base}/lang/en.json`);
+    const ru = json(`${base}/lang/ru.json`);
+    assert.deepEqual(Object.keys(en.runtime || {}).sort(), Object.keys(ru.runtime || {}).sort());
+    const manifest = readManifest(json(`${base}/component.json`));
+    for (const member of manifest.members) {
+      if (member.word) assert.ok(en.runtime[member.word] !== undefined && ru.runtime[member.word] !== undefined, `${member.name} -> runtime.${member.word}`);
+    }
+  });
+
+  test(`${folder}: every alias row is dated; the shim takes the rows it can serve`, () => {
+    const table = json(`${base}/aliases.json`);
+    for (const row of table.aliases) {
+      assert.equal(row.since, '2026-10-27', `${row.from}`);
+      assert.equal(row.remove_after, '2026-12-01', `${row.from}`);
+    }
+    const {refused} = readAliasTable(table, {tag: `sf-${folder}`});
+    for (const one of refused) {
+      const row = table.aliases[one.index];
+      assert.ok(row.to === null || row.shim === 'none', `${folder}: ${row.from} is refused (${one.reason}) without being a host attribute or a documentary row`);
+    }
+  });
+}
+
+test('sf-country-code: the host is the form control; the inner tel input carries no name and joins no form (§17.1)', () => {
+  const source = read('src/smart/country-code/index.js');
+  assert.match(source, /class SfCountryCode extends FormField\(CountryCodeElement\)/u);
+  assert.match(source, /controlName: this\.sfInternals \? '' : this\.name/u);
+  assert.match(source, /controlForm: this\.sfInternals \? '' : this\.getAttribute\('form'\)/u);
+  const manifest = json('src/smart/country-code/component.json');
+  assert.equal(manifest.settings.form, undefined, 'form is a host attribute, read by the browser');
+  assert.deepEqual(manifest.form.validity, ['value-missing', 'custom-error']);
+  assert.equal(json('src/smart/country-code/lang/ru.json').runtime['value-missing'], 'Введите номер телефона.');
+});

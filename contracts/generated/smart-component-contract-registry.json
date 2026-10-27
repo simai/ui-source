@@ -603,7 +603,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/country-code/smart.manifest.json",
-      "manifest_sha256": "83079888e510a0258ad2b72774f48a18d7b3996fc0efc2b29abef407d53664a6",
+      "manifest_sha256": "7fa3e8c0b4d5368e8731809e22b3da1a27006cfebb80f6b07631999d28145d16",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

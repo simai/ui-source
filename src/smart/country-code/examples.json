@@ -1,0 +1,7 @@
+[
+  {"name": "reference", "title": "Телефон с выбором страны", "settings": {"label": "Телефон", "value": "+7 999 123-45-67"}, "expect": {"values": {"value": "+7 999 123-45-67", "open": false}}},
+  {"name": "required", "title": "Обязательный номер", "settings": {"label": "Телефон", "name": "phone", "required": true}, "expect": {"values": {"value": ""}, "validity": {"valueMissing": true}}},
+  {"name": "single-country", "title": "Одна страна", "settings": {"label": "Телефон", "multi-country": false, "iso2": "ru"}, "expect": {"values": {"open": false}}},
+  {"name": "disabled", "title": "Недоступен", "settings": {"label": "Телефон", "name": "phone", "value": "+7 999 123-45-67", "disabled": true}, "expect": {"values": {"value": "+7 999 123-45-67"}}},
+  {"name": "aria-label", "title": "Подпись выводит страница", "settings": {"aria-label": "Телефон для связи"}, "expect": {"name": "Телефон для связи"}}
+]

@@ -1,0 +1,283 @@
+{
+  "$comment": "The source of sf-country-code's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/country-code (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/country-code/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
+  "id": "smart.country-code",
+  "tag": "sf-country-code",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "hint": {
+      "type": "string",
+      "default": ""
+    },
+    "placeholder": {
+      "type": "string",
+      "default-from": "runtime.placeholder"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "locale": {
+      "type": "string",
+      "default": ""
+    },
+    "use-mask": {
+      "type": "boolean",
+      "default": false
+    },
+    "use-country-masks": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-code": {
+      "type": "boolean",
+      "default": true
+    },
+    "mask-style": {
+      "type": "string",
+      "default": "native"
+    },
+    "multi-country": {
+      "type": "boolean",
+      "default": true
+    },
+    "iso2": {
+      "type": "string",
+      "default": ""
+    },
+    "dial-code": {
+      "type": "string",
+      "default": ""
+    },
+    "mask-pattern": {
+      "type": "string",
+      "default": ""
+    },
+    "flag-base": {
+      "type": "string",
+      "default": ""
+    },
+    "lazy-flags": {
+      "type": "boolean",
+      "default": true
+    },
+    "show-mask-placeholder": {
+      "type": "boolean",
+      "default": false
+    },
+    "mask-placeholder-char": {
+      "type": "string",
+      "default": "_"
+    },
+    "max-items": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": ""
+    },
+    "open": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": {
+    "change": {
+      "carries": "native"
+    },
+    "input": {
+      "carries": "native"
+    }
+  },
+  "actions": {},
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "ArrowDown": "open",
+      "ArrowUp": "open",
+      "Escape": "close"
+    },
+    "panel": {
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js"
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "textbox",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Escape": "close"
+    }
+  },
+  "css-variables": {
+    "--sf-country-code-background-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-country-code-border-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-country-code-radius": {
+      "type": "length"
+    },
+    "--sf-country-code-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-country-code-list-background-color": {
+      "type": "color",
+      "state": "open"
+    }
+  },
+  "x-summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
+  "x-source": {
+    "package": "framework",
+    "folder": "country-code",
+    "manifest": "simai/ui-source@5100227 src/smart/country-code/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/country-code.component.json"
+  },
+  "x-words": [
+    "label",
+    "hint",
+    "placeholder"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "lang runtime also holds the words of COUNTRY_CODE_TEXT (ui-source/src/component/country-code/js/_country_code.js): a shared script this component draws with (§11: no word lives only inside a bundle)",
+    "settings.placeholder: its default words move to lang/en.json runtime.placeholder (§11, §16 item 44)",
+    "settings.form: a host attribute the browser reads for a form-associated element (§17.1); the host joins the form it names, the inner tel input no longer does"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-country-code when the interface needs the country code behavior.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-country-code></sf-country-code>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "lang-ru: runtime.placeholder in Russian is the same mask, +7(___)___-__-__; value-missing says «Введите номер телефона.» as the class script did",
+    "a11y-role: textbox -- the native tel input carries the role and the name; the country toggle is a button with a listbox popup inside it (keyboard.panel)",
+    "key-effects: host Enter/Space/ArrowDown/ArrowUp open the list, Escape closes it; in the list (panel) arrows, Home and End move focus, Enter and Space select, Escape closes",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates (one source of markup, not two)",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json",
+    "css-variables: five public variables read by the class sheet src/component/country-code/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
+    "version: 1.1.0 -- the setting form leaves for the host attribute behind a dated alias row; a minor while the alias holds (§4.10)",
+    "form: the host is the form control through ElementInternals (§17.1); it submits the tel text as the person sees it, required asks for digits after the dial code",
+    "host-states: none -- the open list and the disabled look are classes the class script writes on its own root (shared with the class component); moving them to host states is left for the class script"
+  ]
+}

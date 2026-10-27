@@ -27,7 +27,9 @@ test('page language: no component falls back to Russian', async () => {
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
     'src/smart/datepicker/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
     'src/smart/tags/index.js': [/closeLabel: \{ default: '' \}/, /pageText\(TAG_TEXT, 'remove', this\)/],
-    'src/smart/country-code/index.js': [/locale: \{ default: '' \}/, /pageLanguage\(this\)/],
+    // The setting comes from the component's manifest (standard 1.3.8 §4).
+    'src/smart/country-code/index.js': [/pageLanguage\(this\)/],
+    'src/smart/country-code/component.json': [/"locale": \{\s*"type": "string",\s*"default": ""\s*\}/],
     'src/component/country-code/js/_country_code.js': [/pageLanguage\(root\)/, /locale: locale === 'ru' \? 'ru' : 'en'/],
     // These two followed the rule and could still only ever say two languages:
     // a ternary on «ru» is not something a product can add to. They ask the

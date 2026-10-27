@@ -82,7 +82,11 @@ test('control boundary: input controls rest on the role', async () => {
   };
   for (const [path, variable] of Object.entries(resting)) {
     const source = await read(path);
-    assert.ok(source.includes(`${variable}: var(--sf-outline);`), `${path}: ${variable} rests on --sf-outline`);
+    // A public variable may stand before the role (standard 1.3.8 §6): the
+    // rest state reads it, with the role as the fallback.
+    const rests = source.includes(`${variable}: var(--sf-outline);`)
+      || new RegExp(`${variable}: var\\(--sf-[a-z]+(?:-[a-z]+)*-border-color, var\\(--sf-outline\\)\\);`, 'u').test(source);
+    assert.ok(rests, `${path}: ${variable} rests on --sf-outline`);
   }
   // Nothing may ask for the role that was removed.
   for (const path of Object.keys(resting)) {

@@ -20,6 +20,8 @@ const FOLDERS = {
   quantity: 'quantity',
   // sf-toggle from its component.json (standard 1.3.8 §6, 2026-10-27).
   toggle: 'toggle',
+  // Group B of the form fields, with their move to standard 1.3.8 (2026-10-27).
+  'country-code': 'country-code',
 };
 
 const scss = async (folder) => {

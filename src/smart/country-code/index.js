@@ -9,40 +9,35 @@ import {
   unbindCountryCode,
 } from '../../component/country-code/js/_country_code';
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
+import { FormField } from '../helpers/form-field';
 import { renderCountryCodeTemplate } from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// sf-country-code from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §11, §16.20, §17.1): the settings are attributes and properties
+// made by core/js/element-manifest.js, the words are lang/<locale>.json and the
+// host is the form control through ElementInternals. What stays here is
+// behaviour: the countries, the mask and the list, drawn by the class script.
+const CountryCodeElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
 const COUNTRY_CODE_SELECTOR = '.sf-country-code';
 const COUNTRY_ITEMS = Array.isArray(countriesData?.items) ? countriesData.items : [];
 
-class SfCountryCode extends SfBaseElement {
+class SfCountryCode extends FormField(CountryCodeElement) {
   static get props() {
     return {
-      size: { default: '1' },
-      label: { default: '' },
+      ...super.props,
       ariaLabel: { attribute: 'aria-label', default: '' },
-      required: { type: Boolean, default: false },
-      name: { default: '' },
-      form: { default: '' },
-      hint: { default: '' },
-      value: { default: '' },
-      placeholder: { default: '+7(___)___-__-__' },
-      disabled: { type: Boolean, default: false },
-      open: { type: Boolean, default: false },
-      locale: { default: '' },
-      useMask: { type: Boolean, default: false },
-      useCountryMasks: { type: Boolean, default: true },
-      showCode: { type: Boolean, default: true },
-      maskStyle: { default: 'native' },
-      multiCountry: { type: Boolean, default: true },
-      iso2: { default: '' },
-      dialCode: { default: '' },
-      maskPattern: { default: '' },
-      flagBase: { default: '' },
-      lazyFlags: { type: Boolean, default: true },
-      showMaskPlaceholder: { type: Boolean, default: false },
-      maskPlaceholderChar: { default: '_' },
-      maxItems: { type: Number, default: 0 },
     };
   }
 
@@ -52,14 +47,14 @@ class SfCountryCode extends SfBaseElement {
     this._countries = null;
     this._boundRoot = null;
     this._renderAttributes = new Set();
+    // The tel text is the value the form gets: every keystroke and every
+    // country chosen tells the form (§17.1).
+    this.addEventListener('input', () => this.fieldSyncForm());
+    this.addEventListener('change', () => this.fieldSyncForm());
   }
 
   get size() {
     return fieldSize(this.getAttribute('size') || '1', 'sf-country-code');
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
   }
 
   // A telephone inside a field that is already labelled -- a record panel draws
@@ -69,24 +64,51 @@ class SfCountryCode extends SfBaseElement {
     return this.getProp('ariaLabel') || '';
   }
 
-  get required() {
-    return this.getBooleanAttr('required', false);
-  }
-
-  get hint() {
-    return this.getAttribute('hint') || '';
-  }
-
+  // The current value is what the person typed (§4.3); the attribute is the
+  // default, which a form reset returns to.
   get value() {
-    return this.getAttribute('value') || '';
+    const input = this._telInput();
+    return input ? String(input.value ?? '') : this.getAttribute('value') || '';
   }
 
-  get placeholder() {
-    return this.getAttribute('placeholder') || '+7(___)___-__-__';
+  set value(next) {
+    const text = next === null || next === undefined ? '' : String(next);
+    if (text) this.setAttribute('value', text);
+    else this.removeAttribute('value');
+    const input = this._telInput();
+    if (input && input.value !== text) input.value = text;
+    this.fieldSyncForm();
   }
 
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
+  _telInput() {
+    return this.querySelector(':scope .sf-country-code-field input') || null;
+  }
+
+  // What the form gets (§17.1): the tel text as the person sees it, nothing
+  // while disabled.
+  sfFormValue() {
+    if (this.disabled) return null;
+    return this.value;
+  }
+
+  // §17.2: a required phone has digits after the dial code; the dial code
+  // alone is no number.
+  fieldValidity() {
+    const input = this._telInput();
+    const text = this.value.trim();
+    const dial = String(this.querySelector(':scope .sf-country-code')?.dataset?.dialCode || '').trim();
+    const local = this.showCode && dial && text.startsWith(dial) ? text.slice(dial.length) : text;
+    return {
+      valueMissing: this.required && !this.disabled && !/\d/u.test(local),
+      message: this.sfWord('value-missing'),
+      anchor: input,
+    };
+  }
+
+  // form.reset(): the class script puts the default text and country back
+  // after the browser does; the form is told once it has.
+  fieldReset() {
+    setTimeout(() => this.fieldSyncForm(), 0);
   }
 
   get open() {
@@ -182,6 +204,11 @@ class SfCountryCode extends SfBaseElement {
       iso2: this.iso2,
       flagBase: this.flagBase,
       maxItems: this.maxItems,
+      // The host is the form control where the browser has ElementInternals,
+      // so the inner tel input carries no name (§17.1 item 6); elsewhere it is
+      // named and joins the form the host names, as before.
+      controlName: this.sfInternals ? '' : this.name,
+      controlForm: this.sfInternals ? '' : this.getAttribute('form') || '',
     });
   }
 
@@ -211,6 +238,7 @@ class SfCountryCode extends SfBaseElement {
         maskPattern: this.maskPattern,
       });
     }
+    this.fieldSyncForm();
   }
 
   template() {

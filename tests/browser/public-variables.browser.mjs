@@ -77,6 +77,13 @@ const DRAW = {
   // focus, so the current cell is the only one drawn in its own colour.
   verification: {css: ['verification', 'smart/smart/code-input/css/code-input.css'], js: 'code-input',
     html: '<sf-code-input label="Код" value="12" size="1"></sf-code-input><sf-code-input label="Код" value="12" appearance="filled" size="1"></sf-code-input><sf-code-input label="Код" value="12" invalid size="1"></sf-code-input>'},
+  // Group B of the form fields, with their move to standard 1.3.8
+  // (2026-10-27). Each state a variable colours is drawn: the country list
+  // open, a colour on a preset and one with nothing chosen, a value shown as
+  // text, a file held over the second area, a chosen day and a chosen range.
+  'country-code': {css: ['country-code'], js: 'country-code',
+    html: '<sf-country-code label="Телефон" value="+7 999 123-45-67" size="1"></sf-country-code>',
+    open: 'document.querySelector(".sf-country-code").classList.add("open")'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

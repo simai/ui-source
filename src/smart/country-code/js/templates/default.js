@@ -92,8 +92,8 @@ export function renderCountryCodeTemplate(context) {
         </span>
         <input
           type="tel"
-          name=${context.name || nothing}
-          form=${context.form || nothing}
+          name=${context.controlName || nothing}
+          form=${context.controlForm || nothing}
           ?required=${required}
           .defaultValue=${value}
           .value=${value}

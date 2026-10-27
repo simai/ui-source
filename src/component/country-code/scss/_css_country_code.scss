@@ -37,13 +37,13 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-country-code .sf-country-code-field {
-  --sf-country-code-field--background-color: var(--sf-surface-0);
+  --sf-country-code-field--background-color: var(--sf-country-code-background-color, var(--sf-surface-0));
   --sf-country-code-field--border: var(--sf-px) solid;
-  --sf-country-code-field--border-color: var(--sf-outline);
-  --sf-country-code-field--border-end-end-radius: var(--sf-ui-radius-default);
-  --sf-country-code-field--border-end-start-radius: var(--sf-ui-radius-default);
-  --sf-country-code-field--border-start-end-radius: var(--sf-ui-radius-default);
-  --sf-country-code-field--border-start-start-radius: var(--sf-ui-radius-default);
+  --sf-country-code-field--border-color: var(--sf-country-code-border-color, var(--sf-outline));
+  --sf-country-code-field--border-end-end-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
+  --sf-country-code-field--border-end-start-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
+  --sf-country-code-field--border-start-end-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
+  --sf-country-code-field--border-start-start-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
   background-color: var(--sf-country-code-field--background-color);
   border: var(--sf-country-code-field--border);
   border-color: var(--sf-country-code-field--border-color, transparent);
@@ -190,7 +190,7 @@
 }
 
 .sf-country-code:not(:has(input:disabled)) .sf-country-code-field {
-  --sf-country-code-field--border-color: var(--sf-outline);
+  --sf-country-code-field--border-color: var(--sf-country-code-border-color, var(--sf-outline));
 }
 
 /* The flag and its chevron sit on the field's line less its two borders, the
@@ -219,7 +219,7 @@
 }
 
 .sf-country-code input {
-  --sf-country-code-input--color: var(--sf-on-surface);
+  --sf-country-code-input--color: var(--sf-country-code-color, var(--sf-on-surface));
 }
 
 .sf-country-code.sf-country-code--size-1 .sf-country-code-hint {
@@ -412,7 +412,7 @@
 .sf-country-code.open .sf-country-code-list {
   /* Поднят: поверхность берёт ступень своей высоты, иначе в тёмной теме
      подъём не виден — там чёрная тень ничего не даёт. */
-  --sf-country-code-list--background-color: var(--sf-elevation-3--surface);
+  --sf-country-code-list--background-color: var(--sf-country-code-list-background-color, var(--sf-elevation-3--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   --sf-country-code-list--box-shadow: var(--sf-elevation-3--shadow);
   --sf-country-code-list--padding-bottom: var(--sf-space-1\/3);

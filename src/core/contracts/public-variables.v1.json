@@ -1625,6 +1625,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "country-code",
+      "selector": ".sf-country-code",
+      "variables": [
+        {
+          "name": "--sf-country-code-background-color",
+          "role": "background",
+          "summary": "The field's fill at rest.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-country-code-border-color",
+          "role": "border-color",
+          "summary": "The field's boundary at rest; hover, focus, error and disabled keep their own.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-country-code-radius",
+          "role": "radius",
+          "summary": "The field's corner radius.",
+          "default": "var(--sf-ui-radius-default)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-country-code-color",
+          "role": "color",
+          "summary": "The number's ink at rest; disabled keeps its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-country-code-list-background-color",
+          "role": "background",
+          "summary": "The fill of the open list of countries.",
+          "default": "var(--sf-elevation-3--surface)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

@@ -43,7 +43,9 @@ test('a control carries the boundary a person can actually see', () => {
     // States paint the same variable with their own colour — error, disabled,
     // the primary of a hover. What the rule is about is the resting boundary:
     // the solid role has to be there, and the role that draws an area must not.
-    const uses = [...source.matchAll(new RegExp(`${variable}:\\s*var\\(--sf-([a-z-]+)\\)`, 'gu'))]
+    // A public variable may stand first, with the role as its fallback
+    // (standard 1.3.8 §6): the role read is the fallback.
+    const uses = [...source.matchAll(new RegExp(`${variable}:\\s*var\\((?:--sf-[a-z-]+-border-color,\\s*var\\()?--sf-([a-z-]+)\\)`, 'gu'))]
       .map((match) => match[1]);
     if (!uses.length) { offenders.push(`${component}: ${variable} is not declared`); continue; }
     // The resting boundary is --sf-outline, which holds 3:1 by its own

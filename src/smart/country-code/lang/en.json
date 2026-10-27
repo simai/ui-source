@@ -1,0 +1,10 @@
+{
+  "title": "Country Code",
+  "runtime": {
+    "country-label": "Country code",
+    "phone-label": "Phone number",
+    "phone-required": "Enter a phone number.",
+    "placeholder": "+7(___)___-__-__",
+    "value-missing": "Enter a phone number."
+  }
+}

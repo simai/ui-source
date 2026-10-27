@@ -6,7 +6,8 @@ const custom = await readFile(new URL('../src/component/country-code/scss/_css_c
 
 test('Country Code auxiliary text uses readable semantic roles, not disabled-like muted ink', () => {
   for (const part of ['text','hint','placeholder']) assert.ok(css.includes(`--sf-country-code-${part}--color: var(--sf-on-surface-variant);`));
-  assert.ok(css.includes('--sf-country-code-field--border-color: var(--sf-outline);'));
+  // The rest state reads the public variable first (standard 1.3.8 §6).
+  assert.ok(css.includes('--sf-country-code-field--border-color: var(--sf-country-code-border-color, var(--sf-outline));'));
 });
 
 test('Country Code input and placeholder use the same size and line-height tokens in all sizes', () => {
