@@ -1,0 +1,63 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Каталог решений",
+      "settings": {
+        "heading": "Каталог решений",
+        "count": "448",
+        "star": false
+      },
+      "expect": {
+        "heading": "Каталог решений",
+        "star": false
+      }
+    },
+    {
+      "name": "favourite",
+      "title": "Страница в избранном",
+      "settings": {
+        "heading": "Заказы",
+        "count": "~1 200",
+        "star": true
+      },
+      "expect": {
+        "star": true
+      }
+    },
+    {
+      "name": "install",
+      "title": "Страница для всех сайтов",
+      "settings": {
+        "heading": "Пользователи",
+        "level": "install"
+      },
+      "expect": {
+        "level": "install"
+      }
+    },
+    {
+      "name": "path-and-action",
+      "title": "Путь и главное действие",
+      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button>",
+      "settings": {
+        "heading": "Каталог решений",
+        "count": "448",
+        "star": false
+      },
+      "expect": {
+        "heading": "Каталог решений"
+      }
+    },
+    {
+      "name": "no-star",
+      "title": "Без звезды",
+      "settings": {
+        "heading": "Настройки"
+      },
+      "expect": {
+        "heading": "Настройки"
+      }
+    }
+  ]
+}

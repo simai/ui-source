@@ -269,10 +269,8 @@
     "flex-direction/default",
     "flex-grow/default",
     "flex-wrap/default",
-    "gap/default",
     "margin/default",
     "min-width/default",
-    "position/default",
     "text-overflow/default"
   ],
   "cl-pagination": [

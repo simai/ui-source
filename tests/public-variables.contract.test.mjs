@@ -48,6 +48,8 @@ const FOLDERS = {
   gallery: 'smart/gallery/js/templates',
   resizer: 'smart/resizer',
   'profile-picker': 'smart/profile-picker',
+  // The editors and screens, with their move to standard 1.3.8 (2026-10-27).
+  'page-header': 'smart/page-header',
 };
 
 const scss = async (folder) => {

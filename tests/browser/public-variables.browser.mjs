@@ -141,6 +141,10 @@ const DRAW = {
     html: '<nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400"></sf-resizer></nav><nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400" data-sf-resizing></sf-resizer></nav>'},
   'profile-picker': {css: ['smart/smart/profile-picker/css/profile-picker.css'], js: 'profile-picker',
     html: '<sf-profile-picker label="Профиль"></sf-profile-picker>'},
+  // The editors and screens (2026-10-27): a favourite with an action, so the
+  // star's colour and the actions' gap have a part to reach.
+  'page-header': {css: ['badges', 'icon-buttons', 'icons', 'smart/smart/page-header/css/page-header.css'], js: 'page-header',
+    html: '<sf-page-header heading="Каталог" count="4" star><button slot="actions" type="button">Создать</button></sf-page-header>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

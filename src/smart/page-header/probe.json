@@ -1,0 +1,130 @@
+{
+  "component": "sf-page-header",
+  "probe": "sf-page-header against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-page-header id=\"h\" heading=\"Каталог решений\" count=\"448\" star=\"off\"></sf-page-header>",
+      "  <sf-page-header id=\"h-on\" heading=\"Заказы\" star></sf-page-header>",
+      "  <sf-page-header id=\"h-none\" heading=\"Настройки\" level=\"install\"></sf-page-header>",
+      "  <div lang=\"en\"><sf-page-header id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-page-header></div>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-heading-count",
+      "title": "the heading is the page's h1 and the count a badge",
+      "covers": "settings.heading, settings.count, accessibility.name heading",
+      "steps": [
+        {
+          "check": "document.querySelector('#h h1').textContent.trim() === 'Каталог решений' && document.querySelector('#h sf-badge').getAttribute('text') === '448'"
+        }
+      ]
+    },
+    {
+      "id": "p2-star-states",
+      "title": "star off and on draw a star in that state; absent draws none",
+      "covers": "settings.star (optional boolean), lang runtime.star, runtime.unstar",
+      "steps": [
+        {
+          "check": "(() => { const off = document.querySelector('#h .sf-page-header-star button'); const on = document.querySelector('#h-on .sf-page-header-star button'); return off && off.getAttribute('aria-pressed') === 'false' && off.getAttribute('aria-label') === 'В избранное' && on.getAttribute('aria-pressed') === 'true' && on.getAttribute('aria-label') === 'Убрать из избранного' && !document.querySelector('#h-none .sf-page-header-star') && document.querySelector('#h').star === false && document.querySelector('#h-on').star === true && document.querySelector('#h-none').star === undefined; })()"
+        }
+      ]
+    },
+    {
+      "id": "p3-toggle",
+      "title": "pressing the star sends sf-page-header-toggle {on}, then the dated sf-page-header-star, and the star turns on",
+      "covers": "events.toggle, aliases.json sf-page-header-star, keyboard Enter/Space (the native button)",
+      "steps": [
+        {
+          "user": "click:#h .sf-page-header-star button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-page-header-toggle",
+                "count": 1,
+                "detail": {
+                  "on": true
+                }
+              },
+              {
+                "name": "sf-page-header-star",
+                "count": 1
+              }
+            ],
+            "values": {
+              "#h.star": true
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('#h .sf-page-header-star button').getAttribute('aria-pressed') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p4-cancelled",
+      "title": "a host that cancels the request keeps the star as it was, and writes it itself",
+      "covers": "events.toggle cancelable",
+      "steps": [
+        {
+          "script": "(document.addEventListener('sf-page-header-toggle', (event) => event.preventDefault(), {once: true}), true)"
+        },
+        {
+          "user": "click:#h-on .sf-page-header-star button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-page-header-toggle",
+                "count": 1,
+                "detail": {
+                  "on": false
+                }
+              }
+            ],
+            "values": {
+              "#h-on.star": true
+            }
+          }
+        },
+        {
+          "script": "(document.querySelector('#h-on').star = false, true)",
+          "expect": {
+            "values": {
+              "#h-on.star": false
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('#h-on').getAttribute('star') === 'false' && document.querySelector('#h-on .sf-page-header-star button').getAttribute('aria-pressed') === 'false'"
+        }
+      ]
+    },
+    {
+      "id": "p5-install-and-language",
+      "title": "an install page says so in the element's language",
+      "covers": "settings.level, lang runtime.all-sites (§11.1)",
+      "steps": [
+        {
+          "check": "[...document.querySelectorAll('#h-none sf-badge')].some((b) => b.getAttribute('text') === 'для всех сайтов') && [...document.querySelectorAll('#h-en sf-badge')].some((b) => b.getAttribute('text') === 'for all sites') && document.querySelector('#h-en .sf-page-header-star button').getAttribute('aria-label') === 'Add to favourites'"
+        }
+      ]
+    },
+    {
+      "id": "p6-public-variables",
+      "title": "the public variables reach what the header draws",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.querySelector('#h').style.setProperty('--sf-page-header-line-gap', '17px'), document.querySelector('#h').style.setProperty('--sf-page-header-heading-color', 'rgb(1, 2, 3)'), true)"
+        },
+        {
+          "check": "getComputedStyle(document.querySelector('#h .sf-page-header-line')).columnGap === '17px' && getComputedStyle(document.querySelector('#h h1')).color === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

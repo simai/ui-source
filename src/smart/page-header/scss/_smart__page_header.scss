@@ -1,0 +1,26 @@
+@layer sf.components {
+/* The head of an admin page. The public variables (standard 1.3.8 §6): the gap
+   between the path and the line, the line's gap, the actions' gap, the
+   heading's colour and the favourite star's colour. */
+.sf-page-header {
+  gap: var(--sf-page-header-gap, var(--sf-space-1\/2));
+}
+
+.sf-page-header-line {
+  gap: var(--sf-page-header-line-gap, var(--sf-space-1));
+}
+
+.sf-page-header-heading {
+  color: var(--sf-page-header-heading-color, inherit);
+}
+
+.sf-page-header-actions {
+  gap: var(--sf-page-header-actions-gap, var(--sf-space-1\/2));
+}
+
+/* The icon button's schemes set the glyph's ink on its button, so the
+   favourite's colour is given to the glyph itself. */
+.sf-page-header-star--on .sf-icon {
+  --sf-icon--color: var(--sf-page-header-star-color, var(--sf-warning));
+}
+}

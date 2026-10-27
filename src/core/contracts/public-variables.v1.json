@@ -2788,6 +2788,48 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "page-header",
+      "selector": "sf-page-header, .sf-page-header",
+      "variables": [
+        {
+          "name": "--sf-page-header-gap",
+          "role": "gap",
+          "summary": "The space between the path and the line under it.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-page-header-line-gap",
+          "role": "gap",
+          "summary": "The space between the heading, its marks, the star and the actions.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-page-header-actions-gap",
+          "role": "gap",
+          "summary": "The space between the actions.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-page-header-heading-color",
+          "role": "color",
+          "summary": "The heading's ink.",
+          "default": "inherit",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-page-header-star-color",
+          "role": "color",
+          "summary": "The star's ink while the page is a favourite.",
+          "default": "var(--sf-warning)",
+          "state": "on",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

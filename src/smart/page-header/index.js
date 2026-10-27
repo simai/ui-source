@@ -8,66 +8,59 @@
 // The host owns everything in it. The path, the start of the line on a phone
 // and the actions are the host's own markup in slots; the heading, the count
 // and whether the page is shared by every site are attributes. The star is the
-// one control the header draws itself, and pressing it is an intent the host
-// answers: `sf-page-header-star` is cancelable, and a host that wants to wait
-// for its own answer cancels it and sets `star` when it knows.
+// one control the header draws itself, and pressing it is a request the host
+// answers: sf-page-header-toggle {on} is cancelable, and a host that wants to
+// wait for its own answer cancels it and sets `star` when it knows.
+//
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// the settings are made by core/js/element-manifest.js, the words are the
+// language files', and the old sf-page-header-star follows the toggle as a
+// dated alias (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import {renderPageHeaderTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+import './scss/index.scss';
 
-export const PAGE_HEADER_TEXT = {
-  en: {
-    star: 'Add to favourites',
-    unstar: 'Remove from favourites',
-    allSites: 'for all sites',
-  },
-  ru: {
-    star: 'В избранное',
-    unstar: 'Убрать из избранного',
-    allSites: 'для всех сайтов',
-  },
-};
+const PageHeaderElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
-class SfPageHeader extends SfBaseElement {
-  static get props() {
-    return {
-      heading: {default: ''},
-      count: {default: ''},
-      // A page that belongs to the install rather than to one site says so
-      // beside its heading, the same mark the menu puts under the install root.
-      level: {default: 'site', values: ['site', 'install']},
-      // '' draws no star; 'off' and 'on' draw it in that state.
-      star: {default: '', values: ['', 'off', 'on']},
-      rootClass: {attribute: 'root-class', default: ''},
-    };
+class SfPageHeader extends PageHeaderElement {
+  // star is optional (§4.2): absent draws no star, so it reads undefined
+  // rather than the boolean's false.
+  get star() {
+    return this.hasAttribute('star') ? super.star : undefined;
   }
 
-  text(key) {
-    return pageText(PAGE_HEADER_TEXT, key, this, 'sf-page-header');
+  set star(value) {
+    if (value === undefined || value === null) this.removeAttribute('star');
+    else this.setAttribute('star', value ? 'true' : 'false');
   }
 
+  // The template's press: the request toggle {on}; not cancelled, the header
+  // writes the star itself.
   toggleStar() {
-    const on = this.getProp('star') !== 'on';
-    const event = new CustomEvent('sf-page-header-star', {
-      bubbles: true,
-      composed: true,
-      cancelable: true,
-      detail: {on},
-    });
-    if (this.dispatchEvent(event)) this.setAttribute('star', on ? 'on' : 'off');
+    const on = this.star !== true;
+    if (this.sfEmit('toggle', {on}, {cancelable: true})) this.star = on;
   }
 
   templateContext() {
-    const props = this.getPropsContext();
     return this.createTemplateContext({
-      ...props,
+      ...this.getPropsContext(),
       component: this,
-      heading: this.getProp('heading'),
-      count: this.getProp('count'),
-      level: this.getProp('level'),
-      star: this.getProp('star'),
+      heading: this.heading,
+      count: this.count,
+      level: this.level,
+      star: this.star,
       rootClass: this.getRootClass(),
-      text: (key) => this.text(key),
+      text: (key) => this.sfWord(key),
       hostSlot: (name) => this.getSlotContent(name),
       hasHostSlot: (name) => this.hasSlotContent(name),
     });
