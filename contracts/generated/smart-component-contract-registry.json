@@ -2130,7 +2130,7 @@
       "kind": "smart",
       "lifecycle": "released",
       "manifest_path": "src/smart/tooltip/smart.manifest.json",
-      "manifest_sha256": "f4b7a01b747eca6b7a475d7e7ccb68f5ce11083392c6d485dc068f5c950809dd",
+      "manifest_sha256": "aa128382dfd7d888cd7b709924e4e5de11289d6cdcda2e18aad6fa832d2ab23f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -1,6 +1,7 @@
 
 import registerComponent from '../../register-helper';
 import BundledPosition from '../../../core/js/position.js';
+import { partId } from '../../../core/js/instance-path.js';
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
@@ -43,7 +44,6 @@ function arrowPlacement(arrow, rtl) {
 const tooltipInstances = new WeakMap();
 const TRIGGER_SELECTOR = '[data-tooltip]';
 const SURFACE_SELECTOR = '.sf-tooltip, sf-tooltip';
-let tooltipId = 0;
 
 function descriptionTokens(trigger) {
   return (trigger.getAttribute('aria-describedby') || '')
@@ -90,9 +90,16 @@ class SfTooltipController {
     this.surface = this.resolveSurface();
     if (!this.surface) return;
 
+    // A path id (standard 1.3.8 §7.1.1, simai/ui-source#41), not a module
+    // counter: the trigger's path -- its id, else its place among the page's
+    // [data-tooltip] triggers, which no id written here moves -- and the local
+    // name tooltip.
     if (!this.surface.id) {
-      tooltipId += 1;
-      this.surface.id = `sf-tooltip-${tooltipId}`;
+      const doc = this.trigger.ownerDocument;
+      const path = this.trigger.id
+        ? `page/${this.trigger.id}`
+        : `data-tooltip[${[...doc.querySelectorAll(TRIGGER_SELECTOR)].indexOf(this.trigger) + 1}]`;
+      this.surface.id = partId(path, 'tooltip');
     }
 
     this.originalDescription = this.trigger.getAttribute('aria-describedby');

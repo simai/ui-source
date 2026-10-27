@@ -134,3 +134,21 @@ test('sf-dropdown: change carries data only; sf-dropdown:change keeps root throu
   assert.doesNotMatch(interaction, /\+\+sequence/);
   assert.match(interaction, /node\.id = partId\(instancePath\(owner, \{kind: 'sf-dropdown'\}\), local\)/);
 });
+
+test('sf-context-menu, sf-toast, sf-tooltip: their manifests and events', () => {
+  const menu = json('src/smart/context-menu/component.json');
+  assert.deepEqual(Object.keys(menu.events), ['select', 'open', 'opened', 'close', 'closed', 'search', 'tab']);
+  assert.ok(menu.settings.entries.of.submenu, 'entries name their fields (§4.2)');
+  const menuSource = read('src/smart/context-menu/index.js');
+  assert.doesNotMatch(menuSource, /get role\(\)/);
+  assert.match(menuSource, /if \(ask && !this\.sfEmit\("close", \{reason, unsaved: false\}, \{cancelable: true\}\)\) return false;/);
+  assert.match(read('src/core/js/composition/sortable-inserter.mjs'), /'sf-context-menu-closed'/);
+  const toast = json('src/smart/toast/component.json');
+  assert.deepEqual(Object.keys(toast.events), ['action', 'close', 'closed']);
+  const toastSource = read('src/smart/toast/index.js');
+  assert.match(toastSource, /this\.sfEmit\('action', \{ action: event\.detail\?\.action \?\? '' \}\);/);
+  assert.match(read('src/component/toast/js/_toast.js'), /cancelable: true,\s*detail: \{ toast: root, trigger \}/);
+  const tooltip = json('src/smart/tooltip/component.json');
+  assert.ok(!tooltip.layer, 'sf-tooltip draws in place');
+  assert.doesNotMatch(read('src/component/tooltip/js/_tooltip.js'), /tooltipId/);
+});

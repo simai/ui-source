@@ -1,0 +1,50 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Подсказка",
+      "settings": {
+        "text": "Сохранить черновик"
+      },
+      "expect": {
+        "name": "Сохранить черновик"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "dark",
+      "title": "Тёмная",
+      "settings": {
+        "text": "Копировать",
+        "appearance": "dark"
+      },
+      "expect": {
+        "name": "Копировать"
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "arrow",
+      "title": "Со стрелкой",
+      "settings": {
+        "text": "Ниже",
+        "arrow": "top-center"
+      },
+      "expect": {
+        "name": "Ниже"
+      }
+    },
+    {
+      "name": "supporting",
+      "title": "С пояснением",
+      "settings": {
+        "text": "Доступ",
+        "supporting-text": "Только чтение",
+        "size": "2"
+      },
+      "expect": {
+        "name": "Доступ"
+      }
+    }
+  ]
+}

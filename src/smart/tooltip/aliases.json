@@ -1,0 +1,17 @@
+{
+  "$comment": "Dated aliases of sf-tooltip for the shim (core/js/aliases.js, standard §16 item 20).",
+  "component": "sf-tooltip",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "type",
+      "to": "appearance",
+      "kind": "setting",
+      "component": "sf-tooltip",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    }
+  ]
+}
