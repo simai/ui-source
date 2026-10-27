@@ -40,7 +40,7 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.doesNotMatch(runtime, /^\s*console;\s*$/m);
   assert.match(css, /--sf-download-file--text-size: var\(--sf-text-size-1\)/);
   assert.match(css, /border: var\(--sf-px\)/);
-  assert.match(css, /border-radius: var\(--sf-radius--ui\)/);
+  assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
   assert.match(css, /\.sf-download-file:focus-visible/);
   assert.match(css, /overflow-wrap: anywhere/);
   assert.match(template, /href && !disabled \? 'a' : 'button'/);

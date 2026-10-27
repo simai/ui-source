@@ -129,7 +129,11 @@ function emitDownloadFileClick(root, href, fileName, download) {
   );
 }
 
-function bindDownloadFile(root) {
+// `onActivate(detail)` takes the place of the class event: sf-download-file
+// sends its own cancelable `sf-download-file-download` (standard 1.3.8 §8,
+// vocabulary 1.1.5 §5.1), and the old `sf-download-file:click` follows it as a
+// dated alias. Answering false cancels the download.
+function bindDownloadFile(root, {onActivate} = {}) {
   if (!root || root.dataset[DOWNLOAD_FILE_BOUND_FLAG] === '1') return;
 
   const handleClick = (event) => {
@@ -148,7 +152,14 @@ function bindDownloadFile(root) {
     const download =
       root.hasAttribute('download') || root.dataset.download === 'true';
 
-    emitDownloadFileClick(root, href, fileName, download);
+    if (typeof onActivate === 'function') {
+      if (onActivate({ href, fileName, download }) === false) {
+        event.preventDefault();
+        return;
+      }
+    } else {
+      emitDownloadFileClick(root, href, fileName, download);
+    }
 
     if (root.tagName.toLowerCase() === 'a') {
       return;

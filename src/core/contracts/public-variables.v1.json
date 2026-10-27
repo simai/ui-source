@@ -2123,6 +2123,70 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "download-file",
+      "selector": ".sf-download-file",
+      "variables": [
+        {
+          "name": "--sf-download-file-background-color",
+          "role": "background",
+          "summary": "The card's fill at rest; hover, press and disabled keep their own.",
+          "default": "transparent",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-border-color",
+          "role": "border-color",
+          "summary": "The card's border at rest; hover and disabled keep their own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-radius",
+          "role": "radius",
+          "summary": "The card's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-padding",
+          "role": "padding",
+          "summary": "Space around the card's content.",
+          "default": "var(--sf-space-1/3)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-gap",
+          "role": "gap",
+          "summary": "Space between the file's name and its size.",
+          "default": "var(--sf-space-1/3)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-icon-size",
+          "role": "size",
+          "summary": "The download icon's size.",
+          "default": "var(--sf-text-size-3)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-download-file-icon-color",
+          "role": "color",
+          "summary": "The download icon's colour; disabled keeps its own.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

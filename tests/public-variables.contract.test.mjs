@@ -33,6 +33,7 @@ const FOLDERS = {
   close: 'close',
   icon: 'icons',
   'reference-link': 'reference-link',
+  'download-file': 'download-file',
 };
 
 const scss = async (folder) => {

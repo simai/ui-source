@@ -1,0 +1,81 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Скачать отчёт",
+      "settings": {
+        "file-name": "Отчёт за август.pdf",
+        "file-size": "2,4 МБ",
+        "href": "#",
+        "download": true
+      },
+      "expect": {
+        "download": true
+      }
+    },
+    {
+      "name": "open",
+      "title": "Открыть в новой вкладке",
+      "settings": {
+        "file-name": "Прайс-лист.xlsx",
+        "file-size": "84 КБ",
+        "href": "#",
+        "target": "_blank"
+      },
+      "expect": {
+        "download": false
+      }
+    },
+    {
+      "name": "size",
+      "title": "Размер 2",
+      "settings": {
+        "file-name": "logo.svg",
+        "file-size": "12 КБ",
+        "href": "#",
+        "download": true,
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Свой значок",
+      "settings": {
+        "file-name": "Договор.docx",
+        "file-size": "1,1 МБ",
+        "href": "#",
+        "icon": "description"
+      },
+      "expect": {
+        "icon": "description"
+      }
+    },
+    {
+      "name": "action",
+      "title": "Без адреса: действие страницы",
+      "settings": {
+        "file-name": "Выгрузка.csv",
+        "file-size": "—"
+      },
+      "expect": {
+        "href": ""
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "file-name": "Архив.zip",
+        "file-size": "120 МБ",
+        "href": "#",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    }
+  ]
+}
