@@ -3,18 +3,20 @@
 // announced politely; when the browser refuses the clipboard (an embedded
 // frame, a policy), the source is selected instead and the person is told to
 // press Ctrl+C, so the copy is never simply lost.
+//
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// the settings are made by core/js/element-manifest.js; copy is the action
+// and answers an outcome; the facts are sf-copy-button-copied and
+// sf-copy-button-copy-failed, the old sf-copy and sf-copy-error their dated
+// aliases (aliases.json); the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
-import {pageText} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import {renderCopyButtonTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import './scss/index.scss';
-
-const SIZES = ['1/3', '1/2', '1', '2'];
-const APPEARANCES = ['link', 'ghost', 'outline', 'tonal'];
-
-const COPY_TEXT = {
-  en: {copy: 'Copy', copied: 'Copied', failed: 'Could not copy', selected: 'Selected — press {keys}'},
-  ru: {copy: 'Копировать', copied: 'Скопировано', failed: 'Не удалось скопировать', selected: 'Выделено — нажмите {keys}'},
-};
 
 function isMac() {
   return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '');
@@ -42,12 +44,17 @@ async function writeText(text, documentRef) {
   return 'legacy';
 }
 
-const writeAttribute = (element, name, next) => {
-  if (next === null || next === undefined) element.removeAttribute(name);
-  else element.setAttribute(name, String(next));
-};
+const CopyButtonElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+  actions: {
+    copy() { return this.runCopy(); },
+  },
+});
 
-class SfCopyButton extends SfBaseElement {
+class SfCopyButton extends CopyButtonElement {
   constructor() {
     super();
     this.state = {phase: 'idle', message: ''};
@@ -55,62 +62,18 @@ class SfCopyButton extends SfBaseElement {
     this._pending = false;
   }
 
-  static get props() {
-    return {
-      templateName: {attribute: 'template', default: 'default'},
-      value: {default: ''},
-      target: {default: ''},
-      text: {default: ''},
-      label: {default: ''},
-      size: {default: '1/2'},
-      appearance: {default: 'link'},
-      icon: {default: 'content_copy'},
-      successIcon: {attribute: 'success-icon', default: 'check'},
-      successText: {attribute: 'success-text', default: ''},
-      errorText: {attribute: 'error-text', default: ''},
-      duration: {default: '2000'},
-      rootClass: {default: ''},
-    };
-  }
-
-  get value() { return this.getAttribute('value') ?? ''; }
-  get target() { return this.getAttribute('target') || ''; }
-  get text() { return this.getAttribute('text') || ''; }
-  get label() { return this.getAttribute('label') || ''; }
-  get size() { const value = this.getAttribute('size'); return SIZES.includes(value) ? value : '1/2'; }
-  get appearance() { const value = this.getAttribute('appearance'); return APPEARANCES.includes(value) ? value : 'link'; }
-  // The resting glyph says what is copied -- a link, a key -- and the success
-  // glyph what happened.
-  get icon() { return this.getAttribute('icon') || 'content_copy'; }
-  get successIcon() { return this.getAttribute('success-icon') || 'check'; }
-  get successText() { return this.getAttribute('success-text') || ''; }
-  get errorText() { return this.getAttribute('error-text') || ''; }
   // An absent duration is two seconds: read as Number(null) it was zero, and
-  // the result was gone before anyone could hear it.
+  // the result was gone before anyone could hear it. A negative one is too.
   get duration() {
     const raw = this.getAttribute('duration');
     const value = Number(raw);
     return raw !== null && raw !== '' && Number.isFinite(value) && value >= 0 ? value : 2000;
   }
 
-  // Every attribute is a property that can be written as well as read: the
-  // getters above alone made `button.value = …` a silent no-op (docs trial 4).
-  // Writing goes through the attribute, so the getters stay the one reading.
-  set value(next) { writeAttribute(this, 'value', next); }
-  set target(next) { writeAttribute(this, 'target', next); }
-  set text(next) { writeAttribute(this, 'text', next); }
-  set label(next) { writeAttribute(this, 'label', next); }
-  set size(next) { writeAttribute(this, 'size', next); }
-  set appearance(next) { writeAttribute(this, 'appearance', next); }
-  set icon(next) { writeAttribute(this, 'icon', next); }
-  set successIcon(next) { writeAttribute(this, 'success-icon', next); }
-  set successText(next) { writeAttribute(this, 'success-text', next); }
-  set errorText(next) { writeAttribute(this, 'error-text', next); }
-  set duration(next) { writeAttribute(this, 'duration', next); }
+  set duration(next) { super.duration = next; }
 
-
-  words(key) {
-    return pageText(COPY_TEXT, key, this, 'sf-copy-button');
+  words(key, vars) {
+    return this.sfWord(key, vars ? {vars} : {});
   }
 
   sourceElement() {
@@ -165,8 +128,10 @@ class SfCopyButton extends SfBaseElement {
     selection.addRange(range);
   }
 
-  async copy() {
-    if (this._pending) return null;
+  // The action copy (component.json): the generated method calls this and
+  // answers its outcome; the press of the template calls the method.
+  async runCopy() {
+    if (this._pending) return {outcome: 'refused', reason: 'busy'};
     this._pending = true;
     this.setPhase('pending', '');
     try {
@@ -174,8 +139,8 @@ class SfCopyButton extends SfBaseElement {
       if (!text) throw new Error('empty_source');
       const method = await writeText(text, this.ownerDocument);
       this.setPhase('success', this.successText || this.words('copied'));
-      this.dispatchEvent(new CustomEvent('sf-copy', {bubbles: true, composed: true, detail: {text, method}}));
-      return {text, method};
+      this.sfEmit('copied', {text, method});
+      return {outcome: 'applied', text, method};
     } catch (error) {
       const code = ['empty_source', 'missing_target', 'ambiguous_source'].includes(error?.message) ? error.message : 'denied';
       if (code === 'denied') {
@@ -183,12 +148,12 @@ class SfCopyButton extends SfBaseElement {
         try { text = this.source(); } catch { /* nothing to select */ }
         this.selectSource(text);
         const keys = isMac() ? '⌘C' : 'Ctrl+C';
-        this.setPhase('error', this.words('selected').replace('{keys}', keys));
+        this.setPhase('error', this.words('selected', {keys}));
       } else {
         this.setPhase('error', this.errorText || this.words('failed'));
       }
-      this.dispatchEvent(new CustomEvent('sf-copy-error', {bubbles: true, composed: true, detail: {code}}));
-      return null;
+      this.sfEmit('copy-failed', {code});
+      return {outcome: 'refused', reason: code};
     } finally {
       this._pending = false;
     }

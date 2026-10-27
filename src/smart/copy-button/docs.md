@@ -33,6 +33,19 @@
 macOS), чтобы человек мог скопировать сам. Пока идёт копирование, повторное
 нажатие не срабатывает.
 
-События: `sf-copy {text, method}` и `sf-copy-error {code}`. Коды ошибок:
-`empty_source`, `missing_target`, `ambiguous_source`, `denied`. Метод
-`copy()` копирует из кода.
+События: `sf-copy-button-copied {text, method}` — текст скопирован, и
+`sf-copy-button-copy-failed {code}` — не удалось. Коды ошибок:
+`empty_source`, `missing_target`, `ambiguous_source`, `denied`. Прежние имена
+`sf-copy` и `sf-copy-error` приходят следом до 2026-12-01 (`aliases.json`).
+
+Действие `copy()` копирует из кода и отвечает исходом (стандарт 1.3.8 §4.4):
+`{outcome: 'applied', text, method}`, `{outcome: 'refused', reason}` (код
+ошибки или `busy`, пока идёт предыдущее копирование) или `cancelled`, если
+кнопку убрали со страницы.
+
+Публичные переменные: `--sf-copy-button-display`, `--sf-copy-button-vertical-align`,
+`--sf-copy-button-pending-opacity`, `--sf-copy-button-success-color`,
+`--sf-copy-button-error-color`. Вид самой кнопки задают переменные `sf-button`
+и `sf-icon-button`.
+
+Интерфейс — `component.json`, примеры — `examples.json`.

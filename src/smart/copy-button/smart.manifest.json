@@ -272,7 +272,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/copy-button/index.js",
-        "sha256": "fa013eb32948d78d2ac5c6a98e9cab261c3d53e59e9d61f64571071f0e543e7a"
+        "sha256": "ec00682b3d19f218ba050a4c7518db55195d86d6b3d0b958e1d3a232ab8c4906"
       },
       {
         "path": "src/smart/copy-button/js/templates/default.js",
@@ -280,7 +280,7 @@
       },
       {
         "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
-        "sha256": "989e44c422c726857681f5fd3a33a09942a69f9bc9e4101254fe137efc61d0f8"
+        "sha256": "7cf7f2ff90b741ddaa410ce78f4d47ffeaed7ed36d49fd7a91dc369172d21d84"
       },
       {
         "path": "src/smart/copy-button/rule.js",
@@ -288,7 +288,7 @@
       },
       {
         "path": "src/smart/copy-button/docs.md",
-        "sha256": "7edb4530fa68757ed179d56c8255c50e13e0d9592a20bcb75d6fbab4a73d08d3"
+        "sha256": "bdcc27b61f12dd83b3166259d79088e9c944a565dca753f718b55fd8003e4f2f"
       }
     ],
     "generated_runtime": []

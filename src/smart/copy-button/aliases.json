@@ -1,0 +1,38 @@
+{
+  "$comment": "Dated aliases of sf-copy-button for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-copy-button",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-copy",
+      "to": "sf-copy-button-copied",
+      "kind": "event",
+      "component": "sf-copy-button",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-copy",
+        "to": "copied"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1"
+    },
+    {
+      "from": "sf-copy-error",
+      "to": "sf-copy-button-copy-failed",
+      "kind": "event",
+      "component": "sf-copy-button",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "manifest": {
+        "from": "sf-copy-error",
+        "to": "copy-failed"
+      },
+      "section": "§8, vocabulary 1.1.5 §5.1"
+    }
+  ]
+}

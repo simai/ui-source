@@ -1,0 +1,67 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Скопировать команду",
+      "settings": {
+        "value": "npm i @simai/ui",
+        "label": "Скопировать команду"
+      },
+      "expect": {
+        "value": "npm i @simai/ui"
+      }
+    },
+    {
+      "name": "target",
+      "title": "Из элемента страницы",
+      "markup": "<code id=\"token\">sk_test_51H…</code>",
+      "settings": {
+        "target": "#token",
+        "label": "Скопировать ключ"
+      },
+      "expect": {
+        "target": "#token"
+      }
+    },
+    {
+      "name": "text",
+      "title": "С подписью",
+      "settings": {
+        "value": "npm i @simai/ui",
+        "text": "Копировать",
+        "label": "Скопировать команду"
+      },
+      "expect": {
+        "text": "Копировать"
+      }
+    },
+    {
+      "name": "link",
+      "title": "Ссылка, свой значок",
+      "settings": {
+        "value": "https://example.test/r/1",
+        "icon": "link",
+        "success-icon": "done_all",
+        "appearance": "tonal",
+        "label": "Скопировать ссылку"
+      },
+      "expect": {
+        "icon": "link"
+      }
+    },
+    {
+      "name": "size",
+      "title": "Размер 1, держится 5 секунд",
+      "settings": {
+        "value": "A-1042",
+        "size": "1",
+        "duration": 5000,
+        "label": "Скопировать номер"
+      },
+      "expect": {
+        "size": "1",
+        "duration": 5000
+      }
+    }
+  ]
+}

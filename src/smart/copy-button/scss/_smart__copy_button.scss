@@ -1,9 +1,10 @@
 @layer sf.components {
 /* A button that copies, and a status a screen reader hears and nobody sees:
-   the icon says it on screen. */
+   the icon says it on screen. The public variables (standard 1.3.8 §6): the
+   host's display and alignment, the pending look, the icon's ink per result. */
 sf-copy-button {
-  display: inline-flex;
-  vertical-align: middle;
+  display: var(--sf-copy-button-display, inline-flex);
+  vertical-align: var(--sf-copy-button-vertical-align, middle);
 }
 
 .sf-copy-button {
@@ -21,11 +22,15 @@ sf-copy-button {
   white-space: nowrap;
 }
 
+.sf-copy-button--pending {
+  opacity: var(--sf-copy-button-pending-opacity, 1);
+}
+
 .sf-copy-button--success {
-  --sf-icon--color: var(--sf-success);
+  --sf-icon--color: var(--sf-copy-button-success-color, var(--sf-success));
 }
 
 .sf-copy-button--error {
-  --sf-icon--color: var(--sf-error);
+  --sf-icon--color: var(--sf-copy-button-error-color, var(--sf-error));
 }
 }

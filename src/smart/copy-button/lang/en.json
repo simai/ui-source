@@ -1,0 +1,17 @@
+{
+  "title": "Copy button",
+  "runtime": {
+    "copied": "Copied",
+    "copy": "Copy",
+    "failed": "Could not copy",
+    "selected": "Selected — press {keys}"
+  },
+  "events": {
+    "copied": {
+      "label": "Copied"
+    },
+    "copy-failed": {
+      "label": "Could not copy"
+    }
+  }
+}

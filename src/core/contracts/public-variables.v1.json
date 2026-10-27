@@ -2187,6 +2187,50 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "copy-button",
+      "selector": "sf-copy-button, .sf-copy-button",
+      "variables": [
+        {
+          "name": "--sf-copy-button-display",
+          "role": "display",
+          "summary": "How the host lays out among its neighbours.",
+          "default": "inline-flex",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-copy-button-vertical-align",
+          "role": "vertical-align",
+          "summary": "Where the host sits on a line of text.",
+          "default": "middle",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-copy-button-pending-opacity",
+          "role": "opacity",
+          "summary": "The control's opacity while the copy is under way.",
+          "default": "1",
+          "state": "pending",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-copy-button-success-color",
+          "role": "color",
+          "summary": "The icon's ink for a moment after the copy.",
+          "default": "var(--sf-success)",
+          "state": "success",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-copy-button-error-color",
+          "role": "color",
+          "summary": "The icon's ink for a moment after a refused copy.",
+          "default": "var(--sf-error)",
+          "state": "error",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }
