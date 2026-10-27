@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-// Usage: node this-file [/absolute/path/to/source-root]
+// Usage: node this-file /absolute/path/to/output
+//        ASSEMBLY_SOURCE_ROOT=/absolute/path/to/src node this-file   (the source modules)
 //
-// The page side of the assembly runtime (src/core/js/assembly/, standard
-// simai.smart-component 1.3.8 §7), in Chromium, on the source modules:
+// The page side of the assembly runtime (SF.Assembly, src/core/js/assembly/,
+// standard simai.smart-component 1.3.8 §7), in Chromium, on the modules a
+// build ships as source (<output>/core/core/js/assembly/*.mjs):
 //   - a layout places the roles in <x-role>, shows a key as {{key}}, and moves
 //     the layout's content inside a container's <x-role> into the part;
 //   - a role per entry inside a tab panel repeats the panel per entry with
@@ -14,8 +16,10 @@
 //     properties and attributes, values read on their events, events as
 //     <tag>-<verb> and native change, actions as methods, a cancelable
 //     request refused by a rule (§4, §8);
-//   - a part's events stop at the assembly; the page hears the assembly's own
-//     <tag>-<verb> events and its change of values (§7.4);
+//   - a part's interface events stop at the assembly; the page hears the
+//     assembly's own <tag>-<verb> events and its change of values (§7.4); a
+//     native change or input of a form control inside is the page's DOM event
+//     and reaches the page (dispatcher decision 2026-10-27);
 //   - keys kept in the address, Back restores them (§7.5);
 //   - the live region, errors as sf-component-error, the scope ending when the
 //     assembly is taken out of the page (§7.4.1, §4.1, §7.7);
@@ -23,11 +27,13 @@
 /* global URL, console, document, location, process, requestAnimationFrame, setTimeout, window */
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
-import {dirname, join, resolve} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
 
-const root = resolve(process.argv[2] ?? join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'src'));
+const sourceRoot = process.env.ASSEMBLY_SOURCE_ROOT;
+if (!process.argv[2] && !sourceRoot) throw new Error('Build output root is required');
+// The page imports /core/js/assembly/index.mjs: <output>/core holds core/js/, as src/ does.
+const root = resolve(process.argv[2] ? join(process.argv[2], 'core') : sourceRoot);
 const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8'};
 
 const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>assembly runtime</title></head><body><div id="stage"></div>
@@ -163,7 +169,7 @@ try {
   await tab.evaluate(() => window.Assembly.whenIdle());
   const typed = await tab.evaluate(() => ({query: document.getElementById('f').query, heard: [...window.heard]}));
   check('a value is read from the part on its event and written by its role', typed.query === 'abc', typed.query);
-  check('the page hears the assembly\'s change, not the part\'s', typed.heard.filter((one) => one.startsWith('change')).join() === 'change:t-form', typed.heard.join());
+  check('the page hears the assembly\'s change and the control\'s native change', typed.heard.filter((one) => one.startsWith('change')).sort().join() === 'change:t-form,change:t-input', typed.heard.join());
 
   // A press: a rule, an emit; the part's event stops at the frame; the live region speaks.
   await tab.click('[data-sf-role="send"] button');

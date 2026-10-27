@@ -256,6 +256,30 @@
       ]
     },
     {
+      "name": "SF.Assembly",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The assembly runtime of standard simai.smart-component 1.3.8 (owner decision 2026-10-27): define(manifest, {layouts, lang}) defines an assembly's tag from its manifest alone; its parts are any custom elements with a declared interface (interfaces.register). The journal records every turn in development mode (?sf-debug). Not yet: undoable steps and slots in the runtime.",
+      "members": [
+        "define",
+        "defined",
+        "interfaces",
+        "journal",
+        "debug",
+        "activity",
+        "whenIdle",
+        "instance",
+        "instances",
+        "PART_LINK",
+        "adaptElement",
+        "createLink",
+        "compile",
+        "AssemblyCore",
+        "headlessView"
+      ]
+    },
+    {
       "name": "SF.SfBaseElement",
       "status": "public",
       "kind": "class",

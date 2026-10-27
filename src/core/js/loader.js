@@ -1774,16 +1774,22 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
 // (standard simai.smart-component 1.3.8 §7.2.1, simai/ui-source#47): a tab
 // panel or anything else with `hidden`, an `inert` subtree (a closed sf-modal's
 // root, a slide out of view), a closed <details> past its summary, a closed
-// <dialog>. The Loader watches the container and reads it again when it opens;
-// the module is fetched then, once.
-const CLOSED_CONTAINER = '[hidden], [inert], details:not([open]), dialog:not([open])';
-const CLOSED_CONTAINER_ATTRIBUTES = ['hidden', 'inert', 'open'];
+// <dialog>, and a part its assembly has not started yet (§7.2.1: SF.Assembly
+// marks a part with a deferred start `data-sf-start` and adds
+// `data-sf-started` when it starts). The Loader watches the container and
+// reads it again when it opens; the module is fetched then, once. This is the
+// one deferral of the first paint: an unstarted part is a closed container
+// for itself and for everything inside it.
+const UNSTARTED_PART = '[data-sf-start]:not([data-sf-started])';
+const CLOSED_CONTAINER = `[hidden], [inert], details:not([open]), dialog:not([open]), ${UNSTARTED_PART}`;
+const CLOSED_CONTAINER_ATTRIBUTES = ['hidden', 'inert', 'open', 'data-sf-start', 'data-sf-started'];
 
 function isClosedContainer(node) {
   return node?.nodeType === 1 && node.matches(CLOSED_CONTAINER);
 }
 
 function closedContainerOf(el) {
+  if (el?.nodeType === 1 && el.matches(UNSTARTED_PART)) return el;
   for (let node = el?.parentElement; node; node = node.parentElement) {
     if (!isClosedContainer(node)) continue;
     // A closed <details> still shows its summary.

@@ -4,6 +4,7 @@ import './aliases.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';
+import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';
 import './region-navigation.js';

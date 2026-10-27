@@ -467,7 +467,7 @@ export class AssemblyCore {
     return {
       n: ++ACTIVITY.seq, on, payload: payload ?? {}, chain: options.chain ?? [], entry: options.entry ?? null,
       source: options.source ?? null, writes: new Map((options.preset ?? []).map(([key, value, writer]) => [key, {value, writer}])),
-      after: [], refused: null, cancel: options.cancel ?? null, origin: options.origin ?? null, parentSignal: parent, ownScope: null,
+      after: [], refused: null, outcome: null, cancel: options.cancel ?? null, origin: options.origin ?? null, parentSignal: parent, ownScope: null,
       get scope() { return this.ownScope ?? (this.ownScope = linked(this.parentSignal)); },
       fromAddress: Boolean(options.fromAddress),
     };
@@ -571,6 +571,7 @@ export class AssemblyCore {
         result = 'stop';
       }
       return then(result, (ended) => {
+        if (run.outcome && !turn.outcome) turn.outcome = run.outcome; // the rule ended without applied: its outcome
         if (ended !== 'fail' || !Array.isArray(rule.otherwise)) return ended;
         run.inOtherwise = true;
         this.log('otherwise', `${rule.id}: otherwise runs (${run.outcome?.answer})`, {turn: turn.n, rule: rule.id, tag: this.def.tag});
@@ -614,11 +615,7 @@ export class AssemblyCore {
     if (!isObject(step)) { this.error('step', `${rule.id}: ${JSON.stringify(step)} is not a step`); return 'stop'; }
     const read = run.read.read;
     if ('set' in step) return this.writeLogic(turn, step.set, read(step.to), rule, run.cause);
-    if ('add' in step) {
-      const now = read({key: step.add});
-      const by = read(step.by);
-      return this.writeLogic(turn, step.add, Number(now ?? 0) + Number(by ?? 0), rule, run.cause);
-    }
+    if ('add' in step) return this.addLogic(turn, step.add, Number(read(step.by) ?? 0), rule, run.cause);
     if ('reset' in step) return this.writeLogic(turn, step.reset, this.def.initial(step.reset), rule, run.cause);
     if ('append' in step) {
       const list = read({key: step.append});
@@ -662,6 +659,25 @@ export class AssemblyCore {
     if (def.writer !== 'logic') { this.error('write', `${rule.id} writes "${key}", whose writer is ${def.writer}`, {rule: rule.id}); return 'stop'; }
     if (!fits(def, value)) { this.error('type', `${rule.id}: "${key}" (${typeOf(def)}) refused ${show(value)}`, {rule: rule.id}); return 'stop'; }
     turn.writes.set(key, {value, writer: 'logic', cause});
+    return 'go';
+  }
+
+  /**
+   * `add` (§9) applies against the key's value at apply time, not at the time
+   * the step ran: two runs of a rule under `parallel` that both add are never
+   * lost to each other (dispatcher decision 2026-10-27). Within one turn an
+   * add on top of a value the turn already wrote adds to that value.
+   */
+  addLogic(turn, key, by, rule, cause = null) {
+    const def = this.def.keys.get(key);
+    if (!def) { this.error('write', `${rule.id} writes the undeclared key "${key}"`, {rule: rule.id}); return 'stop'; }
+    if (def.writer !== 'logic') { this.error('write', `${rule.id} writes "${key}", whose writer is ${def.writer}`, {rule: rule.id}); return 'stop'; }
+    if (!Number.isFinite(by)) { this.error('type', `${rule.id}: add ${key} by ${show(by)}, not a number`, {rule: rule.id}); return 'stop'; }
+    const written = turn.writes.get(key);
+    if (written && written.add === undefined) return this.writeLogic(turn, key, Number(written.value ?? 0) + by, rule, cause);
+    const add = (written?.add ?? 0) + by;
+    const keys = this.keys;
+    turn.writes.set(key, {add, writer: 'logic', cause, get value() { return Number(keys[key] ?? 0) + this.add; }});
     return 'go';
   }
 
@@ -717,7 +733,10 @@ export class AssemblyCore {
       this.commit(turn);
     }
     if (rec.iface.port && action !== 'connect-port' && !this.ports.has(rec.iface.port.id)) return fail('unavailable', 'port-not-connected');
-    if (!rec.started) this.log('warn', `${rule.id}: ${target} asks a part that has not started`, {rule: rule.id}, 'warn');
+    if (!rec.started) { // a step asks a part that has not started: it starts first, then is asked (dispatcher decision 2026-10-27)
+      this.log('start', `${rule.id}: ${target} asks a part that has not started; it starts first`, {rule: rule.id, role: rec.role});
+      this.startPart(rec, 'asked');
+    }
     if (waits) run.waited = true;
     this.log('step', `${rule.id}: ${asking ? 'ask' : 'do'} ${target} ${show(args)}`, {turn: turn.n, rule: rule.id});
     const answer = this.invoke(rec, action, args, {run, def, timeout, retry});
@@ -727,6 +746,7 @@ export class AssemblyCore {
   settle(run, turn, step, target, outcome) {
     const {rule} = run;
     if (outcome.answer === 'cancelled') {
+      run.outcome = {answer: 'cancelled', reason: outcome.reason ?? '', message: outcome.message ?? ''};
       this.log('answer', `${target} → cancelled: an act, not a failure; no otherwise (§10.3)`, {turn: turn.n, rule: rule.id, answer: 'cancelled'});
       return 'stop';
     }
@@ -803,8 +823,11 @@ export class AssemblyCore {
   reportFromPart(rec, values, options = {}) {
     if (this.disposed || rec.scope.signal.aborted || !isObject(values)) return;
     const turn = this.newTurn(`${rec.role}.values`, {}, {origin: options.origin ?? null});
-    for (const [name, value] of Object.entries(values)) {
+    const first = options.origin === 'start';
+    for (const [name, given] of Object.entries(values)) {
       if (!(name in rec.iface.values)) { this.error('value', `${rec.instanceId}: ${rec.def.tag} has no value "${name}"`, {role: rec.role}); continue; }
+      // A part's first value with no declared default reaches its key as null, not "" (dispatcher decision 2026-10-27).
+      const value = first && given === '' && rec.iface.values[name]?.default === undefined ? null : given;
       const key = rec.def.valueBinds.get(name);
       if (key) turn.writes.set(key, {value, writer: rec.role});
     }
@@ -953,6 +976,8 @@ export class AssemblyCore {
       state.active.delete(scope);
       scope.controller.abort('done');
       if (ended?.refused !== null && ended?.refused !== undefined) return {answer: 'refused', reason: ended.refused};
+      // A rule that ended without applied answers its outcome (dispatcher decision 2026-10-27).
+      if (ended?.outcome) return {...ended.outcome};
       return {answer: 'applied'};
     });
     state.tail = result;

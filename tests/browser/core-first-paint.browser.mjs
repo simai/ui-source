@@ -13,7 +13,9 @@
 //      while its code is coming, one with a core skeleton shape is shown;
 //   b. the body is never at opacity 0;
 //   c. sf-modal inside a closed <dialog>, a [hidden] tab panel or a closed
-//      <details> fetches no modal code until the container opens, then once;
+//      <details>, or an SF.Assembly part not started yet (data-sf-start
+//      without data-sf-started, the part itself or inside it), fetches no
+//      modal code until the container opens or the part starts, then once;
 //   d. no lazy relation is fetched in idle time (sf-button's spinner), unless
 //      the page asks with SF_BOOT_CONFIG.prefetchLazyRelations;
 //   e. a page with .sf-skeleton bars alone fetches no script but Core's; the
@@ -249,6 +251,9 @@ ${core}</body></html>`;
     dialog: {markup: `<dialog id="box">${modal}</dialog>`, open: () => document.getElementById('box').show()},
     hidden: {markup: `<div id="tabs"><div role="tabpanel">Первая</div><div role="tabpanel" id="box" hidden>${modal}</div></div>`, open: () => document.getElementById('box').removeAttribute('hidden')},
     details: {markup: `<details id="box"><summary>Подробнее</summary>${modal}</details>`, open: () => { document.getElementById('box').open = true; }},
+    // An SF.Assembly part with a deferred start (§7.2.1) is the same deferral: the part itself, and what is inside it.
+    'unstarted-part': {markup: modal.replace('<sf-modal id="modal"', '<sf-modal id="box" data-sf-start="opened" aria-busy="true"'), open: () => document.getElementById('box').setAttribute('data-sf-started', '')},
+    'inside-unstarted-part': {markup: `<div id="box" data-sf-start="visible">${modal}</div>`, open: () => document.getElementById('box').setAttribute('data-sf-started', '')},
   };
   report.closed = {};
   for (const [name, {markup, open}] of Object.entries(closed)) {

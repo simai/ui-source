@@ -220,9 +220,11 @@ function el(localName, attrs = {}, parent = null) {
     nodeType: 1, localName, attrs, parentElement: parent,
     hasAttribute(name) { return Object.hasOwn(this.attrs, name); },
     matches(selector) {
-      assert.equal(selector, '[hidden], [inert], details:not([open]), dialog:not([open])');
+      const unstarted = this.hasAttribute('data-sf-start') && !this.hasAttribute('data-sf-started');
+      if (selector === '[data-sf-start]:not([data-sf-started])') return unstarted;
+      assert.equal(selector, '[hidden], [inert], details:not([open]), dialog:not([open]), [data-sf-start]:not([data-sf-started])');
       return this.hasAttribute('hidden') || this.hasAttribute('inert')
-        || (['details', 'dialog'].includes(this.localName) && !this.hasAttribute('open'));
+        || (['details', 'dialog'].includes(this.localName) && !this.hasAttribute('open')) || unstarted;
     },
     closest(name) {
       for (let node = this; node; node = node.parentElement) if (node.localName === name) return node;
@@ -233,7 +235,7 @@ function el(localName, attrs = {}, parent = null) {
 
 test('a tag in a closed container is not a reason to fetch its code', () => {
   const {CLOSED_CONTAINER_ATTRIBUTES, closedContainerOf} = closedContainers();
-  assert.deepEqual([...CLOSED_CONTAINER_ATTRIBUTES], ['hidden', 'inert', 'open']);
+  assert.deepEqual([...CLOSED_CONTAINER_ATTRIBUTES], ['hidden', 'inert', 'open', 'data-sf-start', 'data-sf-started']);
   const body = el('body');
   const inBody = el('sf-modal', {}, body);
   assert.equal(closedContainerOf(inBody), null);
@@ -256,6 +258,14 @@ test('a tag in a closed container is not a reason to fetch its code', () => {
   assert.equal(closedContainerOf(el('sf-badge', {}, el('summary', {}, inner))), hidden);
   // The element itself carrying hidden is not a container of itself.
   assert.equal(closedContainerOf(el('sf-alert', {hidden: ''}, body)), null);
+
+  // The same deferral holds an SF.Assembly part its assembly has not started
+  // (standard 1.3.8 §7.2.1): the part itself and what is inside it.
+  const part = el('sf-modal', {'data-sf-start': 'opened'}, body);
+  assert.equal(closedContainerOf(part), part, 'an unstarted part is closed for itself');
+  assert.equal(closedContainerOf(el('sf-badge', {}, el('div', {}, part))), part, 'and for what is inside it');
+  part.attrs['data-sf-started'] = '';
+  assert.equal(closedContainerOf(part), null, 'started, it is read');
 });
 
 test('both scans leave a closed container for later and hold the tags they ask for', () => {
@@ -295,7 +305,7 @@ test('a closed container is watched and read again once, when it opens', () => {
   assert.equal(plugin.deferClosedSmartElement(el('sf-modal', {}, body)), false);
   assert.equal(observers.length, 1);
   assert.equal(observers[0].targets.length, 1, 'a container is watched once');
-  assert.equal(JSON.stringify(observers[0].targets[0][1]), JSON.stringify({attributes: true, attributeFilter: ['hidden', 'inert', 'open']}));
+  assert.equal(JSON.stringify(observers[0].targets[0][1]), JSON.stringify({attributes: true, attributeFilter: ['hidden', 'inert', 'open', 'data-sf-start', 'data-sf-started']}));
   assert.deepEqual(holds, [['sf-modal', null], ['sf-tabs', null]], 'held, not asked: no module is on its way');
 
   // Still closed: nothing is read.

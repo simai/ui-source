@@ -245,7 +245,7 @@ test('the scope: removing the instance cancels its waits and timers (§7.7)', as
   t.core.dispose();
   const answer = await asked;
   assert.equal(t.core.keys.done, false, 'cancelled: no otherwise');
-  assert.equal(answer.answer, 'applied');
+  assert.equal(answer.answer, 'cancelled', 'the outside action answers the outcome its rule ended with');
   assert.equal(t.part('source').calls[0].options.signal.aborted, true, 'the request is aborted');
   assert.equal(t.part('source').disposed, true);
   resolve({answer: 'applied'});

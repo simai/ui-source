@@ -34,6 +34,9 @@ const PANELS = '[role="tabpanel"], details, [data-sf-panel]';
 const nextFrame = (fn) => (typeof globalThis.requestAnimationFrame === 'function' ? globalThis.requestAnimationFrame(() => fn()) : globalThis.setTimeout(fn, 0));
 
 /** The default way a part's module is fetched when the part starts (§7.2.1): the Loader's. */
+/** DOM events a part's form controls send as any control does: they reach the page. */
+const NATIVE_EVENTS = new Set(['change', 'input']);
+
 function loadByLoader(tag) {
   const loader = globalThis.SF?.Loader;
   if (typeof loader?.ensureSmartElementLoaded === 'function') loader.ensureSmartElementLoaded(tag);
@@ -239,10 +242,16 @@ class HostView {
     return createLink(element, rec.iface, context);
   }
 
-  /** A part's events stop at the assembly: the page sees the assembly's own events only (§7.4). */
+  /**
+   * A part's interface events stop at the assembly: the page sees the
+   * assembly's own events (§7.4). A native event of a form control inside
+   * (`change`, `input`, `click`, ...) is the page's DOM event, not an
+   * interface event, and goes on (dispatcher decision 2026-10-27).
+   */
   stopAtFrame(iface, tag) {
     for (const [verb, def] of Object.entries(iface.events ?? {})) {
-      for (const name of domNames(tag, verb, def)) { // native input and change too: nothing crosses by itself
+      for (const name of domNames(tag, verb, def)) {
+        if (def.carries === 'native' || NATIVE_EVENTS.has(name)) continue;
         if (this.stopped.has(name)) continue;
         this.stopped.add(name);
         this.host.addEventListener(name, (event) => { if (event.target !== this.host) event.stopPropagation(); }, {signal: this.core.scope.signal});
@@ -270,7 +279,7 @@ class HostView {
   observe() {
     if (this.mutations || typeof globalThis.MutationObserver !== 'function') return;
     this.mutations = new globalThis.MutationObserver(() => this.queueCheck());
-    this.mutations.observe(this.host, {subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'open', 'aria-expanded']});
+    this.mutations.observe(this.host, {subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'inert', 'open', 'aria-expanded']});
   }
 
   queueCheck() {
@@ -283,7 +292,7 @@ class HostView {
   closed(element) {
     if (!element?.isConnected || !this.host.isConnected) return true;
     for (let node = element.parentElement; node && node !== this.host; node = node.parentElement) {
-      if (node.hidden || node.getAttribute('aria-expanded') === 'false') return true;
+      if (node.hidden || node.inert || node.getAttribute('aria-expanded') === 'false') return true;
       if ((node.localName === 'details' || node.localName === 'dialog') && !node.open) return true;
     }
     return false;

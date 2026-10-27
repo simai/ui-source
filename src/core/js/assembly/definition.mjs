@@ -117,6 +117,8 @@ export function compile(manifest, options = {}) {
 
   // Keys (§7.1), with what form.aggregates adds (§17.4).
   const keys = new Map(own(manifest.keys).map(([name, def]) => [name, {...def}]));
+  // `undoable` (an undo/redo history per key) is postponed (dispatcher decision 2026-10-27): the key works without it.
+  for (const [name, def] of keys) if (def.undoable) notes.push({section: '§7.5', text: `key "${name}" is undoable: undo is postponed in this runtime; the key keeps its current value only`});
   if (manifest.form?.aggregates === true) {
     if (!keys.has('valid')) keys.set('valid', {type: 'boolean', writer: 'derived', aggregate: 'valid'});
     if (!keys.has('value')) keys.set('value', {type: 'object', writer: 'derived', aggregate: 'value'});

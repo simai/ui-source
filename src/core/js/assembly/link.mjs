@@ -152,7 +152,9 @@ export function adaptElement(element, iface, context) {
       }
       let given = isObject(args) ? args : {};
       // §11.2: a part asked with a code says the assembly's word for it; today's components take text.
-      if (typeof given.code === 'string' && (given.text === undefined || given.text === '')) {
+      // The word by code wins over the host's message; the message is said only when the code has no word
+      // (dispatcher decision 2026-10-27).
+      if (typeof given.code === 'string') {
         const word = context.word(`words.${given.code}`, given.count);
         if (word !== null) given = {...given, text: word};
       }
