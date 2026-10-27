@@ -63,3 +63,27 @@ test('Checkbox documentation covers grouping, mixed state, sizes and placement',
   assert.match(page, /data-indeterminate/);
   assert.match(page, /aria-invalid/);
 });
+
+test('Smart checkbox marks of a size are that size\'s line (simai/ui-source#49)', async () => {
+  // One ladder (ui-control VISUAL-DECISIONS 2026-10-05): the checked, mixed and
+  // help marks are the line height of their size. The size-2 bridge rules read
+  // text-height-1/3 and drew the mixed and help marks 16x16 on a 28px line.
+  const css = await source('src/smart/checkbox/js/templates/default.css');
+  const rules = [...css.replace(/@layer [^{]+\{/g, '').matchAll(/([^{}]+)\{([^}]*)\}/g)]
+    .map(([, selector, body]) => ({selector: selector.trim(), body}))
+    .filter(({body}) => /--sf-icon--(?:height|width)/.test(body));
+  assert.ok(rules.length >= 5, `${rules.length} mark rules`);
+  for (const {selector, body} of rules) {
+    const size = selector.match(/sf-checkbox--size-([0-9\\/]+)/)?.[1];
+    assert.ok(size, selector);
+    const tokens = [...body.matchAll(/--sf-icon--(?:height|width):\s*var\(--sf-text-height-([^)]+)\)/g)].map(([, step]) => step);
+    assert.equal(tokens.length, 2, selector);
+    for (const step of tokens) assert.equal(step, size, `${selector}: text-height-${step} on size ${size}`);
+  }
+  assert.ok(rules.some(({selector}) => /size-2:has\(input:indeterminate\)/.test(selector)), 'the size-2 mixed mark has its rule');
+  // The help mark sits in sf-icon, which the core sheet's child selector does
+  // not reach: every size needs its own rule (size 1/2 drew 24px on a 16px line).
+  for (const size of ['1\\/2', '1', '2']) {
+    assert.ok(rules.some(({selector}) => selector.includes(`sf-checkbox--size-${size} > .sf-checkbox-container > .sf-checkbox-top > sf-icon > .sf-icon`)), `size ${size} help mark`);
+  }
+});
