@@ -5,7 +5,7 @@ SF.RuleLoader['cl-datepicker'] = {
   js: true,
   relation: [
     { name: 'datepicker' },
-    { name: 'cl-inputs' },
+    { name: 'cl-input' },
     { name: 'cl-buttons' },
     { name: 'cl-icon-buttons' },
     { name: 'cl-icons' },

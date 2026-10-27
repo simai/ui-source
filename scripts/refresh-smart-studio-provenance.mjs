@@ -12,7 +12,9 @@ const root = process.cwd();
 // field renderer set is a module by design -- it is called, not placed in
 // markup -- which is why the registry cannot describe it yet. Recorded in
 // ui-control's ledger as a question for the registry's owner.
-const serviceDirectories = new Set(['helpers', 'field-renderers']);
+// inputs is sf-input's former distribution path, a forwarding bundle until
+// 2026-12-01 (change journal path-smart-inputs-to-input), not an element.
+const serviceDirectories = new Set(['helpers', 'field-renderers', 'inputs']);
 const runtimeRoot = path.resolve(root, '../ui-smart');
 const uiRoot = path.resolve(root, '../ui');
 

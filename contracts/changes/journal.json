@@ -2136,6 +2136,43 @@
       "manual": "Delete the variable: a loading button shows the spinner, in the button's ink. To colour the spinner, set --sf-loader--color on the button or an ancestor.",
       "owner": "ui-source",
       "source": "src/component/buttons/scss/_css__buttons_custom.scss, src/component/icon-buttons/scss/_css_icon_buttons_custom.scss"
+    },
+    {
+      "id": "path-smart-inputs-to-input",
+      "recorded_on": "2026-10-27",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-input is served from smart/input/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/input.js and css/input.css, loader bundle cl-input. The old path keeps working until remove_after: smart/inputs/js/inputs.js is a forwarding script that notes the path in SF.deprecations and loads smart/input/js/input.js, smart/inputs/css/inputs.css is sf-input's sheet, and the rule cl-inputs loads cl-input.",
+      "items": [
+        {
+          "component": "sf-input",
+          "from": "smart/inputs/js/inputs.js",
+          "to": "smart/input/js/input.js",
+          "match": "smart/inputs/js/inputs(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-input",
+          "from": "smart/inputs/css/inputs.css",
+          "to": "smart/input/css/input.css",
+          "match": "smart/inputs/css/inputs(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-inputs",
+          "to": "cl-input",
+          "match": "['\"]cl-inputs['\"]"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Write smart/input/ for smart/inputs/ and input for inputs in the file names (js/input.js, js/input.min.js, css/input.css, css/input.min.css); in a product rule's relation write cl-input for cl-inputs. A page that lets the Loader fetch sf-input needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/inputs/js/inputs.js\"></script>",
+        "after": "<script src=\"/distr/smart/input/js/input.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/inputs/index.js, src/smart/input/rule.js"
     }
   ]
 }
