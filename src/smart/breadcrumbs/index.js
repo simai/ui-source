@@ -169,6 +169,11 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       return;
     }
 
+    // Its scope (§7.7) opens with every placing, mounted or still waiting
+    // for items: disconnectedCallback ends it either way, and a trail placed
+    // again before its items came kept the ended one.
+    this.sfOpenScope();
+
     // The trail mounts once it has items: a printed JSON island holds them
     // (standard 1.3.8 §5.4), read before it looks for item children.
     this.sfReadIsland();
