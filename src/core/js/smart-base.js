@@ -1,5 +1,6 @@
 import { noteDeprecated } from './deprecations.js';
 import './internal.js';
+import { installAliases } from './aliases.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
@@ -442,6 +443,13 @@ class SfBaseElement extends HTMLElement {
     this.captureSlotTemplates();
     this.__sfSourceCaptured = true;
     this._isMounted = true;
+    // Dated aliases (standard 1.3.8 §16.20): the component's aliases.json,
+    // installed once per element and kept while it is detached, so a page
+    // that moves it keeps its old names. Before onConnected, so the old
+    // attributes in the markup have filled the new ones when it draws.
+    if (this.constructor.aliases && !this.__sfAliases) {
+      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName});
+    }
     this.onConnected();
     // A component chooses its words when it draws and would otherwise keep
     // them for ever: changing the page's language used to mean reloading it.

@@ -1,5 +1,6 @@
 import './public-path';
 import './internal.js';
+import './aliases.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';
