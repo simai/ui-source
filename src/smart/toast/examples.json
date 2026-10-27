@@ -1,0 +1,71 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Сообщение",
+      "settings": {
+        "heading": "Изменения сохранены",
+        "supporting-text": "Запись обновлена"
+      },
+      "expect": {
+        "name": "Изменения сохранены"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "closed",
+      "title": "Закрыть",
+      "settings": {
+        "heading": "Изменения сохранены"
+      },
+      "script": [
+        {
+          "act": "close"
+        }
+      ],
+      "expect": {
+        "events": [
+          "close",
+          "closed"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "action",
+      "title": "С действием",
+      "settings": {
+        "heading": "Запись удалена",
+        "action-text": "Вернуть",
+        "action": "undo",
+        "status": "info"
+      },
+      "expect": {
+        "name": "Запись удалена"
+      }
+    },
+    {
+      "name": "statuses",
+      "title": "Статусы",
+      "settings": {
+        "heading": "Ошибка сохранения",
+        "status": "error",
+        "role": "alert"
+      },
+      "expect": {
+        "name": "Ошибка сохранения"
+      }
+    },
+    {
+      "name": "timed",
+      "title": "Скрывается сам",
+      "settings": {
+        "heading": "Скопировано",
+        "duration": 3000
+      },
+      "expect": {
+        "name": "Скопировано"
+      }
+    }
+  ]
+}

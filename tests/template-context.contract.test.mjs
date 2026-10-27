@@ -40,7 +40,6 @@ test('template context: the resolved names the templates read are passed', async
     skeleton: ['variant', 'type'],
     tags: ['kind', 'type', 'size', 'inline', 'line'],
     textarea: ['type', 'minlength', 'maxlength'],
-    toast: ['type'],
     toggle: ['type'],
   };
   for (const [component, names] of Object.entries(expected)) {
@@ -48,6 +47,9 @@ test('template context: the resolved names the templates read are passed', async
     const body = source.match(/^ {2}templateContext\(\) \{[\s\S]*?^ {2}\}/m)?.[0] || '';
     for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.${name},`), `${component}.${name}`);
   }
+  // sf-toast's type is a dated alias of status (standard 1.3.8 §16.20): the
+  // template reads the resolved status under its old name.
+  assert.match(await read('src/smart/toast/index.js'), /type: this\.status,/);
   const modal = await read('src/smart/modal/index.js');
   // The setting is backdrop-blur since standard 1.3.8 (blur is a method of
   // every element, §3.1); the template still reads `blur`, resolved.

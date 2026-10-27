@@ -1,0 +1,188 @@
+{
+  "component": "sf-toast",
+  "probe": "sf-toast against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\"><sf-toast id=\"t1\" heading=\"Запись удалена\" supporting-text=\"Её можно вернуть\" action-text=\"Вернуть\" action=\"undo\" status=\"info\" role=\"status\"></sf-toast></div>",
+      "  <sf-toast id=\"t2\" heading=\"Сохранено\"></sf-toast>",
+      "  <sf-toast id=\"t-old\" title=\"Старое имя\" type=\"primary\"></sf-toast>",
+      "  <sf-toast id=\"t-timed\" heading=\"Скопировано\" duration=\"300\"></sf-toast>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-close-button",
+      "title": "its own close button: the request with reason close, the fact, and the toast leaves",
+      "covers": "events.close {reason}, events.closed",
+      "steps": [
+        {
+          "user": "click:#t2 [data-toast-close]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-toast-close",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              },
+              {
+                "name": "sf-toast-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "close"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.getElementById('t2')",
+          "wait": 600
+        }
+      ]
+    },
+    {
+      "id": "p2-action-data-only",
+      "title": "the action button: sf-toast-action {action} once, with data only",
+      "covers": "events.action (own verb), §8",
+      "steps": [
+        {
+          "user": "click:#t1 [data-toast-action]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-toast-action",
+                "count": 1,
+                "detail": {
+                  "action": "undo"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "script": "(() => { let seen = null; const el = document.getElementById('t1'); el.addEventListener('sf-toast-action', (event) => { seen = event.detail; }, {once: true}); el.querySelector('[data-toast-action]').click(); return seen && !('toast' in seen) && !('trigger' in seen); })()",
+          "expect": {
+            "returns": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-refused-close",
+      "title": "a page that prevents the request keeps the toast; close() answers refused",
+      "covers": "events.close cancelable, actions.close",
+      "steps": [
+        {
+          "script": "(document.getElementById('t2').addEventListener('sf-toast-close', (event) => event.preventDefault()), true)"
+        },
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#t2",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "prevented"
+            }
+          }
+        },
+        {
+          "check": "Boolean(document.getElementById('t2')) && document.querySelector('#t2 .sf-toast').dataset.sfToastBound === '1'"
+        }
+      ]
+    },
+    {
+      "id": "p4-close-api",
+      "title": "close() closes with reason api",
+      "covers": "actions.close",
+      "steps": [
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#t2",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-toast-closed",
+                "count": 1,
+                "detail": {
+                  "reason": "api"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-old-names-dated",
+      "title": "title and type still work and are noted with their dates",
+      "covers": "aliases.json setting rows",
+      "steps": [
+        {
+          "check": "document.querySelector('#t-old .sf-toast-text').textContent === 'Старое имя' && document.querySelector('#t-old .sf-toast').classList.contains('sf-toast--info') && ['title', 'type'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-toast' && note.from === from && note.remove_after === '2026-12-01'))"
+        }
+      ]
+    },
+    {
+      "id": "p6-role-and-name",
+      "title": "the host's role reaches the root; the heading is the text",
+      "covers": "accessibility role, name from heading",
+      "steps": [
+        {
+          "check": "document.querySelector('#t1 .sf-toast').getAttribute('role') === 'status' && document.querySelector('#t1 .sf-toast-text').textContent === 'Запись удалена' && !document.querySelector('#t2 .sf-toast')?.hasAttribute('role')"
+        }
+      ]
+    },
+    {
+      "id": "p7-tab-reaches",
+      "title": "Tab reaches the toast's action and close buttons",
+      "covers": "keyboard.host.Tab reach",
+      "steps": [
+        {
+          "script": "(document.querySelector('#t1 [data-toast-action]').focus(), true)",
+          "wait": 50
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement === document.querySelector('#t1 [data-toast-close]')"
+        }
+      ]
+    },
+    {
+      "id": "p8-timed",
+      "title": "a timed toast leaves by itself with reason api",
+      "covers": "settings.duration",
+      "steps": [
+        {
+          "wait": 900,
+          "check": "!document.getElementById('t-timed')"
+        }
+      ]
+    },
+    {
+      "id": "p9-public-variables",
+      "title": "a public variable on an ancestor reaches the toast",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-toast-background-color', 'rgb(1, 2, 3)'), true)",
+          "wait": 50,
+          "check": "getComputedStyle(document.querySelector('#t1 .sf-toast')).getPropertyValue('--sf-toast--background-color').trim() === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

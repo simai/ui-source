@@ -147,13 +147,20 @@ function dismissToast(root, removalTarget = null, trigger = null) {
   removalTarget = removalTarget || root.__sfToastRemovalTarget || root;
 
   unbindToast(root);
-  root.dispatchEvent(
+  // A cancelable request (standard 1.3.8 §19.3, §8): a listener that prevents
+  // it keeps the toast, bound as it was.
+  const allowed = root.dispatchEvent(
     new CustomEvent('sf-toast-close', {
       bubbles: true,
       composed: true,
+      cancelable: true,
       detail: { toast: root, trigger },
     }),
   );
+  if (!allowed) {
+    bindToast(root, removalTarget);
+    return false;
+  }
   return dismissToastElement(root, removalTarget);
 }
 

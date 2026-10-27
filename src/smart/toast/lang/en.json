@@ -1,0 +1,11 @@
+{
+  "title": "Toast",
+  "runtime": {
+    "close-label": "Close message"
+  },
+  "events": {
+    "action": {
+      "label": "Do the toast's action"
+    }
+  }
+}

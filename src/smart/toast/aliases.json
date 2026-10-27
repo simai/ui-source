@@ -1,0 +1,59 @@
+{
+  "$comment": "Dated aliases of sf-toast for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (setting rows), host-attribute (no shim), manifest-only (the DOM name does not change).",
+  "component": "sf-toast",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-toast",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "type",
+      "to": "status",
+      "kind": "setting",
+      "component": "sf-toast",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (journal attribute-type-to-status)"
+    },
+    {
+      "from": "role",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-toast",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1",
+      "note": "stays a host attribute, read by the toast (status or alert) and written on its root; no shim"
+    },
+    {
+      "from": "sf-toast-action",
+      "to": null,
+      "kind": "event",
+      "component": "sf-toast",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§8",
+      "note": "the DOM name stays; detail keeps action and loses the elements toast and trigger"
+    },
+    {
+      "from": "sf-toast-close",
+      "to": null,
+      "kind": "event",
+      "component": "sf-toast",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§8, §19.3",
+      "note": "the DOM name stays and is cancelable now; detail is {reason}, without the elements toast and trigger"
+    }
+  ]
+}
