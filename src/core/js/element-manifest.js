@@ -37,6 +37,10 @@
 //   'applied'}` or `{outcome: 'refused', reason}`; `"emits"` sends its event
 //   once first, and a page that cancels it makes the action refused; a
 //   waiting action whose instance is removed answers `cancelled`;
+// - the base action `connect-port {port}` (§4.1, §4.9): `connectPort(port)`,
+//   `setHostPort` its alias, the port kept on the instance's scope and read
+//   as `sfPort`, the component's `onPortConnected(port, {signal})` its hook
+//   (core/js/host-port.js; the Smart base has it, another base gets it here);
 // - the base values `shown` and `started` (§4.1) and the host state
 //   `data-sf-started`; `sfHostState(name, on)` writes the declared
 //   `host-states` (§5.3);
@@ -53,6 +57,7 @@
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
 import { bindPageActions } from './page-actions.js';
+import { installPortAction } from './host-port.js';
 
 const RESERVED = new Set([
   'props', 'api', 'view', 'scope', 'parts', 'receive', 'render', 'connected',
@@ -230,9 +235,11 @@ function writeAttribute(element, member, value) {
     return;
   }
   if (member.type === 'boolean') {
-    // An optional boolean keeps «off» as a value of its own (§4.2).
+    // An optional boolean keeps «off» as a value of its own (§4.2), and so
+    // does one that is on by default: taking the attribute away would read
+    // as the default, on (sf-pagination's count-known, total-exact).
     if (value) element.setAttribute(member.attribute, '');
-    else if (member.optional) element.setAttribute(member.attribute, 'false');
+    else if (member.optional || member.default === true) element.setAttribute(member.attribute, 'false');
     else element.removeAttribute(member.attribute);
     return;
   }
@@ -479,6 +486,8 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
   }
 
   defineMembers(ManifestElement.prototype, read.members);
+  // connect-port is the base's (§4.1): a base without it gets it here.
+  installPortAction(ManifestElement.prototype);
   defineActions(ManifestElement.prototype, read.actions, actions, read.events);
   // data-sf-action="<id>.<action>" runs a declared action (§8 one page trigger).
   if (read.actions.length) bindPageActions();

@@ -120,6 +120,22 @@ export function freshId() {
   return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
+/**
+ * A port's id (§4.9): `id`, or `port` for a host adapter shaped
+ * `{port, version, capabilities, raise}`; '' when it names none.
+ */
+export function portId(port) {
+  if (!isObject(port)) return '';
+  if (typeof port.id === 'string' && port.id) return port.id;
+  if (typeof port.port === 'string' && port.port) return port.port;
+  return '';
+}
+
+/** connect-port's parameters, `{port}` or the port itself (§4.1). */
+export function portOfParams(args) {
+  return isObject(args) && isObject(args.port) ? args.port : args;
+}
+
 /** An outcome in its one shape `{answer, reason, message, …}` (§4.4, vocabulary §3.1). */
 export function outcomeOf(value) {
   if (value === undefined || value === null || value === true) return {answer: 'applied'};

@@ -14,7 +14,7 @@ import {assemblyLink} from './link.mjs';
 import {journalOn, record} from './journal.mjs';
 import {createReader} from './logic.mjs';
 import {say} from './words.mjs';
-import {BASE_ACTIONS, CAUSE_CHAIN_DEPTH, WRITE_VERBS, clone, fits, isObject, outcomeOf, own, same, show, typeOf} from './values.mjs';
+import {BASE_ACTIONS, CAUSE_CHAIN_DEPTH, WRITE_VERBS, clone, fits, isObject, outcomeOf, own, portId, portOfParams, same, show, typeOf} from './values.mjs';
 
 const ACTIVITY = (() => {
   const root = typeof globalThis !== 'undefined' ? globalThis : {};
@@ -243,7 +243,7 @@ export class AssemblyCore {
     this.view.startPart?.(rec);
     rec.pending.clear(); // superseded: the part reads the current values now
     this.pushAll(rec);
-    for (const port of this.ports.values()) if (rec.isAssembly || rec.iface.port?.id === port.id) rec.link.connectPort?.(port);
+    for (const [id, port] of this.ports) if (rec.isAssembly || portId(rec.iface.port) === id) this.handPort(rec, port);
     rec.link.start?.();
   }
 
@@ -732,7 +732,7 @@ export class AssemblyCore {
       this.log('step', `${rule.id}: applies the turn's writes before it waits`, {turn: turn.n, rule: rule.id});
       this.commit(turn);
     }
-    if (rec.iface.port && action !== 'connect-port' && !this.ports.has(rec.iface.port.id)) return fail('unavailable', 'port-not-connected');
+    if (rec.iface.port && action !== 'connect-port' && !this.ports.has(portId(rec.iface.port))) return fail('unavailable', 'port-not-connected');
     if (!rec.started) { // a step asks a part that has not started: it starts first, then is asked (dispatcher decision 2026-10-27)
       this.log('start', `${rule.id}: ${target} asks a part that has not started; it starts first`, {rule: rule.id, role: rec.role});
       this.startPart(rec, 'asked');
@@ -951,7 +951,7 @@ export class AssemblyCore {
 
   /** An action asked from outside: only rules handle it; an unhandled one is reported, not passed up (§7.4). */
   act(action, args = {}, options = {}) {
-    if (action === 'connect-port') return this.connectPort(args?.port ?? args);
+    if (action === 'connect-port') return this.connectPort(portOfParams(args));
     if (action === 'focus' || action === 'blur') { this.view.focus?.(action); return {answer: 'applied'}; }
     const on = `outside.${action}`;
     const handled = this.def.byTrigger.has(on);
@@ -985,16 +985,36 @@ export class AssemblyCore {
   }
 
   /** `connect-port`: kept, and handed to every part that declares the port, at any depth, later ones too (§4.9). */
-  connectPort(port) {
-    if (!isObject(port) || !port.id) { this.error('port', 'connect-port needs a port with an id'); return {answer: 'refused', reason: 'no-port'}; }
-    this.ports.set(port.id, port);
+  // A port is named by its id, or by `port` for a host adapter shaped
+  // {port, version, capabilities, raise} (ui-pro's adapters).
+  connectPort(given) {
+    const port = portOfParams(given);
+    const id = portId(port);
+    if (!id) { this.error('port', 'connect-port needs a port with an id'); return {answer: 'refused', reason: 'no-port'}; }
+    this.ports.set(id, port);
     let handed = 0;
     for (const state of this.roles.values()) for (const rec of state.parts.values()) {
       if (!rec.started) continue;
-      if (rec.isAssembly || rec.iface.port?.id === port.id) { rec.link.connectPort?.(port); if (!rec.isAssembly) handed += 1; }
+      if (rec.isAssembly || portId(rec.iface.port) === id) { this.handPort(rec, port); if (!rec.isAssembly) handed += 1; }
     }
-    this.log('port', `connect-port ${port.id}: handed to ${handed} part(s) of ${this.id}`, {port: port.id, handed});
+    this.log('port', `connect-port ${id}: handed to ${handed} part(s) of ${this.id}`, {port: id, handed});
     return {answer: 'applied'};
+  }
+
+  /**
+   * Hands a port to a part through its link: the part's base action
+   * connect-port (§4.1). A part that refuses it is reported, not failed: the
+   * assembly keeps the port for the parts that take it.
+   */
+  handPort(rec, port) {
+    const answer = rec.link.connectPort?.(port);
+    const settle = (outcome) => {
+      if (outcome && outcome.answer && outcome.answer !== 'applied') {
+        this.error('port', `${rec.instanceId} refused port ${portId(port)}: ${outcome.reason ?? outcome.answer}`, {role: rec.role, reason: outcome.reason ?? ''});
+      }
+    };
+    if (answer && typeof answer.then === 'function') answer.then(settle, () => {});
+    else settle(answer);
   }
 
   /** The keys, their writers and readers (§14 «a map of keys»). */
