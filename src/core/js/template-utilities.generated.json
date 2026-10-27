@@ -122,7 +122,6 @@
   "cl-download-file": [
     "cursor/default",
     "display/default",
-    "position/default",
     "transition-property/default"
   ],
   "cl-drawer": [
@@ -196,8 +195,7 @@
   ],
   "cl-help-mark": [
     "display/default",
-    "isolate/default",
-    "position/default"
+    "isolate/default"
   ],
   "cl-icon": [
     "font-weight/default",
@@ -331,8 +329,7 @@
   ],
   "cl-reference-link": [
     "align-items/default",
-    "display/default",
-    "position/default"
+    "display/default"
   ],
   "cl-resizer": [
     "display/default",
