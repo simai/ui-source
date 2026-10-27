@@ -1,0 +1,100 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Три цифры из шести",
+      "settings": {
+        "label": "Код из сообщения",
+        "name": "code",
+        "value": "123",
+        "hint": "Мы отправили шесть цифр на ваш телефон."
+      },
+      "expect": {
+        "value": "123"
+      }
+    },
+    {
+      "name": "complete",
+      "title": "Код целиком",
+      "settings": {
+        "label": "Код",
+        "value": "482915"
+      },
+      "expect": {
+        "complete": true
+      }
+    },
+    {
+      "name": "alphanumeric",
+      "title": "Буквы и цифры",
+      "settings": {
+        "label": "Код из письма",
+        "mode": "alphanumeric",
+        "length": 8
+      },
+      "expect": {
+        "mode": "alphanumeric"
+      }
+    },
+    {
+      "name": "masked",
+      "title": "Скрытые символы",
+      "settings": {
+        "label": "PIN",
+        "length": 4,
+        "mask": true,
+        "value": "12"
+      },
+      "expect": {
+        "mask": true
+      }
+    },
+    {
+      "name": "filled",
+      "title": "Заливка",
+      "settings": {
+        "label": "Код",
+        "appearance": "filled"
+      },
+      "expect": {
+        "appearance": "filled"
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Код",
+        "value": "000000",
+        "invalid": true,
+        "error-message": "Неверный код"
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступно",
+      "settings": {
+        "label": "Код",
+        "value": "123456",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Код",
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}

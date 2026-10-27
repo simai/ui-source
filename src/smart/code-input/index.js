@@ -18,15 +18,27 @@
 // The class runtime is loaded with the sheet; the drawn field carries
 // data-sf-verification-owner, so it binds nothing to it and the code has one
 // owner.
+//
+// Since standard simai.smart-component 1.3.8 it is built from its
+// component.json (§3, §4, §17): the settings are made by
+// core/js/element-manifest.js, the words are lang/<locale>.json, the whole
+// code is the fact `completed` (sf-code-input-completed; the old
+// sf-code-input:complete follows it through aliases.json, as `error` follows
+// `invalid`, §17.2), the ids come from the field's instance path and never a
+// counter (§7.1.1, simai/ui-source#41), and the host is the form control
+// through ElementInternals: it submits the code and reports the input's
+// validity, and the input carries no name (§17.1).
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import {fieldSize} from '../../component/field-size';
 import {createFieldContract} from '../../component/field-contract';
-import {pageText} from '../../core/js/page-language';
+import {FormField, innerControlName} from '../helpers/form-field';
 import {renderCodeInputTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import {
-  CODE_INPUT_TEXT,
-  CODE_LENGTH_DEFAULT,
-  CODE_MODES,
   MASK_GLYPH,
   applyEdit,
   applyPaste,
@@ -40,28 +52,18 @@ import {
 } from './code.mjs';
 import './scss/index.scss';
 
-let sequence = 0;
+const CodeInputElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
-class SfCodeInput extends SfBaseElement {
+class SfCodeInput extends FormField(CodeInputElement) {
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
-      length: {default: String(CODE_LENGTH_DEFAULT)},
-      value: {default: ''},
-      defaultValue: {attribute: 'default-value', default: ''},
-      name: {default: ''},
-      mode: {default: 'numeric', values: [...CODE_MODES]},
-      size: {default: '1'},
-      appearance: {default: 'bordered', values: ['bordered', 'filled']},
-      label: {default: ''},
-      hint: {default: ''},
-      required: {type: Boolean, default: false},
-      disabled: {type: Boolean, default: false},
-      readonly: {type: Boolean, default: false},
-      error: {type: Boolean, default: false},
-      invalid: {type: Boolean, default: false},
-      errorMessage: {attribute: 'error-message', default: ''},
-      mask: {type: Boolean, default: false},
       ariaLabel: {attribute: 'aria-label', default: ''},
       rootClass: {default: ''},
     };
@@ -69,7 +71,6 @@ class SfCodeInput extends SfBaseElement {
 
   constructor() {
     super();
-    this._id = `sf-code-input-${++sequence}`;
     // The value the last complete event was sent for: one event per code.
     this._completed = '';
     // Where the selection stood before an edit (beforeinput), so typing over
@@ -106,20 +107,6 @@ class SfCodeInput extends SfBaseElement {
     return fieldSize(this.getAttribute('size') || '1', 'sf-code-input');
   }
 
-  get appearance() {
-    return this.getProp('appearance');
-  }
-
-  get label() { return this.getAttribute('label') || ''; }
-  get hint() { return this.getAttribute('hint') || ''; }
-  get name() { return this.getAttribute('name') || ''; }
-  get required() { return this.getBooleanAttr('required', false); }
-  get disabled() { return this.getBooleanAttr('disabled', false); }
-  get readonly() { return this.getBooleanAttr('readonly', false); }
-  get error() { return this.getBooleanAttr('error', false); }
-  get invalid() { return this.getBooleanAttr('invalid', false); }
-  get errorMessage() { return this.getAttribute('error-message') || ''; }
-  get mask() { return this.getBooleanAttr('mask', false); }
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }
 
   // The code: the native input's, kept to the mode and the length.
@@ -140,6 +127,7 @@ class SfCodeInput extends SfBaseElement {
     this._lastValue = value;
     this._completed = value.length === this.length ? value : '';
     this.syncCells();
+    this.sfSyncFormState?.();
   }
 
   get defaultValue() {
@@ -165,7 +153,7 @@ class SfCodeInput extends SfBaseElement {
   }
 
   text(key) {
-    return pageText(CODE_INPUT_TEXT, key, this, 'sf-code-input');
+    return this.sfWord(key);
   }
 
   // «цифра 3 из 6» -- the cell the caret is in, in the page's language.
@@ -253,12 +241,9 @@ class SfCodeInput extends SfBaseElement {
       if (this._completed !== value) {
         this._completed = value;
         // After the input event has reached every listener, so a host reads
-        // the whole code in both.
-        setTimeout(() => this.dispatchEvent(new CustomEvent('sf-code-input:complete', {
-          bubbles: true,
-          composed: true,
-          detail: {value},
-        })), 0);
+        // the whole code in both. sf-code-input-completed, then the old
+        // sf-code-input:complete with the same detail (aliases.json).
+        setTimeout(() => this.sfEmit('completed', {value}), 0);
       }
     } else {
       this._completed = '';
@@ -367,8 +352,14 @@ class SfCodeInput extends SfBaseElement {
       this._lastValue = this.getInputElement()?.value ?? '';
       this._completed = '';
       this.syncCells();
+      this.sfSyncFormState();
     });
   };
+
+  // The browser's restore of a form (back, reload) gives the code back.
+  formStateRestoreCallback(state) {
+    if (typeof state === 'string') this.value = state;
+  }
 
   attributeChangedCallback(name, previous, next) {
     if (name === 'value' && this._writingValue) return;
@@ -384,7 +375,7 @@ class SfCodeInput extends SfBaseElement {
     const props = this.getPropsContext();
     const component = this;
     const input = this.getInputElement();
-    const invalid = this.invalid || this.error;
+    const invalid = this.invalid;
     const field = createFieldContract(this, {
       prefix: 'sf-code-input',
       required: this.required,
@@ -409,7 +400,8 @@ class SfCodeInput extends SfBaseElement {
     return this.createTemplateContext({
       ...props,
       component,
-      id: this._id,
+      // The field's ids come from its instance path (§7.1.1, #41).
+      id: field.base,
       field,
       size: this.size,
       filled: this.appearance === 'filled',
@@ -419,7 +411,9 @@ class SfCodeInput extends SfBaseElement {
       required: this.required,
       disabled: this.disabled,
       readonly: this.readonly,
-      name: this.name,
+      // The host is the form control where the browser has ElementInternals,
+      // so the input carries no name (§17.1 item 6).
+      name: innerControlName(this, this.name),
       value,
       defaultValue: this.defaultValue,
       defaultCode,
@@ -447,6 +441,7 @@ class SfCodeInput extends SfBaseElement {
       this._form = form;
     }
     this.syncCells();
+    this.sfSyncFormState();
   }
 
   template() {

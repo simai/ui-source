@@ -33,6 +33,7 @@
 //   focus                  a selector the focused element matches
 //   journal                [{from, to, since, remove_after}]: SF.deprecations
 //                          notes heard during the trigger
+//   texts                  {selector: text} of parts inside the element
 //   innerNames             the name attributes of the element's inner
 //                          input/textarea/select, in order
 import {createServer} from 'node:http';
@@ -177,6 +178,7 @@ try {
             focus: expect.focus ? Boolean(document.activeElement?.matches(expect.focus)) : null,
             journal: window.SF?.deprecations?.list?.() ?? [],
             innerNames: [...el.querySelectorAll('input, textarea, select')].map((node) => node.getAttribute('name')),
+            texts: Object.fromEntries(Object.keys(expect.texts ?? {}).map((selector) => [selector, el.querySelector(selector)?.textContent ?? null])),
             listed: form ? [...form.elements].filter((node) => node.localName === el.localName).length : 0,
           };
         }, {target, box, expect: check.expect ?? {}});
@@ -214,6 +216,7 @@ try {
           else for (const [key, value] of Object.entries(want)) if (!same(found[0][key], value)) notes.push(`journal ${want.from}.${key} ${JSON.stringify(found[0][key])}`);
         }
         if (expect.innerNames && !same(seen.innerNames, expect.innerNames)) notes.push(`inner names ${JSON.stringify(seen.innerNames)}`);
+        for (const [selector, text] of Object.entries(expect.texts ?? {})) if (!same(seen.texts[selector], text)) notes.push(`${selector} text ${JSON.stringify(seen.texts[selector])}`);
         if (expect.listed !== undefined && seen.listed !== expect.listed) notes.push(`listed ${seen.listed}`);
       } catch (error) {
         notes.push(`error: ${error.message.split('\n')[0]}`);

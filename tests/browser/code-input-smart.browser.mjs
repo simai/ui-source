@@ -111,7 +111,9 @@ try {
   evidence.basic = basic;
   check('markup: a group named by the label, the field labelled by it', basic.group === 'group' && basic.groupName === 'Код из сообщения' && basic.labelFor, {basic});
   check('markup: one native input for a one-time code', basic.type === 'text' && basic.inputmode === 'numeric' && basic.autocomplete === 'one-time-code'
-    && basic.pattern === '[0-9]{6}' && basic.name === 'code' && basic.dir === 'ltr', {basic});
+    // The host submits the code through ElementInternals (standard 1.3.8
+    // §17.1), so the native input carries no name.
+    && basic.pattern === '[0-9]{6}' && basic.name === '' && basic.dir === 'ltr', {basic});
   check('markup: six empty cells hidden from assistive technology', basic.cells.length === 6 && basic.cells.every((cell) => cell === '') && basic.cellsHidden === 'true', {basic});
   check('markup: described by the caret\'s cell, then the hint', basic.described.join('|') === 'цифра 1 из 6|Шесть цифр из сообщения' && basic.live === 'polite', {basic});
   check('markup: the class runtime left the field to the element', basic.owner === 'smart'

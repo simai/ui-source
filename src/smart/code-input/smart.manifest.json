@@ -213,8 +213,20 @@
       },
       "canonical": true
     },
+    "sf-code-input-completed": {
+      "summary": "The fact completed (standard 1.3.8 §8): every cell holds a character, after an edit the person made; once for each whole code, after its input event. The element never submits the form.",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The whole code."
+          }
+        }
+      }
+    },
     "sf-code-input:complete": {
-      "summary": "Every cell holds a character, after an edit the person made; once for each whole code, after its input event. The element never submits the form.",
+      "summary": "Legacy name of sf-code-input-completed, sent after it with the same detail until 2026-12-01 (aliases.json, standard 1.3.8 §16.20).",
       "payload": {
         "type": "object",
         "properties": {
@@ -346,7 +358,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/code-input/index.js",
-        "sha256": "5d213573f09a0dddbc3426c4cf87befa344a5072daa37f01586f0f90d2453b51"
+        "sha256": "d3089e9e5092b501a43ee33485cbccc206846aa59827bc9a76128f2a00348210"
       },
       {
         "path": "src/smart/code-input/code.mjs",
@@ -354,7 +366,7 @@
       },
       {
         "path": "src/smart/code-input/js/templates/default.js",
-        "sha256": "d721f5cf150f3e3b68ec75f3038ce37d04dbde39f008bb7ce48494885d227e55"
+        "sha256": "1ec2e8132d01c073221548c69bcfa5427a00e35f1e96614d6fffad71a5dc5077"
       },
       {
         "path": "src/smart/code-input/scss/_smart__code_input.scss",
@@ -366,7 +378,7 @@
       },
       {
         "path": "src/smart/code-input/docs.md",
-        "sha256": "15bb276034ef94058d5ba91636bd7e5b8a61fdc59e66e289be49a9640961d987"
+        "sha256": "406c1958459ade8097bc698110a16702fa4706e14b65d2bbc5545abb51c8c156"
       }
     ],
     "generated_runtime": []

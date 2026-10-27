@@ -1,0 +1,8 @@
+{
+  "title": "Code input",
+  "runtime": {
+    "character": "character {n} of {m}",
+    "digit": "digit {n} of {m}",
+    "group": "Code"
+  }
+}

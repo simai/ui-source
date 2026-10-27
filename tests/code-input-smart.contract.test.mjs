@@ -92,7 +92,10 @@ test('code input: each cell is spoken by its place, in Russian and English', () 
   assert.equal(positionWords(CODE_INPUT_TEXT.ru.character, 5, 6), 'символ 6 из 6');
   assert.equal(positionWords(CODE_INPUT_TEXT.en.character, 1, 8), 'character 2 of 8');
   assert.deepEqual(Object.keys(CODE_INPUT_TEXT.ru), Object.keys(CODE_INPUT_TEXT.en));
-  assert.match(source, /pageText\(CODE_INPUT_TEXT, key, this, 'sf-code-input'\)/u);
+  // The words the element says are its language files' (standard 1.3.8 §11),
+  // the same as code.mjs keeps for these unit checks.
+  assert.match(source, /text\(key\) \{\n    return this\.sfWord\(key\);/u);
+  for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/code-input/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
   assert.match(source, /this\.text\(this\.mode === 'numeric' \? 'digit' : 'character'\)/u);
 });
 
@@ -142,9 +145,16 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(source, /this\.addEventListener\('input', this\.onInput, true\);/u);
   assert.match(source, /input\.dispatchEvent\(new InputEvent\('input', \{bubbles: true, inputType: 'insertFromPaste'\}\)\);/u);
   assert.match(source, /if \(changed && !this\._changeSent\) input\.dispatchEvent\(new Event\('change', \{bubbles: true\}\)\);/u);
-  assert.match(source, /new CustomEvent\('sf-code-input:complete', \{\n\s+bubbles: true,\n\s+composed: true,\n\s+detail: \{value\},/u);
+  // The fact `completed` (sf-code-input-completed); the old
+  // sf-code-input:complete follows it with the same detail (aliases.json).
+  assert.match(source, /setTimeout\(\(\) => this\.sfEmit\('completed', \{value\}\), 0\);/u);
+  assert.ok(JSON.parse(read('src/smart/code-input/aliases.json')).aliases.some((row) => row.from === 'sf-code-input:complete' && row.to === 'sf-code-input-completed' && row.mode === 'same-detail'));
   assert.match(source, /if \(this\._completed !== value\) \{/u);
   const sent = new Set([...source.matchAll(/new (?:Custom|Input)?Event\('([^']+)'/gu)].map((match) => match[1]));
+  // A declared event sent by its verb (sfEmit) has the DOM name <tag>-<verb>,
+  // and its dated old names follow it (standard 1.3.8 §8, §16.20).
+  for (const [, verb] of source.matchAll(/this\.sfEmit\('([a-z-]+)'/gu)) sent.add(`sf-code-input-${verb}`);
+  for (const row of JSON.parse(read('src/smart/code-input/aliases.json')).aliases) if (row.kind === 'event' && sent.has(row.to)) sent.add(row.from);
   assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
   // The element never submits a form or checks a code, and goes nowhere.
   assert.doesNotMatch(source, /\.submit\(|requestSubmit|\bfetch\(|XMLHttpRequest|sendBeacon|localStorage|innerHTML|unsafeHTML/u);
@@ -178,8 +188,9 @@ test('code input: the class verification\'s public variables wrap the values it 
   const contract = JSON.parse(read('src/core/contracts/public-variables.v1.json'));
   const entry = contract.components.find((one) => one.component === 'verification');
   assert.equal(entry.selector, '.sf-verification');
-  assert.equal(entry.variables.length, 7);
-  for (const variable of entry.variables) assert.equal(variable.since, '2026-10-25', variable.name);
+  // Seven from 2026-10-25, and the invalid state's own (standard 1.3.8 §6).
+  assert.equal(entry.variables.length, 8);
+  for (const variable of entry.variables) assert.equal(variable.since, variable.state ? '2026-10-27' : '2026-10-25', variable.name);
   for (const line of [
     '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6));',
     '--sf-verification--gap: var(--sf-verification-gap, var(--sf-space-1\\/3));',

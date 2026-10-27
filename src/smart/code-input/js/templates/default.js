@@ -42,8 +42,8 @@ export function renderCodeInputTemplate(context) {
     messageContent,
     messageIsError,
   } = context;
-  const labelId = `${id}-label`;
-  const positionId = `${id}-position`;
+  const labelId = `${id}--label`;
+  const positionId = `${id}--position`;
   const describedBy = [positionId, messageContent ? field.messageId : ''].filter(Boolean).join(' ');
   const cells = Array.from({length}, (_, index) => index);
 

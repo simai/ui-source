@@ -104,6 +104,7 @@ document.addEventListener('sf-code-input:complete', async (event) => {
 | `--sf-verification-color` | Цвет символов в ячейках | `var(--sf-on-surface)` |
 | `--sf-verification-cell-size` | Ширина и высота ячейки — одна на всех размерах, если задана | `var(--sf-title-height-6)` |
 | `--sf-verification-gap` | Расстояние между ячейками | `var(--sf-space-1/3)` |
+| `--sf-verification-invalid-border-color` | Рамка ячеек в состоянии ошибки. | `var(--sf-error)` |
 
 Наведение, текущая ячейка, фокус, ошибка и недоступность рисуются своими
 цветами и поверх настроенных.
