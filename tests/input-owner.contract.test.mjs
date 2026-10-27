@@ -32,14 +32,18 @@ test('Input constructor projects bounded native text metadata', async () => {
 
 test('Smart Input projects the same native metadata and closed visual axes', async () => {
   const [template, index, manifestText] = await Promise.all([
-    source('smart/inputs/js/templates/default.js'),
-    source('smart/inputs/index.js'),
-    source('smart/inputs/smart.manifest.json'),
+    source('smart/input/js/templates/default.js'),
+    source('smart/input/index.js'),
+    source('smart/input/smart.manifest.json'),
   ]);
   const manifest = JSON.parse(manifestText);
+  // The settings are the component.json's; core/js/element-manifest.js makes
+  // the props the template reads (standard 1.3.8 §4).
+  const declared = JSON.parse(await source('smart/input/component.json'));
+  assert.match(index, /elementFromManifest\(manifest,/);
   for (const name of ['inputType', 'autocomplete', 'inputmode', 'minlength', 'maxlength', 'pattern']) {
     assert.match(template, new RegExp(name));
-    assert.match(index, new RegExp(name));
+    assert.ok(declared.settings[name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)], name);
   }
   // smart.icons is listed because the template renders sf-icon, which the rule
   // has to fetch: see loader-relation-completeness.contract.test.mjs.
@@ -57,9 +61,9 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
 
 test('Smart Input source metadata describes real form ownership', async () => {
   const [docs, fixture, scenario] = await Promise.all([
-    source('smart/inputs/docs/docs.md'),
-    source('smart/inputs/studio.fixture.json').then(JSON.parse),
-    source('smart/inputs/studio.scenario.json').then(JSON.parse),
+    source('smart/input/docs/docs.md'),
+    source('smart/input/studio.fixture.json').then(JSON.parse),
+    source('smart/input/studio.scenario.json').then(JSON.parse),
   ]);
   assert.match(docs, /input-type/);
   assert.match(docs, /autocomplete/);

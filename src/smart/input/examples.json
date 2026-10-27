@@ -1,0 +1,113 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Почта, обязательное",
+      "settings": {
+        "label": "Электронная почта",
+        "value": "team@simai.ru",
+        "required": true,
+        "hint": "На этот адрес придёт подтверждение.",
+        "input-type": "email",
+        "autocomplete": "email",
+        "name": "email"
+      },
+      "expect": {
+        "value": "team@simai.ru"
+      }
+    },
+    {
+      "name": "filled",
+      "title": "Заливка",
+      "settings": {
+        "label": "Имя",
+        "appearance": "filled"
+      },
+      "expect": {
+        "appearance": "filled"
+      }
+    },
+    {
+      "name": "hidden",
+      "title": "Скрытое",
+      "settings": {
+        "appearance": "hidden",
+        "name": "token",
+        "value": "abc"
+      },
+      "expect": {
+        "value": "abc"
+      }
+    },
+    {
+      "name": "adornments",
+      "title": "Значок и единица",
+      "settings": {
+        "label": "Поиск",
+        "icon-start": "search",
+        "text-end": "₽"
+      },
+      "expect": {
+        "icon-start": "search"
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Почта",
+        "invalid": true,
+        "error-message": "Укажите почту"
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступно",
+      "settings": {
+        "label": "Логин",
+        "value": "admin",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Только чтение",
+      "settings": {
+        "label": "Код",
+        "value": "A-17",
+        "readonly": true
+      },
+      "expect": {
+        "readonly": true
+      }
+    },
+    {
+      "name": "inherited",
+      "title": "Наследуемое значение",
+      "settings": {
+        "label": "Цвет бренда",
+        "inherited-value": "#336699"
+      },
+      "expect": {
+        "data-inherited": true
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупное",
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}

@@ -26,9 +26,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
-  'component/component/inputs/css/inputs.css', 'smart/smart/inputs/css/inputs.css', 'component/component/textarea/css/textarea.css'];
+  'component/component/inputs/css/inputs.css', 'smart/smart/input/css/input.css', 'component/component/textarea/css/textarea.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
-  'smart/smart/inputs/js/inputs.js', 'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
+  'smart/smart/input/js/input.js', 'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const KEPT = {'1/3': '1/2', '3': '2'};
 const MAX = 4;

@@ -84,8 +84,11 @@ export const FormField = (Base) => class extends Base {
     syncFieldValidity(this, this.sfValidityAnchor());
   }
 
-  // The browser resets the parts after it calls this: the sync waits for them.
+  // The browser resets the parts after it calls this: the sync waits for them,
+  // and once more for the parts that put their own default back a task later
+  // (component/form-reset-helper.js: masks, the checkables' attributes).
   formResetCallback() {
     Promise.resolve().then(() => this.sfSyncFormState());
+    setTimeout(() => this.sfSyncFormState(), 0);
   }
 };

@@ -266,12 +266,12 @@
       "reason": "Read from the colour when not set: the chroma the main colour stands for (265 and 85 for the Framework's own #005bbe)."
     },
     {
-      "component": "inputs",
+      "component": "input",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "inputs",
+      "component": "input",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
     },

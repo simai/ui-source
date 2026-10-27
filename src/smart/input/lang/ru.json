@@ -1,0 +1,11 @@
+{
+  "title": "Текстовые поля",
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "наследуется",
+      "reset": "Сбросить к наследуемому",
+      "described": "Наследуется: {value}"
+    }
+  }
+}

@@ -19,6 +19,21 @@ const ruleKeyOf = (source) =>
   source.match(/SF\.RuleLoader(?:\[['"]([^'"]+)['"]\]|\.([A-Za-z0-9_-]+))/u)?.slice(1).find(Boolean) ?? null;
 const relationsOf = (source) => new Set([...source.matchAll(/name:\s*['"]([^'"]+)['"]/gu)].map((m) => m[1]));
 
+// A rule that only forwards: a Smart folder renamed by standard 1.3.8 §3, §21
+// keeps its former bundle name as a dated rule with no tags of its own whose one
+// relation is the new name (src/smart/input/rule.js: cl-inputs -> cl-input).
+// The Loader follows it, so naming the former key fetches the new one.
+const forwardingRules = () => {
+  const forwards = new Map();
+  for (const entry of readdirSync(resolve(root, 'src/smart'), {withFileTypes: true})) {
+    const rule = resolve(root, `src/smart/${entry.name}/rule.js`);
+    if (!entry.isDirectory() || !existsSync(rule)) continue;
+    for (const match of readFileSync(rule, 'utf8').matchAll(/SF\.RuleLoader\[['"]([^'"]+)['"]\] = \{\s*tags: \[\],[\s\S]*?relation: \[\{ name: '([^']+)' \}\]/gu)) forwards.set(match[1], match[2]);
+  }
+  return forwards;
+};
+const followed = (relation, forwards = forwardingRules()) => new Set([...relation, ...[...relation].map((name) => forwards.get(name)).filter(Boolean)]);
+
 const smartDirectories = () =>
   readdirSync(resolve(root, 'src/smart'), {withFileTypes: true})
     .filter((entry) => entry.isDirectory())
@@ -72,7 +87,7 @@ test('a rule fetches every Smart element its own templates render', () => {
     if (!existsSync(resolve(root, rulePath)) || !existsSync(resolve(root, manifestPath))) continue;
 
     const own = JSON.parse(read(manifestPath)).custom_element;
-    const relation = relationsOf(read(rulePath));
+    const relation = followed(relationsOf(read(rulePath)));
     for (const tag of renderedTags(name)) {
       if (tag === own) continue;
       const owner = owners.get(tag);

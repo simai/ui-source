@@ -34,7 +34,7 @@ test('the renderer set gives a labelled field a name, not a second label', async
 // assistive technology reads the native input. Each control that can stand in a
 // field whose label is drawn outside it now takes the name down to its input.
 test('the controls carry the name to the element that is read', async () => {
-  const input = await read('src/smart/inputs/js/templates/default.js');
+  const input = await read('src/smart/input/js/templates/default.js');
   assert.ok(input.includes('const accessibleName = !labelContent && ariaLabel ? ariaLabel : nothing;'));
   assert.equal(input.split('aria-label=${accessibleName}').length - 1, 2, 'both native inputs');
 
@@ -54,7 +54,7 @@ test('the controls carry the name to the element that is read', async () => {
 });
 
 test('every control that takes the name declares it', async () => {
-  for (const name of ['inputs', 'switch', 'country-code', 'datepicker']) {
+  for (const name of ['input', 'switch', 'country-code', 'datepicker']) {
     const source = await read(`src/smart/${name}/index.js`);
     assert.match(source, /ariaLabel: \{\s*attribute: 'aria-label', default: ''\s*\}/u, `${name} prop`);
     assert.match(source, /get ariaLabel\(\) \{\s*return this\.getProp\('ariaLabel'\) \|\| '';/u, `${name} getter`);

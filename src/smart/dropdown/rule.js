@@ -10,7 +10,7 @@ SF.RuleLoader['cl-dropdown'] = {
     { name: 'inputs' },
     { name: 'icon-buttons' },
     { name: 'cl-list-item' },
-    { name: 'cl-inputs' },
+    { name: 'cl-input' },
     { name: 'cl-icon-buttons' },
   ],
 };

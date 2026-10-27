@@ -20,7 +20,7 @@ const modules = [
   'smart/smart/checkbox/js/checkbox.js',
   'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/inputs/js/inputs.js',
+  'smart/smart/input/js/input.js',
   'smart/smart/spinner/js/spinner.js',
   'smart/smart/pagination/js/pagination.js',
 ].map((p) => join(out, p));

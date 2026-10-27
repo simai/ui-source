@@ -20,7 +20,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
   'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/checkbox/js/checkbox.js',
-  'smart/smart/list-item/js/list-item.js', 'smart/smart/inputs/js/inputs.js',
+  'smart/smart/list-item/js/list-item.js', 'smart/smart/input/js/input.js',
   'smart/smart/dropdown/js/dropdown.js', 'smart/smart/spinner/js/spinner.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));

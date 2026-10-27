@@ -41,7 +41,7 @@ for (const [family, name, selector, nativeTag] of [
 }
 
 test('Smart Input keeps explicit empty default separate from its live value', async () => {
-  const source = await read('smart/inputs/index.js');
+  const source = await read('smart/input/index.js');
   const getter = source.slice(source.indexOf('  get defaultValue()'), source.indexOf('  set defaultValue('));
   const context = vm.createContext({});
   vm.runInContext(`globalThis.Subject = class {${getter}}`, context);
@@ -52,7 +52,7 @@ test('Smart Input keeps explicit empty default separate from its live value', as
   attrs.set('default-value', 'reset'); assert.equal(subject.defaultValue, 'reset');
   attrs.delete('default-value'); assert.equal(subject.defaultValue, 'current');
   attrs.delete('value'); assert.equal(subject.defaultValue, '');
-  const template = await read('smart/inputs/js/templates/default.js');
+  const template = await read('smart/input/js/templates/default.js');
   assert.match(template, /\.value=\$\{value\}\s+\.defaultValue=\$\{defaultValue\}/);
 });
 
@@ -74,7 +74,7 @@ test('Smart Textarea reads live text while its template records reset default', 
 
 test('Smart text setters synchronize native/masked values immediately without synthetic input', async () => {
   for (const [family, nextGetter, maskKey] of [
-    ['inputs', 'defaultValue', '__sfInputMask'], ['textarea', 'name', '__sfTextareaMask'],
+    ['input', 'defaultValue', '__sfInputMask'], ['textarea', 'name', '__sfTextareaMask'],
   ]) {
     const source = await read(`smart/${family}/index.js`);
     const setter = source.slice(source.indexOf('  set value('), source.indexOf(`  get ${nextGetter}()`));

@@ -202,7 +202,7 @@
 
   .sf-input.error.sf-input--bordered .sf-input-field {
     --sf-input-field--background-color: var(--sf-transparent-for-focus);
-    --sf-input-field--border-color: var(--sf-error);
+    --sf-input-field--border-color: var(--sf-input-invalid-border-color, var(--sf-error));
   }
 
   .sf-input.error.sf-input--bordered .sf-input-hint-text-wrap, .sf-input.error.sf-input--filled .sf-input-hint-text-wrap {

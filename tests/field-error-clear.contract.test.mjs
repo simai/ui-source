@@ -9,16 +9,18 @@ import test from 'node:test';
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('sf-input: the host\'s invalid/error is the state, and the classes follow it both ways', () => {
-  const source = read('src/smart/inputs/index.js');
+  const source = read('src/smart/input/index.js');
   const body = source.slice(source.indexOf('afterRender() {'), source.indexOf('getInputElement() {'));
   // The binding reads the classes back to decide aria-invalid; the native
   // input's class is not drawn by the template, so it is set from the host --
   // off as well as on -- before the binding reads it.
-  assert.match(body, /const invalid = this\.invalid \|\| this\.error;/u);
+  // `error` is a dated alias of `invalid` (standard 1.3.8 §17.2): writing it
+  // writes invalid, so the host's invalid alone is the state.
+  assert.match(body, /const invalid = this\.invalid;/u);
   assert.match(body, /this\._boundRoot\.classList\.toggle\('error', invalid\);/u);
   assert.match(body, /this\.getInputElement\(\)\?\.classList\.toggle\('error', invalid\);\s*bindInput\(this\._boundRoot\);/u);
   // The template draws aria-invalid from the same state and drops it when valid.
-  const template = read('src/smart/inputs/js/templates/default.js');
+  const template = read('src/smart/input/js/templates/default.js');
   assert.ok(template.includes("aria-invalid=${field.invalid ? 'true' : nothing}"));
   assert.ok(template.includes('invalid: invalid || error,'));
 });

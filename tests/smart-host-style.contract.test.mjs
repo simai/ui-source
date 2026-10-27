@@ -18,7 +18,7 @@ test('Smart author CSSOM is stable and isolated from the boxless host style',asy
 });
 
 test('Input and Textarea expose the existing root-style contract on their actual roots',async()=>{
-  const input=await read('src/smart/inputs/js/templates/default.js');
+  const input=await read('src/smart/input/js/templates/default.js');
   assert.equal((input.match(/style=\$\{rootStyle \|\| nothing\}/g)||[]).length,2);
   const textarea=await read('src/smart/textarea/js/templates/default.js');
   assert.match(textarea,/context\.rootClass/);

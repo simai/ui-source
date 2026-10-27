@@ -8,8 +8,8 @@ Tag:
 
 Loading model:
 
-- detected by `tags: ['sf-input']` in `src/smart/inputs/rule.js`
-- loaded as smart bundle `cl-inputs`
+- detected by `tags: ['sf-input']` in `src/smart/input/rule.js`
+- loaded as smart bundle `cl-input` (`cl-inputs` is its dated alias until 2026-12-01)
 - base styles and base component JS are loaded through relation with `inputs`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
 

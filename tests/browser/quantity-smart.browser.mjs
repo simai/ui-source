@@ -31,13 +31,13 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css',
-  'component/component/inputs/css/inputs.css', 'smart/smart/inputs/css/inputs.css',
+  'component/component/inputs/css/inputs.css', 'smart/smart/input/css/input.css',
   // The layout utilities the templates write (flex, flex-col, items-center…):
   // the Loader would bring them; this page adds the modules by hand.
   ...['display', 'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'place-items']
     .map((name) => `utility/utility/${name}/default/css/default.css`)];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/quantity/js/quantity.js',
-  'smart/smart/inputs/js/inputs.js'];
+  'smart/smart/input/js/input.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 

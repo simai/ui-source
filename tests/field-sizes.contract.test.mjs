@@ -59,13 +59,13 @@ test('field sizes: no field sheet styles a retired size', async () => {
       if (RETIRED_CLASS.test(await readFile(path, 'utf8'))) found.push(path);
     }
   }
-  const smartInputs = await read('src/smart/inputs/js/templates/default.css');
-  if (RETIRED_CLASS.test(smartInputs)) found.push('src/smart/inputs/js/templates/default.css');
+  const smartInputs = await read('src/smart/input/js/templates/default.css');
+  if (RETIRED_CLASS.test(smartInputs)) found.push('src/smart/input/js/templates/default.css');
   assert.deepEqual(found, []);
 });
 
 test('field sizes: Smart manifests offer the three sizes and nothing else', async () => {
-  for (const name of ['inputs', 'textarea', 'dropdown', 'file-upload', 'country-code']) {
+  for (const name of ['input', 'textarea', 'dropdown', 'file-upload', 'country-code']) {
     const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
     assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES], name);
   }
@@ -78,7 +78,7 @@ test('field sizes: every field reads its size through the one rule', async () =>
     'src/component/inputs/js/_inputs.js', 'src/component/textarea/js/_textarea.js',
     'src/component/quantity/js/_quantity.js', 'src/component/country-code/js/_country_code.js',
     'src/component/file-upload/js/_file_upload.js', 'src/component/dropdown/js/_dropdown.js',
-    'src/smart/inputs/index.js', 'src/smart/textarea/index.js', 'src/smart/dropdown/index.js',
+    'src/smart/input/index.js', 'src/smart/textarea/index.js', 'src/smart/dropdown/index.js',
     'src/smart/file-upload/index.js', 'src/smart/file-upload/js/templates/default.js',
     'src/smart/country-code/index.js', 'src/smart/datepicker/index.js',
   ];

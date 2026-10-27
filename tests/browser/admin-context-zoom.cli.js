@@ -17,7 +17,7 @@ async page => {
     await page.emulateMedia({forcedColors: 'none', reducedMotion: 'reduce'});
     await page.goto('http://127.0.0.1:8766/ui-source/tests/fixtures/modal-loader-lab.html');
     for (const name of ['buttons', 'context-menu', 'admin-menu', 'icons', 'icon-buttons', 'inputs', 'badges']) await page.addStyleTag({url: `${base}/component/${name}/css/${name}.css`});
-    for (const name of ['buttons', 'context-menu', 'icons', 'icon-buttons', 'inputs', 'badges', 'admin-menu']) await page.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});
+    for (const name of ['buttons', 'context-menu', 'icons', 'icon-buttons', 'input', 'badges', 'admin-menu']) await page.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});
     await page.evaluate(async ({base, theme, dir}) => {
       document.documentElement.className = `theme-${theme}`;
       document.documentElement.dir = dir;

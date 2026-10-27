@@ -230,6 +230,14 @@
           "varies_with": [
             "size"
           ]
+        },
+        {
+          "name": "--sf-input-invalid-border-color",
+          "role": "border-color",
+          "summary": "The field's border while it is invalid (bordered appearance).",
+          "default": "var(--sf-error)",
+          "state": "invalid",
+          "since": "2026-10-27"
         }
       ]
     },

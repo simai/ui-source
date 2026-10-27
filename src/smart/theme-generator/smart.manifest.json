@@ -369,7 +369,7 @@
       },
       {
         "path": "src/smart/theme-generator/rule.js",
-        "sha256": "9d25eecf429daa6938d8e9acd0e579b4e2752f8d66afb236fe150390c5327458"
+        "sha256": "042e8fc6cc2b2d27b522169bad9eacc7fca579ed213de8ff50654bb09f01390b"
       },
       {
         "path": "src/smart/theme-generator/docs.md",

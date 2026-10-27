@@ -25,7 +25,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/textarea/css/textarea.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/inputs/js/inputs.js', 'smart/smart/textarea/js/textarea.js',
+  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js',
   'smart/smart/datepicker/js/datepicker.js', 'smart/smart/field-renderers/js/field-renderers.js'];
 
 const failures = [];

@@ -544,16 +544,16 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/inputs/index.js",
-        "sha256": "faf537081abaeb4783d19f98462d7b98e644e806003fb72cacd8dadb15ff469a"
+        "path": "src/smart/input/index.js",
+        "sha256": "5408a8bd9e64f6c1a52cc0bd52bff6f2437bcf0147976f2eaba392d7d3056a12"
       },
       {
-        "path": "src/smart/inputs/rule.js",
-        "sha256": "6cb3199df8e04d261cdb5324b5b94fa60ebe5e94fd11a04d11bba32e15e1d3db"
+        "path": "src/smart/input/rule.js",
+        "sha256": "dfe837b976e8a6670661e7ae342bfde7079e8fae34afa484a2068b21d104ccf4"
       },
       {
-        "path": "src/smart/inputs/js/templates/default.js",
-        "sha256": "0ff4836618d8620cc1dc7f0a50fa0c86b2d7074c8dcaabfc8e7a2f664fb76b99"
+        "path": "src/smart/input/js/templates/default.js",
+        "sha256": "f4a9337e9face34d84ca7be004682b00c358cf60a2a065042e660e941fda10cb"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

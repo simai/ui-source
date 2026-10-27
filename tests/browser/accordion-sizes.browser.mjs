@@ -27,7 +27,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/inputs/css/inputs.css', 'component/component/buttons/css/buttons.css',
   'component/component/accordion/css/accordion.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icons/js/icons.js', 'smart/smart/buttons/js/buttons.js',
-  'component/component/inputs/js/inputs.js', 'smart/smart/inputs/js/inputs.js', 'component/component/accordion/js/accordion.js'];
+  'component/component/inputs/js/inputs.js', 'smart/smart/input/js/input.js', 'component/component/accordion/js/accordion.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 // sf-input draws 1/2, 1 and 2; sf-button every step.
 const INPUT_SIZES = new Set(['1/2', '1', '2']);

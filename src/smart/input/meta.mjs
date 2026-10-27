@@ -2,7 +2,7 @@ const INPUTS_APPEARANCE_VALUES = ["bordered", "filled", "hidden"];
 
 const sfInputsMeta = {
   tag: 'sf-inputs',
-  source: 'src/smart/inputs/meta.mjs',
+  source: 'src/smart/input/meta.mjs',
   attributes: {
     appearance: {
       kind: 'enum',

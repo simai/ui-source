@@ -106,7 +106,7 @@
       "state": "converted"
     },
     {
-      "component": "inputs",
+      "component": "input",
       "axis": "appearance",
       "legacy": [
         "type"
@@ -370,7 +370,7 @@
       "dropdown",
       "file-upload",
       "image-field",
-      "inputs",
+      "input",
       "quantity",
       "radio",
       "range-slider",

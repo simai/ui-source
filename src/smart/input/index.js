@@ -3,52 +3,35 @@ import {
   unbindInput,
 } from '../../component/inputs/js/_inputs';
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
+import { FormField, innerControlName } from '../helpers/form-field';
 import { renderInputTemplate } from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-const INPUT_TYPES = new Set(['text', 'email', 'password', 'search', 'tel', 'url']);
-const INPUT_MODES = new Set(['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
-const INPUT_VARIANTS = new Set(['bordered', 'filled', 'hidden']);
+// sf-input from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §17, §20). The settings are made by core/js/element-manifest.js; the
+// legacy names `type` (appearance), `error` (invalid, §17.2), `left-icon`
+// (icon-start) and `right-text` (text-end) are dated aliases (aliases.json),
+// and so is the trait's old event sf-field:reset (sf-field-reset). The host is
+// the form control through ElementInternals: it submits the text, reports the
+// native input's validity, and the native input carries no name (§17.1).
+const InputElement = elementFromManifest(manifest, {
+  base: InheritedValueField(SfBaseElement),
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-const boundedValue = (value, allowed, fallback) => allowed.has(value) ? value : fallback;
-
-class SfInput extends InheritedValueField(SfBaseElement) {
+class SfInput extends FormField(InputElement) {
   static get props() {
     return {
-      size: { default: '1' },
-      // The axis is called appearance, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      appearance: {default: 'bordered', values: ['bordered', 'filled', 'hidden'], aliases: ['type']},
-      label: { default: '' },
-      required: { type: Boolean, default: false },
-      placeholder: { default: '' },
-      inputType: { default: 'text' },
-      autocomplete: { default: '' },
-      inputmode: { default: '' },
-      minlength: { default: '' },
-      maxlength: { default: '' },
-      pattern: { default: '' },
-      hint: { default: '' },
-      value: { default: '' },
-      defaultValue: { default: '' },
-      name: { default: '' },
-      iconStart: {type: String, default: null},
-      textEnd: {type: String, default: null},
-      leftIcon: { default: '' },
-      rightText: { default: '' },
-      hintIcon: { default: '' },
+      ...super.props,
       rootClass: { default: '' },
-      disabled: { type: Boolean, default: false },
-      readonly: { type: Boolean, default: false },
-      error: { type: Boolean, default: false },
-      invalid: { type: Boolean, default: false },
-      errorMessage: { default: '' },
-      mask: { type: Boolean, default: false },
-      maskPattern: { default: '' },
-      maskLazy: { default: '' },
-      maskPlaceholderChar: { default: '' },
-      maskOptions: { default: '' },
       ariaLabel: { attribute: 'aria-label', default: '' },
       // What the field falls back to while it holds nothing (simai/ui-source#28):
       // shown as inherited, with a reset back to it once a value is typed.
@@ -68,55 +51,6 @@ class SfInput extends InheritedValueField(SfBaseElement) {
     return fieldSize(this.getAttribute('size') || '1', 'sf-input');
   }
 
-  get appearance() {
-    return this.getProp('appearance');
-  }
-
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.appearance;
-  }
-
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
-  get required() {
-    return this.getBooleanAttr('required', false);
-  }
-
-  get placeholder() {
-    return this.getAttribute('placeholder') || '';
-  }
-
-  get inputType() {
-    return boundedValue(this.getAttribute('input-type') || 'text', INPUT_TYPES, 'text');
-  }
-
-  get autocomplete() {
-    return this.getAttribute('autocomplete') || '';
-  }
-
-  get inputmode() {
-    return boundedValue(this.getAttribute('inputmode') || '', INPUT_MODES, '');
-  }
-
-  get minlength() {
-    return this.getAttribute('minlength') || '';
-  }
-
-  get maxlength() {
-    return this.getAttribute('maxlength') || '';
-  }
-
-  get pattern() {
-    return this.getAttribute('pattern') || '';
-  }
-
-  get hint() {
-    return this.getAttribute('hint') || '';
-  }
-
   get value() {
     const input = this.getInputElement();
     return input ? input.value : this.getAttribute('value') || '';
@@ -133,6 +67,7 @@ class SfInput extends InheritedValueField(SfBaseElement) {
     const mask = this.querySelector('.sf-input')?.__sfInputMask;
     if (mask) mask.value = normalizedValue;
     else if (input && input.value !== normalizedValue) input.value = normalizedValue;
+    this.sfSyncFormState?.();
   }
 
   get defaultValue() {
@@ -148,70 +83,18 @@ class SfInput extends InheritedValueField(SfBaseElement) {
     this.setAttribute('default-value', String(nextValue));
   }
 
-  get name() {
-    return this.getAttribute('name') || '';
-  }
-
-  get leftIcon() {
-    return this.getAttribute('icon-start') ?? this.getAttribute('left-icon') ?? '';
-  }
-
-  get rightText() {
-    return this.getAttribute('text-end') ?? this.getAttribute('right-text') ?? '';
-  }
-
   get iconStart() {
-    return this.leftIcon;
+    return this.getAttribute('icon-start') ?? '';
   }
 
   get textEnd() {
-    return this.rightText;
-  }
-
-  get hintIcon() {
-    return this.getAttribute('hint-icon') || '';
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  get readonly() {
-    return this.getBooleanAttr('readonly', false);
-  }
-
-  get error() {
-    return this.getBooleanAttr('error', false);
-  }
-
-  get invalid() {
-    return this.getBooleanAttr('invalid', false);
-  }
-
-  get errorMessage() {
-    return this.getAttribute('error-message') || '';
-  }
-
-  get mask() {
-    return this.getBooleanAttr('mask', false);
-  }
-
-  get maskPattern() {
-    return this.getAttribute('mask-pattern') || '';
+    return this.getAttribute('text-end') ?? '';
   }
 
   get maskLazy() {
     return this.hasAttribute('mask-lazy')
       ? this.getBooleanAttr('mask-lazy', true)
       : '';
-  }
-
-  get maskPlaceholderChar() {
-    return this.getAttribute('mask-placeholder-char') || '';
-  }
-
-  get maskOptions() {
-    return this.getAttribute('mask-options') || '';
   }
 
   // A field whose label is drawn outside the control -- a record panel prints
@@ -247,6 +130,11 @@ class SfInput extends InheritedValueField(SfBaseElement) {
     input?.dispatchEvent(new Event('change', {bubbles: true}));
   }
 
+  // The browser's restore of a form (back, reload) gives the text back.
+  formStateRestoreCallback(state) {
+    if (typeof state === 'string') this.value = state;
+  }
+
   templateContext() {
     const props = this.getPropsContext();
     const hasControlledValue = this.hasAttribute('value');
@@ -254,13 +142,16 @@ class SfInput extends InheritedValueField(SfBaseElement) {
 
     return this.createTemplateContext({
       ...props,
-      leftIcon: props.iconStart ?? props.leftIcon,
-      rightText: props.textEnd ?? props.rightText,
+      leftIcon: this.iconStart,
+      rightText: this.textEnd,
       // Resolved names the template reads (contracts/template-context.json).
       iconStart: this.iconStart,
       textEnd: this.textEnd,
-      type: this.type,
+      type: this.appearance,
       maskLazy: this.maskLazy,
+      // The host is the form control where the browser has ElementInternals,
+      // so the native input carries no name (§17.1 item 6).
+      name: innerControlName(this, props.name),
       value: hasControlledValue ? props.value : (input ? input.value : this.defaultValue),
       defaultValue: this.defaultValue,
       hasControlledValue,
@@ -286,19 +177,20 @@ class SfInput extends InheritedValueField(SfBaseElement) {
 
     this._boundRoot = this.querySelector('.sf-input');
     if (this._boundRoot) {
-      // The host's invalid/error is the state; the classes follow it. The
-      // template draws the root's class, but the native input's `error` class
-      // is put there by the binding (syncFieldContract) and no render takes it
-      // off -- and the binding read it back as "still invalid", so removing
-      // `invalid` cleared the message while the red border and
-      // aria-invalid="true" came back (Larena acceptance, 2026-10-22: the
-      // datetime's time field after «Укажите время» and then 10:30).
-      const invalid = this.invalid || this.error;
+      // The host's invalid is the state; the classes follow it. The template
+      // draws the root's class, but the native input's `error` class is put
+      // there by the binding (syncFieldContract) and no render takes it off --
+      // and the binding read it back as "still invalid", so removing `invalid`
+      // cleared the message while the red border and aria-invalid="true" came
+      // back (Larena acceptance, 2026-10-22: the datetime's time field after
+      // «Укажите время» and then 10:30).
+      const invalid = this.invalid;
       this._boundRoot.classList.toggle('error', invalid);
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);
     }
     this.syncInheritedState();
+    this.sfSyncFormState();
   }
 
   getInputElement() {

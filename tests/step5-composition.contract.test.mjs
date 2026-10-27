@@ -43,7 +43,7 @@ test('renderer inputs: datepicker size, reference size, avatar line, file-previe
    control the set renders declares what it emits today. */
 test('renderer events: the controls declare what they emit', async () => {
   for (const [name, events] of [
-    ['inputs', ['input', 'change']], ['textarea', ['input', 'change']],
+    ['input', ['input', 'change']], ['textarea', ['input', 'change']],
     ['checkbox', ['change']], ['switch', ['change']], ['file-upload', ['change']],
   ]) {
     const declared = Object.keys((await manifest(name)).events);

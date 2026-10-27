@@ -27,7 +27,7 @@ const DRAW = {
   // anchored badge alone (simai/ui-source#12).
   badge: {css: ['badges'], js: 'badges', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
   button: {css: ['buttons'], js: 'buttons', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
-  input: {css: ['inputs'], js: 'inputs', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input>'},
+  input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
   tag: {css: ['tags'], js: 'tags', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
   'icon-button': {css: ['icon-buttons'], js: 'icon-buttons', html: '<sf-icon-button icon="add" aria-label="Добавить" size="1"></sf-icon-button>'},

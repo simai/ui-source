@@ -35,7 +35,7 @@ test('template context: the resolved names the templates read are passed', async
     badges: ['iconStart', 'iconEnd'],
     buttons: ['iconStart', 'iconEnd', 'type'],
     'icon-buttons': ['type', 'variant'],
-    inputs: ['iconStart', 'textEnd', 'type', 'maskLazy'],
+    input: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],
     skeleton: ['variant', 'type'],
     tags: ['kind', 'type', 'size', 'inline', 'line'],
