@@ -1,0 +1,224 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.linkage",
+  "version": "1.0.0",
+  "title": "SIMAI Framework Linkage",
+  "appliesTo": [
+    "simai.framework.unit",
+    "simai.framework.release",
+    "simai.framework.component-package",
+    "simai.framework.consumer"
+  ],
+  "requirements": [
+    {
+      "id": "every-unit-has-a-passport",
+      "level": "must",
+      "text": "Every unit a source publishes has a passport: a stable id <kind>.<name> (smart.tree, component.radio, tokens.colour, font.inter, icons.material-symbols, port.simai.property-view-port), a version, its owner and the list of files that make it. A unit without a passport is not published.",
+      "verification": "manual",
+      "guidance": "Framework: every folder of src/component, src/utility and src/plugin keeps passport.json; the token sets, the font, the icon sets, the shared modules and the core keep theirs in src/core/passports; Smart components and host ports are derived from component.json and the port editions. Every committed file under src/ belongs to exactly one unit. Framework: held by scripts/linkage.mjs passports --check and tests/linkage.contract.test.mjs."
+    },
+    {
+      "id": "id-never-changes",
+      "level": "must",
+      "text": "An id is never reused or silently renamed. A rename is a new id plus a dated former name in the change journal (simai.change-lifecycle), and the passport of the new id names the old one.",
+      "verification": "manual",
+      "guidance": "Framework: a passport names earlier ids in former_ids with their journal record; a Smart component's former path (a Loader forward) is derived that way. Reuse of an id is a review item."
+    },
+    {
+      "id": "content-hash",
+      "level": "must",
+      "text": "The passport carries a content hash: one SHA-256 over every file of the unit (sorted paths, each path and its bytes), computed from the committed source, not the working tree.",
+      "verification": "manual",
+      "guidance": "Framework: for each file in ascending path order its path, a zero byte, its length in decimal, a zero byte and its bytes, read from git (HEAD by default). Framework: held by scripts/linkage.mjs passports --check and tests/linkage.contract.test.mjs."
+    },
+    {
+      "id": "semver-meaning",
+      "level": "must",
+      "text": "The version is major.minor.patch: patch for a fix that changes no public surface, minor for an addition that breaks nothing, major for a change a consumer has to act on. The public surface is what the unit's manifest and docs declare: attributes, properties, events, slots, CSS variables, tokens, words, port intents.",
+      "verification": "manual"
+    },
+    {
+      "id": "hash-moves-version",
+      "level": "must",
+      "text": "If the content hash changes, the version changes. A release whose unit hash differs from the previous release while its version is the same is refused by the release gate.",
+      "verification": "manual",
+      "guidance": "Framework: scripts/linkage.mjs passports --check --previous <inventory> and compare refuse hash-moved-without-version and version-went-back; tests/linkage.contract.test.mjs holds the rule on fixtures and, given SF_LINKAGE_PREVIOUS, on the previous release."
+    },
+    {
+      "id": "dependencies-declared",
+      "level": "must",
+      "text": "The passport names the units it depends on with the version range it accepts, including the shared foundations (tokens, fonts, icons) it reads. A dependency the code uses but the passport omits is a defect found by a check, not by a consumer.",
+      "verification": "manual",
+      "guidance": "Framework: found mechanically from rule relations, SCSS @use/@forward/@import and url(), script imports and the custom properties a unit reads of a foundation that defines them; a range is a caret range. Framework: held by scripts/linkage.mjs passports --check and tests/linkage.contract.test.mjs."
+    },
+    {
+      "id": "journal-per-version",
+      "level": "must",
+      "text": "Each version of a unit has a journal entry: what changed and, for a minor or major, what a consumer does about it. The entry is data, not only prose; renames and removals use the existing change-journal records.",
+      "verification": "manual"
+    },
+    {
+      "id": "inventory-per-release",
+      "level": "must",
+      "text": "Every release publishes an inventory: every unit with id, version and content hash, and the release's own identity (the pair id ui-<12>, a package id larena-<12>, ...). The inventory travels inside the distribution and beside the release lock; additions to the lock keep its existing fields so current readers keep working.",
+      "verification": "manual",
+      "guidance": "Framework: scripts/linkage.mjs inventory --out <file> --release <id> writes it from the committed passports; the release route does not carry it yet."
+    },
+    {
+      "id": "inventory-is-complete",
+      "level": "must",
+      "text": "The inventory lists every unit the release carries; a file in the distribution that belongs to no unit is a defect.",
+      "verification": "manual",
+      "guidance": "Framework: on the source side, a committed file under src/ that belongs to no unit fails the passport check; the distribution side is the builder's."
+    },
+    {
+      "id": "inventories-compare",
+      "level": "must",
+      "text": "Any two inventories of one source compare to a change report: added, removed, changed (from-version, to-version, the journal entries in between), and the units whose dependencies changed. The report is data and is published with the release.",
+      "verification": "manual",
+      "guidance": "Framework: scripts/linkage.mjs compare <from> <to> writes the change report; the journal entries in between come with journal-per-version."
+    },
+    {
+      "id": "consumer-keeps-a-record",
+      "level": "must",
+      "text": "A consumer that wants to know what is out of date keeps a usage record: the source and release it was last brought up to, and for each place it uses a unit (a Figma node, a docs page, a project file or screen, an example) the unit id, the version and the content hash it was made against.",
+      "verification": "manual"
+    },
+    {
+      "id": "record-is-local-data",
+      "level": "must",
+      "text": "The record lives with the consumer, in a format this standard defines; the source never needs access to it. A consumer may keep it by hand, generate it from its code, or both.",
+      "verification": "manual"
+    },
+    {
+      "id": "foundations-count",
+      "level": "must",
+      "text": "A place that uses a unit also depends on that unit's declared foundations; reconcile follows them, so a changed colour token marks every place drawn with it even when no component version moved.",
+      "verification": "manual"
+    },
+    {
+      "id": "one-reconcile",
+      "level": "must",
+      "text": "One command takes a usage record and an inventory and gives each place one status: current (the hash matches), update-available (a newer patch or minor), action-needed (a major, or a journal entry asks for a change; the entry's instruction is quoted), former-name (still works, with the date it stops), missing (the unit is gone).",
+      "verification": "manual",
+      "guidance": "The reconcile command lives in ui-builder, beside the receipts, published so a project can run it without the sources (owner, 2026-10-27)."
+    },
+    {
+      "id": "report-is-data",
+      "level": "must",
+      "text": "The reconcile report is machine-readable and also readable by a person; tools build on it (the Figma drift report, a docs checklist, a project upgrade list). It never changes the consumer on its own.",
+      "verification": "manual"
+    },
+    {
+      "id": "no-silent-drift",
+      "level": "should",
+      "text": "A consumer that publishes (a docs site, a Figma library, a product release) runs reconcile before it does, and says which places it leaves out of date and why.",
+      "verification": "manual",
+      "guidance": "Documentation pages are consumers: each records which units and versions it shows; they are not units of SIMAI Framework (owner, 2026-10-27)."
+    },
+    {
+      "id": "gate-in-the-release",
+      "level": "must",
+      "text": "The release route of each source runs the passport, hash-moves-version and inventory checks; a red check stops the release like any other gate.",
+      "verification": "manual",
+      "guidance": "Framework: the passport check runs with the contract tests (tests/linkage.contract.test.mjs); the release route's step against the previous release's inventory is not wired yet."
+    },
+    {
+      "id": "one-format-for-all-sources",
+      "level": "must",
+      "text": "SIMAI Framework, ui-pro and any component package use the same passport, inventory and report formats, so a consumer reconciles against several sources the same way.",
+      "verification": "manual",
+      "guidance": "The formats: simai.framework.unit-passport, simai.framework.unit-inventory and simai.framework.unit-change-report, schema_version 1, pinned below."
+    },
+    {
+      "id": "adopt-in-place",
+      "level": "should",
+      "text": "Existing data is the starting point: Smart component manifests and component.json already carry versions, the change journal already dates renames, release locks already carry archive hashes, the Figma kit's comparator already reads locks. They are extended, not replaced.",
+      "verification": "manual",
+      "guidance": "Framework: a Smart component's passport is derived from its component.json and a host port's from its edition folders; nothing is written beside them."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.unit-passport-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/unit-passport-1.0.0.schema.json",
+      "sha256": "bb25d643d204aca114d8320367fc925e7e189e6df32b564150dffafddb4e6e93",
+      "description": "The form of a passport: id, kind, version, owner, files, content hash, dependencies with ranges, former ids."
+    },
+    {
+      "id": "simai.framework.unit-inventory-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/unit-inventory-1.0.0.schema.json",
+      "sha256": "e61dde103d92a68081bc5dff0a92d60f72602d9241008aeb5f4a1420756901a9",
+      "description": "The form of a release's inventory: the source, its revision, the release id and every unit with version, content hash and dependencies."
+    },
+    {
+      "id": "simai.framework.unit-change-report-schema",
+      "version": "1.0.0",
+      "path": "../../pinned/unit-change-report-1.0.0.schema.json",
+      "sha256": "29d853ccb62f78f361d445e839e3aadd48d15087b613672e7c7d247dbba5bcec",
+      "description": "The form of the comparison of two inventories: added, removed, changed, dependencies changed, and the violations a release gate refuses."
+    }
+  ],
+  "references": [
+    {
+      "id": "simai.change-lifecycle",
+      "version": "1.0.0",
+      "path": "../../simai.change-lifecycle/1.0.0/standard.json",
+      "sha256": "e63f4550d2c967e4f65c917677be849a6640614bad33c00c31cb0c6aef7ed860",
+      "description": "Dated former names and the change journal a rename and a removal are recorded in."
+    },
+    {
+      "id": "simai.component-package",
+      "version": "1.1.1",
+      "path": "../../simai.component-package/1.1.1/standard.json",
+      "sha256": "f6c675628da5ee977faca1d1fb1400423cf29257eb3d0c89790fddece1ed1315",
+      "description": "A package and its receipt: a package is a source held to this standard like the Framework."
+    },
+    {
+      "id": "simai.framework.release-lock",
+      "version": "2.0.0",
+      "description": "The release lock v2 of a pair (simai/ui contracts/schema/framework-release-lock.v2.schema.json); the inventory travels beside it and additions keep its fields."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "scope_note": "What is current, what is out of date and what to change, for every system that uses SIMAI Framework: a passport per unit, an inventory per release, a usage record per consumer and one reconcile between them. Every source of parts (SIMAI Framework, simai/ui-pro, any component package) and every consumer (the Figma UI kit, the documentation sites, Larena, ui-admin, ui-chat, a customer project, examples, AI tooling).",
+      "decisions": [
+        "owner decision 2026-10-27 (recorded in the Federation): one standard for linkage; ui-control control/standards/simai.linkage-1.0.0-draft.md approved with the owner's answers",
+        "owner 2026-10-27: one utility folder is one unit (utility.<folder>); a report may roll units up by family for reading",
+        "owner 2026-10-27: documentation pages are consumers, not units",
+        "owner 2026-10-27: the reconcile command lives in ui-builder, beside the receipts"
+      ],
+      "rollout": [
+        "1. this standard",
+        "2. passports for every SIMAI Framework unit and the hash-moves-version gate",
+        "3. the inventory in each SIMAI Framework and ui-pro release, and the compare report",
+        "4. the reconcile command; first consumers the Figma kit and the documentation sites",
+        "5. Larena, ui-admin, ui-chat and customer projects add their usage records as they move to a new release"
+      ],
+      "tools": {
+        "passports": "simai/ui-source scripts/linkage.mjs passports --check|--write",
+        "inventory": "simai/ui-source scripts/linkage.mjs inventory --out <file>",
+        "compare": "simai/ui-source scripts/linkage.mjs compare <a> <b>",
+        "reconcile": "simai/ui-builder (to come)"
+      },
+      "not_yet_checked": [
+        "journal-per-version: no per-version journal entry is required by a gate yet",
+        "the inventory is not in the distribution and the release route does not compare against the previous release yet",
+        "usage records, reconcile and its report are defined here and built in ui-builder"
+      ]
+    }
+  }
+}

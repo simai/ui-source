@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/unit-inventory.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework unit inventory",
+  "description": "Every unit a release of one source carries, with its version, content hash and dependencies, and the release's own identity (standard simai.linkage inventory-per-release). Written by scripts/linkage.mjs inventory from the committed passports; two inventories of one source compare to a change report (scripts/linkage.mjs compare).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_version",
+    "source",
+    "revision",
+    "units"
+  ],
+  "properties": {
+    "schema": {
+      "const": "simai.framework.unit-inventory"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The repository the units come from, e.g. simai/ui-source."
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$",
+      "description": "The source commit the inventory was read from."
+    },
+    "release": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z][a-z0-9-]*-[a-f0-9]{12}$",
+      "description": "The release's identity, e.g. the pair id ui-<12> or a package id larena-<12>; null before a release names it."
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "version",
+          "content_sha256",
+          "dependencies"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$"
+          },
+          "kind": {
+            "enum": [
+              "component",
+              "utility",
+              "plugin",
+              "smart",
+              "port",
+              "tokens",
+              "font",
+              "icons",
+              "module",
+              "core"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "content_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "files": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many source files the unit has."
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "range"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$"
+                },
+                "range": {
+                  "type": "string",
+                  "pattern": "^\\^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+                  "description": "The versions accepted: a caret range, ^major.minor.patch (same major and not lower; for 0.x the same minor)."
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "In ascending order of id, one entry per unit."
+    }
+  }
+}
