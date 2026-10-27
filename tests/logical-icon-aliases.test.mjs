@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
-for (const [name, renderer] of [['button','renderButtonTemplate'], ['badges','renderBadgeTemplate']]) {
+for (const [name, renderer] of [['button','renderButtonTemplate'], ['badge','renderBadgeTemplate']]) {
   const source = fs.readFileSync(new URL(`../src/smart/${name}/js/templates/default.js`, import.meta.url), 'utf8');
   const html = (parts, ...values) => parts.reduce((result, part, index) => result + part + (values[index] ?? ''), '');
   const render = vm.runInNewContext(source.replace(/^import .*;$/gm, '').replace('export function', 'function') + `\n${renderer};`, {html, nothing: ''});

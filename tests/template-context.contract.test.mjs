@@ -32,7 +32,7 @@ test('template context: every exemption names a resolving getter and a reason', 
    templateContext() does not quietly drop the resolved value again. */
 test('template context: the resolved names the templates read are passed', async () => {
   const expected = {
-    badges: ['iconStart', 'iconEnd'],
+    badge: ['iconStart', 'iconEnd'],
     button: ['iconStart', 'iconEnd', 'type'],
     'icon-button': ['type', 'variant'],
     input: ['iconStart', 'textEnd', 'type', 'maskLazy'],

@@ -234,8 +234,8 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/badges/index.js",
-        "sha256": "af3efc5747c4e2ce6232b9426da54ffb69c98288f7c055525e3c6a4fafc2bcfe"
+        "path": "src/smart/badge/index.js",
+        "sha256": "95e09e2c98b24b02827b9fe6e7dc015373cbccd3e1789ae391946d18085e21b6"
       }
     ],
     "generated_runtime": [

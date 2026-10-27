@@ -14,12 +14,13 @@ import {fileURLToPath} from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const axes = JSON.parse(readFileSync(resolve(root, 'contracts/public-api-axes.json'), 'utf8'));
 const tags = {
-  buttons: 'sf-button', 'icon-buttons': 'sf-icon-button', inputs: 'sf-input', dropdown: 'sf-dropdown',
-  badges: 'sf-badge', 'tree-item': 'sf-tree-item',
+  // Smart folders, named as their tags without the prefix (standard 1.3.8 §3, §21).
+  button: 'sf-button', 'icon-button': 'sf-icon-button', input: 'sf-input', dropdown: 'sf-dropdown',
+  badge: 'sf-badge', 'tree-item': 'sf-tree-item',
 };
 const legacy = {};
 for (const {component, axis, legacy: names = []} of axes.components) {
-  if (!tags[component] || (component === 'badges' && axis === 'status')) continue;
+  if (!tags[component] || (component === 'badge' && axis === 'status')) continue;
   for (const name of names) (legacy[tags[component]] ??= {})[name] = axis;
 }
 // Renames the change journal records (tightness -> spacing) count too.

@@ -6,7 +6,7 @@ SF.RuleLoader['cl-page-header'] = {
   mode: 'smart',
   js: true,
   relation: [
-    {name: 'cl-badges'},
+    {name: 'cl-badge'},
     {name: 'cl-icon-button'},
     {name: 'cl-icon'},
   ],

@@ -86,8 +86,8 @@ test('Core and Smart renderers share the canonical classes and icon-only shape',
     read('src/component/badges/js/_badges.js'),
     read('src/component/badges/json/badge.utility.json'),
     read('src/component/badges/scss/_css__badges.scss'),
-    read('src/smart/badges/index.js'),
-    read('src/smart/badges/js/templates/default.js'),
+    read('src/smart/badge/index.js'),
+    read('src/smart/badge/js/templates/default.js'),
   ]);
 
   assert.match(core, /`sf-badge--\$\{type\}`/);
@@ -96,23 +96,27 @@ test('Core and Smart renderers share the canonical classes and icon-only shape',
   assert.doesNotMatch(utilityMap, /flex\/1|flex-1/);
   assert.doesNotMatch(css, /utility-hint:[^\n]*flex\/1/);
 
-  assert.match(smart, /values: BADGE_TYPES/);
+  // appearance and size are made from component.json (core/js/element-manifest.js),
+  // with the class contract's lists.
+  const component = JSON.parse(await read('src/smart/badge/component.json'));
+  assert.deepEqual(component.settings.appearance.values, ['main', 'tonal', 'outline']);
+  assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1']);
   // The scheme keeps its own axis — the colour roles — and the status words it
   // used to carry now live on the status axis.
   assert.match(smart, /values: BADGE_COLOUR_ROLES/);
   assert.match(smart, /values: BADGE_STATUSES/);
-  assert.match(smart, /values: BADGE_SIZES/);
+  assert.match(smart, /BADGE_SIZES/);
   assert.match(smart, /normalizeBadgeContract\(props\)/);
   assert.match(template, /hasTextContent/);
   assert.match(template, /: nothing/);
 });
 
 test('Badge documentation records the matrix, semantic extension and official dark variant', async () => {
-  const docs = await read('src/smart/badges/docs/docs.md');
+  const docs = await read('src/smart/badge/docs/docs.md');
 
   assert.match(docs, /42 supported combinations/);
   assert.match(docs, /36 semantic combinations/);
   assert.match(docs, /`tonal \+ on-surface` is not a designed variant/);
-  assert.match(docs, /type="main" scheme="on-surface"/);
+  assert.match(docs, /appearance="main" scheme="on-surface"/);
   assert.match(docs, /not an\s+additional `inverse` scheme/);
 });

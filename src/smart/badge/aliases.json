@@ -1,0 +1,82 @@
+{
+  "$comment": "Dated aliases of sf-badge for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+  "component": "sf-badge",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1",
+      "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+    },
+    {
+      "from": "type",
+      "to": "appearance",
+      "kind": "setting",
+      "section": "§16 item 20, contracts/public-api-axes.json",
+      "note": "the legacy axis name; the shim maps the attribute and the property",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "icon-left",
+      "to": "icon-start",
+      "kind": "setting",
+      "section": "§16 item 20",
+      "note": "journal attribute-icon-left-right-to-start-end; icon-start wins when both are given",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "icon-right",
+      "to": "icon-end",
+      "kind": "setting",
+      "section": "§16 item 20",
+      "note": "journal attribute-icon-left-right-to-start-end; icon-end wins when both are given",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "danger",
+      "to": "error",
+      "kind": "value",
+      "setting": "status",
+      "section": "§16 item 20",
+      "note": "journal value-status-danger-critical-to-error",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "left",
+      "to": "start",
+      "kind": "value",
+      "setting": "icon-position",
+      "section": "§16 item 20",
+      "note": "the physical name the template read as start",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    },
+    {
+      "from": "right",
+      "to": "end",
+      "kind": "value",
+      "setting": "icon-position",
+      "section": "§16 item 20",
+      "note": "the physical name the template read as end",
+      "component": "sf-badge",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01"
+    }
+  ]
+}

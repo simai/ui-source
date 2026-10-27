@@ -90,7 +90,7 @@
       "note": "segmented draws the same radiogroup as a sunken track with a plate under the selected segment (simai/ui-source#4); default keeps the joined outlined buttons."
     },
     {
-      "component": "badges",
+      "component": "badge",
       "axis": "appearance",
       "legacy": [
         "type"
@@ -237,7 +237,7 @@
       "note": "same split"
     },
     {
-      "component": "badges",
+      "component": "badge",
       "axis": "status",
       "legacy": [
         "scheme"

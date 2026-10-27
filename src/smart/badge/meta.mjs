@@ -4,7 +4,7 @@ const BADGE_STATUS_VALUES = ["", "info", "success", "warning", "error"];
 
 const sfBadgesMeta = {
   tag: 'sf-badge',
-  source: 'src/smart/badges/meta.mjs',
+  source: 'src/smart/badge/meta.mjs',
   attributes: {
     appearance: {
       kind: 'enum',

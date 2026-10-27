@@ -1,4 +1,4 @@
-# Smart Badges
+# Smart Badge
 
 The default template applies shared `root-class`, `style` and `root-style`
 settings to its root. Use Framework utilities and semantic tokens; the outer
@@ -13,8 +13,10 @@ Tag:
 
 Loading model:
 
-- detected by `tags: ['sf-badge']` in `src/smart/badges/rule.js`
-- loaded as smart bundle `cl-badges`
+- detected by `tags: ['sf-badge']` in `src/smart/badge/rule.js`
+- loaded as smart bundle `cl-badge` (`cl-badges` is its dated alias until
+  2026-12-01, and `smart/badges/js/badges.js` a forwarding script that loads
+  `smart/badge/js/badge.js`; change journal `path-smart-badges-to-badge`)
 - base styles and base component JS are loaded through relation with `badges`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
 
@@ -22,8 +24,10 @@ Main attributes:
 
 - `template`
 - `size`
-- `type`
+- `appearance`
 - `scheme`
+- `status`
+- `line`
 - `text`
 - `icon`
 - `icon-start`
@@ -31,10 +35,13 @@ Main attributes:
 - `icon-position`
 - `aria-label`
 
-For older SF5 templates, `icon-left` and `icon-right` remain compatibility
-aliases.
+The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
+`appearance`, `icon-left` and `icon-right` for `icon-start` and `icon-end`, and
+the values `danger` (status error), `left` and `right` (icon-position start
+and end). The shim writes the new attribute and notes each use in
+`SF.deprecations`. A status word written as `scheme` still reaches `status`.
 
-Supported `type` values:
+Supported `appearance` values:
 
 - `main`
 - `tonal`
@@ -84,7 +91,7 @@ The dark semantic badge from the UI Kit is `main + on-surface`; it is not an
 additional `inverse` scheme:
 
 ```html
-<sf-badge type="main" scheme="on-surface" size="1/2" text="PHP 8.2"></sf-badge>
+<sf-badge appearance="main" scheme="on-surface" size="1/2" text="PHP 8.2"></sf-badge>
 ```
 
 When no text or `text` slot is supplied, the text container is omitted. This
@@ -110,7 +117,7 @@ The legacy slot names `icon-left` and `icon-right` remain compatible.
 Example:
 
 ```html
-<sf-badge type="main" scheme="primary" text="99+">
+<sf-badge appearance="main" scheme="primary" text="99+">
   <span slot="icon-start"><i class="sf-icon">arrow_upward</i></span>
 </sf-badge>
 ```

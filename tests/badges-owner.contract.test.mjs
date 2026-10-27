@@ -28,7 +28,7 @@ test('Badge presentation uses semantic roles and high-level geometry tokens', as
 test('Ordinary and Smart Badge preserve static inline semantics', async () => {
   const [ordinary, smartTemplate] = await Promise.all([
     read('src/component/badges/js/_badges.js'),
-    read('src/smart/badges/js/templates/default.js'),
+    read('src/smart/badge/js/templates/default.js'),
   ]);
 
   assert.match(ordinary, /createElement\('span'\)/);
@@ -41,7 +41,7 @@ test('Ordinary and Smart Badge preserve static inline semantics', async () => {
 });
 
 test('Smart Badge declares exact variants and no keyboard ownership', async () => {
-  const manifest = JSON.parse(await read('src/smart/badges/smart.manifest.json'));
+  const manifest = JSON.parse(await read('src/smart/badge/smart.manifest.json'));
 
   assert.deepEqual(manifest.composition.uses, ['component.badges']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1']);

@@ -1,0 +1,103 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Новый",
+      "settings": {
+        "text": "Новый",
+        "scheme": "primary"
+      },
+      "expect": {
+        "appearance": "main",
+        "scheme": "primary"
+      }
+    },
+    {
+      "name": "tonal",
+      "title": "Тональный",
+      "settings": {
+        "text": "Черновик",
+        "appearance": "tonal",
+        "scheme": "secondary"
+      },
+      "expect": {
+        "appearance": "tonal"
+      }
+    },
+    {
+      "name": "outline",
+      "title": "Контурный",
+      "settings": {
+        "text": "PHP 8.2",
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "size": "1/2"
+      },
+      "expect": {
+        "appearance": "outline",
+        "size": "1/2"
+      }
+    },
+    {
+      "name": "status",
+      "title": "Статус",
+      "settings": {
+        "text": "Оплачен",
+        "status": "success"
+      },
+      "expect": {
+        "status": "success"
+      }
+    },
+    {
+      "name": "error",
+      "title": "Ошибка",
+      "settings": {
+        "text": "Просрочен",
+        "status": "error",
+        "appearance": "tonal"
+      },
+      "expect": {
+        "status": "error"
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Со значком",
+      "settings": {
+        "text": "Проверен",
+        "icon-start": "check",
+        "status": "info"
+      },
+      "expect": {
+        "icon-start": "check"
+      }
+    },
+    {
+      "name": "count",
+      "title": "Счётчик с подписью",
+      "settings": {
+        "text": "99+",
+        "scheme": "primary"
+      },
+      "attributes": {
+        "aria-label": "Больше 99 новых"
+      },
+      "expect": {
+        "text": "99+"
+      }
+    },
+    {
+      "name": "line",
+      "title": "В строке таблицы",
+      "settings": {
+        "text": "Активен",
+        "status": "success",
+        "line": "1"
+      },
+      "expect": {
+        "line": "1"
+      }
+    }
+  ]
+}

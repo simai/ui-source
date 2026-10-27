@@ -9,7 +9,7 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
    size 1/2 badge 28px and a size 1/2 scale 26px tall against a 20px line; no
    badge size fit the line at all. */
 test('line composition: badge and scale take the text line', async () => {
-  for (const name of ['badges', 'progress-scale', 'reference-link', 'tags']) {
+  for (const name of ['badge', 'progress-scale', 'reference-link', 'tags']) {
     const manifest = JSON.parse(await read(`smart/${name}/smart.manifest.json`));
     assert.deepEqual(manifest.inputs.properties.line.enum, ['', '1/2', '1', '2'], name);
   }

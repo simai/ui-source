@@ -36,7 +36,7 @@
     "flex-direction/default",
     "position/default"
   ],
-  "cl-badges": [
+  "cl-badge": [
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",

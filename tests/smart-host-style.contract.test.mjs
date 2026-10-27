@@ -41,7 +41,7 @@ for (const kind of ['checkbox', 'radio', 'switch', 'toggle']) {
   });
 }
 
-for (const kind of ['button', 'icon-button', 'close', 'button-group', 'badges', 'progress-bar', 'progress-scale', 'spinner', 'reference-link', 'download-file', 'alert', 'toast']) {
+for (const kind of ['button', 'icon-button', 'close', 'button-group', 'badge', 'progress-bar', 'progress-scale', 'spinner', 'reference-link', 'download-file', 'alert', 'toast']) {
   test(`${kind} consumes common root classes and styles in its default template`,async()=>{
     const source=await read(`src/smart/${kind}/js/templates/default.js`);
     assert.match(source,/rootClass/);
