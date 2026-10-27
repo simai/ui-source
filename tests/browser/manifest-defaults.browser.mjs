@@ -40,6 +40,9 @@ try {
     const result = await page.evaluate(async ({tag, inputs}) => {
       const Ctor = customElements.get(tag);
       if (!Ctor) return {error: `${tag} is not defined`};
+      // sf-resizer draws nothing: a plain element made from its component.json
+      // (standard 1.3.8), not the Smart base, so its defaults are its manifest's by construction.
+      if (typeof Ctor.normalizePropConfig !== 'function') return {rows: []};
       const element = document.createElement(tag);
       document.body.append(element);
       await new Promise((settle) => setTimeout(settle, 0));

@@ -116,6 +116,31 @@ const DRAW = {
     html: `<sf-breadcrumbs aria-label="Навигация" items='[{"label":"Главная","href":"#"},{"label":"Раздел"},{"label":"Страница"}]'></sf-breadcrumbs>`},
   steps: {css: ['step', 'icons'], js: 'steps',
     html: `<sf-steps aria-label="Этапы" current="1" items='[{"label":"Черновик"},{"label":"Проверка"},{"label":"Готово"}]'></sf-steps>`},
+  // Display group B with its move to standard 1.3.8 (2026-10-27): each part a
+  // variable reaches is drawn -- the percentage beside a bar, a spinner's
+  // words, a wave and two bars, an error's actions, a file's row with its
+  // buttons, a slider's thumbnails, a gallery's inline caption, a handle at
+  // rest and one being dragged, a picker's folded trigger.
+  'progress-bar': {css: ['progress-bar'], js: 'progress-bar',
+    html: '<sf-progress-bar label="Загрузка" value="40" text-position="inline-end"></sf-progress-bar>'},
+  'progress-scale': {css: ['progress-scale'], js: 'progress-scale',
+    html: '<sf-progress-scale label="Этапы" value="45"></sf-progress-scale>'},
+  spinner: {css: ['spinner'], js: 'spinner',
+    html: '<sf-spinner label="Загрузка данных" size="2"></sf-spinner>'},
+  skeleton: {css: ['skeleton'], js: 'skeleton',
+    html: '<sf-skeleton count="2" animation="wave"></sf-skeleton>'},
+  'empty-state': {css: ['featured-icon', 'buttons', 'smart/smart/empty-state/css/empty-state.css'], js: 'empty-state',
+    html: '<sf-empty-state kind="error"></sf-empty-state>'},
+  'file-preview': {css: ['file-preview', 'icon-buttons'], js: 'file-preview',
+    html: '<sf-file-preview file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-preview>'},
+  slider: {css: ['slider', 'icon-buttons'], js: 'slider',
+    html: '<div style="inline-size:600px"><sf-slider thumbs><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div>'},
+  gallery: {css: ['slider', 'modal', 'icon-buttons', 'smart/smart/gallery/css/gallery.css'], js: ['slider', 'gallery'],
+    html: '<div style="inline-size:600px"><sf-gallery thumbs="false"><figure slot="slide"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><figcaption>Подпись</figcaption></figure></sf-gallery></div>'},
+  resizer: {css: ['smart/smart/resizer/css/resizer.css'], js: 'resizer',
+    html: '<nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400"></sf-resizer></nav><nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400" data-sf-resizing></sf-resizer></nav>'},
+  'profile-picker': {css: ['smart/smart/profile-picker/css/profile-picker.css'], js: 'profile-picker',
+    html: '<sf-profile-picker label="Профиль"></sf-profile-picker>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -155,7 +180,9 @@ try {
       const path = folder === 'core' ? 'core/core/css/core.css' : folder.includes('/') ? folder : `component/component/${folder}/css/${folder}.css`;
       await page.addStyleTag({path: join(out, path)}).catch(() => note({component: entry.component, said: `no sheet ${path}`}));
     }
-    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js', `smart/smart/${draw.js}/js/${draw.js}.js`]) {
+    // js names one module, or several when a component draws with another
+    // (sf-gallery's inline view is sf-slider).
+    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js', ...[].concat(draw.js).map((js) => `smart/smart/${js}/js/${js}.js`)]) {
       await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
     }
     await page.waitForTimeout(700);

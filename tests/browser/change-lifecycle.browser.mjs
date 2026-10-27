@@ -30,6 +30,9 @@ try {
     const declared = await page.evaluate((tag) => {
       const Ctor = customElements.get(tag);
       if (!Ctor) return [];
+      // sf-resizer draws nothing: a plain element made from its component.json
+      // (standard 1.3.8), not the Smart base, so its old names are rows of its aliases.json.
+      if (typeof Ctor.normalizePropConfig !== 'function') return [];
       const rows = [];
       for (const [key, config] of Object.entries(Ctor.props || {})) {
         const normal = Ctor.normalizePropConfig(key, config);

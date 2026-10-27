@@ -36,12 +36,12 @@ const FOLDERS = {
   'download-file': 'download-file',
   'copy-button': 'smart/copy-button',
   'help-mark': 'smart/help-mark',
-  // Display group B of standard 1.3.8 (2026-10-27): the class sheets the Smart elements draw with.
+  // Display group B, with its move to standard 1.3.8 (2026-10-27): the class
+  // sheets the Smart elements draw with, or a sheet of the element's own.
   'progress-bar': 'progress-bar',
   'progress-scale': 'progress-scale',
   spinner: 'spinner',
   skeleton: 'skeleton',
-  // A Smart component whose sheet sits in its own folder.
   'empty-state': 'smart/empty-state',
   'file-preview': 'file-preview',
   slider: 'slider',

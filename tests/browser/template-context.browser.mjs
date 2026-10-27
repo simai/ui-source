@@ -46,6 +46,9 @@ try {
     const result = await page.evaluate(async ({tag, inputs}) => {
       const Ctor = customElements.get(tag);
       if (!Ctor) return {error: `${tag} is not defined`};
+      // sf-resizer draws nothing: a plain element made from its component.json
+      // (standard 1.3.8), not the Smart base, so it has no template to compare.
+      if (typeof Ctor.normalizePropConfig !== 'function') return {checked: 0, bare: [], diffs: []};
       const ownGetter = (key) => {
         for (let proto = Ctor.prototype; proto && proto !== HTMLElement.prototype; proto = Object.getPrototypeOf(proto)) {
           if (proto.constructor.name === 'SfBaseElement') return false;

@@ -151,7 +151,6 @@
   ],
   "cl-empty-state": [
     "display/default",
-    "isolate/default",
     "position/default"
   ],
   "cl-file-preview": [
@@ -174,6 +173,7 @@
   ],
   "cl-gallery": [
     "align-items/default",
+    "backdrop-filter-blur/default",
     "background-color/default",
     "border-radius/default",
     "border-width/default",
@@ -352,7 +352,6 @@
     "text-color/default"
   ],
   "cl-spinner": [
-    "animation/default",
     "position/default",
     "stroke-color/default"
   ],
