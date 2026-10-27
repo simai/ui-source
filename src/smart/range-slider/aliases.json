@@ -1,0 +1,40 @@
+{
+  "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+  "component": "sf-range-slider",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "prefix",
+      "to": "prefix-text",
+      "kind": "setting",
+      "component": "sf-range-slider",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26",
+      "note": "the old attribute and property write prefix-text; the property prefix is the browser's own (Element.prototype.prefix), so only the attribute is mapped"
+    },
+    {
+      "from": "sf-range-slider-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-range-slider",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "note": "sent by the shim after change, with the same detail"
+    },
+    {
+      "from": "onSliderChange",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-range-slider",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "note": "sent by the shim after change, with the same detail"
+    }
+  ]
+}

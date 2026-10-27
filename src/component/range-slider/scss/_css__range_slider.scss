@@ -10,7 +10,7 @@
 }
 
 .sf-range-slider .sf-range-slider-progress-line {
-  background-color: var(--sf-range-slider-progress-line--background-color, var(--sf-primary));
+  background-color: var(--sf-range-slider-progress-line--background-color, var(--sf-range-slider-fill-color, var(--sf-primary)));
   border-end-end-radius: var(--sf-range-slider-progress-line--border-end-end-radius, var(--sf-radius--ui));
   border-end-start-radius: var(--sf-range-slider-progress-line--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-progress-line--border-start-end-radius, var(--sf-radius--ui));
@@ -19,7 +19,7 @@
 }
 
 .sf-range-slider .sf-range-slider-track {
-  background-color: var(--sf-range-slider-track--background-color, var(--sf-surface-container));
+  background-color: var(--sf-range-slider-track--background-color, var(--sf-range-slider-track-color, var(--sf-surface-container)));
   border-end-end-radius: var(--sf-range-slider-track--border-end-end-radius, var(--sf-radius--ui));
   border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));

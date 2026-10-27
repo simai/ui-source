@@ -1707,6 +1707,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "range-slider",
+      "selector": ".sf-range-slider",
+      "variables": [
+        {
+          "name": "--sf-range-slider-track-color",
+          "role": "background",
+          "summary": "The track's fill outside the chosen part.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-range-slider-fill-color",
+          "role": "background",
+          "summary": "The fill of the chosen part of the track.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-range-slider-handle-color",
+          "role": "background",
+          "summary": "A handle's ring at rest; disabled keeps its own.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-range-slider-handle-inner-color",
+          "role": "background",
+          "summary": "The centre of a handle.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-range-slider-value-color",
+          "role": "color",
+          "summary": "The ink of a value shown as text or in a tooltip.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

@@ -24,6 +24,7 @@ const FOLDERS = {
   'country-code': 'country-code',
   // A Smart component whose sheet sits beside its template.
   color: 'smart/color/js/templates',
+  'range-slider': 'range-slider',
 };
 
 const scss = async (folder) => {

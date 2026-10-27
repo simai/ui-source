@@ -29,7 +29,7 @@ export function renderRangeSliderTemplate(context) {
                 data-connect=${valueOrNothing(context.connect)}
                 data-keyboard=${String(!!context.keyboard)}
                 data-label=${valueOrNothing(context.label)}
-                data-prefix=${valueOrNothing(context.prefix)}
+                data-prefix=${valueOrNothing(context.prefixText)}
                 data-suffix=${valueOrNothing(context.suffix)}
                 data-lower-label=${valueOrNothing(context.lowerLabel)}
                 data-upper-label=${valueOrNothing(context.upperLabel)}

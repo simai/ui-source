@@ -7,6 +7,12 @@ import {
 } from '../../component/range-slider/js/_range_slider';
 import { renderRangeSliderTemplate } from './js/templates/default';
 import { setLoaderDragState } from '../helpers/loaderDragState';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { dispatchAliased } from '../../core/js/aliases';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
 
 function serializeValue(value) {
@@ -50,37 +56,38 @@ function getSliderHandleCount(root) {
   return root.querySelectorAll('.sf-range-slider-handle').length || 0;
 }
 
+// sf-range-slider from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §8, §16.20): the settings are attributes and properties made by
+// core/js/element-manifest.js and its dated aliases are aliases.json -- prefix
+// is prefix-text, and the old change names follow change.
+const RangeSliderElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
+
+// The class component's events, copied onto the host under their old method
+// names. Outside the interface: change is the host's own (sfEmit), and the
+// shim sends sf-range-slider-change and onSliderChange after it.
 const sliderEventAliases = {
   'sf-range-slider-update': 'onSliderUpdate',
-  'sf-range-slider-change': 'onSliderChange',
   'sf-range-slider-set': 'onSliderSet',
   'sf-range-slider-start': 'onSliderStart',
   'sf-range-slider-end': 'onSliderEnd',
 };
 
-class SfRangeSlider extends SfBaseElement {
+class SfRangeSlider extends RangeSliderElement {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
-      min: { default: '0' },
-      max: { default: '100' },
-      start: { default: '' },
-      value: { default: '' },
-      multiple: { type: Boolean, default: false },
-      step: { default: '' },
-      margin: { default: '' },
-      connect: { default: '' },
-      keyboard: { type: Boolean, default: true },
-      label: { default: 'none' },
-      prefix: { default: '' },
-      suffix: { default: '' },
-      lowerLabel: { default: '' },
-      upperLabel: { default: '' },
-      decimals: { default: '' },
-      tooltipPosition: { default: '' },
-      textPosition: { default: '' },
-      labelPosition: { default: '' },
-      disabled: { type: Boolean, default: false },
+      // A number or null, read as the manifest's accessor reads it (§4.2).
+      step: {
+        type: Number,
+        default: null,
+        parser: (raw, fallback) => (raw !== undefined && raw !== null && String(raw).trim() !== '' && Number.isFinite(Number(raw)) ? Number(raw) : fallback),
+      },
       rootClass: { default: '' },
     };
   }
@@ -118,12 +125,8 @@ class SfRangeSlider extends SfBaseElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  get min() {
-    return this.getAttribute('min') || '0';
-  }
-
-  get max() {
-    return this.getAttribute('max') || '100';
+  get step() {
+    return this.getProp('step');
   }
 
   get start() {
@@ -183,10 +186,6 @@ class SfRangeSlider extends SfBaseElement {
     }
   }
 
-  get step() {
-    return this.getAttribute('step') || '';
-  }
-
   get margin() {
     return this.getAttribute('margin') || '';
   }
@@ -201,10 +200,6 @@ class SfRangeSlider extends SfBaseElement {
 
   get label() {
     return this.getAttribute('label') || 'none';
-  }
-
-  get prefix() {
-    return this.getAttribute('prefix') || '';
   }
 
   get suffix() {
@@ -288,7 +283,7 @@ class SfRangeSlider extends SfBaseElement {
         'connect',
         'keyboard',
         'label',
-        'prefix',
+        'prefix-text',
         'suffix',
         'lower-label',
         'upper-label',
@@ -297,6 +292,9 @@ class SfRangeSlider extends SfBaseElement {
         'text-position',
         'label-position',
         'root-class',
+        // Disabled is drawn by the template from the setting (§5.3), not
+        // toggled on the root by a script.
+        'disabled',
       ].includes(name),
     );
 
@@ -320,17 +318,6 @@ class SfRangeSlider extends SfBaseElement {
       this.shouldRebuildForValue(this.getAttribute('value') || this.start || '0')
     ) {
       return false;
-    }
-
-    if (changedAttributes.includes('disabled')) {
-      root.classList.toggle('disabled', this.disabled);
-      if (root.noUiSlider) {
-        if (this.disabled) {
-          root.noUiSlider.disable();
-        } else {
-          root.noUiSlider.enable();
-        }
-      }
     }
 
     if (changedAttributes.includes('value')) {
@@ -374,6 +361,8 @@ class SfRangeSlider extends SfBaseElement {
     root.addEventListener('sf-range-slider-end', this._handleSliderEnd);
     root.addEventListener('sf-range-slider-set', this._handleSliderEnd);
     root.addEventListener('sf-range-slider-change', this._handleSliderEnd);
+    root.addEventListener('sf-range-slider-change', this._handleInnerChange);
+    root.addEventListener('change', this._handleInnerChange);
 
     Object.keys(sliderEventAliases).forEach((eventName) => {
       root.addEventListener(eventName, this._handleSliderAlias);
@@ -386,6 +375,8 @@ class SfRangeSlider extends SfBaseElement {
     root.removeEventListener('sf-range-slider-end', this._handleSliderEnd);
     root.removeEventListener('sf-range-slider-set', this._handleSliderEnd);
     root.removeEventListener('sf-range-slider-change', this._handleSliderEnd);
+    root.removeEventListener('sf-range-slider-change', this._handleInnerChange);
+    root.removeEventListener('change', this._handleInnerChange);
 
     Object.keys(sliderEventAliases).forEach((eventName) => {
       root.removeEventListener(eventName, this._handleSliderAlias);
@@ -435,6 +426,19 @@ class SfRangeSlider extends SfBaseElement {
     this._syncingValueAttribute = true;
     this.setAttribute('value', serialized);
     this._syncingValueAttribute = false;
+  };
+
+  // The class component's change and sf-range-slider-change stop at the
+  // host: a person's change leaves it once, as the host's own event, without
+  // the element in its detail (§8), and the shim sends the old names after it
+  // with the same detail (aliases.json). A value set from code sends nothing.
+  _handleInnerChange = (event) => {
+    event.stopPropagation();
+    if (event.type !== 'change' || event.target !== this.getSliderRoot()) return;
+    const {values, value, handleCount, handle} = event.detail || {};
+    // change keeps its native name (§8, §17.3); sfEmit would derive
+    // sf-range-slider-change from a verb that carries a detail.
+    dispatchAliased(this, 'change', { detail: { values, value, handleCount, handle } });
   };
 
   _handleSliderAlias = (event) => {
@@ -540,7 +544,7 @@ class SfRangeSlider extends SfBaseElement {
       connect: this.connect,
       keyboard: this.keyboard,
       label: this.label,
-      prefix: this.prefix,
+      prefixText: this.prefixText,
       suffix: this.suffix,
       lowerLabel: this.lowerLabel,
       upperLabel: this.upperLabel,

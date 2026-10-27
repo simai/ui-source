@@ -1,0 +1,7 @@
+[
+  {"name": "single", "title": "Одно значение", "settings": {"aria-label": "Громкость", "min": 0, "max": 100, "value": "40"}, "expect": {"values": {"value": "40"}}},
+  {"name": "reference", "title": "Диапазон с подписями", "settings": {"min": 0, "max": 100, "value": "20,80", "multiple": true, "prefix-text": "от ", "suffix": " %", "label": "text", "lower-label": "Нижняя граница", "upper-label": "Верхняя граница"}, "expect": {"values": {"value": "20,80"}}},
+  {"name": "stepped", "title": "С шагом", "settings": {"aria-label": "Оценка", "min": 0, "max": 10, "step": 2, "value": "4"}, "expect": {"values": {"value": "4"}}},
+  {"name": "tooltip", "title": "Значение над ручкой", "settings": {"aria-label": "Цена", "min": 0, "max": 1000, "value": "250", "label": "tooltip", "suffix": " ₽"}, "expect": {"values": {"value": "250"}}},
+  {"name": "disabled", "title": "Недоступен", "settings": {"aria-label": "Громкость", "value": "40", "disabled": true}, "expect": {"values": {"value": "40"}}}
+]

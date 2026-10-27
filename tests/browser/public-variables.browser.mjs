@@ -86,6 +86,8 @@ const DRAW = {
     open: 'document.querySelector(".sf-country-code").classList.add("open")'},
   color: {css: ['smart/smart/color/css/color.css'], js: 'color',
     html: '<sf-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-color><sf-color label="Цвет"></sf-color>'},
+  'range-slider': {css: ['range-slider'], js: 'range-slider',
+    html: '<div style="inline-size:400px;padding:40px 20px"><sf-range-slider aria-label="Громкость" value="40" label="text"></sf-range-slider></div>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

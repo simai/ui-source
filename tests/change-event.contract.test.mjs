@@ -37,12 +37,19 @@ test('change event: one canonical name for every value control', async () => {
   const slider = await read('src/component/range-slider/js/_range_slider.js');
   assert.match(slider, /if \(!root\._sfSettingValue\) \{\n      dispatchSliderEvent\(root, 'change', unencoded, \{ handle \}, 'change'\);/);
   assert.match(slider, /root\._sfSettingValue = true;\n  try \{\n    root\.noUiSlider\.set\(nextValue\);/);
-  // The Smart slider forwards only the prefixed names; repeating `change` would
-  // double it. Its onChange listens to change, the canonical name, and nothing
-  // else of it names change.
+  // The Smart slider stops the class component's change and
+  // sf-range-slider-change at its host and sends change once, as its own
+  // (standard 1.3.8 §8, through the alias shim's dispatch, under its native
+  // name); the shim sends the old names after it (aliases.json). Its onChange
+  // listens to change, the canonical name.
   const smartSlider = await read('src/smart/range-slider/index.js');
   assert.doesNotMatch(smartSlider, /new (?:Custom)?Event\(\s*['"]change['"]/);
-  assert.deepEqual(smartSlider.match(/['"]change['"]/g), ["'change'"]);
+  assert.equal(smartSlider.match(/dispatchAliased\(this, 'change', /g)?.length, 1);
+  assert.doesNotMatch(smartSlider, /this\.sfEmit\('change'/);
+  assert.match(smartSlider, /_handleInnerChange = \(event\) => \{\n    event\.stopPropagation\(\);/);
+  assert.doesNotMatch(smartSlider, /'sf-range-slider-change': 'onSliderChange'/);
+  const sliderAliases = JSON.parse(await read('src/smart/range-slider/aliases.json')).aliases.filter((row) => row.kind === 'event');
+  assert.deepEqual(sliderAliases.map((row) => [row.from, row.to]), [['sf-range-slider-change', 'change'], ['onSliderChange', 'change']]);
   assert.match(smartSlider, /onChange\(handler, options\) \{\n    if \(typeof handler === 'function'\) \{\n      this\.addEventListener\('change', /);
 });
 

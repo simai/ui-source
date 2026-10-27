@@ -8,7 +8,7 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-thumb .sf-thumb-handle {
   // Defaults belong at use sites so root/Smart-host tokens remain inheritable.
-  background-color: var(--sf-thumb-handle--background-color, var(--sf-primary));
+  background-color: var(--sf-thumb-handle--background-color, var(--sf-range-slider-handle-color, var(--sf-primary)));
   border-end-end-radius: var(--sf-thumb-handle--border-end-end-radius, var(--sf-radius-circle));
   border-end-start-radius: var(--sf-thumb-handle--border-end-start-radius, var(--sf-radius-circle));
   border-start-end-radius: var(--sf-thumb-handle--border-start-end-radius, var(--sf-radius-circle));
@@ -22,7 +22,7 @@
 }
 
 .sf-thumb .sf-thumb-inner {
-  background-color: var(--sf-thumb-inner--background-color, var(--sf-surface-0));
+  background-color: var(--sf-thumb-inner--background-color, var(--sf-range-slider-handle-inner-color, var(--sf-surface-0)));
   border-radius: var(--sf-thumb-inner--border-radius, var(--sf-radius-circle));
   height: var(--sf-thumb-inner--height, 50%);
   transition-duration: var(--sf-duration-fast);
@@ -32,7 +32,7 @@
 }
 
 .sf-thumb .sf-thumb-text {
-  color: var(--sf-thumb-text--color, var(--sf-on-surface));
+  color: var(--sf-thumb-text--color, var(--sf-range-slider-value-color, var(--sf-on-surface)));
   font-family: var(--sf-thumb-text--font-family, var(--sf-text--family));
   font-size: var(--sf-thumb-text--font-size, var(--sf-text-small--size));
   font-weight: var(--sf-thumb-text--font-weight, var(--sf-font-weight-regular));
