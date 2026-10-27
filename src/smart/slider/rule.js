@@ -3,5 +3,5 @@ SF.RuleLoader['cl-slider'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
-  relation: [{ name: 'slider' }, { name: 'cl-icon-buttons' }],
+  relation: [{ name: 'slider' }, { name: 'cl-icon-button' }],
 };

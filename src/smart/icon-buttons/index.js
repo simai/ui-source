@@ -12,8 +12,8 @@
 // - its sheet, css/icon-buttons.css, is sf-icon-button's sheet, built from the same
 //   sources as css/icon-button.css.
 //
-// The Loader's own rule for the old bundle name, cl-icon-buttons, forwards to
-// cl-icon-button (src/smart/icon-button/rule.js) and never fetches this file.
+// The Loader forwards the old bundle name, cl-icon-buttons, to cl-icon-button
+// (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import '../icon-button/js/templates/default.css';
 

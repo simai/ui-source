@@ -13,14 +13,8 @@ SF.RuleLoader['cl-tag'] = {
   ],
 };
 
-// The bundle's former name (the folder was `tags` until standard 1.3.8 §3,
-// §21 gave it the tag's name): a rule that still names it loads sf-tag.
-// Dated like the element's aliases: until 2026-12-01.
-SF.RuleLoader['cl-tags'] = {
-    tags: [],
-    type: 'smart',
-    mode: 'smart',
-    js: false,
-    css: false,
-    relation: [{ name: 'cl-tag' }],
-};
+// The bundle's former name cl-tags (the folder was `tags` until standard
+// 1.3.8 §3, §21 gave it the tag's name) is not a rule here: a rule of type
+// smart is a Smart component to the registry, and this one has no element. The
+// Loader forwards it to cl-tag from src/core/contracts/
+// smart-rule-forwards.v1.json until 2026-12-01.

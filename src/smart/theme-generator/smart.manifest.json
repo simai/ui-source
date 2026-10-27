@@ -28,9 +28,9 @@
     "uses": [
       "smart.color",
       "smart.input",
-      "smart.buttons",
-      "smart.icon-buttons",
-      "smart.icons"
+      "smart.button",
+      "smart.icon-button",
+      "smart.icon"
     ],
     "public_parts": []
   },

@@ -23,7 +23,7 @@
   "composition": {
     "uses": [
       "component.context-menu",
-      "smart.buttons"
+      "smart.button"
     ],
     "public_parts": []
   },

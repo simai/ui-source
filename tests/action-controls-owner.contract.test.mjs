@@ -31,7 +31,7 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
   assert.match(rule, /name: 'cl-close'/);
   assert.deepEqual(manifest.composition.uses, [
     'component.icon-buttons',
-    'smart.icons',
+    'smart.icon',
     'smart.close',
     // The spinner a loading icon button shows (simai/ui-source#10).
     'component.spinner',

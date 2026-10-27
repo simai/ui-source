@@ -131,19 +131,19 @@ test('keeps namespaced extensions and rejects unqualified extension names', asyn
 test('adapts one real Smart manifest without exposing arbitrary classes', async () => {
   const smart = JSON.parse(await readFile(resolve(root, 'src/smart/button/smart.manifest.json'), 'utf8'));
   const type = compositionTypeFromSmartManifest(smart);
-  assert.equal(type.type, 'smart.buttons');
+  assert.equal(type.type, 'smart.button');
   assert.equal(type.renderer.name, 'sf-button');
   assert.equal(type.props_schema.properties['root-class'], undefined);
   const registry = createRegistry([...BUILTIN_TYPE_MANIFESTS, type]);
   const document = {
     schema: 'simai.composition.document.v1', id: 'smart', profile: 'ui-layout',
-    root: { id: 'button', type: 'smart.buttons', props: { text: 'Купить', scheme: 'primary' } },
+    root: { id: 'button', type: 'smart.button', props: { text: 'Купить', scheme: 'primary' } },
   };
   const output = await render(document, { registry });
   assert.equal(output.diagnostics.length, 0);
   assert.match(output.html, /^<sf-button/u);
   assert.deepEqual(output.assets, ['smart/button']);
-  assert.deepEqual(output.hydration, [{ id: 'button', type: 'smart.buttons', element: 'sf-button' }]);
+  assert.deepEqual(output.hydration, [{ id: 'button', type: 'smart.button', element: 'sf-button' }]);
 });
 
 test('renders a separate composite Smart type with a named slot', async () => {

@@ -24,7 +24,7 @@
     "uses": [
       "component.breadcrumbs",
       "component.icons",
-      "smart.icons"
+      "smart.icon"
     ],
     "public_parts": []
   },

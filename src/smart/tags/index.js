@@ -12,8 +12,8 @@
 // - its sheet, css/tags.css, is sf-tag's sheet, built from the same
 //   sources as css/tag.css.
 //
-// The Loader's own rule for the old bundle name, cl-tags, forwards to
-// cl-tag (src/smart/tag/rule.js) and never fetches this file.
+// The Loader forwards the old bundle name, cl-tags, to cl-tag
+// (src/core/contracts/smart-rule-forwards.v1.json) and never fetches this file.
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import '../tag/js/templates/default.css';
 

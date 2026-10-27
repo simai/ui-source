@@ -24,10 +24,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.buttons",
+      "smart.button",
       "smart.checkbox",
       "smart.dropdown",
-      "smart.icon-buttons",
+      "smart.icon-button",
       "smart.input",
       "smart.list-item",
       "smart.spinner"

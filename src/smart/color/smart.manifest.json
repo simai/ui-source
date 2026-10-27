@@ -24,7 +24,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icon-buttons"
+      "smart.icon-button"
     ],
     "public_parts": [
       "swatch",

@@ -5,10 +5,10 @@ SF.RuleLoader['cl-pagination'] = {
   js: true,
   relation: [
     { name: 'pagination' },
-    { name: 'cl-buttons' },
+    { name: 'cl-button' },
     { name: 'cl-checkbox' },
     { name: 'cl-dropdown' },
-    { name: 'cl-icon-buttons' },
+    { name: 'cl-icon-button' },
     { name: 'cl-input' },
     { name: 'cl-list-item' },
     { name: 'cl-spinner' },

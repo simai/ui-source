@@ -56,7 +56,7 @@ test('Smart Toast declares exact roles, composition and concise behavior inputs'
   assert.deepEqual(manifest.inputs.properties.status.enum, ['neutral', 'info', 'success', 'warning', 'error']);
   assert.deepEqual(manifest.inputs.properties.type.enum, manifest.inputs.properties.status.enum);
   assert.deepEqual(manifest.inputs.properties.role.enum, ['', 'status', 'alert']);
-  assert.deepEqual(manifest.composition.uses, ['component.toast', 'component.buttons', 'smart.icon-buttons', 'smart.icons']);
+  assert.deepEqual(manifest.composition.uses, ['component.toast', 'component.buttons', 'smart.icon-button', 'smart.icon']);
   assert.deepEqual(manifest.contracts.canonical_behavior_attributes.enum, ['data-action', 'data-close', 'data-duration']);
 });
 

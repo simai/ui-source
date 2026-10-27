@@ -23,7 +23,7 @@
   "composition": {
     "uses": [
       "component.download-file",
-      "smart.icons"
+      "smart.icon"
     ],
     "public_parts": []
   },

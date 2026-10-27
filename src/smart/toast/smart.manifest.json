@@ -24,8 +24,8 @@
     "uses": [
       "component.toast",
       "component.buttons",
-      "smart.icon-buttons",
-      "smart.icons"
+      "smart.icon-button",
+      "smart.icon"
     ],
     "public_parts": []
   },

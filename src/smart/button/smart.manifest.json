@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "id": "smart.buttons",
+  "id": "smart.button",
   "version": "1.0.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
@@ -22,13 +22,13 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icons",
+      "smart.icon",
       "component.spinner"
     ],
     "public_parts": [],
     "declarative": {
       "standard": "simai.composition.document.v1",
-      "type": "smart.buttons",
+      "type": "smart.button",
       "mode": "leaf",
       "profiles": [
         "ui-layout"

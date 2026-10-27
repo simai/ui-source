@@ -9,14 +9,8 @@ SF.RuleLoader['cl-icon'] = {
     relation: [{ name: 'icons' }, { name: 'badges', lazy: true }],
 };
 
-// The bundle's former name (the folder was `icons` until standard 1.3.8 §3,
-// §21 gave it the tag's name): a rule that still names it loads sf-icon.
-// Dated like the element's aliases: until 2026-12-01.
-SF.RuleLoader['cl-icons'] = {
-    tags: [],
-    type: 'smart',
-    mode: 'smart',
-    js: false,
-    css: false,
-    relation: [{ name: 'cl-icon' }],
-};
+// The bundle's former name cl-icons (the folder was `icons` until standard
+// 1.3.8 §3, §21 gave it the tag's name) is not a rule here: a rule of type
+// smart is a Smart component to the registry, and this one has no element. The
+// Loader forwards it to cl-icon from src/core/contracts/
+// smart-rule-forwards.v1.json until 2026-12-01.

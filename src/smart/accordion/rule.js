@@ -12,6 +12,6 @@ SF.RuleLoader['cl-accordion'] = {
   relation: [
     { name: 'accordion' },
     { name: 'icons' },
-    { name: 'cl-badges', lazy: true },
+    { name: 'cl-badge', lazy: true },
   ],
 };

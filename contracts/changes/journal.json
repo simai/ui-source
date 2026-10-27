@@ -2185,7 +2185,7 @@
       "recorded_on": "2026-10-27",
       "stage": "compat",
       "kind": "component",
-      "summary": "sf-icon is served from smart/icon/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/icon.js, loader bundle cl-icon. The old path keeps working until remove_after: smart/icons/js/icons.js is a forwarding script that notes the path in SF.deprecations and loads smart/icon/js/icon.js, and the rule cl-icons loads cl-icon.",
+      "summary": "sf-icon is served from smart/icon/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/icon.js, loader bundle cl-icon. The old path keeps working until remove_after: smart/icons/js/icons.js is a forwarding script that notes the path in SF.deprecations and loads smart/icon/js/icon.js, the Loader forwards the bundle name cl-icons to cl-icon (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.icons is a dated alias of smart.icon, the id that follows the folder and the tag.",
       "items": [
         {
           "component": "sf-icon",
@@ -2198,25 +2198,31 @@
           "from": "cl-icons",
           "to": "cl-icon",
           "match": "['\"]cl-icons['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.icons",
+          "to": "smart.icon",
+          "match": "['\"]smart\\.icons['\"]"
         }
       ],
       "deprecated_on": "2026-10-27",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "Write smart/icon/ for smart/icons/ and icon for icons in the file names (js/icon.js, js/icon.min.js); in a product rule's relation write cl-icon for cl-icons. A page that lets the Loader fetch sf-icon needs no change.",
+      "manual": "Write smart/icon/ for smart/icons/ and icon for icons in the file names (js/icon.js, js/icon.min.js); in a product rule's relation write cl-icon for cl-icons, and in a manifest or a package contract smart.icon for smart.icons. A page that lets the Loader fetch sf-icon needs no change.",
       "examples": {
         "before": "<script src=\"/distr/smart/icons/js/icons.js\"></script>",
         "after": "<script src=\"/distr/smart/icon/js/icon.js\"></script>"
       },
       "owner": "ui-source",
-      "source": "src/smart/icons/index.js, src/smart/icon/rule.js"
+      "source": "src/smart/icons/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/icon/smart.manifest.json"
     },
     {
       "id": "path-smart-buttons-to-button",
       "recorded_on": "2026-10-27",
       "stage": "compat",
       "kind": "component",
-      "summary": "sf-button is served from smart/button/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/button.js, loader bundle cl-button. The old path keeps working until remove_after: smart/buttons/js/buttons.js is a forwarding script that notes the path in SF.deprecations and loads smart/button/js/button.js, and the rule cl-buttons loads cl-button.",
+      "summary": "sf-button is served from smart/button/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/button.js, loader bundle cl-button. The old path keeps working until remove_after: smart/buttons/js/buttons.js is a forwarding script that notes the path in SF.deprecations and loads smart/button/js/button.js, the Loader forwards the bundle name cl-buttons to cl-button (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.buttons is a dated alias of smart.button, the id that follows the folder and the tag.",
       "items": [
         {
           "component": "sf-button",
@@ -2229,25 +2235,31 @@
           "from": "cl-buttons",
           "to": "cl-button",
           "match": "['\"]cl-buttons['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.buttons",
+          "to": "smart.button",
+          "match": "['\"]smart\\.buttons['\"]"
         }
       ],
       "deprecated_on": "2026-10-27",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "Write smart/button/ for smart/buttons/ and button for buttons in the file names (js/button.js, js/button.min.js); in a product rule's relation write cl-button for cl-buttons. A page that lets the Loader fetch sf-button needs no change.",
+      "manual": "Write smart/button/ for smart/buttons/ and button for buttons in the file names (js/button.js, js/button.min.js); in a product rule's relation write cl-button for cl-buttons, and in a manifest or a package contract smart.button for smart.buttons. A page that lets the Loader fetch sf-button needs no change.",
       "examples": {
         "before": "<script src=\"/distr/smart/buttons/js/buttons.js\"></script>",
         "after": "<script src=\"/distr/smart/button/js/button.js\"></script>"
       },
       "owner": "ui-source",
-      "source": "src/smart/buttons/index.js, src/smart/button/rule.js"
+      "source": "src/smart/buttons/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button/smart.manifest.json"
     },
     {
       "id": "path-smart-icon-buttons-to-icon-button",
       "recorded_on": "2026-10-27",
       "stage": "compat",
       "kind": "component",
-      "summary": "sf-icon-button is served from smart/icon-button/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/icon-button.js and css/icon-button.css, loader bundle cl-icon-button. The old path keeps working until remove_after: smart/icon-buttons/js/icon-buttons.js is a forwarding script that notes the path in SF.deprecations and loads smart/icon-button/js/icon-button.js, smart/icon-buttons/css/icon-buttons.css is sf-icon-button's sheet, and the rule cl-icon-buttons loads cl-icon-button.",
+      "summary": "sf-icon-button is served from smart/icon-button/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/icon-button.js and css/icon-button.css, loader bundle cl-icon-button. The old path keeps working until remove_after: smart/icon-buttons/js/icon-buttons.js is a forwarding script that notes the path in SF.deprecations and loads smart/icon-button/js/icon-button.js, smart/icon-buttons/css/icon-buttons.css is sf-icon-button's sheet, the Loader forwards the bundle name cl-icon-buttons to cl-icon-button (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.icon-buttons is a dated alias of smart.icon-button, the id that follows the folder and the tag.",
       "items": [
         {
           "component": "sf-icon-button",
@@ -2266,25 +2278,31 @@
           "from": "cl-icon-buttons",
           "to": "cl-icon-button",
           "match": "['\"]cl-icon-buttons['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.icon-buttons",
+          "to": "smart.icon-button",
+          "match": "['\"]smart\\.icon-buttons['\"]"
         }
       ],
       "deprecated_on": "2026-10-27",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "Write smart/icon-button/ for smart/icon-buttons/ and icon-button for icon-buttons in the file names (js/icon-button.js, js/icon-button.min.js, css/icon-button.css, css/icon-button.min.css); in a product rule's relation write cl-icon-button for cl-icon-buttons. A page that lets the Loader fetch sf-icon-button needs no change.",
+      "manual": "Write smart/icon-button/ for smart/icon-buttons/ and icon-button for icon-buttons in the file names (js/icon-button.js, js/icon-button.min.js, css/icon-button.css, css/icon-button.min.css); in a product rule's relation write cl-icon-button for cl-icon-buttons, and in a manifest or a package contract smart.icon-button for smart.icon-buttons. A page that lets the Loader fetch sf-icon-button needs no change.",
       "examples": {
         "before": "<script src=\"/distr/smart/icon-buttons/js/icon-buttons.js\"></script>",
         "after": "<script src=\"/distr/smart/icon-button/js/icon-button.js\"></script>"
       },
       "owner": "ui-source",
-      "source": "src/smart/icon-buttons/index.js, src/smart/icon-button/rule.js"
+      "source": "src/smart/icon-buttons/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/icon-button/smart.manifest.json"
     },
     {
       "id": "path-smart-badges-to-badge",
       "recorded_on": "2026-10-27",
       "stage": "compat",
       "kind": "component",
-      "summary": "sf-badge is served from smart/badge/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/badge.js, loader bundle cl-badge. The old path keeps working until remove_after: smart/badges/js/badges.js is a forwarding script that notes the path in SF.deprecations and loads smart/badge/js/badge.js, and the rule cl-badges loads cl-badge.",
+      "summary": "sf-badge is served from smart/badge/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/badge.js, loader bundle cl-badge. The old path keeps working until remove_after: smart/badges/js/badges.js is a forwarding script that notes the path in SF.deprecations and loads smart/badge/js/badge.js, the Loader forwards the bundle name cl-badges to cl-badge (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.badges is a dated alias of smart.badge, the id that follows the folder and the tag.",
       "items": [
         {
           "component": "sf-badge",
@@ -2297,25 +2315,31 @@
           "from": "cl-badges",
           "to": "cl-badge",
           "match": "['\"]cl-badges['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.badges",
+          "to": "smart.badge",
+          "match": "['\"]smart\\.badges['\"]"
         }
       ],
       "deprecated_on": "2026-10-27",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "Write smart/badge/ for smart/badges/ and badge for badges in the file names (js/badge.js, js/badge.min.js); in a product rule's relation write cl-badge for cl-badges. A page that lets the Loader fetch sf-badge needs no change.",
+      "manual": "Write smart/badge/ for smart/badges/ and badge for badges in the file names (js/badge.js, js/badge.min.js); in a product rule's relation write cl-badge for cl-badges, and in a manifest or a package contract smart.badge for smart.badges. A page that lets the Loader fetch sf-badge needs no change.",
       "examples": {
         "before": "<script src=\"/distr/smart/badges/js/badges.js\"></script>",
         "after": "<script src=\"/distr/smart/badge/js/badge.js\"></script>"
       },
       "owner": "ui-source",
-      "source": "src/smart/badges/index.js, src/smart/badge/rule.js"
+      "source": "src/smart/badges/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/badge/smart.manifest.json"
     },
     {
       "id": "path-smart-tags-to-tag",
       "recorded_on": "2026-10-27",
       "stage": "compat",
       "kind": "component",
-      "summary": "sf-tag is served from smart/tag/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/tag.js and css/tag.css, loader bundle cl-tag. The old path keeps working until remove_after: smart/tags/js/tags.js is a forwarding script that notes the path in SF.deprecations and loads smart/tag/js/tag.js, smart/tags/css/tags.css is sf-tag's sheet, and the rule cl-tags loads cl-tag.",
+      "summary": "sf-tag is served from smart/tag/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/tag.js and css/tag.css, loader bundle cl-tag. The old path keeps working until remove_after: smart/tags/js/tags.js is a forwarding script that notes the path in SF.deprecations and loads smart/tag/js/tag.js, smart/tags/css/tags.css is sf-tag's sheet, the Loader forwards the bundle name cl-tags to cl-tag (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.tags is a dated alias of smart.tag, the id that follows the folder and the tag.",
       "items": [
         {
           "component": "sf-tag",
@@ -2334,18 +2358,24 @@
           "from": "cl-tags",
           "to": "cl-tag",
           "match": "['\"]cl-tags['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.tags",
+          "to": "smart.tag",
+          "match": "['\"]smart\\.tags['\"]"
         }
       ],
       "deprecated_on": "2026-10-27",
       "remove_after": "2026-12-01",
       "rewrite": "manual",
-      "manual": "Write smart/tag/ for smart/tags/ and tag for tags in the file names (js/tag.js, js/tag.min.js, css/tag.css, css/tag.min.css); in a product rule's relation write cl-tag for cl-tags. A page that lets the Loader fetch sf-tag needs no change.",
+      "manual": "Write smart/tag/ for smart/tags/ and tag for tags in the file names (js/tag.js, js/tag.min.js, css/tag.css, css/tag.min.css); in a product rule's relation write cl-tag for cl-tags, and in a manifest or a package contract smart.tag for smart.tags. A page that lets the Loader fetch sf-tag needs no change.",
       "examples": {
         "before": "<script src=\"/distr/smart/tags/js/tags.js\"></script>",
         "after": "<script src=\"/distr/smart/tag/js/tag.js\"></script>"
       },
       "owner": "ui-source",
-      "source": "src/smart/tags/index.js, src/smart/tag/rule.js"
+      "source": "src/smart/tags/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/tag/smart.manifest.json"
     }
   ]
 }

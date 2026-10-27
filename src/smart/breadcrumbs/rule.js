@@ -6,6 +6,6 @@ SF.RuleLoader['cl-breadcrumbs'] = {
   relation: [
     { name: 'breadcrumbs' },
     { name: 'icons' },
-    { name: 'cl-icons' },
+    { name: 'cl-icon' },
   ],
 };

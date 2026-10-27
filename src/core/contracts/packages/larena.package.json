@@ -22,13 +22,13 @@
         "component.badges",
         "component.icons",
         "component.inputs",
-        "smart.badges",
-        "smart.buttons",
+        "smart.badge",
+        "smart.button",
         "smart.context-menu",
         "smart.dropdown",
         "smart.empty-state",
-        "smart.icon-buttons",
-        "smart.icons",
+        "smart.icon-button",
+        "smart.icon",
         "smart.input",
         "smart.profile-picker",
         "smart.resizer",
@@ -41,8 +41,8 @@
       "rule_name": "cl-change-confirm",
       "folder": "change-confirm",
       "requires": [
-        "smart.buttons",
-        "smart.icons"
+        "smart.button",
+        "smart.icon"
       ]
     },
     {
@@ -53,8 +53,8 @@
       "requires": [
         "component.icons",
         "smart.avatar",
-        "smart.badges",
-        "smart.buttons",
+        "smart.badge",
+        "smart.button",
         "smart.checkbox",
         "smart.color",
         "smart.context-menu",
@@ -62,7 +62,7 @@
         "smart.datepicker",
         "smart.dropdown",
         "smart.empty-state",
-        "smart.icon-buttons",
+        "smart.icon-button",
         "smart.input",
         "smart.list-item",
         "smart.modal",
@@ -73,7 +73,7 @@
         "smart.sortable",
         "smart.spinner",
         "smart.tabs",
-        "smart.tags"
+        "smart.tag"
       ]
     },
     {
@@ -83,11 +83,11 @@
       "folder": "data-view",
       "requires": [
         "component.icons",
-        "smart.buttons",
+        "smart.button",
         "smart.checkbox",
         "smart.data-view",
         "smart.dropdown",
-        "smart.icon-buttons",
+        "smart.icon-button",
         "smart.pagination",
         "smart.toast"
       ]
@@ -98,8 +98,8 @@
       "rule_name": "cl-message-log",
       "folder": "message-log",
       "requires": [
-        "smart.buttons",
-        "smart.icon-buttons",
+        "smart.button",
+        "smart.icon-button",
         "utility.sr-only"
       ]
     },
@@ -112,9 +112,9 @@
         "component.accordion",
         "component.icons",
         "smart.avatar",
-        "smart.badges",
+        "smart.badge",
         "smart.button-group",
-        "smart.buttons",
+        "smart.button",
         "smart.checkbox",
         "smart.color",
         "smart.copy-button",
@@ -128,8 +128,8 @@
         "smart.file-preview",
         "smart.file-upload",
         "smart.help-mark",
-        "smart.icon-buttons",
-        "smart.icons",
+        "smart.icon-button",
+        "smart.icon",
         "smart.input",
         "smart.list-item",
         "smart.popover",
@@ -142,7 +142,7 @@
         "smart.spinner",
         "smart.switch",
         "smart.tabs",
-        "smart.tags",
+        "smart.tag",
         "smart.textarea",
         "smart.tree",
         "smart.tree-item"
@@ -155,9 +155,9 @@
       "folder": "thread-list",
       "requires": [
         "smart.avatar",
-        "smart.badges",
+        "smart.badge",
         "smart.context-menu",
-        "smart.icons",
+        "smart.icon",
         "utility.sr-only"
       ]
     }

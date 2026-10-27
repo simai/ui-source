@@ -27,7 +27,7 @@
   "composition": {
     "uses": [
       "component.button-group",
-      "smart.buttons",
+      "smart.button",
       "component.spinner"
     ],
     "public_parts": []

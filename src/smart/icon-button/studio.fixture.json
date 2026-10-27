@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.icon-buttons",
+  "component": "smart.icon-button",
   "title": "Icon Buttons reference",
   "summary": "Deterministic reference fixture for sf-icon-button.",
   "locale": "ru",

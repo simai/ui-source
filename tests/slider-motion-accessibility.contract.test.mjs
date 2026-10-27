@@ -36,7 +36,7 @@ test('Smart Slider preloads the Smart Icon Buttons that its template renders', a
     sandbox.SF.RuleLoader['cl-slider'].relation,
     ({name}) => name,
   );
-  assert.deepEqual(dependencies, ['slider', 'cl-icon-buttons']);
+  assert.deepEqual(dependencies, ['slider', 'cl-icon-button']);
 });
 
 test('Smart Slider waits for its own controls without an unbounded child-component barrier', () => {

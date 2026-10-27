@@ -29,7 +29,7 @@
   "composition": {
     "uses": [
       "component.accordion",
-      "smart.badges"
+      "smart.badge"
     ],
     "public_parts": []
   },
@@ -433,7 +433,7 @@
       },
       {
         "path": "src/smart/accordion/rule.js",
-        "sha256": "b1acba66304c3cc41af8da828136f7673bfd44e69faebb63953fd52f6033275b"
+        "sha256": "93a6b08c16c0b6e05b68ca2bdfc4ee4059316aa718a2f826143b986d05b5ea12"
       },
       {
         "path": "src/smart/accordion/docs.md",

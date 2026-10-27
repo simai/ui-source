@@ -29,8 +29,8 @@ test("whole composite manifests are generated into the searchable registry", () 
 
 
 test("CLI describes and verifies a free component", () => {
-  const packet = JSON.parse(run("describe", "smart.buttons", "--format", "ai"));
+  const packet = JSON.parse(run("describe", "smart.button", "--format", "ai"));
   assert.equal(packet.public_abi.custom_element, "sf-button");
   assert.equal(packet.conformance.compatibility.contract_schema.version, 2);
-  assert.deepEqual(JSON.parse(run("verify", "smart.buttons")), {ok: true, verified: ["smart.buttons"]});
+  assert.deepEqual(JSON.parse(run("verify", "smart.button")), {ok: true, verified: ["smart.button"]});
 });

@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-scenario.v1",
   "id": "smoke",
-  "component": "smart.tags",
+  "component": "smart.tag",
   "fixture": "reference",
   "viewport": "desktop",
   "actions": [],

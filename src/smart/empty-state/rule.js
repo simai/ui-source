@@ -6,7 +6,7 @@ SF.RuleLoader['cl-empty-state'] = {
   css: true,
   relation: [
     { name: 'featured-icon' },
-    { name: 'cl-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-button' },
+    { name: 'cl-icon' },
   ],
 };

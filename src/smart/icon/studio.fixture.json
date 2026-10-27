@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.icons",
+  "component": "smart.icon",
   "title": "Icons reference",
   "summary": "Deterministic reference fixture for sf-icon.",
   "locale": "ru",

@@ -28,8 +28,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.buttons",
-      "smart.icons"
+      "smart.button",
+      "smart.icon"
     ],
     "public_parts": []
   },

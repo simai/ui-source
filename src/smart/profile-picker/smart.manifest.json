@@ -24,8 +24,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.buttons",
-      "smart.icons"
+      "smart.button",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -302,7 +302,7 @@
       },
       {
         "path": "src/smart/profile-picker/rule.js",
-        "sha256": "48660ab5f695ae4f4e883de78e9c7cec83575c6582d75900630abb54e0bce3a1"
+        "sha256": "8a4e6753573f887092805e4546e49fb2e2e75c5dc48e02cbe09baea797531646"
       },
       {
         "path": "src/smart/profile-picker/docs.md",

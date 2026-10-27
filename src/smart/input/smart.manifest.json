@@ -23,7 +23,7 @@
   "composition": {
     "uses": [
       "component.inputs",
-      "smart.icons"
+      "smart.icon"
     ],
     "public_parts": [
       "native-input",
@@ -549,7 +549,7 @@
       },
       {
         "path": "src/smart/input/rule.js",
-        "sha256": "99572e435068fd03c271dd5f1225fce3b4f7d0919747829a3359978fed8b041f"
+        "sha256": "8cb0d632b4be5fd0c7f96f5a55dac54d5d137c927e733baaeab8a4e7295db03c"
       },
       {
         "path": "src/smart/input/js/templates/default.js",

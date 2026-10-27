@@ -48,9 +48,9 @@ test('Smart Breadcrumbs projects the ordinary owner and native navigation semant
     read('src/smart/breadcrumbs/smart.manifest.json').then(JSON.parse),
   ]);
 
-  // smart.icons is listed because the template renders sf-icon, which the rule
+  // smart.icon is listed because the template renders sf-icon, which the rule
   // has to fetch: see loader-relation-completeness.contract.test.mjs.
-  assert.deepEqual(manifest.composition.uses, ['component.breadcrumbs', 'component.icons', 'smart.icons']);
+  assert.deepEqual(manifest.composition.uses, ['component.breadcrumbs', 'component.icons', 'smart.icon']);
   // Empty: the runtime reads the attribute, then the page language's dictionary;
   // the English default the manifest used to show was never used (2026-10-13).
   assert.equal(manifest.inputs.properties['expand-label'].default, '');

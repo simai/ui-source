@@ -25,9 +25,9 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.badges",
-      "smart.icon-buttons",
-      "smart.icons"
+      "smart.badge",
+      "smart.icon-button",
+      "smart.icon"
     ],
     "public_parts": []
   },

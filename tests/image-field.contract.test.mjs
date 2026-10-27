@@ -139,7 +139,7 @@ test('image field: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-image-field'\] = \{\n  tags: \['sf-image-field'\],/u);
   assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-icon' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/image-field\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['smart.buttons', 'smart.icons']);
+  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.icon']);
 });
 
 // The public variables (2026-10-24): ten, each read with the value the field

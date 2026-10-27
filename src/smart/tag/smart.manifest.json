@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "id": "smart.tags",
+  "id": "smart.tag",
   "version": "1.1.0",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
@@ -26,7 +26,7 @@
     "uses": [
       "component.avatars",
       "component.dot",
-      "smart.icon-buttons",
+      "smart.icon-button",
       "component.tags"
     ],
     "public_parts": []

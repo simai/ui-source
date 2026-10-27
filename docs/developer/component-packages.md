@@ -91,7 +91,7 @@ SF.RuleLoader.registerPackage('larena', {
       mode: 'smart',
       js: true,
       css: true,
-      relation: [{name: 'cl-icons'}, {name: 'cl-pagination'}],
+      relation: [{name: 'cl-icon'}, {name: 'cl-pagination'}],
     },
   },
 });
@@ -100,7 +100,7 @@ SF.RuleLoader.registerPackage('larena', {
 - A rule is written exactly as a Core Smart rule is; the Loader stamps
   `package: '<name>'` on it, and that field is what sends its files to the
   package base. Relations name rules by key and each resolves from its own
-  package, so a larena rule relating to `cl-icons` fetches the icons from the
+  package, so a larena rule relating to `cl-icon` fetches the icons from the
   Smart base.
 - A relation the element renders only later -- a filter editor, a date
   picker, a cell renderer for a type a page may not hold -- is marked

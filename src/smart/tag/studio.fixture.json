@@ -1,7 +1,7 @@
 {
   "schema": "simai.smart-component-fixture.v2",
   "id": "reference",
-  "component": "smart.tags",
+  "component": "smart.tag",
   "title": "Tags reference",
   "summary": "Deterministic reference fixture for sf-tag.",
   "locale": "ru",

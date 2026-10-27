@@ -5,7 +5,7 @@ SF.RuleLoader['cl-profile-picker'] = {
   js: true,
   css: true,
   relation: [
-    { name: 'cl-buttons' },
-    { name: 'cl-icons' },
+    { name: 'cl-button' },
+    { name: 'cl-icon' },
   ],
 };

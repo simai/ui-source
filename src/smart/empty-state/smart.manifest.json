@@ -25,8 +25,8 @@
   "composition": {
     "uses": [
       "component.featured-icon",
-      "smart.buttons",
-      "smart.icons"
+      "smart.button",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -257,7 +257,7 @@
       },
       {
         "path": "src/smart/empty-state/rule.js",
-        "sha256": "b290d959c363c4df822492bc6e9c2b44919d41682055a801b92bdaa94a4282f2"
+        "sha256": "292af1c4656e3d3596e7a82c20093f93450f43a0567387a2768a6935daeaa079"
       },
       {
         "path": "src/smart/empty-state/docs.md",

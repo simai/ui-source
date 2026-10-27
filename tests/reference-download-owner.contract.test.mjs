@@ -21,7 +21,7 @@ test('Reference Link owns native navigation, complete geometry and BEM aliases',
   assert.match(template, /aria-hidden="true"/);
   assert.match(template, /href && !disabled/);
   assert.match(rule, /js: false/);
-  assert.deepEqual(manifest.composition.uses, ['component.reference-link', 'smart.icons']);
+  assert.deepEqual(manifest.composition.uses, ['component.reference-link', 'smart.icon']);
   assert.equal(manifest.contracts.navigation.disabled, 'non-interactive content with no href');
   assert.doesNotMatch(css, /(?:^|[\s:,])1px(?:[\s;,)])/m);
 });
@@ -47,7 +47,7 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(template, /aria-hidden="true"/);
   assert.match(rule, /name: 'icons'/);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
-  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'smart.icons']);
+  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'smart.icon']);
   assert.ok(manifest.events['sf-download-file:click']);
   assert.doesNotMatch(css, /(?:^|[\s:,])1px(?:[\s;,)])/m);
 });
