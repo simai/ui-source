@@ -16,7 +16,7 @@ const CONTROLS = {
   input: {tag: 'sf-input', relation: /name: 'icon-buttons'/u},
   textarea: {tag: 'sf-textarea', relation: /name: 'icon-buttons'/u},
   dropdown: {tag: 'sf-dropdown', relation: /name: 'icon-buttons'/u},
-  color: {tag: 'sf-color', relation: /name: 'cl-icon-buttons'/u},
+  color: {tag: 'sf-color', relation: /name: 'cl-icon-button'/u},
   switch: {tag: 'sf-switch', relation: /name: 'icon-buttons'/u},
 };
 

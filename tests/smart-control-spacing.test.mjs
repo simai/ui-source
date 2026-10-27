@@ -6,7 +6,7 @@ const {resolveControlSpacing} = await import(`data:text/javascript;base64,${Buff
 // A component built from its component.json (standard 1.3.8) takes tightness as
 // a dated alias of spacing, its words as spacing's value aliases: the shim
 // writes spacing, so the template context reads spacing alone.
-for (const name of ['button']) {
+for (const name of ['button', 'icon-button']) {
   test(`${name}: tightness is a dated alias of spacing, its words spacing's values`, () => {
     const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
     const {aliases} = JSON.parse(fs.readFileSync(new URL(`../src/smart/${name}/aliases.json`, import.meta.url), 'utf8'));
@@ -16,7 +16,7 @@ for (const name of ['button']) {
     assert.match(source, /resolveControlSpacing\(\{spacing: this\.getAttribute\('spacing'\)\}\)/);
   });
 }
-for (const name of ['icon-buttons', 'button-group']) {
+for (const name of ['button-group']) {
   const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
   const body = source.match(/  templateContext\(\) \{([\s\S]*?)\n  \}/)[1];
   const context = new Function('resolveControlSpacing', body);

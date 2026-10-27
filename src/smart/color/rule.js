@@ -7,5 +7,5 @@ SF.RuleLoader['cl-color'] = {
   mode: 'smart',
   js: true,
   css: true,
-  relation: [{ name: 'icons' }, { name: 'cl-icon-buttons' }],
+  relation: [{ name: 'icons' }, { name: 'cl-icon-button' }],
 };

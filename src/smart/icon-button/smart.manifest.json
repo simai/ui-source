@@ -510,8 +510,8 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/icon-buttons/index.js",
-        "sha256": "05e68e238c2e58bba406a4e89543d9ad28aa92050c1421e15686b90f121cff26"
+        "path": "src/smart/icon-button/index.js",
+        "sha256": "1afa9b6fd52aa7b2ed7ae0414f5567f20278a4d0fd4a0a36ca6136fa0dc0fb48"
       }
     ],
     "generated_runtime": [

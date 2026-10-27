@@ -1,0 +1,145 @@
+{
+  "component": "sf-icon-button",
+  "probe": "sf-icon-button against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-icon-button id=\"ib\" icon=\"settings\" aria-label=\"Настройки\"></sf-icon-button>",
+      "  <sf-icon-button id=\"ib-close\" kind=\"close\" aria-label=\"Закрыть\"></sf-icon-button>",
+      "  <sf-icon-button id=\"ib-old\" variant=\"close\" type=\"tonal\" tightness=\"low\" aria-label=\"Старые имена\"></sf-icon-button>",
+      "  <sf-icon-button id=\"ib-badge\" icon=\"notifications\" badge-count=\"3\" size=\"2\" aria-label=\"Уведомления\"></sf-icon-button>",
+      "  <sf-icon-button id=\"ib-load\" icon=\"refresh\" loading aria-label=\"Обновить\"></sf-icon-button>",
+      "  <sf-icon-button id=\"ib-bad\" icon=\"add\" appearance=\"primary\" size=\"7\" aria-label=\"Неизвестно\"></sf-icon-button>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-native-button",
+      "title": "draws one native button named by the host's aria-label; the host has no box",
+      "covers": "accessibility.role button, accessibility.name aria-label",
+      "steps": [
+        {
+          "check": "(() => { const host = document.querySelector('#ib'); const b = host.querySelector('button.sf-icon-button'); return getComputedStyle(host).display === 'contents' && b && b.getAttribute('aria-label') === 'Настройки' && b.querySelector('sf-icon').getAttribute('icon') === 'settings' && b.classList.contains('sf-icon-button--icon') && b.classList.contains('sf-icon-button--default') && b.classList.contains('sf-icon-button--primary'); })()",
+          "expect": {
+            "values": {
+              "#ib.kind": "icon",
+              "#ib.appearance": "default",
+              "#ib.size": "1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2-close",
+      "title": "the close kind draws sf-close at the button's size",
+      "covers": "settings.kind close",
+      "steps": [
+        {
+          "check": "document.querySelector('#ib-close button').classList.contains('sf-icon-button--close') && document.querySelector('#ib-close button sf-close').getAttribute('size') === '1'"
+        }
+      ]
+    },
+    {
+      "id": "p3-dated-aliases",
+      "title": "variant, type and tightness still draw, each noted with its dates",
+      "covers": "aliases.json variant, type, tightness, low",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-old button'); return b.classList.contains('sf-icon-button--close') && b.classList.contains('sf-icon-button--tonal') && b.classList.contains('tightness-low'); })()",
+          "expect": {
+            "values": {
+              "#ib-old.kind": "close",
+              "#ib-old.appearance": "tonal",
+              "#ib-old.spacing": "compact"
+            }
+          }
+        },
+        {
+          "check": "['variant', 'type', 'tightness'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-icon-button' && note.from === from && note.remove_after === '2026-12-01'))"
+        }
+      ]
+    },
+    {
+      "id": "p4-badge",
+      "title": "a count stands on the button and joins its name",
+      "covers": "settings.badge-count",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-badge button'); return Boolean(b.querySelector('.sf-badge')) && b.getAttribute('aria-label').startsWith('Уведомления') && b.getAttribute('aria-label').includes('3'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-loading",
+      "title": "loading puts the spinner in place of the icon and disables the button",
+      "covers": "settings.loading",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-load button'); return b.disabled && b.getAttribute('aria-busy') === 'true' && !b.querySelector('sf-icon') && Boolean(b.querySelector('.sf-icon-button-spinner')); })()"
+        }
+      ]
+    },
+    {
+      "id": "p6-unknown-values",
+      "title": "a value off a list draws the default",
+      "covers": "settings.appearance enum, settings.size enum",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#ib-bad button'); return b.classList.contains('sf-icon-button--default') && b.classList.contains('sf-icon-button--size-1'); })()",
+          "expect": {
+            "values": {
+              "#ib-bad.appearance": "default",
+              "#ib-bad.size": "1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-click-bubbles",
+      "title": "a click on the native button reaches the host",
+      "covers": "native activation",
+      "steps": [
+        {
+          "script": "(() => { window.__ibClicks = 0; document.querySelector('#ib').addEventListener('click', () => { window.__ibClicks += 1; }); return true; })()"
+        },
+        {
+          "user": "click:#ib button"
+        },
+        {
+          "check": "window.__ibClicks === 1"
+        }
+      ]
+    },
+    {
+      "id": "p8-button-attributes",
+      "title": "setButtonAttributes writes the object setting, not an attribute",
+      "covers": "settings.button-attributes (x-decisions setter)",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#ib').setButtonAttributes({title: 'x'}); return true; })()"
+        },
+        {
+          "check": "document.querySelector('#ib').buttonAttributes.title === 'x' && !document.querySelector('#ib').hasAttribute('button-attributes')"
+        }
+      ]
+    },
+    {
+      "id": "p9-public-variable",
+      "title": "--sf-icon-button-background-color fills the button",
+      "covers": "css-variables --sf-icon-button-background-color",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#ib').style.setProperty('--sf-icon-button-background-color', 'rgb(1, 2, 3)'); return true; })()"
+        },
+        {
+          "check": "getComputedStyle(document.querySelector('#ib button')).backgroundColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

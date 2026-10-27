@@ -28,7 +28,7 @@ const modules = [
   'smart/smart/reference-link/js/reference-link.js',
   'smart/smart/progress-scale/js/progress-scale.js',
   'smart/smart/file-preview/js/file-preview.js', 'smart/smart/input/js/input.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/button/js/button.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/button/js/button.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
 

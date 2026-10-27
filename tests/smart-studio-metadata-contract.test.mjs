@@ -33,7 +33,7 @@ test('button Studio contract preserves closed choices and open icon examples', a
 test('metadata refresh is generic and also corrects icon button inputs', async () => {
   const [generator, manifest] = await Promise.all([
     source('scripts/generate-smart-studio-artifacts.mjs'),
-    json('src/smart/icon-buttons/smart.manifest.json'),
+    json('src/smart/icon-button/smart.manifest.json'),
   ]);
 
   assert.match(generator, /componentMetadata\(componentRoot\)/);

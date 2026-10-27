@@ -23,7 +23,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/inputs/css/inputs.css',
   'component/component/pagination/css/pagination.css', 'component/component/dropdown/css/dropdown.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/input/js/input.js', 'smart/smart/list-item/js/list-item.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js', 'smart/smart/pagination/js/pagination.js'];
 const WIDTHS = ['26rem', '20rem', '60rem'];
 

@@ -21,12 +21,12 @@ const out = resolve(process.argv[2]);
 const styles = [
   'core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/inputs/css/inputs.css', 'component/component/buttons/css/buttons.css',
-  'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/icon-buttons/css/icon-buttons.css',
+  'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/icon-button/css/icon-button.css',
   'smart/smart/input/css/input.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/input/js/input.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
 

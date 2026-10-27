@@ -307,7 +307,7 @@
       },
       {
         "path": "src/smart/color/rule.js",
-        "sha256": "4eb88c62173597d5ef68d53915fcaf8d59dbef7dbb2e8df9e9745c453d595476"
+        "sha256": "a2f07a806db6d631d84bf0c99855ef9d468615bb262626dc0cd85040786ab196"
       },
       {
         "path": "src/smart/color/js/templates/default.js",

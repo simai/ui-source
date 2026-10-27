@@ -7,7 +7,7 @@ SF.RuleLoader['cl-datepicker'] = {
     { name: 'datepicker' },
     { name: 'cl-input' },
     { name: 'cl-button' },
-    { name: 'cl-icon-buttons' },
+    { name: 'cl-icon-button' },
     { name: 'cl-icon' },
   ],
 };

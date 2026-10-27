@@ -9,6 +9,6 @@ SF.RuleLoader['cl-tags'] = {
     { name: 'tags' },
     { name: 'avatars' },
     { name: 'dot' },
-    { name: 'cl-icon-buttons' },
+    { name: 'cl-icon-button' },
   ],
 };

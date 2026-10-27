@@ -1,0 +1,133 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Настройки",
+      "settings": {
+        "icon": "settings"
+      },
+      "attributes": {
+        "aria-label": "Настройки"
+      },
+      "expect": {
+        "icon": "settings"
+      }
+    },
+    {
+      "name": "tonal",
+      "title": "Тональная",
+      "settings": {
+        "icon": "edit",
+        "appearance": "tonal",
+        "scheme": "secondary"
+      },
+      "attributes": {
+        "aria-label": "Изменить"
+      },
+      "expect": {
+        "appearance": "tonal"
+      }
+    },
+    {
+      "name": "outline",
+      "title": "Контурная",
+      "settings": {
+        "icon": "share",
+        "appearance": "outline"
+      },
+      "attributes": {
+        "aria-label": "Поделиться"
+      },
+      "expect": {
+        "appearance": "outline"
+      }
+    },
+    {
+      "name": "close",
+      "title": "Закрыть",
+      "settings": {
+        "kind": "close",
+        "appearance": "link",
+        "scheme": "on-surface"
+      },
+      "attributes": {
+        "aria-label": "Закрыть"
+      },
+      "expect": {
+        "kind": "close"
+      }
+    },
+    {
+      "name": "error",
+      "title": "Удалить",
+      "settings": {
+        "icon": "delete",
+        "status": "error"
+      },
+      "attributes": {
+        "aria-label": "Удалить"
+      },
+      "expect": {
+        "status": "error"
+      }
+    },
+    {
+      "name": "badge",
+      "title": "Со счётчиком",
+      "settings": {
+        "icon": "notifications",
+        "badge-count": "3",
+        "size": "2"
+      },
+      "attributes": {
+        "aria-label": "Уведомления"
+      },
+      "expect": {
+        "badge-count": "3"
+      }
+    },
+    {
+      "name": "loading",
+      "title": "Загрузка",
+      "settings": {
+        "icon": "refresh",
+        "loading": true
+      },
+      "attributes": {
+        "aria-label": "Обновить"
+      },
+      "expect": {
+        "loading": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "icon": "add",
+        "disabled": true
+      },
+      "attributes": {
+        "aria-label": "Добавить"
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "segments",
+      "title": "Сегмент в начале",
+      "settings": {
+        "icon": "format_bold",
+        "segment": "start",
+        "appearance": "outline"
+      },
+      "attributes": {
+        "aria-label": "Полужирный"
+      },
+      "expect": {
+        "segment": "start"
+      }
+    }
+  ]
+}

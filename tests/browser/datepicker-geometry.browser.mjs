@@ -15,7 +15,7 @@ const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/datepicker/css/datepicker.css', 'smart/smart/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
 
 const day = (n, classes = '', info = '') => `<button class="sf-datepicker-day ${classes} flex flex-col content-main-center items-cross-center" type="button" data-n="${n}"><span class="sf-datepicker-day-date">${n}</span>${info ? `<span class="sf-datepicker-day-info">${info}</span>` : ''}</button>`;
 const WEEK = `<div class="sf-datepicker flex flex-col" id="week"><div class="sf-datepicker-row grid grid-col-7">

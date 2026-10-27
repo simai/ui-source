@@ -124,7 +124,7 @@ test("representative controls bind to the vertical height contract", () => {
         "src/component/icon-buttons/scss/_css_icon_buttons.scss",
     ), "utf8"));
     const smartIconButtonTemplate = fs.readFileSync(repositoryPath(
-        "src/smart/icon-buttons/js/templates/default.js",
+        "src/smart/icon-button/js/templates/default.js",
     ), "utf8");
 
     // Form fields have three sizes; icon buttons keep the whole scale because

@@ -33,7 +33,7 @@
       "note": "a destructive control is a status, not a colour role: `scheme` keeps saying which colour family a button takes and `status` says what it is about. Only `error` is painted -- a button that succeeds or warns is a colour with no meaning until a product asks for one."
     },
     {
-      "component": "icon-buttons",
+      "component": "icon-button",
       "axis": "status",
       "legacy": [],
       "state": "canonical_from_the_start",
@@ -48,7 +48,7 @@
       "state": "converted"
     },
     {
-      "component": "icon-buttons",
+      "component": "icon-button",
       "axis": "appearance",
       "legacy": [
         "type"
@@ -206,7 +206,7 @@
       "state": "converted"
     },
     {
-      "component": "icon-buttons",
+      "component": "icon-button",
       "axis": "kind",
       "legacy": [
         "variant"

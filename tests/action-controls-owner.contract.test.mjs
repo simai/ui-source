@@ -15,16 +15,19 @@ test('ordinary Icon Button creates one safe native icon action', async () => {
 });
 
 test('Smart Icon Button mirrors blocked loading and declared composition', async () => {
-  const template = await read('src/smart/icon-buttons/js/templates/default.js');
-  const runtime = await read('src/smart/icon-buttons/index.js');
-  const rule = await read('src/smart/icon-buttons/rule.js');
-  const manifest = JSON.parse(await read('src/smart/icon-buttons/smart.manifest.json'));
+  const template = await read('src/smart/icon-button/js/templates/default.js');
+  const runtime = await read('src/smart/icon-button/index.js');
+  const rule = await read('src/smart/icon-button/rule.js');
+  const manifest = JSON.parse(await read('src/smart/icon-button/smart.manifest.json'));
 
   assert.match(template, /\?disabled=\$\{disabled \|\| loading\}/);
   assert.match(template, /aria-hidden="true"/);
   assert.match(runtime, /button\.disabled = this\.disabled \|\| this\.loading/);
-  assert.match(runtime, /get segment\(\)/);
-  assert.match(runtime, /get filled\(\)/);
+  // segment and filled are made from component.json (core/js/element-manifest.js).
+  const component = JSON.parse(await read('src/smart/icon-button/component.json'));
+  assert.match(runtime, /elementFromManifest\(manifest/);
+  assert.deepEqual(component.settings.segment.values, ['', 'start', 'middle', 'end']);
+  assert.equal(component.settings.filled.type, 'boolean');
   assert.match(rule, /name: 'cl-close'/);
   assert.deepEqual(manifest.composition.uses, [
     'component.icon-buttons',

@@ -34,7 +34,7 @@ test('template context: the resolved names the templates read are passed', async
   const expected = {
     badges: ['iconStart', 'iconEnd'],
     button: ['iconStart', 'iconEnd', 'type'],
-    'icon-buttons': ['type', 'variant'],
+    'icon-button': ['type', 'variant'],
     input: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],
     skeleton: ['variant', 'type'],
@@ -48,7 +48,7 @@ test('template context: the resolved names the templates read are passed', async
     // A component built from its component.json passes the canonical axis
     // under the legacy name: `type` itself is a dated alias (aliases.json), and
     // reading it would note a use of the old name on every render.
-    for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.(?:${name}${name === 'type' ? '|kind|appearance' : ''}),`), `${component}.${name}`);
+    for (const name of names) assert.match(body, new RegExp(`\\b${name}: this\\.(?:${name}${name === 'type' || name === 'variant' ? '|kind|appearance' : ''}),`), `${component}.${name}`);
   }
   // sf-toast's type is a dated alias of status (standard 1.3.8 §16.20): the
   // template reads the resolved status under its old name.

@@ -1,0 +1,278 @@
+{
+  "$comment": "The source of sf-icon-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.icon-buttons",
+  "tag": "sf-icon-button",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "button",
+  "settings": {
+    "kind": {
+      "type": "enum",
+      "values": [
+        "icon",
+        "close"
+      ],
+      "default": "icon"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1"
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "default",
+        "tonal",
+        "outline",
+        "link",
+        "surface",
+        "ghost"
+      ],
+      "default": "default"
+    },
+    "scheme": {
+      "type": "enum",
+      "values": [
+        "primary",
+        "secondary",
+        "on-surface"
+      ],
+      "default": "primary"
+    },
+    "status": {
+      "type": "enum",
+      "values": [
+        "",
+        "error"
+      ],
+      "default": ""
+    },
+    "segment": {
+      "type": "enum",
+      "values": [
+        "",
+        "start",
+        "middle",
+        "end"
+      ],
+      "default": ""
+    },
+    "icon": {
+      "type": "icon",
+      "default": "add"
+    },
+    "filled": {
+      "type": "boolean",
+      "default": false
+    },
+    "spacing": {
+      "type": "enum",
+      "values": [
+        "compact",
+        "normal",
+        "comfortable",
+        "spacious"
+      ],
+      "default": "normal"
+    },
+    "radius": {
+      "type": "enum",
+      "values": [
+        "",
+        "default",
+        "square",
+        "rounded"
+      ],
+      "default": ""
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "native-type": {
+      "type": "enum",
+      "values": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "default": "button"
+    },
+    "badge-count": {
+      "type": "string",
+      "default": ""
+    },
+    "badge-dot": {
+      "type": "boolean",
+      "default": false
+    },
+    "badge-cap": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "default": 99
+    },
+    "badge-label": {
+      "type": "string",
+      "default": ""
+    },
+    "button-attributes": {
+      "type": "object",
+      "summary": "Attributes an external project template may put on its button; the built-in template does not read them"
+    }
+  },
+  "values": {},
+  "events": {},
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "button",
+    "name": {
+      "from": [
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach"
+    }
+  },
+  "css-variables": {
+    "--sf-icon-button-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-icon-button-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-icon-button-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-icon-button-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-icon-button-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-icon-button-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-icon-button-padding-block": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
+  "x-source": {
+    "package": "framework",
+    "folder": "icon-buttons",
+    "manifest": "simai/ui-source@5100227 src/smart/icon-buttons/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/icon-buttons.component.json"
+  },
+  "x-words": [
+    "badge-label"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-icon-button for a compact action that is unambiguous from one familiar icon and has a concise accessible name.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not omit aria-label when no visible text names the action",
+        "Do not use the large-surface radius as a normal control variation",
+        "Do not keep a loading action enabled"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-icon-button icon=\"add\" aria-label=\"Add item\"></sf-icon-button>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "a11y-role: button, the native <button> the template draws (the host is display:contents). The name is the host's aria-label, passed to the native button with the badge phrase after it (§3.1, §4.8); an icon-only control has no other text.",
+    "key-effects: Tab reach. Enter and Space are the native button's own activation, not an effect of the closed list; the native click bubbles as before. No press event: the parts catalogue gives sf-icon-button none, and sf-button's press is the target the stands wrote for sf-button alone.",
+    "setter: setButtonAttributes is not an action (§4.4): button-attributes is a writable object setting (a property), and the method stays a helper that writes it; it no longer writes the object into an attribute.",
+    "legacy names: type -> appearance, variant -> kind and tightness -> spacing leave the settings and are dated setting aliases (aliases.json, until 2026-12-01); tightness's words are spacing's value aliases (low/high/highest -> compact/comfortable/spacious). ghost stays an appearance of its own here: the class sf-icon-button--ghost draws it.",
+    "badge-cap is a number with min 1; badge-count stays a string capped by badge-cap.",
+    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift). The host stays display:contents: geometry lives on > button.",
+    "examples: examples.json from studio.fixture.json (add, default primary) plus tonal and outline, the close kind, the error status, a count badge, loading, disabled and segments.",
+    "css-variables: the seven public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
+    "folder: icon-buttons takes the tag's name, icon-button (§3, §21, §16 item 16); the loader bundle is cl-icon-button, cl-icon-buttons stays a forwarding rule and smart/icon-buttons/js/icon-buttons.js a forwarding script (css/icon-buttons.css its sheet) until 2026-12-01 (change journal path-smart-icon-buttons-to-icon-button). The registry id stays smart.icon-buttons.",
+    "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20)."
+  ]
+}

@@ -17,7 +17,7 @@ const styles = [
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/button/js/button.js', 'smart/smart/icon-buttons/js/icon-buttons.js',
+  'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js',
   'smart/smart/context-menu/js/context-menu.js',
   'smart/smart/popover/js/popover.js',
 ].map((p) => join(out, p));

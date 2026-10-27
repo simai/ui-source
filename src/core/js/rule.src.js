@@ -762,7 +762,7 @@ import '../../smart/file-upload/rule.js';
 import '../../smart/file-preview/rule.js';
 import '../../smart/gallery/rule.js';
 import '../../smart/help-mark/rule.js';
-import '../../smart/icon-buttons/rule.js';
+import '../../smart/icon-button/rule.js';
 import '../../smart/icon/rule.js';
 import '../../smart/image-field/rule.js';
 import '../../smart/inline-editor/rule.js';

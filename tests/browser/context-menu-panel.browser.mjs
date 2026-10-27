@@ -15,7 +15,7 @@ const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/tabs/css/tabs.css', 'component/component/context-menu/css/context-menu.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/tabs/js/tabs.js', 'smart/smart/context-menu/js/context-menu.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/tabs/js/tabs.js', 'smart/smart/context-menu/js/context-menu.js'];
 
 const failures = [];
 const note = (detail) => failures.push(detail);

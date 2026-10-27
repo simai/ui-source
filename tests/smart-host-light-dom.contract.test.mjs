@@ -38,7 +38,7 @@ test('a host data attribute ends up on the native control and on nothing else', 
   );
 
   // Both buttons ask for it, and no caller asks for the other shape.
-  for (const path of ['src/smart/button/index.js', 'src/smart/icon-buttons/index.js']) {
+  for (const path of ['src/smart/button/index.js', 'src/smart/icon-button/index.js']) {
     const source = await read(path);
     assert.match(source, /transferDataAttributes: true/, `${path} moves data-* to its control`);
   }
@@ -85,7 +85,7 @@ test('focus() on a host reaches the control inside it', async () => {
   const button = await read('src/smart/button/index.js');
   assert.match(button, /focusDelegate\(\) \{\s*return this\.querySelector\("\.sf-button"\);\s*\}/u);
 
-  const iconButton = await read('src/smart/icon-buttons/index.js');
+  const iconButton = await read('src/smart/icon-button/index.js');
   assert.match(iconButton, /focusDelegate\(\) \{\s*return this\.querySelector\('\.sf-icon-button'\);\s*\}/u);
 });
 
@@ -122,7 +122,7 @@ test('button documentation names all three label sources and the data-* rule', a
 });
 
 test('icon button documentation states the same host-attribute and focus rule', async () => {
-  const docs = await read('src/smart/icon-buttons/docs/docs.md');
+  const docs = await read('src/smart/icon-button/docs/docs.md');
 
   assert.match(docs, /## Host attributes/);
   assert.match(docs, /\*\*moved, not copied\*\*/);

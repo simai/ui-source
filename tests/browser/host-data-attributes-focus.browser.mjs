@@ -34,7 +34,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/button/js/button.js', 'smart/smart/icon-buttons/js/icon-buttons.js',
+  'smart/smart/button/js/button.js', 'smart/smart/icon-button/js/icon-button.js',
   'component/component/buttons/js/buttons.js', 'component/component/icon-buttons/js/icon-buttons.js'];
 
 const failures = [];

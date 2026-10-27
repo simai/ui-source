@@ -203,11 +203,10 @@
     "font-weight/default",
     "position/default"
   ],
-  "cl-icon-buttons": [
+  "cl-icon-button": [
     "align-items/default",
     "display/default",
-    "pointer-events/default",
-    "position/default"
+    "pointer-events/default"
   ],
   "cl-image-field": [
     "position/default"

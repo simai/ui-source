@@ -21,7 +21,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/datepicker/css/datepicker.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/input/js/input.js', 'smart/smart/datepicker/js/datepicker.js'];
 
 const failures = [];
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };

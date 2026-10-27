@@ -15,7 +15,8 @@ const axes = JSON.parse(readFileSync(resolve(root, 'contracts/public-api-axes.js
 // The change journal records renames the axes file does not (tightness ->
 // spacing); its attribute records count the same way.
 const journal = JSON.parse(readFileSync(resolve(root, 'contracts/changes/journal.json'), 'utf8'));
-const folder = (tag) => ({'sf-button': 'buttons', 'sf-icon-button': 'icon-buttons', 'sf-button-group': 'button-group'})[tag] ?? tag.replace(/^sf-/u, '');
+// A Smart folder is named as its tag without the prefix (standard 1.3.8 §3, §21).
+const folder = (tag) => tag.replace(/^sf-/u, '');
 const renames = [
   ...axes.components,
   ...journal.records.filter((record) => record.kind === 'attribute').flatMap((record) => record.items

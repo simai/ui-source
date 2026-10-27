@@ -13,7 +13,7 @@ const ICON_BUTTON_NATIVE_TYPE_VALUES = ['button', 'submit', 'reset'];
 
 const sfIconButtonMeta = {
   tag: 'sf-icon-button',
-  source: 'src/smart/icon-buttons/meta.mjs',
+  source: 'src/smart/icon-button/meta.mjs',
   attributes: {
     template: {
       kind: 'custom',

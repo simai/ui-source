@@ -7,7 +7,7 @@ SF.RuleLoader['cl-page-header'] = {
   js: true,
   relation: [
     {name: 'cl-badges'},
-    {name: 'cl-icon-buttons'},
+    {name: 'cl-icon-button'},
     {name: 'cl-icon'},
   ],
 };

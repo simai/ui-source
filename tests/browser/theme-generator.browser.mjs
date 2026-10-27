@@ -23,7 +23,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'smart/smart/input/css/input.css',
   'smart/smart/color/css/color.css', 'smart/smart/theme-generator/css/theme-generator.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/button/js/button.js', 'smart/smart/input/js/input.js',
+  'smart/smart/icon-button/js/icon-button.js', 'smart/smart/button/js/button.js', 'smart/smart/input/js/input.js',
   'smart/smart/color/js/color.js', 'smart/smart/theme-generator/js/theme-generator.js'];
 const absent = modules.filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build module(s) not found under ${out}: ${absent.join(', ')}`);

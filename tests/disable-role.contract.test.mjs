@@ -85,7 +85,7 @@ test('the disabled content role paints a fill only where the fill is the content
     'src/component/range-slider/scss/_css__thumbs.scss: background-color: var(--sf-on-disable);',
     'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-disable);',
     'src/component/toggle/scss/_css_toggle.scss: --sf-toggle-inner--background-color: var(--sf-on-disable);',
-    'src/smart/icon-buttons/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
+    'src/smart/icon-button/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
   ].sort());
 });
 

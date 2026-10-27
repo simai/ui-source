@@ -19,7 +19,7 @@ async page => {
       'component/buttons/css/buttons.css',
       'component/icon-buttons/css/icon-buttons.css',
       'component/tabs/css/tabs.css',
-      'smart/icon-buttons/css/icon-buttons.css',
+      'smart/icon-button/css/icon-button.css',
       'smart/tabs/css/tabs.css',
       'smart/tabs/template/default.css',
     ]) await frame.addStyleTag({url: `${base}/${path}`});

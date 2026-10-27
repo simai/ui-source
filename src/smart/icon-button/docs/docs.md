@@ -1,4 +1,4 @@
-# Smart Icon Buttons
+# Smart Icon Button
 
 The default template applies shared `root-class`, `style` and `root-style`
 settings to its root. Use Framework utilities and semantic tokens; the outer
@@ -19,17 +19,20 @@ Tag:
 
 Loading model:
 
-- detected by `tags: ['sf-icon-button']` in `src/smart/icon-buttons/rule.js`
-- loaded as smart bundle `cl-icon-buttons`
+- detected by `tags: ['sf-icon-button']` in `src/smart/icon-button/rule.js`
+- loaded as smart bundle `cl-icon-button` (`cl-icon-buttons` is its dated alias
+  until 2026-12-01, and `smart/icon-buttons/js/icon-buttons.js` a forwarding
+  script that loads `smart/icon-button/js/icon-button.js`; change journal
+  `path-smart-icon-buttons-to-icon-button`)
 - base styles and base component JS are loaded through relation with `icon-buttons`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
 
 Main attributes:
 
 - `template`
-- `variant="icon|close"`
+- `kind="icon|close"`
 - `size`
-- `type="default|tonal|outline|link|surface|ghost"` — surface and ghost read the
+- `appearance="default|tonal|outline|link|surface|ghost"` — surface and ghost read the
   neutral alpha ramp rather than a colour of their own: surface keeps a faint
   fill and a border one step stronger, ghost keeps nothing until a pointer or the
   keyboard reaches it. The icon keeps the scheme colour, because a fill that
@@ -57,8 +60,14 @@ Main attributes:
   `0` hides it. See the Badges documentation, «Бейдж на якоре»
   (simai/ui-source#12).
 
-For older SF5 templates, `tightness="low|high|highest"` remains a
-compatibility alias.
+The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
+`appearance`, `variant` for `kind`, and `tightness="low|high|highest"` for
+`spacing="compact|comfortable|spacious"`. The shim writes the new attribute and
+notes each use in `SF.deprecations`.
+
+- `button-attributes` — an object (a property) for an external project
+  template; the built-in template does not read it.
+  `element.setButtonAttributes(object)` writes it.
 
 Runtime helpers:
 
@@ -75,7 +84,8 @@ Runtime helpers:
 
 Metadata:
 
-- `src/smart/icon-buttons/meta.mjs`
+- `src/smart/icon-button/meta.mjs`
+- `src/smart/icon-button/component.json` — the interface (standard 1.3.8)
 
 ## Lifecycle events
 
@@ -91,8 +101,8 @@ The host element dispatches bubbling custom events from `SfBaseElement`:
 
 Supported through `SfBaseElement` with:
 
-- `/local/smart/templates/icon-buttons/<template>/index.js`
-- `/local/smart/templates/icon-buttons/<template>/index.css`
+- `/local/smart/templates/icon-button/<template>/index.js`
+- `/local/smart/templates/icon-button/<template>/index.css`
 
 ## Slot overrides
 
