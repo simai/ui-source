@@ -1,0 +1,10 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Каталог, звезда приходит с данными",
+      "settings": {"heading": "Каталог"},
+      "late": {"star": false}
+    }
+  ]
+}

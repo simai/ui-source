@@ -28,7 +28,10 @@
 // src/smart, or a test assembly of Framework parts under
 // tests/fixtures/first-paint/) is gated the same way, part by part: each
 // part's box is the same in the three phases, a part printed as a skeleton
-// turning into content when the example's late data is set on the assembly.
+// turning into content when the example's late data is set on the assembly,
+// and every printed part host is adopted: the live part is the element the
+// page printed, never one drawn anew beside or instead of it (stand 24 F2: a
+// printed sf-button whose role had moved to its <button> was drawn again).
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
@@ -163,6 +166,7 @@ async function measure({component, example, file, kind, width, sheets, layout = 
   const html = strip(readFileSync(file, 'utf8'));
   pages.set(path, `${head({title: id, sheets: ['/distr/core/css/core.css', ...sheets.map((one) => `/distr/${one}`)], extra: `<script>window.__fpTag=${JSON.stringify(component.tag)};window.__fpRoles=${assembly};window.__fpOverlay=${Boolean(component.overlay)};</script><script src="/first-paint-watch.js"></script>${coreScript}`})}<body>
 <main id="stage">${assembly ? html : placed(example, component.tag, html)}</main>
+${assembly ? `<script>window.__fpPrinted = [...document.querySelectorAll('#stage [data-sf-role]')];</script>` : ''}
 <p id="after">Текст под элементом</p>
 ${assembly ? assemblyModule(component) : ''}
 </body></html>`);
@@ -189,6 +193,17 @@ ${assembly ? assemblyModule(component) : ''}
     }
     await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
     const fp = await page.evaluate(() => window.__fp);
+    if (assembly) {
+      // Every printed part is adopted: the live part host is the printed one.
+      const anew = await page.evaluate((tag) => {
+        const printed = window.__fpPrinted ?? [];
+        const roles = new Set(printed.map((one) => one.getAttribute('data-sf-role')));
+        const live = [...document.querySelectorAll(`#stage ${tag} [data-sf-role]`)];
+        return live.filter((one) => roles.has(one.getAttribute('data-sf-role')) && !printed.includes(one))
+          .map((one) => `${one.getAttribute('data-sf-role')} (${one.localName})`);
+      }, component.tag);
+      if (anew.length) problems.push(`printed part(s) drawn anew, not adopted: ${anew.join(', ')}`);
+    }
     const frames = fp.frames;
     // Phase 1 is the first paint as it stands when the code arrives: the last
     // frame before it. What moved before that, with no code on the page, was

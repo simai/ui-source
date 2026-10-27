@@ -23,7 +23,11 @@
 //   - keys kept in the address, Back restores them (§7.5);
 //   - the live region, errors as sf-component-error, the scope ending when the
 //     assembly is taken out of the page (§7.4.1, §4.1, §7.7);
-//   - a layout switch moves the parts with their state (§7.3).
+//   - a layout switch moves the parts with their state (§7.3);
+//   - a part whose code has not arrived fetches none while its role's `if` is
+//     false (the role's own or a layout element's), nor inside a closed
+//     container before it opens: the network is watched (§7.2.1; stand 24 F1,
+//     simai/ui-source#47).
 /* global URL, console, document, location, process, requestAnimationFrame, setTimeout, window */
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
@@ -110,12 +114,30 @@ Assembly.define({
   },
   lang: {ru: {values: {total: 'Всего'}, roles: {send: {settings: {text: 'Отправить'}}}}},
 });
+// Parts whose code is fetched: the Loader is a stand-in that imports
+// /parts/<tag>.mjs, so every fetch is a request the test sees.
+window.SF = {Loader: {ensureSmartElementLoaded(tag) { import('/parts/' + tag + '.mjs'); }}};
+Assembly.interfaces.registerAll({
+  't-late': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
+  't-side': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
+  't-later': {version: '1.0.0', settings: {}, values: {}, events: {}, actions: {}},
+});
+Assembly.define({
+  tag: 't-lazy', kind: 'assembly', settings: {}, values: {}, events: {}, actions: {},
+  keys: {open: {type: 'boolean', writer: 'logic', initial: false}},
+  roles: {panel: {part: 't-late', if: 'open'}, side: {part: 't-side'}, later: {part: 't-later', start: 'opened'}},
+  rules: [],
+}, {
+  layouts: {default: '<x-role name="panel"></x-role><section if="open"><x-role name="side"></x-role></section><div class="closed" hidden><x-role name="later"></x-role></div>'},
+});
 window.__ready = true;
 </script></body></html>`;
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   if (url.pathname === '/' || url.pathname === '/index.html') { res.writeHead(200, {'content-type': TYPES['.html']}); res.end(page); return; }
+  const lazy = /^\/parts\/(t-[a-z]+)\.mjs$/.exec(url.pathname);
+  if (lazy) { res.writeHead(200, {'content-type': TYPES['.mjs']}); res.end(`customElements.define('${lazy[1]}', class extends HTMLElement {});`); return; }
   const file = join(root, decodeURIComponent(url.pathname));
   if (!file.startsWith(root)) { res.writeHead(403).end(); return; }
   try { res.writeHead(200, {'content-type': TYPES[file.slice(file.lastIndexOf('.'))] ?? 'application/octet-stream'}); res.end(await readFile(file)); } catch { res.writeHead(404).end(); }
@@ -251,6 +273,50 @@ try {
   });
   check('an error reaches the page as sf-component-error', ended.error);
   check('taken out of the page, the instance\'s scope ends', ended.aborted && ended.disposed && !ended.instances.includes('page/f'), JSON.stringify(ended));
+
+  // Code is fetched for a part that starts, never for one its `if` holds or a
+  // closed container hides (§7.2.1; stand 24 F1).
+  const fetched = [];
+  tab.on('request', (request) => { const path = new URL(request.url()).pathname; if (path.startsWith('/parts/')) fetched.push(path); });
+  await tab.evaluate(async () => {
+    const lazy = document.createElement('t-lazy');
+    lazy.id = 'lazy';
+    document.getElementById('stage').append(lazy);
+    await window.Assembly.whenIdle();
+    await new Promise((done) => setTimeout(done, 100));
+  });
+  const held = await tab.evaluate(() => {
+    const parts = window.Assembly.instances().includes('page/lazy') && document.getElementById('lazy').sfCore;
+    return {started: ['panel', 'side', 'later'].map((role) => parts.partsOf(role)[0]?.started), marked: parts.partsOf('panel')[0]?.element.hasAttribute('data-sf-start')};
+  });
+  check('if false: the part is placed, not started, and marked unstarted for the Loader', JSON.stringify(held.started) === '[false,false,false]' && held.marked, JSON.stringify(held));
+  check('no code is fetched for a part under a false if or in a closed container', fetched.length === 0, fetched.join(', '));
+  await tab.evaluate(async () => {
+    const core = document.getElementById('lazy').sfCore;
+    const turn = core.newTurn('test', {});
+    turn.writes.set('open', {value: true, writer: 'logic'});
+    core.commit(turn);
+    await window.Assembly.whenIdle();
+  });
+  await tab.waitForFunction(() => customElements.get('t-late') && customElements.get('t-side'), null, {timeout: 3000}).catch(() => {});
+  const shown = await tab.evaluate(() => ({started: ['panel', 'side', 'later'].map((role) => document.getElementById('lazy').sfCore.partsOf(role)[0]?.started),
+    busy: document.querySelector('t-late').getAttribute('aria-busy'), mark: document.querySelector('t-late').hasAttribute('data-sf-started')}));
+  check('the first true if starts the part and fetches its code once', JSON.stringify(shown.started) === '[true,true,false]' && shown.busy === null && shown.mark
+    && JSON.stringify([...fetched].sort()) === '["/parts/t-late.mjs","/parts/t-side.mjs"]', `${JSON.stringify(shown)} ${fetched.join(', ')}`);
+  await tab.evaluate(() => { document.querySelector('#lazy .closed').hidden = false; });
+  await tab.waitForFunction(() => customElements.get('t-later'), null, {timeout: 3000}).catch(() => {});
+  check('a closed container fetches its part\'s code when it opens', fetched.filter((one) => one === '/parts/t-later.mjs').length === 1, fetched.join(', '));
+  await tab.evaluate(async () => {
+    const core = document.getElementById('lazy').sfCore;
+    for (const value of [false, true]) {
+      const turn = core.newTurn('test', {});
+      turn.writes.set('open', {value, writer: 'logic'});
+      core.commit(turn);
+      await window.Assembly.whenIdle();
+    }
+  });
+  check('a part shown again fetches nothing', fetched.length === 3, fetched.join(', '));
+
   check('no page errors', errors.length === 0, errors.join('; '));
   const journal = await tab.evaluate(() => window.Assembly.journal.entries().filter((entry) => entry.level === 'error').map((entry) => entry.text));
   check('the journal has the one error the test caused', journal.length === 1 && /no setting "missing"/.test(journal[0]), journal.join('; '));

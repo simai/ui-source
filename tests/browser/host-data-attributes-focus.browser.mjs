@@ -13,7 +13,11 @@
 //     removeHostDataAttribute() clears it from the record and the control;
 //   - host.focus() puts focus on the control, host.blur() takes it off, and a
 //     focus asked before the first render is applied once the control is there;
-//   - aria-* and title are still copied to the native control.
+//   - aria-* and title are still copied to the native control;
+//   - the runtime's own marks (SF.Assembly's data-sf-role, data-sf-instance,
+//     data-sf-start, data-sf-started; the first paint's data-sf-static) stay
+//     on the host, where the Assembly adopts the part by them; an adopted
+//     host that draws loses data-sf-static (stand 24 F2, U1).
 //
 // Three shapes were tried in production and two were wrong. Moving the
 // attribute to the control emptied the host a product had written it on
@@ -52,6 +56,11 @@ async function open(body) {
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
   for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
   await page.waitForFunction(() => ['sf-button', 'sf-icon-button'].every((tag) => customElements.get(tag)));
+  // What an author wrote on a host, without the runtime's own state marks
+  // (data-sf-started is the base value started, §4.1, and stays on the host).
+  await page.evaluate(() => {
+    window.authored = (host) => Object.fromEntries(Object.entries(host.dataset).filter(([key]) => key !== 'sfStarted'));
+  });
   await page.waitForTimeout(600);
   return page;
 }
@@ -80,7 +89,7 @@ try {
         backToIconHost: first('[data-column-key="f2"]')?.closest('sf-icon-button')?.id || null,
         onHost: {
           action: document.querySelector('#close').getAttribute('data-action'),
-          dataset: {...document.querySelector('#close').dataset},
+          dataset: authored(document.querySelector('#close')),
         },
         copied: {
           title: document.querySelector('#close button').getAttribute('title'),
@@ -152,6 +161,33 @@ try {
     await page.close();
   }
 
+  // 1a. The runtime's marks stay on the host: SF.Assembly finds a part by its
+  //     data-sf-role on the part's own tag, and a printed sf-button whose role
+  //     went to its <button> was drawn a second time (stand 24 F2).
+  {
+    const page = await open(`<div id="shell">
+      <sf-button id="part" text="Меню" data-sf-role="menu-button" data-sf-instance="page/screen/menu-button"
+        data-sf-start="now" data-sf-started data-sf-static data-action="open"></sf-button>
+    </div>`);
+    const marks = await page.evaluate(() => {
+      const host = document.querySelector('#part');
+      const button = host.querySelector('button');
+      const names = ['data-sf-role', 'data-sf-instance', 'data-sf-start', 'data-sf-started'];
+      return {
+        host: names.filter((name) => host.hasAttribute(name)),
+        control: names.filter((name) => button?.hasAttribute(name)),
+        role: document.querySelector('[data-sf-role="menu-button"]')?.localName ?? null,
+        action: document.querySelectorAll('[data-action="open"]').length === 1 && button?.getAttribute('data-action') === 'open',
+        static: host.hasAttribute('data-sf-static') || Boolean(button?.hasAttribute('data-sf-static')),
+      };
+    });
+    evidence.marks = marks;
+    check('the Assembly\'s marks stay on the host', marks.host.length === 4 && marks.control.length === 0 && marks.role === 'sf-button', marks);
+    check('an author\'s data-* still moves to the control', marks.action === true, marks);
+    check('a drawn host is no longer static markup', marks.static === false, marks);
+    await page.close();
+  }
+
   // 2. The host's record of what the author wrote, and taking one back.
   {
     const page = await open('<div id="panel"></div>');
@@ -167,7 +203,7 @@ try {
 
       const afterRender = {
         read: {...add.dataAttributes},
-        dataset: {...add.dataset},
+        dataset: authored(add),
         onControl: add.querySelector('button')?.getAttribute('data-add') || null,
         count: panel.querySelectorAll('[data-add]').length,
       };

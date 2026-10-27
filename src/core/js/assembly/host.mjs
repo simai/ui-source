@@ -107,9 +107,17 @@ class HostView {
   /** The printed host of a role's part, taken once (§7.3 phase 2). */
   takePrinted(rec) {
     if (!this.printed || rec.entry) return null;
-    const element = this.printed.get(rec.role);
+    let element = this.printed.get(rec.role);
     this.printed.delete(rec.role);
-    if (!element || element.localName !== rec.def.tag) return null;
+    // A first paint composed by an older pair printed a forwarding part's
+    // role on its inner control (sf-button moved every data-* to its
+    // <button>, stand 24 F2): the part is the host around it.
+    if (element && element.localName !== rec.def.tag) {
+      const control = element;
+      element = control.parentElement?.closest(rec.def.tag) ?? null;
+      if (element) for (const name of ['data-sf-role', 'data-sf-instance']) control.removeAttribute(name);
+    }
+    if (!element) return null;
     // What the layout put inside the part when it was printed (a container's
     // panels) comes again from the live layout; its static markup stays.
     for (const child of Array.from(element.children)) {
@@ -256,7 +264,9 @@ class HostView {
     element[OWNED] = true;
     element.setAttribute('data-sf-role', rec.entry ? `${rec.role}[${rec.entryId}]` : rec.role);
     element.setAttribute('data-sf-instance', rec.instanceId);
-    if (rec.def.start !== 'now') {
+    // An unstarted part is a closed container for the Loader (loader.js
+    // UNSTARTED_PART): a deferred start, or a part its `if` holds (§7.2.1).
+    if (rec.def.start !== 'now' || rec.held) {
       element.setAttribute('data-sf-start', rec.def.start);
       element.setAttribute('aria-busy', 'true');
     }

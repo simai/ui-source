@@ -1,0 +1,26 @@
+{
+  "$comment": "A test assembly of Framework parts for the composed first paint (standard simai.smart-component 1.3.9 §5.4, §7.3, gate 24): the head of an admin screen as stand 24 found it (simai/ui-control control/smart-architecture/stands/24-admin-screen/real-2026-10-27, F2 and F3). A printed sf-button is adopted in its own box, and the page header's line keeps its height when the star arrives with the late data, so the field below never moves. Not a product component.",
+  "id": "test.admin-head",
+  "tag": "t-admin-head",
+  "version": "1.0.0",
+  "kind": "assembly",
+  "settings": {
+    "heading": {"type": "string", "default": "Каталог"},
+    "star": {"type": "boolean", "optional": true}
+  },
+  "values": {},
+  "events": {},
+  "actions": {},
+  "keys": {
+    "heading": {"type": "string", "writer": "parent"},
+    "star": {"type": "boolean", "writer": "parent"}
+  },
+  "roles": {
+    "menu": {"part": "sf-button", "settings": {"text": "Меню", "appearance": "outline"}},
+    "head": {"part": "sf-page-header", "bind": {"settings.heading": "heading", "settings.star": "star"}},
+    "search": {"part": "sf-input", "settings": {"label": "Поиск", "placeholder": "Название записи"}}
+  },
+  "rules": [],
+  "layouts": {"default": "layout.default.html"},
+  "examples": "examples.json"
+}

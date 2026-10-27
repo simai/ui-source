@@ -202,6 +202,21 @@ class SmartElementDirective extends Directive {
 
 export const smartElement = directive(SmartElementDirective);
 
+// The marks the runtime keeps on a Smart host (SF.Assembly, the first paint,
+// the Loader): forwardHostAttributes leaves them on the host.
+const HOST_RUNTIME_MARKS = new Set([
+  "data-sf-role",
+  "data-sf-instance",
+  "data-sf-start",
+  "data-sf-started",
+  "data-sf-assembly",
+  "data-sf-static",
+  "data-sf-first-paint",
+  "data-sf-held",
+  "data-sf-skeleton",
+  "data-sf-observer",
+]);
+
 // The same element, outside a template. A caller that holds the element itself
 // -- a portal, a measurement, a test -- gets a fresh one, because there is no
 // position to keep it in.
@@ -1355,6 +1370,15 @@ class SfBaseElement extends HTMLElement {
   // wrote data-add on <sf-button> needs a way to read it back), and
   // removeHostDataAttribute() takes one off the host's record and the control
   // together.
+  //
+  // The runtime's own marks of the host are not the author's and are never
+  // moved: SF.Assembly's part marks (data-sf-role, data-sf-instance,
+  // data-sf-start, data-sf-started) and the first paint's (data-sf-static,
+  // data-sf-first-paint, data-sf-held, data-sf-observer) name the host, the
+  // element the Assembly and the Loader find by them. Moved to the control,
+  // a printed sf-button carried its role on <button>, and the Assembly could
+  // not adopt it: it drew a second button and the line below moved (stand
+  // 24, F2).
   forwardHostAttributes(target, options = {}) {
     if (!target) {
       return this;
@@ -1385,6 +1409,10 @@ class SfBaseElement extends HTMLElement {
       }
 
       if (/^on[a-z]/i.test(name)) {
+        return;
+      }
+
+      if (HOST_RUNTIME_MARKS.has(name)) {
         return;
       }
 
@@ -2677,6 +2705,20 @@ class SfBaseElement extends HTMLElement {
     }
     this.removeAttribute("data-sf-first-paint");
     Array.from(this.children).forEach((child) => child.removeAttribute("data-sf-held"));
+    // A host printed as a static node of another's picture and adopted live
+    // (sf-data-view takes its printed sf-table and sf-pagination as its
+    // slotted children) is no longer static markup once it draws. The mark
+    // stays only while the element around it can still replace its picture:
+    // a Smart parent that has not drawn yet, and the node is not slotted page
+    // content (stand 24, U1).
+    if (this.hasAttribute("data-sf-static")) {
+      const parent = this.parentElement;
+      const pictureOfParent =
+        !this.hasAttribute("slot") &&
+        Boolean(parent?.localName.includes("-")) &&
+        parent.isRendered !== true;
+      if (!pictureOfParent) this.removeAttribute("data-sf-static");
+    }
   }
 
   template() {
