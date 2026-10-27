@@ -11,6 +11,17 @@ export const DEFAULT_PRELOADER = Object.freeze({
 
 const MOTION_HANDLE = '__sfPreloaderMotion';
 
+// What the server printed is the first paint (standard simai.smart-component
+// 1.3.8 §5.4): static markup of a Smart element (`data-sf-static`) or a core
+// skeleton shape (`data-sf-skeleton`). A page that carries either is not
+// covered by the boot preloader; a bare page, with nothing to show until the
+// Loader is ready, still is.
+export const FIRST_PAINT_SELECTOR = '[data-sf-static], [data-sf-skeleton]';
+
+export function pageHasFirstPaint(doc = globalThis.document) {
+  return Boolean(doc?.querySelector?.(FIRST_PAINT_SELECTOR));
+}
+
 export function getPreloaderColor(root = document.documentElement) {
   const fallback = root?.classList?.contains('theme-dark')
     ? '#e3e2e7'

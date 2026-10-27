@@ -16,6 +16,7 @@ import {
   DEFAULT_PRELOADER,
   getPreloaderBackground,
   getPreloaderColor,
+  pageHasFirstPaint,
   startPreloaderMotion,
   stopPreloaderMotion,
 } from './preloader';
@@ -243,6 +244,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 
     const buildPreloader = () => {
       if (preloaderRun || document.querySelector('.sf-loader')) return;
+      // A page with static markup or skeletons shows them, never the
+      // preloader over them (§5.4). Read when the preloader would show, after
+      // its delay, when the server's markup has been parsed.
+      if (pageHasFirstPaint(document)) return;
 
       wrap = document.createElement('div');
       const inner = document.createElement('div');
@@ -305,6 +310,22 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       delayTimer = setTimeout(buildPreloader, cfg.delay);
     } else {
       buildPreloader();
+    }
+
+    // A preloader asked for at once, before the body was parsed, gives way
+    // when the parsed page turns out to carry its own first paint.
+    if (document.readyState === 'loading') {
+      document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+          if (!pageHasFirstPaint(document)) return;
+          cancelBuild();
+          preloaderRun = false;
+          stopAnimation();
+          hide();
+        },
+        { once: true },
+      );
     }
   };
 

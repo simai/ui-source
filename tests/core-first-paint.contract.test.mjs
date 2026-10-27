@@ -365,3 +365,18 @@ test('the skeleton class fetches its sheet alone; the script comes with the API 
   assert.match(slice(loader, 'SFLoaderPlugin.prototype.findShortCodes =', 'function generateTemplateParamsFromString'), /this\.loadScriptOnCall\(originItem\);/u);
   assert.match(slice(loader, 'SFLoaderPlugin.prototype.ensurePlugin =', 'SFLoaderPlugin.prototype.loadScriptOnCall ='), /this\.loadScriptOnCall\(key\);\s*if \(this\.module\[key\]\) return true;/u);
 });
+
+// ---------- the boot preloader (§5.4) ----------
+test('the boot preloader never covers a page with static markup or skeletons; a bare page keeps it', async () => {
+  const {pageHasFirstPaint, FIRST_PAINT_SELECTOR} = await import('../src/core/js/preloader.js');
+  assert.equal(FIRST_PAINT_SELECTOR, '[data-sf-static], [data-sf-skeleton]');
+  const doc = (found) => ({querySelector: (selector) => (selector === FIRST_PAINT_SELECTOR && found ? {} : null)});
+  assert.equal(pageHasFirstPaint(doc(true)), true);
+  assert.equal(pageHasFirstPaint(doc(false)), false);
+  assert.equal(pageHasFirstPaint(null), false);
+  const index = read('src/core/js/index.js');
+  const build = slice(index, 'const buildPreloader = () => {', 'wrap = document.createElement');
+  assert.match(build, /if \(pageHasFirstPaint\(document\)\) return;/, 'checked when the preloader would show');
+  assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;/, 'SF_BOOT_CONFIG.preloader.enabled = false still turns it off');
+  assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageHasFirstPaint\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
+});
