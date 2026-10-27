@@ -449,7 +449,10 @@ class SfBaseElement extends HTMLElement {
     // attributes in the markup have filled the new ones when it draws.
     this.sfOpenScope();
     if (this.constructor.aliases && !this.__sfAliases) {
-      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName, signal: this.sfScope});
+      // A component whose old event names carried more than the new ones
+      // (page elements, which §8 takes out of detail) gives the shim one
+      // detail adapter per old name: sfAliasAdapters() -> {old: (detail) => old detail}.
+      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName, signal: this.sfScope, adapters: this.sfAliasAdapters?.() ?? {}});
     }
     this.onConnected();
     // A component chooses its words when it draws and would otherwise keep

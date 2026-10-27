@@ -258,5 +258,6 @@ test('the Smart base gives every instance a scope that ends on removal (§7.7)',
   assert.match(base, /get sfScope\(\) \{\s*if \(!this\.__sfScope\) this\.__sfScope = new AbortController\(\);/);
   assert.match(base, /disconnectedCallback\(\) \{\s*this\._isMounted = false;\s*this\.sfCloseScope\?\.\(\);/);
   assert.match(base, /if \(!this\.isConnected\) this\.__sfScope\?\.abort\(\);/);
-  assert.match(base, /installAliases\(this, this\.constructor\.aliases, \{tag: this\.localName, signal: this\.sfScope\}\)/);
+  // ... and hands the shim the element's detail adapters for split rows (§16.20).
+  assert.match(base, /installAliases\(this, this\.constructor\.aliases, \{tag: this\.localName, signal: this\.sfScope, adapters: this\.sfAliasAdapters\?\.\(\) \?\? \{\}\}\)/);
 });

@@ -52,6 +52,7 @@
 
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
+import { bindPageActions } from './page-actions.js';
 
 const RESERVED = new Set([
   'props', 'api', 'view', 'scope', 'parts', 'receive', 'render', 'connected',
@@ -348,6 +349,9 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
 
   class ManifestElement extends Base {
     static get manifest() { return manifest; }
+    // What SF.Assembly reads of a part it places (assembly/definition.mjs
+    // interfaces.of): the same manifest, so a rule can ask its actions.
+    static get sfInterface() { return manifest; }
     static get sfManifest() { return read; }
     static get sfWords() { return words; }
     static get formAssociated() { return formAssociated; }
@@ -466,6 +470,8 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
 
   defineMembers(ManifestElement.prototype, read.members);
   defineActions(ManifestElement.prototype, read.actions, actions, read.events);
+  // data-sf-action="<id>.<action>" runs a declared action (§8 one page trigger).
+  if (read.actions.length) bindPageActions();
   if (aliases) ManifestElement.aliases = aliases;
   return ManifestElement;
 }

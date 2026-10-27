@@ -125,6 +125,9 @@ export function outcomeOf(value) {
   if (value === undefined || value === null || value === true) return {answer: 'applied'};
   if (value === false) return {answer: 'refused', reason: '', message: ''};
   if (typeof value === 'string') return ANSWERS.includes(value) ? {answer: value} : {answer: 'applied'};
+  // An element made from its manifest answers {outcome, reason, value}
+  // (element-manifest.js, §4.4): the same answer under the element's word.
+  if (isObject(value) && typeof value.answer !== 'string' && typeof value.outcome === 'string') return outcomeOf({...value, answer: value.outcome});
   if (isObject(value) && typeof value.answer === 'string') {
     return ANSWERS.includes(value.answer) ? value : {...value, answer: 'refused', reason: value.reason ?? 'unknown-answer'};
   }

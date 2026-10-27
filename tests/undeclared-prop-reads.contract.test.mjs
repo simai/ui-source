@@ -38,6 +38,15 @@ const importedHelpers = (path, source) => [...source.matchAll(/from\s+["'](\.\.\
   .map(([, spec]) => resolve(root, path, '..', `${spec}.js`))
   .filter((file) => existsSync(file))
   .map((file) => readFileSync(file, 'utf8'));
+// A component made from its component.json (core element-manifest.js) has an
+// accessor for every setting and value the manifest declares (standard 1.3.8 §4).
+const manifestMembers = (name, source) => {
+  const file = resolve(root, 'src/smart', name, 'component.json');
+  if (!/elementFromManifest\(manifest/u.test(source) || !existsSync(file)) return new Set();
+  const manifest = JSON.parse(readFileSync(file, 'utf8'));
+  return new Set([...Object.keys(manifest.settings || {}), ...Object.keys(manifest.values || {})]
+    .map((member) => member.replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase())));
+};
 const escape = (name) => name.replace(/\$/gu, '\\$');
 const defines = (source, key) =>
   new RegExp(`^\\s+(?:static\\s+)?(?:async\\s+)?(?:get\\s+|set\\s+)?${escape(key)}\\s*\\([^)]*\\)\\s*\\{`, 'mu').test(source)
@@ -62,8 +71,9 @@ test('a component reads a declared prop through a getter or getProp, never off t
     if (!existsSync(resolve(root, path))) continue;
     const source = read(path);
     const mixins = importedHelpers(path, source);
+    const generated = manifestMembers(name, source);
     for (const key of declaredProps(source)) {
-      if (defines(source, key) || defines(base, key) || mixins.some((mixin) => defines(mixin, key))) continue;
+      if (generated.has(key) || defines(source, key) || defines(base, key) || mixins.some((mixin) => defines(mixin, key))) continue;
       checked += 1;
       const bare = new RegExp(`\\bthis\\??\\.${escape(key)}\\b(?!\\s*=(?!=))`, 'u').test(source)
         || new RegExp(`\\{[^}]*\\b${escape(key)}\\b[^}]*\\}\\s*=\\s*this\\b`, 'u').test(source);
