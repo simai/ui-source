@@ -15,7 +15,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
   'smart/smart/icon/js/icon.js',
-  'smart/smart/buttons/js/buttons.js',
+  'smart/smart/button/js/button.js',
   'smart/smart/icon-buttons/js/icon-buttons.js',
   'smart/smart/checkbox/js/checkbox.js',
   'smart/smart/list-item/js/list-item.js',

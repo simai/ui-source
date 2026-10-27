@@ -25,7 +25,7 @@ const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'smart/smart/image-field/css/image-field.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js', 'smart/smart/image-field/js/image-field.js'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/image-field/js/image-field.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 

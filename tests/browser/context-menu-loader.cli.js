@@ -47,7 +47,7 @@ async page => {
       '/component/context-menu/css/context-menu.css',
       '/smart/context-menu/js/context-menu.js',
       '/component/buttons/css/buttons.css',
-      '/smart/buttons/js/buttons.js'
+      '/smart/button/js/button.js'
     ];
     state.requiredAssets = requiredAssets.every(fragment => state.resources.some(path => path.endsWith(fragment)));
     const row = {width, theme, ...state};

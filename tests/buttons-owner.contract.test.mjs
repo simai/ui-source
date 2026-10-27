@@ -35,8 +35,8 @@ test('Button custom presentation uses semantic design and motion tokens', async 
 test('ordinary and Smart Buttons block duplicate loading actions and hide decorative icons', async () => {
   const [ordinary, smart, template] = await Promise.all([
     read('src/component/buttons/js/_buttons.js'),
-    read('src/smart/buttons/index.js'),
-    read('src/smart/buttons/js/templates/default.js'),
+    read('src/smart/button/index.js'),
+    read('src/smart/button/js/templates/default.js'),
   ]);
 
   assert.match(ordinary, /if \(loading\)[\s\S]*this\.button\.disabled = true/);

@@ -28,9 +28,9 @@ function openTemplateInput(manifest) {
 // field renderer set is a module by design -- it is called, not placed in
 // markup -- which is why the registry cannot describe it yet. Recorded in
 // ui-control's ledger as a question for the registry's owner.
-// inputs and icons are former distribution paths of Smart elements, forwarding
+// inputs, icons and buttons are former distribution paths of Smart elements, forwarding
 // bundles until 2026-12-01 (change journal path-smart-<old>-to-<new>), not elements.
-const serviceDirectories = new Set(['helpers', 'field-renderers', 'inputs', 'icons']);
+const serviceDirectories = new Set(['helpers', 'field-renderers', 'inputs', 'icons', 'buttons']);
 const generatedRuntimeRoot = path.resolve(root, '../ui-smart');
 const uiRoot = path.resolve(root, '../ui');
 const revision = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: root, encoding: 'utf8'}).trim();

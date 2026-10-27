@@ -33,7 +33,7 @@ test('template context: every exemption names a resolving getter and a reason', 
 test('template context: the resolved names the templates read are passed', async () => {
   const expected = {
     badges: ['iconStart', 'iconEnd'],
-    buttons: ['iconStart', 'iconEnd', 'type'],
+    button: ['iconStart', 'iconEnd', 'type'],
     'icon-buttons': ['type', 'variant'],
     input: ['iconStart', 'textEnd', 'type', 'maskLazy'],
     'list-item': ['type'],

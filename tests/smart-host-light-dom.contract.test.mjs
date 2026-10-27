@@ -38,7 +38,7 @@ test('a host data attribute ends up on the native control and on nothing else', 
   );
 
   // Both buttons ask for it, and no caller asks for the other shape.
-  for (const path of ['src/smart/buttons/index.js', 'src/smart/icon-buttons/index.js']) {
+  for (const path of ['src/smart/button/index.js', 'src/smart/icon-buttons/index.js']) {
     const source = await read(path);
     assert.match(source, /transferDataAttributes: true/, `${path} moves data-* to its control`);
   }
@@ -82,7 +82,7 @@ test('focus() on a host reaches the control inside it', async () => {
   assert.match(base, /this\.whenRendered\(\(\) => \{/u);
   assert.match(base, /if \(\(this\.ownerDocument\?\.activeElement \|\| null\) !== activeWhenAsked\) return;/u);
 
-  const button = await read('src/smart/buttons/index.js');
+  const button = await read('src/smart/button/index.js');
   assert.match(button, /focusDelegate\(\) \{\s*return this\.querySelector\("\.sf-button"\);\s*\}/u);
 
   const iconButton = await read('src/smart/icon-buttons/index.js');
@@ -91,8 +91,8 @@ test('focus() on a host reaches the control inside it', async () => {
 
 test('a text child is the button label, not a second label beside it', async () => {
   const [button, template] = await Promise.all([
-    read('src/smart/buttons/index.js'),
-    read('src/smart/buttons/js/templates/default.js'),
+    read('src/smart/button/index.js'),
+    read('src/smart/button/js/templates/default.js'),
   ]);
 
   // createElement('sf-button') + textContent rendered an empty button with the
@@ -110,7 +110,7 @@ test('a text child is the button label, not a second label beside it', async () 
 });
 
 test('button documentation names all three label sources and the data-* rule', async () => {
-  const docs = await read('src/smart/buttons/docs/docs.md');
+  const docs = await read('src/smart/button/docs/docs.md');
 
   assert.match(docs, /## The label/);
   assert.match(docs, /<sf-button>Добавить<\/sf-button>/);

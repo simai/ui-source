@@ -3,7 +3,20 @@ import fs from 'node:fs';
 import test from 'node:test';
 const resolver = fs.readFileSync(new URL('../src/core/js/control-spacing.js', import.meta.url), 'utf8');
 const {resolveControlSpacing} = await import(`data:text/javascript;base64,${Buffer.from(resolver).toString('base64')}`);
-for (const name of ['buttons', 'icon-buttons', 'button-group']) {
+// A component built from its component.json (standard 1.3.8) takes tightness as
+// a dated alias of spacing, its words as spacing's value aliases: the shim
+// writes spacing, so the template context reads spacing alone.
+for (const name of ['button']) {
+  test(`${name}: tightness is a dated alias of spacing, its words spacing's values`, () => {
+    const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
+    const {aliases} = JSON.parse(fs.readFileSync(new URL(`../src/smart/${name}/aliases.json`, import.meta.url), 'utf8'));
+    assert.ok(aliases.some((row) => row.kind === 'setting' && row.from === 'tightness' && row.to === 'spacing'));
+    const words = Object.fromEntries(aliases.filter((row) => row.kind === 'value' && row.setting === 'spacing').map((row) => [row.from, row.to]));
+    assert.deepEqual(words, {low: 'compact', high: 'comfortable', highest: 'spacious'});
+    assert.match(source, /resolveControlSpacing\(\{spacing: this\.getAttribute\('spacing'\)\}\)/);
+  });
+}
+for (const name of ['icon-buttons', 'button-group']) {
   const source = fs.readFileSync(new URL(`../src/smart/${name}/index.js`, import.meta.url), 'utf8');
   const body = source.match(/  templateContext\(\) \{([\s\S]*?)\n  \}/)[1];
   const context = new Function('resolveControlSpacing', body);

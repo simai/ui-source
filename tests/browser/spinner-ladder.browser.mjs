@@ -24,7 +24,7 @@ const out = resolve(process.argv[2]);
 
 const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/spinner/css/spinner.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js',
+const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'component/component/spinner/js/spinner.js', 'smart/smart/spinner/js/spinner.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 

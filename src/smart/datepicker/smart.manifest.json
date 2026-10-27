@@ -596,7 +596,7 @@
       },
       {
         "path": "src/smart/datepicker/rule.js",
-        "sha256": "a17f29ef1599f802d3763f72825d51554cf11d1acab6fe8cb34bfe4e21c7b3cb"
+        "sha256": "4bfd30ed570dff828263f47489e3ba16ff3ed16625294c7d596b9858ac09181a"
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",

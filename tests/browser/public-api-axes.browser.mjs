@@ -14,7 +14,7 @@ const cases = [
   // legacy value of sf-button, drawn as link (journal value-button-ghost-to-link).
   {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'tonal', canonical: 'surface',
    css: ['core/core/css/core.css', 'component/component/buttons/css/buttons.css'],
-   js: 'smart/smart/buttons/js/buttons.js'},
+   js: 'smart/smart/button/js/button.js'},
   {tag: 'sf-icon-button', root: '.sf-icon-button', prefix: 'sf-icon-button--', legacy: 'ghost', canonical: 'surface',
    css: ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css'],
    js: 'smart/smart/icon-buttons/js/icon-buttons.js'},

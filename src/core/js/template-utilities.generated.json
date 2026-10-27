@@ -52,6 +52,12 @@
     "position/default",
     "visibility/default"
   ],
+  "cl-button": [
+    "align-items/default",
+    "display/default",
+    "flex/default",
+    "pointer-events/default"
+  ],
   "cl-button-group": [
     "align-items/default",
     "display/default",
@@ -59,13 +65,6 @@
     "pointer-events/default",
     "position/default",
     "text-align/default"
-  ],
-  "cl-buttons": [
-    "align-items/default",
-    "display/default",
-    "flex/default",
-    "pointer-events/default",
-    "position/default"
   ],
   "cl-checkbox": [
     "cursor/default",

@@ -232,7 +232,7 @@ test('the runtime writers emit the new form', async () => {
   for (const manifest of BUILTIN_EDITOR_MANIFESTS) assert.ok(isNew(manifest, 'simai.composition.editor-manifest'), manifest.type);
   for (const kind of BUILTIN_FIELD_KINDS) assert.ok(isNew(kind, 'simai.composition.editor-field-kind'), kind.kind);
   assert.ok(isNew(fieldKindRegistry(), 'simai.composition.editor-field-kind-registry'));
-  assert.ok(isNew(compositionTypeFromSmartManifest(json('src/smart/buttons/smart.manifest.json')), 'simai.composition.type-manifest'));
+  assert.ok(isNew(compositionTypeFromSmartManifest(json('src/smart/button/smart.manifest.json')), 'simai.composition.type-manifest'));
   for (const [path, name] of [
     ['src/core/contracts/composition-types.v1.json', 'simai.composition.type-registry'],
     ['src/core/contracts/composition-ports.v1.json', 'simai.composition.port-registry'],

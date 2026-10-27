@@ -53,7 +53,7 @@ test('button loading: the stripes are only read, never set or animated', async (
    ordinary constructors and the group's segments take it from one drawing. */
 test('button loading: every button draws the one spinner', async () => {
   for (const path of [
-    'src/smart/buttons/js/templates/default.js',
+    'src/smart/button/js/templates/default.js',
     'src/smart/icon-buttons/js/templates/default.js',
     'src/smart/button-group/js/templates/default.js',
     'src/component/buttons/js/_buttons.js',

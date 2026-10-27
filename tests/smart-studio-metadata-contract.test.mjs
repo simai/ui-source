@@ -10,8 +10,8 @@ const source = (relative) => readFile(path.resolve(root, relative), 'utf8');
 
 test('button Studio contract preserves closed choices and open icon examples', async () => {
   const [manifest, fixture] = await Promise.all([
-    json('src/smart/buttons/smart.manifest.json'),
-    json('src/smart/buttons/studio.fixture.json'),
+    json('src/smart/button/smart.manifest.json'),
+    json('src/smart/button/studio.fixture.json'),
   ]);
   const properties = manifest.inputs.properties;
 

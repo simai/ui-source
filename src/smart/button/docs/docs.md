@@ -1,4 +1,4 @@
-# Smart Buttons
+# Smart Button
 
 The default template applies shared `root-class`, `style` and `root-style`
 settings to its root. Use Framework utilities and semantic tokens; the outer
@@ -12,8 +12,10 @@ Tag:
 
 Loading model:
 
-- detected by `tags: ['sf-button']` in `src/smart/buttons/rule.js`
-- loaded as smart bundle `cl-buttons`
+- detected by `tags: ['sf-button']` in `src/smart/button/rule.js`
+- loaded as smart bundle `cl-button` (`cl-buttons` is its dated alias until
+  2026-12-01, and `smart/buttons/js/buttons.js` a forwarding script that loads
+  `smart/button/js/button.js`; change journal `path-smart-buttons-to-button`)
 - base styles and base component JS are loaded through relation with `buttons`
 - updates are batched through the shared `SfBaseElement`; default strategy uses `lit` DOM patching
 - `loading` publishes `aria-busy="true"`, disables the native button against
@@ -26,11 +28,10 @@ Main attributes:
 
 - `template`
 - `size`
-- `type="default|tonal|outline|link|surface|ghost"` — surface and ghost read the
-  neutral alpha ramp rather than a colour of their own: surface keeps a faint
-  fill and a border one step stronger, ghost keeps nothing until a pointer or the
-  keyboard reaches it. Both are right in a light and in a dark theme without
-  being redeclared.
+- `appearance="default|tonal|outline|link|surface|ghost"` — surface reads the
+  neutral alpha ramp rather than a colour of its own: a faint fill and a border
+  one step stronger, right in a light and in a dark theme without being
+  redeclared. `ghost` is the link appearance under its old name, a dated alias.
 - `scheme="primary|secondary|on-surface"` — which colour family the control
   takes.
 - `status="error"` — what the control is about. The destructive one, for a
@@ -49,10 +50,23 @@ Main attributes:
 - `loading`
 - `disabled`
 - `native-type`
-- `aria-label`
+- `expanded` — present, it writes `aria-expanded` on the native button
+  (`expanded="false"` says closed); absent, nothing is said
+- `aria-label` — a host attribute, passed to the native button
 
-For older SF5 templates, `icon-left`, `icon-right` and
-`tightness="low|high|highest"` remain compatibility aliases.
+The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
+`appearance`, `icon-left` and `icon-right` for `icon-start` and `icon-end`,
+`tightness="low|high|highest"` for `spacing="compact|comfortable|spacious"`, and
+the values `ghost` (link), `danger` and `critical` (error), `left` and `right`
+(icon-position start and end). The shim writes the new attribute and notes each
+use in `SF.deprecations`.
+
+## Events
+
+- `sf-button-press` — a person pressed the native button: a click, Enter or
+  Space. It is sent once per press, with an empty `detail`, and never while the
+  button is disabled or loading. The native `click` still bubbles as before; in
+  an assembly a rule hears the press as `<role>.press`.
 
 The empty radius is the normal UI radius. `default` is retained as a legacy
 surface-radius override but should not be used for ordinary controls; prefer
@@ -73,7 +87,8 @@ Runtime helpers:
 
 Metadata:
 
-- `src/smart/buttons/meta.mjs`
+- `src/smart/button/meta.mjs`
+- `src/smart/button/component.json` — the interface (standard 1.3.8)
 
 ## Lifecycle events
 
@@ -89,8 +104,8 @@ The host element dispatches bubbling custom events from `SfBaseElement`:
 
 Supported through `SfBaseElement` with:
 
-- `/local/smart/templates/buttons/<template>/index.js`
-- `/local/smart/templates/buttons/<template>/index.css`
+- `/local/smart/templates/button/<template>/index.js`
+- `/local/smart/templates/button/<template>/index.css`
 
 ## The label
 

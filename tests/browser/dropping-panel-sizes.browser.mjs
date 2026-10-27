@@ -26,7 +26,7 @@ const styles = [
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
   'smart/smart/icon/js/icon.js',
-  'smart/smart/buttons/js/buttons.js',
+  'smart/smart/button/js/button.js',
   'smart/smart/list-item/js/list-item.js',
   'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/context-menu/js/context-menu.js',

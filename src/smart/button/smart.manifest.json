@@ -61,7 +61,7 @@
         "name": "sf-button"
       },
       "assets": [
-        "smart/buttons"
+        "smart/button"
       ]
     }
   },
@@ -279,6 +279,9 @@
           "surface",
           "ghost"
         ]
+      },
+      "expanded": {
+        "type": "boolean"
       }
     },
     "additionalProperties": false
@@ -508,8 +511,8 @@
     "source_revision": "d73527c92056a684b5f34a46ec7315e1ded9be19",
     "source_artifacts": [
       {
-        "path": "src/smart/buttons/index.js",
-        "sha256": "830807ad0a44684df8554802c39ee7d50bbb18a757c5f8edc125aede78595997"
+        "path": "src/smart/button/index.js",
+        "sha256": "0495981b0933220ab65471048bb643f99a0817a36894fe6d8618ffcc98fc0a00"
       }
     ],
     "generated_runtime": [

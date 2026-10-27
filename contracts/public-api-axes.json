@@ -26,7 +26,7 @@
   ],
   "components": [
     {
-      "component": "buttons",
+      "component": "button",
       "axis": "status",
       "legacy": [],
       "state": "canonical_from_the_start",
@@ -40,7 +40,7 @@
       "note": "the same split as buttons: the colour family stays `scheme`, what the control is about is `status`, and only the destructive one is painted."
     },
     {
-      "component": "buttons",
+      "component": "button",
       "axis": "appearance",
       "legacy": [
         "type"

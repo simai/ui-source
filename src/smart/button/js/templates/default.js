@@ -88,6 +88,7 @@ export function renderButtonTemplate(context) {
                 ?disabled=${disabled || loading}
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
+                aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
         >
             ${overlayContent}
             ${startContent}

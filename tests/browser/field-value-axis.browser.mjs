@@ -25,7 +25,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/inputs/css/inputs.css', 'component/component/textarea/css/textarea.css',
   'component/component/buttons/css/buttons.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js',
+const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'component/component/inputs/js/inputs.js', 'smart/smart/input/js/input.js',
   'component/component/textarea/js/textarea.js', 'smart/smart/textarea/js/textarea.js'];
 const SIZES = {'1/2': 32, 1: 40, 2: 48};

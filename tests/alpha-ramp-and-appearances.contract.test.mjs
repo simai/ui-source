@@ -232,7 +232,7 @@ test('the appearances are part of the public API, and documented', () => {
     return [...declared.matchAll(/'([^']+)'/gu)].map(([, value]) => value);
   };
 
-  for (const [component, constant] of [['buttons', 'BUTTON_APPEARANCE_VALUES'], ['icon-buttons', 'ICON_BUTTON_APPEARANCE_VALUES']]) {
+  for (const [component, constant] of [['button', 'BUTTON_APPEARANCE_VALUES'], ['icon-buttons', 'ICON_BUTTON_APPEARANCE_VALUES']]) {
     const manifest = JSON.parse(read(`src/smart/${component}/smart.manifest.json`));
     // The axis is `appearance`; `type` still mirrors it, which the axes rule checks.
     assert.deepEqual(

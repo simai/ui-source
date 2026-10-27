@@ -12,7 +12,7 @@ const BUTTON_ICON_EXAMPLES = ['home', 'settings', 'search', 'edit', 'check', 'cl
 
 const sfButtonMeta = {
   tag: 'sf-button',
-  source: 'src/smart/buttons/meta.mjs',
+  source: 'src/smart/button/meta.mjs',
   attributes: {
     template: {
       kind: 'custom',

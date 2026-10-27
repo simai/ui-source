@@ -1,0 +1,148 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Продолжить",
+      "settings": {
+        "text": "Продолжить",
+        "appearance": "default",
+        "scheme": "primary"
+      },
+      "expect": {
+        "appearance": "default",
+        "scheme": "primary"
+      }
+    },
+    {
+      "name": "tonal",
+      "title": "Тональная",
+      "settings": {
+        "text": "Сохранить черновик",
+        "appearance": "tonal"
+      },
+      "expect": {
+        "appearance": "tonal"
+      }
+    },
+    {
+      "name": "outline",
+      "title": "Контурная",
+      "settings": {
+        "text": "Отмена",
+        "appearance": "outline",
+        "scheme": "secondary"
+      },
+      "expect": {
+        "appearance": "outline"
+      }
+    },
+    {
+      "name": "link",
+      "title": "Ссылка",
+      "settings": {
+        "text": "Подробнее",
+        "appearance": "link"
+      },
+      "expect": {
+        "appearance": "link"
+      }
+    },
+    {
+      "name": "surface",
+      "title": "На поверхности",
+      "settings": {
+        "text": "Фильтры",
+        "appearance": "surface",
+        "scheme": "on-surface"
+      },
+      "expect": {
+        "appearance": "surface"
+      }
+    },
+    {
+      "name": "error",
+      "title": "Удаление",
+      "settings": {
+        "text": "Удалить",
+        "status": "error"
+      },
+      "expect": {
+        "status": "error"
+      }
+    },
+    {
+      "name": "icons",
+      "title": "Значки в начале и в конце",
+      "settings": {
+        "text": "Далее",
+        "icon-start": "add",
+        "icon-end": "arrow_forward"
+      },
+      "expect": {
+        "icon-start": "add",
+        "icon-end": "arrow_forward"
+      }
+    },
+    {
+      "name": "icon-only",
+      "title": "Только значок",
+      "settings": {
+        "icon": "search"
+      },
+      "attributes": {
+        "aria-label": "Найти"
+      },
+      "expect": {
+        "icon": "search"
+      }
+    },
+    {
+      "name": "loading",
+      "title": "Загрузка",
+      "settings": {
+        "text": "Отправить",
+        "loading": true
+      },
+      "expect": {
+        "loading": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "text": "Отправить",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "expanded",
+      "title": "Открывает панель",
+      "settings": {
+        "text": "Ещё",
+        "icon-end": "expand_more",
+        "expanded": false
+      },
+      "expect": {
+        "expanded": false
+      }
+    },
+    {
+      "name": "sizes",
+      "title": "Размер 3, просторная",
+      "settings": {
+        "text": "Купить",
+        "size": "3",
+        "spacing": "spacious",
+        "radius": "rounded"
+      },
+      "expect": {
+        "size": "3",
+        "spacing": "spacious"
+      }
+    }
+  ]
+}

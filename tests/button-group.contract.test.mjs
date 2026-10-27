@@ -23,7 +23,7 @@ test('button group is registered as a component and a Smart Component', async ()
   assert.match(componentRule, /type: 'component'/);
   assert.match(smartRule, /tags: \['sf-button-group'\]/);
   assert.match(smartRule, /name: 'button-group'/);
-  assert.match(smartRule, /name: 'cl-buttons'/);
+  assert.match(smartRule, /name: 'cl-button'/);
 });
 
 test('button group keeps layout and state ownership separated', async () => {

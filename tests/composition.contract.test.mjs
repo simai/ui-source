@@ -129,7 +129,7 @@ test('keeps namespaced extensions and rejects unqualified extension names', asyn
 });
 
 test('adapts one real Smart manifest without exposing arbitrary classes', async () => {
-  const smart = JSON.parse(await readFile(resolve(root, 'src/smart/buttons/smart.manifest.json'), 'utf8'));
+  const smart = JSON.parse(await readFile(resolve(root, 'src/smart/button/smart.manifest.json'), 'utf8'));
   const type = compositionTypeFromSmartManifest(smart);
   assert.equal(type.type, 'smart.buttons');
   assert.equal(type.renderer.name, 'sf-button');
@@ -142,7 +142,7 @@ test('adapts one real Smart manifest without exposing arbitrary classes', async 
   const output = await render(document, { registry });
   assert.equal(output.diagnostics.length, 0);
   assert.match(output.html, /^<sf-button/u);
-  assert.deepEqual(output.assets, ['smart/buttons']);
+  assert.deepEqual(output.assets, ['smart/button']);
   assert.deepEqual(output.hydration, [{ id: 'button', type: 'smart.buttons', element: 'sf-button' }]);
 });
 

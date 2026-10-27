@@ -24,7 +24,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/tabs/css/tabs.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/buttons/js/buttons.js', 'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/tabs/js/tabs.js'];
+  'smart/smart/button/js/button.js', 'smart/smart/icon-buttons/js/icon-buttons.js', 'smart/smart/tabs/js/tabs.js'];
 const TYPES = ['', 'underline', 'pills', 'full', 'vertical'];
 const SCHEMES = ['default', 'outline', 'link'];
 const VARIANTS = ['', 'icons'];

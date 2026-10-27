@@ -743,7 +743,7 @@ import '../../smart/avatars/rule.js';
 import '../../smart/badges/rule.js';
 import '../../smart/breadcrumbs/rule.js';
 import '../../smart/button-group/rule.js';
-import '../../smart/buttons/rule.js';
+import '../../smart/button/rule.js';
 import '../../smart/checkbox/rule.js';
 import '../../smart/color/rule.js';
 import '../../smart/popover/rule.js';

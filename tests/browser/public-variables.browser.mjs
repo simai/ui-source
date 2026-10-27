@@ -141,7 +141,7 @@ try {
       const path = folder === 'core' ? 'core/core/css/core.css' : folder.includes('/') ? folder : `component/component/${folder}/css/${folder}.css`;
       await page.addStyleTag({path: join(out, path)}).catch(() => note({component: entry.component, said: `no sheet ${path}`}));
     }
-    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js', 'smart/smart/icon-buttons/js/icon-buttons.js', `smart/smart/${draw.js}/js/${draw.js}.js`]) {
+    for (const path of ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/icon-buttons/js/icon-buttons.js', `smart/smart/${draw.js}/js/${draw.js}.js`]) {
       await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
     }
     await page.waitForTimeout(700);

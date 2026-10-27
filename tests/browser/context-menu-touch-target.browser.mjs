@@ -23,7 +23,7 @@ const styles = [
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
-  'smart/smart/buttons/js/buttons.js',
+  'smart/smart/button/js/button.js',
   'smart/smart/context-menu/js/context-menu.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));

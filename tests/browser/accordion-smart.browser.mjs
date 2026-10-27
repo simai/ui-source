@@ -29,7 +29,7 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/buttons/css/buttons.css', 'component/component/badges/css/badges.css',
   'component/component/accordion/css/accordion.css', 'smart/smart/accordion/css/accordion.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/buttons/js/buttons.js',
+const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/badges/js/badges.js', 'component/component/accordion/js/accordion.js', 'smart/smart/accordion/js/accordion.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 

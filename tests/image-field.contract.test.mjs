@@ -137,7 +137,7 @@ test('image field: sizes are the form sizes and every measure is a ladder step',
 test('image field: the loader knows it and asks for what it draws with', () => {
   const rule = read('src/smart/image-field/rule.js');
   assert.match(rule, /SF\.RuleLoader\['cl-image-field'\] = \{\n  tags: \['sf-image-field'\],/u);
-  assert.match(rule, /\{ name: 'cl-buttons' \},\n    \{ name: 'cl-icon' \},/u);
+  assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-icon' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/image-field\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['smart.buttons', 'smart.icons']);
 });
