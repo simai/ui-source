@@ -4,7 +4,7 @@ import { installAliases } from './aliases.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
-import { language } from "./page-language";
+import { followLanguage, language } from "./page-language";
 export function toBoolean(value, fallback = false) {
   if (value === undefined || value === null || value === "") return fallback;
   if (typeof value === "boolean") return value;
@@ -460,6 +460,11 @@ class SfBaseElement extends HTMLElement {
     this.__sfLanguageOff = language.onChange(() => {
       if (this._isMounted) this.requestComponentUpdate("language");
     });
+    // A [lang] changed on the page redraws the elements under it (standard
+    // 1.3.8 §11.1; simai/ui-source#45): one observer for the document.
+    this.__sfLanguageUnwatch = followLanguage(this, () => {
+      if (this._isMounted) this.requestComponentUpdate("language");
+    });
     this.emitComponentEvent("connected");
     this.requestComponentUpdate("connected");
   }
@@ -497,6 +502,8 @@ class SfBaseElement extends HTMLElement {
     this.sfCloseScope?.();
     this.__sfLanguageOff?.();
     this.__sfLanguageOff = null;
+    this.__sfLanguageUnwatch?.();
+    this.__sfLanguageUnwatch = null;
     try {
       this.onDisconnected();
     } finally {

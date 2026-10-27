@@ -90,9 +90,26 @@ function langOwner(node) {
   return null;
 }
 
+// The language of a part of the page wins over the language chosen for the
+// whole page (owner, 2026-10-26; standard simai.smart-component 1.3.8 §11.1):
+//   1. a word given on the element itself (the component's own attribute);
+//   2. the nearest [lang] below <html>;
+//   3. the page's choice, SF.language.use(), which also sets <html lang>;
+//   4. <html lang>;
+//   5. English.
+// Until 2026-10-27 the choice won over a section's [lang], so an English
+// section inside a Russian page that had called use('ru') spoke Russian.
+function languageSource(node) {
+  const owner = langOwner(node);
+  const root = globalThis.document?.documentElement ?? null;
+  if (owner && owner !== root) return owner.getAttribute('lang');
+  if (STORE.chosen) return STORE.chosen;
+  return owner?.getAttribute('lang') || root?.lang || 'en';
+}
+
 /**
- * The page's language for this node: the nearest [lang], else the document's,
- * else English — unless a product has chosen one explicitly.
+ * The page's language for this node: the nearest [lang] below <html>, else
+ * the language the page chose, else <html lang>, else English.
  */
 export function pageLanguage(node) {
   // The language without its region, whichever way it was set: a page that
@@ -100,17 +117,56 @@ export function pageLanguage(node) {
   // lang="pt-BR" is. The chosen value kept its region and answered 'pt-br',
   // which matched no dictionary keyed by language and made isRussianPage false
   // on a page that chose 'ru-RU'. The region stays in pageLocale.
-  if (STORE.chosen) return STORE.chosen.split('-')[0];
-  const owner = langOwner(node);
-  const value = owner?.getAttribute('lang') || globalThis.document?.documentElement?.lang || 'en';
-  return normalise(value).split('-')[0] || 'en';
+  return normalise(languageSource(node)).split('-')[0] || 'en';
 }
 
 /** The page's language with its region kept, which is what formatting wants. */
 export function pageLocale(node) {
-  if (STORE.chosen) return STORE.chosen;
-  const owner = langOwner(node);
-  return normalise(owner?.getAttribute('lang') || globalThis.document?.documentElement?.lang || 'en');
+  return normalise(languageSource(node)) || 'en';
+}
+
+/**
+ * Follows `lang` in the document (§11.1 «changes are followed»): one observer
+ * for the page, whichever bundle starts it, and the elements under a changed
+ * [lang] draw again. `element.requestComponentUpdate('language')` is what a
+ * Smart element does; anything else passes its own `redraw`. Returns the way
+ * to stop following.
+ */
+export function followLanguage(element, redraw = () => element.requestComponentUpdate?.('language')) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const doc = element?.ownerDocument ?? root.document;
+  const Observer = doc?.defaultView?.MutationObserver ?? root.MutationObserver;
+  if (!doc?.documentElement || typeof Observer !== 'function') return () => {};
+  if (!root.__sfLanguageWatch || root.__sfLanguageWatch.document !== doc) {
+    const watch = {document: doc, elements: new Map(), observer: null};
+    watch.observer = new Observer((records) => {
+      const changed = [...new Set(records.map((record) => record.target))];
+      for (const [one, again] of [...watch.elements]) {
+        if (changed.some((target) => within(target, one))) {
+          try {
+            again();
+          } catch {
+            // One element that fails to draw does not keep the others in the
+            // old language.
+          }
+        }
+      }
+    });
+    watch.observer.observe(doc.documentElement, {attributes: true, attributeFilter: ['lang'], subtree: true});
+    root.__sfLanguageWatch = watch;
+  }
+  const watch = root.__sfLanguageWatch;
+  watch.elements.set(element, redraw);
+  return () => watch.elements.delete(element);
+}
+
+// Whether `node` is `target` or below it, across shadow roots.
+function within(target, node) {
+  for (let current = node; current; ) {
+    if (current === target) return true;
+    current = current.parentNode || current.host || null;
+  }
+  return false;
 }
 
 export function isRussianPage(node) {
@@ -217,6 +273,10 @@ export const language = {
     const next = value === null || value === undefined ? null : normalise(value);
     if (next === STORE.chosen) return STORE.chosen;
     STORE.chosen = next;
+    // The choice is the page's language: <html lang> says it too (§11.1), so
+    // the browser, a screen reader and CSS :lang() agree with the words.
+    const root = globalThis.document?.documentElement;
+    if (next && root && root.getAttribute('lang') !== next) root.setAttribute('lang', next);
     announce();
     return STORE.chosen;
   },
