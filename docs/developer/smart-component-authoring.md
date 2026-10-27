@@ -205,7 +205,7 @@ the next one.
   data arrived, the text below never moves and no layout shift is recorded.
   A shift before any code while nothing moved, or of text alone while no box
   moved, is a font arriving and is reported apart. Known exceptions, each
-  with its reason: `tests/browser/first-paint-gate.known.json`.
+  with its reason: `tests/fixtures/first-paint/gate-known.json`.
 
 - **A Smart element in a closed container loads when it opens** (§7.2.1,
   simai/ui-source#47). Inside `[hidden]`, `[inert]`, a closed `<details>` (past

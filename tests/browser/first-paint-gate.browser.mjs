@@ -297,9 +297,9 @@ try {
 
 results.sort((a, b) => a.id.localeCompare(b.id));
 // Measurements that fail for a reason outside the first paint, each with
-// that reason (first-paint-gate.known.json): reported, not counted. An entry
+// that reason (tests/fixtures/first-paint/gate-known.json): reported, not counted. An entry
 // that no longer fails is reported too, to be taken out.
-const knownFile = new URL('./first-paint-gate.known.json', import.meta.url);
+const knownFile = new URL('../fixtures/first-paint/gate-known.json', import.meta.url);
 const known = existsSync(knownFile) ? JSON.parse(readFileSync(knownFile, 'utf8')).known ?? {} : {};
 const keyOf = (one) => one.id.replace(/ @\d+$/u, '');
 const failing = results.filter((one) => one.problems.length);
