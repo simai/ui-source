@@ -1,0 +1,33 @@
+{
+  "id": "options-carry-the-source-and-a-limit",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "The candidates of a lookup are asked for by its source, at most limit at a time, and answered as a page with a cursor.",
+  "given": {
+    "capabilities": [
+      "field-options"
+    ]
+  },
+  "when": {
+    "intent": "field.options",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "field": "country",
+      "cursor": null,
+      "search": "",
+      "source": "countries",
+      "limit": 20
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "options_page"
+    ],
+    "data_must_include": [
+      "options_page"
+    ],
+    "note": "items are {value, label}. A page holds no more than limit items; next_cursor null or absent says it is the last, whatever its length. total is optional."
+  }
+}

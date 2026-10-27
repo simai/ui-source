@@ -1,0 +1,25 @@
+{
+  "intent": "view.delete",
+  "summary": "The last shared view cannot be removed: a scope with none has nothing for a person who has made none of their own.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.delete",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "default"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The component does not offer the control in that case either, so this refusal is a guard rather than the way a person finds out."
+  },
+  "id": "view-delete-the-last-shared-one-is-refused"
+}

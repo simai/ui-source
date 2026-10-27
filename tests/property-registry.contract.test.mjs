@@ -43,7 +43,8 @@ test('string:password is registered, write-only, in both languages', () => {
   const string = PROPERTY_TYPES.find((entry) => entry.type === 'string');
   const password = string.variants.find((variant) => variant.id === 'password');
   assert.deepEqual(password, {id: 'password', label: {ru: 'Пароль', en: 'Password'}, writeOnly: true});
-  assert.deepEqual(string.params, ['placeholder', 'required', 'readonly']);
+  // mask and nullable since property-view port 1.16.0 (a masked string).
+  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'required', 'readonly']);
 });
 
 test('the password renderers never put the value into markup and write only typed text', () => {

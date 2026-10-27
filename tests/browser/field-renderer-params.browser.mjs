@@ -76,7 +76,8 @@ try {
     for (const entry of set.registry) {
       const reads = new Set();
       for (const variant of [null, ...entry.variants.map((one) => one.id)]) {
-        for (const extra of [{}, {required: true}, {readonly: true}, {multiple: true}]) {
+        // {mask}: a masked string reads nullable, a key no other string reads (port 1.16.0).
+        for (const extra of [{}, {required: true}, {readonly: true}, {multiple: true}, {mask: '00'}]) {
           const field = new Proxy({key: 'k', label: 'L', propertyType: entry.type, ...(variant ? {variant} : {}), ...extra,
             options: [{value: 'a', label: 'A'}]}, {get(target, key) { if (typeof key === 'string') reads.add(key); return target[key]; }});
           for (const draw of [

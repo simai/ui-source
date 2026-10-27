@@ -1,0 +1,23 @@
+{
+  "id": "save-stale-revision-is-a-conflict",
+  "intent": "record.save",
+  "summary": "A whole-object save against a moved revision is a conflict, never an overwrite.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "values": {
+        "title": "Другое название"
+      },
+      "revision": "6"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "note": "The person's values stay on screen with the conflict said."
+  }
+}
