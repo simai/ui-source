@@ -56,6 +56,7 @@
 
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
+import { noteDeprecated } from './deprecations.js';
 import { bindPageActions } from './page-actions.js';
 import { installPortAction } from './host-port.js';
 
@@ -352,15 +353,22 @@ function isShown(element) {
  *   source    the language the component was written in (the fallback before
  *             the key; default the first file that `lang` names);
  *   aliases   the component's aliases.json;
- *   actions   `{<action>(params, {signal}) => outcome}`, the actions' code.
+ *   actions   `{<action>(params, {signal}) => outcome}`, the actions' code;
+ *   formerWords
+ *             `{since, remove_after, words: {<key>: <old key>}}`: the keys
+ *             a product may still have registered its words under (the
+ *             camelCase keys before §11's language files). A word registered
+ *             under an old key is said until the day, noted once in
+ *             SF.deprecations.
  */
-export function elementFromManifest(manifest, {base, lang = {}, source, aliases, actions = {}} = {}) {
+export function elementFromManifest(manifest, {base, lang = {}, source, aliases, actions = {}, formerWords} = {}) {
   const Base = base || globalThis.SF?.smart?.SfBaseElement;
   if (typeof Base !== 'function') throw new TypeError('elementFromManifest: a base class is required');
   const read = readManifest(manifest);
   const generatedProps = propsFromManifest(manifest);
   const words = Object.fromEntries(Object.entries(lang).map(([locale, file]) => [locale.toLowerCase(), {...(file?.runtime || {})}]));
   const sourceLanguage = source || Object.keys(words)[0] || '';
+  const formerKeys = formerWords?.words || {};
   const formAssociated = Boolean(read.form) && typeof globalThis.ElementInternals === 'function'
     && typeof globalThis.ElementInternals.prototype?.setFormValue === 'function';
 
@@ -416,7 +424,17 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
 
     /** A word of the element's own, in its language (§11, §11.1). */
     sfWord(key, {count, vars} = {}) {
-      return pageWord(words, key, this, {component: this.localName, source: sourceLanguage, count, vars});
+      const former = Object.hasOwn(formerKeys, key) ? formerKeys[key] : undefined;
+      const onFormer = former === undefined ? undefined : (old) => noteDeprecated({
+        component: this.localName,
+        tag: this.localName,
+        kind: 'word',
+        from: old,
+        to: key,
+        since: formerWords.since,
+        remove_after: formerWords.remove_after,
+      });
+      return pageWord(words, key, this, {component: this.localName, source: sourceLanguage, count, vars, former, onFormer});
     }
 
     /** Writes a declared host state (§5.3). */

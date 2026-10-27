@@ -2406,6 +2406,145 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tree/aliases.json, src/smart/tree/smart.manifest.json"
+    },
+    {
+      "id": "option-pagination-word-keys-camel-to-kebab",
+      "recorded_on": "2026-10-27",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "sf-pagination's words are its language files' keys, written like its attributes (standard simai.smart-component 1.3.8 §11): total-label for totalLabel. A product that registered its own words under the old camelCase keys through SF.language.register keeps them until remove_after: a word registered under an old key is said when none is registered under the new one for that language, and the old key is noted once in SF.deprecations (kind word).",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "actionApplyText",
+          "to": "action-apply-text",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bactionApplyText['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actionChooseLabel",
+          "to": "action-choose-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bactionChooseLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actionForAllLabel",
+          "to": "action-for-all-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bactionForAllLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actionsLabel",
+          "to": "actions-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bactionsLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actionsRegionLabel",
+          "to": "actions-region-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bactionsRegionLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "ariaLabel",
+          "to": "aria-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bariaLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "clearSelectionLabel",
+          "to": "clear-selection-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bclearSelectionLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "countingLabel",
+          "to": "counting-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bcountingLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "firstLabel",
+          "to": "first-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bfirstLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "lastLabel",
+          "to": "last-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\blastLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "nextLabel",
+          "to": "next-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bnextLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pageFieldLabel",
+          "to": "page-field-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bpageFieldLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pageLabel",
+          "to": "page-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bpageLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pageSizeLabel",
+          "to": "page-size-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bpageSizeLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pagesLabel",
+          "to": "pages-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bpagesLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "previousLabel",
+          "to": "previous-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bpreviousLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "selectedLabel",
+          "to": "selected-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bselectedLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "showCountLabel",
+          "to": "show-count-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bshowCountLabel['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "showMoreText",
+          "to": "show-more-text",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bshowMoreText['\"]?\\s*:"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "totalLabel",
+          "to": "total-label",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\btotalLabel['\"]?\\s*:"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Register sf-pagination's words under the keys of its language files (src/smart/pagination/lang/en.json): total-label for totalLabel, page-size-label for pageSizeLabel, and so on; the key is the attribute's name.",
+      "examples": {
+        "before": "SF.language.register('sf-pagination', 'de', {totalLabel: 'Gesamt:'})",
+        "after": "SF.language.register('sf-pagination', 'de', {'total-label': 'Gesamt:'})"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js formerWords, src/core/js/element-manifest.js, src/core/js/page-language.js pageWord"
     }
   ]
 }

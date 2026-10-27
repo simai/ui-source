@@ -49,6 +49,13 @@ Every reader-facing label can be localized with the short source attributes:
 `show-more-text`, `actions-label`, `action-apply-text` and
 `action-for-all-label`.
 
+A product that adds a language registers the words under the same keys, the
+attributes' names: `SF.language.register('sf-pagination', 'de', {'total-label':
+'Gesamt:'})`. The camelCase keys of the words before standard 1.3.8
+(`totalLabel`, `pageSizeLabel`, …) are read until 2026-12-01, each noted once in
+`SF.deprecations` (change journal
+`option-pagination-word-keys-camel-to-kebab`).
+
 ## Adaptation
 
 The default template applies `root-class`, author `style` and `root-style` to

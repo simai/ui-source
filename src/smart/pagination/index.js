@@ -15,11 +15,22 @@ import ru from "./lang/ru.json";
 // 2026-10-10), and its events take the vocabulary's names; the old ones --
 // sf-page-change, sf-show-more, … -- follow with their old detail until
 // 2026-12-01 (aliases.json).
+//
+// Its words had camelCase keys before the language files (totalLabel, …); a
+// product that registered its own words under them through
+// SF.language.register keeps them until 2026-12-01, each old key noted once
+// in SF.deprecations (change journal option-pagination-word-keys-camel-to-kebab).
+const camelKey = (key) => String(key).replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
 const PaginationElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
   source: "ru",
   aliases,
+  formerWords: {
+    since: "2026-10-27",
+    remove_after: "2026-12-01",
+    words: Object.fromEntries(Object.keys(en.runtime).map((key) => [key, camelKey(key)])),
+  },
 });
 
 // A word's key in the language files: pagesLabel → pages-label.

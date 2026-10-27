@@ -227,15 +227,31 @@ function fill(text, locale, count, vars) {
  * takes a number is an object of plural forms chosen by Intl.PluralRules of
  * the language the word was found in; `{n}` is the number in that language's
  * format and `{name}` takes `vars.name`.
+ *
+ * `former` names the key the same word had before a rename (one key or a
+ * list): a product that registered its words under the old key keeps them
+ * until the alias's day. For each language the word registered under the new
+ * key wins, then one registered under an old key, then the shipped one; a
+ * word taken by an old key is reported to `onFormer(oldKey)`, which notes the
+ * deprecation.
  */
-export function pageWord(dictionary, key, node, {component, source = '', count, vars} = {}) {
+export function pageWord(dictionary, key, node, {component, source = '', count, vars, former, onFormer} = {}) {
   const owner = component ?? componentOf(node);
   const locale = pageLocale(node);
   const order = chain(locale);
   const sourceLanguage = normalise(source);
   if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
+  const formerKeys = former === undefined || former === null ? [] : [].concat(former);
   for (const candidate of order) {
-    const added = owner ? REGISTERED.get(owner)?.get(candidate)?.[key] : undefined;
+    const registered = owner ? REGISTERED.get(owner)?.get(candidate) : undefined;
+    let added = registered?.[key];
+    if (added === undefined && registered) {
+      const old = formerKeys.find((name) => registered[name] !== undefined && registered[name] !== null);
+      if (old !== undefined) {
+        added = registered[old];
+        onFormer?.(old);
+      }
+    }
     const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
     if (word === undefined || word === null) continue;
     if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
