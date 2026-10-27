@@ -1,6 +1,7 @@
 import { noteDeprecated } from './deprecations.js';
 import './internal.js';
 import { installAliases } from './aliases.js';
+import { upgradeOwnProperties } from './upgrade-properties.js';
 import { connectPort as connectHostPort, portOf } from './host-port.js';
 import { html, nothing, render } from "lit";
 import {createRef} from "lit/directives/ref.js";
@@ -462,6 +463,12 @@ class SfBaseElement extends HTMLElement {
     // language listener per sf-slider of a gallery's lightbox, 2026-10-27).
     // It is placed again later, and that placing connects it.
     if (!this.isConnected) return;
+    // Values a page or a parent's template set before this class was defined
+    // reach their setters now, once, before anything is drawn from them.
+    if (!this.__sfPropertiesUpgraded) {
+      this.__sfPropertiesUpgraded = true;
+      upgradeOwnProperties(this);
+    }
     this.constructor.ensureStyleReadinessCss();
     this.captureHostStyle();
     this.applyHostDisplayStyle();

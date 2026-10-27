@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -133,6 +133,7 @@
     "src/core/js/tailwind-map.js",
     "src/core/js/template-utilities.generated.json",
     "src/core/js/theme-palette.js",
+    "src/core/js/upgrade-properties.js",
     "src/core/js/utilityModuleAliases.js",
     "src/core/js/vendor/material-color-utilities/LICENSE",
     "src/core/js/vendor/material-color-utilities/hct/cam16.js",
@@ -149,7 +150,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "65214cc222edaba7750062e8912df11ca912f4e461f47a1414f661765ad0760e",
+  "content_sha256": "0f37221d8d3145e9a3e202bc50b309a239670d7289000a927d4733d6e942e9c9",
   "dependencies": [
     {
       "id": "core.styles",
