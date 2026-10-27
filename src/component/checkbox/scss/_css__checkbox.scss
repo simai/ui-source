@@ -154,7 +154,7 @@
 
 
   .sf-checkbox.error .sf-checkbox-box {
-    --sf-checkbox-box--border-color: var(--sf-error);
+    --sf-checkbox-box--border-color: var(--sf-checkbox-invalid-border-color, var(--sf-error));
   }
 
   .sf-checkbox:has(input:enabled:not(:disabled):not(.disabled)) {
@@ -168,8 +168,8 @@
   }
 
   .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active) .sf-checkbox-box {
-    --sf-checkbox-box--background-color: var(--sf-primary);
-    --sf-checkbox-box--border-color: var(--sf-primary);
+    --sf-checkbox-box--background-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
+    --sf-checkbox-box--border-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
   }
 
   .sf-checkbox:not(.error).sf-checkbox--size-1\/2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {

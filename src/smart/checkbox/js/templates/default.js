@@ -15,14 +15,14 @@ export function renderCheckboxTemplate(context) {
         rootClass,
         rootStyle,
         value,
-        error,
+        invalid,
         stateIcon,
         ariaLabel,
     } = context;
 
     const rootClasses = ['sf-checkbox', `sf-checkbox--size-${size}`, 'flex', rootClass];
 
-    if (error) {
+    if (invalid) {
         rootClasses.push('error');
     }
     if (!disabled) {
@@ -57,12 +57,12 @@ export function renderCheckboxTemplate(context) {
         <span class="sf-checkbox-box transition flex">
         <input
                 type="checkbox"
-                name=${name || ''}
-                .value=${value || ''}
+                name=${name || nothing}
+                .value=${value || 'on'}
                 .checked=${checked}
                 ?disabled=${disabled}
                 .indeterminate=${indeterminate}
-                aria-invalid=${error ? 'true' : nothing}
+                aria-invalid=${invalid ? 'true' : nothing}
                 aria-label=${!label && !context.component?.hasSlotContent?.('label') && ariaLabel ? ariaLabel : nothing}
         />
           <sf-icon aria-hidden="true" icon=${stateIcon || ''}></sf-icon>

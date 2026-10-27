@@ -1,40 +1,41 @@
 import SfBaseElement, { toBoolean } from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
 import { resolveCheckboxIcon } from '../../component/checkbox/js/_checkbox';
 import { renderCheckboxTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
+import { FormField, innerControlName } from '../helpers/form-field';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-checkbox from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §17.1, §17.2). The settings and the values checked and
+// indeterminate are made by core/js/element-manifest.js; `error` is a dated
+// alias of `invalid` (§17.2, aliases.json); the host is the form control
+// through ElementInternals, so a checked box submits its value, "on" without
+// one, as a native checkbox does (§17.1 item 2), and the inner checkbox
+// carries no name.
+const CheckboxElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
-class SfCheckbox extends SfBaseElement {
+class SfCheckbox extends FormField(CheckboxElement) {
   static get props() {
     return {
-      size: { default: '1', values: ['1/2', '1', '2'] },
-      label: { default: '' },
-      ariaLabel: { default: '' },
-      description: { default: '' },
-      help: { default: '' },
-      position: {type: String, default: 'start', values: ['start', 'end']},
+      ...super.props,
+      // A host attribute, never a setting (§3.1): read for the inner input's name.
+      ariaLabel: { attribute: 'aria-label', default: '' },
       rootClass: {type: String, default: ''},
-      checked: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
-      indeterminate: { type: Boolean, default: false },
-      name: { default: '' },
-      value: { default: '' },
-      error: { type: Boolean, default: false },
     };
   }
-
 
   constructor() {
     super();
     this._inputElement = null;
-  }
-
-  get size() {
-    return this.getProp('size');
-  }
-
-  get label() {
-    return this.getProp('label');
   }
 
   // A checkbox with no visible label still needs a name: a table's row and
@@ -42,55 +43,6 @@ class SfCheckbox extends SfBaseElement {
   // the host's aria-label or the ariaLabel prop and lands on the native input.
   get ariaLabel() {
     return this.getProp('ariaLabel') || this.getAttribute('aria-label') || '';
-  }
-
-  get description() {
-    return this.getProp('description');
-  }
-
-  get help() {
-    return this.getProp('help');
-  }
-
-  get checked() {
-    return this.getProp('checked');
-  }
-
-  set checked(nextValue) {
-    if (nextValue) {
-      this.setAttribute('checked', '');
-    } else {
-      this.removeAttribute('checked');
-    }
-  }
-
-  get disabled() {
-    return this.getProp('disabled');
-  }
-
-  get indeterminate() {
-    return this.getProp('indeterminate');
-  }
-
-  get name() {
-    return this.getProp('name');
-  }
-
-  get value() {
-    return this.getProp('value');
-  }
-
-  set value(nextValue) {
-    if (nextValue === null || nextValue === undefined) {
-      this.removeAttribute('value');
-      return;
-    }
-
-    this.setAttribute('value', String(nextValue));
-  }
-
-  get error() {
-    return this.getProp('error');
   }
 
   get stateIcon() {
@@ -101,8 +53,12 @@ class SfCheckbox extends SfBaseElement {
   }
 
   template() {
+    const context = this.templateContext();
     return renderCheckboxTemplate({
-      ...this.templateContext(),
+      ...context,
+      // The host is the form control where the browser has ElementInternals
+      // (§17.1 item 6).
+      name: innerControlName(this, context.name),
       stateIcon: this.stateIcon,
       ariaLabel: this.ariaLabel,
     });
@@ -126,6 +82,7 @@ class SfCheckbox extends SfBaseElement {
       input.addEventListener('change', this._handleChange);
       this._inputElement = input;
     }
+    this.sfSyncFormState();
   }
 
   onDisconnected() {
@@ -152,6 +109,7 @@ class SfCheckbox extends SfBaseElement {
     } else {
       this.removeAttribute('indeterminate');
     }
+    this.sfSyncFormState();
   };
 
   getInputElement() {
@@ -186,8 +144,8 @@ class SfCheckbox extends SfBaseElement {
       checked: !!input?.checked,
       indeterminate: !!input?.indeterminate,
       disabled: !!input?.disabled,
-      name: input?.name || '',
-      value: input?.value || '',
+      name: this.name,
+      value: this.value,
     };
   }
 
@@ -236,6 +194,7 @@ class SfCheckbox extends SfBaseElement {
       super.setState(restState);
     }
 
+    this.sfSyncFormState();
     return this;
   }
 

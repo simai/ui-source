@@ -1,0 +1,105 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Отмечен, с подписью",
+      "settings": {
+        "label": "Получать уведомления",
+        "checked": true
+      },
+      "expect": {
+        "checked": true
+      }
+    },
+    {
+      "name": "off",
+      "title": "Не отмечен",
+      "settings": {
+        "label": "Получать уведомления"
+      },
+      "expect": {
+        "checked": false
+      }
+    },
+    {
+      "name": "indeterminate",
+      "title": "Частично",
+      "settings": {
+        "label": "Все строки",
+        "indeterminate": true
+      },
+      "expect": {
+        "indeterminate": true
+      }
+    },
+    {
+      "name": "description",
+      "title": "С пояснением и значком",
+      "settings": {
+        "label": "Рассылка",
+        "description": "Раз в неделю",
+        "help": "info"
+      },
+      "expect": {
+        "checked": false
+      }
+    },
+    {
+      "name": "end",
+      "title": "Флажок справа",
+      "settings": {
+        "label": "Справа",
+        "position": "end"
+      },
+      "expect": {
+        "position": "end"
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Ошибка",
+      "settings": {
+        "label": "Согласен с условиями",
+        "invalid": true
+      },
+      "expect": {
+        "invalid": true
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "label": "Только чтение",
+        "checked": true,
+        "disabled": true
+      },
+      "expect": {
+        "checked": true,
+        "disabled": true
+      }
+    },
+    {
+      "name": "aria",
+      "title": "Подпись выводит страница",
+      "settings": {},
+      "attributes": {
+        "aria-label": "Выбрать строку"
+      },
+      "expect": {
+        "checked": false
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Размер 2",
+      "settings": {
+        "label": "Крупный",
+        "size": "2"
+      },
+      "expect": {
+        "size": "2"
+      }
+    }
+  ]
+}

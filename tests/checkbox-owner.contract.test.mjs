@@ -20,7 +20,8 @@ test('Checkbox retains one native input and concise mixed-state initialization',
 
 test('Smart invalid state is published by the native input', async () => {
   const template = await source('src/smart/checkbox/js/templates/default.js');
-  assert.match(template, /aria-invalid=\$\{error \? 'true' : nothing\}/);
+  // `invalid` is the shown state; `error` is its dated alias (standard 1.3.8 §17.2).
+  assert.match(template, /aria-invalid=\$\{invalid \? 'true' : nothing\}/);
 });
 
 test('Checkbox geometry, colour and motion use Framework tokens', async () => {
@@ -36,8 +37,13 @@ test('Checkbox geometry, colour and motion use Framework tokens', async () => {
 test('Checkbox public contract closes size, position, state and keyboard axes', async () => {
   const runtime = await source('src/smart/checkbox/index.js');
   const manifest = JSON.parse(await source('src/smart/checkbox/smart.manifest.json'));
-  assert.match(runtime, /size: \{ default: '1', values: \['1\/2', '1', '2'\] \}/);
-  assert.match(runtime, /position: \{type: String, default: 'start', values: \['start', 'end'\]\}/);
+  // The closed axes are the component.json's (standard 1.3.8), from which
+  // core/js/element-manifest.js makes the props.
+  const declared = JSON.parse(await source('src/smart/checkbox/component.json'));
+  assert.match(runtime, /elementFromManifest\(manifest,/);
+  assert.deepEqual(declared.settings.size, {type: 'enum', values: ['1/2', '1', '2'], default: '1'});
+  assert.deepEqual(declared.settings.position, {type: 'enum', values: ['start', 'end'], default: 'start'});
+  assert.deepEqual(Object.keys(declared.accessibility.keys), ['Tab', 'Space']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.deepEqual(manifest.inputs.properties.position.enum, ['start', 'end']);
   assert.deepEqual(manifest.contracts.checkbox_states.enum, ['unchecked', 'checked', 'mixed', 'disabled', 'invalid']);
