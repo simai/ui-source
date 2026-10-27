@@ -1,0 +1,12 @@
+{
+  "title": "Resizer",
+  "runtime": {
+    "hint": "Drag, or use the arrow keys; a double click restores the width.",
+    "label": "Resize"
+  },
+  "events": {
+    "resize": {
+      "label": "Change the width"
+    }
+  }
+}

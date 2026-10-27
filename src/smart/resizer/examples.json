@@ -1,0 +1,74 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Ширина панели",
+      "settings": {
+        "min": "12rem",
+        "max": "24rem",
+        "label": "Ширина"
+      },
+      "parent": "<nav style=\"inline-size: 16rem; position: relative\"></nav>",
+      "expect": {
+        "role": "separator",
+        "name": "Ширина"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "keys",
+      "title": "Клавишами",
+      "settings": {
+        "min": "200",
+        "max": "400",
+        "step": 16
+      },
+      "parent": "<nav style=\"inline-size: 300px\"></nav>",
+      "script": [
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "key": "Home"
+        },
+        {
+          "key": "End"
+        }
+      ],
+      "expect": {
+        "events": [
+          {
+            "resize": {
+              "phase": "end"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "kept",
+      "title": "Ширина, которую хранит хост",
+      "settings": {
+        "min": "200",
+        "max": "400",
+        "value": 320,
+        "property": "--menu-width"
+      },
+      "parent": "<nav style=\"inline-size: var(--menu-width, 250px)\"></nav>",
+      "expect": {
+        "valuenow": 320
+      }
+    },
+    {
+      "name": "start-edge",
+      "title": "Ручка в начале",
+      "settings": {
+        "edge": "inline-start"
+      },
+      "parent": "<aside style=\"inline-size: 20rem\"></aside>",
+      "expect": {
+        "role": "separator"
+      }
+    }
+  ]
+}

@@ -2705,6 +2705,48 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "resizer",
+      "selector": "sf-resizer",
+      "variables": [
+        {
+          "name": "--sf-resizer-hit-size",
+          "role": "inline-size",
+          "summary": "The strip a pointer finds, wider than the line it draws.",
+          "default": "var(--sf-a8)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-resizer-line-width",
+          "role": "inline-size",
+          "summary": "The line drawn in the middle of the strip.",
+          "default": "calc(2 * var(--sf-px))",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-resizer-line-color",
+          "role": "background",
+          "summary": "The line at rest: none by default.",
+          "default": "transparent",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-resizer-hover-line-color",
+          "role": "background",
+          "summary": "The line while hovered or dragged.",
+          "default": "var(--sf-primary)",
+          "state": "hover",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-resizer-z-index",
+          "role": "z-index",
+          "summary": "The layer the handle stands in, above the panel's own layers and below overlays.",
+          "default": "var(--sf-z-index-7)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

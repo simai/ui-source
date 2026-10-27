@@ -17,10 +17,19 @@ import {readFile} from 'node:fs/promises';
 
 const here = (path) => new URL(path, import.meta.url);
 const raw = await readFile(here('../src/smart/resizer/index.js'), 'utf8');
+// Standard 1.3.8: the element is made from its component.json and speaks its
+// language files; the bundler inlines the JSON, so the test does too.
+const inline = async (name, file) => `const ${name} = ${await readFile(here(`../src/smart/resizer/${file}`), 'utf8')};`;
 const source = raw
   .replace(/^import '\.\/scss\/index\.scss';$/mu, '')
+  .replace(/^import manifest from '\.\/component\.json';$/mu, await inline('manifest', 'component.json'))
+  .replace(/^import aliases from '\.\/aliases\.json';$/mu, await inline('aliases', 'aliases.json'))
+  .replace(/^import en from '\.\/lang\/en\.json';$/mu, await inline('en', 'lang/en.json'))
+  .replace(/^import ru from '\.\/lang\/ru\.json';$/mu, await inline('ru', 'lang/ru.json'))
   .replace("'./engine.mjs'", JSON.stringify(here('../src/smart/resizer/engine.mjs').href))
   .replace("'../../core/js/page-language'", JSON.stringify(here('../src/core/js/page-language.js').href))
+  .replace("'../../core/js/element-manifest'", JSON.stringify(here('../src/core/js/element-manifest.js').href))
+  .replace("'../../core/js/aliases.js'", JSON.stringify(here('../src/core/js/aliases.js').href))
   .replace("'../../core/js/preferences.js'", JSON.stringify(here('../src/core/js/preferences.js').href));
 
 class StubElement {
@@ -28,6 +37,8 @@ class StubElement {
     this.attributes = new Map();
     this.dataset = {};
     this.isConnected = true;
+    // The tag the words are registered under, as the browser gives it.
+    this.localName = 'sf-resizer';
   }
 
   getAttribute(name) { return this.attributes.has(name) ? this.attributes.get(name) : null; }
@@ -36,6 +47,8 @@ class StubElement {
   hasAttribute(name) { return this.attributes.has(name); }
   addEventListener() {}
   removeEventListener() {}
+  dispatchEvent() { return true; }
+  toggleAttribute(name, force) { if (force) this.setAttribute(name, ''); else this.removeAttribute(name); }
   // The shared reader looks for the nearest [lang] and past shadow roots; this
   // handle has neither, so the page's own language answers.
   closest() { return null; }
@@ -114,7 +127,9 @@ test('sf-resizer: a handle taken out of the page stops listening', (t) => {
 test('sf-resizer: no private reading of the page language is left in the source', () => {
   assert.doesNotMatch(raw, /function pageLanguage\(/u, 'a private reading of [lang]');
   assert.doesNotMatch(raw, /documentElement\.lang/u, 'the page language is the shared reader\'s to resolve');
-  assert.match(raw, /import \{language, pageText\} from '\.\.\/\.\.\/core\/js\/page-language'/u);
-  assert.match(raw, /pageText\(RESIZER_TEXT, key, node, 'sf-resizer'\)/u);
+  assert.match(raw, /import \{language\} from '\.\.\/\.\.\/core\/js\/page-language'/u);
+  // The words are its language files, read by the shared reader (sfWord).
+  assert.match(raw, /this\.sfWord\('label'\)/u);
+  assert.match(raw, /lang: \{en, ru\}/u);
   assert.match(raw, /language\.onChange\(/u, 'the announce refresh');
 });

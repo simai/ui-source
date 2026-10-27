@@ -48,8 +48,9 @@ test('page language: no component falls back to Russian', async () => {
     'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import en from '\.\/lang\/en\.json';/],
     // The resizer handle read [lang] itself over its own dictionary until
     // 2026-10-21 (ui-mail feedback ui-mail.resizer-language): a product could
-    // neither choose its language nor teach it a third one.
-    'src/smart/resizer/index.js': [/pageText\(RESIZER_TEXT, key, node, 'sf-resizer'\)/, /language\.onChange\(/],
+    // neither choose its language nor teach it a third one. Its words are its
+    // language files since standard 1.3.8 §11.
+    'src/smart/resizer/index.js': [/this\.sfWord\('label'\)/, /import en from '\.\/lang\/en\.json';/, /language\.onChange\(/],
   };
   for (const [path, patterns] of Object.entries(sources)) {
     const source = await read(path);

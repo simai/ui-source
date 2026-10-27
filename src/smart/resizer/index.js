@@ -8,23 +8,48 @@
 // otherwise as inline-size. With `storage-key` the width is remembered in this
 // browser and restored the next time.
 import {attachResizer, setResizerValue} from './engine.mjs';
-import {language, pageText} from '../../core/js/page-language';
+import {language} from '../../core/js/page-language';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {installAliases} from '../../core/js/aliases.js';
 import BundledPreferences from '../../core/js/preferences.js';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// The two languages the handle ships are the floor, not the whole set: the
-// words go through the shared reader, so SF.language.use() chooses the
-// language and SF.language.register('sf-resizer', ...) adds one the Framework
-// has never heard of. Until then the handle kept a private reading of the
-// page's [lang] and a private dictionary, so it ignored both and could say
-// nothing but English and Russian (ui-mail feedback ui-mail.resizer-language,
-// 2026-10-21).
-const RESIZER_TEXT = {
-  en: {label: 'Resize', hint: 'Drag, or use the arrow keys; a double click restores the width.'},
-  ru: {label: 'Изменить ширину', hint: 'Тяните или нажимайте стрелки; двойной щелчок возвращает ширину.'},
-};
+// The words are lang/<locale>.json, read through the shared reader, so
+// SF.language.use() chooses the language and SF.language.register('sf-resizer',
+// ...) adds one the Framework has never heard of (ui-mail feedback
+// ui-mail.resizer-language, 2026-10-21; standard 1.3.8 §11).
 
-const text = (node, key) => pageText(RESIZER_TEXT, key, node, 'sf-resizer');
+// The handle draws nothing, so it is no Smart renderer: a plain element with
+// the instance's scope (standard 1.3.8 §7.7) and its dated aliases (§16.20).
+class ResizerHost extends HTMLElement {
+  get sfScope() {
+    if (!this.__sfScope || this.__sfScope.signal.aborted) this.__sfScope = new AbortController();
+    return this.__sfScope.signal;
+  }
+
+  connectedCallback() {
+    if (this.constructor.aliases && !this.__sfAliases) {
+      this.__sfAliases = installAliases(this, this.constructor.aliases, {tag: this.localName, signal: this.sfScope});
+    }
+  }
+
+  disconnectedCallback() {
+    // Removed and not placed again before the next task: the scope ends.
+    setTimeout(() => {
+      if (this.isConnected) return;
+      this.__sfScope?.abort();
+      this.__sfAliases = null;
+    }, 0);
+  }
+}
+
+// From its component.json: settings are attributes and properties made by
+// core/js/element-manifest.js; sf-resize is a dated alias of sf-resizer-resize.
+const ResizerElement = elementFromManifest(manifest, {base: ResizerHost, lang: {en, ru}, source: 'ru', aliases});
 
 // A CSS length (tokens included) in pixels, read in the target's context.
 function pixels(value, context) {
@@ -68,7 +93,7 @@ function writeStored(key, value) {
   else preferences()?.write(preferenceKey(key), {v: 1, width: Math.round(value)});
 }
 
-export class SfResizer extends HTMLElement {
+export class SfResizer extends ResizerElement {
   static get observedAttributes() { return ['min', 'max', 'label', 'disabled', 'value']; }
 
   constructor() {
@@ -77,6 +102,7 @@ export class SfResizer extends HTMLElement {
   }
 
   connectedCallback() {
+    super.connectedCallback();
     if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
     this.syncLabel();
     // The gesture is the shared one (attachResizer): the element only says
@@ -105,6 +131,7 @@ export class SfResizer extends HTMLElement {
   }
 
   disconnectedCallback() {
+    super.disconnectedCallback();
     this._detach?.();
     this._detach = null;
     this._languageOff?.();
@@ -123,11 +150,14 @@ export class SfResizer extends HTMLElement {
     }
   }
 
-  get storageKey() { return this.getAttribute('storage-key') || ''; }
-  get property() { return this.getAttribute('property') || ''; }
   get step() { return Math.max(1, Number(this.getAttribute('step')) || 16); }
-  get disabled() { return this.hasAttribute('disabled'); }
+  set step(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('step');
+    else this.setAttribute('step', String(value));
+  }
 
+  // The panel it resizes: its parent, or the closest ancestor matching the
+  // setting target. The method keeps the property name it has had since 1.0.0.
   target() {
     const selector = this.getAttribute('target');
     return (selector ? this.parentElement?.closest(selector) : this.parentElement) ?? null;
@@ -176,8 +206,9 @@ export class SfResizer extends HTMLElement {
     return width;
   }
 
+  // resize {width, phase} (§8 own verb); sf-resize follows with the same detail.
   announce(width, phase) {
-    this.dispatchEvent(new CustomEvent('sf-resize', {bubbles: true, composed: true, detail: {width, phase}}));
+    this.sfEmit('resize', {width, phase});
   }
 
   commit(width) {
@@ -227,8 +258,8 @@ export class SfResizer extends HTMLElement {
   }
 
   syncLabel() {
-    const label = text(this, 'label');
-    const hint = text(this, 'hint');
+    const label = this.sfWord('label');
+    const hint = this.sfWord('hint');
     if (!this.getAttribute('aria-label') || this._ownLabel) {
       this.setAttribute('aria-label', this.getAttribute('label') || label);
       this._ownLabel = true;

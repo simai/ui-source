@@ -1,0 +1,19 @@
+{
+  "$comment": "Dated aliases of sf-resizer for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-resizer",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-resize",
+      "to": "sf-resizer-resize",
+      "kind": "event",
+      "component": "sf-resizer",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, vocabulary §7",
+      "note": "the old name follows with the same detail {width, phase}"
+    }
+  ]
+}

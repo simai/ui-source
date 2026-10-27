@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.resizer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Resizer",
   "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
   "kind": "smart",
@@ -247,11 +247,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "a6f1cfc9b24cfcb099433b6025ee1560c5b061fe768e2aa2b58d28f1b19705ed"
+        "sha256": "02f0982fd607bce9a68fd4a8b5d1aec1d6e79ac5b281e18f65a5fa442f89ac51"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
-        "sha256": "d242b2984fb7f335bf75b7987e5b60dc5339fe0affa85d0320b878bcd905841f"
+        "sha256": "c93c1c168e81f87dc55cc28d9aac87db96e0e9301a2c216e41b7b87374eb7513"
       },
       {
         "path": "src/smart/resizer/rule.js",
@@ -259,7 +259,7 @@
       },
       {
         "path": "src/smart/resizer/docs.md",
-        "sha256": "07c0310ff06d517c456ebebac95df8b744a7daa56582c9605b718baee698e1b3"
+        "sha256": "16934e83a15220f72faf8fa83799b8d3798eca44788b5b535bf17b9664dbfe02"
       },
       {
         "path": "src/smart/resizer/engine.mjs",

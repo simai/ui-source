@@ -2,14 +2,14 @@
 /* A strip on the panel's edge, wider than it looks so a pointer finds it: the
    line it draws on hover, focus and drag is a hairline in the middle. */
 sf-resizer {
-  --sf-resizer--hit: var(--sf-a8);
+  --sf-resizer--hit: var(--sf-resizer-hit-size, var(--sf-a8));
   position: absolute;
   inset-block: 0;
   inset-inline-end: calc(-1 * var(--sf-resizer--hit) / 2);
   /* Above the panel's own positioned layers -- a menu that lifts itself to
      z-6 covered the handle and the drag and double-click never reached it
      (docs trial 5) -- and below the page's overlays (z-9). */
-  z-index: var(--sf-z-index-7, 70);
+  z-index: var(--sf-resizer-z-index, var(--sf-z-index-7, 70));
   display: block;
   inline-size: var(--sf-resizer--hit);
   cursor: col-resize;
@@ -26,9 +26,9 @@ sf-resizer::after {
   content: '';
   position: absolute;
   inset-block: 0;
-  inset-inline-start: calc(50% - var(--sf-px));
-  inline-size: calc(2 * var(--sf-px));
-  background-color: transparent;
+  inset-inline-start: calc(50% - var(--sf-resizer-line-width, calc(2 * var(--sf-px))) / 2);
+  inline-size: var(--sf-resizer-line-width, calc(2 * var(--sf-px)));
+  background-color: var(--sf-resizer-line-color, transparent);
   transition: background-color var(--sf-duration-fast, 0.15s) var(--sf-animation, ease);
 }
 
@@ -46,7 +46,7 @@ html[data-sf-resizer-active] * {
 @layer sf.states {
   sf-resizer:not([aria-disabled="true"]):hover::after,
   sf-resizer[data-sf-resizing]::after {
-    background-color: var(--sf-primary);
+    background-color: var(--sf-resizer-hover-line-color, var(--sf-primary));
   }
 
   sf-resizer:focus-visible::after {
