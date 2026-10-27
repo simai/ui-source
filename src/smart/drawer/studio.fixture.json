@@ -10,7 +10,7 @@
     "title": "Параметры проекта",
     "label": "Параметры проекта",
     "placement": "inline-end",
-    "size": "medium"
+    "size": "1"
   },
   "children": [
     {

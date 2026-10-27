@@ -7,8 +7,8 @@
   "locale": "ru",
   "props": {
     "text": "Новый",
-    "type": "fill",
-    "scheme": "primary"
+    "scheme": "primary",
+    "appearance": "main"
   },
   "children": [],
   "state": "default"
