@@ -2562,6 +2562,67 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "file-preview",
+      "selector": ".sf-file-preview",
+      "variables": [
+        {
+          "name": "--sf-file-preview-background-color",
+          "role": "background",
+          "summary": "The row's fill: none at rest, the container colour with surface.",
+          "default": "transparent",
+          "varies_with": [
+            "surface"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-padding",
+          "role": "padding-block",
+          "summary": "Room inside the row: none at rest, a step with surface.",
+          "default": "var(--sf-space-0)",
+          "varies_with": [
+            "surface"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-radius",
+          "role": "radius",
+          "summary": "The row's corners.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-gap",
+          "role": "gap",
+          "summary": "Space between the thumbnail, the name and the actions.",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-holder-size",
+          "role": "size",
+          "summary": "The thumbnail's square.",
+          "default": "var(--sf-ui-2--control-height)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-holder-background-color",
+          "role": "background",
+          "summary": "The thumbnail's fill behind an icon.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-preview-holder-color",
+          "role": "color",
+          "summary": "The file icon in the thumbnail.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

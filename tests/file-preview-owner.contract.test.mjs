@@ -26,9 +26,10 @@ test('File Preview owns its row geometry without utility classes', async () => {
 test('File Preview composes tokens and leaves Icon Button geometry to its owner', async () => {
   const css = await read('src/component/file-preview/scss/_css__file_preview.scss');
 
-  assert.match(css, /--sf-file-preview-holder--size: var\(--sf-ui-2--control-height\)/);
+  // The public variable first, the token its fallback (standard 1.3.8 §6).
+  assert.match(css, /--sf-file-preview-holder--size: var\(--sf-file-preview-holder-size, var\(--sf-ui-2--control-height\)\)/);
   assert.match(css, /--sf-file-preview-holder--radius: var\(--sf-radius--ui\)/);
-  assert.match(css, /--sf-file-preview--radius: var\(--sf-radius--ui\)/);
+  assert.match(css, /--sf-file-preview--radius: var\(--sf-file-preview-radius, var\(--sf-radius--ui\)\)/);
   assert.match(css, /--sf-file-preview-name--font-size: var\(--sf-text-size-1\)/);
   assert.match(css, /--sf-file-preview-size--font-size: var\(--sf-text-size-1\\\/2\)/);
   assert.doesNotMatch(css, /\.sf-file-preview \.sf-icon-button\s*\{/);

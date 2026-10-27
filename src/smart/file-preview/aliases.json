@@ -1,0 +1,112 @@
+{
+  "$comment": "Dated aliases of sf-file-preview for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-file-preview",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "name",
+      "to": "file-name",
+      "kind": "setting",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "compatibility.aliases"
+    },
+    {
+      "from": "size",
+      "to": "file-size",
+      "kind": "setting",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "compatibility.aliases"
+    },
+    {
+      "from": "type",
+      "to": "kind",
+      "kind": "setting",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json); its value default reads auto"
+    },
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1, §4.8",
+      "note": "stays a host attribute, read by the element for the group's name; no shim"
+    },
+    {
+      "from": "sf-file-preview:download",
+      "to": "sf-file-preview-download",
+      "kind": "event",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary 1.1.5 §5 download",
+      "note": "the new detail {id, action, value} holds the old fields"
+    },
+    {
+      "from": "sf-file-preview:remove",
+      "to": "sf-file-preview-detach",
+      "kind": "event",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary 1.1.5 §5 detach, §5.1",
+      "note": "the new detail {id, action, value} holds the old fields; bx-simai.property listens to the old name (vocabulary §9.2)"
+    },
+    {
+      "from": "avatar-size",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "compatibility.aliases",
+      "note": "read by nothing since 1.0.0"
+    },
+    {
+      "from": "open",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "compatibility.deprecations",
+      "note": "the actions are no longer hidden in a floating layer; the attribute does nothing"
+    },
+    {
+      "from": "setOpen",
+      "to": null,
+      "kind": "action",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "compatibility.deprecations, §4.4",
+      "note": "kept until the date and noted on each call; it writes the attribute open, which does nothing"
+    },
+    {
+      "from": "toggleOpen",
+      "to": null,
+      "kind": "action",
+      "component": "sf-file-preview",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "compatibility.deprecations, §4.4",
+      "note": "kept until the date and noted on each call"
+    }
+  ]
+}

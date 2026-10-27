@@ -1781,7 +1781,7 @@ function renderFileEdit(field, value, host) {
                         download-action=${file.href ? 'true' : 'false'}
                         remove-action="true"
                         remove-label=${`${setText(host, 'removeFile')} ${file.label ?? file.name ?? ''}`.trim()}
-                        @sf-file-preview:remove=${() => drop(index)}
+                        @sf-file-preview-detach=${() => drop(index)}
                 ></sf-file-preview>
             `)}
 

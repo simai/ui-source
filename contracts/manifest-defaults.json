@@ -77,11 +77,6 @@
     },
     {
       "component": "file-preview",
-      "prop": "ariaLabel",
-      "reason": "The page language's text when not set: \"File\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "file-preview",
       "prop": "downloadLabel",
       "reason": "The page language's text when not set: \"Download file\" on an English page, the dictionary's word on another."
     },
@@ -274,6 +269,11 @@
       "component": "input",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "profile-picker",
+      "prop": "label",
+      "reason": "The language file's word when not set (standard 1.3.8 §11, label default-from runtime.label): \"Profile\" on an English page, «Профиль» on a Russian one."
     },
     {
       "component": "textarea",

@@ -1,52 +1,42 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import {renderFilePreviewTemplate} from './js/templates/default';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-file-preview", code, words).
-const FILE_PREVIEW_TEXT = {
-  en: {
-    ariaLabel: 'File',
-    downloadLabel: 'Download file',
-    removeLabel: 'Remove file',
-  },
-  ru: {
-    ariaLabel: 'Файл',
-    downloadLabel: 'Скачать файл',
-    removeLabel: 'Удалить файл',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-file-preview from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §8; vocabulary 1.1.5 §5 download and detach): its settings
+// are attributes and properties made by core/js/element-manifest.js, its words
+// are lang/<locale>.json (a product adds a language through
+// SF.language.register("sf-file-preview", code, words)), and the old names --
+// name, size, type, sf-file-preview:download, sf-file-preview:remove, open,
+// setOpen(), toggleOpen() -- are dated rows of aliases.json.
+const FilePreviewElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
 const IMAGE_EXTENSION = /\.(?:avif|bmp|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i;
 
-class SfFilePreview extends SfBaseElement {
+// What retires without a new name (aliases.json rows with `to: null`): kept
+// until the date, and each call is noted with it.
+function noteRetired(from) {
+  noteDeprecated({ component: 'sf-file-preview', tag: 'sf-file-preview', kind: 'action', from, to: null,
+    since: aliases.since, remove_after: aliases.remove_after });
+}
+
+class SfFilePreview extends FilePreviewElement {
   static get props() {
     return {
-      templateName: {attribute: 'template', default: 'default'},
-      name: {default: 'File'},
-      fileName: {attribute: 'file-name', default: 'File'},
-      size: {default: ''},
-      fileSize: {attribute: 'file-size', default: ''},
-      icon: {default: 'description'},
-      href: {default: ''},
+      ...super.props,
       // The axis is called kind, because that is the question it answers.
       // `type` keeps working: see contracts/public-api-axes.json.
       kind: {default: 'auto', values: ['auto', 'icon', 'image'], aliases: ['type'], valueAliases: {auto: ['default']}},
-      mimeType: {attribute: 'mime-type', default: ''},
-      imageUrl: {attribute: 'image-url', default: ''},
-      avatarSize: {attribute: 'avatar-size', default: ''},
-      open: {type: Boolean, default: false},
-      surface: {type: Boolean, default: false},
-      download: {type: Boolean, default: true},
-      target: {default: '_blank'},
-      actions: {type: Boolean, default: true},
-      downloadAction: {attribute: 'download-action', type: Boolean, default: true},
-      removeAction: {attribute: 'remove-action', type: Boolean, default: true},
-      disabled: {type: Boolean, default: false},
-      compact: {type: Boolean, default: false},
-      ariaLabel: {attribute: 'aria-label', default: ''},
-      downloadLabel: {attribute: 'download-label', default: ''},
-      removeLabel: {attribute: 'remove-label', default: ''},
     };
   }
 
@@ -59,103 +49,18 @@ class SfFilePreview extends SfBaseElement {
       || !!this.querySelector(':scope > .sf-file-preview[data-render-managed="1"]');
   }
 
-  get templateName() {
-    return this.getAttribute('template') || 'default';
-  }
-
-  get name() {
-    return this.getAttribute('name') || this.getAttribute('file-name') || 'File';
-  }
-
-  get fileName() {
-    return this.getAttribute('file-name') || this.getAttribute('name') || 'File';
-  }
-
-  get size() {
-    return this.getAttribute('size') || this.fileSize;
-  }
-
-  get fileSize() {
-    return this.getAttribute('file-size') || this.getAttribute('size') || '';
-  }
-
-  get icon() {
-    return this.getAttribute('icon') || 'description';
-  }
-
-  get href() {
-    return this.getAttribute('href') || '';
-  }
-
   get kind() {
     return this.getProp('kind');
   }
 
-  // The legacy name, kept so a consumer reading el.type still gets an answer.
-  get type() {
-    return this.kind;
+  set kind(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('kind');
+    else this.setAttribute('kind', String(value));
   }
 
-  get mimeType() {
-    return this.getAttribute('mime-type') || '';
-  }
-
-  get imageUrl() {
-    return this.getAttribute('image-url') || '';
-  }
-
-  get avatarSize() {
-    return this.getAttribute('avatar-size') || '';
-  }
-
-  get open() {
-    return this.getBooleanAttr('open', false);
-  }
-
-  get surface() {
-    return this.getBooleanAttr('surface', false);
-  }
-
-  get download() {
-    return this.getBooleanAttr('download', true);
-  }
-
-  get target() {
-    return this.getAttribute('target') || '_blank';
-  }
-
-  get actions() {
-    return this.getBooleanAttr('actions', true);
-  }
-
-  get downloadAction() {
-    return this.getBooleanAttr('download-action', true);
-  }
-
-  get removeAction() {
-    return this.getBooleanAttr('remove-action', true);
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
-  get ariaLabel() {
-    return this.getAttribute('aria-label') || this.fileName;
-  }
-
-  get downloadLabel() {
-    return this.getAttribute('download-label') || pageText(FILE_PREVIEW_TEXT, "downloadLabel", this);
-  }
-
-  get removeLabel() {
-    return this.getAttribute('remove-label') || pageText(FILE_PREVIEW_TEXT, "removeLabel", this);
-  }
-
-  // Only the leading visual, on a row's line: a list of files shows each as a
-  // thumbnail or as its extension, and the record shows the rest.
-  get compact() {
-    return this.getBooleanAttr('compact', false);
+  // The group's name (§3.1, §4.8): the host's aria-label, else the file name.
+  get accessibleName() {
+    return this.getAttribute('aria-label') || this.fileName || this.sfWord('aria-label');
   }
 
   get extension() {
@@ -164,9 +69,8 @@ class SfFilePreview extends SfBaseElement {
   }
 
   get isImage() {
-    if (this.type === 'image') return true;
-    if (this.type === 'icon') return false;
-
+    if (this.kind === 'image') return true;
+    if (this.kind === 'icon') return false;
     return this.mimeType.toLowerCase().startsWith('image/')
       || IMAGE_EXTENSION.test(this.imageUrl || this.href || this.fileName);
   }
@@ -176,15 +80,12 @@ class SfFilePreview extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
-      ariaLabel: this.getAttribute("aria-label") || pageText(FILE_PREVIEW_TEXT, "ariaLabel", this),
-      downloadLabel: this.getAttribute("download-label") || pageText(FILE_PREVIEW_TEXT, "downloadLabel", this),
-      removeLabel: this.getAttribute("remove-label") || pageText(FILE_PREVIEW_TEXT, "removeLabel", this),
       component: this,
       fileName: this.fileName,
       fileSize: this.fileSize,
       icon: this.icon,
       href: this.href,
-      type: this.type,
+      type: this.kind,
       mimeType: this.mimeType,
       imageUrl: this.imageUrl,
       isImage: this.isImage,
@@ -197,7 +98,7 @@ class SfFilePreview extends SfBaseElement {
       downloadAction: this.downloadAction,
       removeAction: this.removeAction,
       disabled: this.disabled,
-      ariaLabel: this.ariaLabel,
+      ariaLabel: this.accessibleName,
       downloadLabel: this.downloadLabel,
       removeLabel: this.removeLabel,
       onDownload: (event) => this.handleDownload(event),
@@ -209,6 +110,7 @@ class SfFilePreview extends SfBaseElement {
     return renderFilePreviewTemplate(this.templateContext());
   }
 
+  // The file as data (§8): what download and detach carry in `value`.
   get data() {
     return this.getValue();
   }
@@ -219,40 +121,51 @@ class SfFilePreview extends SfBaseElement {
       fileSize: this.fileSize,
       icon: this.icon,
       href: this.href,
-      type: this.type,
+      type: this.kind,
       mimeType: this.mimeType,
       imageUrl: this.imageUrl,
       target: this.target,
     };
   }
 
+  // The file's id in a detail (vocabulary §5 {id}): the host's id, else its
+  // address, else its name.
+  get fileId() {
+    return this.id || this.href || this.fileName;
+  }
+
+  // §4.4 and compatibility.deprecations: open did nothing since 1.0.0.
   setOpen(value) {
+    noteRetired('setOpen');
     this.toggleAttribute('open', Boolean(value));
     return this;
   }
 
   toggleOpen() {
-    return this.setOpen(!this.open);
+    noteRetired('toggleOpen');
+    this.toggleAttribute('open', !this.hasAttribute('open'));
+    return this;
   }
 
   onDownload(handler, options) {
     if (typeof handler === 'function') {
-      this.addEventListener('sf-file-preview:download', handler, options);
+      this.addEventListener('sf-file-preview-download', handler, options);
     }
     return this;
   }
 
   onRemove(handler, options) {
     if (typeof handler === 'function') {
-      this.addEventListener('sf-file-preview:remove', handler, options);
+      this.addEventListener('sf-file-preview-detach', handler, options);
     }
     return this;
   }
 
+  // download {id}: a request a page may refuse; unrefused, the browser opens
+  // or downloads the file.
   handleDownload(event) {
     event?.preventDefault?.();
-    if (this.disabled || !this.dispatchFilePreviewEvent('download') || !this.href) return;
-
+    if (this.disabled || !this.request('download', 'download') || !this.href) return;
     const anchor = document.createElement('a');
     anchor.href = this.href;
     if (this.download) {
@@ -264,18 +177,16 @@ class SfFilePreview extends SfBaseElement {
     anchor.click();
   }
 
+  // detach {id}: the host removes the file; the preview only asks.
   handleRemove(event) {
     event?.preventDefault?.();
-    if (!this.disabled) this.dispatchFilePreviewEvent('remove');
+    if (!this.disabled) this.request('detach', 'remove');
   }
 
-  dispatchFilePreviewEvent(action) {
-    return this.dispatchEvent(new CustomEvent(`sf-file-preview:${action}`, {
-      bubbles: true,
-      cancelable: true,
-      composed: true,
-      detail: {action, value: this.getValue()},
-    }));
+  // The detail is data only (§8): the id, and for the old names' listeners
+  // the action and the file (detail-adds rows of aliases.json).
+  request(verb, action) {
+    return this.sfEmit(verb, {id: String(this.fileId ?? ''), action, value: this.getValue()}, {cancelable: true});
   }
 }
 

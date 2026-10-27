@@ -1,0 +1,8 @@
+{
+  "title": "Предпросмотр файла",
+  "runtime": {
+    "aria-label": "Файл",
+    "download-label": "Скачать файл",
+    "remove-label": "Удалить файл"
+  }
+}

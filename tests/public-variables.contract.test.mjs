@@ -43,6 +43,7 @@ const FOLDERS = {
   skeleton: 'skeleton',
   // A Smart component whose sheet sits in its own folder.
   'empty-state': 'smart/empty-state',
+  'file-preview': 'file-preview',
 };
 
 const scss = async (folder) => {

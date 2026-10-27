@@ -1,9 +1,9 @@
 @layer sf.components {
   .sf-file-preview {
-    --sf-file-preview--background-color: transparent;
-    --sf-file-preview--gap: var(--sf-space-1\/2);
-    --sf-file-preview--padding: var(--sf-space-0);
-    --sf-file-preview--radius: var(--sf-radius--ui);
+    --sf-file-preview--background-color: var(--sf-file-preview-background-color, transparent);
+    --sf-file-preview--gap: var(--sf-file-preview-gap, var(--sf-space-1\/2));
+    --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-space-0));
+    --sf-file-preview--radius: var(--sf-file-preview-radius, var(--sf-radius--ui));
 
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -25,16 +25,16 @@
   }
 
   .sf-file-preview--surface {
-    --sf-file-preview--background-color: var(--sf-surface-container);
+    --sf-file-preview--background-color: var(--sf-file-preview-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    --sf-file-preview--padding: var(--sf-space-1\/2);
+    --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-space-1\/2));
   }
 
   .sf-file-preview .sf-file-preview-holder {
-    --sf-file-preview-holder--size: var(--sf-ui-2--control-height);
-    --sf-file-preview-holder--background-color: var(--sf-surface-container);
+    --sf-file-preview-holder--size: var(--sf-file-preview-holder-size, var(--sf-ui-2--control-height));
+    --sf-file-preview-holder--background-color: var(--sf-file-preview-holder-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-    --sf-file-preview-holder--color: var(--sf-on-surface-variant);
+    --sf-file-preview-holder--color: var(--sf-file-preview-holder-color, var(--sf-on-surface-variant));
     --sf-file-preview-holder--radius: var(--sf-radius--ui);
 
     display: inline-flex;

@@ -7,26 +7,41 @@ file.
 
 ## Attributes
 
-- `file-name`, or legacy alias `name`
-- `file-size`, or legacy alias `size`
-- `type="auto|icon|image"`
+- `file-name`
+- `file-size`
+- `kind="auto|icon|image"`
 - `icon`, `image-url`, `mime-type`, `href`
-- `surface`
+- `surface`, `compact`
 - `actions`, `download-action`, `remove-action`
 - `download`, `target`, `disabled`
-- `aria-label`, `download-label`, `remove-label`
+- `download-label`, `remove-label`; the host's `aria-label` names the row
+  (the file name when unset)
 
-The historical `type="default"` value maps to `auto`. The historical `open`,
-`setOpen()` and `toggleOpen()` surface remains callable for compatibility, but
-actions are no longer hidden in an inaccessible floating layer.
+The old names keep working until 2026-12-01 and are noted in
+`SF.deprecations.list()`: `name` is `file-name`, `size` is `file-size`, `type`
+is `kind` (its value `default` reads `auto`). `avatar-size`, `open`,
+`setOpen()` and `toggleOpen()` remain callable, but actions are no longer hidden
+in an inaccessible floating layer: they do nothing and retire on the same date.
 
 ## Events
 
-- `sf-file-preview:download`
-- `sf-file-preview:remove`
+- `sf-file-preview-download {id, action, value}` — the person pressed download;
+  unprevented, the browser downloads or opens `href`.
+- `sf-file-preview-detach {id, action, value}` — the person pressed remove; the
+  host removes the file.
 
-Both events bubble across the Custom Element boundary and may be cancelled.
-Their detail contains `action` and the current `value`.
+Both are vocabulary 1.1.5 requests (`download`, `detach`); both bubble across
+the Custom Element boundary and may be cancelled. `id` is the host's `id`, else
+`href`, else the file name; `value` is the file as data. The old names
+`sf-file-preview:download` and `sf-file-preview:remove` are sent after the new
+ones with the same detail until 2026-12-01.
+
+## Public variables
+
+`--sf-file-preview-background-color`, `--sf-file-preview-padding`,
+`--sf-file-preview-radius`, `--sf-file-preview-gap`,
+`--sf-file-preview-holder-size`, `--sf-file-preview-holder-background-color`,
+`--sf-file-preview-holder-color`.
 
 ## Example
 

@@ -30,8 +30,13 @@ test('Smart File Preview exposes native localized actions and cancellable events
 
   assert.match(template, /\?disabled=\$\{disabled\}/);
   assert.match(template, /aria-label=\$\{label\}/);
-  assert.match(source, /downloadLabel: \{attribute: 'download-label'/);
-  assert.match(source, /removeLabel: \{attribute: 'remove-label'/);
+  // Standard 1.3.8: the labels are settings of component.json whose words come
+  // from the language files; the events are vocabulary requests, cancelable.
+  const declared = JSON.parse(await read('src/smart/file-preview/component.json'));
+  assert.equal(declared.settings['download-label']['default-from'], 'runtime.download-label');
+  assert.equal(declared.settings['remove-label']['default-from'], 'runtime.remove-label');
+  assert.equal(declared.events.download.cancelable, true);
+  assert.equal(declared.events.detach.cancelable, true);
   assert.match(source, /cancelable: true/);
   assert.equal(manifest.contracts.event_delivery.properties.cancelable.const, true);
   assert.equal(manifest.events['sf-file-preview:download'].payload.type, 'object');

@@ -1,0 +1,252 @@
+{
+  "$comment": "The source of sf-file-preview's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-preview (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.file-preview",
+  "tag": "sf-file-preview",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "file",
+  "settings": {
+    "file-name": {
+      "type": "string",
+      "default": "File"
+    },
+    "file-size": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "icon",
+      "default": "description"
+    },
+    "href": {
+      "type": "string",
+      "default": ""
+    },
+    "kind": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "icon",
+        "image"
+      ],
+      "default": "auto"
+    },
+    "mime-type": {
+      "type": "string",
+      "default": ""
+    },
+    "image-url": {
+      "type": "string",
+      "default": ""
+    },
+    "surface": {
+      "type": "boolean",
+      "default": false
+    },
+    "download": {
+      "type": "boolean",
+      "default": true
+    },
+    "target": {
+      "type": "string",
+      "default": "_blank"
+    },
+    "actions": {
+      "type": "boolean",
+      "default": true
+    },
+    "download-action": {
+      "type": "boolean",
+      "default": true
+    },
+    "remove-action": {
+      "type": "boolean",
+      "default": true
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "download-label": {
+      "type": "string",
+      "default-from": "runtime.download-label"
+    },
+    "remove-label": {
+      "type": "string",
+      "default-from": "runtime.remove-label"
+    },
+    "compact": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "values": {},
+  "events": {
+    "download": {
+      "carries": {
+        "id": "string",
+        "action": "string",
+        "value": "object"
+      },
+      "cancelable": true
+    },
+    "detach": {
+      "carries": {
+        "id": "string",
+        "action": "string",
+        "value": "object"
+      },
+      "cancelable": true
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs/docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "group",
+    "when": {
+      "actions": true
+    },
+    "otherwise": "none",
+    "name": {
+      "from": [
+        "aria-label",
+        "file-name"
+      ]
+    },
+    "keys": {
+      "Tab": "reach"
+    },
+    "$comment": "With its download or remove button the row is a group named by the host's aria-label, else the file name; Enter and Space press those native buttons (role button), so the group maps only Tab. The compact form is a link or an image named by the file."
+  },
+  "css-variables": {
+    "--sf-file-preview-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-file-preview-padding": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-file-preview-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-file-preview-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-file-preview-holder-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-file-preview-holder-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-file-preview-holder-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "Accessible Smart projection of the ordinary File Preview row.",
+  "x-source": {
+    "package": "framework",
+    "folder": "file-preview",
+    "manifest": "simai/ui-source@5100227 src/smart/file-preview/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/file-preview.component.json"
+  },
+  "x-words": [
+    "download-label",
+    "remove-label"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "events sf-file-preview:download → download (sf-file-preview-download), sf-file-preview:remove → detach (sf-file-preview-detach), vocabulary 1.1.5 §5 and §5.1; the detail adds id",
+    "settings.name → file-name, size → file-size, type → kind: the old names of compatibility.aliases, dated setting aliases",
+    "settings.avatar-size, values.open, methods setOpen and toggleOpen: no effect since 1.0.0 (compatibility.deprecations, open), retired with dates",
+    "values.compact → settings.compact: a setting the page writes, not a value the element holds"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "file-name",
+        "file-size",
+        "href",
+        "image-url"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "hidden floating action geometry",
+        "permission inference"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-file-preview for an already selected or attached file with visible metadata and optional native actions.",
+      "do_not": [
+        "Do not use it for upload progress or transport",
+        "Do not hide actions in a hover-only or floating layer"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-file-preview file-name=\"File.pdf\"></sf-file-preview>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "alias-conflict: sf-file-preview:remove takes the vocabulary's name sf-file-preview-detach (vocabulary 1.1.5 §5.1 lists exactly this rename); the alias table's sf-file-preview-remove never shipped (the code sent sf-file-preview:remove), so no row carries it.",
+    "version: 1.0.0 → 1.1.0: the events take the vocabulary's names and the old names, settings and methods are dated rows; a minor while they hold (§4.10).",
+    "events: download {id} and detach {id} by vocabulary §5 (cancelable requests: a page that prevents download keeps the browser from opening the file). id is the host's id, else href, else the file name. The detail keeps action and value for the old listeners (detail-adds), and carries no element (§8).",
+    "key-effects: the role group gives no keys; Enter and Space press the native download and remove buttons (role button), so the group maps only Tab: reach.",
+    "a11y-role: group written with when {actions: true} (a row with its buttons); otherwise none. The name is the host's aria-label (§3.1), else the file name.",
+    "existing-aliases: compatibility.aliases (name, size, type=default, avatar-size, open) and compatibility.deprecations (open) fold into aliases.json with the dates: name, size and type are setting aliases (default reads auto), avatar-size and open are retired, as are setOpen and toggleOpen.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json plus an image, the compact form and a disabled row; probe.json drives download and detach, the refusal and the aliases.",
+    "skeleton: none; the preview draws from its settings; an image that loads late keeps the holder's box (§5.4).",
+    "css-variables: seven public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json)."
+  ]
+}
