@@ -2623,6 +2623,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "slider",
+      "selector": ".sf-slider",
+      "variables": [
+        {
+          "name": "--sf-slider-gap",
+          "role": "gap",
+          "summary": "Space between the slides, the controls and the thumbnails.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-slider-arrow-offset-inline",
+          "role": "inset-inline",
+          "summary": "How far the arrows stand in from the edges.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-slider-dots-offset-block",
+          "role": "inset-block-end",
+          "summary": "How far the dots stand up from the bottom edge.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-slider-thumbnail-size",
+          "role": "size",
+          "summary": "The side of a thumbnail.",
+          "default": "var(--sf-d2)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-slider-thumbnail-radius",
+          "role": "radius",
+          "summary": "The corners of a thumbnail.",
+          "default": "var(--sf-radius-square)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

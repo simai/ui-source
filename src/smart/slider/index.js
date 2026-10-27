@@ -1,17 +1,28 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import {
   bindSlider,
   refreshSlider,
   unbindSlider,
 } from '../../component/slider/js/_slider';
 import { renderSliderTemplate } from './js/templates/default';
-import { pageText } from '../../core/js/page-language';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-// The arrows were named in English on every page.
-const SLIDER_TEXT = {
-  en: { previous: 'Previous slide', next: 'Next slide' },
-  ru: { previous: 'Предыдущий слайд', next: 'Следующий слайд' },
-};
+// sf-slider from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §8): its settings are attributes and properties made by
+// core/js/element-manifest.js, the arrows' words are lang/<locale>.json (a
+// product adds a language through SF.language.register("sf-slider", code,
+// words)), and sf-slide-change and getSlider() are dated rows of aliases.json.
+const SliderElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
 
 const FORWARDED_SLIDER_DATA_ATTRIBUTES = new Set([
   'data-autoplay',
@@ -29,84 +40,16 @@ const FORWARDED_SLIDER_DATA_ATTRIBUTES = new Set([
 
 
 
-class SfSlider extends SfBaseElement {
+class SfSlider extends SliderElement {
   static get props() {
-    return {
-      buttonType: { default: 'primary' },
-      buttonSize: { default: '1' },
-      dots: { type: Boolean, default: true },
-      dotsType: { default: 'primary-dark' },
-      dotsSize: { default: '2' },
-      thumbs: { type: Boolean, default: false },
-      thumbsClass: { default: '' },
-      thumbClass: { default: '' },
-      arrows: { type: Boolean, default: true },
-      loop: { type: Boolean, default: false },
-      spaceBetween: { type: Number, default: 12 },
-      speed: { type: Number, default: 450 },
-      rootClass: { default: '' },
-      slideClass: { default: '' },
-    };
+    return { ...super.props, rootClass: { default: '' } };
   }
-
 
   constructor() {
     super();
     this._boundRoot = null;
     this._boundSlider = null;
     this._sliderInitToken = 0;
-  }
-
-  get buttonType() {
-    return this.getAttribute('button-type') || 'primary';
-  }
-
-  get buttonSize() {
-    return this.getAttribute('button-size') || '1';
-  }
-
-  get dots() {
-    return this.getBooleanAttr('dots', true);
-  }
-
-  get dotsType() {
-    return this.getAttribute('dots-type') || 'primary-dark';
-  }
-
-  get dotsSize() {
-    return this.getAttribute('dots-size') || '2';
-  }
-
-  get thumbs() {
-    return this.getBooleanAttr('thumbs', false);
-  }
-
-  get thumbsClass() {
-    return this.getAttribute('thumbs-class') || '';
-  }
-
-  get thumbClass() {
-    return this.getAttribute('thumb-class') || '';
-  }
-
-  get arrows() {
-    return this.getBooleanAttr('arrows', true);
-  }
-
-  get loop() {
-    return this.getBooleanAttr('loop', false);
-  }
-
-  get spaceBetween() {
-    return this.getNumberAttr('space-between', 12);
-  }
-
-  get speed() {
-    return this.getNumberAttr('speed', 450);
-  }
-
-  get slideClass() {
-    return this.getAttribute('slide-class') || '';
   }
 
   get slides() {
@@ -121,8 +64,8 @@ class SfSlider extends SfBaseElement {
       component: this,
       rootClass: this.getRootClass(),
       slides: this.slides,
-      previousLabel: pageText(SLIDER_TEXT, 'previous', this),
-      nextLabel: pageText(SLIDER_TEXT, 'next', this),
+      previousLabel: this.sfWord('previous'),
+      nextLabel: this.sfWord('next'),
     });
   }
 
@@ -255,14 +198,18 @@ class SfSlider extends SfBaseElement {
     const slider = this._boundSlider;
     if (!slider) return;
 
-    this.emitComponentEvent('slide-change', {
+    // §8: the indexes only; sf-slide-change follows with the same detail.
+    this.sfEmit('change', {
       activeIndex: slider.activeIndex,
       realIndex: slider.realIndex,
       previousIndex: slider.previousIndex,
     });
   };
 
+  // §4.4: a reader retires; kept until the date and noted on each call.
   getSlider() {
+    noteDeprecated({ component: 'sf-slider', tag: 'sf-slider', kind: 'action', from: 'getSlider', to: null,
+      since: aliases.since, remove_after: aliases.remove_after });
     return this._boundSlider || null;
   }
 
@@ -278,17 +225,19 @@ class SfSlider extends SfBaseElement {
       this.attachSliderEvents();
     }
 
-    return this;
+    return { outcome: 'applied' };
   }
 
   slideNext() {
-    this._boundSlider?.slideNext?.();
-    return this;
+    if (!this._boundSlider?.slideNext) return { outcome: 'refused', reason: 'not-ready' };
+    this._boundSlider.slideNext();
+    return { outcome: 'applied' };
   }
 
   slidePrev() {
-    this._boundSlider?.slidePrev?.();
-    return this;
+    if (!this._boundSlider?.slidePrev) return { outcome: 'refused', reason: 'not-ready' };
+    this._boundSlider.slidePrev();
+    return { outcome: 'applied' };
   }
 
   get state() {

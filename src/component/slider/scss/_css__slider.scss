@@ -9,7 +9,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: var(--sf-slider--gap, var(--sf-space-1));
+  gap: var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1)));
   min-width: 0;
   position: relative;
   width: 100%;
@@ -65,10 +65,10 @@
 }
 
 .sf-slider .sf-slider-thumbnail {
-  block-size: var(--sf-slider-thumbnail--block-size, var(--sf-d2));
-  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-radius-square));
+  block-size: var(--sf-slider-thumbnail--block-size, var(--sf-slider-thumbnail-size, var(--sf-d2)));
+  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-slider-thumbnail-radius, var(--sf-radius-square)));
   display: block;
-  inline-size: var(--sf-slider-thumbnail--inline-size, var(--sf-d2));
+  inline-size: var(--sf-slider-thumbnail--inline-size, var(--sf-slider-thumbnail-size, var(--sf-d2)));
   min-height: 0;
   overflow: hidden;
 }
@@ -137,7 +137,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--sf-slider--gap, var(--sf-space-1));
+  gap: var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1)));
 }
 
 .sf-slider--content .sf-slider-controls .sf-slider-arrows {
@@ -166,7 +166,7 @@
      a thumbnail is its own size. */
   flex-basis: auto !important;
   opacity: var(--sf-slider-thumbnails-slide--opacity, 0.72);
-  width: var(--sf-slider-thumbnail--inline-size, var(--sf-d2)) !important;
+  width: var(--sf-slider-thumbnail--inline-size, var(--sf-slider-thumbnail-size, var(--sf-d2))) !important;
 }
 
 .sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {

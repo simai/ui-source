@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -258,7 +258,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "311a51bb9a2eb5f169d3f6bc7aa74e4bd3890b326c018225f669be426672e5d9"
+        "sha256": "45d1e67d7c4918bf7abbd1816ba94b2c21bc2102d2cad69d4ba343e15cbfe899"
       }
     ],
     "generated_runtime": [

@@ -1,0 +1,78 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Слайдер",
+      "settings": {
+        "dots": true,
+        "arrows": true
+      },
+      "children": [
+        "<div>Первый слайд</div>",
+        "<div>Второй слайд</div>"
+      ],
+      "expect": {
+        "slides": 2
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "next",
+      "title": "Следующий слайд",
+      "settings": {
+        "arrows": true
+      },
+      "children": [
+        "<div>Один</div>",
+        "<div>Два</div>",
+        "<div>Три</div>"
+      ],
+      "script": [
+        {
+          "act": "slide-next"
+        }
+      ],
+      "expect": {
+        "events": [
+          {
+            "change": {
+              "active-index": 1
+            }
+          }
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "thumbs",
+      "title": "С миниатюрами",
+      "settings": {
+        "thumbs": true,
+        "dots": false
+      },
+      "children": [
+        "<img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Один\">",
+        "<img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Два\">"
+      ],
+      "expect": {
+        "slides": 2
+      }
+    },
+    {
+      "name": "loop",
+      "title": "По кругу",
+      "settings": {
+        "loop": true,
+        "speed": 300,
+        "space-between": 8
+      },
+      "children": [
+        "<div>А</div>",
+        "<div>Б</div>"
+      ],
+      "expect": {
+        "slides": 2
+      }
+    }
+  ]
+}

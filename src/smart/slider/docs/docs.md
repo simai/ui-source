@@ -121,3 +121,23 @@ Short slider aliases are still accepted and forwarded:
 The component waits for nested smart arrow buttons to render before binding Swiper. This prevents Swiper navigation from initializing before `.sf-slider-button-prev` and `.sf-slider-button-next` exist.
 
 Use `refresh()` after changing slides or Swiper-related data attributes programmatically.
+
+## Actions and events
+
+- `refresh()` — lays the slides out again; answers `{outcome: "applied"}`.
+- `slideNext()`, `slidePrev()` — show the next or the previous slide; they
+  answer `{outcome: "refused", reason: "not-ready"}` before Swiper has started.
+- `change {activeIndex, realIndex, previousIndex}` — the shown slide changed
+  (DOM name `change`). The detail carries the indexes only.
+
+Until 2026-12-01 the old event `sf-slide-change` follows `change` with the same
+detail, and `getSlider()` still answers the Swiper instance; both are noted in
+`SF.deprecations.list()`.
+
+The arrows say «Предыдущий слайд» and «Следующий слайд» from the language files
+(`lang/ru.json`, `lang/en.json`); a product adds a language through
+`SF.language.register("sf-slider", code, words)`.
+
+Public variables: `--sf-slider-gap`, `--sf-slider-arrow-offset-inline`,
+`--sf-slider-dots-offset-block`, `--sf-slider-thumbnail-size`,
+`--sf-slider-thumbnail-radius`.

@@ -1,0 +1,30 @@
+{
+  "$comment": "Dated aliases of sf-slider for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-slider",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-slide-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-slider",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the old name follows change with the same detail; component, tagName and template are no longer in it (§8)"
+    },
+    {
+      "from": "getSlider",
+      "to": null,
+      "kind": "action",
+      "component": "sf-slider",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Slider",
+  "runtime": {
+    "next": "Next slide",
+    "previous": "Previous slide"
+  }
+}
