@@ -1,0 +1,19 @@
+{
+  "title": "Empty state",
+  "runtime": {
+    "error-text": "Try again",
+    "error-title": "Could not load",
+    "no-access-text": "Ask an administrator for access",
+    "no-access-title": "No access",
+    "no-data-text": "Items will appear here",
+    "no-data-title": "Nothing here yet",
+    "nothing-found-text": "Try another query or other filters",
+    "nothing-found-title": "Nothing found",
+    "retry": "Try again"
+  },
+  "events": {
+    "action": {
+      "label": "Do the empty state's action"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$comment": "Dated aliases of sf-empty-state for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-empty-state",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-empty-state",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "sf-empty-state-action",
+      "to": null,
+      "kind": "event",
+      "component": "sf-empty-state",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "manifest-only",
+      "section": "§8",
+      "note": "the DOM name and the detail {id} stay; the manifest declares the verb action"
+    }
+  ]
+}

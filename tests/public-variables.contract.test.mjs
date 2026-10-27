@@ -41,6 +41,8 @@ const FOLDERS = {
   'progress-scale': 'progress-scale',
   spinner: 'spinner',
   skeleton: 'skeleton',
+  // A Smart component whose sheet sits in its own folder.
+  'empty-state': 'smart/empty-state',
 };
 
 const scss = async (folder) => {

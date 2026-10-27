@@ -10,7 +10,8 @@
 | `no-access` | lock | «Нет доступа» / «Обратитесь к администратору» |
 | `error` | error | «Не удалось загрузить» / «Попробуйте ещё раз» и кнопка «Повторить» |
 
-`icon`, `title` и `text` заменяют значения по умолчанию. `heading-level`
+`icon`, `heading` и `text` заменяют значения по умолчанию (прежнее имя
+`title` читается до 2026-12-01). `heading-level`
 (2–6, по умолчанию 3) задаёт уровень заголовка в структуре страницы, чтобы
 состояние было видно в оглавлении для чтения с экрана. Вид заголовка от уровня
 не зависит. Размер `size`:
@@ -38,7 +39,9 @@
 
 «Ничего не найдено» и ошибка объявляются вежливо (`role="status"`), остальные
 состояния — нет. Значок декоративный. Ширина — не больше 28rem (переменная
-`--sf-empty-state-max-inline-size`).
+`--sf-empty-state-max-inline-size`). Ещё пять публичных переменных:
+`--sf-empty-state-color`, `--sf-empty-state-text-color`, `--sf-empty-state-gap`,
+`--sf-empty-state-padding-block`, `--sf-empty-state-actions-gap`.
 
 ```html
 <sf-empty-state kind="nothing-found" size="1/2" heading-level="4"></sf-empty-state>

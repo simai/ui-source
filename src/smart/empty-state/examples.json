@@ -1,0 +1,79 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Ничего не найдено",
+      "settings": {
+        "kind": "nothing-found",
+        "size": "1",
+        "heading-level": 3
+      },
+      "expect": {
+        "name": "Ничего не найдено",
+        "role": "status"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "no-data",
+      "title": "Пока ничего нет",
+      "settings": {
+        "kind": "no-data"
+      },
+      "expect": {
+        "name": "Пока ничего нет",
+        "role": null
+      }
+    },
+    {
+      "name": "error-retry",
+      "title": "Ошибка с повтором",
+      "settings": {
+        "kind": "error"
+      },
+      "script": [
+        {
+          "press": "[data-action=\"retry\"]"
+        }
+      ],
+      "expect": {
+        "events": [
+          {
+            "action": {
+              "id": "retry"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "inline",
+      "title": "В строку",
+      "settings": {
+        "kind": "nothing-found",
+        "layout": "inline",
+        "size": "1/2"
+      },
+      "expect": {
+        "heading": null
+      }
+    },
+    {
+      "name": "actions",
+      "title": "Свои действия",
+      "settings": {
+        "kind": "no-data",
+        "heading": "Нет проектов",
+        "actions": [
+          {
+            "id": "create",
+            "text": "Создать проект"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Нет проектов"
+      }
+    }
+  ]
+}
