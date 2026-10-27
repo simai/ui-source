@@ -81,7 +81,7 @@ class SfColor extends FormField(ColorElement) {
         else this.removeAttribute("value");
         this._committed = value;
         this.requestComponentUpdate("value");
-        this.fieldSyncForm();
+        this.sfSyncFormState();
     }
 
     // What the colour falls back to while nothing is chosen. Shown rather than
@@ -126,7 +126,7 @@ class SfColor extends FormField(ColorElement) {
 
     afterRender() {
         this.syncInheritedState();
-        this.fieldSyncForm();
+        this.sfSyncFormState();
     }
 
     get customText() {
@@ -196,7 +196,7 @@ class SfColor extends FormField(ColorElement) {
         if (value) this.setAttribute("value", value);
         else this.removeAttribute("value");
         this.requestComponentUpdate("value");
-        this.fieldSyncForm();
+        this.sfSyncFormState();
         this._emit("input");
         return true;
     }
@@ -209,11 +209,7 @@ class SfColor extends FormField(ColorElement) {
     }
 
     _emit(type) {
-        this.dispatchEvent(new CustomEvent(type, {
-            bubbles: true,
-            composed: true,
-            detail: {value: this.value, name: this.name},
-        }));
+        this.sfEmit(type, {value: this.value, name: this.name});
     }
 
     connectedCallback() {

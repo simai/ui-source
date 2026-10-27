@@ -181,7 +181,8 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
   for (const verb of ['begun', 'chunk', 'cancelled']) assert.match(source, new RegExp(`this\\.sfEmit\\('${verb}', `, 'u'), verb);
   assert.match(source, /'sf-file-upload:file-complete': 'completed'/u);
   assert.match(source, /'sf-file-upload:file-error': 'failed'/u);
-  assert.match(source, /dispatchAliased\(this, 'change', \{ detail: chosen \}\)/u);
+  // change keeps its native name through sfEmit (core/js/element-manifest.js eventName).
+  assert.match(source, /this\.sfEmit\('change', chosen\)/u);
   assert.doesNotMatch(source, /FILE_UPLOAD_TEXT|pageText/u);
   assert.doesNotMatch(source, /\n {2}removeItem\(index\) \{|\n {2}clear\(\) \{/u, 'remove-item and clear are the manifest\'s actions');
   const manifest = json('src/smart/file-upload/component.json');
@@ -201,7 +202,7 @@ test('sf-datepicker: a leaf with outcome actions; the form gets the ISO date; th
   for (const method of ['openPanel', 'closePanel', 'togglePanel', 'choosePreset', 'chooseCustomRange']) {
     assert.doesNotMatch(source, new RegExp(`\\n {4}${method}\\(`, 'u'), `${method} is generated from the manifest's action`);
   }
-  assert.match(source, /dispatchAliased\(this, 'change', \{detail\}\)/u);
+  assert.match(source, /this\.sfEmit\('change', detail\)/u);
   assert.doesNotMatch(source, /new CustomEvent\('(?:change|sf-datepicker-change)'|emitComponentEvent\('change'/u);
   assert.doesNotMatch(source, /DATEPICKER_TEXT|datepickerSequence/u);
   assert.match(source, /partId\(instancePath\(this, \{kind: 'sf-datepicker'\}\), 'panel'\)/u);

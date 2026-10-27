@@ -43,7 +43,7 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.doesNotMatch(component, /localStorage|fetch\(|XMLHttpRequest/);
   // change is sent once through sfEmit; the shim sends sf-button-group-change
   // after it (standard 1.3.8 §16.20, aliases.json).
-  assert.match(smart, /dispatchAliased\(this, 'change', \{ detail \}\)/);
+  assert.match(smart, /this\.sfEmit\('change', detail\)/);
   assert.match(smart, /ArrowLeft/);
   assert.match(smart, /ArrowRight/);
   assert.match(smart, /ArrowUp/);

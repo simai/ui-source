@@ -30,8 +30,8 @@
 //   name; the others are read-only properties that a component overrides with
 //   its own getter;
 // - events (§8): `sfEmit(verb, detail)` sends `<tag>-<verb>`, or the native
-//   name for `"carries": "native"`, through the dated aliases, so the old
-//   names follow;
+//   name for `change`, `input` and `"carries": "native"` (with the detail
+//   when one is given), through the dated aliases, so the old names follow;
 // - actions (§4.4): one method per action that takes its `with` parameters as
 //   one object or in declared order and answers an outcome, `{outcome:
 //   'applied'}` or `{outcome: 'refused', reason}`; `"emits"` sends its event
@@ -80,10 +80,16 @@ function isNativeMember(property) {
   return false;
 }
 
+// The browser's own names a field reports under (§8, §17.3): a page listens
+// for `change` and `input` on any form control, ours included, so they keep
+// those names whatever they carry -- a detail when the component gives one,
+// never `<tag>-change`.
+const NATIVE_EVENTS = new Set(['change', 'input']);
+
 /** The DOM name of an event the manifest declares by its verb (§8). */
 export function eventName(manifest, verb) {
   const declared = manifest?.events?.[verb];
-  if (declared?.carries === 'native') return verb;
+  if (NATIVE_EVENTS.has(verb) || declared?.carries === 'native') return verb;
   return `${manifest.tag}-${verb}`;
 }
 
@@ -159,7 +165,7 @@ export function readManifest(manifest) {
     verb,
     name: eventName(manifest, verb),
     cancelable: spec?.cancelable === true,
-    native: spec?.carries === 'native',
+    native: NATIVE_EVENTS.has(verb) || spec?.carries === 'native',
   }]));
   const actions = Object.entries(manifest.actions || {}).map(([name, spec]) => ({
     name,

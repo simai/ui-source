@@ -22,7 +22,7 @@ test('Smart Datepicker uses real Lit refs and exposes its date-value states', as
   assert.match(template, /aria-current=\$\{day\.today/);
   // change once; the shim sends sf-datepicker-change and sf-change after it
   // (standard 1.3.8 §16.20, aliases.json).
-  assert.match(source, /dispatchAliased\(this, 'change', \{detail\}\)/);
+  assert.match(source, /this\.sfEmit\('change', detail\)/);
   assert.ok(JSON.parse(await read('src/smart/datepicker/aliases.json')).aliases.some((row) => row.from === 'sf-datepicker-change' && row.to === 'change'));
   assert.match(source, /get closeOnSelect\(\)/);
   assert.match(source, /getBooleanAttr\('mask', false\)/);

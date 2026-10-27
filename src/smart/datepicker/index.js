@@ -1,6 +1,5 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {dispatchAliased} from '../../core/js/aliases';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {fieldSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
@@ -1645,8 +1644,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
         // Once, under its native name, without the element in its detail (§8);
         // the shim sends sf-datepicker-change and sf-change after it with the
         // same detail (aliases.json).
-        this.fieldSyncForm();
-        dispatchAliased(this, 'change', {detail});
+        this.sfSyncFormState();
+        this.sfEmit('change', detail);
     }
 
     templateContext() {
@@ -1733,7 +1732,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         monthToggle?.setAttribute('aria-expanded', this.contextMode === 'month' ? 'true' : 'false');
         yearToggle?.setAttribute('aria-expanded', this.contextMode === 'year' ? 'true' : 'false');
         this.syncOverlayListeners();
-        this.fieldSyncForm();
+        this.sfSyncFormState();
         requestAnimationFrame(() => {
             this.positionPanel();
             if (this._focusCalendarOnOpen || this._focusDateAfterRender) {

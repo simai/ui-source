@@ -8,7 +8,6 @@ import {
 import { renderRangeSliderTemplate } from './js/templates/default';
 import { setLoaderDragState } from '../helpers/loaderDragState';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { dispatchAliased } from '../../core/js/aliases';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -436,9 +435,8 @@ class SfRangeSlider extends RangeSliderElement {
     event.stopPropagation();
     if (event.type !== 'change' || event.target !== this.getSliderRoot()) return;
     const {values, value, handleCount, handle} = event.detail || {};
-    // change keeps its native name (§8, §17.3); sfEmit would derive
-    // sf-range-slider-change from a verb that carries a detail.
-    dispatchAliased(this, 'change', { detail: { values, value, handleCount, handle } });
+    // change keeps its native name (§8, §17.3).
+    this.sfEmit('change', { values, value, handleCount, handle });
   };
 
   _handleSliderAlias = (event) => {

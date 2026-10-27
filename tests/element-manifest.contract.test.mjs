@@ -76,6 +76,10 @@ function make(options = {}) {
 
 test('the DOM name of an event follows its verb (§8)', () => {
   assert.equal(eventName(manifest, 'change'), 'change');
+  // change and input keep the browser's names when they carry a detail too.
+  const detailed = {tag: 'sf-thing', events: {change: {carries: {value: 'string'}}, input: {carries: {value: 'string'}}}};
+  assert.equal(eventName(detailed, 'change'), 'change');
+  assert.equal(eventName(detailed, 'input'), 'input');
   assert.equal(eventName(manifest, 'open'), 'sf-thing-open');
   assert.equal(eventName(manifest, 'close'), 'sf-thing-close');
 });

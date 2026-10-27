@@ -93,7 +93,8 @@ test('image field: buttons are real buttons named for what they act on, the thum
 });
 
 test('image field: input and change once each per choice or removal, with the File; code is not a change', () => {
-  assert.match(source, /for \(const type of \['input', 'change'\]\) \{\n      this\.dispatchEvent\(new CustomEvent\(type, \{\n        bubbles: true,\n        composed: true,\n        detail: \{value, file, source, name: this\.name\},/u);
+  // Under their native names through sfEmit (core/js/element-manifest.js eventName).
+  assert.match(source, /for \(const type of \['input', 'change'\]\) this\.sfEmit\(type, \{value, file, source, name: this\.name\}\);/u);
   // The platform input's own change and input stop at the host.
   assert.match(source, /onInputChange\(event\) \{\n    event\.stopPropagation\(\);/u);
   assert.match(source, /onInputEvent\(event\) \{\n    event\.stopPropagation\(\);/u);

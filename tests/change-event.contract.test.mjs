@@ -32,22 +32,23 @@ test('change event: one canonical name for every value control', async () => {
   }
 
   const group = await read('src/smart/button-group/index.js');
-  // Once, under its native name; the shim sends sf-button-group-change after
-  // it (standard 1.3.8 §16.20, aliases.json).
-  assert.match(group, /emitValueChange\(detail\) \{\n    dispatchAliased\(this, 'change', \{ detail \}\);\n  \}/);
+  // Once, under its native name (sfEmit: change keeps it, core/js/
+  // element-manifest.js eventName); the shim sends sf-button-group-change
+  // after it (standard 1.3.8 §16.20, aliases.json).
+  assert.match(group, /emitValueChange\(detail\) \{\n    this\.sfEmit\('change', detail\);\n  \}/);
   assert.equal(group.match(/this\.emitValueChange\(\{/g)?.length, 2, 'select and clear');
   const slider = await read('src/component/range-slider/js/_range_slider.js');
   assert.match(slider, /if \(!root\._sfSettingValue\) \{\n      dispatchSliderEvent\(root, 'change', unencoded, \{ handle \}, 'change'\);/);
   assert.match(slider, /root\._sfSettingValue = true;\n  try \{\n    root\.noUiSlider\.set\(nextValue\);/);
   // The Smart slider stops the class component's change and
   // sf-range-slider-change at its host and sends change once, as its own
-  // (standard 1.3.8 §8, through the alias shim's dispatch, under its native
-  // name); the shim sends the old names after it (aliases.json). Its onChange
-  // listens to change, the canonical name.
+  // (standard 1.3.8 §8, through sfEmit, under its native name); the shim
+  // sends the old names after it (aliases.json). Its onChange listens to
+  // change, the canonical name.
   const smartSlider = await read('src/smart/range-slider/index.js');
   assert.doesNotMatch(smartSlider, /new (?:Custom)?Event\(\s*['"]change['"]/);
-  assert.equal(smartSlider.match(/dispatchAliased\(this, 'change', /g)?.length, 1);
-  assert.doesNotMatch(smartSlider, /this\.sfEmit\('change'/);
+  assert.equal(smartSlider.match(/this\.sfEmit\('change', /g)?.length, 1);
+  assert.doesNotMatch(smartSlider, /dispatchAliased\(this, 'change'/);
   assert.match(smartSlider, /_handleInnerChange = \(event\) => \{\n    event\.stopPropagation\(\);/);
   assert.doesNotMatch(smartSlider, /'sf-range-slider-change': 'onSliderChange'/);
   const sliderAliases = JSON.parse(await read('src/smart/range-slider/aliases.json')).aliases.filter((row) => row.kind === 'event');

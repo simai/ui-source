@@ -160,7 +160,7 @@ class SfImageField extends FormField(ImageFieldElement) {
     if (value?.href !== this._objectUrl) this._releaseObjectUrl();
     this._value = value;
     this.requestComponentUpdate('value');
-    this.fieldSyncForm();
+    this.sfSyncFormState();
     return this;
   }
 
@@ -300,14 +300,8 @@ class SfImageField extends FormField(ImageFieldElement) {
   // `input` and `change` once each per choice or removal, as a native file
   // input sends them, on the host with the value, the File and the form name.
   _emitValue({value, file, source}) {
-    this.fieldSyncForm();
-    for (const type of ['input', 'change']) {
-      this.dispatchEvent(new CustomEvent(type, {
-        bubbles: true,
-        composed: true,
-        detail: {value, file, source, name: this.name},
-      }));
-    }
+    this.sfSyncFormState();
+    for (const type of ['input', 'change']) this.sfEmit(type, {value, file, source, name: this.name});
   }
 
   _releaseObjectUrl() {
@@ -416,7 +410,7 @@ class SfImageField extends FormField(ImageFieldElement) {
       // render has not drawn its own yet, and the host's focus() waits for it.
       this.querySelector(':scope .sf-image-field-actions sf-button:not([disabled])')?.focus({preventScroll: true});
     }
-    this.fieldSyncForm();
+    this.sfSyncFormState();
     return undefined;
   }
 

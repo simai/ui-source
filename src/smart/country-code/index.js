@@ -48,9 +48,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     this._boundRoot = null;
     this._renderAttributes = new Set();
     // The tel text is the value the form gets: every keystroke and every
-    // country chosen tells the form (§17.1).
-    this.addEventListener('input', () => this.fieldSyncForm());
-    this.addEventListener('change', () => this.fieldSyncForm());
+    // country chosen tells the form (§17.1) -- FormField listens for them.
   }
 
   get size() {
@@ -77,7 +75,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     else this.removeAttribute('value');
     const input = this._telInput();
     if (input && input.value !== text) input.value = text;
-    this.fieldSyncForm();
+    this.sfSyncFormState();
   }
 
   _telInput() {
@@ -108,7 +106,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
   // form.reset(): the class script puts the default text and country back
   // after the browser does; the form is told once it has.
   fieldReset() {
-    setTimeout(() => this.fieldSyncForm(), 0);
+    setTimeout(() => this.sfSyncFormState(), 0);
   }
 
   get open() {
@@ -238,7 +236,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
         maskPattern: this.maskPattern,
       });
     }
-    this.fieldSyncForm();
+    this.sfSyncFormState();
   }
 
   template() {

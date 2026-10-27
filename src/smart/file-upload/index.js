@@ -5,7 +5,6 @@ import {
 } from '../../component/file-upload/js/_file_upload';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { dispatchAliased } from '../../core/js/aliases';
 import { renderFileUploadTemplate } from './js/templates/default';
 import { FIELD_SIZES, fieldSize } from '../../component/field-size';
 import manifest from './component.json';
@@ -361,7 +360,7 @@ class SfFileUpload extends FileUploadElement {
         const chosen = this._lastAttach;
         this._lastAttach = null;
         // change keeps its native name (§8, §17.3).
-        dispatchAliased(this, 'change', { detail: chosen });
+        this.sfEmit('change', chosen);
       }
       this.requestComponentUpdate('items');
     };

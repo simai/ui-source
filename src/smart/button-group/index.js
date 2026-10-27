@@ -1,6 +1,5 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { dispatchAliased } from '../../core/js/aliases';
 import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { bindFormReset } from '../../component/form-reset-helper';
@@ -192,7 +191,7 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     } else {
       this.setAttribute('value', String(nextValue));
     }
-    this.fieldSyncForm();
+    this.sfSyncFormState();
   }
 
   // What the form gets (§17.1): the selected value, nothing while disabled.
@@ -266,16 +265,15 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   // Every form value control reports a committed change as `change` on its
   // host, once, under its native name and without the element in its detail
   // (§8, §17.3); the shim sends the legacy sf-button-group-change after it with
-  // the same detail (aliases.json). sfEmit would derive sf-button-group-change
-  // from a verb that carries a detail.
+  // the same detail (aliases.json).
   emitValueChange(detail) {
-    dispatchAliased(this, 'change', { detail });
+    this.sfEmit('change', detail);
   }
 
   afterRender() {
     this.syncButtonSemantics();
     this.bindReset();
-    this.fieldSyncForm();
+    this.sfSyncFormState();
   }
 
   // Without ElementInternals the hidden input carries the name and value (and
