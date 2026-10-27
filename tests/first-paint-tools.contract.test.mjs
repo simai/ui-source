@@ -3,7 +3,7 @@ import {mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, assemblies, exampleFiles, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES, clockOf, FIRST_PAINT_NOW} from '../scripts/first-paint-lib.mjs';
 import {fillSkeleton, repeatCount} from '../scripts/first-paint-skeleton.mjs';
 
 // The first-paint tools themselves (scripts/first-paint-*.mjs,
@@ -236,4 +236,34 @@ test('8. no size or place the code measured enters a snapshot', () => {
   const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
   assert.match(page, /function unmeasured\(style\)/u);
   assert.match(page, /name\.startsWith\('--'\)\) && measured/u, 'a measured custom property too');
+});
+
+test('9. the clock is frozen: one instant per example, before any page code runs', () => {
+  assert.equal(FIRST_PAINT_NOW, '2026-10-27T12:00:00+03:00');
+  assert.equal(clockOf({name: 'a'}, {packages: {}}), FIRST_PAINT_NOW);
+  assert.equal(clockOf({name: 'a'}, {packages: {}, now: '2026-01-02T10:00:00Z'}), '2026-01-02T10:00:00Z', 'the run configuration sets the package\'s instant');
+  assert.equal(clockOf({name: 'a', 'first-paint': {now: '2026-03-04T23:59:00+03:00'}}, {packages: {}, now: '2026-01-02T10:00:00Z'}), '2026-03-04T23:59:00+03:00', 'the example wins');
+  assert.throws(() => clockOf({name: 'a', 'first-paint': {now: 'yesterday'}}, {packages: {}}), /ISO date-time/u);
+  assert.throws(() => clockOf({name: 'a', 'first-paint': {now: '2026-10-27T12:00:00'}}, {packages: {}}), /with its offset/u, 'an instant without an offset depends on the machine');
+  assert.equal(sizeProblem({name: 'a', 'first-paint': {now: FIRST_PAINT_NOW}}, 100), null, 'now alone declares no size');
+  assert.match(sizeProblem({name: 'a', 'first-paint': {now: FIRST_PAINT_NOW}}, SNAPSHOT_MAX_BYTES + 1), new RegExp(`over ${SNAPSHOT_MAX_BYTES}`, 'u'));
+  const dir = mkdtempSync(join(tmpdir(), 'first-paint-now-'));
+  try {
+    writeFileSync(join(dir, 'config.json'), JSON.stringify({now: '2026-05-06T07:08:09+03:00'}));
+    assert.deepEqual(readConfig([`--config=${join(dir, 'config.json')}`], {}), {packages: {}, now: '2026-05-06T07:08:09+03:00'});
+    writeFileSync(join(dir, 'bad.json'), JSON.stringify({now: 1}));
+    assert.throws(() => readConfig([`--config=${join(dir, 'bad.json')}`], {}), /"now" must be an ISO date-time/u);
+  } finally {
+    rmSync(dir, {recursive: true, force: true});
+  }
+  // The snapshot and the gate freeze it between newPage and goto.
+  for (const file of ['scripts/snapshot-first-paint.mjs', 'tests/browser/first-paint-gate.browser.mjs']) {
+    const source = readFileSync(join(root, file), 'utf8');
+    const pages = source.split('await context.newPage();').slice(1);
+    assert.ok(pages.length > 0, file);
+    for (const after of pages) {
+      const freeze = after.indexOf('await freezeClock(page, example);');
+      assert.ok(freeze >= 0 && freeze < after.indexOf('page.goto('), `${file}: the clock is frozen before the page loads`);
+    }
+  }
 });

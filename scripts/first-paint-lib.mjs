@@ -65,7 +65,8 @@ const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
  * before the first scan, as on a page that uses the package. A base under a
  * free mount (/distr/smart/) is served after the free output: a package adds
  * to the Framework and never shadows it. Relative paths are read from the
- * file's folder.
+ * file's folder. A top-level "now" (an ISO date-time) sets the package's
+ * frozen clock (see clockOf).
  */
 export function readConfig(argv = process.argv, env = process.env) {
   const flag = argv.find((one) => one.startsWith('--config='));
@@ -83,8 +84,37 @@ export function readConfig(argv = process.argv, env = process.env) {
     if (!base.startsWith('/distr/')) throw new Error(`${file}: package ${name}: its base must be under /distr/`);
     packages[name] = {output, base};
   }
-  return {packages};
+  if (config.now === undefined) return {packages};
+  if (!isInstant(config.now)) throw new Error(`${file}: "now" must be an ISO date-time with its offset, e.g. ${FIRST_PAINT_NOW}`);
+  return {packages, now: config.now};
 }
+
+/**
+ * The clock of a first-paint page is frozen (dispatcher decision 2026-10-28):
+ * a component that reads the date (sf-thread-list groups by today, yesterday
+ * and earlier) would otherwise print a different snapshot every midnight.
+ * Before any page code runs, Date and Date.now give one instant -- the
+ * example's "first-paint": {"now": "<ISO>"}, else the run configuration's
+ * "now", else FIRST_PAINT_NOW; timers and performance.now() keep running.
+ * The snapshot and gate 24 freeze the same instant, so the gate measures
+ * what was printed.
+ */
+export const FIRST_PAINT_NOW = '2026-10-27T12:00:00+03:00';
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})$/u;
+export const isInstant = (value) => typeof value === 'string' && ISO_INSTANT.test(value) && !Number.isNaN(Date.parse(value));
+export function clockOf(example, run = config) {
+  const declared = example?.['first-paint']?.now;
+  if (declared !== undefined) {
+    if (!isInstant(declared)) throw new Error(`${example.name}: "first-paint" now must be an ISO date-time with its offset, e.g. ${FIRST_PAINT_NOW}`);
+    return declared;
+  }
+  return run?.now ?? FIRST_PAINT_NOW;
+}
+/** Freezes the page's clock at the example's instant; call before page.goto. */
+export async function freezeClock(page, example, run = config) {
+  await page.clock.setFixedTime(new Date(clockOf(example, run)));
+}
+
 export const config = readConfig();
 
 // Assemblies whose composed first paint is snapshotted and gated besides the
@@ -150,7 +180,9 @@ export function givesLateData(component, example) {
  */
 export const SNAPSHOT_MAX_BYTES = 8192;
 export function sizeProblem(example, bytes) {
-  const declared = example['first-paint'] ?? null;
+  const first = example['first-paint'] ?? null;
+  // "now" alone (clockOf) declares no size.
+  const declared = first && ('max-bytes' in first || 'why' in first || !('now' in first)) ? first : null;
   if (declared && (!Number.isInteger(declared['max-bytes']) || !String(declared.why ?? '').trim())) {
     return `${example.name}: "first-paint" needs an integer max-bytes and a why`;
   }

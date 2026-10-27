@@ -36,7 +36,7 @@
 import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync} from 'node:fs';
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem, freezeClock} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -68,6 +68,7 @@ ${coreScript}
   const sheets = [];
   const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
   const page = await context.newPage();
+  await freezeClock(page, example);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   let inflight = 0;
@@ -148,6 +149,7 @@ ${assemblyModule(assembly)}
   const sheets = [];
   const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
   const page = await context.newPage();
+  await freezeClock(page, example);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('request', (request) => {

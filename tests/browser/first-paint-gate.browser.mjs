@@ -37,7 +37,7 @@
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
-import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT} from '../../scripts/first-paint-lib.mjs';
+import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT, freezeClock} from '../../scripts/first-paint-lib.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
@@ -174,6 +174,8 @@ ${assembly ? assemblyModule(component) : ''}
 </body></html>`);
   const context = await browser.newContext({viewport: {width, height: 900}, reducedMotion: 'reduce'});
   const page = await context.newPage();
+  // The instant the snapshot was printed at (first-paint-lib.mjs clockOf).
+  await freezeClock(page, example);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   const problems = [];

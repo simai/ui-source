@@ -196,6 +196,20 @@ the next one.
   serialise without it (`fontsReady`). Metric overrides cannot close the gap
   instead: Arial's glyph widths differ from Inter's per letter, not by a
   scale. Two independent write runs give byte-identical snapshots.
+- **The clock is frozen** (decision 2026-10-28). A component that reads the
+  date (sf-thread-list groups conversations by today, yesterday and earlier)
+  would print a different snapshot every midnight. The snapshot and gate 24
+  fix `Date` and `Date.now()` at one instant before any page code runs
+  (Playwright `page.clock.setFixedTime`; timers and `performance.now()` keep
+  running): `2026-10-27T12:00:00+03:00` by default
+  (`scripts/first-paint-lib.mjs` `FIRST_PAINT_NOW`, `clockOf`). An example
+  that needs another instant declares it, an ISO date-time with its offset:
+  `"first-paint": {"now": "2026-10-27T23:59:00+03:00"}` (`now` alone sets no
+  size limit); a component package sets its own default with a top-level
+  `"now"` in its `--config` file. The example's instant wins over the
+  package's, the package's over the default. Fixture data meant to fall on
+  "today" is written against that instant, not against the day it was
+  authored.
 - **A component package runs the same tools** over its own build: a JSON file
   given as `--config=<file>` (or `FIRST_PAINT_CONFIG`) declares
   `{"packages": {"<name>": {"output": "<built smart/ dir>", "base":
