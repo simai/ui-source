@@ -73,9 +73,49 @@ class HostView {
     this.box = this.parse(name);
     this.findPlaces(this.box, Boolean(name));
     this.mountAnnouncer();
-    host.append(this.box);
+    this.adoptPrinted();
     this.unlanguage = language.onChange(() => core.relanguage());
     core.scope.signal.addEventListener('abort', () => this.unlanguage?.(), {once: true});
+  }
+
+  /**
+   * The first paint the build composed (§7.3; scripts/snapshot-first-paint.mjs)
+   * is the layout printed in the host, marked data-sf-static, each part's host
+   * in its place holding the part's static markup or skeleton. The live
+   * layout takes its place in the same task as the parts are placed: each
+   * printed part host moves into its place in the live layout (createPart
+   * takes it rather than making one), so it adopts its own printed markup when
+   * its code arrives, in its own box. Without a printed layout the live one
+   * is appended.
+   */
+  adoptPrinted() {
+    const {host} = this;
+    const printed = Array.from(host.children).find((child) => child.hasAttribute('data-sf-layout') && child.hasAttribute('data-sf-static'));
+    if (!printed) {
+      host.append(this.box);
+      return;
+    }
+    this.printed = new Map();
+    for (const part of printed.querySelectorAll('[data-sf-role]')) {
+      // A part of a part (a nested assembly's) goes with its own host.
+      if (part.parentElement?.closest('[data-sf-role]') && printed.contains(part.parentElement.closest('[data-sf-role]'))) continue;
+      this.printed.set(part.getAttribute('data-sf-role'), part);
+    }
+    printed.replaceWith(this.box);
+  }
+
+  /** The printed host of a role's part, taken once (§7.3 phase 2). */
+  takePrinted(rec) {
+    if (!this.printed || rec.entry) return null;
+    const element = this.printed.get(rec.role);
+    this.printed.delete(rec.role);
+    if (!element || element.localName !== rec.def.tag) return null;
+    // What the layout put inside the part when it was printed (a container's
+    // panels) comes again from the live layout; its static markup stays.
+    for (const child of Array.from(element.children)) {
+      if (!child.hasAttribute('data-sf-static') && !child.matches('script[data-sf-settings]')) child.remove();
+    }
+    return element;
   }
 
   parse(name) {
@@ -211,7 +251,7 @@ class HostView {
 
   createPart(rec, context) {
     const tag = rec.def.tag;
-    const element = globalThis.document.createElement(tag);
+    const element = this.takePrinted(rec) ?? globalThis.document.createElement(tag);
     rec.element = element;
     element[OWNED] = true;
     element.setAttribute('data-sf-role', rec.entry ? `${rec.role}[${rec.entryId}]` : rec.role);
@@ -320,7 +360,8 @@ class HostView {
 
   startPart(rec) {
     const element = rec.element;
-    element.removeAttribute('aria-busy');
+    // A printed skeleton stays busy until its data arrives (§5.4).
+    if (element.getAttribute('data-sf-first-paint') !== 'skeleton') element.removeAttribute('aria-busy');
     element.setAttribute('data-sf-started', '');
     if (rec.def.start !== 'now') this.watched.add(rec);
     if (!definitions.has(rec.def.tag) && !globalThis.customElements?.get(rec.def.tag)) this.loadPart(rec.def.tag);

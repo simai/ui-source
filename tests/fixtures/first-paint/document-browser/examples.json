@@ -1,0 +1,15 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Документы, профили приходят позже",
+      "settings": {"title": "Документы"},
+      "late": {
+        "profiles": [
+          {"id": "regular", "label": "Обычный", "shared": true, "builtin": true},
+          {"id": "mine", "label": "Мой", "shared": false}
+        ]
+      }
+    }
+  ]
+}

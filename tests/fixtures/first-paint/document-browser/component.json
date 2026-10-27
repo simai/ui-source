@@ -1,0 +1,34 @@
+{
+  "$comment": "A test assembly of Framework parts for the composed first paint (standard simai.smart-component 1.3.8 §7.3, gate 24): scripts/snapshot-first-paint.mjs composes static/default/<example>.html from its parts' static markup and skeletons, tests/browser/first-paint-gate.browser.mjs measures it. Not a product component.",
+  "id": "test.document-browser",
+  "tag": "t-document-browser",
+  "version": "1.0.0",
+  "kind": "assembly",
+  "settings": {
+    "title": {"type": "string", "default": "Документы"},
+    "profiles": {"type": "list"}
+  },
+  "values": {
+    "query": {"type": "string", "value": "query"}
+  },
+  "events": {},
+  "actions": {},
+  "keys": {
+    "title": {"type": "string", "writer": "parent"},
+    "profiles": {"type": "list", "writer": "parent"},
+    "query": {"type": "string", "writer": "search"}
+  },
+  "roles": {
+    "picker": {"part": "sf-profile-picker", "settings": {"label": "Профиль", "current": "regular"}, "bind": {"settings.profiles": "profiles"}},
+    "search": {"part": "sf-input", "settings": {"label": "Поиск", "placeholder": "Название документа"}, "bind": {"values.value": "query"}},
+    "folders": {"part": "sf-tree", "settings": {"items": [
+      {"label": "Договоры", "value": "contracts", "open": true, "children": [{"label": "Поставка № 2026-114.pdf", "value": "c114", "kind": "file"}, {"label": "Аренда склада.docx", "value": "lease", "kind": "file"}]},
+      {"label": "Счета", "value": "invoices", "children": [{"label": "Счёт № 88.pdf", "value": "i88", "kind": "file"}]},
+      {"label": "Описание проекта.md", "value": "readme", "kind": "file"}
+    ]}},
+    "path": {"part": "sf-breadcrumbs", "settings": {"items": [{"label": "Главная", "href": "#"}, {"label": "Документы"}]}}
+  },
+  "rules": [],
+  "layouts": {"default": "layout.default.html"},
+  "examples": "examples.json"
+}
