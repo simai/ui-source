@@ -485,7 +485,7 @@
     "a11y-name: aria-label on the host, else the language file's runtime word «Страницы результатов» / «Result pages».",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus the unknown count, the half size and the bulk panel; probe.json drives Tab, Enter and Space (gate 16).",
-    "css-variables: nine public variables read by the class sheets (component/pagination) over the role tokens (§6): the fill, the words' colour, the gap, the divider, a page number's fill, colour and radius, the current page's fill and colour. They are not in src/core/contracts/public-variables.v1.json yet: that file is shared with the field family's branches.",
+    "css-variables: nine public variables read by the class sheets (component/pagination) over the role tokens (§6): the fill, the words' colour, the gap, the divider, a page number's fill, colour and radius, the current page's fill and colour. They are not in src/core/contracts/public-variables.v1.json yet: on the built bytes (tests/browser/public-variables.browser.mjs) only the fill, the words' colour and the gap reach sf-pagination; the page number's and the current page's variables style .sf-page-number, which the template no longer draws (the page field took the row of numbers), and the divider styles .sf-pagination-top, which it does not draw either. They enter the contract when they are pointed at what the element draws.",
     "side-effects: none.",
     "docs: docs/docs.md, where the folder keeps it (as sf-tooltip)."
   ]
