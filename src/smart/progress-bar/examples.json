@@ -1,0 +1,70 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Прогресс",
+      "settings": {
+        "label": "Загрузка файлов",
+        "value": 65,
+        "text-position": "inline-end"
+      },
+      "expect": {
+        "name": "Загрузка файлов",
+        "role": "progressbar",
+        "valuenow": 65
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "chunk",
+      "title": "Часть задачи",
+      "settings": {
+        "label": "Импорт",
+        "value": 10
+      },
+      "script": [
+        {
+          "act": "chunk",
+          "with": {
+            "done": 30,
+            "total": 120
+          }
+        }
+      ],
+      "expect": {
+        "values": {
+          "value": 25
+        },
+        "valuenow": 25
+      },
+      "from": "studio.scenario.json (setProgress → chunk)"
+    },
+    {
+      "name": "status",
+      "title": "Со статусом",
+      "settings": {
+        "label": "Проверка",
+        "value": 100,
+        "status": "success",
+        "value-text": "Готово"
+      },
+      "expect": {
+        "name": "Проверка",
+        "valuetext": "Готово"
+      }
+    },
+    {
+      "name": "aria-label",
+      "title": "Имя от страницы",
+      "settings": {
+        "value": 40
+      },
+      "attributes": {
+        "aria-label": "Копирование"
+      },
+      "expect": {
+        "name": "Копирование"
+      }
+    }
+  ]
+}

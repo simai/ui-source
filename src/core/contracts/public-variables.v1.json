@@ -2296,6 +2296,63 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "progress-bar",
+      "selector": ".sf-progress-bar",
+      "variables": [
+        {
+          "name": "--sf-progress-bar-fill-color",
+          "role": "background",
+          "summary": "The filled part; a status gives its own colour unless this is set.",
+          "default": "var(--sf-primary)",
+          "varies_with": [
+            "status"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-track-color",
+          "role": "background",
+          "summary": "The track under the filled part.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-height",
+          "role": "size",
+          "summary": "The thickness of the track.",
+          "default": "var(--sf-text-size-1/5)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-radius",
+          "role": "radius",
+          "summary": "The corners of the track and the filled part.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-color",
+          "role": "color",
+          "summary": "The visible percentage.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-gap",
+          "role": "gap",
+          "summary": "Space between the track and the percentage.",
+          "default": "var(--sf-space-1/3)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

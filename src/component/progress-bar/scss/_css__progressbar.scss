@@ -2,7 +2,7 @@
 /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
 .sf-progress-bar {
   background-color: var(--sf-progress-bar--background-color, transparent);
-  color: var(--sf-progress-bar--color, var(--sf-on-surface));
+  color: var(--sf-progress-bar--color, var(--sf-progress-bar-color, var(--sf-on-surface)));
   font-family: var(--sf-progress-bar--font-family, var(--sf-text--family));
   font-weight: var(--sf-progress-bar--font-weight, var(--sf-font-weight-regular));
   gap: var(--sf-progress-bar--gap);
@@ -11,34 +11,34 @@
 }
 
 .sf-progress-bar .sf-progress-bar-main {
-  --sf-progress-bar-main--background-color: var(--sf-surface-container);
-  --sf-progress-bar-main--border-radius: var(--sf-radius--ui);
+  --sf-progress-bar-main--background-color: var(--sf-progress-bar-track-color, var(--sf-surface-container));
+  --sf-progress-bar-main--border-radius: var(--sf-progress-bar-radius, var(--sf-radius--ui));
   background-color: var(--sf-progress-bar-main--background-color);
   border-radius: var(--sf-progress-bar-main--border-radius);
-  height: var(--sf-progress-bar-main--height);
+  height: var(--sf-progress-bar-height, var(--sf-progress-bar-main--height));
 }
 
 .sf-progress-bar .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-primary);
-  --sf-progress-bar-progress--border-radius: var(--sf-radius--ui);
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-primary));
+  --sf-progress-bar-progress--border-radius: var(--sf-progress-bar-radius, var(--sf-radius--ui));
   background-color: var(--sf-progress-bar-progress--background-color);
   border-radius: var(--sf-progress-bar-progress--border-radius);
 }
 
 .sf-progress-bar.sf-progress-bar--info .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-info);
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-info));
 }
 
 .sf-progress-bar.sf-progress-bar--success .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-success);
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-success));
 }
 
 .sf-progress-bar.sf-progress-bar--warning .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-warning);
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-warning));
 }
 
 .sf-progress-bar.sf-progress-bar--error .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-error);
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-error));
 }
 
 /* utility-hint: align-items/flex-end (.items-end) */
@@ -97,14 +97,14 @@
 }
 
 .sf-progress-bar--size-1, .sf-progress-bar--size-2 {
-  --sf-progress-bar--gap: var(--sf-space-1\/3);
+  --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/3));
 }
 
 .sf-progress-bar--size-3 {
-  --sf-progress-bar--gap: var(--sf-space-1\/2);
+  --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/2));
 }
 
 .sf-progress-bar--size-1\/3, .sf-progress-bar--size-1\/2 {
-  --sf-progress-bar--gap: var(--sf-space-1\/4);
+  --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/4));
 }
 }

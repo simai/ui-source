@@ -1,0 +1,49 @@
+{
+  "$comment": "Dated aliases of sf-progress-bar for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-progress-bar",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "tone",
+      "to": "status",
+      "kind": "setting",
+      "component": "sf-progress-bar",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    },
+    {
+      "from": "setProgress",
+      "to": "chunk",
+      "kind": "action",
+      "component": "sf-progress-bar",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§4.4, vocabulary §5.2",
+      "note": "setProgress(n) calls chunk(n): n of 100"
+    },
+    {
+      "from": "getProgress",
+      "to": null,
+      "kind": "action",
+      "component": "sf-progress-bar",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires: read value; the method stays until the date and notes each call"
+    },
+    {
+      "from": "setTextPosition",
+      "to": null,
+      "kind": "action",
+      "component": "sf-progress-bar",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "text-position is a writable setting; the method stays until the date and notes each call"
+    }
+  ]
+}
