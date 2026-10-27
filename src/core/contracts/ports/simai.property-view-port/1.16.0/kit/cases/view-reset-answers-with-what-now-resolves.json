@@ -1,0 +1,30 @@
+{
+  "id": "view-reset-answers-with-what-now-resolves",
+  "intent": "view.reset",
+  "capability": "view-settings",
+  "summary": "Clearing a layer answers with the arrangement that resolves after it is gone, so the panel redraws without reading the record again.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.reset",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": "v7"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision",
+      "view"
+    ],
+    "note": "A reset is a write against the revision, not a deletion, and the component never sends its own idea of the defaults -- the host owns those, and writing them would overwrite them with a guess. The answer carries what now resolves because a second read would show the person a reload for a change they already made."
+  }
+}
