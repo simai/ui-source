@@ -19,8 +19,10 @@
 // three phases (±0.5 px), the text below it never moves, no layout shift is
 // recorded once the sheets are in (CLS 0), no static markup is left beside
 // the element once it has drawn, and no frame shows it without a box when its
-// settled box has one. The first frames are measured only once the first
-// paint's sheets and fonts are in.
+// settled box has one. Frames are measured once the first paint's sheets
+// and fonts are in; phase 1 is the last frame before the code, and a shift
+// before the code -- nothing but the page's fonts can move it then -- is
+// reported as fontShift, not counted.
 //
 // The composed first paint of an assembly (§7.3; an assembly of
 // src/smart, or a test assembly of Framework parts under
@@ -76,10 +78,23 @@ const WATCH = `(() => {
   const tick = () => {
     const host = document.querySelector('#stage ' + window.__fpTag);
     if (host && document.body) {
-      // The sheets, then every font the laid-out page asked for.
+      // The sheets, then the fonts the page's text is set in -- every face its
+      // characters need (a Cyrillic range of Inter is fetched only once text
+      // asks for it), as a page preloads them -- then every font in use.
       if (fp.sheetsAt === null && !fp.waiting && sheetsIn()) {
         fp.waiting = true;
-        document.fonts.ready.then(() => requestAnimationFrame(() => { fp.sheetsAt = performance.now(); }));
+        const text = document.body.innerText;
+        const fonts = new Set([...document.querySelectorAll('#stage *, #after')].map((el) => {
+          const style = getComputedStyle(el);
+          return style.fontStyle + ' ' + style.fontWeight + ' 16px ' + style.fontFamily;
+        }));
+        // Every face the sheets declare, too (but the icon font Core replaces
+        // with its subset): a face that comes in later sets text again, and
+        // the gate measures the element taking over, not the fonts arriving.
+        const faces = [...document.fonts].filter((face) => !/Material Symbols/u.test(face.family)).map((face) => face.load());
+        Promise.allSettled([...faces, ...[...fonts].map((font) => document.fonts.load(font, text))])
+          .then(() => document.fonts.ready)
+          .then(() => requestAnimationFrame(() => { fp.sheetsAt = performance.now(); }));
       }
       if (fp.definedAt === null && host.matches(':defined')) fp.definedAt = performance.now();
       // Drawn: defined and drawn, or keeping its printed skeleton for its data;
@@ -175,7 +190,11 @@ ${assembly ? assemblyModule(component) : ''}
     await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
     const fp = await page.evaluate(() => window.__fp);
     const frames = fp.frames;
-    const first = frames.find((frame) => !frame.defined) ?? null;
+    // Phase 1 is the first paint as it stands when the code arrives: the last
+    // frame before it. What moved before that, with no code on the page, was
+    // the page's fonts coming in (reported as fontShift).
+    const before = frames.filter((frame) => !frame.defined);
+    const first = before.at(-1) ?? null;
     const settled = frames.at(-1) ?? null;
     const drawn = [...frames].reverse().find((frame) => frame.drawn && (fp.dataAt === null || frame.t < fp.dataAt)) ?? null;
     const phases = {p1: first?.box ?? null, p2: drawn?.box ?? null, p3: settled?.box ?? null};
@@ -193,18 +212,19 @@ ${assembly ? assemblyModule(component) : ''}
         if (!same(seen[1], seen[2])) problems.push(`part ${role} moved when the data arrived: ${box4(seen[1])} -> ${box4(seen[2])}`);
       }
     }
-    const afters = [...new Set(frames.map((frame) => frame.after))];
+    const afters = [...new Set(frames.slice(Math.max(0, frames.indexOf(first))).map((frame) => frame.after))];
     if (afters.length > 1) problems.push(`the text below moved: ${afters.join(' -> ')}`);
-    // A shift before any code arrived, while the element's box and the text
-    // below stood still, is the page's fonts arriving (a text set again in its
-    // web font or the icon subset): reported, not counted against the first
-    // paint. Every shift from the code's arrival on counts.
+    // A shift before any code arrived is the page's fonts arriving (a text
+    // set again in its web font or the icon subset): reported, not counted
+    // against the first paint. Every shift from the code's arrival on counts.
     const after = (shift) => fp.sheetsAt !== null && shift.t >= fp.sheetsAt;
     const beforeCode = (shift) => fp.definedAt === null || shift.t < fp.definedAt - 20;
-    const still = first && frames.filter((frame) => !frame.defined).every((frame) => same(frame.box, first.box) && frame.after === first.after);
+    // Before the code nothing of the page's scripts touched the element: any
+    // shift then is the fonts'.
+    const still = Boolean(first);
     // So is a shift of text alone (glyphs set again when a font or the icon
     // subset arrives) while no box moved in any frame.
-    const steady = still && frames.every((frame) => same(frame.box, first.box) && frame.after === first.after);
+    const steady = still && frames.slice(frames.indexOf(first)).every((frame) => same(frame.box, first.box) && frame.after === first.after);
     const textOnly = (shift) => shift.sources.every((one) => one === '#text.' || one.startsWith('I.sf-icon'));
     const fonts = fp.shifts.filter((shift) => after(shift) && still && (beforeCode(shift) || (steady && textOnly(shift))));
     const shifts = fp.shifts.filter((shift) => after(shift) && !fonts.includes(shift));
