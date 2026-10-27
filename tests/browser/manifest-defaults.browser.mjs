@@ -42,6 +42,10 @@ try {
       if (!Ctor) return {error: `${tag} is not defined`};
       // sf-resizer draws nothing: a plain element made from its component.json
       // (standard 1.3.8), not the Smart base, so its defaults are its manifest's by construction.
+      // The editors (sf-sortable, sf-inline-editor, sf-composition-overlay) are
+      // plain elements of the composition modules over their component.json
+      // (core/js/composition/manifest-host.mjs): no Smart base, no template;
+      // their settings are checked by their probe.json.
       if (typeof Ctor.normalizePropConfig !== 'function') return {rows: []};
       const element = document.createElement(tag);
       document.body.append(element);

@@ -151,6 +151,7 @@
   ],
   "cl-empty-state": [
     "display/default",
+    "isolate/default",
     "position/default"
   ],
   "cl-file-preview": [

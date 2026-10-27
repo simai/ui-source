@@ -27,7 +27,8 @@
       "component.icon-buttons",
       "component.icons",
       "component.tree",
-      "component.tree-item"
+      "component.tree-item",
+      "smart.tree-item"
     ],
     "public_parts": []
   },
@@ -297,7 +298,7 @@
       },
       {
         "path": "src/smart/tree/rule.js",
-        "sha256": "7d874241ae6fb319e88afcb9c19f5426f995dd86cc16021067f83d9e32f736bc"
+        "sha256": "06d36e733ff4d4fa4a7631ae1dbbb5408aef4c54887f228c0f87f2bd23afaa56"
       },
       {
         "path": "src/smart/tree/docs/docs.md",
