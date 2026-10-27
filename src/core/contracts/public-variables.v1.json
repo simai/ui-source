@@ -1803,6 +1803,54 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "datepicker",
+      "selector": ".sf-datepicker",
+      "variables": [
+        {
+          "name": "--sf-datepicker-background-color",
+          "role": "background",
+          "summary": "The calendar's surface, and its month and year lists.",
+          "default": "var(--sf-elevation-3--surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-day-color",
+          "role": "color",
+          "summary": "A day's number at rest; another month, a weekend, disabled and selected days keep their own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-selected-background-color",
+          "role": "background",
+          "summary": "The chosen day, and the ends of a chosen range.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-selected-color",
+          "role": "color",
+          "summary": "The number on the chosen day.",
+          "default": "var(--sf-on-primary)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-range-background-color",
+          "role": "background",
+          "summary": "The days inside a chosen range.",
+          "default": "var(--sf-primary-container-active)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-weekday-color",
+          "role": "color",
+          "summary": "The weekday names over the grid.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

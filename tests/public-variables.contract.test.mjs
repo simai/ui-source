@@ -26,6 +26,7 @@ const FOLDERS = {
   color: 'smart/color/js/templates',
   'range-slider': 'range-slider',
   'file-upload': 'file-upload',
+  datepicker: 'datepicker',
 };
 
 const scss = async (folder) => {

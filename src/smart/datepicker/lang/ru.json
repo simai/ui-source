@@ -1,0 +1,21 @@
+{
+  "title": "Календарь",
+  "runtime": {
+    "choose-month": "Выберите месяц",
+    "choose-year": "Выберите год",
+    "custom-range": "Свой период",
+    "next-month": "Следующий месяц",
+    "next-years": "Следующие годы",
+    "preset-last-month": "Прошлый месяц",
+    "preset-last30-days": "Последние 30 дней",
+    "preset-last7-days": "Последние 7 дней",
+    "preset-this-month": "Этот месяц",
+    "preset-this-week": "Эта неделя",
+    "preset-today": "Сегодня",
+    "preset-yesterday": "Вчера",
+    "presets": "Быстрый выбор",
+    "previous-month": "Предыдущий месяц",
+    "previous-years": "Предыдущие годы",
+    "value-missing": "Выберите дату."
+  }
+}

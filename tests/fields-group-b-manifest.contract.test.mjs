@@ -19,6 +19,7 @@ const COMPONENTS = {
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
   'image-field': {class: 'SfImageField', sheets: 'src/smart/image-field/scss'},
   'file-upload': {class: 'SfFileUpload', sheets: 'src/component/file-upload/scss'},
+  datepicker: {class: 'SfDatepicker', sheets: 'src/component/datepicker/scss'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -192,4 +193,24 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
   assert.ok(rows.every((row) => row.from.startsWith('sf-file-upload:')), 'only the names that shipped');
   // The dragged-over look reads the host state too (§5.3).
   assert.match(read('src/component/file-upload/scss/_css__file_upload.scss'), /sf-file-upload\[data-dragged-over\] > \.sf-file-upload:not\(\[disabled\]\):not\(\.disabled\) \{/u);
+});
+
+test('sf-datepicker: a leaf with outcome actions; the form gets the ISO date; the panel id from the path (§4.4, §7.1.1, §17.1)', () => {
+  const source = read('src/smart/datepicker/index.js');
+  assert.match(source, /class SfDatepicker extends FormField\(DatepickerElement\)/u);
+  for (const method of ['openPanel', 'closePanel', 'togglePanel', 'choosePreset', 'chooseCustomRange']) {
+    assert.doesNotMatch(source, new RegExp(`\\n {4}${method}\\(`, 'u'), `${method} is generated from the manifest's action`);
+  }
+  assert.match(source, /dispatchAliased\(this, 'change', \{detail\}\)/u);
+  assert.doesNotMatch(source, /new CustomEvent\('(?:change|sf-datepicker-change)'|emitComponentEvent\('change'/u);
+  assert.doesNotMatch(source, /DATEPICKER_TEXT|datepickerSequence/u);
+  assert.match(source, /partId\(instancePath\(this, \{kind: 'sf-datepicker'\}\), 'panel'\)/u);
+  assert.match(source, /if \(startValue && endValue\) return `\$\{startValue\}\/\$\{endValue\}`;/u);
+  assert.match(source, /boxName: this\.sfInternals \? '' : this\.inputName/u);
+  const manifest = json('src/smart/datepicker/component.json');
+  assert.equal(manifest.kind, 'leaf');
+  assert.ok(manifest['x-decisions'].some((line) => line.startsWith('assembly: it stays a leaf')));
+  assert.deepEqual(Object.keys(manifest.actions), ['open-panel', 'close-panel', 'toggle-panel', 'choose-preset', 'choose-custom-range']);
+  assert.equal(manifest.settings.presets.type, 'list');
+  assert.equal(manifest['side-effects'], undefined, 'the panel is never moved to the end of body');
 });

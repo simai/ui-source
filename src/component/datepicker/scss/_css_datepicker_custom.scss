@@ -1,6 +1,6 @@
 @layer sf.overrides {
   .sf-datepicker-day.sf-datepicker-day-start, .sf-datepicker-day.sf-datepicker-day-end {
-    --sf-datepicker-day--background-color: var(--sf-primary);
+    --sf-datepicker-day--background-color: var(--sf-datepicker-selected-background-color, var(--sf-primary));
   }
   .sf-datepicker-day.sf-datepicker-day-start:not(.sf-datepicker-day.sf-datepicker-day-end) {
     --sf-datepicker-day--border-end-end-radius: 0;
@@ -42,7 +42,7 @@
     --sf-datepicker-day--border-start-end-radius: 0;
     --sf-datepicker-day--border-start-start-radius: 0;
     --sf-datepicker-day--border-end-start-radius: 0;
-    --sf-datepicker-day--background-color: var(--sf-primary-container-active);
+    --sf-datepicker-day--background-color: var(--sf-datepicker-range-background-color, var(--sf-primary-container-active));
   }
   .sf-datepicker-day.sf-datepicker-day-selected .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-on-primary-container);

@@ -588,11 +588,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "3d5194c8215b86e834b21cd5ed46925ae18d0aa524c06fbf54cef03113a47085"
+        "sha256": "9378c816096c184912492b12f123d0f2713ba52d3a396699f6bc36460deb122f"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
-        "sha256": "7c9b379eda8911e7e31ce7ed3076121fcb98b5d688d53eeca1af9e2f8bd98492"
+        "sha256": "78a88ab0bd71b3f41b3e25f25f31a7c04ddd091fd47d1eea6ec5fc0861f924ec"
       },
       {
         "path": "src/smart/datepicker/rule.js",

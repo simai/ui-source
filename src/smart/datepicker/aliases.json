@@ -1,0 +1,41 @@
+{
+  "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+  "component": "sf-datepicker",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "aria-label",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-datepicker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "host-attribute",
+      "section": "§3.1",
+      "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+    },
+    {
+      "from": "sf-datepicker-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-datepicker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)"
+    },
+    {
+      "from": "sf-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-datepicker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)"
+    }
+  ]
+}

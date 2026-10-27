@@ -39,7 +39,8 @@ test('page language: no component falls back to Russian', async () => {
     'src/component/file-upload/js/_file_upload.js': [/pageText\(FILE_UPLOAD_ITEM_TEXT, 'remove'/],
     'src/component/highlight/js/index.js': [/pageText\(HIGHLIGHT_TEXT, 'copy', block/],
     'src/component/country-code/js/_country_code.js': [/pageText\(COUNTRY_CODE_TEXT, 'phoneLabel'/],
-    'src/smart/datepicker/index.js': [/const DATEPICKER_TEXT = \{/],
+    // Its words are the language files' (standard 1.3.8 §11).
+    'src/smart/datepicker/index.js': [/node\.sfWord\(wordKey\(key\)\)/],
     // sf-drawer's words are its language files (standard 1.3.8 §11).
     'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import en from '\.\/lang\/en\.json';/],
     // The resizer handle read [lang] itself over its own dictionary until

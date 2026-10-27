@@ -1,13 +1,20 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {dispatchAliased} from '../../core/js/aliases';
+import {instancePath, partId} from '../../core/js/instance-path';
 import {fieldSize} from '../../component/field-size';
+import {FormField} from '../helpers/form-field';
 import {renderDatepickerTemplate} from './js/templates/default';
 import BundledPosition from '../../core/js/position.js';
-import {pageLocale, pageText} from '../../core/js/page-language';
+import {pageLocale} from '../../core/js/page-language';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const YEARS_PAGE_SIZE = 18;
-let datepickerSequence = 0;
 
 function padDatePart(value) {
     return String(value).padStart(2, '0');
@@ -293,49 +300,57 @@ function presetTextKey(id) {
 // Every word this picker says, in the languages it ships with. A product adds
 // any other through SF.language.register('sf-datepicker', code, words) -- which
 // an if/else on «ru» did not allow at all.
-const DATEPICKER_TEXT = {
-    en: {
-        previousMonth: 'Previous month',
-        nextMonth: 'Next month',
-        previousYears: 'Previous years',
-        nextYears: 'Next years',
-        chooseMonth: 'Choose a month',
-        chooseYear: 'Choose a year',
-        presets: 'Quick ranges',
-        customRange: 'Custom range',
-        preset_today: 'Today',
-        preset_yesterday: 'Yesterday',
-        preset_last7Days: 'Last 7 days',
-        preset_last30Days: 'Last 30 days',
-        preset_thisWeek: 'This week',
-        preset_thisMonth: 'This month',
-        preset_lastMonth: 'Last month',
-    },
-    ru: {
-        previousMonth: 'Предыдущий месяц',
-        nextMonth: 'Следующий месяц',
-        previousYears: 'Предыдущие годы',
-        nextYears: 'Следующие годы',
-        chooseMonth: 'Выберите месяц',
-        chooseYear: 'Выберите год',
-        presets: 'Быстрый выбор',
-        customRange: 'Свой период',
-        preset_today: 'Сегодня',
-        preset_yesterday: 'Вчера',
-        preset_last7Days: 'Последние 7 дней',
-        preset_last30Days: 'Последние 30 дней',
-        preset_thisWeek: 'Эта неделя',
-        preset_thisMonth: 'Этот месяц',
-        preset_lastMonth: 'Прошлый месяц',
-    },
-};
+// Every word is lang/<locale>.json runtime (standard 1.3.8 §11); the code's
+// camelCase keys read as the files' kebab-case ones.
+const wordKey = (key) => String(key).replace(/_/gu, '-').replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
 
 function getLabels(node) {
     const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear', 'presets', 'customRange'];
-    return Object.fromEntries(keys.map((key) => [key, pageText(DATEPICKER_TEXT, key, node, 'sf-datepicker')]));
+    return Object.fromEntries(keys.map((key) => [key, node.sfWord(wordKey(key))]));
 }
 
-class SfDatepicker extends SfBaseElement {
+// sf-datepicker from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §4.4, §7.1.1, §8, §11, §16.20, §17.1). It stays a leaf: the one
+// interactive part it places is its own text box. The settings are attributes
+// and properties made by core/js/element-manifest.js, the panel actions answer
+// an outcome, change leaves once (the shim sends sf-datepicker-change and
+// sf-change after it), and the host is the form control through
+// ElementInternals.
+const DatepickerElement = elementFromManifest(manifest, {
+    base: SfBaseElement,
+    lang: {en, ru},
+    source: 'ru',
+    aliases,
+    actions: {
+        'open-panel'({options} = {}) {
+            if (this.disabled) return 'disabled';
+            this._openPanel(options || {});
+            return 'applied';
+        },
+        'close-panel'({options} = {}) {
+            if (!this.open) return 'unchanged';
+            this._closePanel(options || {});
+            return 'applied';
+        },
+        'toggle-panel'() {
+            if (!this.open && this.disabled) return 'disabled';
+            this._togglePanel();
+            return 'applied';
+        },
+        'choose-preset'({item} = {}) {
+            if (!item || item.disabled || !this.range) return 'unavailable-preset';
+            this._choosePreset(item);
+            return 'applied';
+        },
+        'choose-custom-range'() {
+            if (!this.range) return 'not-a-range';
+            this._chooseCustomRange();
+            return 'applied';
+        },
+    },
+});
+
+class SfDatepicker extends FormField(DatepickerElement) {
     constructor() {
         super();
         this._input = null;
@@ -344,7 +359,6 @@ class SfDatepicker extends SfBaseElement {
         this._viewportHandler = this.positionPanel.bind(this);
         this._focusCalendarOnOpen = false;
         this._focusDateAfterRender = false;
-        this._panelId = `sf-datepicker-panel-${++datepickerSequence}`;
 
         this.state = {
             openAbove: false,
@@ -359,7 +373,10 @@ class SfDatepicker extends SfBaseElement {
     }
 
     static get props() {
+        // The manifest's settings, read as the component always read them:
+        // its own entries win where they keep an attribute's old reading.
         return {
+            ...super.props,
             templateName: {attribute: 'template', default: 'default'},
             value: {default: ''},
             date: {default: ''},
@@ -415,7 +432,17 @@ class SfDatepicker extends SfBaseElement {
         };
     }
 
+    // The panel's id comes from the instance path (§7.1.1), never from a counter.
+    get _panelId() {
+        return partId(instancePath(this, {kind: 'sf-datepicker'}), 'panel');
+    }
+
     connectedCallback() {
+        // What a form reset returns to (§17.1 item 4): the value as written.
+        if (!this._written) {
+            this._written = Object.fromEntries(['date', 'start-value', 'end-value', 'preset']
+                .map((name) => [name, this.getAttribute(name)]));
+        }
         this.upgradeProperty('value');
         this.upgradeProperty('presets');
         super.connectedCallback();
@@ -497,7 +524,7 @@ class SfDatepicker extends SfBaseElement {
             if (max && compareDates(to, max) > 0) to = max;
             const disabled = compareDates(from, to) > 0;
             const label = item.label
-                || (RELATIVE_PRESETS.includes(item.id) ? pageText(DATEPICKER_TEXT, presetTextKey(item.id), this, 'sf-datepicker') : item.id);
+                || (RELATIVE_PRESETS.includes(item.id) ? this.sfWord(wordKey(presetTextKey(item.id))) : item.id);
             return {id: String(item.id), label, relative: item.relative || null, from, to, disabled,
                 pressed: this.preset === String(item.id)};
         }).filter(Boolean);
@@ -727,6 +754,34 @@ class SfDatepicker extends SfBaseElement {
 
     get placeholder() {
         return this.getAttribute('placeholder') || '';
+    }
+
+    // What the form gets (§17.1): the ISO date, never the display text; a
+    // range as start/end (an ISO 8601 interval); nothing while disabled.
+    sfFormValue() {
+        if (this.disabled) return null;
+        if (!this.range) return this.date || '';
+        const {startValue, endValue} = this;
+        if (startValue && endValue) return `${startValue}/${endValue}`;
+        return startValue || '';
+    }
+
+    fieldValidity() {
+        const empty = this.range ? !this.startValue : !this.date;
+        return {
+            valueMissing: this.required && !this.disabled && empty,
+            message: this.sfWord('value-missing'),
+            anchor: this._input || null,
+        };
+    }
+
+    // form.reset(): the value as written, without events (§17.1 item 4).
+    fieldReset() {
+        for (const [name, value] of Object.entries(this._written || {})) {
+            if (value === null) this.removeAttribute(name);
+            else this.setAttribute(name, value);
+        }
+        this.requestComponentUpdate('reset');
     }
 
     get label() {
@@ -1138,7 +1193,7 @@ class SfDatepicker extends SfBaseElement {
         return this;
     }
 
-    openPanel({focusCalendar = false} = {}) {
+    _openPanel({focusCalendar = false} = {}) {
         if (this.disabled) return this;
         this._focusCalendarOnOpen = focusCalendar;
         if (!this.open) this.showValueMonth();
@@ -1155,7 +1210,7 @@ class SfDatepicker extends SfBaseElement {
         return this;
     }
 
-    closePanel({restoreFocus = false} = {}) {
+    _closePanel({restoreFocus = false} = {}) {
         if (!this.open) {
             return this;
         }
@@ -1168,8 +1223,8 @@ class SfDatepicker extends SfBaseElement {
         return this;
     }
 
-    togglePanel() {
-        return this.open ? this.closePanel() : this.openPanel();
+    _togglePanel() {
+        return this.open ? this._closePanel() : this._openPanel();
     }
 
     // What is typed is read through the declared format, so «14.10.2026» and
@@ -1235,7 +1290,7 @@ class SfDatepicker extends SfBaseElement {
     handleInputClick(event) {
         event?.preventDefault?.();
         event?.stopPropagation?.();
-        this.openPanel();
+        this._openPanel();
     }
 
     handleInputKeydown(event) {
@@ -1248,12 +1303,12 @@ class SfDatepicker extends SfBaseElement {
                 this.handleInputChange(event);
                 return;
             }
-            this.openPanel({focusCalendar: true});
+            this._openPanel({focusCalendar: true});
             return;
         }
         if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return;
         event.preventDefault();
-        this.openPanel({focusCalendar: true});
+        this._openPanel({focusCalendar: true});
     }
 
     handleDayKeydown(event, day) {
@@ -1306,7 +1361,7 @@ class SfDatepicker extends SfBaseElement {
         if (this.contains(target) || this.refs.datePickerPanel.value?.contains?.(target)) {
             return;
         }
-        this.closePanel();
+        this._closePanel();
     }
 
     // An open calendar owns Escape: the press closes the calendar, the focus goes
@@ -1334,7 +1389,7 @@ class SfDatepicker extends SfBaseElement {
             return;
         }
 
-        this.closePanel({restoreFocus: true});
+        this._closePanel({restoreFocus: true});
     }
 
     syncOverlayListeners() {
@@ -1415,7 +1470,7 @@ class SfDatepicker extends SfBaseElement {
         });
         this.set({activeDate: day.value});
         this.emitChange();
-        if (this.closeOnSelect) this.closePanel({restoreFocus: true});
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
         return this;
     }
 
@@ -1455,13 +1510,13 @@ class SfDatepicker extends SfBaseElement {
         this.setState(nextState);
         this.set({activeDate: day.value});
         this.emitChange();
-        if (this.closeOnSelect) this.closePanel({restoreFocus: true});
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
         return this;
     }
 
     // A quick range: its dates, the grid on the month it ends in, and the change
     // said once, by the person's choice -- never by a render.
-    choosePreset(item) {
+    _choosePreset(item) {
         if (!item || item.disabled) return this;
         const from = formatIsoDate(item.from);
         const to = formatIsoDate(item.to);
@@ -1476,12 +1531,12 @@ class SfDatepicker extends SfBaseElement {
         });
         this.set({activeDate: to});
         this.emitChange();
-        if (this.closeOnSelect) this.closePanel({restoreFocus: true});
+        if (this.closeOnSelect) this._closePanel({restoreFocus: true});
         return this;
     }
 
     // «Свой период»: the quick range lets go and the person picks on the grid.
-    chooseCustomRange() {
+    _chooseCustomRange() {
         if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
         this._focusDateAfterRender = true;
         this.requestComponentUpdate('custom-range');
@@ -1587,26 +1642,11 @@ class SfDatepicker extends SfBaseElement {
                 format: this.format,
             };
 
-        this.dispatchEvent(
-            new CustomEvent('change', {
-                bubbles: true,
-                composed: true,
-                detail,
-            }),
-        );
-
-        this.dispatchEvent(
-            new CustomEvent('sf-datepicker-change', {
-                bubbles: true,
-                composed: true,
-                detail,
-            }),
-        );
-
-        // The legacy sf-change carries the change detail, as its manifest says; it
-        // carried the whole state (open, portal, locale, month...), which no
-        // handler of a change wants and which changed with every refactor.
-        this.emitComponentEvent('change', detail);
+        // Once, under its native name, without the element in its detail (§8);
+        // the shim sends sf-datepicker-change and sf-change after it with the
+        // same detail (aliases.json).
+        this.fieldSyncForm();
+        dispatchAliased(this, 'change', {detail});
     }
 
     templateContext() {
@@ -1652,7 +1692,11 @@ class SfDatepicker extends SfBaseElement {
             portal: this.portal,
             inputType: this.inputType,
             inputSize: this.inputSize,
+            // The host is the form control where the browser has
+            // ElementInternals, so the inner text box carries no name (§17.1
+            // item 6); without them it is named, as before.
             inputName: this.inputName,
+            boxName: this.sfInternals ? '' : this.inputName,
             placeholder: this.placeholder,
             label: this.label,
             ariaLabel: this.ariaLabel,
@@ -1689,6 +1733,7 @@ class SfDatepicker extends SfBaseElement {
         monthToggle?.setAttribute('aria-expanded', this.contextMode === 'month' ? 'true' : 'false');
         yearToggle?.setAttribute('aria-expanded', this.contextMode === 'year' ? 'true' : 'false');
         this.syncOverlayListeners();
+        this.fieldSyncForm();
         requestAnimationFrame(() => {
             this.positionPanel();
             if (this._focusCalendarOnOpen || this._focusDateAfterRender) {

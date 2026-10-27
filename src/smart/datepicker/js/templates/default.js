@@ -80,7 +80,7 @@ function renderDatepickerInput(context) {
     return html`
         <sf-input class="sf-datepicker-input" ${ref(context.component.refs.input)}
             appearance=${context.inputType} size=${context.inputSize}
-            label=${context.label || nothing} name=${context.inputName || nothing}
+            label=${context.label || nothing} name=${context.boxName || nothing}
             aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}
             placeholder=${context.placeholder || nothing} icon-start=${context.iconStart || nothing}
             root-class=${context.inputRootClass || nothing} value=${context.displayValue || ''}

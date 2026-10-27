@@ -1,0 +1,21 @@
+{
+  "title": "Datepicker",
+  "runtime": {
+    "choose-month": "Choose a month",
+    "choose-year": "Choose a year",
+    "custom-range": "Custom range",
+    "next-month": "Next month",
+    "next-years": "Next years",
+    "preset-last-month": "Last month",
+    "preset-last30-days": "Last 30 days",
+    "preset-last7-days": "Last 7 days",
+    "preset-this-month": "This month",
+    "preset-this-week": "This week",
+    "preset-today": "Today",
+    "preset-yesterday": "Yesterday",
+    "presets": "Quick ranges",
+    "previous-month": "Previous month",
+    "previous-years": "Previous years",
+    "value-missing": "Choose a date."
+  }
+}

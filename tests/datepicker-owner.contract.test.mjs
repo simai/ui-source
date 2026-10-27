@@ -20,7 +20,10 @@ test('Smart Datepicker uses real Lit refs and exposes its date-value states', as
   assert.match(template, /ref\(context\.component\.refs\.input\)/);
   assert.match(template, /aria-label=\$\{day\.label\}/);
   assert.match(template, /aria-current=\$\{day\.today/);
-  assert.match(source, /'sf-datepicker-change'/);
+  // change once; the shim sends sf-datepicker-change and sf-change after it
+  // (standard 1.3.8 §16.20, aliases.json).
+  assert.match(source, /dispatchAliased\(this, 'change', \{detail\}\)/);
+  assert.ok(JSON.parse(await read('src/smart/datepicker/aliases.json')).aliases.some((row) => row.from === 'sf-datepicker-change' && row.to === 'change'));
   assert.match(source, /get closeOnSelect\(\)/);
   assert.match(source, /getBooleanAttr\('mask', false\)/);
 });
@@ -60,7 +63,8 @@ test('Datepicker distinguishes weekend, disabled and continuous selection paint'
   assert.match(surface, /sf-datepicker-day-off:not\(:disabled\):not\(\.active\):not\(\.disabled\)/);
   assert.match(surface, /--sf-datepicker-day-date--color: var\(--sf-error\)/);
   assert.match(surface, /var\(--sf-transparent\)/);
-  assert.match(day, /--sf-datepicker-day-date--color: var\(--sf-on-surface\)/);
+  // The public variable stands before the role (standard 1.3.8 §6).
+  assert.match(day, /--sf-datepicker-day-date--color: var\(--sf-datepicker-day-color, var\(--sf-on-surface\)\)/);
   assert.match(day, /--sf-datepicker-day-info--color: var\(--sf-on-surface-variant\)/);
   assert.match(day, /\.sf-datepicker-day:is\(:disabled, \.disabled\)/);
   assert.match(variants, /another-month[\s\S]{0,700}--sf-datepicker-day-date--color: var\(--sf-on-surface-variant\)/);

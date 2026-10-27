@@ -100,7 +100,7 @@ test('an open calendar holds the mark and takes Escape in capture as the innermo
   assert.ok(source.includes('holdOpenSurfaceMark(this, false)'));
   assert.ok(source.includes("document.addEventListener('keydown', this._documentKeydownHandler, true)"));
   assert.ok(source.includes("document.removeEventListener('keydown', this._documentKeydownHandler, true)"));
-  assert.match(source, /handleDocumentKeydown\(event\) \{[\s\S]*?isTopOpenSurface\(this\)[\s\S]*?event\.stopPropagation\(\);[\s\S]*?this\.closePanel\(\{restoreFocus: true\}\)/);
+  assert.match(source, /handleDocumentKeydown\(event\) \{[\s\S]*?isTopOpenSurface\(this\)[\s\S]*?event\.stopPropagation\(\);[\s\S]*?this\._closePanel\(\{restoreFocus: true\}\)/);
 });
 
 test('the capture-phase surfaces act only as the innermost layer', async () => {

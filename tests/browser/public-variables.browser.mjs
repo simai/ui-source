@@ -91,6 +91,8 @@ const DRAW = {
   'file-upload': {css: ['file-upload', 'featured-icon'], js: 'file-upload',
     html: '<sf-file-upload aria-label="Документы"></sf-file-upload><sf-file-upload id="held" aria-label="Документы"></sf-file-upload>',
     open: 'document.getElementById("held").setAttribute("data-dragged-over", "true")'},
+  datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'datepicker',
+    html: '<sf-datepicker input="false" value="2026-09-03"></sf-datepicker><sf-datepicker input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-datepicker>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

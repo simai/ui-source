@@ -1,0 +1,8 @@
+[
+  {"name": "reference", "title": "Дата публикации", "settings": {"value": "2026-09-03", "locale": "ru", "label": "Дата публикации"}, "expect": {"values": {"value": "2026-09-03", "open": false}}},
+  {"name": "range", "title": "Период", "settings": {"range": true, "label": "Период", "start-value": "2026-09-01", "end-value": "2026-09-07"}, "expect": {"values": {"value": ["2026-09-01", "2026-09-07"]}, "form": "2026-09-01/2026-09-07"}},
+  {"name": "presets", "title": "Быстрый выбор", "settings": {"range": true, "label": "Период", "presets": "today,last-7-days,this-month"}, "expect": {"values": {"open": false}}},
+  {"name": "inline", "title": "Календарь без поля", "settings": {"input": false, "value": "2026-09-03"}, "expect": {"role": "group"}},
+  {"name": "required", "title": "Обязательная дата", "settings": {"label": "Срок", "name": "due", "required": true}, "expect": {"validity": {"valueMissing": true}}},
+  {"name": "bounds", "title": "С границами", "settings": {"label": "Дата", "min-date": "2026-09-01", "max-date": "2026-09-30", "value": "2026-09-15"}, "expect": {"values": {"value": "2026-09-15"}}}
+]

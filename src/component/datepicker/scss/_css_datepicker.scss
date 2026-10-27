@@ -4,7 +4,7 @@
     --sf-datepicker--inline-size: calc(var(--sf-ui-1--control-height) * 7 + var(--sf-space-1));
     /* The whole calendar floats on step 3, not only its top band: on the plain
        surface its body was the page's colour in the dark theme. */
-    background-color: var(--sf-datepicker--background-color, var(--sf-elevation-3--surface));
+    background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-elevation-3--surface)));
     --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
     border-end-end-radius: var(--sf-datepicker--border-bottom-right-radius, var(--sf-radius--surface));
     border-end-start-radius: var(--sf-datepicker--border-bottom-left-radius, var(--sf-radius--surface));
@@ -100,7 +100,7 @@
   }
 
   .sf-datepicker .sf-datepicker-weekday {
-    color: var(--sf-datepicker-weekday--color, var(--sf-on-surface-variant));
+    color: var(--sf-datepicker-weekday--color, var(--sf-datepicker-weekday-color, var(--sf-on-surface-variant)));
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-medium);
@@ -115,7 +115,7 @@
 
  .sf-datepicker .sf-datepicker-context {
    /* Opaque, to cover the days under it, in the panel's own colour. */
-   --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-elevation-3--surface));
+   --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-elevation-3--surface)));
    background: var(--sf-datepicker-context--background-color);
    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
    z-index: var(--sf-z-index-2);

@@ -1,0 +1,460 @@
+{
+  "$comment": "The source of sf-datepicker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
+  "id": "smart.datepicker",
+  "tag": "sf-datepicker",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "date": {
+      "type": "string",
+      "default": ""
+    },
+    "start-value": {
+      "type": "string",
+      "default": ""
+    },
+    "end-value": {
+      "type": "string",
+      "default": ""
+    },
+    "max-date": {
+      "type": "string",
+      "default": ""
+    },
+    "min-date": {
+      "type": "string",
+      "default": ""
+    },
+    "range": {
+      "type": "boolean",
+      "default": false
+    },
+    "month": {
+      "type": "number",
+      "optional": true,
+      "integer": true,
+      "min": 0,
+      "max": 11
+    },
+    "year": {
+      "type": "number",
+      "optional": true,
+      "integer": true
+    },
+    "context": {
+      "type": "enum",
+      "values": [
+        "",
+        "month",
+        "year"
+      ],
+      "default": ""
+    },
+    "week-start": {
+      "type": "number",
+      "optional": true,
+      "integer": true,
+      "min": 0,
+      "max": 6
+    },
+    "locale": {
+      "type": "string",
+      "default": ""
+    },
+    "format": {
+      "type": "string",
+      "default": "DD.MM.YYYY"
+    },
+    "close-on-select": {
+      "type": "boolean",
+      "default": true
+    },
+    "input": {
+      "type": "boolean",
+      "default": true
+    },
+    "portal": {
+      "type": "boolean",
+      "default": true
+    },
+    "input-type": {
+      "type": "string",
+      "default": "bordered"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "input-size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "input-name": {
+      "type": "string",
+      "default": ""
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error-message": {
+      "type": "string",
+      "default": ""
+    },
+    "icon-start": {
+      "type": "icon",
+      "default": "calendar_today"
+    },
+    "left-icon": {
+      "type": "icon",
+      "default": "calendar_today"
+    },
+    "input-root-class": {
+      "type": "string",
+      "default": ""
+    },
+    "mask": {
+      "type": "boolean",
+      "default": false
+    },
+    "mask-pattern": {
+      "type": "string",
+      "default": "00.00.0000"
+    },
+    "mask-lazy": {
+      "type": "boolean",
+      "default": false
+    },
+    "mask-placeholder-char": {
+      "type": "string",
+      "default": "_"
+    },
+    "mask-options": {
+      "type": "string",
+      "default": ""
+    },
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "preset": {
+      "type": "string",
+      "default": ""
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false
+    },
+    "presets": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "relative": {
+          "type": "enum",
+          "values": [
+            "today",
+            "yesterday",
+            "last-7-days",
+            "last-30-days",
+            "this-week",
+            "this-month",
+            "last-month"
+          ],
+          "optional": true
+        },
+        "range": {
+          "type": "list",
+          "optional": true
+        }
+      },
+      "summary": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": ""
+    },
+    "open": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "value": "object",
+        "date": "string",
+        "start-value": "string",
+        "end-value": "string",
+        "formatted-value": "string",
+        "iso-value": "string",
+        "range": "boolean",
+        "format": "string",
+        "preset": "object"
+      }
+    }
+  },
+  "actions": {
+    "open-panel": {
+      "with": {
+        "options": "object"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "close-panel": {
+      "with": {
+        "options": "object"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "toggle-panel": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "choose-preset": {
+      "with": {
+        "item": "object"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "choose-custom-range": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "readonly": "readonly",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "layer": {
+    "kind": "surface",
+    "traps-focus": false
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "ArrowDown": "open",
+      "Escape": "close"
+    },
+    "panel": {
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "ArrowUp": "step:-7",
+      "ArrowDown": "step:+7",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "PageUp": "step:-page",
+      "PageDown": "step:+page",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js"
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "dialog",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Shift+Tab": "reach",
+      "ArrowDown": "open",
+      "Escape": "close",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "ArrowUp": "step:-7",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "PageUp": "step:-page",
+      "PageDown": "step:+page",
+      "Enter": "select",
+      "Space": "select"
+    }
+  },
+  "css-variables": {
+    "--sf-datepicker-background-color": {
+      "type": "color",
+      "state": "open"
+    },
+    "--sf-datepicker-day-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-datepicker-selected-background-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-datepicker-selected-color": {
+      "type": "color",
+      "state": "selected"
+    },
+    "--sf-datepicker-range-background-color": {
+      "type": "color",
+      "state": "in-range"
+    },
+    "--sf-datepicker-weekday-color": {
+      "type": "color",
+      "state": "rest"
+    }
+  },
+  "x-summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
+  "x-source": {
+    "package": "framework",
+    "folder": "datepicker",
+    "manifest": "simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/datepicker.component.json"
+  },
+  "x-words": [
+    "placeholder",
+    "label"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source source and machine manifest",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "timezone policy",
+        "business-day validation",
+        "persistence",
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop-popup",
+        "mobile-popup",
+        "inline",
+        "visual-viewport-bounded-overlay"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-datepicker for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use color as the only selected or disabled signal",
+        "Do not encode timezone or business-date rules in the visual component",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-datepicker label=\"Дата\" value=\"2026-09-03\"></sf-datepicker>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "assembly: it stays a leaf. The one interactive Smart part it places is its own text box (sf-input), wired privately for typing, masks and focus; the grid, the month and year lists and the quick ranges are its own markup. An assembly would declare keys, roles and rules to wire a single text box no rule can reach better than the leaf does (the smaller mechanism)",
+    "version: 1.1.0 -- sf-datepicker-change and sf-change follow change behind dated aliases, presets becomes a list, the actions answer outcomes; a minor while the aliases hold (§4.10)",
+    "a11y-role: dialog while it opens from its text box; inline (input=false) the panel is a group. The role field takes one value in 1.3.8, so the inline case is written here",
+    "key-effects: the text box opens the calendar with ArrowDown and closes it with Escape; in the grid (panel) Left and Right move a day, Up and Down a week (step:-7/+7), Home and End to the week's first and last day, PageUp and PageDown a month, Enter and Space choose",
+    "type-union: presets is a list of {id, label?, relative?, range?}; the attribute keeps its comma list of built-in ids",
+    "item-shape: value is the date in the ISO form (YYYY-MM-DD); in range mode the property is [start-value, end-value] and the form submits start/end (ISO 8601 interval); the host owns the stored value",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json and the docs",
+    "css-variables: six public variables read by the class sheets with the role as fallback (§6)",
+    "side-effects: none -- with portal the panel is positioned as fixed in place; it is never moved to the end of body",
+    "form: the host is the form control through ElementInternals (§17.1): the ISO date (a range as start/end), never the display text; nothing while disabled; read-only submits; form.reset() returns the written value without events. The inner sf-input carries no name. value-missing while required and empty",
+    "actions: open-panel, close-panel, toggle-panel, choose-preset {item} and choose-custom-range answer outcomes (§4.4)",
+    "ids: the panel id comes from the instance path (§7.1.1), not a module counter"
+  ]
+}
