@@ -1,0 +1,32 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.box-shadow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/box-shadow/default/index.js",
+    "src/utility/box-shadow/default/index.scss",
+    "src/utility/box-shadow/default/rule.js",
+    "src/utility/box-shadow/default/scss/_sf_css__shadow.scss",
+    "src/utility/box-shadow/default/scss/_var__shadow.scss",
+    "src/utility/box-shadow/default/scss/index.scss",
+    "src/utility/box-shadow/hover/index.js",
+    "src/utility/box-shadow/hover/index.scss",
+    "src/utility/box-shadow/hover/rule.js",
+    "src/utility/box-shadow/hover/scss/_sf_css__shadow.scss",
+    "src/utility/box-shadow/hover/scss/index.scss"
+  ],
+  "content_sha256": "966bcbda42b52d59282c4c8aa7d53bdbf07ee5d59855f820d3a82d12924697e8",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    }
+  ]
+}

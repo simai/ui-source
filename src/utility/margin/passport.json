@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.margin",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/margin/default/index.js",
+    "src/utility/margin/default/index.scss",
+    "src/utility/margin/default/rule.js",
+    "src/utility/margin/default/scss/_sf_css__margin.scss",
+    "src/utility/margin/default/scss/_sf_var__margin.scss",
+    "src/utility/margin/default/scss/index.scss",
+    "src/utility/margin/lg/index.js",
+    "src/utility/margin/lg/index.scss",
+    "src/utility/margin/lg/rule.js",
+    "src/utility/margin/lg/scss/_sf_css__margin.scss",
+    "src/utility/margin/lg/scss/index.scss",
+    "src/utility/margin/md/index.js",
+    "src/utility/margin/md/index.scss",
+    "src/utility/margin/md/rule.js",
+    "src/utility/margin/md/scss/_sf_css__margin.scss",
+    "src/utility/margin/md/scss/index.scss",
+    "src/utility/margin/sm/index.js",
+    "src/utility/margin/sm/index.scss",
+    "src/utility/margin/sm/rule.js",
+    "src/utility/margin/sm/scss/_sf_css__margin.scss",
+    "src/utility/margin/sm/scss/index.scss",
+    "src/utility/margin/xl/index.js",
+    "src/utility/margin/xl/index.scss",
+    "src/utility/margin/xl/rule.js",
+    "src/utility/margin/xl/scss/_sf_css__margin.scss",
+    "src/utility/margin/xl/scss/index.scss",
+    "src/utility/margin/xxl/index.js",
+    "src/utility/margin/xxl/index.scss",
+    "src/utility/margin/xxl/rule.js",
+    "src/utility/margin/xxl/scss/_sf_css__margin.scss",
+    "src/utility/margin/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2c5e7e830bdb854bbd6c74d9f1782cf93757535b782b62e169ac385f42443d69",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

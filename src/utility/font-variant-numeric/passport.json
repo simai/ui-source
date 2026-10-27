@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.font-variant-numeric",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/font-variant-numeric/default/index.js",
+    "src/utility/font-variant-numeric/default/index.scss",
+    "src/utility/font-variant-numeric/default/rule.js",
+    "src/utility/font-variant-numeric/default/scss/_sf_css__font_variant_numeric.scss",
+    "src/utility/font-variant-numeric/default/scss/_sf_var__font_variant_numeric.scss",
+    "src/utility/font-variant-numeric/default/scss/index.scss"
+  ],
+  "content_sha256": "7b26929570c2283397476bb3325f4aa383bc870eeec025e26466e1f6e95a2005",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.z-index",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/z-index/default/index.js",
+    "src/utility/z-index/default/index.scss",
+    "src/utility/z-index/default/rule.js",
+    "src/utility/z-index/default/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/default/scss/_sf_var__z_index.scss",
+    "src/utility/z-index/default/scss/index.scss",
+    "src/utility/z-index/lg/index.js",
+    "src/utility/z-index/lg/index.scss",
+    "src/utility/z-index/lg/rule.js",
+    "src/utility/z-index/lg/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/lg/scss/index.scss",
+    "src/utility/z-index/md/index.js",
+    "src/utility/z-index/md/index.scss",
+    "src/utility/z-index/md/rule.js",
+    "src/utility/z-index/md/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/md/scss/index.scss",
+    "src/utility/z-index/sm/index.js",
+    "src/utility/z-index/sm/index.scss",
+    "src/utility/z-index/sm/rule.js",
+    "src/utility/z-index/sm/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/sm/scss/index.scss",
+    "src/utility/z-index/xl/index.js",
+    "src/utility/z-index/xl/index.scss",
+    "src/utility/z-index/xl/rule.js",
+    "src/utility/z-index/xl/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/xl/scss/index.scss",
+    "src/utility/z-index/xxl/index.js",
+    "src/utility/z-index/xxl/index.scss",
+    "src/utility/z-index/xxl/rule.js",
+    "src/utility/z-index/xxl/scss/_sf_css__z_index.scss",
+    "src/utility/z-index/xxl/scss/index.scss"
+  ],
+  "content_sha256": "62391354a8cc987c86118e5cb98bdc2f91bc953ff3d52fda0ba417ddcc017a4c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

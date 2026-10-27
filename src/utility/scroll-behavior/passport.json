@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-behavior",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-behavior/default/index.js",
+    "src/utility/scroll-behavior/default/index.scss",
+    "src/utility/scroll-behavior/default/rule.js",
+    "src/utility/scroll-behavior/default/scss/_sf_css__scroll_behavior.scss",
+    "src/utility/scroll-behavior/default/scss/_sf_var__scroll_behavior.scss",
+    "src/utility/scroll-behavior/default/scss/index.scss"
+  ],
+  "content_sha256": "97e9471ad66556456602888ce1fb69f7696a7cd514ff5bc8da26de0233057935",
+  "dependencies": []
+}

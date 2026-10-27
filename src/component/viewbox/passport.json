@@ -1,0 +1,16 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.viewbox",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/viewbox/index.js",
+    "src/component/viewbox/scss/_css__viewbox.scss",
+    "src/component/viewbox/scss/_var__viewbox.scss",
+    "src/component/viewbox/scss/index.scss"
+  ],
+  "content_sha256": "4318764487ccc8ee2c87b795c3bacbd4a8db8c70f473016de9d0d50d752f26de",
+  "dependencies": []
+}

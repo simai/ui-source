@@ -1,0 +1,43 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.progress-scale",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/progress-scale/index.js",
+    "src/component/progress-scale/js/_progress_scale.js",
+    "src/component/progress-scale/js/index.js",
+    "src/component/progress-scale/rule.js",
+    "src/component/progress-scale/scss/_css__progress_scale.scss",
+    "src/component/progress-scale/scss/index.scss"
+  ],
+  "content_sha256": "78a3b9c2488cefe9f840b3195324bc46fac7ebb9a284e19355c1ed117f665896",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

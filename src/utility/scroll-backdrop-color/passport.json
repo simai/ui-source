@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-backdrop-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-backdrop-color/default/index.js",
+    "src/utility/scroll-backdrop-color/default/index.scss",
+    "src/utility/scroll-backdrop-color/default/rule.js",
+    "src/utility/scroll-backdrop-color/default/scss/_sf_css__scroll_backdrop_color.scss",
+    "src/utility/scroll-backdrop-color/default/scss/_sf_var__scroll_backdrop_color.scss",
+    "src/utility/scroll-backdrop-color/default/scss/index.scss"
+  ],
+  "content_sha256": "5eae517905959954e0c1b08a7d81b9c5d2e063a002e2eb2af7217de88f025751",
+  "dependencies": []
+}

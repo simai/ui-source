@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.break-after",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/break-after/default/index.js",
+    "src/utility/break-after/default/index.scss",
+    "src/utility/break-after/default/rule.js",
+    "src/utility/break-after/default/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/default/scss/_sf_var__break_after.scss",
+    "src/utility/break-after/default/scss/index.scss",
+    "src/utility/break-after/lg/index.js",
+    "src/utility/break-after/lg/index.scss",
+    "src/utility/break-after/lg/rule.js",
+    "src/utility/break-after/lg/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/lg/scss/index.scss",
+    "src/utility/break-after/md/index.js",
+    "src/utility/break-after/md/index.scss",
+    "src/utility/break-after/md/rule.js",
+    "src/utility/break-after/md/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/md/scss/index.scss",
+    "src/utility/break-after/sm/index.js",
+    "src/utility/break-after/sm/index.scss",
+    "src/utility/break-after/sm/rule.js",
+    "src/utility/break-after/sm/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/sm/scss/index.scss",
+    "src/utility/break-after/xl/index.js",
+    "src/utility/break-after/xl/index.scss",
+    "src/utility/break-after/xl/rule.js",
+    "src/utility/break-after/xl/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/xl/scss/index.scss",
+    "src/utility/break-after/xxl/index.js",
+    "src/utility/break-after/xxl/index.scss",
+    "src/utility/break-after/xxl/rule.js",
+    "src/utility/break-after/xxl/scss/_sf_css__break_after.scss",
+    "src/utility/break-after/xxl/scss/index.scss"
+  ],
+  "content_sha256": "c098bb7166b5de00cdbfa76ee35ffe190c74d8ba01012c5a98186f4fbda34010",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

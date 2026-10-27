@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.max-width-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/max-width-ext/default/index.js",
+    "src/utility/max-width-ext/default/index.scss",
+    "src/utility/max-width-ext/default/rule.js",
+    "src/utility/max-width-ext/default/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/default/scss/index.scss",
+    "src/utility/max-width-ext/lg/index.js",
+    "src/utility/max-width-ext/lg/index.scss",
+    "src/utility/max-width-ext/lg/rule.js",
+    "src/utility/max-width-ext/lg/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/lg/scss/index.scss",
+    "src/utility/max-width-ext/md/index.js",
+    "src/utility/max-width-ext/md/index.scss",
+    "src/utility/max-width-ext/md/rule.js",
+    "src/utility/max-width-ext/md/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/md/scss/index.scss",
+    "src/utility/max-width-ext/sm/index.js",
+    "src/utility/max-width-ext/sm/index.scss",
+    "src/utility/max-width-ext/sm/rule.js",
+    "src/utility/max-width-ext/sm/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/sm/scss/index.scss",
+    "src/utility/max-width-ext/xl/index.js",
+    "src/utility/max-width-ext/xl/index.scss",
+    "src/utility/max-width-ext/xl/rule.js",
+    "src/utility/max-width-ext/xl/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/xl/scss/index.scss",
+    "src/utility/max-width-ext/xxl/index.js",
+    "src/utility/max-width-ext/xxl/index.scss",
+    "src/utility/max-width-ext/xxl/rule.js",
+    "src/utility/max-width-ext/xxl/scss/_sf_css__width_max.scss",
+    "src/utility/max-width-ext/xxl/scss/index.scss"
+  ],
+  "content_sha256": "f9dd839835786eba02a0e87ed9af29c11378f0c28d7dc2635ba06d7a0e0e814e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

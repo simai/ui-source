@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.display-print",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/display-print/default/index.js",
+    "src/utility/display-print/default/index.scss",
+    "src/utility/display-print/default/rule.js",
+    "src/utility/display-print/default/scss/_sf_css__display_print.scss",
+    "src/utility/display-print/default/scss/_sf_var__display_print.scss",
+    "src/utility/display-print/default/scss/index.scss"
+  ],
+  "content_sha256": "27e8fb6522247c6105025c8e594b6d83e81d5e0236013bad7fd5fb010883e853",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

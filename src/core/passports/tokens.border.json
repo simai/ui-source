@@ -1,0 +1,36 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.border",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Border widths, border roles and the focus ring.",
+  "includes": [
+    "src/core/scss/_sf_css__border.scss",
+    "src/core/figma_variables/figma_focus.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_focus.scss",
+    "src/core/scss/_sf_css__border.scss"
+  ],
+  "content_sha256": "2527e360d7a6b0a79ccc93586017c95f6a2d0fdd8abf8440d9f59bdd70d51771",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

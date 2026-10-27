@@ -1,0 +1,21 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.breakpoint",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The breakpoints and their mixins.",
+  "includes": [
+    "src/core/scss/_sf_css__breakpoint.scss",
+    "src/core/scss/vars/_sf_var__breakpoint.scss",
+    "src/core/scss/mix/_mix__breakpoint.scss"
+  ],
+  "files": [
+    "src/core/scss/_sf_css__breakpoint.scss",
+    "src/core/scss/mix/_mix__breakpoint.scss",
+    "src/core/scss/vars/_sf_var__breakpoint.scss"
+  ],
+  "content_sha256": "2871468d538018a188a78d081dbd50970da417a92fcf78cd3dcd8eb642d3b9d1",
+  "dependencies": []
+}

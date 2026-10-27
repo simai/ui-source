@@ -1,0 +1,15 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.wow",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/wow/index.js",
+    "src/component/wow/js/_wow.js",
+    "src/component/wow/js/index.js"
+  ],
+  "content_sha256": "35fc89f6f90273f6c789f2d54e4159ab4311904164f03412e9c911c3b2a4f596",
+  "dependencies": []
+}

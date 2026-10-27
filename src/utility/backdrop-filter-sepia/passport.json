@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-sepia",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-sepia/default/index.js",
+    "src/utility/backdrop-filter-sepia/default/index.scss",
+    "src/utility/backdrop-filter-sepia/default/rule.js",
+    "src/utility/backdrop-filter-sepia/default/scss/_sf_css__backdrop_sepia.scss",
+    "src/utility/backdrop-filter-sepia/default/scss/_sf_var__backdrop_sepia.scss",
+    "src/utility/backdrop-filter-sepia/default/scss/index.scss",
+    "src/utility/backdrop-filter-sepia/hover/index.js",
+    "src/utility/backdrop-filter-sepia/hover/index.scss",
+    "src/utility/backdrop-filter-sepia/hover/rule.js",
+    "src/utility/backdrop-filter-sepia/hover/scss/_sf_css__backdrop_sepia.scss",
+    "src/utility/backdrop-filter-sepia/hover/scss/index.scss"
+  ],
+  "content_sha256": "6b0fe3dedd1d87878329026052c6a46945009a9bd848a9d1c2ff8eb57ed77d8e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.flex-align",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/flex-align/default/index.js",
+    "src/utility/flex-align/default/index.scss",
+    "src/utility/flex-align/default/rule.js",
+    "src/utility/flex-align/default/scss/_sf_css__align.scss",
+    "src/utility/flex-align/default/scss/index.scss",
+    "src/utility/flex-align/lg/index.js",
+    "src/utility/flex-align/lg/index.scss",
+    "src/utility/flex-align/lg/rule.js",
+    "src/utility/flex-align/lg/scss/_sf_css__align.scss",
+    "src/utility/flex-align/lg/scss/index.scss",
+    "src/utility/flex-align/md/index.js",
+    "src/utility/flex-align/md/index.scss",
+    "src/utility/flex-align/md/rule.js",
+    "src/utility/flex-align/md/scss/_sf_css__align.scss",
+    "src/utility/flex-align/md/scss/index.scss",
+    "src/utility/flex-align/sm/index.js",
+    "src/utility/flex-align/sm/index.scss",
+    "src/utility/flex-align/sm/rule.js",
+    "src/utility/flex-align/sm/scss/_sf_css__align.scss",
+    "src/utility/flex-align/sm/scss/index.scss",
+    "src/utility/flex-align/xl/index.js",
+    "src/utility/flex-align/xl/index.scss",
+    "src/utility/flex-align/xl/rule.js",
+    "src/utility/flex-align/xl/scss/_sf_css__align.scss",
+    "src/utility/flex-align/xl/scss/index.scss",
+    "src/utility/flex-align/xxl/index.js",
+    "src/utility/flex-align/xxl/index.scss",
+    "src/utility/flex-align/xxl/rule.js",
+    "src/utility/flex-align/xxl/scss/_sf_css__align.scss",
+    "src/utility/flex-align/xxl/scss/index.scss"
+  ],
+  "content_sha256": "f066aa614eaeee11afc173b38e95e1b796a6e18d62eba3b72b3d314fefbd4b52",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stroke-linejoin",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stroke-linejoin/default/index.js",
+    "src/utility/stroke-linejoin/default/index.scss",
+    "src/utility/stroke-linejoin/default/rule.js",
+    "src/utility/stroke-linejoin/default/scss/_sf_css__stroke_linejoin.scss",
+    "src/utility/stroke-linejoin/default/scss/_sf_var__stroke_linejoin.scss",
+    "src/utility/stroke-linejoin/default/scss/index.scss"
+  ],
+  "content_sha256": "1bf6442f4532a30a83aef9ac5d14a1f69d3c78d8b7b5bd5207766f584a5a27a5",
+  "dependencies": []
+}

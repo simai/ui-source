@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-padding",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-padding/default/index.js",
+    "src/utility/scroll-padding/default/index.scss",
+    "src/utility/scroll-padding/default/rule.js",
+    "src/utility/scroll-padding/default/scss/_sf_css__scroll_padding.scss",
+    "src/utility/scroll-padding/default/scss/_sf_var__scroll_padding.scss",
+    "src/utility/scroll-padding/default/scss/index.scss"
+  ],
+  "content_sha256": "208ae787a515fe487bc040d36d1e94ea269080a3ebc6ee872251ac838e82cd92",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

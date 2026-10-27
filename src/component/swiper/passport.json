@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.swiper",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/swiper/docs/docs.md",
+    "src/component/swiper/index.js",
+    "src/component/swiper/js/index.js",
+    "src/component/swiper/rule.js",
+    "src/component/swiper/scss/index.scss"
+  ],
+  "content_sha256": "155d8a5313caa74fdf1c0255e1ab18a546af11e38729cda0f2171fdb29b39875",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-row-start",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-row-start/default/index.js",
+    "src/utility/grid-row-start/default/index.scss",
+    "src/utility/grid-row-start/default/rule.js",
+    "src/utility/grid-row-start/default/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/default/scss/_sf_var__grid_row_start.scss",
+    "src/utility/grid-row-start/default/scss/index.scss",
+    "src/utility/grid-row-start/lg/index.js",
+    "src/utility/grid-row-start/lg/index.scss",
+    "src/utility/grid-row-start/lg/rule.js",
+    "src/utility/grid-row-start/lg/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/lg/scss/index.scss",
+    "src/utility/grid-row-start/md/index.js",
+    "src/utility/grid-row-start/md/index.scss",
+    "src/utility/grid-row-start/md/rule.js",
+    "src/utility/grid-row-start/md/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/md/scss/index.scss",
+    "src/utility/grid-row-start/sm/index.js",
+    "src/utility/grid-row-start/sm/index.scss",
+    "src/utility/grid-row-start/sm/rule.js",
+    "src/utility/grid-row-start/sm/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/sm/scss/index.scss",
+    "src/utility/grid-row-start/xl/index.js",
+    "src/utility/grid-row-start/xl/index.scss",
+    "src/utility/grid-row-start/xl/rule.js",
+    "src/utility/grid-row-start/xl/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/xl/scss/index.scss",
+    "src/utility/grid-row-start/xxl/index.js",
+    "src/utility/grid-row-start/xxl/index.scss",
+    "src/utility/grid-row-start/xxl/rule.js",
+    "src/utility/grid-row-start/xxl/scss/_sf_css__grid_row_start.scss",
+    "src/utility/grid-row-start/xxl/scss/index.scss"
+  ],
+  "content_sha256": "08496aebacaecf6acda826b5a8c50b043fae443d0625c78d63d89703b1c33fcd",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

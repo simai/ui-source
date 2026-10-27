@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.line-clamp",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/line-clamp/default/index.js",
+    "src/utility/line-clamp/default/index.scss",
+    "src/utility/line-clamp/default/rule.js",
+    "src/utility/line-clamp/default/scss/_sf_css__line_clamp.scss",
+    "src/utility/line-clamp/default/scss/_sf_var__line_clamp.scss",
+    "src/utility/line-clamp/default/scss/index.scss"
+  ],
+  "content_sha256": "fd135ee18424a9d7092048604dc671d04156d9c0db48cd419cba9c30e454dabc",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

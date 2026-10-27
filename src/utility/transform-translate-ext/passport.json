@@ -1,0 +1,31 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.transform-translate-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/transform-translate-ext/default/index.js",
+    "src/utility/transform-translate-ext/default/index.scss",
+    "src/utility/transform-translate-ext/default/rule.js",
+    "src/utility/transform-translate-ext/default/scss/_sf_css__transform_translate.scss",
+    "src/utility/transform-translate-ext/default/scss/index.scss",
+    "src/utility/transform-translate-ext/hover/index.js",
+    "src/utility/transform-translate-ext/hover/index.scss",
+    "src/utility/transform-translate-ext/hover/rule.js",
+    "src/utility/transform-translate-ext/hover/scss/_sf_css__transform_translate.scss",
+    "src/utility/transform-translate-ext/hover/scss/index.scss"
+  ],
+  "content_sha256": "30186705791f2ce6c876cf2fa6abf112e55e9e99f7ae9fecdaceacf69d46651c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

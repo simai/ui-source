@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-slider-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-slider-color/default/index.js",
+    "src/utility/scroll-slider-color/default/index.scss",
+    "src/utility/scroll-slider-color/default/rule.js",
+    "src/utility/scroll-slider-color/default/scss/_sf_css__scroll_slider_color.scss",
+    "src/utility/scroll-slider-color/default/scss/_sf_var__scroll_slider_color.scss",
+    "src/utility/scroll-slider-color/default/scss/index.scss"
+  ],
+  "content_sha256": "838923b983cc2889f00a4b1ea442a1042dc23785f41702b2c4812472fb00de9e",
+  "dependencies": []
+}

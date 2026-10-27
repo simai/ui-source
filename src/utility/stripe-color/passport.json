@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stripe-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stripe-color/default/index.js",
+    "src/utility/stripe-color/default/index.scss",
+    "src/utility/stripe-color/default/rule.js",
+    "src/utility/stripe-color/default/scss/_sf_css__stripe_color.scss",
+    "src/utility/stripe-color/default/scss/_sf_var__stripe_color.scss",
+    "src/utility/stripe-color/default/scss/index.scss"
+  ],
+  "content_sha256": "2dcd1c448e34a70a986487cdc5fef2314c0776a147d0b5e90095b625a4322b3b",
+  "dependencies": []
+}

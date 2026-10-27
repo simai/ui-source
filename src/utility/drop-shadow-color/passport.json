@@ -1,0 +1,36 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.drop-shadow-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/drop-shadow-color/default/index.js",
+    "src/utility/drop-shadow-color/default/index.scss",
+    "src/utility/drop-shadow-color/default/rule.js",
+    "src/utility/drop-shadow-color/default/scss/_sf_css__filter_drop_shadow_color.scss",
+    "src/utility/drop-shadow-color/default/scss/_sf_var__filter_drop_shadow_color.scss",
+    "src/utility/drop-shadow-color/default/scss/index.scss",
+    "src/utility/drop-shadow-color/hover/index.js",
+    "src/utility/drop-shadow-color/hover/index.scss",
+    "src/utility/drop-shadow-color/hover/rule.js",
+    "src/utility/drop-shadow-color/hover/scss/_sf_css__filter_drop_shadow_color.scss",
+    "src/utility/drop-shadow-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "76324052b2a2ca7192d50ab7174ff337021c0278aab192cb001662fddc64c13f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    }
+  ]
+}

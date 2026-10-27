@@ -1,0 +1,17 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "icons.material-symbols",
+  "kind": "icons",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Material Symbols Outlined, the icon font sf-icon draws with and the subset runtime cuts.",
+  "includes": [
+    "src/component/icons/fonts/MaterialSymbols-Outlined.woff2"
+  ],
+  "files": [
+    "src/component/icons/fonts/MaterialSymbols-Outlined.woff2"
+  ],
+  "content_sha256": "d0c8bda02b43a8feadb1e67b4093a50460a952720888ac1775d97c122fdbf029",
+  "dependencies": []
+}

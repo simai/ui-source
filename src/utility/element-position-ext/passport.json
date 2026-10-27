@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.element-position-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/element-position-ext/default/index.js",
+    "src/utility/element-position-ext/default/index.scss",
+    "src/utility/element-position-ext/default/rule.js",
+    "src/utility/element-position-ext/default/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/default/scss/_sf_var__absolute.scss",
+    "src/utility/element-position-ext/default/scss/index.scss",
+    "src/utility/element-position-ext/lg/index.js",
+    "src/utility/element-position-ext/lg/index.scss",
+    "src/utility/element-position-ext/lg/rule.js",
+    "src/utility/element-position-ext/lg/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/lg/scss/index.scss",
+    "src/utility/element-position-ext/md/index.js",
+    "src/utility/element-position-ext/md/index.scss",
+    "src/utility/element-position-ext/md/rule.js",
+    "src/utility/element-position-ext/md/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/md/scss/index.scss",
+    "src/utility/element-position-ext/sm/index.js",
+    "src/utility/element-position-ext/sm/index.scss",
+    "src/utility/element-position-ext/sm/rule.js",
+    "src/utility/element-position-ext/sm/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/sm/scss/index.scss",
+    "src/utility/element-position-ext/xl/index.js",
+    "src/utility/element-position-ext/xl/index.scss",
+    "src/utility/element-position-ext/xl/rule.js",
+    "src/utility/element-position-ext/xl/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/xl/scss/index.scss",
+    "src/utility/element-position-ext/xxl/index.js",
+    "src/utility/element-position-ext/xxl/index.scss",
+    "src/utility/element-position-ext/xxl/rule.js",
+    "src/utility/element-position-ext/xxl/scss/_sf_css__absolute.scss",
+    "src/utility/element-position-ext/xxl/scss/index.scss"
+  ],
+  "content_sha256": "a9db0443d3e30a886e1553de8cbea199e5707d21dbae170554002bd284566884",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

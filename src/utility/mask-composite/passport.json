@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.mask-composite",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/mask-composite/default/index.js",
+    "src/utility/mask-composite/default/index.scss",
+    "src/utility/mask-composite/default/rule.js",
+    "src/utility/mask-composite/default/scss/_sf_css__mask_composite.scss",
+    "src/utility/mask-composite/default/scss/_sf_var__mask_composite.scss",
+    "src/utility/mask-composite/default/scss/index.scss"
+  ],
+  "content_sha256": "52cdbbfcd0504abd0b85c329ed7b59039120df53fdf3b2da89daa3d40bb72108",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

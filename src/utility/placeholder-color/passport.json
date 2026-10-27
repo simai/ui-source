@@ -1,0 +1,36 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.placeholder-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/placeholder-color/default/index.js",
+    "src/utility/placeholder-color/default/index.scss",
+    "src/utility/placeholder-color/default/rule.js",
+    "src/utility/placeholder-color/default/scss/_sf_css__placeholder_color.scss",
+    "src/utility/placeholder-color/default/scss/index.scss",
+    "src/utility/placeholder-color/focus/index.js",
+    "src/utility/placeholder-color/focus/index.scss",
+    "src/utility/placeholder-color/focus/rule.js",
+    "src/utility/placeholder-color/focus/scss/_sf_css__placeholder_color.scss",
+    "src/utility/placeholder-color/focus/scss/index.scss",
+    "src/utility/placeholder-color/hover/index.js",
+    "src/utility/placeholder-color/hover/index.scss",
+    "src/utility/placeholder-color/hover/rule.js",
+    "src/utility/placeholder-color/hover/scss/_sf_css__placeholder_color.scss",
+    "src/utility/placeholder-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "d3bf0b7f0742b9d208ba09b00107013a8a0ddfd49ffd598a7f1e8d668b29178a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.text-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

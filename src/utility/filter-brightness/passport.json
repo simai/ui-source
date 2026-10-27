@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-brightness",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-brightness/default/index.js",
+    "src/utility/filter-brightness/default/index.scss",
+    "src/utility/filter-brightness/default/rule.js",
+    "src/utility/filter-brightness/default/scss/_sf_css__filter_brightness.scss",
+    "src/utility/filter-brightness/default/scss/_sf_var__filter_brightness.scss",
+    "src/utility/filter-brightness/default/scss/index.scss",
+    "src/utility/filter-brightness/hover/index.js",
+    "src/utility/filter-brightness/hover/index.scss",
+    "src/utility/filter-brightness/hover/rule.js",
+    "src/utility/filter-brightness/hover/scss/_sf_css__filter_brightness.scss",
+    "src/utility/filter-brightness/hover/scss/index.scss"
+  ],
+  "content_sha256": "5ca446cd2dee916f9d971efa4944bf51f05c0bbd98ae9eb1d22f84c21f99fe0f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-opacity",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-opacity/default/index.js",
+    "src/utility/filter-opacity/default/index.scss",
+    "src/utility/filter-opacity/default/rule.js",
+    "src/utility/filter-opacity/default/scss/_sf_css__filter_opacity.scss",
+    "src/utility/filter-opacity/default/scss/_sf_var__filter_opacity.scss",
+    "src/utility/filter-opacity/default/scss/index.scss",
+    "src/utility/filter-opacity/hover/index.js",
+    "src/utility/filter-opacity/hover/index.scss",
+    "src/utility/filter-opacity/hover/rule.js",
+    "src/utility/filter-opacity/hover/scss/_sf_css__filter_opacity.scss",
+    "src/utility/filter-opacity/hover/scss/index.scss"
+  ],
+  "content_sha256": "050ec66a8454804f13b2792bd0ac8b4c95464023b949643b8bfb1ed90ba53eee",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

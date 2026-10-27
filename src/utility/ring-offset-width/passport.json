@@ -1,0 +1,41 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.ring-offset-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/ring-offset-width/default/index.js",
+    "src/utility/ring-offset-width/default/index.scss",
+    "src/utility/ring-offset-width/default/rule.js",
+    "src/utility/ring-offset-width/default/scss/_sf_css__ring_offset_width.scss",
+    "src/utility/ring-offset-width/default/scss/index.scss",
+    "src/utility/ring-offset-width/focus-visible/index.js",
+    "src/utility/ring-offset-width/focus-visible/index.scss",
+    "src/utility/ring-offset-width/focus-visible/rule.js",
+    "src/utility/ring-offset-width/focus-visible/scss/_sf_css__ring_offset_width.scss",
+    "src/utility/ring-offset-width/focus-visible/scss/index.scss",
+    "src/utility/ring-offset-width/focus/index.js",
+    "src/utility/ring-offset-width/focus/index.scss",
+    "src/utility/ring-offset-width/focus/rule.js",
+    "src/utility/ring-offset-width/focus/scss/_sf_css__ring_offset_width.scss",
+    "src/utility/ring-offset-width/focus/scss/index.scss",
+    "src/utility/ring-offset-width/hover/index.js",
+    "src/utility/ring-offset-width/hover/index.scss",
+    "src/utility/ring-offset-width/hover/rule.js",
+    "src/utility/ring-offset-width/hover/scss/_sf_css__ring_offset_width.scss",
+    "src/utility/ring-offset-width/hover/scss/index.scss"
+  ],
+  "content_sha256": "677186b217f0ac3271c58ff4a36714fefea0199eaf88296a753c032585a479cd",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.ring-width",
+      "range": "^1.0.0"
+    }
+  ]
+}

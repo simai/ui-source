@@ -1,0 +1,56 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "module.smart-helpers",
+  "kind": "module",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The helpers the Smart components import (src/smart/helpers); not a component itself.",
+  "includes": [
+    "src/smart/helpers/"
+  ],
+  "files": [
+    "src/smart/helpers/anchored-badge.js",
+    "src/smart/helpers/checkableReset.js",
+    "src/smart/helpers/dom.js",
+    "src/smart/helpers/draggable.js",
+    "src/smart/helpers/form-field.js",
+    "src/smart/helpers/inherited-value.css",
+    "src/smart/helpers/inherited-value.js",
+    "src/smart/helpers/loaderDragState.js",
+    "src/smart/helpers/option-badge.js",
+    "src/smart/helpers/refs.js",
+    "src/smart/helpers/text.js"
+  ],
+  "content_sha256": "e417301ca6d01cfd0fc871aa810fb2435745c40eb86fa3bfbe6acbf61848797d",
+  "dependencies": [
+    {
+      "id": "component.badges",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

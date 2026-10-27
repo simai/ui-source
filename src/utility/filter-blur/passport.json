@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-blur",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-blur/default/index.js",
+    "src/utility/filter-blur/default/index.scss",
+    "src/utility/filter-blur/default/rule.js",
+    "src/utility/filter-blur/default/scss/_sf_css__filter_blur.scss",
+    "src/utility/filter-blur/default/scss/_sf_var__filter_blur.scss",
+    "src/utility/filter-blur/default/scss/index.scss",
+    "src/utility/filter-blur/hover/index.js",
+    "src/utility/filter-blur/hover/index.scss",
+    "src/utility/filter-blur/hover/rule.js",
+    "src/utility/filter-blur/hover/scss/_sf_css__filter_blur.scss",
+    "src/utility/filter-blur/hover/scss/index.scss"
+  ],
+  "content_sha256": "f48686cc934e440ec505445c1e75893fa5a63b58dfa73740a3f424a286ad7300",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.grid-auto-rows",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/grid-auto-rows/default/index.js",
+    "src/utility/grid-auto-rows/default/index.scss",
+    "src/utility/grid-auto-rows/default/rule.js",
+    "src/utility/grid-auto-rows/default/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/default/scss/_sf_var__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/default/scss/index.scss",
+    "src/utility/grid-auto-rows/lg/index.js",
+    "src/utility/grid-auto-rows/lg/index.scss",
+    "src/utility/grid-auto-rows/lg/rule.js",
+    "src/utility/grid-auto-rows/lg/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/lg/scss/index.scss",
+    "src/utility/grid-auto-rows/md/index.js",
+    "src/utility/grid-auto-rows/md/index.scss",
+    "src/utility/grid-auto-rows/md/rule.js",
+    "src/utility/grid-auto-rows/md/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/md/scss/index.scss",
+    "src/utility/grid-auto-rows/sm/index.js",
+    "src/utility/grid-auto-rows/sm/index.scss",
+    "src/utility/grid-auto-rows/sm/rule.js",
+    "src/utility/grid-auto-rows/sm/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/sm/scss/index.scss",
+    "src/utility/grid-auto-rows/xl/index.js",
+    "src/utility/grid-auto-rows/xl/index.scss",
+    "src/utility/grid-auto-rows/xl/rule.js",
+    "src/utility/grid-auto-rows/xl/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/xl/scss/index.scss",
+    "src/utility/grid-auto-rows/xxl/index.js",
+    "src/utility/grid-auto-rows/xxl/index.scss",
+    "src/utility/grid-auto-rows/xxl/rule.js",
+    "src/utility/grid-auto-rows/xxl/scss/_sf_css__grid_auto_rows.scss",
+    "src/utility/grid-auto-rows/xxl/scss/index.scss"
+  ],
+  "content_sha256": "537d89ecf365c8269f82dc3db38c49a5c252d9d81c4e70e0dbd10abb892ded08",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

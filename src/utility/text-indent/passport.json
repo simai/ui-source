@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-indent",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-indent/default/index.js",
+    "src/utility/text-indent/default/index.scss",
+    "src/utility/text-indent/default/rule.js",
+    "src/utility/text-indent/default/scss/_sf_css__text_indent.scss",
+    "src/utility/text-indent/default/scss/_sf_var__text_indent.scss",
+    "src/utility/text-indent/default/scss/index.scss"
+  ],
+  "content_sha256": "33b94faf45d16db06a6ea3daa99aa094c4a1ecc7daf799d067d1152759fb0361",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

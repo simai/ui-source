@@ -1,0 +1,42 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-color/active/index.js",
+    "src/utility/border-color/active/index.scss",
+    "src/utility/border-color/active/rule.js",
+    "src/utility/border-color/active/scss/_sf_css__border_color.scss",
+    "src/utility/border-color/active/scss/index.scss",
+    "src/utility/border-color/default/index.js",
+    "src/utility/border-color/default/index.scss",
+    "src/utility/border-color/default/rule.js",
+    "src/utility/border-color/default/scss/_sf_css__border_color.scss",
+    "src/utility/border-color/default/scss/_sf_var__border_color.scss",
+    "src/utility/border-color/default/scss/index.scss",
+    "src/utility/border-color/focus/index.js",
+    "src/utility/border-color/focus/index.scss",
+    "src/utility/border-color/focus/rule.js",
+    "src/utility/border-color/focus/scss/_sf_css__border_color.scss",
+    "src/utility/border-color/focus/scss/index.scss",
+    "src/utility/border-color/hover/index.js",
+    "src/utility/border-color/hover/index.scss",
+    "src/utility/border-color/hover/rule.js",
+    "src/utility/border-color/hover/scss/_sf_css__border_color.scss",
+    "src/utility/border-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "cf21de74a951f0f212677d4d21e9b669f4b91500b839bb49bc42d95300f3b49a",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.background-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

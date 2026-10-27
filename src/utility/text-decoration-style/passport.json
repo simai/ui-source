@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-decoration-style",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-decoration-style/default/index.js",
+    "src/utility/text-decoration-style/default/index.scss",
+    "src/utility/text-decoration-style/default/rule.js",
+    "src/utility/text-decoration-style/default/scss/_sf_css__text_decoration_style.scss",
+    "src/utility/text-decoration-style/default/scss/_sf_var__text_decoration_style.scss",
+    "src/utility/text-decoration-style/default/scss/index.scss"
+  ],
+  "content_sha256": "dbef5e589953493d91d77993129793e20dd2508ec9ab185166bdac3615a3ee62",
+  "dependencies": []
+}

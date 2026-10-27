@@ -1,0 +1,47 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.visibility",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/visibility/default/index.js",
+    "src/utility/visibility/default/index.scss",
+    "src/utility/visibility/default/rule.js",
+    "src/utility/visibility/default/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/default/scss/index.scss",
+    "src/utility/visibility/lg/index.js",
+    "src/utility/visibility/lg/index.scss",
+    "src/utility/visibility/lg/rule.js",
+    "src/utility/visibility/lg/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/lg/scss/index.scss",
+    "src/utility/visibility/md/index.js",
+    "src/utility/visibility/md/index.scss",
+    "src/utility/visibility/md/rule.js",
+    "src/utility/visibility/md/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/md/scss/index.scss",
+    "src/utility/visibility/sm/index.js",
+    "src/utility/visibility/sm/index.scss",
+    "src/utility/visibility/sm/rule.js",
+    "src/utility/visibility/sm/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/sm/scss/index.scss",
+    "src/utility/visibility/xl/index.js",
+    "src/utility/visibility/xl/index.scss",
+    "src/utility/visibility/xl/rule.js",
+    "src/utility/visibility/xl/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/xl/scss/index.scss",
+    "src/utility/visibility/xxl/index.js",
+    "src/utility/visibility/xxl/index.scss",
+    "src/utility/visibility/xxl/rule.js",
+    "src/utility/visibility/xxl/scss/_sf_css__visibility.scss",
+    "src/utility/visibility/xxl/scss/index.scss"
+  ],
+  "content_sha256": "87e5eae57dd6f429bb056f7cd3028d6d1b7115e390d7f576dcd734a9414e6ad8",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

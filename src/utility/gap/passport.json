@@ -1,0 +1,51 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.gap",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/gap/default/index.js",
+    "src/utility/gap/default/index.scss",
+    "src/utility/gap/default/rule.js",
+    "src/utility/gap/default/scss/_sf_css__gap.scss",
+    "src/utility/gap/default/scss/index.scss",
+    "src/utility/gap/lg/index.js",
+    "src/utility/gap/lg/index.scss",
+    "src/utility/gap/lg/rule.js",
+    "src/utility/gap/lg/scss/_sf_css__gap.scss",
+    "src/utility/gap/lg/scss/index.scss",
+    "src/utility/gap/md/index.js",
+    "src/utility/gap/md/index.scss",
+    "src/utility/gap/md/rule.js",
+    "src/utility/gap/md/scss/_sf_css__gap.scss",
+    "src/utility/gap/md/scss/index.scss",
+    "src/utility/gap/sm/index.js",
+    "src/utility/gap/sm/index.scss",
+    "src/utility/gap/sm/rule.js",
+    "src/utility/gap/sm/scss/_sf_css__gap.scss",
+    "src/utility/gap/sm/scss/index.scss",
+    "src/utility/gap/xl/index.js",
+    "src/utility/gap/xl/index.scss",
+    "src/utility/gap/xl/rule.js",
+    "src/utility/gap/xl/scss/_sf_css__gap.scss",
+    "src/utility/gap/xl/scss/index.scss",
+    "src/utility/gap/xxl/index.js",
+    "src/utility/gap/xxl/index.scss",
+    "src/utility/gap/xxl/rule.js",
+    "src/utility/gap/xxl/scss/_sf_css__gap.scss",
+    "src/utility/gap/xxl/scss/index.scss"
+  ],
+  "content_sha256": "993278e83f592f512096a5ceb1dddd8dfca1cb57fdc7c4d5d1c12e7549e0abc1",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.padding",
+      "range": "^1.0.0"
+    }
+  ]
+}

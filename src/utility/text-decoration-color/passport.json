@@ -1,0 +1,38 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-decoration-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-decoration-color/active/index.js",
+    "src/utility/text-decoration-color/active/index.scss",
+    "src/utility/text-decoration-color/active/rule.js",
+    "src/utility/text-decoration-color/active/scss/_sf_css__text_decoration_color.scss",
+    "src/utility/text-decoration-color/active/scss/index.scss",
+    "src/utility/text-decoration-color/default/index.js",
+    "src/utility/text-decoration-color/default/index.scss",
+    "src/utility/text-decoration-color/default/rule.js",
+    "src/utility/text-decoration-color/default/scss/_sf_css__text_decoration_color.scss",
+    "src/utility/text-decoration-color/default/scss/_sf_var__text_decoration_color.scss",
+    "src/utility/text-decoration-color/default/scss/index.scss",
+    "src/utility/text-decoration-color/focus/index.js",
+    "src/utility/text-decoration-color/focus/index.scss",
+    "src/utility/text-decoration-color/focus/rule.js",
+    "src/utility/text-decoration-color/focus/scss/_sf_css__text_decoration_color.scss",
+    "src/utility/text-decoration-color/focus/scss/index.scss",
+    "src/utility/text-decoration-color/hover/index.js",
+    "src/utility/text-decoration-color/hover/index.scss",
+    "src/utility/text-decoration-color/hover/rule.js",
+    "src/utility/text-decoration-color/hover/scss/_sf_css__text_decoration_color.scss",
+    "src/utility/text-decoration-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "5547719aa4f8208452b1b19913deebe9026f00fe28342c91cd28292e47fe2bde",
+  "dependencies": [
+    {
+      "id": "utility.text-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

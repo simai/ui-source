@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-grayscale",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-grayscale/default/index.js",
+    "src/utility/backdrop-filter-grayscale/default/index.scss",
+    "src/utility/backdrop-filter-grayscale/default/rule.js",
+    "src/utility/backdrop-filter-grayscale/default/scss/_sf_css__backdrop_grayscale.scss",
+    "src/utility/backdrop-filter-grayscale/default/scss/_sf_var__backdrop_grayscale.scss",
+    "src/utility/backdrop-filter-grayscale/default/scss/index.scss",
+    "src/utility/backdrop-filter-grayscale/hover/index.js",
+    "src/utility/backdrop-filter-grayscale/hover/index.scss",
+    "src/utility/backdrop-filter-grayscale/hover/rule.js",
+    "src/utility/backdrop-filter-grayscale/hover/scss/_sf_css__backdrop_grayscale.scss",
+    "src/utility/backdrop-filter-grayscale/hover/scss/index.scss"
+  ],
+  "content_sha256": "203ca14eb63572c9b540940f7051dacdacd158c1aca33e7fac43885d903f954f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

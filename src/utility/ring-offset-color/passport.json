@@ -1,0 +1,41 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.ring-offset-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/ring-offset-color/default/index.js",
+    "src/utility/ring-offset-color/default/index.scss",
+    "src/utility/ring-offset-color/default/rule.js",
+    "src/utility/ring-offset-color/default/scss/_sf_css__ring_offset_color.scss",
+    "src/utility/ring-offset-color/default/scss/index.scss",
+    "src/utility/ring-offset-color/focus-visible/index.js",
+    "src/utility/ring-offset-color/focus-visible/index.scss",
+    "src/utility/ring-offset-color/focus-visible/rule.js",
+    "src/utility/ring-offset-color/focus-visible/scss/_sf_css__ring_offset_color.scss",
+    "src/utility/ring-offset-color/focus-visible/scss/index.scss",
+    "src/utility/ring-offset-color/focus/index.js",
+    "src/utility/ring-offset-color/focus/index.scss",
+    "src/utility/ring-offset-color/focus/rule.js",
+    "src/utility/ring-offset-color/focus/scss/_sf_css__ring_offset_color.scss",
+    "src/utility/ring-offset-color/focus/scss/index.scss",
+    "src/utility/ring-offset-color/hover/index.js",
+    "src/utility/ring-offset-color/hover/index.scss",
+    "src/utility/ring-offset-color/hover/rule.js",
+    "src/utility/ring-offset-color/hover/scss/_sf_css__ring_offset_color.scss",
+    "src/utility/ring-offset-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "671dde660c65e82f046ddddd74f1f227892d8394a8d05f5f8e44f5c8ef0f3cbb",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.border-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

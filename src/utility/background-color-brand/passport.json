@@ -1,0 +1,24 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-color-brand",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-color-brand/default/index.js",
+    "src/utility/background-color-brand/default/index.scss",
+    "src/utility/background-color-brand/default/rule.js",
+    "src/utility/background-color-brand/default/scss/_sf_css__background_color_brand.scss",
+    "src/utility/background-color-brand/default/scss/_sf_var__background_color_brand.scss",
+    "src/utility/background-color-brand/default/scss/index.scss",
+    "src/utility/background-color-brand/hover/index.js",
+    "src/utility/background-color-brand/hover/index.scss",
+    "src/utility/background-color-brand/hover/rule.js",
+    "src/utility/background-color-brand/hover/scss/_sf_css__background_color_brand.scss",
+    "src/utility/background-color-brand/hover/scss/_sf_var__background_color_brand.scss",
+    "src/utility/background-color-brand/hover/scss/index.scss"
+  ],
+  "content_sha256": "d628e1de9f45440225abc4d0a1c4584429ad10a73df783ef7114ec2670622c55",
+  "dependencies": []
+}

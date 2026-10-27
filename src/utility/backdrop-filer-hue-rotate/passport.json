@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filer-hue-rotate",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filer-hue-rotate/default/index.js",
+    "src/utility/backdrop-filer-hue-rotate/default/index.scss",
+    "src/utility/backdrop-filer-hue-rotate/default/rule.js",
+    "src/utility/backdrop-filer-hue-rotate/default/scss/_sf_css__backdrop_hue_rotate.scss",
+    "src/utility/backdrop-filer-hue-rotate/default/scss/_sf_var__backdrop_hue_rotate.scss",
+    "src/utility/backdrop-filer-hue-rotate/default/scss/index.scss",
+    "src/utility/backdrop-filer-hue-rotate/hover/index.js",
+    "src/utility/backdrop-filer-hue-rotate/hover/index.scss",
+    "src/utility/backdrop-filer-hue-rotate/hover/rule.js",
+    "src/utility/backdrop-filer-hue-rotate/hover/scss/_sf_css__backdrop_hue_rotate.scss",
+    "src/utility/backdrop-filer-hue-rotate/hover/scss/index.scss"
+  ],
+  "content_sha256": "602656d46d8232fa9d287dde56b8ae45e09c0372670483e3123ba5b9e937cfb5",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

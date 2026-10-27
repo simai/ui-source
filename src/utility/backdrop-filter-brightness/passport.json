@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.backdrop-filter-brightness",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/backdrop-filter-brightness/default/index.js",
+    "src/utility/backdrop-filter-brightness/default/index.scss",
+    "src/utility/backdrop-filter-brightness/default/rule.js",
+    "src/utility/backdrop-filter-brightness/default/scss/_sf_css__backdrop_brightness.scss",
+    "src/utility/backdrop-filter-brightness/default/scss/_sf_var__backdrop_brightness.scss",
+    "src/utility/backdrop-filter-brightness/default/scss/index.scss",
+    "src/utility/backdrop-filter-brightness/hover/index.js",
+    "src/utility/backdrop-filter-brightness/hover/index.scss",
+    "src/utility/backdrop-filter-brightness/hover/rule.js",
+    "src/utility/backdrop-filter-brightness/hover/scss/_sf_css__backdrop_brightness.scss",
+    "src/utility/backdrop-filter-brightness/hover/scss/index.scss"
+  ],
+  "content_sha256": "7b345ce5081bada55b0a60bd06cca5c1e0cb0916bca704ab1c01014c85a452b7",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

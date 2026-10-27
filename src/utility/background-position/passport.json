@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-position",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-position/default/index.js",
+    "src/utility/background-position/default/index.scss",
+    "src/utility/background-position/default/rule.js",
+    "src/utility/background-position/default/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/default/scss/_sf_var_background_position.scss",
+    "src/utility/background-position/default/scss/index.scss",
+    "src/utility/background-position/lg/index.js",
+    "src/utility/background-position/lg/index.scss",
+    "src/utility/background-position/lg/rule.js",
+    "src/utility/background-position/lg/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/lg/scss/index.scss",
+    "src/utility/background-position/md/index.js",
+    "src/utility/background-position/md/index.scss",
+    "src/utility/background-position/md/rule.js",
+    "src/utility/background-position/md/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/md/scss/index.scss",
+    "src/utility/background-position/sm/index.js",
+    "src/utility/background-position/sm/index.scss",
+    "src/utility/background-position/sm/rule.js",
+    "src/utility/background-position/sm/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/sm/scss/index.scss",
+    "src/utility/background-position/xl/index.js",
+    "src/utility/background-position/xl/index.scss",
+    "src/utility/background-position/xl/rule.js",
+    "src/utility/background-position/xl/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/xl/scss/index.scss",
+    "src/utility/background-position/xxl/index.js",
+    "src/utility/background-position/xxl/index.scss",
+    "src/utility/background-position/xxl/rule.js",
+    "src/utility/background-position/xxl/scss/_sf_css_background_position.scss",
+    "src/utility/background-position/xxl/scss/index.scss"
+  ],
+  "content_sha256": "5d3980888b7409816c4e910ea2461c1371c35f9b234b2a8e417bbab66717870f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

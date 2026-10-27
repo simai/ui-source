@@ -1,0 +1,75 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "module.component-shared",
+  "kind": "module",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The modules the class components share from the top of src/component: field contract and size, mask service, form reset and registration.",
+  "includes": [
+    "src/component/"
+  ],
+  "files": [
+    "src/component/field-contract.js",
+    "src/component/field-size.js",
+    "src/component/form-reset-helper.js",
+    "src/component/mask-service.js",
+    "src/component/register-helper.js",
+    "src/component/register.js"
+  ],
+  "content_sha256": "1cbf52e1951def82204d790ea8ca606617906d705bcb78935e120ec40f61ee2d",
+  "dependencies": [
+    {
+      "id": "component.badges",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.buttons",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.clipboard",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.emoji",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.fab",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.highlight",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.icon-buttons",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.radio",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.sf-system",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.skeleton",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.switch",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "component.tab",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    }
+  ]
+}

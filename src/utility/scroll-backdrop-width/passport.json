@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-backdrop-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-backdrop-width/default/index.js",
+    "src/utility/scroll-backdrop-width/default/index.scss",
+    "src/utility/scroll-backdrop-width/default/rule.js",
+    "src/utility/scroll-backdrop-width/default/scss/_sf_css__scroll_backdrop_width.scss",
+    "src/utility/scroll-backdrop-width/default/scss/_sf_var__scroll_backdrop_width.scss",
+    "src/utility/scroll-backdrop-width/default/scss/index.scss"
+  ],
+  "content_sha256": "e3c3af72f1a96a169c1487ff4631f343535d95ca5f163a60b16d9d0a83497f51",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

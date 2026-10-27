@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.outline-offset",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/outline-offset/default/index.js",
+    "src/utility/outline-offset/default/index.scss",
+    "src/utility/outline-offset/default/rule.js",
+    "src/utility/outline-offset/default/scss/_sf_css__outline_offset.scss",
+    "src/utility/outline-offset/default/scss/_sf_var__outline_offset.scss",
+    "src/utility/outline-offset/default/scss/index.scss"
+  ],
+  "content_sha256": "0ee3043bec3c92894032d4fec7aa125e15177b1664b99dfa0258c455e9ff9765",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.table-stripe",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/table-stripe/default/index.js",
+    "src/utility/table-stripe/default/index.scss",
+    "src/utility/table-stripe/default/rule.js",
+    "src/utility/table-stripe/default/scss/_sf_css__table_stripe.scss",
+    "src/utility/table-stripe/default/scss/index.scss"
+  ],
+  "content_sha256": "d80bb4bba222e47e24fa1ba9884aa212c0f6ff075f8d6b5fdb9ccc2a26e75601",
+  "dependencies": [
+    {
+      "id": "utility.table",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.animation-duration",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/animation-duration/default/index.js",
+    "src/utility/animation-duration/default/index.scss",
+    "src/utility/animation-duration/default/rule.js",
+    "src/utility/animation-duration/default/scss/_sf_css__animation_duration.scss",
+    "src/utility/animation-duration/default/scss/_sf_var__animation_duration.scss",
+    "src/utility/animation-duration/default/scss/index.scss"
+  ],
+  "content_sha256": "f4f5a965e90e0a9476fbde875c91f9706a17eff1529095c8de349cb91341128b",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

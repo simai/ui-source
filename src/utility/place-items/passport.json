@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.place-items",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/place-items/default/index.js",
+    "src/utility/place-items/default/index.scss",
+    "src/utility/place-items/default/rule.js",
+    "src/utility/place-items/default/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/default/scss/_sf_var__place_items.scss",
+    "src/utility/place-items/default/scss/index.scss",
+    "src/utility/place-items/lg/index.js",
+    "src/utility/place-items/lg/index.scss",
+    "src/utility/place-items/lg/rule.js",
+    "src/utility/place-items/lg/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/lg/scss/index.scss",
+    "src/utility/place-items/md/index.js",
+    "src/utility/place-items/md/index.scss",
+    "src/utility/place-items/md/rule.js",
+    "src/utility/place-items/md/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/md/scss/index.scss",
+    "src/utility/place-items/sm/index.js",
+    "src/utility/place-items/sm/index.scss",
+    "src/utility/place-items/sm/rule.js",
+    "src/utility/place-items/sm/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/sm/scss/index.scss",
+    "src/utility/place-items/xl/index.js",
+    "src/utility/place-items/xl/index.scss",
+    "src/utility/place-items/xl/rule.js",
+    "src/utility/place-items/xl/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/xl/scss/index.scss",
+    "src/utility/place-items/xxl/index.js",
+    "src/utility/place-items/xxl/index.scss",
+    "src/utility/place-items/xxl/rule.js",
+    "src/utility/place-items/xxl/scss/_sf_css__place_items.scss",
+    "src/utility/place-items/xxl/scss/index.scss"
+  ],
+  "content_sha256": "208e6846557e8c5634ad88d2b023e0748e920721ea4709b9257e9f9ff74f27cb",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

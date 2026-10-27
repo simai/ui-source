@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-size",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-size/default/index.js",
+    "src/utility/background-size/default/index.scss",
+    "src/utility/background-size/default/rule.js",
+    "src/utility/background-size/default/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/default/scss/_sf_var_background_size.scss",
+    "src/utility/background-size/default/scss/index.scss",
+    "src/utility/background-size/lg/index.js",
+    "src/utility/background-size/lg/index.scss",
+    "src/utility/background-size/lg/rule.js",
+    "src/utility/background-size/lg/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/lg/scss/index.scss",
+    "src/utility/background-size/md/index.js",
+    "src/utility/background-size/md/index.scss",
+    "src/utility/background-size/md/rule.js",
+    "src/utility/background-size/md/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/md/scss/index.scss",
+    "src/utility/background-size/sm/index.js",
+    "src/utility/background-size/sm/index.scss",
+    "src/utility/background-size/sm/rule.js",
+    "src/utility/background-size/sm/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/sm/scss/index.scss",
+    "src/utility/background-size/xl/index.js",
+    "src/utility/background-size/xl/index.scss",
+    "src/utility/background-size/xl/rule.js",
+    "src/utility/background-size/xl/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/xl/scss/index.scss",
+    "src/utility/background-size/xxl/index.js",
+    "src/utility/background-size/xxl/index.scss",
+    "src/utility/background-size/xxl/rule.js",
+    "src/utility/background-size/xxl/scss/_sf_css_background_size.scss",
+    "src/utility/background-size/xxl/scss/index.scss"
+  ],
+  "content_sha256": "25f94d52971c80e71490ca77f3228fbf61bb8d557513afcd644cb19174618a1a",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

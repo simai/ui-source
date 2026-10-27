@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.justify-items",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/justify-items/default/index.js",
+    "src/utility/justify-items/default/index.scss",
+    "src/utility/justify-items/default/rule.js",
+    "src/utility/justify-items/default/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/default/scss/_sf_var__justify_items.scss",
+    "src/utility/justify-items/default/scss/index.scss",
+    "src/utility/justify-items/lg/index.js",
+    "src/utility/justify-items/lg/index.scss",
+    "src/utility/justify-items/lg/rule.js",
+    "src/utility/justify-items/lg/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/lg/scss/index.scss",
+    "src/utility/justify-items/md/index.js",
+    "src/utility/justify-items/md/index.scss",
+    "src/utility/justify-items/md/rule.js",
+    "src/utility/justify-items/md/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/md/scss/index.scss",
+    "src/utility/justify-items/sm/index.js",
+    "src/utility/justify-items/sm/index.scss",
+    "src/utility/justify-items/sm/rule.js",
+    "src/utility/justify-items/sm/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/sm/scss/index.scss",
+    "src/utility/justify-items/xl/index.js",
+    "src/utility/justify-items/xl/index.scss",
+    "src/utility/justify-items/xl/rule.js",
+    "src/utility/justify-items/xl/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/xl/scss/index.scss",
+    "src/utility/justify-items/xxl/index.js",
+    "src/utility/justify-items/xxl/index.scss",
+    "src/utility/justify-items/xxl/rule.js",
+    "src/utility/justify-items/xxl/scss/_sf_css__justify_items.scss",
+    "src/utility/justify-items/xxl/scss/index.scss"
+  ],
+  "content_sha256": "38d385eba295ec8b576aa9c3fb93445193b63f4d098f383542ccfd028ec55f0c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-decoration-offset",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-decoration-offset/default/index.js",
+    "src/utility/text-decoration-offset/default/index.scss",
+    "src/utility/text-decoration-offset/default/rule.js",
+    "src/utility/text-decoration-offset/default/scss/_sf_css__text_underline_offset.scss",
+    "src/utility/text-decoration-offset/default/scss/_sf_var__text_underline_offset.scss",
+    "src/utility/text-decoration-offset/default/scss/index.scss"
+  ],
+  "content_sha256": "6045f2d953c163f24c0c6a22f44b4bd1e0e7137d0980614244b6a10b53813487",
+  "dependencies": []
+}

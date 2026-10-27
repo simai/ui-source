@@ -1,0 +1,32 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.drop-shadow",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/drop-shadow/default/index.js",
+    "src/utility/drop-shadow/default/index.scss",
+    "src/utility/drop-shadow/default/rule.js",
+    "src/utility/drop-shadow/default/scss/_sf_css__filter_drop_shadow.scss",
+    "src/utility/drop-shadow/default/scss/_sf_var__filter_drop_shadow.scss",
+    "src/utility/drop-shadow/default/scss/index.scss",
+    "src/utility/drop-shadow/hover/index.js",
+    "src/utility/drop-shadow/hover/index.scss",
+    "src/utility/drop-shadow/hover/rule.js",
+    "src/utility/drop-shadow/hover/scss/_sf_css__filter_drop_shadow.scss",
+    "src/utility/drop-shadow/hover/scss/index.scss"
+  ],
+  "content_sha256": "46ae00162e740f3edda70c1a2bb34cfedc8d61476d446c9607cde58d681fba1f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

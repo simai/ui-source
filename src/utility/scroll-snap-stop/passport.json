@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-snap-stop",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-snap-stop/default/index.js",
+    "src/utility/scroll-snap-stop/default/index.scss",
+    "src/utility/scroll-snap-stop/default/rule.js",
+    "src/utility/scroll-snap-stop/default/scss/_sf_css__scroll_snap_stop.scss",
+    "src/utility/scroll-snap-stop/default/scss/_sf_var__scroll_snap_stop.scss",
+    "src/utility/scroll-snap-stop/default/scss/index.scss"
+  ],
+  "content_sha256": "728b3794b2921c989bb839233fe593eb72a16fb64bcaaf90086744e5b9366f99",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

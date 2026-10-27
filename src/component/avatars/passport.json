@@ -1,0 +1,53 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.avatars",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/avatars/docs/docs.md",
+    "src/component/avatars/index.js",
+    "src/component/avatars/js/_avatars.js",
+    "src/component/avatars/js/index.js",
+    "src/component/avatars/json/avatar-card.utility.json",
+    "src/component/avatars/json/avatar-label-group.utility.json",
+    "src/component/avatars/rule.js",
+    "src/component/avatars/scss/_css__add-button.scss",
+    "src/component/avatars/scss/_css__avatar-card.scss",
+    "src/component/avatars/scss/_css__avatar_company.scss",
+    "src/component/avatars/scss/_css__avatar_custom.scss",
+    "src/component/avatars/scss/_css__avatar_label_group.scss",
+    "src/component/avatars/scss/_css__avatar_online_indicator.scss",
+    "src/component/avatars/scss/_css__avatars.scss",
+    "src/component/avatars/scss/_css__avatars_group.scss",
+    "src/component/avatars/scss/index.scss"
+  ],
+  "content_sha256": "6ebc6c437f8ba1de0b9c4e613b3ecbdf17a659a77be114f013f4d6fba0e75c83",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

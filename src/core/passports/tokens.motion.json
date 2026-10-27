@@ -1,0 +1,19 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.motion",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "Durations, easings and transitions.",
+  "includes": [
+    "src/core/scss/_sf_css__transition.scss",
+    "src/core/scss/vars/_sf_var__animation.scss"
+  ],
+  "files": [
+    "src/core/scss/_sf_css__transition.scss",
+    "src/core/scss/vars/_sf_var__animation.scss"
+  ],
+  "content_sha256": "7066e8ed9656e92cf7c6f628c4de07705e667ddf12782d7e74550e66e9093206",
+  "dependencies": []
+}

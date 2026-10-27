@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stroke-linecap",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stroke-linecap/default/index.js",
+    "src/utility/stroke-linecap/default/index.scss",
+    "src/utility/stroke-linecap/default/rule.js",
+    "src/utility/stroke-linecap/default/scss/_sf_css__linecap.scss",
+    "src/utility/stroke-linecap/default/scss/_sf_var__linecap.scss",
+    "src/utility/stroke-linecap/default/scss/index.scss"
+  ],
+  "content_sha256": "f9159a48c3783ab5aae67a92413955dde681b32c47632fab066f106fec8e1860",
+  "dependencies": []
+}

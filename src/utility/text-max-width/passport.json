@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-max-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-max-width/default/index.js",
+    "src/utility/text-max-width/default/index.scss",
+    "src/utility/text-max-width/default/rule.js",
+    "src/utility/text-max-width/default/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/default/scss/_sf_var__text_measure.scss",
+    "src/utility/text-max-width/default/scss/index.scss",
+    "src/utility/text-max-width/lg/index.js",
+    "src/utility/text-max-width/lg/index.scss",
+    "src/utility/text-max-width/lg/rule.js",
+    "src/utility/text-max-width/lg/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/lg/scss/index.scss",
+    "src/utility/text-max-width/md/index.js",
+    "src/utility/text-max-width/md/index.scss",
+    "src/utility/text-max-width/md/rule.js",
+    "src/utility/text-max-width/md/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/md/scss/index.scss",
+    "src/utility/text-max-width/sm/index.js",
+    "src/utility/text-max-width/sm/index.scss",
+    "src/utility/text-max-width/sm/rule.js",
+    "src/utility/text-max-width/sm/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/sm/scss/index.scss",
+    "src/utility/text-max-width/xl/index.js",
+    "src/utility/text-max-width/xl/index.scss",
+    "src/utility/text-max-width/xl/rule.js",
+    "src/utility/text-max-width/xl/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/xl/scss/index.scss",
+    "src/utility/text-max-width/xxl/index.js",
+    "src/utility/text-max-width/xxl/index.scss",
+    "src/utility/text-max-width/xxl/rule.js",
+    "src/utility/text-max-width/xxl/scss/_sf_css__text_measure.scss",
+    "src/utility/text-max-width/xxl/scss/index.scss"
+  ],
+  "content_sha256": "0faf61e8bae9ee98a28777b2fedb861ce3fff7f59e63d6da2fa91735e03fa442",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

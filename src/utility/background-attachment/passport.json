@@ -1,0 +1,47 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-attachment",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-attachment/default/index.js",
+    "src/utility/background-attachment/default/index.scss",
+    "src/utility/background-attachment/default/rule.js",
+    "src/utility/background-attachment/default/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/default/scss/index.scss",
+    "src/utility/background-attachment/lg/index.js",
+    "src/utility/background-attachment/lg/index.scss",
+    "src/utility/background-attachment/lg/rule.js",
+    "src/utility/background-attachment/lg/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/lg/scss/index.scss",
+    "src/utility/background-attachment/md/index.js",
+    "src/utility/background-attachment/md/index.scss",
+    "src/utility/background-attachment/md/rule.js",
+    "src/utility/background-attachment/md/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/md/scss/index.scss",
+    "src/utility/background-attachment/sm/index.js",
+    "src/utility/background-attachment/sm/index.scss",
+    "src/utility/background-attachment/sm/rule.js",
+    "src/utility/background-attachment/sm/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/sm/scss/index.scss",
+    "src/utility/background-attachment/xl/index.js",
+    "src/utility/background-attachment/xl/index.scss",
+    "src/utility/background-attachment/xl/rule.js",
+    "src/utility/background-attachment/xl/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/xl/scss/index.scss",
+    "src/utility/background-attachment/xxl/index.js",
+    "src/utility/background-attachment/xxl/index.scss",
+    "src/utility/background-attachment/xxl/rule.js",
+    "src/utility/background-attachment/xxl/scss/_sf_css_background_attachment.scss",
+    "src/utility/background-attachment/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2cbc16d0f0e539b41335721334e6994ce1b9f14a86cfdaff8859d438b4bfa966",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

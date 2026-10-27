@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-grayscale",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-grayscale/default/index.js",
+    "src/utility/filter-grayscale/default/index.scss",
+    "src/utility/filter-grayscale/default/rule.js",
+    "src/utility/filter-grayscale/default/scss/_sf_css__filter_grayscale.scss",
+    "src/utility/filter-grayscale/default/scss/_sf_var__filter_grayscale.scss",
+    "src/utility/filter-grayscale/default/scss/index.scss",
+    "src/utility/filter-grayscale/hover/index.js",
+    "src/utility/filter-grayscale/hover/index.scss",
+    "src/utility/filter-grayscale/hover/rule.js",
+    "src/utility/filter-grayscale/hover/scss/_sf_css__filter_grayscale.scss",
+    "src/utility/filter-grayscale/hover/scss/index.scss"
+  ],
+  "content_sha256": "239d950d5a6cf801807cac1d200a4a69e8e0b5d25f07f02a496b6d31f3962b2e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.divider-style",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/divider-style/default/index.js",
+    "src/utility/divider-style/default/index.scss",
+    "src/utility/divider-style/default/rule.js",
+    "src/utility/divider-style/default/scss/_sf_css__divider_style.scss",
+    "src/utility/divider-style/default/scss/_sf_var__divider_style.scss",
+    "src/utility/divider-style/default/scss/index.scss"
+  ],
+  "content_sha256": "3cba619609d5b678161bfde04d7241e36b750c7776d348e907c8900b6cbc4e35",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

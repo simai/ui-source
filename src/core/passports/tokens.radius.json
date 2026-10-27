@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.radius",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The radii: the radius ladder, the border radius roles and the controls' radius.",
+  "includes": [
+    "src/core/figma_variables/figma_radius.scss",
+    "src/core/figma_variables/figma_border_radius.scss",
+    "src/core/figma_variables/figma_ui_radius.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_border_radius.scss",
+    "src/core/figma_variables/figma_radius.scss",
+    "src/core/figma_variables/figma_ui_radius.scss"
+  ],
+  "content_sha256": "d1e5d291cedcf61a5c28ddc7aa35c4e0d60fb70d120032e5cb2ae220a246cda5",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    }
+  ]
+}

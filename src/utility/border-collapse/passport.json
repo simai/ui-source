@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-collapse",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-collapse/default/index.js",
+    "src/utility/border-collapse/default/index.scss",
+    "src/utility/border-collapse/default/rule.js",
+    "src/utility/border-collapse/default/scss/_sf_css__border_collapse.scss",
+    "src/utility/border-collapse/default/scss/index.scss"
+  ],
+  "content_sha256": "df1c4ecba40bdb0264ada774b4a4c177349c5a1223b4365e848ad63b43637b6c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

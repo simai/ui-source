@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.caret-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/caret-color/default/index.js",
+    "src/utility/caret-color/default/index.scss",
+    "src/utility/caret-color/default/rule.js",
+    "src/utility/caret-color/default/scss/_sf_css__caret_color.scss",
+    "src/utility/caret-color/default/scss/_sf_var__caret_color.scss",
+    "src/utility/caret-color/default/scss/index.scss"
+  ],
+  "content_sha256": "0720c810bee8f09782ae8d973e90359090579c1995d013f0f3c4132c869cdfbe",
+  "dependencies": []
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stroke-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stroke-color/default/index.js",
+    "src/utility/stroke-color/default/index.scss",
+    "src/utility/stroke-color/default/rule.js",
+    "src/utility/stroke-color/default/scss/_sf_css__stroke.scss",
+    "src/utility/stroke-color/default/scss/_sf_var__stroke.scss",
+    "src/utility/stroke-color/default/scss/index.scss",
+    "src/utility/stroke-color/hover/index.js",
+    "src/utility/stroke-color/hover/index.scss",
+    "src/utility/stroke-color/hover/rule.js",
+    "src/utility/stroke-color/hover/scss/_sf_css__stroke.scss",
+    "src/utility/stroke-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "c4eeff73cad4d0cae55e75ba9801a3fa439fee5e18876f1905454051223ce241",
+  "dependencies": []
+}

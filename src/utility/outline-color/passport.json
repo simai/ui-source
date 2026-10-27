@@ -1,0 +1,43 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.outline-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/outline-color/active/index.js",
+    "src/utility/outline-color/active/index.scss",
+    "src/utility/outline-color/active/rule.js",
+    "src/utility/outline-color/active/scss/_sf_css__outline_color.scss",
+    "src/utility/outline-color/active/scss/index.scss",
+    "src/utility/outline-color/default/index.js",
+    "src/utility/outline-color/default/index.scss",
+    "src/utility/outline-color/default/rule.js",
+    "src/utility/outline-color/default/scss/_sf_css__outline_color.scss",
+    "src/utility/outline-color/default/scss/_sf_var__outline_color.scss",
+    "src/utility/outline-color/default/scss/index.scss",
+    "src/utility/outline-color/focus-visible/index.js",
+    "src/utility/outline-color/focus-visible/index.scss",
+    "src/utility/outline-color/focus-visible/rule.js",
+    "src/utility/outline-color/focus-visible/scss/_sf_css__outline_color.scss",
+    "src/utility/outline-color/focus-visible/scss/index.scss",
+    "src/utility/outline-color/focus/index.js",
+    "src/utility/outline-color/focus/index.scss",
+    "src/utility/outline-color/focus/rule.js",
+    "src/utility/outline-color/focus/scss/_sf_css__outline_color.scss",
+    "src/utility/outline-color/focus/scss/index.scss",
+    "src/utility/outline-color/hover/index.js",
+    "src/utility/outline-color/hover/index.scss",
+    "src/utility/outline-color/hover/rule.js",
+    "src/utility/outline-color/hover/scss/_sf_css__outline_color.scss",
+    "src/utility/outline-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "34b83e9e23ea47df4d6f32903a85a56d07fc73ea76395a8a5e9ee62fa1a473db",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

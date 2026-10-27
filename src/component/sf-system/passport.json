@@ -1,0 +1,56 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.sf-system",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/sf-system/index.js",
+    "src/component/sf-system/js/01-namespace/namespace.js",
+    "src/component/sf-system/js/02-methods/_events.js",
+    "src/component/sf-system/js/02-methods/_methods.js",
+    "src/component/sf-system/js/03-system/_blocks.js",
+    "src/component/sf-system/js/03-system/_call.js",
+    "src/component/sf-system/js/03-system/_controller.js",
+    "src/component/sf-system/js/03-system/_parameters.js",
+    "src/component/sf-system/js/03-system/_provider.js",
+    "src/component/sf-system/js/03-system/_search.js",
+    "src/component/sf-system/js/03-system/_stack.js",
+    "src/component/sf-system/js/04-blocks/_ajaxload.js",
+    "src/component/sf-system/js/04-blocks/_modal.js",
+    "src/component/sf-system/js/04-blocks/_special.js",
+    "src/component/sf-system/js/ajax/_ajax.js",
+    "src/component/sf-system/js/cloneDeep/cloneDeep.js",
+    "src/component/sf-system/js/curpos/curpos.js",
+    "src/component/sf-system/js/event/event.js",
+    "src/component/sf-system/js/event/receive/receive.js",
+    "src/component/sf-system/js/event/send/send.js",
+    "src/component/sf-system/js/extend/extend.js",
+    "src/component/sf-system/js/gallery/_gallery.js",
+    "src/component/sf-system/js/index.js",
+    "src/component/sf-system/js/init/_init.js",
+    "src/component/sf-system/js/method.js",
+    "src/component/sf-system/js/modal/_modal.js",
+    "src/component/sf-system/js/overbox/_overbox.js",
+    "src/component/sf-system/js/param/modal.js",
+    "src/component/sf-system/js/param/overbox.js",
+    "src/component/sf-system/js/param/param.js",
+    "src/component/sf-system/js/quickkey/quickkey.js",
+    "src/component/sf-system/js/ready/_ready.js",
+    "src/component/sf-system/js/search/_search.js",
+    "src/component/sf-system/js/topZIndex/topZIndex.js",
+    "src/component/sf-system/rule.js"
+  ],
+  "content_sha256": "5d93955604949c5a4bb081673022691ddaa42340bff519ff3434d8626dc26ab7",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.spinner",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/spinner/index.js",
+    "src/component/spinner/js/_spinner-draw.js",
+    "src/component/spinner/js/_spinner.js",
+    "src/component/spinner/js/index.js",
+    "src/component/spinner/rule.js",
+    "src/component/spinner/scss/_css__spinner.scss",
+    "src/component/spinner/scss/_css__spinner_custom.scss",
+    "src/component/spinner/scss/_var__spinner.scss",
+    "src/component/spinner/scss/index.scss"
+  ],
+  "content_sha256": "d7fdf5ddfc73d01bbd7c3faa3298ac5beb0a21dcb6a67930f6fa68f70193caca",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

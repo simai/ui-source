@@ -1,0 +1,59 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stripe",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stripe/default/index.js",
+    "src/utility/stripe/default/index.scss",
+    "src/utility/stripe/default/rule.js",
+    "src/utility/stripe/default/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/default/scss/index.scss",
+    "src/utility/stripe/lg/index.js",
+    "src/utility/stripe/lg/index.scss",
+    "src/utility/stripe/lg/rule.js",
+    "src/utility/stripe/lg/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/lg/scss/index.scss",
+    "src/utility/stripe/md/index.js",
+    "src/utility/stripe/md/index.scss",
+    "src/utility/stripe/md/rule.js",
+    "src/utility/stripe/md/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/md/scss/index.scss",
+    "src/utility/stripe/sm/index.js",
+    "src/utility/stripe/sm/index.scss",
+    "src/utility/stripe/sm/rule.js",
+    "src/utility/stripe/sm/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/sm/scss/index.scss",
+    "src/utility/stripe/xl/index.js",
+    "src/utility/stripe/xl/index.scss",
+    "src/utility/stripe/xl/rule.js",
+    "src/utility/stripe/xl/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/xl/scss/index.scss",
+    "src/utility/stripe/xxl/index.js",
+    "src/utility/stripe/xxl/index.scss",
+    "src/utility/stripe/xxl/rule.js",
+    "src/utility/stripe/xxl/scss/_sf_css__stripe.scss",
+    "src/utility/stripe/xxl/scss/index.scss"
+  ],
+  "content_sha256": "1d6296bf59484860e8b112af90dcd6d749f5cbba78df6ae43c3502536bb6327f",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

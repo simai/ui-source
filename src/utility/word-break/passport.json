@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.word-break",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/word-break/default/index.js",
+    "src/utility/word-break/default/index.scss",
+    "src/utility/word-break/default/rule.js",
+    "src/utility/word-break/default/scss/_sf_css__word_break.scss",
+    "src/utility/word-break/default/scss/_sf_var__word_break.scss",
+    "src/utility/word-break/default/scss/index.scss"
+  ],
+  "content_sha256": "dae57b16e0ca6f087812b446192b38f89fcf581986f2699c4a6a8e04220d9d2e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

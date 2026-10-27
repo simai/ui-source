@@ -1,0 +1,57 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.switch",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/switch/docs/docs.md",
+    "src/component/switch/index.js",
+    "src/component/switch/js/_switch.js",
+    "src/component/switch/js/index.js",
+    "src/component/switch/rule.js",
+    "src/component/switch/scss/_css_switch.scss",
+    "src/component/switch/scss/_css_switch_custom.scss",
+    "src/component/switch/scss/index.scss"
+  ],
+  "content_sha256": "bfe254688024eaa32c74f896d5ba72b0811269b615e46fca6ca1b619d0be32df",
+  "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "module.component-shared",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

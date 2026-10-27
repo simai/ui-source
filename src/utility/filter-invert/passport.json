@@ -1,0 +1,28 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.filter-invert",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/filter-invert/default/index.js",
+    "src/utility/filter-invert/default/index.scss",
+    "src/utility/filter-invert/default/rule.js",
+    "src/utility/filter-invert/default/scss/_sf_css__filter_invert.scss",
+    "src/utility/filter-invert/default/scss/_sf_var__filter_invert.scss",
+    "src/utility/filter-invert/default/scss/index.scss",
+    "src/utility/filter-invert/hover/index.js",
+    "src/utility/filter-invert/hover/index.scss",
+    "src/utility/filter-invert/hover/rule.js",
+    "src/utility/filter-invert/hover/scss/_sf_css__filter_invert.scss",
+    "src/utility/filter-invert/hover/scss/index.scss"
+  ],
+  "content_sha256": "115c81c7e4d86d0ef6ceab97445c8cea5d5a2c9a21aa91c716f2f11ee31017b0",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

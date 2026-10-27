@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.mask-origin",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/mask-origin/default/index.js",
+    "src/utility/mask-origin/default/index.scss",
+    "src/utility/mask-origin/default/rule.js",
+    "src/utility/mask-origin/default/scss/_sf_css__mask_origin.scss",
+    "src/utility/mask-origin/default/scss/_sf_var__mask_origin.scss",
+    "src/utility/mask-origin/default/scss/index.scss"
+  ],
+  "content_sha256": "a0936c7b9714c90ebc85066b2b54c38f89f72b09603bd93ad3008c78112148cc",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

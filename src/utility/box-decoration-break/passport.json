@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.box-decoration-break",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/box-decoration-break/default/index.js",
+    "src/utility/box-decoration-break/default/index.scss",
+    "src/utility/box-decoration-break/default/rule.js",
+    "src/utility/box-decoration-break/default/scss/_sf_css__box_decoaration_break.scss",
+    "src/utility/box-decoration-break/default/scss/_sf_var__box_decoaration_break.scss",
+    "src/utility/box-decoration-break/default/scss/index.scss"
+  ],
+  "content_sha256": "70bc3f0c37af1d14d1e5bccfa99c9ae6d7f3297cfc29cd9e72dc3e7bbb12d32c",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

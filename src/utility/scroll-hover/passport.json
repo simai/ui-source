@@ -1,0 +1,27 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-hover",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-hover/default/index.js",
+    "src/utility/scroll-hover/default/index.scss",
+    "src/utility/scroll-hover/default/rule.js",
+    "src/utility/scroll-hover/default/scss/_sf_css__scroll_hover.scss",
+    "src/utility/scroll-hover/default/scss/_sf_var__scroll_hover.scss",
+    "src/utility/scroll-hover/default/scss/index.scss"
+  ],
+  "content_sha256": "6bd3539cc730fea8abeadd4dd682fd5f9db7cb51fd6f4589f7d9661a9bfb5bcc",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    }
+  ]
+}

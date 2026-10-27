@@ -1,0 +1,13 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.editor",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/editor/default/scss/_editor_default.scss"
+  ],
+  "content_sha256": "61ff04eac8dd59891132ec03dc615d73c3f6ea704a9961fa5b93694a67f46ca6",
+  "dependencies": []
+}

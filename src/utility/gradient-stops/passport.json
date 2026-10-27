@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.gradient-stops",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/gradient-stops/default/index.js",
+    "src/utility/gradient-stops/default/index.scss",
+    "src/utility/gradient-stops/default/rule.js",
+    "src/utility/gradient-stops/default/scss/_sf_css__gradient_stops.scss",
+    "src/utility/gradient-stops/default/scss/index.scss"
+  ],
+  "content_sha256": "9eedb539231e53ae94a65bd27f82a6c0b262307bee0657ae3372b8e838b3fedc",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "utility.gradient-color",
+      "range": "^1.0.0"
+    }
+  ]
+}

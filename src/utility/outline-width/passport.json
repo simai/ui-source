@@ -1,0 +1,33 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.outline-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/outline-width/default/index.js",
+    "src/utility/outline-width/default/index.scss",
+    "src/utility/outline-width/default/rule.js",
+    "src/utility/outline-width/default/scss/_sf_css__outline_width.scss",
+    "src/utility/outline-width/default/scss/_sf_var__outline_width.scss",
+    "src/utility/outline-width/default/scss/index.scss",
+    "src/utility/outline-width/focus-visible/index.js",
+    "src/utility/outline-width/focus-visible/index.scss",
+    "src/utility/outline-width/focus-visible/rule.js",
+    "src/utility/outline-width/focus-visible/scss/_sf_css__outline_width.scss",
+    "src/utility/outline-width/focus-visible/scss/index.scss",
+    "src/utility/outline-width/focus/index.js",
+    "src/utility/outline-width/focus/index.scss",
+    "src/utility/outline-width/focus/rule.js",
+    "src/utility/outline-width/focus/scss/_sf_css__outline_width.scss",
+    "src/utility/outline-width/focus/scss/index.scss"
+  ],
+  "content_sha256": "2600787adfb82cb989ab1f4ac8e4f17435a6eb65fc9fa5811cbec9c29290df36",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

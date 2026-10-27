@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.height",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/height/default/index.js",
+    "src/utility/height/default/index.scss",
+    "src/utility/height/default/rule.js",
+    "src/utility/height/default/scss/_sf_css__height.scss",
+    "src/utility/height/default/scss/_sf_var__height.scss",
+    "src/utility/height/default/scss/index.scss",
+    "src/utility/height/lg/index.js",
+    "src/utility/height/lg/index.scss",
+    "src/utility/height/lg/rule.js",
+    "src/utility/height/lg/scss/_sf_css__height.scss",
+    "src/utility/height/lg/scss/index.scss",
+    "src/utility/height/md/index.js",
+    "src/utility/height/md/index.scss",
+    "src/utility/height/md/rule.js",
+    "src/utility/height/md/scss/_sf_css__height.scss",
+    "src/utility/height/md/scss/index.scss",
+    "src/utility/height/sm/index.js",
+    "src/utility/height/sm/index.scss",
+    "src/utility/height/sm/rule.js",
+    "src/utility/height/sm/scss/_sf_css__height.scss",
+    "src/utility/height/sm/scss/index.scss",
+    "src/utility/height/xl/index.js",
+    "src/utility/height/xl/index.scss",
+    "src/utility/height/xl/rule.js",
+    "src/utility/height/xl/scss/_sf_css__height.scss",
+    "src/utility/height/xl/scss/index.scss",
+    "src/utility/height/xxl/index.js",
+    "src/utility/height/xxl/index.scss",
+    "src/utility/height/xxl/rule.js",
+    "src/utility/height/xxl/scss/_sf_css__height.scss",
+    "src/utility/height/xxl/scss/index.scss"
+  ],
+  "content_sha256": "2da64dbb388b46174dfa1666a879dd1763c4128ffb37b7d16ee5bb81166afb51",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "tokens.opacity",
+  "kind": "tokens",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The alpha scale and the per-property alpha channels.",
+  "includes": [
+    "src/core/figma_variables/figma_opacity.scss",
+    "src/core/scss/_sf_css__opacity.scss"
+  ],
+  "files": [
+    "src/core/figma_variables/figma_opacity.scss",
+    "src/core/scss/_sf_css__opacity.scss"
+  ],
+  "content_sha256": "a38d03e2a410706552aaceb5213463a9fb2dd60d5825949f4207874e7d82485d",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    }
+  ]
+}

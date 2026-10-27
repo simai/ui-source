@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.flex-wrap",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/flex-wrap/default/index.js",
+    "src/utility/flex-wrap/default/index.scss",
+    "src/utility/flex-wrap/default/rule.js",
+    "src/utility/flex-wrap/default/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/default/scss/_sf_var__flex_wrap.scss",
+    "src/utility/flex-wrap/default/scss/index.scss",
+    "src/utility/flex-wrap/lg/index.js",
+    "src/utility/flex-wrap/lg/index.scss",
+    "src/utility/flex-wrap/lg/rule.js",
+    "src/utility/flex-wrap/lg/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/lg/scss/index.scss",
+    "src/utility/flex-wrap/md/index.js",
+    "src/utility/flex-wrap/md/index.scss",
+    "src/utility/flex-wrap/md/rule.js",
+    "src/utility/flex-wrap/md/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/md/scss/index.scss",
+    "src/utility/flex-wrap/sm/index.js",
+    "src/utility/flex-wrap/sm/index.scss",
+    "src/utility/flex-wrap/sm/rule.js",
+    "src/utility/flex-wrap/sm/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/sm/scss/index.scss",
+    "src/utility/flex-wrap/xl/index.js",
+    "src/utility/flex-wrap/xl/index.scss",
+    "src/utility/flex-wrap/xl/rule.js",
+    "src/utility/flex-wrap/xl/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/xl/scss/index.scss",
+    "src/utility/flex-wrap/xxl/index.js",
+    "src/utility/flex-wrap/xxl/index.scss",
+    "src/utility/flex-wrap/xxl/rule.js",
+    "src/utility/flex-wrap/xxl/scss/_sf_css__flex_wrap.scss",
+    "src/utility/flex-wrap/xxl/scss/index.scss"
+  ],
+  "content_sha256": "db1b799551be6426b1299e5659567ef8fcc82c2ea8e468cc5cc4541aa42569ee",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

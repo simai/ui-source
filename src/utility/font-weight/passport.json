@@ -1,0 +1,53 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.font-weight",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/font-weight/default/index.js",
+    "src/utility/font-weight/default/index.scss",
+    "src/utility/font-weight/default/rule.js",
+    "src/utility/font-weight/default/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/default/scss/_sf_var__font_weight.scss",
+    "src/utility/font-weight/default/scss/index.scss",
+    "src/utility/font-weight/hover/index.js",
+    "src/utility/font-weight/hover/index.scss",
+    "src/utility/font-weight/hover/rule.js",
+    "src/utility/font-weight/hover/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/hover/scss/index.scss",
+    "src/utility/font-weight/lg/index.js",
+    "src/utility/font-weight/lg/index.scss",
+    "src/utility/font-weight/lg/rule.js",
+    "src/utility/font-weight/lg/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/lg/scss/index.scss",
+    "src/utility/font-weight/md/index.js",
+    "src/utility/font-weight/md/index.scss",
+    "src/utility/font-weight/md/rule.js",
+    "src/utility/font-weight/md/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/md/scss/index.scss",
+    "src/utility/font-weight/sm/index.js",
+    "src/utility/font-weight/sm/index.scss",
+    "src/utility/font-weight/sm/rule.js",
+    "src/utility/font-weight/sm/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/sm/scss/index.scss",
+    "src/utility/font-weight/xl/index.js",
+    "src/utility/font-weight/xl/index.scss",
+    "src/utility/font-weight/xl/rule.js",
+    "src/utility/font-weight/xl/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/xl/scss/index.scss",
+    "src/utility/font-weight/xxl/index.js",
+    "src/utility/font-weight/xxl/index.scss",
+    "src/utility/font-weight/xxl/rule.js",
+    "src/utility/font-weight/xxl/scss/_sf_css__font_weight.scss",
+    "src/utility/font-weight/xxl/scss/index.scss"
+  ],
+  "content_sha256": "f7e322f1cc82fb89468f83adf67ada64389330312f1ebd2278985c7ea9674afd",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

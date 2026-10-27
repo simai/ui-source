@@ -1,0 +1,52 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.border-radius",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/border-radius/default/index.js",
+    "src/utility/border-radius/default/index.scss",
+    "src/utility/border-radius/default/rule.js",
+    "src/utility/border-radius/default/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/default/scss/_sf_var__radius.scss",
+    "src/utility/border-radius/default/scss/index.scss",
+    "src/utility/border-radius/lg/index.js",
+    "src/utility/border-radius/lg/index.scss",
+    "src/utility/border-radius/lg/rule.js",
+    "src/utility/border-radius/lg/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/lg/scss/index.scss",
+    "src/utility/border-radius/md/index.js",
+    "src/utility/border-radius/md/index.scss",
+    "src/utility/border-radius/md/rule.js",
+    "src/utility/border-radius/md/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/md/scss/index.scss",
+    "src/utility/border-radius/sm/index.js",
+    "src/utility/border-radius/sm/index.scss",
+    "src/utility/border-radius/sm/rule.js",
+    "src/utility/border-radius/sm/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/sm/scss/index.scss",
+    "src/utility/border-radius/xl/index.js",
+    "src/utility/border-radius/xl/index.scss",
+    "src/utility/border-radius/xl/rule.js",
+    "src/utility/border-radius/xl/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/xl/scss/index.scss",
+    "src/utility/border-radius/xxl/index.js",
+    "src/utility/border-radius/xxl/index.scss",
+    "src/utility/border-radius/xxl/rule.js",
+    "src/utility/border-radius/xxl/scss/_sf_css__radius.scss",
+    "src/utility/border-radius/xxl/scss/index.scss"
+  ],
+  "content_sha256": "5f51a081f5ee81b6f828f91ed9bb02da0987bc9c38e3b69a81a874cc9f66e3ed",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

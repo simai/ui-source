@@ -1,0 +1,19 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.ajax",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/ajax/index.js",
+    "src/component/ajax/js/_ajax.js"
+  ],
+  "content_sha256": "60fac37ce78634551bbea1d2d01d0b432c93d26331f43623b92a8eb1d4ea7889",
+  "dependencies": [
+    {
+      "id": "component.sf-system",
+      "range": "^1.0.0"
+    }
+  ]
+}

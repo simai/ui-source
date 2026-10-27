@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.stroke-width",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/stroke-width/default/index.js",
+    "src/utility/stroke-width/default/index.scss",
+    "src/utility/stroke-width/default/rule.js",
+    "src/utility/stroke-width/default/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/default/scss/_sf_var__stroke_width.scss",
+    "src/utility/stroke-width/default/scss/index.scss",
+    "src/utility/stroke-width/lg/index.js",
+    "src/utility/stroke-width/lg/index.scss",
+    "src/utility/stroke-width/lg/rule.js",
+    "src/utility/stroke-width/lg/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/lg/scss/index.scss",
+    "src/utility/stroke-width/md/index.js",
+    "src/utility/stroke-width/md/index.scss",
+    "src/utility/stroke-width/md/rule.js",
+    "src/utility/stroke-width/md/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/md/scss/index.scss",
+    "src/utility/stroke-width/sm/index.js",
+    "src/utility/stroke-width/sm/index.scss",
+    "src/utility/stroke-width/sm/rule.js",
+    "src/utility/stroke-width/sm/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/sm/scss/index.scss",
+    "src/utility/stroke-width/xl/index.js",
+    "src/utility/stroke-width/xl/index.scss",
+    "src/utility/stroke-width/xl/rule.js",
+    "src/utility/stroke-width/xl/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/xl/scss/index.scss",
+    "src/utility/stroke-width/xxl/index.js",
+    "src/utility/stroke-width/xxl/index.scss",
+    "src/utility/stroke-width/xxl/rule.js",
+    "src/utility/stroke-width/xxl/scss/_sf_css__stroke_width.scss",
+    "src/utility/stroke-width/xxl/scss/index.scss"
+  ],
+  "content_sha256": "abe617cbd6f6e4cbc16532e0590d9209e5c95448904eee483572787a5d928a19",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.overscroll-behavior",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/overscroll-behavior/default/index.js",
+    "src/utility/overscroll-behavior/default/index.scss",
+    "src/utility/overscroll-behavior/default/rule.js",
+    "src/utility/overscroll-behavior/default/scss/_sf_css__overscroll.scss",
+    "src/utility/overscroll-behavior/default/scss/_sf_var__overscroll.scss",
+    "src/utility/overscroll-behavior/default/scss/index.scss"
+  ],
+  "content_sha256": "d8097a05a4a90d787f52d3f47f4d7b1453a4e46bd834efb1b1355f147cfcfd48",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

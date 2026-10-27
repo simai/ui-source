@@ -1,0 +1,26 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.scroll-margin-ext",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/scroll-margin-ext/default/index.js",
+    "src/utility/scroll-margin-ext/default/index.scss",
+    "src/utility/scroll-margin-ext/default/rule.js",
+    "src/utility/scroll-margin-ext/default/scss/_sf_css__margin_ext.scss",
+    "src/utility/scroll-margin-ext/default/scss/index.scss"
+  ],
+  "content_sha256": "83634ce2a5be5477bd887a584d163109fb2200c7eaa085a630ea12642ab6d8b2",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

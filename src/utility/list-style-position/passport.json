@@ -1,0 +1,23 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.list-style-position",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/list-style-position/default/index.js",
+    "src/utility/list-style-position/default/index.scss",
+    "src/utility/list-style-position/default/rule.js",
+    "src/utility/list-style-position/default/scss/_sf_css__list_style_position.scss",
+    "src/utility/list-style-position/default/scss/_sf_var__list_style_position.scss",
+    "src/utility/list-style-position/default/scss/index.scss"
+  ],
+  "content_sha256": "fe8cafe7e3be135b07e4867186bd0a2081d9821449895af57c5caf6a53addc61",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.datepicker",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/datepicker/index.scss",
+    "src/component/datepicker/rule.js",
+    "src/component/datepicker/scss/_css_datepicker-text.scss",
+    "src/component/datepicker/scss/_css_datepicker.scss",
+    "src/component/datepicker/scss/_css_datepicker_custom.scss",
+    "src/component/datepicker/scss/_css_day.scss",
+    "src/component/datepicker/scss/index.scss"
+  ],
+  "content_sha256": "d0e320c98ec1fbd607d55d5e8b8d07c0050c8c83f70272ae1075be7104b76ed1",
+  "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

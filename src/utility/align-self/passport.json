@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.align-self",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/align-self/default/index.js",
+    "src/utility/align-self/default/index.scss",
+    "src/utility/align-self/default/rule.js",
+    "src/utility/align-self/default/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/default/scss/_sf_var__align_self.scss",
+    "src/utility/align-self/default/scss/index.scss",
+    "src/utility/align-self/lg/index.js",
+    "src/utility/align-self/lg/index.scss",
+    "src/utility/align-self/lg/rule.js",
+    "src/utility/align-self/lg/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/lg/scss/index.scss",
+    "src/utility/align-self/md/index.js",
+    "src/utility/align-self/md/index.scss",
+    "src/utility/align-self/md/rule.js",
+    "src/utility/align-self/md/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/md/scss/index.scss",
+    "src/utility/align-self/sm/index.js",
+    "src/utility/align-self/sm/index.scss",
+    "src/utility/align-self/sm/rule.js",
+    "src/utility/align-self/sm/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/sm/scss/index.scss",
+    "src/utility/align-self/xl/index.js",
+    "src/utility/align-self/xl/index.scss",
+    "src/utility/align-self/xl/rule.js",
+    "src/utility/align-self/xl/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/xl/scss/index.scss",
+    "src/utility/align-self/xxl/index.js",
+    "src/utility/align-self/xxl/index.scss",
+    "src/utility/align-self/xxl/rule.js",
+    "src/utility/align-self/xxl/scss/_sf_css__align_self.scss",
+    "src/utility/align-self/xxl/scss/index.scss"
+  ],
+  "content_sha256": "20b7922705244e53292859658d1afd356ed30b77f03d0d8cfdc055f942f4fa47",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

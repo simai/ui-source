@@ -1,0 +1,22 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.table-layout",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/table-layout/default/index.js",
+    "src/utility/table-layout/default/index.scss",
+    "src/utility/table-layout/default/rule.js",
+    "src/utility/table-layout/default/scss/_sf_css__table_layout.scss",
+    "src/utility/table-layout/default/scss/index.scss"
+  ],
+  "content_sha256": "09a8c9964bfb34e6bd6e8dab53124ff6154f3e151fc207aaa86c8b503a121120",
+  "dependencies": [
+    {
+      "id": "utility.table",
+      "range": "^1.0.0"
+    }
+  ]
+}

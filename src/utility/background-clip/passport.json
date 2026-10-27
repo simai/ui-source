@@ -1,0 +1,48 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.background-clip",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/background-clip/default/index.js",
+    "src/utility/background-clip/default/index.scss",
+    "src/utility/background-clip/default/rule.js",
+    "src/utility/background-clip/default/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/default/scss/_sf_var_background_clip.scss",
+    "src/utility/background-clip/default/scss/index.scss",
+    "src/utility/background-clip/lg/index.js",
+    "src/utility/background-clip/lg/index.scss",
+    "src/utility/background-clip/lg/rule.js",
+    "src/utility/background-clip/lg/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/lg/scss/index.scss",
+    "src/utility/background-clip/md/index.js",
+    "src/utility/background-clip/md/index.scss",
+    "src/utility/background-clip/md/rule.js",
+    "src/utility/background-clip/md/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/md/scss/index.scss",
+    "src/utility/background-clip/sm/index.js",
+    "src/utility/background-clip/sm/index.scss",
+    "src/utility/background-clip/sm/rule.js",
+    "src/utility/background-clip/sm/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/sm/scss/index.scss",
+    "src/utility/background-clip/xl/index.js",
+    "src/utility/background-clip/xl/index.scss",
+    "src/utility/background-clip/xl/rule.js",
+    "src/utility/background-clip/xl/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/xl/scss/index.scss",
+    "src/utility/background-clip/xxl/index.js",
+    "src/utility/background-clip/xxl/index.scss",
+    "src/utility/background-clip/xxl/rule.js",
+    "src/utility/background-clip/xxl/scss/_sf_css_background_clip.scss",
+    "src/utility/background-clip/xxl/scss/index.scss"
+  ],
+  "content_sha256": "96b94c5d69475f6883f0e6d5da489b9dce485b31b58b0a4df77e11c71b19aa2e",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.box-shadow-color",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/box-shadow-color/active/index.js",
+    "src/utility/box-shadow-color/active/index.scss",
+    "src/utility/box-shadow-color/active/rule.js",
+    "src/utility/box-shadow-color/active/scss/_sf_css__box_shadow_color.scss",
+    "src/utility/box-shadow-color/active/scss/index.scss",
+    "src/utility/box-shadow-color/default/index.js",
+    "src/utility/box-shadow-color/default/index.scss",
+    "src/utility/box-shadow-color/default/rule.js",
+    "src/utility/box-shadow-color/default/scss/_sf_css__box_shadow_color.scss",
+    "src/utility/box-shadow-color/default/scss/_sf_var__box_shadow_color.scss",
+    "src/utility/box-shadow-color/default/scss/index.scss",
+    "src/utility/box-shadow-color/hover/index.js",
+    "src/utility/box-shadow-color/hover/index.scss",
+    "src/utility/box-shadow-color/hover/rule.js",
+    "src/utility/box-shadow-color/hover/scss/_sf_css__box_shadow_color.scss",
+    "src/utility/box-shadow-color/hover/scss/index.scss"
+  ],
+  "content_sha256": "a82599d149455dfb922a80866b404c768a1df5192dccea089db4f8eaae3e0270",
+  "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.elevation",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.text-wrap",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/text-wrap/default/index.js",
+    "src/utility/text-wrap/default/index.scss",
+    "src/utility/text-wrap/default/rule.js",
+    "src/utility/text-wrap/default/scss/_sf_css__text_wrap.scss",
+    "src/utility/text-wrap/default/scss/index.scss"
+  ],
+  "content_sha256": "5d75b29bf425776f7898f004462e22411baea9f94d740f32f9071f3f4bca0f96",
+  "dependencies": []
+}
