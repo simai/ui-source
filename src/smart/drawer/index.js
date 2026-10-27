@@ -402,7 +402,8 @@ class SfDrawer extends DrawerElement {
   }
 
   connectedCallback() {
-    if (!this._contentNodes) this._contentNodes = Array.from(this.childNodes);
+    // Static markup is a picture of the drawer, not its content (§5.4).
+    if (!this._contentNodes) this._contentNodes = Array.from(this.childNodes).filter((node) => !node.hasAttribute?.('data-sf-static'));
     this.drawerId = this.resolveDrawerId();
     super.connectedCallback();
     drawerManager.bindGlobalEvents();
@@ -629,6 +630,12 @@ class SfDrawer extends DrawerElement {
     // The portal stands at the end of the body; it speaks and looks as the
     // drawer does where it stands (standard 1.3.8 §19.1).
     carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES});
+    // Static markup printed for the first paint goes as the drawer draws
+    // (standard 1.3.8 §5.4); the panel itself is rendered in the portal.
+    if (!this.__sfFirstPaintEnded) {
+      this.__sfFirstPaintEnded = true;
+      this.prepareRenderContainer();
+    }
     render(result, portal);
     this.afterRender();
   }

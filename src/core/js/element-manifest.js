@@ -366,6 +366,11 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
   if (typeof Base !== 'function') throw new TypeError('elementFromManifest: a base class is required');
   const read = readManifest(manifest);
   const generatedProps = propsFromManifest(manifest);
+  // Settings that arrive after the first paint (§5.4): their skeleton holds
+  // the box until they do.
+  const late = [].concat(manifest.presentation?.skeleton?.late ?? [])
+    .map((name) => read.members.find((member) => member.name === name))
+    .filter(Boolean);
   const words = Object.fromEntries(Object.entries(lang).map(([locale, file]) => [locale.toLowerCase(), {...(file?.runtime || {})}]));
   const sourceLanguage = source || Object.keys(words)[0] || '';
   const formerKeys = formerWords?.words || {};
@@ -391,9 +396,58 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
     }
 
     connectedCallback() {
+      this.sfReadIsland();
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
+    }
+
+    /**
+     * The first values of the settings an attribute cannot hold, lists and
+     * objects, from the JSON island a server prints in the host (§5.4):
+     * `<script type="application/json" data-sf-settings>{"items": [...]}</script>`.
+     * Read once, before the first render; an attribute or a property the page
+     * set first wins. The island is taken out, so a component that reads its
+     * children never meets it.
+     */
+    sfReadIsland() {
+      const island = Array.from(this.children ?? []).find((child) => child.localName === 'script'
+        && child.hasAttribute('data-sf-settings') && /^application\/json$/iu.test(child.type));
+      if (!island) return;
+      island.remove();
+      let data;
+      try {
+        data = JSON.parse(island.textContent || '{}');
+      } catch (error) {
+        globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the data-sf-settings island is not JSON`, error);
+        return;
+      }
+      for (const [name, value] of Object.entries(isPlainObject(data) ? data : {})) {
+        const member = read.members.find((one) => one.name === name);
+        if (!member || !member.writable || member.native) {
+          globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the island's "${name}" is not a setting`);
+          continue;
+        }
+        if (member.attribute ? this.hasAttribute(member.attribute) : Object.prototype.hasOwnProperty.call(this.__sfManifestData ?? {}, name)) continue;
+        this[member.property] = value;
+      }
+    }
+
+    /**
+     * Whether the element keeps its printed skeleton (§5.4, §7.3 phase 3):
+     * the host was printed with data-sf-first-paint="skeleton" and a setting
+     * declared late (presentation.skeleton.late) has not arrived. The first
+     * render waits for it, so the skeleton turns into content in one frame.
+     * A component whose data comes another way (a port) overrides this.
+     */
+    sfAwaitingData() {
+      if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return false;
+      return late.some((member) => {
+        if (member.attribute && this.hasAttribute(member.attribute)) return false;
+        // Read through the property: a component may keep the setting itself.
+        const value = this[member.property];
+        return value === undefined || value === null || (Array.isArray(value) && !value.length);
+      });
     }
 
     /** §4.1: the element has a box in an opened container. */

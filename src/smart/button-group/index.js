@@ -208,6 +208,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   connectedCallback() {
+    // A printed JSON island first (standard 1.3.8 §5.4): what is read below may be in it.
+    this.sfReadIsland();
     // The value a form reset returns to: the one the group was written with.
     if (!Object.prototype.hasOwnProperty.call(this, '_resetValue')) this._resetValue = this.value;
     super.connectedCallback();

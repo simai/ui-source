@@ -426,7 +426,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree-item/index.js",
-        "sha256": "90455a627dce3da3f3688ccf76bf8be8de53c97b01ff568894646159780f387e"
+        "sha256": "10cde6f7e0db07ef343eb851551065e24ca462e99de3286859b30f003f4d7a88"
       },
       {
         "path": "src/smart/tree-item/js/templates/default.js",

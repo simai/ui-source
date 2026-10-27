@@ -153,6 +153,60 @@ the next one.
   markup nor a `data-sf-skeleton` shape (`src/core/js/pending-tags.js`), in its
   own box; the page itself is never hidden.
 
+- **Every component's first paint is a build snapshot** (owner decision
+  2026-10-27; §5.4, §7.3, gate 24). `node scripts/snapshot-first-paint.mjs
+  <build output>` renders every example of `examples.json` (a component
+  without one: its defaults) in a headless browser with the real Loader and
+  writes `static/<template>/<example>.html` -- the host as a server prints it:
+  its attributes, a JSON island `<script type="application/json"
+  data-sf-settings>` for list and object settings, the rendered markup marked
+  `data-sf-static`, and the page's own children (those the element takes into
+  its markup marked `data-sf-held`, out of view until it draws) -- and
+  `static/sheets.json`, the sheets the Loader asked for, per example. The
+  files are committed and ship with the component (the builder copies every
+  `.html` and `.json` of its folder); `--check` fails on a stale one, and
+  `tests/browser/first-paint-snapshots.browser.mjs` runs it on the candidate.
+  An overlay is printed closed: its first paint is its trigger, or nothing.
+- **Late data has a skeleton.** Settings that arrive after the first paint
+  are declared: `"presentation": {"skeleton": {"late": ["items"]}}` (sf-tree,
+  sf-menu, sf-profile-picker). For an example that gives them, the snapshot
+  also writes `<example>.skeleton.html`: every text a bar of the same length
+  (`.sf-first-paint-bar`, the text kept transparent), every image a fill,
+  values cleared, the late settings left out of the island, the host marked
+  `data-sf-first-paint="skeleton" aria-busy="true"`. The element keeps a
+  printed skeleton until the late settings arrive (`sfAwaitingData()`), then
+  replaces it in one frame. A hand-written `skeleton.html`
+  (`presentation.skeleton.file`, with `{{setting}}` and `<template
+  data-sf-repeat="rows">` repeated from `presentation.skeleton.repeat`)
+  overrides the derived one, and is what a part whose data is unknown when an
+  assembly is composed is printed with.
+- **Adoption is the base's**, not a component's: the JSON island is read
+  before the first render (`sfReadIsland()`, a component that reads children
+  before `super.connectedCallback()` calls it first); a Smart element drawn
+  inside another's static markup does not draw on its own; when the outer
+  element draws, each new Smart element of its template takes the static
+  children of the printed one of the same tag and order
+  (`handOverStaticMarkup`), so the page shows its picture until it draws. A
+  component that renders by its own path (sf-modal, sf-drawer, the plain
+  composition hosts) removes static markup the same way, and one that
+  collects its children as content skips `data-sf-static`.
+- **An assembly's first paint is composed from its parts** (§7.3): the
+  snapshot renders the assembly and writes `static/<layout>/<example>.html`,
+  the live layout printed as one `data-sf-static` node with each part's host
+  in its place holding the part's static markup, or its `skeleton.html` when
+  its late data is not in the example. `SF.Assembly` takes the printed part
+  hosts into the live layout in the same task as it places the parts
+  (`HostView.adoptPrinted`), so each adopts its own printed markup.
+  `tests/fixtures/first-paint/document-browser` is the test assembly.
+- **Gate 24** (`tests/browser/first-paint-gate.browser.mjs`): every snapshot
+  is printed with its sheets, Core in `<head>`, the components' code held
+  back; at 1280 and 390 px the element's box (each part's, for an assembly)
+  is the same once the sheets are in, once the code adopted and once the late
+  data arrived, the text below never moves and no layout shift is recorded.
+  A shift before any code while nothing moved, or of text alone while no box
+  moved, is a font arriving and is reported apart. Known exceptions, each
+  with its reason: `tests/browser/first-paint-gate.known.json`.
+
 - **A Smart element in a closed container loads when it opens** (§7.2.1,
   simai/ui-source#47). Inside `[hidden]`, `[inert]`, a closed `<details>` (past
   its summary) or a closed `<dialog>`, the Loader does not fetch the tag's code;

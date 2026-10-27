@@ -301,7 +301,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "78127fbf89b3f598ced6628dba13aad16e84aa665053e624a1027a78eae4f149"
+        "sha256": "c8fa1245032d681d3b46cb5773dbdd6358fd1838eacdcc4608bf15bd30ea4ad4"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",

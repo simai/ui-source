@@ -234,7 +234,8 @@ class SfModal extends ModalElement {
     if (!first) return;
     const loose = Array.from(this.childNodes).filter((node) =>
       node.nodeType === Node.ELEMENT_NODE
-        ? node.tagName.toLowerCase() !== "template"
+        // Static markup is a picture of the window, not its content (§5.4).
+        ? node.tagName.toLowerCase() !== "template" && !node.hasAttribute("data-sf-static")
         : node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
     if (!loose.length) return;
     if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
@@ -636,6 +637,13 @@ class SfModal extends ModalElement {
       return;
     }
 
+    // Static markup printed for the first paint goes as the window draws
+    // (standard 1.3.8 §5.4): the base's first render does it, and this
+    // render is the window's own.
+    if (!this.__sfFirstPaintEnded) {
+      this.__sfFirstPaintEnded = true;
+      this.prepareRenderContainer(changedAttributes);
+    }
     render(templateResult, this.resolveRenderTarget());
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {

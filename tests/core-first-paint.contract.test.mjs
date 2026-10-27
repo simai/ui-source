@@ -174,16 +174,21 @@ test('Core holds every undefined sf- element met while the page is parsed, until
 test('the first render replaces static markup in the same task, and keeps slots', () => {
   const base = read('src/core/js/smart-base.js');
   // Class methods, read as an object literal's: a comma between them.
-  const methods = slice(base, '  staticMarkup() {', '  template() {').replace(/\n  \}\n\n  (?=\w+\()/gu, '\n  },\n\n  ');
+  const methods = slice(base, '  staticMarkup() {', '  template() {')
+    .replace(/^ *\/\/.*\n/gmu, '')
+    .replace(/\n  \}\n\n  (?=\w+\()/gu, '\n  },\n\n  ');
   const host = vm.runInNewContext(`({
     _hasRendered: false,
     children: [],
+    getAttribute() { return null; },
+    removeAttribute() {},
     shouldClearLightDomBeforeFirstRender() { return false; },
     ${methods}
   })`);
   const node = (attrs) => ({
     attrs,
     hasAttribute(name) { return Object.hasOwn(this.attrs, name); },
+    removeAttribute(name) { if (name !== 'data-sf-static') delete this.attrs[name]; },
     remove() { host.children.splice(host.children.indexOf(this), 1); },
   });
   const printed = node({'data-sf-static': ''});

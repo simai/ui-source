@@ -49,6 +49,8 @@ class SfTreeItem extends TreeItemElement {
   }
 
   connectedCallback() {
+    // A printed JSON island first (standard 1.3.8 §5.4): what is read below may be in it.
+    this.sfReadIsland();
     if (!this.__treeItemSourceCaptured) {
       this.captureSourceData();
       this.captureInitialContent();

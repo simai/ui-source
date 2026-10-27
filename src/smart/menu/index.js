@@ -121,7 +121,8 @@ class SfSmartMenu extends MenuElement {
     const first = !this._slotTemplatesCaptured;
     super.captureSlotTemplates();
     if (!first) return;
-    const children = Array.from(this.children);
+    // Static markup is a picture of the menu, not its items (§5.4).
+    const children = Array.from(this.children).filter((child) => !child.hasAttribute('data-sf-static'));
     const nav = children.find((child) => child.localName === 'nav');
     const list = children.find((child) => child.localName === 'ul') || nav?.querySelector(':scope > ul');
     if (!list) return;

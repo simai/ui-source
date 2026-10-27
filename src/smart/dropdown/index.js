@@ -173,6 +173,8 @@ class SfDropdown extends DropdownElement {
   }
 
   connectedCallback() {
+    // A printed JSON island first (standard 1.3.8 §5.4): what is read below may be in it.
+    this.sfReadIsland();
     this.captureOptions();
     if (!Object.prototype.hasOwnProperty.call(this, '_resetValues')) {
       this._resetValues = [...this.selectedValues];

@@ -1068,6 +1068,20 @@ class SfBaseElement extends HTMLElement {
       return;
     }
 
+    // A printed skeleton stays until the data it stands for arrives (§5.4,
+    // §7.3 phase 3): the first render then replaces it in one frame.
+    if (!this._hasRendered && this.sfAwaitingData?.() === true) {
+      return;
+    }
+
+    // An element drawn inside another's static markup is part of that
+    // picture: it does not draw on its own (a slider in a gallery's picture
+    // drew without its slides before the gallery came). The element around
+    // it replaces the picture, or hands this part of it to its own new one.
+    if (!this._hasRendered && this.parentElement?.closest("[data-sf-static]")) {
+      return;
+    }
+
     this._activeRefEffects = new Set();
     this.beforeRender(changedAttributes);
     this.emitComponentEvent("before-render", { changedAttributes });
@@ -1082,9 +1096,17 @@ class SfBaseElement extends HTMLElement {
       return;
     }
 
+    const printed = this._hasRendered ? [] : this.staticMarkup();
     this.prepareRenderContainer(changedAttributes);
     this.markStylePending(this);
     render(templateResult, this);
+    if (printed.length) {
+      this.handOverStaticMarkup(printed);
+      // Page children the first paint held out of view are placed now.
+      this.querySelectorAll("[data-sf-held]").forEach((node) => {
+        if (!node.parentElement?.querySelector(":scope > [data-sf-static]")) node.removeAttribute("data-sf-held");
+      });
+    }
     this.flushRefEffects();
     await this.whenRenderedStylesReady(this);
 
@@ -2598,10 +2620,63 @@ class SfBaseElement extends HTMLElement {
 
     if (this.shouldClearLightDomBeforeFirstRender()) {
       this.replaceChildren();
+      this.endFirstPaint();
       return;
     }
 
     this.staticMarkup().forEach((node) => node.remove());
+    this.endFirstPaint();
+  }
+
+  // A Smart element this element's template draws (a slider in a gallery, a
+  // button in a header) is new and draws itself later, a frame or more after
+  // this one. Its part of the printed picture goes over to it, in the same
+  // task: the n-th new element of a tag takes the static children of the n-th
+  // printed one, so the page shows the picture of it until it draws (§5.4,
+  // gate 23: no frame without the component).
+  handOverStaticMarkup(printed) {
+    const pool = new Map();
+    for (const node of printed) {
+      for (const element of node.querySelectorAll("*")) {
+        if (!element.localName.includes("-")) continue;
+        if (!pool.has(element.localName)) pool.set(element.localName, []);
+        pool.get(element.localName).push(element);
+      }
+    }
+    if (!pool.size) return;
+    for (const element of this.querySelectorAll("*")) {
+      if (!element.localName.includes("-") || element.isRendered === true) continue;
+      // Only an element that will draw takes a picture: a Smart element, or
+      // one whose code has not arrived.
+      if (customElements.get(element.localName) && !("isRendered" in element)) continue;
+      if (element.closest("[data-sf-static]")) continue;
+      const old = pool.get(element.localName)?.shift();
+      if (!old) continue;
+      // Text the template put inside it would show beside the picture: such
+      // an element shows its text until it draws. Elements it was given are
+      // held out of view (data-sf-held) while the picture stands.
+      if (Array.from(element.childNodes).some((node) => node.nodeType === 3 && node.data.trim())) continue;
+      const pictures = Array.from(old.children).filter((child) => child.hasAttribute("data-sf-static"));
+      if (!pictures.length) continue;
+      Array.from(element.children).forEach((child) => child.setAttribute("data-sf-held", ""));
+      // The printed host's box (display: contents, as the element sets it on
+      // connect) until its code comes: an undefined host is inline and gave
+      // a line of its own around the picture.
+      const display = old.style?.display;
+      if (display && !element.style.display) element.style.display = display;
+      element.append(...pictures);
+    }
+  }
+
+  // What the first paint left on the host goes with it: the skeleton's
+  // marks, and the hold on page children the static markup showed for them
+  // (core placeholder sheet, data-sf-held).
+  endFirstPaint() {
+    if (this.getAttribute("data-sf-first-paint") === "skeleton") {
+      this.removeAttribute("aria-busy");
+    }
+    this.removeAttribute("data-sf-first-paint");
+    Array.from(this.children).forEach((child) => child.removeAttribute("data-sf-held"));
   }
 
   template() {

@@ -169,6 +169,9 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       return;
     }
 
+    // The trail mounts once it has items: a printed JSON island holds them
+    // (standard 1.3.8 §5.4), read before it looks for item children.
+    this.sfReadIsland();
     this.observeItemChildren();
     this.applyHostDisplayStyle();
 
