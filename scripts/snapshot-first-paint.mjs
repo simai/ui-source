@@ -88,15 +88,17 @@ ${coreScript}
     await page.evaluate(() => document.fonts.ready);
     const quiet = Date.now() + 15000;
     while ((inflight > 0 || Date.now() - last < 600) && Date.now() < quiet) await new Promise((settle) => setTimeout(settle, 50));
-    // Settled: two snapshots 150 ms apart agree.
+    // Settled: three snapshots 250 ms apart agree (a measured style, such as
+    // the composition overlay's clip-path, takes a while on a loaded machine).
     const prefix = `sf-${component.folder}-${example.name}`.replace(/[^a-z0-9-]/giu, '-');
     let html = '';
-    for (let tries = 0; tries < 8; tries += 1) {
+    let agreed = 0;
+    for (let tries = 0; tries < 16 && agreed < 2; tries += 1) {
       await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
       const next = await page.evaluate((prefix) => window.__sfFirstPaintSerialize({prefix}), prefix);
-      if (next === html) break;
+      agreed = next === html ? agreed + 1 : 0;
       html = next;
-      await page.waitForTimeout(150);
+      await page.waitForTimeout(250);
     }
     let skeleton = null;
     // A skeleton stands for data the example gives late: an example that
@@ -178,7 +180,15 @@ const header = (component, example, kind) => `<!-- ${component.tag}, example «$
 function compare(file, body) {
   if (check) {
     if (!existsSync(file)) results.missing.push(relative(repo, file));
-    else if (readFileSync(file, 'utf8') !== body) results.stale.push(relative(repo, file));
+    else if (readFileSync(file, 'utf8') !== body) {
+      results.stale.push(relative(repo, file));
+      // What this run rendered, to compare (FIRST_PAINT_STALE_DIR).
+      if (process.env.FIRST_PAINT_STALE_DIR) {
+        const copy = join(process.env.FIRST_PAINT_STALE_DIR, relative(repo, file));
+        mkdirSync(dirname(copy), {recursive: true});
+        writeFileSync(copy, body);
+      }
+    }
     else results.unchanged += 1;
     return;
   }
@@ -197,9 +207,15 @@ async function worker() {
     const {component, example} = job;
     const entry = byComponent.get(component.folder);
     try {
-      const got = await snapshot(component, example);
-      if (got.errors.length) throw new Error(got.errors.join('; '));
       const files = exampleFiles(component, example);
+      let got = await snapshot(component, example);
+      // A check renders a differing example again before it calls it stale:
+      // one render on a loaded machine can be taken before the page settled.
+      for (let again = 0; check && again < 2 && existsSync(files.html)
+        && readFileSync(files.html, 'utf8') !== `${header(component, example, 'static markup')}${got.html}\n`; again += 1) {
+        got = await snapshot(component, example);
+      }
+      if (got.errors.length) throw new Error(got.errors.join('; '));
       compare(files.html, `${header(component, example, 'static markup')}${got.html}\n`);
       entry.files.add(files.html);
       if (got.skeleton) {
@@ -260,6 +276,7 @@ const keptSheets = (file) => {
 for (const {component, sheets, examples, files} of byComponent.values()) {
   if (!Object.keys(examples).length) continue;
   const committed = keptSheets(join(component.dir, 'static', 'sheets.json'));
+  sheets.clear();
   for (const [name, list] of Object.entries(examples)) {
     const before = committed?.examples?.[name] ?? [];
     const missing = list.filter((one) => !before.includes(one));
