@@ -1,0 +1,94 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Галерея в лайтбоксе",
+      "settings": {
+        "open": true,
+        "current": 1
+      },
+      "children": [
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">"
+      ],
+      "expect": {
+        "values": {
+          "open": true
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "next",
+      "title": "Следующий слайд",
+      "settings": {
+        "arrows": true,
+        "thumbs": false
+      },
+      "children": [
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+      ],
+      "script": [
+        {
+          "act": "next"
+        }
+      ],
+      "expect": {
+        "events": [
+          {
+            "change": {
+              "previous": 1,
+              "current": 2,
+              "from": "api"
+            }
+          }
+        ],
+        "values": {
+          "current": 2
+        }
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "inline-only",
+      "title": "Без лайтбокса",
+      "settings": {
+        "lightbox": false,
+        "dots": true
+      },
+      "children": [
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+      ]
+    },
+    {
+      "name": "lightbox-only",
+      "title": "Только лайтбокс",
+      "settings": {
+        "inline": false,
+        "heading": "Фотографии"
+      },
+      "children": [
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
+        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+      ],
+      "script": [
+        {
+          "act": "open",
+          "with": {
+            "index": 2
+          }
+        }
+      ],
+      "expect": {
+        "events": [
+          "opened"
+        ],
+        "name": "Фотографии"
+      }
+    }
+  ]
+}

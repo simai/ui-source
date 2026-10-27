@@ -4,15 +4,15 @@
   /* The rendered root is the grid/flex item (the custom host is display:contents).
      Do not feed Swiper's measured slide width back into an automatic minimum. */
   .sf-gallery {
-    min-width: 0;
+    min-width: var(--sf-gallery-min-inline-size, 0);
   }
 
   .sf-gallery-lightbox-content {
     --sf-slider-slide--height: auto;
-    --sf-slider-slide--min-height: 0;
+    --sf-slider-slide--min-height: var(--sf-gallery-slide-min-height, 0);
     --sf-slider-slide-img--width: auto;
     --sf-slider-slide-img--height: auto;
-    --sf-slider-slide-img--object-fit: contain;
+    --sf-slider-slide-img--object-fit: var(--sf-gallery-object-fit, contain);
     min-height: 0;
   }
 
@@ -47,8 +47,14 @@
   :where([data-sf-gallery-slider='lightbox']) img {
     display: block;
     min-height: 0;
-    max-height: var(--sf-gallery-media--max-height, calc(100dvh - var(--sf-space-6) * 2));
+    max-height: var(--sf-gallery-media-max-height, var(--sf-gallery-media--max-height, calc(100dvh - var(--sf-space-6) * 2)));
     max-width: 100%;
+  }
+
+  /* A caption under an image, inline and in the lightbox. */
+  .sf-gallery figcaption,
+  :where([data-sf-gallery-slider='lightbox']) figcaption {
+    color: var(--sf-gallery-caption-color, inherit);
   }
 
   :where([data-sf-gallery-slider='lightbox']) figcaption {

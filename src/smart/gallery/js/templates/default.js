@@ -48,7 +48,7 @@ export function renderGalleryTemplate(context) {
             <sf-modal
               data-sf-gallery-modal
               modal-id=${context.modalId}
-              title=${context.title}
+              heading=${context.heading}
               text=${context.text}
               ?open=${context.open}
               overlay=${String(context.overlay)}
@@ -62,7 +62,7 @@ export function renderGalleryTemplate(context) {
               fullscreen=${String(context.fullscreen)}
               width=${context.width}
               height=${context.height}
-              blur=${String(context.blur)}
+              backdrop-blur=${String(context.backdropBlur)}
               blur-type=${context.blurType}
               overlay-class=${context.overlayClass}
               close-class=${context.closeClass}

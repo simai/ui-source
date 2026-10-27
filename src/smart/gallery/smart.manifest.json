@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -219,6 +219,13 @@
       "footer-class": {
         "type": "string",
         "default": ""
+      },
+      "heading": {
+        "type": "string"
+      },
+      "backdrop-blur": {
+        "type": "boolean",
+        "default": false
       }
     },
     "additionalProperties": false
@@ -510,7 +517,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "5b4dc2cc1bfe3b7e6aafdbb8b989df813915361d946e35b233667ea4c371d3ba"
+        "sha256": "7a0574307d6ad8d1ed6172b8764ca554ad27b5540d9d4e7d0f2ad91564bf28f0"
       }
     ],
     "generated_runtime": [

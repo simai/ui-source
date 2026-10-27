@@ -45,6 +45,7 @@ const FOLDERS = {
   'empty-state': 'smart/empty-state',
   'file-preview': 'file-preview',
   slider: 'slider',
+  gallery: 'smart/gallery/js/templates',
 };
 
 const scss = async (folder) => {

@@ -34,7 +34,8 @@ test('Gallery seeds both children but does not drive the originating Slider back
     _inlineSlider: inline, _lightboxSlider: lightbox,
     _normalizeCurrent: value => value, _rememberSliderIndex: remember,
     _syncSliderToIndex: (child, index) => driven.push({child, index}),
-    emitComponentEvent: (name, detail) => changes.push({name, detail}),
+    // Standard 1.3.8: the declared event goes out through sfEmit (§8).
+    sfEmit: (name, detail) => changes.push({name, detail}),
   };
   setCurrent.call(gallery, 3, 'lightbox');
   assert.equal(inline.getAttribute('data-swiper-initial-slide'), '2');

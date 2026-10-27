@@ -1,0 +1,92 @@
+{
+  "$comment": "Dated aliases of sf-gallery for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-gallery",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "title",
+      "to": "heading",
+      "kind": "setting",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26"
+    },
+    {
+      "from": "blur",
+      "to": "backdrop-blur",
+      "kind": "setting",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "§3.1, §16 item 26: blur is the base action blur"
+    },
+    {
+      "from": "sf-change",
+      "to": "change",
+      "kind": "event",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the detail is data only now: component, tagName and template leave it"
+    },
+    {
+      "from": "sf-open",
+      "to": "sf-gallery-opened",
+      "kind": "event",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, vocabulary §4 (a fact)",
+      "note": "the detail is data only now"
+    },
+    {
+      "from": "sf-close",
+      "to": "sf-gallery-closed",
+      "kind": "event",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, vocabulary §4 (a fact)",
+      "note": "the detail is data only now"
+    },
+    {
+      "from": "getModal",
+      "to": null,
+      "kind": "action",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    },
+    {
+      "from": "getInlineSlider",
+      "to": null,
+      "kind": "action",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    },
+    {
+      "from": "getLightboxSlider",
+      "to": null,
+      "kind": "action",
+      "component": "sf-gallery",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    }
+  ]
+}

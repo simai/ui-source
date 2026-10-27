@@ -23,6 +23,7 @@ test('Gallery uses existing Slider projection tokens and spacing-backed viewport
 });
 
 test('Gallery can shrink as a grid or flex item without clipping its content',()=>{
-  assert.match(css,/\.sf-gallery\s*\{\s*min-width:\s*0;\s*\}/);
+  // The public variable first, 0 its fallback (standard 1.3.8 §6).
+  assert.match(css,/\.sf-gallery\s*\{\s*min-width:\s*var\(--sf-gallery-min-inline-size, 0\);\s*\}/);
   assert.doesNotMatch(css,/\.sf-gallery\s*\{[^}]*overflow\s*:\s*(hidden|clip)/);
 });

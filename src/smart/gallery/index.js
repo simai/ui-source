@@ -1,6 +1,34 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import { renderGalleryTemplate } from './js/templates/default';
 import { normalizeSlideContent } from '../../component/slider/js/_slide-content';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// sf-gallery from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8): its settings, values and actions are made by
+// core/js/element-manifest.js, and the old names -- title, blur, sf-change,
+// sf-open, sf-close and the readers getModal(), getInlineSlider(),
+// getLightboxSlider() -- are dated rows of aliases.json.
+const GalleryElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+});
+
+const applied = () => ({ outcome: 'applied' });
+
+// What retires without a new name (aliases.json rows with `to: null`): kept
+// until the date, and each call is noted with it.
+function noteRetired(from) {
+  noteDeprecated({ component: 'sf-gallery', tag: 'sf-gallery', kind: 'action', from, to: null,
+    since: aliases.since, remove_after: aliases.remove_after });
+}
+
 
 function normalizeSlotNodes(content) {
   if (!content || content === null || typeof content === 'undefined') {
@@ -26,7 +54,7 @@ const DELEGATED_MODAL_DEFAULTS = {
 };
 
 const DELEGATED_MODAL_ATTRIBUTES = [
-  'title',
+  'heading',
   'text',
   'overlay',
   'show-header',
@@ -38,7 +66,7 @@ const DELEGATED_MODAL_ATTRIBUTES = [
   'fullscreen',
   'width',
   'height',
-  'blur',
+  'backdrop-blur',
   'blur-type',
   'overlay-class',
   'close-class',
@@ -73,6 +101,13 @@ const DELEGATED_SLIDER_ATTRIBUTES = [
   'slide-class',
   'lightbox-class',
 ];
+
+// A trigger's data-sf-modal-title and data-sf-modal-blur still configure the
+// lightbox: heading and backdrop-blur are their names since standard 1.3.8.
+const DELEGATED_MODAL_ATTRIBUTE_ALIASES = {
+  title: 'heading',
+  blur: 'backdrop-blur',
+};
 
 const DELEGATED_SLIDER_ATTRIBUTE_ALIASES = {
   class: 'lightbox-class',
@@ -269,6 +304,7 @@ function configureDelegatedGallery(gallery, trigger, items) {
     namespace: 'modal',
     attributes: DELEGATED_MODAL_ATTRIBUTES,
     defaults: DELEGATED_MODAL_DEFAULTS,
+    aliases: DELEGATED_MODAL_ATTRIBUTE_ALIASES,
   });
   applyDelegatedNamespaceOptions({
     gallery,
@@ -283,62 +319,14 @@ function configureDelegatedGallery(gallery, trigger, items) {
 
 let galleryUid = 0;
 
-class SfGallery extends SfBaseElement {
+class SfGallery extends GalleryElement {
   static globalDelegationBound = false;
 
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
-      modalId: { default: '' },
-      title: { default: 'Gallery' },
-      text: { default: '' },
-      open: { type: Boolean, default: false },
-      current: { type: Number, default: 1 },
-      inline: { type: Boolean, default: true },
-      lightbox: { type: Boolean, default: true },
-      arrows: { type: Boolean, default: true },
-      dots: { type: Boolean, default: false },
-      thumbs: { type: Boolean, default: true },
-      loop: { type: Boolean, default: false },
-      spaceBetween: { type: Number, default: 12 },
-      speed: { type: Number, default: 450 },
-      buttonType: { default: 'primary' },
-      buttonSize: { default: '1' },
-      dotsType: { default: 'primary-dark' },
-      dotsSize: { default: '2' },
-      thumbsClass: { default: '' },
-      thumbClass: { default: '' },
       rootClass: { default: '' },
-      slideClass: { default: '' },
-      inlineClass: { default: '' },
-      lightboxClass: { default: '' },
-      overlay: { type: Boolean, default: true },
-      showHeader: { type: Boolean, default: true },
-      showClose: { type: Boolean, default: true },
-      closeOnEsc: { type: Boolean, default: true },
-      closeOnOverlay: { type: Boolean, default: true },
-      preserveScrollGap: { type: Boolean, default: true },
-      position: {
-        default: 'center',
-        values: ['center', 'left', 'right', 'top', 'bottom'],
-      },
-      fullscreen: { type: Boolean, default: false },
-      width: { default: '' },
-      height: { default: '' },
-      blur: { type: Boolean, default: false },
-      blurType: {
-        default: 'medium',
-        values: ['none', 'small', 'medium', 'large'],
-      },
-      overlayClass: { default: '' },
-      closeClass: { default: '' },
-      surfaceClass: { default: '' },
-      surfacePadding: { default: '' },
-      panelClass: { default: '' },
-      headerClass: { default: '' },
-      bodyClass: { default: '' },
-      contentClass: { default: '' },
-      footerClass: { default: '' },
     };
   }
 
@@ -452,6 +440,12 @@ class SfGallery extends SfBaseElement {
     return this._getConfiguredCurrent();
   }
 
+  // current is a value a page may also write (§4.3): the slide to show.
+  set current(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('current');
+    else this.setAttribute('current', String(value));
+  }
+
   _getConfiguredCurrent() {
     return this._normalizeCurrent(this.getProp('current') || 1);
   }
@@ -471,7 +465,10 @@ class SfGallery extends SfBaseElement {
   _setCurrent(index, source = 'api', options = {}) {
     const { emit = true, syncAttribute = false } = options;
     const next = this._normalizeCurrent(index);
-    const previous = this.current;
+    // The slide shown before this change: the gallery's own position, else the
+    // configured one. Reading the slider here would read the new position on a
+    // person's first swipe, which then sent no change at all.
+    const previous = this._current !== null ? this._normalizeCurrent(this._current) : this._getConfiguredCurrent();
 
     if (next === previous && this._current === next) {
       return this;
@@ -499,7 +496,8 @@ class SfGallery extends SfBaseElement {
     }
 
     if (emit && next !== previous) {
-      this.emitComponentEvent('change', {
+      // §8: data only; sf-change follows with the same detail until the date.
+    this.sfEmit('change', {
         previous,
         current: next,
         total: this.slidesTotal,
@@ -519,7 +517,7 @@ class SfGallery extends SfBaseElement {
   }
 
   _getSliderIndex(sliderElement) {
-    const slider = sliderElement?.getSlider?.();
+    const slider = sliderElement?._boundSlider || null;
     if (!slider) {
       return null;
     }
@@ -537,7 +535,7 @@ class SfGallery extends SfBaseElement {
   }
 
   _getSliderTotal(sliderElement) {
-    const slider = sliderElement?.getSlider?.();
+    const slider = sliderElement?._boundSlider || null;
     if (!slider) {
       return null;
     }
@@ -652,11 +650,11 @@ class SfGallery extends SfBaseElement {
       this._handleModalAfterRender,
     );
     this._inlineSlider?.addEventListener?.(
-      'sf-slide-change',
+      'change',
       this._handleInlineSlideChange,
     );
     this._lightboxSlider?.addEventListener?.(
-      'sf-slide-change',
+      'change',
       this._handleLightboxSlideChange,
     );
     this._lightboxSlider?.addEventListener?.(
@@ -690,11 +688,11 @@ class SfGallery extends SfBaseElement {
       this._handleModalAfterRender,
     );
     this._inlineSlider?.removeEventListener?.(
-      'sf-slide-change',
+      'change',
       this._handleInlineSlideChange,
     );
     this._lightboxSlider?.removeEventListener?.(
-      'sf-slide-change',
+      'change',
       this._handleLightboxSlideChange,
     );
     this._lightboxSlider?.removeEventListener?.(
@@ -841,7 +839,7 @@ class SfGallery extends SfBaseElement {
 
   _syncSliderToIndex(sliderElement, index) {
     this._rememberSliderIndex(sliderElement, index);
-    const slider = sliderElement?.getSlider?.();
+    const slider = sliderElement?._boundSlider || null;
     if (!slider || typeof index !== 'number' || index < 0) {
       return;
     }
@@ -896,11 +894,18 @@ class SfGallery extends SfBaseElement {
     this.open(index);
   }
 
+  // A nested slider's change is the gallery's business: it becomes the
+  // gallery's own change and stops here (§7.4: a part's events stop at the
+  // component that holds it).
   _handleInlineSlideChange(event) {
+    if (event.target !== this._inlineSlider) return;
+    event.stopPropagation();
     this._syncCurrentFromEvent(event, false);
   }
 
   _handleLightboxSlideChange(event) {
+    if (event.target !== this._lightboxSlider) return;
+    event.stopPropagation();
     this._syncCurrentFromEvent(event, true);
   }
 
@@ -1013,7 +1018,7 @@ class SfGallery extends SfBaseElement {
       this._refreshLightboxSlider();
       this._syncSliderToIndex(this._lightboxSlider, targetIndex);
     });
-    this.emitComponentEvent('open', {
+    this.sfEmit('opened', {
       current: this.current,
       total: this.slidesTotal,
     });
@@ -1024,7 +1029,7 @@ class SfGallery extends SfBaseElement {
     if (this.hasAttribute('open')) {
       this.removeAttribute('open');
     }
-    this.emitComponentEvent('close', {
+    this.sfEmit('closed', {
       current: this.current,
       total: this.slidesTotal,
     });
@@ -1042,32 +1047,41 @@ class SfGallery extends SfBaseElement {
     this._syncingCurrent = false;
   }
 
+  // §4.4: readers retire; kept until the date and noted on each call.
   getModal() {
+    noteRetired('getModal');
     return this._modal || null;
   }
 
   getInlineSlider() {
+    noteRetired('getInlineSlider');
     return this._inlineSlider || null;
   }
 
   getLightboxSlider() {
+    noteRetired('getLightboxSlider');
     return this._lightboxSlider || null;
   }
 
+  // The actions (§4.4) answer outcomes. `index` comes as a number or as
+  // {index}, the manifest's parameter object.
   open(index = null) {
-    if (index !== null && typeof index !== 'undefined') {
-      this.goTo(index);
+    const at = index && typeof index === 'object' ? index.index : index;
+    if (!this.getProp('lightbox')) return { outcome: 'refused', reason: 'no-lightbox' };
+    if (at !== null && typeof at !== 'undefined') {
+      this.goTo(at);
     }
 
     this.setAttribute('open', '');
     this._modal?.open?.();
-    return this;
+    return applied();
   }
 
   close() {
+    if (!this.openState) return { outcome: 'refused', reason: 'closed' };
     this.removeAttribute('open');
     this._modal?.close?.();
-    return this;
+    return applied();
   }
 
   toggle(index = null) {
@@ -1079,7 +1093,10 @@ class SfGallery extends SfBaseElement {
   }
 
   goTo(index) {
-    return this._setCurrent(index, 'api', { syncAttribute: true });
+    const at = index && typeof index === 'object' ? index.index : index;
+    if (!Number.isFinite(Number.parseInt(String(at), 10))) return { outcome: 'refused', reason: 'invalid' };
+    this._setCurrent(at, 'api', { syncAttribute: true });
+    return applied();
   }
 
   next() {

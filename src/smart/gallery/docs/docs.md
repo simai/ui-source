@@ -110,7 +110,7 @@ Example:
 
 Supported delegated modal attributes:
 
-- `data-sf-modal-title`
+- `data-sf-modal-heading` (or the older `data-sf-modal-title`)
 - `data-sf-modal-text`
 - `data-sf-modal-overlay`
 - `data-sf-modal-show-header`
@@ -122,7 +122,7 @@ Supported delegated modal attributes:
 - `data-sf-modal-fullscreen`
 - `data-sf-modal-width`
 - `data-sf-modal-height`
-- `data-sf-modal-blur`
+- `data-sf-modal-backdrop-blur` (or the older `data-sf-modal-blur`)
 - `data-sf-modal-blur-type`
 - `data-sf-modal-overlay-class`
 - `data-sf-modal-close-class`
@@ -157,7 +157,8 @@ Legacy `data-sf-gallery-*` options are still accepted as fallback for matching o
 
 - `template`
 - `modal-id`
-- `title`
+- `heading` — the lightbox's heading; «Галерея» / «Gallery» from the language
+  file when unset
 - `text`
 - `open`
 - `current`
@@ -187,7 +188,7 @@ Legacy `data-sf-gallery-*` options are still accepted as fallback for matching o
 - `fullscreen`
 - `width`
 - `height`
-- `blur`
+- `backdrop-blur`
 - `blur-type="none|small|medium|large"`
 - `overlay-class`
 - `close-class`
@@ -211,25 +212,33 @@ items; an attributed node (for example `figure slot="slide" class="p-2"`)
 is retained whole. Keep a composite card inside one item, not separate sibling
 heading/text/link nodes. Template and setSlot input use the same boundaries.
 
-## Methods
+## Actions
 
-- `open(index)`
-- `close()`
+Each answers an outcome, `{outcome: "applied"}` or `{outcome: "refused", reason}`:
+
+- `open(index)` — opens the lightbox, at a one-based slide when given;
+  refused (`no-lightbox`) without a lightbox
+- `close()` — refused (`closed`) when the lightbox is closed
 - `toggle(index)`
-- `goTo(index)`
-- `next()`
-- `prev()`
-- `getModal()`
-- `getInlineSlider()`
-- `getLightboxSlider()`
+- `goTo(index)`, `next()`, `prev()`
 
 ## Events
 
-The host dispatches component events through `SfBaseElement`:
+- `change {previous, current, total, from}` — the shown slide changed (`from`:
+  `inline`, `lightbox` or `api`). A nested slider's own `change` stops at the
+  gallery.
+- `sf-gallery-opened {current, total}` — the lightbox opened.
+- `sf-gallery-closed {current, total}` — the lightbox closed.
 
-- `sf-gallery-open`
-- `sf-gallery-close`
-- `sf-gallery-change`
+The detail carries data only. Until 2026-12-01 the old names keep working and
+are noted in `SF.deprecations.list()`: the attributes `title` (now `heading`)
+and `blur` (now `backdrop-blur`), the events `sf-change`, `sf-open` and
+`sf-close` (sent after the new ones with the same detail), and the readers
+`getModal()`, `getInlineSlider()` and `getLightboxSlider()`.
+
+Public variables: `--sf-gallery-min-inline-size`, `--sf-gallery-media-max-height`,
+`--sf-gallery-object-fit`, `--sf-gallery-slide-min-height`,
+`--sf-gallery-caption-color`.
 
 Shared lifecycle events are also available:
 
