@@ -55,8 +55,10 @@ test('Smart templates write the axis names on the Framework elements they draw',
 });
 
 test('tree and dropdown items read kind before the legacy type', () => {
-  for (const file of ['src/smart/tree/index.js', 'src/smart/tree-item/js/node-data.js', 'src/smart/dropdown/index.js']) {
+  for (const file of ['src/smart/tree-item/js/node-data.js', 'src/smart/dropdown/index.js']) {
     const source = readFileSync(resolve(root, file), 'utf8');
     assert.match(source, /getAttribute\('kind'\) \|\| \w+\.getAttribute\('type'\)/u, file);
   }
+  // sf-tree reads its entries as data (markup children through node-data.js).
+  assert.match(readFileSync(resolve(root, 'src/smart/tree/index.js'), 'utf8'), /item\.kind \|\| item\.type/u);
 });

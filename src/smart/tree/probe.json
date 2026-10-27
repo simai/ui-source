@@ -1,0 +1,341 @@
+{
+  "component": "sf-tree",
+  "probe": "sf-tree against component.json (standard simai.smart-component 1.3.8 §12, §18, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-tree id=\"t\" aria-label=\"Папки\" selection=\"one\">",
+      "    <sf-tree-item value=\"root\" label=\"Корень\" open><sf-tree-item value=\"images\" label=\"Изображения\"></sf-tree-item><sf-tree-item value=\"doc\" label=\"Договор.pdf\" kind=\"file\"></sf-tree-item></sf-tree-item>",
+      "    <sf-tree-item value=\"b\" text=\"Второй\"><sf-tree-item value=\"b1\" label=\"Вложенный\"></sf-tree-item></sf-tree-item>",
+      "    <sf-tree-item value=\"off\" label=\"Недоступный\" disabled></sf-tree-item>",
+      "  </sf-tree>",
+      "  <sf-tree id=\"n\" aria-label=\"Ссылки\"><sf-tree-item value=\"x\" label=\"Пункт\" kind=\"file\"></sf-tree-item><sf-tree-item value=\"y\" label=\"Ещё\" kind=\"file\"></sf-tree-item></sf-tree>",
+      "  <sf-tree id=\"s\" aria-label=\"Старое слово\" selection=\"single\"><sf-tree-item value=\"p\" label=\"П\" kind=\"file\"></sf-tree-item></sf-tree>",
+      "  <sf-tree id=\"m\" aria-label=\"Несколько\" selection=\"many\"><sf-tree-item value=\"a\" label=\"А\" kind=\"file\"></sf-tree-item><sf-tree-item value=\"c\" label=\"В\" kind=\"file\"></sf-tree-item></sf-tree>",
+      "  <div id=\"box\" style=\"height: 320px; overflow: auto\"><sf-tree id=\"big\" aria-label=\"Большое\"></sf-tree></div>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-flat-rows",
+      "title": "the entries are flat rows with their level, set size and place; one Tab stop",
+      "covers": "role tree, items from markup, aria-level, roving tab stop, text alias",
+      "steps": [
+        {
+          "check": "(() => { const rows = [...document.querySelectorAll('#t [role=treeitem]')]; const level = (v) => document.querySelector(`#t [data-value=${v}]`).getAttribute('aria-level'); return document.querySelector('#t > .sf-tree[role=tree]').getAttribute('aria-label') === 'Папки' && rows.length === 5 && level('images') === '2' && level('b') === '1' && document.querySelector('#t [data-value=doc]').getAttribute('aria-posinset') === '2' && document.querySelector('#t [data-value=b] .sf-tree-item-name').textContent.trim() === 'Второй' && rows.filter((r) => r.tabIndex === 0).length === 1 && !document.querySelector('#t sf-tree-item'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-toggle",
+      "title": "the chevron closes a branch: sf-tree-toggle {id, open}, then the dated sf-tree-item-toggle",
+      "covers": "events.toggle, aliases.json sf-tree-item-toggle, entry-state open",
+      "steps": [
+        {
+          "user": "click:#t [data-value=root] .sf-tree-toggle",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "root",
+                  "open": false,
+                  "value": "root"
+                }
+              },
+              {
+                "name": "sf-tree-item-toggle",
+                "count": 1,
+                "detail": {
+                  "open": false,
+                  "value": "root"
+                }
+              },
+              {
+                "name": "sf-tree-select",
+                "count": 0
+              }
+            ]
+          }
+        },
+        {
+          "check": "!document.querySelector('#t [data-value=images]') && document.querySelector('#t [data-value=root]').getAttribute('aria-expanded') === 'false'"
+        }
+      ]
+    },
+    {
+      "id": "p3-keyboard",
+      "title": "the arrows walk the visible rows; ArrowRight opens and enters, ArrowLeft returns; Home, End and a letter",
+      "covers": "keyboard ArrowDown, ArrowUp, ArrowRight, ArrowLeft, Home, End, typeahead",
+      "steps": [
+        {
+          "script": "(document.querySelector('#t [data-value=root]').focus(), true)"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "check": "document.activeElement.dataset.value === 'images'"
+        },
+        {
+          "user": "keyboard:ArrowDown"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "check": "document.activeElement.dataset.value === 'b' && document.activeElement.getAttribute('aria-expanded') === 'false'"
+        },
+        {
+          "user": "keyboard:ArrowRight",
+          "check": "document.activeElement.dataset.value === 'b' && document.activeElement.getAttribute('aria-expanded') === 'true'"
+        },
+        {
+          "user": "keyboard:ArrowRight",
+          "check": "document.activeElement.dataset.value === 'b1'"
+        },
+        {
+          "user": "keyboard:ArrowLeft",
+          "check": "document.activeElement.dataset.value === 'b'"
+        },
+        {
+          "user": "keyboard:End",
+          "check": "document.activeElement.dataset.value === 'off'"
+        },
+        {
+          "user": "keyboard:Home",
+          "check": "document.activeElement.dataset.value === 'root' && document.activeElement.tabIndex === 0"
+        },
+        {
+          "check": "document.activeElement.dataset.value === 'doc'",
+          "script": "(document.activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Д', bubbles: true, composed: true})), true)"
+        }
+      ]
+    },
+    {
+      "id": "p4-select-one",
+      "title": "a press selects one entry: sf-tree-select {ids, id, selected}, then the dated sf-tree-selection-change",
+      "covers": "events.select, values.selected, aliases.json sf-tree-selection-change",
+      "steps": [
+        {
+          "user": "click:#t [data-value=images] .sf-tree-item-container",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-select",
+                "count": 1,
+                "detail": {
+                  "ids": [
+                    "images"
+                  ],
+                  "id": "images",
+                  "selected": true
+                }
+              },
+              {
+                "name": "sf-tree-selection-change",
+                "count": 1,
+                "detail": {
+                  "value": "images",
+                  "selected": true
+                }
+              }
+            ],
+            "values": {
+              "#t.selected": "images"
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('#t [data-value=images]').getAttribute('aria-selected') === 'true' && document.querySelector('#t [data-value=root]').getAttribute('aria-selected') === 'false'"
+        }
+      ]
+    },
+    {
+      "id": "p5-selection-words",
+      "title": "selection single is one's dated value alias; many toggles each entry with Space and holds selected-ids",
+      "covers": "settings.selection, aliases.json single/multiple, values.selected-ids, keyboard Space",
+      "steps": [
+        {
+          "check": "document.querySelector('#s').selection === 'one' && document.querySelector('#m > .sf-tree').getAttribute('aria-multiselectable') === 'true'"
+        },
+        {
+          "script": "(document.querySelector('#m [data-value=a]').focus(), true)"
+        },
+        {
+          "user": "keyboard:Space"
+        },
+        {
+          "user": "keyboard:ArrowDown"
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-select",
+                "count": 1,
+                "detail": {
+                  "ids": [
+                    "a",
+                    "c"
+                  ],
+                  "id": "c",
+                  "selected": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "JSON.stringify(document.querySelector('#m').selectedIds) === JSON.stringify(['a', 'c'])"
+        }
+      ]
+    },
+    {
+      "id": "p6-open",
+      "title": "a press on a name asks to open the entry: sf-tree-open {id, value}, then the dated sf-tree-item-click",
+      "covers": "events.open, aliases.json sf-tree-item-click, keyboard Enter",
+      "steps": [
+        {
+          "user": "click:#n [data-value=x] .sf-tree-item-name",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-open",
+                "count": 1,
+                "detail": {
+                  "id": "x",
+                  "value": "x"
+                }
+              },
+              {
+                "name": "sf-tree-item-click",
+                "count": 1,
+                "detail": {
+                  "value": "x"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "script": "(document.querySelector('#n [data-value=y]').focus(), true)"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tree-open",
+                "count": 1,
+                "detail": {
+                  "id": "y"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7-actions",
+      "title": "expand and collapse answer outcomes; a leaf refuses",
+      "covers": "actions.expand, actions.collapse",
+      "steps": [
+        {
+          "action": {
+            "name": "expand",
+            "with": {
+              "id": "b"
+            }
+          },
+          "target": "#t",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-tree-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "b",
+                  "open": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "name": "collapse",
+            "with": {
+              "id": "doc"
+            }
+          },
+          "target": "#t",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "leaf"
+            }
+          }
+        },
+        {
+          "check": "!!document.querySelector('#t [data-value=b1]')"
+        }
+      ]
+    },
+    {
+      "id": "p8-one-entry-in-place",
+      "title": "a new items with one entry changed rewrites that row in place; the others keep their elements and the open state survives",
+      "covers": "settings.items (entries keyed by id, changes: content), entry-state open (§18.1, §18.4)",
+      "steps": [
+        {
+          "script": "(() => { const t = document.querySelector('#n'); window.__kept = t.querySelector('[data-value=y]'); window.__changed = t.querySelector('[data-value=x]'); t.items = [{label: 'Пункт переименован', value: 'x', kind: 'file'}, {label: 'Ещё', value: 'y', kind: 'file'}]; return true; })()"
+        },
+        {
+          "check": "(() => { const t = document.querySelector('#n'); return t.querySelector('[data-value=y]') === window.__kept && t.querySelector('[data-value=x]') === window.__changed && window.__changed.querySelector('.sf-tree-item-name').textContent.trim() === 'Пункт переименован'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-window",
+      "title": "over 300 visible entries only those in view are drawn, window {first, last} is said, and focus-entry draws a far entry before focusing it",
+      "covers": "window (§18.4), events.window, actions.focus-entry",
+      "steps": [
+        {
+          "script": "(() => { window.__win = []; const t = document.querySelector('#big'); t.addEventListener('sf-tree-window', (e) => window.__win.push(e.detail)); t.items = Array.from({length: 40}, (_, g) => ({label: `Папка ${g + 1}`, value: `f${g}`, open: true, children: Array.from({length: 49}, (_, c) => ({label: `Документ ${g + 1}.${c + 1}`, value: `f${g}-${c}`, kind: 'file'}))})); return true; })()",
+          "wait": 800
+        },
+        {
+          "check": "(() => { const rows = document.querySelectorAll('#big [role=treeitem]').length; return rows > 0 && rows < 100 && window.__win.length > 0 && window.__win.at(-1).first === 0 && document.querySelectorAll('#big .sf-tree-spacer').length === 1; })()"
+        },
+        {
+          "action": {
+            "name": "focus-entry",
+            "with": {
+              "id": "f39-48"
+            }
+          },
+          "target": "#big",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          },
+          "wait": 800
+        },
+        {
+          "check": "document.activeElement && document.activeElement.dataset.value === 'f39-48' && document.querySelectorAll('#big [role=treeitem]').length < 100"
+        },
+        {
+          "user": "keyboard:Home",
+          "wait": 800,
+          "check": "document.activeElement && document.activeElement.dataset.value === 'f0'"
+        }
+      ]
+    }
+  ]
+}

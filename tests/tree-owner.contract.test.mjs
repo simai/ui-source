@@ -49,13 +49,16 @@ test('Smart Tree mirrors navigation, selection and ARIA ownership', async () => 
     read('src/smart/tree-item/js/templates/row.js'),
   ]);
 
+  // The entries are drawn flat, keyed by id (standard 1.3.8 §18.4): a level
+  // is aria-level, the roving tab stop is the tree's.
   assert.match(tree, /getVisibleItems\(\)/);
-  assert.match(tree, /moveTypeahead\(item, key\)/);
-  assert.match(tree, /tree-selection-change/);
+  assert.match(tree, /moveTypeahead\(index, key\)/);
+  assert.match(tree, /this\.sfEmit\('select'/);
   assert.match(item, /'focus-item'\(\)/);
   assert.match(item, /activate\(\)/);
   assert.match(row, /role="treeitem"/);
   assert.match(row, /tabindex=\$\{row\.tabStop \? '0' : '-1'\}/);
+  assert.match(row, /aria-level=/);
   assert.match(template, /class="sf-tree-group flex flex-col" role="group"/);
   assert.match(row, /aria-selected=/);
   assert.match(row, /aria-current=/);

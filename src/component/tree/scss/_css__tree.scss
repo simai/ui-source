@@ -1,17 +1,24 @@
 @layer sf.components {
   .sf-tree {
-    padding-inline-start: var(--sf-tree--padding-inline-start, var(--sf-space-1));
-    padding-inline-end: var(--sf-tree--padding-inline-end, var(--sf-space-1));
+    padding-inline-start: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-start, var(--sf-space-1)));
+    padding-inline-end: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-end, var(--sf-space-1)));
     padding-top: var(--sf-tree--padding-top, var(--sf-space-1));
     padding-bottom: var(--sf-tree--padding-bottom, var(--sf-space-1));
-    gap: var(--sf-tree--gap, var(--sf-space-1\/3));
+    gap: var(--sf-tree-gap, var(--sf-tree--gap, var(--sf-space-1\/3)));
   }
 
   .sf-tree .sf-tree-item {
     gap: var(--sf-tree-item--gap, var(--sf-space-1\/3));
-    border-radius: var(--sf-radius--ui);
-    color: var(--sf-on-surface);
+    border-radius: var(--sf-tree-radius, var(--sf-radius--ui));
+    color: var(--sf-tree-color, var(--sf-on-surface));
     outline: none;
+  }
+
+  /* sf-tree draws its entries flat (standard 1.3.8 §18.4): a row says its
+     level, and each level below the first is one indent in, the indent a
+     nested group takes. */
+  .sf-tree .sf-tree-item[data-sf-tree-level] {
+    margin-inline-start: calc((var(--sf-tree-level, 1) - 1) * var(--sf-tree-indent, var(--sf-tree-item--nested-padding-inline-start, var(--sf-space-3))));
   }
 
   .sf-tree .sf-tree-group {
@@ -21,11 +28,11 @@
   }
 
   .sf-tree > .sf-tree-item .sf-tree-group {
-    padding-inline-start: var(--sf-tree-item--nested-padding-inline-start, var(--sf-space-3));
+    padding-inline-start: var(--sf-tree-indent, var(--sf-tree-item--nested-padding-inline-start, var(--sf-space-3)));
   }
 
   .sf-tree .sf-tree-item-container {
-    gap: var(--sf-tree-item--container-gap, var(--sf-space-1\/2));
+    gap: var(--sf-tree-item-gap, var(--sf-tree-item--container-gap, var(--sf-space-1\/2)));
     min-block-size: var(--sf-tree-item--min-block-size, var(--sf-b6));
     padding-block: var(--sf-tree-item--padding-block, var(--sf-space-1\/3));
     padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
@@ -54,7 +61,7 @@
 
   .sf-tree .sf-tree-item.active > .sf-tree-item-container,
   .sf-tree .sf-tree-item[aria-selected='true'] > .sf-tree-item-container {
-    background: var(--sf-surface-container-active);
+    background: var(--sf-tree-selected-background-color, var(--sf-surface-container-active));
   }
 
   // A row is flush against the rows above and below it, so the ring turns

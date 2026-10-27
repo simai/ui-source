@@ -419,8 +419,9 @@
   "cl-tree": [
     "display/default",
     "flex-direction/default",
-    "position/default",
-    "visibility/default"
+    "isolate/default",
+    "resize/default",
+    "text-max-width/default"
   ],
   "cl-tree-item": [
     "align-items/default",

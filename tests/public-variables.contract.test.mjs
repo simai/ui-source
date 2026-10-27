@@ -52,7 +52,8 @@ const FOLDERS = {
   'page-header': 'smart/page-header',
   // sf-list-item draws with the class sheet of the dropdown's rows.
   'list-item': 'dropdown',
-  // sf-tree-item draws its row with the tree-item class sheet.
+  // sf-tree draws its rows with the tree and tree-item class sheets.
+  tree: 'tree',
   'tree-item': 'tree-item',
 };
 

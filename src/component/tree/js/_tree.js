@@ -7,6 +7,17 @@ const TREE_GROUP_SELECTOR = '.sf-tree-group';
 const TREE_BOUND_FLAG = 'sfTreeBound';
 const treeTypeahead = new WeakMap();
 
+// The vocabulary's names (simai.smart-vocabulary 1.1.5 §5.1: sf-tree:toggle ->
+// sf-tree-toggle, sf-tree:activate -> sf-tree-open, sf-tree:selection-change ->
+// sf-tree-select), the names sf-tree sends. A class tree sends the new name
+// first, data only, then the old one with its old detail until 2026-12-01.
+function sendBoth(target, name, detail, oldName, oldDetail) {
+  target.dispatchEvent(new CustomEvent(name, {bubbles: true, detail}));
+  target.dispatchEvent(new CustomEvent(oldName, {bubbles: true, detail: oldDetail}));
+}
+
+const valueOf = (item) => item?.getAttribute?.('data-value') || '';
+
 function isSmartTreeRoot(root) {
   return Boolean(root?.closest?.('sf-tree'));
 }
@@ -181,15 +192,7 @@ function setTreeItemOpen(item, open = true) {
   item.toggleAttribute('open', open);
   syncTreeItem(item);
 
-  item.dispatchEvent(
-    new CustomEvent('sf-tree:toggle', {
-      bubbles: true,
-      detail: {
-        item,
-        open,
-      },
-    }),
-  );
+  sendBoth(item, 'sf-tree-toggle', {id: valueOf(item), open, value: valueOf(item)}, 'sf-tree:toggle', {item, open});
 
   return true;
 }
@@ -210,12 +213,7 @@ function activateTreeItem(item) {
     return;
   }
 
-  item.dispatchEvent(
-    new CustomEvent('sf-tree:activate', {
-      bubbles: true,
-      detail: { item, value: item.getAttribute('data-value') || '' },
-    }),
-  );
+  sendBoth(item, 'sf-tree-open', {id: valueOf(item), value: valueOf(item)}, 'sf-tree:activate', { item, value: item.getAttribute('data-value') || '' });
 }
 
 function selectTreeItem(root, item) {
@@ -239,16 +237,12 @@ function selectTreeItem(root, item) {
     item.setAttribute('aria-selected', String(nextSelected));
   }
 
-  root.dispatchEvent(
-    new CustomEvent('sf-tree:selection-change', {
-      bubbles: true,
-      detail: {
-        item,
-        selected: nextSelected,
-        value: item.getAttribute('data-value') || '',
-      },
-    }),
-  );
+  const ids = Array.from(root.querySelectorAll(`${TREE_ITEM_SELECTOR}[aria-selected="true"]`)).map(valueOf);
+  sendBoth(root, 'sf-tree-select', {ids, id: valueOf(item), selected: nextSelected}, 'sf-tree:selection-change', {
+    item,
+    selected: nextSelected,
+    value: item.getAttribute('data-value') || '',
+  });
 }
 
 function moveTreeTypeahead(root, item, key) {

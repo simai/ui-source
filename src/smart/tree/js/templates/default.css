@@ -1,8 +1,8 @@
 @layer sf.components {
-  .sf-tree > sf-tree-item > .sf-tree-item > .sf-tree-group {
-    padding-inline-start: var(
-      --sf-tree-item--nested-padding-inline-start,
-      var(--sf-space-3)
-    );
+  /* A spacer stands for the rows a long tree does not draw (standard 1.3.8
+     §18.4): it keeps the scroll height and takes no part in the rows' look. */
+  .sf-tree > .sf-tree-spacer {
+    flex: none;
+    pointer-events: none;
   }
 }

@@ -1,0 +1,79 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Раздел с дочерним пунктом",
+      "children": "<sf-tree-item label=\"Корневой раздел\" value=\"root\" open><sf-tree-item label=\"Дочерний пункт\" value=\"child\"></sf-tree-item></sf-tree-item>",
+      "settings": {
+        "aria-label": "Структура"
+      },
+      "expect": {
+        "selection": "none"
+      }
+    },
+    {
+      "name": "files",
+      "title": "Папки и файлы данными",
+      "settings": {
+        "aria-label": "Файлы",
+        "items": [
+          {"label": "Документы", "value": "docs", "open": true, "children": [{"label": "Договор.pdf", "value": "contract", "kind": "file"}, {"label": "Смета.xlsx", "value": "estimate", "kind": "file"}]},
+          {"label": "Изображения", "value": "images", "children": [{"label": "Обложка.png", "value": "cover", "kind": "file"}]},
+          {"label": "README.md", "value": "readme", "kind": "file"}
+        ]
+      },
+      "expect": {
+        "selection": "none"
+      }
+    },
+    {
+      "name": "one",
+      "title": "Выбор одного раздела",
+      "children": "<sf-tree-item label=\"Основы\" value=\"foundation\" open><sf-tree-item label=\"Цвет\" value=\"color\" kind=\"file\"></sf-tree-item><sf-tree-item label=\"Типографика\" value=\"type\" kind=\"file\"></sf-tree-item></sf-tree-item><sf-tree-item label=\"Компоненты\" value=\"components\" kind=\"file\"></sf-tree-item>",
+      "settings": {
+        "aria-label": "Разделы",
+        "selection": "one",
+        "selected": "color"
+      },
+      "expect": {
+        "selected": "color"
+      }
+    },
+    {
+      "name": "many",
+      "title": "Выбор нескольких",
+      "children": "<sf-tree-item label=\"Входящие\" value=\"inbox\" kind=\"file\" selected></sf-tree-item><sf-tree-item label=\"Отправленные\" value=\"sent\" kind=\"file\"></sf-tree-item><sf-tree-item label=\"Архив\" value=\"archive\" kind=\"file\" selected></sf-tree-item>",
+      "settings": {
+        "aria-label": "Папки почты",
+        "selection": "many"
+      },
+      "expect": {
+        "selection": "many"
+      }
+    },
+    {
+      "name": "links",
+      "title": "Навигация ссылками",
+      "children": "<sf-tree-item label=\"Каталог\" value=\"catalog\" href=\"#catalog\" open><sf-tree-item label=\"Решения\" value=\"solutions\" href=\"#solutions\" kind=\"file\" active></sf-tree-item></sf-tree-item>",
+      "settings": {
+        "aria-label": "Разделы сайта"
+      },
+      "expect": {
+        "selection": "none"
+      }
+    },
+    {
+      "name": "drop",
+      "title": "Узлы принимают записи и файлы",
+      "children": "<sf-tree-item label=\"Общие\" value=\"shared\" open><sf-tree-item label=\"Отчёты\" value=\"reports\"></sf-tree-item></sf-tree-item>",
+      "settings": {
+        "aria-label": "Папки",
+        "accept-records": true,
+        "accept-files": true
+      },
+      "expect": {
+        "accept-records": true
+      }
+    }
+  ]
+}

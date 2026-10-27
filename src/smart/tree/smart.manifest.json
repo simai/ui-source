@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "title": "Tree",
   "summary": "Accessible hierarchical composite with roving focus, branch expansion and host-owned selection.",
   "kind": "smart",
@@ -24,8 +24,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icon-buttons",
+      "component.icons",
       "component.tree",
-      "smart.tree-item"
+      "component.tree-item"
     ],
     "public_parts": []
   },
@@ -77,6 +79,14 @@
         "type": "boolean",
         "default": false,
         "description": "A node takes files dropped from the computer and says so with sf-tree-files-drop."
+      },
+      "selected": {
+        "type": "string",
+        "default": ""
+      },
+      "selected-ids": {
+        "type": "array",
+        "default": []
       }
     },
     "additionalProperties": false
@@ -275,23 +285,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "2bb3e156f8e1c0fa7d41630b73dab3af1d4727043d7d5bed4c23dac8414ca858"
+        "sha256": "78127fbf89b3f598ced6628dba13aad16e84aa665053e624a1027a78eae4f149"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",
-        "sha256": "687fb21260bf46f4c54374a09697d164f25177a1990b8a17542e74cf4c09cd31"
+        "sha256": "987c056c2011fdcfe6736617456c827d86eab11e59c41d132071f3684d323144"
       },
       {
         "path": "src/smart/tree/js/templates/default.css",
-        "sha256": "c1d70828d6f1cd5066a14e449827ba5398b1b7c95b436aef07006ddef9befcb9"
+        "sha256": "d3afbb0a397dc96f3744c5fd66b2e27fead78d147a42e7469f6ac877f7887682"
       },
       {
         "path": "src/smart/tree/rule.js",
-        "sha256": "361bd8b45dfe53b9ed05488289b3f4924aeca5b2f10a7f39eeb9b28bdd47c945"
+        "sha256": "7d874241ae6fb319e88afcb9c19f5426f995dd86cc16021067f83d9e32f736bc"
       },
       {
         "path": "src/smart/tree/docs/docs.md",
-        "sha256": "170b7cfae832436de8e9c8aa54eb5714d7ffe8730129f68f5aef9ccfa0b4d36b"
+        "sha256": "2a1c288eeb460c6e3629cdf9f2795054764fe78f9adc64783339181d5d4e704c"
       }
     ],
     "generated_runtime": [

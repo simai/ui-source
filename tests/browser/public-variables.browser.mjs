@@ -149,7 +149,10 @@ const DRAW = {
   // have parts to reach; the row stands alone, so its divider is drawn.
   'list-item': {css: ['dropdown', 'icons'], js: 'list-item',
     html: '<sf-list-item text="Заголовок" supporting="Пояснение" sortable-item="a" interactive size="1"></sf-list-item>'},
-  // A standalone node marked as a drop target.
+  // A tree with an open folder (a second level, so the indent has a row to
+  // move) and a selected row; a standalone node marked as a drop target.
+  tree: {css: ['tree', 'tree-item', 'icons', 'icon-buttons'], js: 'tree',
+    html: '<sf-tree aria-label="Папки" selection="one" selected="b"><sf-tree-item label="Папка" value="a" open><sf-tree-item label="Файл" value="b" kind="file"></sf-tree-item></sf-tree-item></sf-tree>'},
   'tree-item': {css: ['tree-item', 'icons', 'icon-buttons'], js: 'tree-item',
     html: '<sf-tree-item id="node" label="Папка" value="a" open><sf-tree-item label="Файл" value="b" kind="file"></sf-tree-item></sf-tree-item>',
     open: 'document.querySelector("#node > .sf-tree-item").setAttribute("data-sf-drop-target", "")'},
@@ -168,6 +171,9 @@ const ROLES = {
   'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},
   'padding-block': {properties: ['padding-top'], value: '19px'},
   gap: {properties: ['column-gap', 'row-gap'], value: '23px'},
+  // A level's indent: a flat tree's row stands in by a margin (sf-tree), a
+  // nested group by its padding.
+  indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
   size: {properties: ['block-size', 'height'], value: '29px'},
   'indicator-color': {properties: ['border-bottom-color', 'background-color'], value: 'rgb(10, 11, 12)'},
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},

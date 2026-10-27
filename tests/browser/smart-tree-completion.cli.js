@@ -15,7 +15,7 @@ await page.route('**/favicon.ico', route => route.fulfill({status: 204, body: ''
 
 await page.setViewportSize({width: 1024, height: 768});
 await page.goto('http://127.0.0.1:8766/ui-source/tests/fixtures/smart-tree-loader-lab.html');
-await page.waitForFunction(() => customElements.get('sf-tree') && customElements.get('sf-tree-item'));
+await page.waitForFunction(() => customElements.get('sf-tree'));
 await page.waitForFunction(() => document.querySelectorAll('#tree [role="treeitem"]').length === 5);
 await page.waitForFunction(() => [...document.querySelectorAll('#tree .sf-icon')].every(icon => icon.classList.contains('sf-icon-loaded')));
 
@@ -23,43 +23,44 @@ check('root has accessible tree semantics', await page.evaluate(() => {
   const root = document.querySelector('#tree > .sf-tree');
   return root?.getAttribute('role') === 'tree' && root?.getAttribute('aria-label') === 'Разделы документации';
 }));
-check('open children are owned by a group', await page.locator('#tree [role="group"]').count() === 1);
+// sf-tree draws its entries flat (standard 1.3.8 §18.4): a level is aria-level.
+check('open children say their level', await page.locator('#tree [role="treeitem"][aria-level="2"]').count() === 2);
 check('tree exposes exactly one tab stop', await page.locator('#tree [role="treeitem"][tabindex="0"]').count() === 1);
 check('disclosure and node icons are visible', await page.evaluate(() => [...document.querySelectorAll('#tree .sf-icon')].every(icon => getComputedStyle(icon).fontSize !== '0px')));
 
 await page.locator('#tree [role="treeitem"][tabindex="0"]').focus();
 await page.keyboard.press('ArrowDown');
-check('ArrowDown moves to next visible node', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Цвет'));
+check('ArrowDown moves to next visible node', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Цвет'));
 await page.keyboard.press('ArrowDown');
-check('second ArrowDown reaches closed branch', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Типографика'));
+check('second ArrowDown reaches closed branch', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Типографика'));
 await page.keyboard.press('ArrowRight');
-await page.waitForFunction(() => document.activeElement?.closest('sf-tree-item')?.getProp('open') === true);
-check('ArrowRight opens a closed branch', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Типографика'));
-check('newly open level is owned by a group', await page.locator('#tree [role="group"]').count() === 2);
+await page.waitForFunction(() => document.activeElement?.getAttribute('aria-expanded') === 'true');
+check('ArrowRight opens a closed branch', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Типографика'));
+check('newly open level says its level', await page.locator('#tree [role="treeitem"][aria-level="3"]').count() === 2);
 await page.keyboard.press('ArrowRight');
-check('ArrowRight enters first child', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Шрифт'));
+check('ArrowRight enters first child', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Шрифт'));
 await page.keyboard.press('ArrowLeft');
-check('ArrowLeft returns to parent', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Типографика'));
+check('ArrowLeft returns to parent', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Типографика'));
 await page.keyboard.press('End');
-check('End reaches last visible node', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Закрытый раздел'));
+check('End reaches last visible node', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Закрытый раздел'));
 await page.keyboard.press('Home');
-check('Home returns to first visible node', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Основы'));
+check('Home returns to first visible node', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Основы'));
 await page.evaluate(() => {
   document.activeElement.dispatchEvent(
     new KeyboardEvent('keydown', {key: 'К', bubbles: true, composed: true}),
   );
 });
-check('typeahead moves focus by label', await page.evaluate(() => document.activeElement?.closest('sf-tree-item')?.label === 'Компоненты'));
+check('typeahead moves focus by label', await page.evaluate(() => document.activeElement?.querySelector(':scope > .sf-tree-item-container .sf-tree-item-name')?.textContent.trim() === 'Компоненты'));
 await page.keyboard.press('Space');
 await page.waitForFunction(() => document.querySelector('#events').textContent === 'components:true');
 check('Space changes selection without expansion', await page.evaluate(() => {
-  const item = document.activeElement?.closest('sf-tree-item');
-  return item?.label === 'Компоненты' && item?.hasAttribute('selected');
+  const item = document.activeElement;
+  return item?.querySelector('.sf-tree-item-name')?.textContent.trim() === 'Компоненты' && item?.getAttribute('aria-selected') === 'true';
 }));
 
 await page.locator('#add-node').click();
-await page.waitForFunction(() => [...document.querySelectorAll('#tree sf-tree-item')].some(item => item.label === 'Динамический раздел'));
-check('dynamic top-level node is captured and rendered', await page.evaluate(() => [...document.querySelectorAll('#tree sf-tree-item')].some(item => item.label === 'Динамический раздел')));
+await page.waitForFunction(() => [...document.querySelectorAll('#tree [role="treeitem"]')].some(item => item.textContent.trim() === 'Динамический раздел'));
+check('dynamic top-level node is captured and rendered', await page.evaluate(() => [...document.querySelectorAll('#tree [role="treeitem"]')].some(item => item.textContent.trim() === 'Динамический раздел')));
 
 await page.evaluate(() => document.documentElement.className = 'theme-dark');
 check('dark theme retains semantic row paint', await page.evaluate(() => {
