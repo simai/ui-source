@@ -1,0 +1,211 @@
+{
+  "component": "sf-profile-picker",
+  "probe": "sf-profile-picker against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-profile-picker id=\"pp\" current=\"regular\" resettable></sf-profile-picker>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-open-menu",
+      "title": "open answers applied: the panel is a menu named by the language file's label, its rows menuitemradio",
+      "covers": "actions.open, accessibility (role menu, name)",
+      "steps": [
+        {
+          "script": "(() => { const p = document.getElementById('pp'); p.profiles = [{id: 'regular', label: 'Обычный', shared: true, builtin: true}, {id: 'editors', label: 'Редакторы', shared: true}, {id: 'mine', label: 'Мой', shared: false}]; p.rights = {create: {personal: false, shared: true}}; return true; })()"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#pp",
+          "wait": 500,
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            }
+          }
+        },
+        {
+          "check": "(() => { const panel = document.querySelector('#pp .sf-profile-picker-panel'); return panel.getAttribute('role') === 'menu' && panel.getAttribute('aria-label') === 'Профиль' && panel.querySelectorAll('[role=\"menuitemradio\"]').length === 3 && document.querySelector('#pp [aria-checked=\"true\"]').dataset.id === 'regular'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p2-select",
+      "title": "choosing a row sends select {id, ids}, then the old sf-profile-select; the panel closes",
+      "covers": "events.select, aliases sf-profile-select (detail-adds)",
+      "steps": [
+        {
+          "script": "(() => { const p = document.getElementById('pp'); p.profiles = [{id: 'regular', label: 'Обычный', shared: true, builtin: true}, {id: 'editors', label: 'Редакторы', shared: true}, {id: 'mine', label: 'Мой', shared: false}]; p.rights = {create: {personal: false, shared: true}}; return true; })()"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#pp",
+          "wait": 500
+        },
+        {
+          "user": "click:#pp .sf-profile-picker-row[data-id=\"editors\"]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-profile-picker-select",
+                "count": 1,
+                "detail": {
+                  "id": "editors",
+                  "ids": [
+                    "editors"
+                  ]
+                }
+              },
+              {
+                "name": "sf-profile-select",
+                "count": 1,
+                "detail": {
+                  "id": "editors"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "action": {
+            "name": "close"
+          },
+          "target": "#pp",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "closed"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-delete-key",
+      "title": "Delete on a row the person may change asks to confirm; confirming sends delete {id, ids}",
+      "covers": "keyboard.row Delete, events.delete",
+      "steps": [
+        {
+          "script": "(() => { const p = document.getElementById('pp'); p.profiles = [{id: 'regular', label: 'Обычный', shared: true, builtin: true}, {id: 'editors', label: 'Редакторы', shared: true}, {id: 'mine', label: 'Мой', shared: false}]; p.rights = {create: {personal: false, shared: true}}; return true; })()"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#pp",
+          "wait": 500
+        },
+        {
+          "script": "(document.querySelector('#pp .sf-profile-picker-row[data-id=\"mine\"]').focus(), true)"
+        },
+        {
+          "user": "keyboard:Delete",
+          "check": "Boolean(document.querySelector('#pp .sf-profile-picker-confirm[role=\"alertdialog\"]'))"
+        },
+        {
+          "user": "click:#pp .sf-profile-picker-confirm sf-button button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-profile-picker-delete",
+                "count": 1,
+                "detail": {
+                  "id": "mine",
+                  "ids": [
+                    "mine"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4-create-reset",
+      "title": "create sends {label, shared, from, kind}; reset sends {id}",
+      "covers": "events.create, events.reset",
+      "steps": [
+        {
+          "script": "(() => { const p = document.getElementById('pp'); p.profiles = [{id: 'regular', label: 'Обычный', shared: true, builtin: true}, {id: 'editors', label: 'Редакторы', shared: true}, {id: 'mine', label: 'Мой', shared: false}]; p.rights = {create: {personal: false, shared: true}}; return true; })()"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#pp",
+          "wait": 500
+        },
+        {
+          "script": "(document.getElementById('pp').submitCreate('Новый', true), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-profile-picker-create",
+                "count": 1,
+                "detail": {
+                  "label": "Новый",
+                  "shared": true,
+                  "from": "regular",
+                  "kind": "shared"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "script": "(document.getElementById('pp').reset(), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-profile-picker-reset",
+                "count": 1,
+                "detail": {
+                  "id": "regular"
+                }
+              },
+              {
+                "name": "sf-profile-reset",
+                "count": 1,
+                "detail": {
+                  "id": "regular"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-escape",
+      "title": "Escape closes the open panel and the focus returns to the trigger",
+      "covers": "accessibility.keys Escape (close)",
+      "steps": [
+        {
+          "script": "(() => { const p = document.getElementById('pp'); p.profiles = [{id: 'regular', label: 'Обычный', shared: true, builtin: true}, {id: 'editors', label: 'Редакторы', shared: true}, {id: 'mine', label: 'Мой', shared: false}]; p.rights = {create: {personal: false, shared: true}}; return true; })()"
+        },
+        {
+          "action": {
+            "name": "open"
+          },
+          "target": "#pp",
+          "wait": 500
+        },
+        {
+          "user": "keyboard:Escape",
+          "focus": "expect returned to #pp .sf-profile-picker-trigger",
+          "check": "document.querySelector('#pp .sf-profile-picker-panel').hidden"
+        }
+      ]
+    }
+  ]
+}

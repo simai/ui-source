@@ -22,15 +22,23 @@
   ];
   profiles.rights = {create: {personal: false, shared: true}};
   profiles.setAttribute('current', 'regular');
-  profiles.addEventListener('sf-profile-select', (event) => console.log(event.detail.id));
+  profiles.addEventListener('sf-profile-picker-select', (event) => console.log(event.detail.id));
 </script>
 ```
 
 Профили и права принадлежат сайту. Компонент не меняет свой список сам: он
-сообщает, что попросил человек, — `sf-profile-select {id}`,
-`sf-profile-create {label, shared, from}`, `sf-profile-rename {id, label}`,
-`sf-profile-delete {id}`, `sf-profile-reset {id}`. Сайт отвечает новым списком
-`profiles` и `current` или текстом в `message`, если отказал.
+сообщает, что попросил человек, — `sf-profile-picker-select {id, ids}`,
+`sf-profile-picker-create {label, shared, from, kind}`,
+`sf-profile-picker-rename {id, label, title}`, `sf-profile-picker-delete {id, ids}`,
+`sf-profile-picker-reset {id}`. Сайт отвечает новым списком `profiles` и
+`current` или текстом в `message`, если отказал. Прежние имена
+`sf-profile-select`, `-create`, `-rename`, `-delete`, `-reset` приходят следом с
+тем же `detail` до 2026-12-01.
+
+Действия `open()`, `close()` и `toggle()` отвечают исходом:
+`{outcome: "applied"}` или `{outcome: "refused", reason}` (`disabled`, `closed`).
+Пока сайт не передал профили, первая отрисовка — `skeleton.html`: свёрнутая
+кнопка с полосой на месте названия.
 
 - `profiles` — `{id, label, shared, builtin, editable}`. `editable: false` —
   профиль можно выбрать, но нельзя менять. `builtin` — стандартный профиль, его
@@ -39,6 +47,10 @@
   Личный профиль у человека один: если он уже есть, сайт передаёт
   `personal: false`.
 - `size` — `1/2` (по умолчанию) или `1`.
+
+Публичные переменные: `--sf-profile-picker-background-color`,
+`--sf-profile-picker-border-color`, `--sf-profile-picker-radius`,
+`--sf-profile-picker-color`, `--sf-profile-picker-panel-background-color`.
 
 Клавиатура: стрелки, Home и End ходят по строкам, Enter выбирает, F2
 переименовывает, Delete удаляет, Escape закрывает форму, а затем панель.

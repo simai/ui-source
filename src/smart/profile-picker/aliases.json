@@ -1,0 +1,63 @@
+{
+  "$comment": "Dated aliases of sf-profile-picker for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-profile-picker",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-profile-select",
+      "to": "sf-profile-picker-select",
+      "kind": "event",
+      "component": "sf-profile-picker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary §7: the DOM name takes the tag",
+      "note": "the old name follows with the same detail, which holds the old fields"
+    },
+    {
+      "from": "sf-profile-create",
+      "to": "sf-profile-picker-create",
+      "kind": "event",
+      "component": "sf-profile-picker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary §7: the DOM name takes the tag",
+      "note": "the old name follows with the same detail, which holds the old fields"
+    },
+    {
+      "from": "sf-profile-rename",
+      "to": "sf-profile-picker-rename",
+      "kind": "event",
+      "component": "sf-profile-picker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary §7: the DOM name takes the tag",
+      "note": "the old name follows with the same detail, which holds the old fields"
+    },
+    {
+      "from": "sf-profile-delete",
+      "to": "sf-profile-picker-delete",
+      "kind": "event",
+      "component": "sf-profile-picker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "detail-adds",
+      "section": "vocabulary §7: the DOM name takes the tag",
+      "note": "the old name follows with the same detail, which holds the old fields"
+    },
+    {
+      "from": "sf-profile-reset",
+      "to": "sf-profile-picker-reset",
+      "kind": "event",
+      "component": "sf-profile-picker",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "vocabulary §7: the DOM name takes the tag",
+      "note": "the old name follows with the same detail"
+    }
+  ]
+}

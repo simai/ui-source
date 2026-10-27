@@ -47,6 +47,7 @@ const FOLDERS = {
   slider: 'slider',
   gallery: 'smart/gallery/js/templates',
   resizer: 'smart/resizer',
+  'profile-picker': 'smart/profile-picker',
 };
 
 const scss = async (folder) => {

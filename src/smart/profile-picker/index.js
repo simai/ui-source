@@ -7,38 +7,40 @@
 //
 // The profiles and what may be done with them are the host's: the component
 // draws them and says what the person asked for, with one event per act --
-// sf-profile-select, -create, -rename, -delete, -reset. It does not change its
-// own list; the host answers by setting `profiles` (and `current`), or by
-// setting `message` to say why not.
+// sf-profile-picker-select, -create, -rename, -delete, -reset (the old
+// sf-profile-* names follow until 2026-12-01). It does not change its own
+// list; the host answers by setting `profiles` (and `current`), or by setting
+// `message` to say why not.
+//
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// settings and values are made by core/js/element-manifest.js, the words are
+// lang/<locale>.json, and skeleton.html is its first paint before the host's
+// profiles arrive (§5.4).
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
-import {pageText} from '../../core/js/page-language';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {renderProfilePickerTemplate} from './js/templates/default';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 import './scss/index.scss';
+
+const ProfilePickerElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
 const position = () => globalThis.SF?.Position || BundledPosition;
 
-export const PROFILE_PICKER_TEXT = {
-  en: {
-    label: 'Profile', newProfile: 'New profile…', name: 'Profile name', personal: 'Personal', shared: 'For everyone',
-    builtin: 'standard', create: 'Create', cancel: 'Cancel', rename: 'Rename', remove: 'Delete', save: 'Save',
-    reset: 'Reset to standard', removeQuestion: 'Delete «{name}»?', removeShared: 'It goes for everyone on the site.',
-    copyOf: 'A copy of «{name}».', seenByAll: 'Seen by everyone on the site.', seenByYou: 'Seen only by you.',
-    locked: 'You cannot change it', personalTaken: 'You already have a personal profile', sharedDenied: 'You cannot make shared profiles',
-    nameEmpty: 'Give the profile a name.',
-  },
-  ru: {
-    label: 'Профиль', newProfile: 'Новый профиль…', name: 'Название профиля', personal: 'Личный', shared: 'Для всех',
-    builtin: 'стандартный', create: 'Создать', cancel: 'Отмена', rename: 'Переименовать', remove: 'Удалить', save: 'Сохранить',
-    reset: 'Сбросить к стандартному', removeQuestion: 'Удалить «{name}»?', removeShared: 'Он исчезнет у всех на сайте.',
-    copyOf: 'Копия профиля «{name}».', seenByAll: 'Виден всем на сайте.', seenByYou: 'Виден только вам.',
-    locked: 'Нет прав на изменение', personalTaken: 'Личный профиль уже есть', sharedDenied: 'Нет прав на общие профили',
-    nameEmpty: 'Дайте профилю название.',
-  },
-};
+// The template names its words in camelCase; the language files in kebab-case.
+const kebab = (key) => String(key).replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
+const applied = () => ({outcome: 'applied'});
 
-class SfProfilePicker extends SfBaseElement {
+class SfProfilePicker extends ProfilePickerElement {
   constructor() {
     super();
     this._profiles = [];
@@ -53,16 +55,7 @@ class SfProfilePicker extends SfBaseElement {
   }
 
   static get props() {
-    return {
-      templateName: {attribute: 'template', default: 'default'},
-      label: {default: ''},
-      size: {default: '1/2'},
-      current: {default: ''},
-      resettable: {type: Boolean, default: false},
-      message: {default: ''},
-      disabled: {type: Boolean, default: false},
-      rootClass: {default: ''},
-    };
+    return {...super.props, templateName: {attribute: 'template', default: 'default'}, rootClass: {default: ''}};
   }
 
   // [{id, label, shared, builtin, editable}]: editable false is a profile this
@@ -93,32 +86,26 @@ class SfProfilePicker extends SfBaseElement {
     this.requestComponentUpdate('rights');
   }
 
-  get label() {
-    return this.getAttribute('label') || '';
-  }
-
   get size() {
     return this.getAttribute('size') === '1' ? '1' : '1/2';
+  }
+
+  set size(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('size');
+    else this.setAttribute('size', String(value));
   }
 
   get current() {
     return this.getAttribute('current') ?? String(this._profiles[0]?.id ?? '');
   }
 
-  get resettable() {
-    return this.getBooleanAttr('resettable', false);
-  }
-
-  get message() {
-    return this.getAttribute('message') || '';
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
+  set current(value) {
+    if (value === null || value === undefined) this.removeAttribute('current');
+    else this.setAttribute('current', String(value));
   }
 
   text(key) {
-    return pageText(PROFILE_PICKER_TEXT, key, this, 'sf-profile-picker');
+    return this.sfWord(kebab(key));
   }
 
   currentProfile() {
@@ -144,13 +131,14 @@ class SfProfilePicker extends SfBaseElement {
 
   // ─── opening ───────────────────────────────────────────────────────────
   async open() {
-    if (this.disabled || this.state.open) return;
+    if (this.disabled) return {outcome: 'refused', reason: 'disabled'};
+    if (this.state.open) return applied();
     this.state = {...this.state, open: true, mode: null, target: null};
     this.requestComponentUpdate('open');
     await this.whenRendered?.();
     const panel = this.panel();
     const trigger = this.trigger();
-    if (!panel || !trigger) return;
+    if (!panel || !trigger) return applied();
     if (typeof panel.showPopover === 'function') {
       panel.setAttribute('popover', 'manual');
       if (!panel.matches(':popover-open')) panel.showPopover();
@@ -163,10 +151,11 @@ class SfProfilePicker extends SfBaseElement {
     // panel listening on the document stands back.
     holdOpenSurfaceMark(this, true);
     (panel.querySelector('.sf-profile-picker-row[aria-checked="true"]') ?? panel.querySelector('.sf-profile-picker-row'))?.focus({preventScroll: true});
+    return applied();
   }
 
   close({restoreFocus = true} = {}) {
-    if (!this.state.open) return;
+    if (!this.state.open) return {outcome: 'refused', reason: 'closed'};
     this.state = {...this.state, open: false, mode: null, target: null};
     this._position?.stop();
     this._position = null;
@@ -176,6 +165,7 @@ class SfProfilePicker extends SfBaseElement {
     if (panel?.matches?.(':popover-open')) panel.hidePopover();
     this.requestComponentUpdate('close');
     if (restoreFocus) this.trigger()?.focus({preventScroll: true});
+    return applied();
   }
 
   toggle() {
@@ -188,8 +178,9 @@ class SfProfilePicker extends SfBaseElement {
   }
 
   // ─── acts ──────────────────────────────────────────────────────────────
+  // sf-profile-picker-<verb> (§8); the old sf-profile-<verb> follows.
   announce(name, detail, {cancelable = false} = {}) {
-    return this.dispatchEvent(new CustomEvent(`sf-profile-${name}`, {bubbles: true, composed: true, cancelable, detail}));
+    return this.sfEmit(name, detail, {cancelable});
   }
 
   setMode(mode, target = null) {
@@ -210,7 +201,7 @@ class SfProfilePicker extends SfBaseElement {
   }
 
   choose(id) {
-    if (String(id) !== String(this.current)) this.announce('select', {id: String(id)});
+    if (String(id) !== String(this.current)) this.announce('select', {id: String(id), ids: [String(id)]});
     this.close();
   }
 
@@ -222,7 +213,7 @@ class SfProfilePicker extends SfBaseElement {
     }
     const create = this._rights.create ?? {};
     const kind = (shared && create.shared) || !create.personal ? true : Boolean(shared);
-    this.announce('create', {label, shared: kind, from: String(this.currentProfile()?.id ?? '')});
+    this.announce('create', {label, shared: kind, from: String(this.currentProfile()?.id ?? ''), kind: kind ? 'shared' : 'personal'});
   }
 
   submitRename(id, name) {
@@ -231,11 +222,11 @@ class SfProfilePicker extends SfBaseElement {
       this.setAttribute('message', this.text('nameEmpty'));
       return;
     }
-    this.announce('rename', {id: String(id), label});
+    this.announce('rename', {id: String(id), label, title: label});
   }
 
   submitDelete(id) {
-    this.announce('delete', {id: String(id)});
+    this.announce('delete', {id: String(id), ids: [String(id)]});
   }
 
   reset() {

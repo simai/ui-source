@@ -1,0 +1,26 @@
+{
+  "title": "Profile picker",
+  "runtime": {
+    "builtin": "standard",
+    "cancel": "Cancel",
+    "copy-of": "A copy of «{name}».",
+    "create": "Create",
+    "label": "Profile",
+    "locked": "You cannot change it",
+    "name": "Profile name",
+    "name-empty": "Give the profile a name.",
+    "new-profile": "New profile…",
+    "personal": "Personal",
+    "personal-taken": "You already have a personal profile",
+    "remove": "Delete",
+    "remove-question": "Delete «{name}»?",
+    "remove-shared": "It goes for everyone on the site.",
+    "rename": "Rename",
+    "reset": "Reset to standard",
+    "save": "Save",
+    "seen-by-all": "Seen by everyone on the site.",
+    "seen-by-you": "Seen only by you.",
+    "shared": "For everyone",
+    "shared-denied": "You cannot make shared profiles"
+  }
+}

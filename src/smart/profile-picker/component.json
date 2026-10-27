@@ -1,0 +1,279 @@
+{
+  "$comment": "The source of sf-profile-picker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/profile-picker (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.profile-picker",
+  "tag": "sf-profile-picker",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "picker",
+  "settings": {
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1/2"
+    },
+    "resettable": {
+      "type": "boolean",
+      "default": false
+    },
+    "message": {
+      "type": "string",
+      "default": ""
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "profiles": {
+      "type": "list",
+      "of": {
+        "id": "id",
+        "label": "string",
+        "shared": "boolean",
+        "builtin": "boolean",
+        "editable": "boolean"
+      },
+      "x-summary": "The profiles the host offers; the picker never changes its own list"
+    },
+    "rights": {
+      "type": "object",
+      "x-summary": "What this person may do: {create: {personal, shared}, reset}"
+    }
+  },
+  "values": {
+    "current": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "events": {
+    "select": {
+      "carries": {
+        "id": "string",
+        "ids": "list"
+      }
+    },
+    "create": {
+      "carries": {
+        "label": "string",
+        "shared": "boolean",
+        "from": "string",
+        "kind": {
+          "type": "enum",
+          "values": [
+            "personal",
+            "shared"
+          ]
+        }
+      }
+    },
+    "rename": {
+      "carries": {
+        "id": "string",
+        "label": "string",
+        "title": "string"
+      }
+    },
+    "delete": {
+      "carries": {
+        "id": "string",
+        "ids": "list"
+      }
+    },
+    "reset": {
+      "carries": {
+        "id": "string"
+      }
+    }
+  },
+  "actions": {
+    "open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-summary": "Opens the panel; refused (disabled) when disabled, applied when already open"
+    },
+    "close": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-summary": "Closes the panel and gives the focus back to the trigger; refused (closed) when closed"
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Enter": "open",
+      "Space": "open"
+    },
+    "row": {
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "F2": "rename",
+      "Delete": "delete",
+      "Escape": "close"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "presentation": {
+    "skeleton": {
+      "file": "skeleton.html",
+      "$comment": "The folded trigger with a bar for the profile's name: the first paint before the host sets profiles (§5.4)."
+    }
+  },
+  "styles": "scss/_smart__profile_picker.scss",
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "menu",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowUp": "focus:prev",
+      "ArrowDown": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Space": "select",
+      "Escape": "close"
+    },
+    "$comment": "The trigger is a button (aria-haspopup menu, aria-expanded); the open panel is a menu named by the label, its rows menuitemradio with aria-checked. F2 and Delete on a row the person may change open its rename and its delete confirmation (keyboard.row); they are actions of the picker, not effects of the menu role."
+  },
+  "css-variables": {
+    "--sf-profile-picker-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-profile-picker-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-profile-picker-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-profile-picker-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-profile-picker-panel-background-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
+  "x-source": {
+    "package": "framework",
+    "folder": "profile-picker",
+    "manifest": "simai/ui-source@5100227 src/smart/profile-picker/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/profile-picker.component.json"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-renamed": [
+    "events.sf-profile-select → select (the DOM name without sf-<tag>-)",
+    "events.sf-profile-create → create (the DOM name without sf-<tag>-)",
+    "events.sf-profile-rename → rename (the DOM name without sf-<tag>-)",
+    "events.sf-profile-delete → delete (the DOM name without sf-<tag>-)",
+    "events.sf-profile-reset → reset (the DOM name without sf-<tag>-)",
+    "events: the detail adds the vocabulary's fields (select and delete ids, rename title, create kind) beside the old ones; the old names get the same larger detail (detail-adds)",
+    "settings.profiles, rights: the list and the object the host set as properties, declared"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "saving the width on a server"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-profile-picker wherever a person chooses between profiles or views of something and may make, rename or remove them: the admin menu's profiles, a record's views.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not let the component change its own list; answer its events by setting profiles and current",
+        "Do not build a second profile switcher"
+      ],
+      "required_reads": [
+        "inputs",
+        "contracts",
+        "events",
+        "accessibility",
+        "provenance"
+      ],
+      "minimal_example": "<sf-profile-picker label=\"Профиль\" current=\"regular\" resettable></sf-profile-picker>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0: the five events take the tag in their DOM names behind dated aliases, profiles and rights are declared, open, close and toggle answer outcomes; a minor while the aliases hold (§4.10).",
+    "events: sf-profile-<verb> becomes sf-profile-picker-<verb> (vocabulary §7: the component's tag). The details keep {id}, {label, shared, from}, {id, label} and add the vocabulary's shapes: select {ids}, delete {ids}, rename {title}, create {kind: personal | shared}; the old names get the same detail (detail-adds). The picker asks; the host answers by setting profiles, current or message.",
+    "key-effects: the menu role gives Arrow, Home, End, Enter, Space and Escape; Delete and F2 on a row the person may change are mapped in keyboard.row to the picker's own acts delete and rename (§4.6), which no ARIA effect names.",
+    "skeleton: the profiles are the host's data and arrive after the first paint, so skeleton.html draws the folded trigger with a bar of the text size for the name (§3, §5.4); presentation.skeleton names it.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the rights and the reset; probe.json drives choosing, creating, renaming, deleting, resetting and the old names.",
+    "css-variables: five public variables read by its own sheet with the role token as fallback (src/core/contracts/public-variables.v1.json)."
+  ]
+}

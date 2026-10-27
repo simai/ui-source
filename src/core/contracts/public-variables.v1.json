@@ -2747,6 +2747,47 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "profile-picker",
+      "selector": ".sf-profile-picker",
+      "variables": [
+        {
+          "name": "--sf-profile-picker-background-color",
+          "role": "background",
+          "summary": "The folded trigger's fill.",
+          "default": "transparent",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-profile-picker-border-color",
+          "role": "border-color",
+          "summary": "The folded trigger's border at rest; open keeps its own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-profile-picker-radius",
+          "role": "radius",
+          "summary": "The folded trigger's corners.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-profile-picker-color",
+          "role": "color",
+          "summary": "The trigger's words.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-profile-picker-panel-background-color",
+          "role": "background",
+          "summary": "The open panel's fill.",
+          "default": "var(--sf-elevation-3--surface)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

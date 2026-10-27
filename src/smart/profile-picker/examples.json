@@ -1,0 +1,90 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Профили",
+      "settings": {
+        "label": "Профиль",
+        "current": "regular",
+        "resettable": true,
+        "profiles": [
+          {
+            "id": "regular",
+            "label": "Обычный",
+            "shared": true,
+            "builtin": true
+          },
+          {
+            "id": "mine",
+            "label": "Мой",
+            "shared": false
+          }
+        ]
+      },
+      "expect": {
+        "name": "Профиль"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "open",
+      "title": "Открыть",
+      "settings": {
+        "current": "regular",
+        "profiles": [
+          {
+            "id": "regular",
+            "label": "Обычный",
+            "shared": true,
+            "builtin": true
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "open"
+        }
+      ],
+      "expect": {
+        "returns": {
+          "outcome": "applied"
+        }
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "skeleton",
+      "title": "До профилей",
+      "settings": {
+        "label": "Профиль"
+      },
+      "template": "skeleton",
+      "expect": {
+        "aria-hidden": true
+      }
+    },
+    {
+      "name": "rights",
+      "title": "Создать общий",
+      "settings": {
+        "rights": {
+          "create": {
+            "personal": false,
+            "shared": true
+          }
+        },
+        "profiles": [
+          {
+            "id": "regular",
+            "label": "Обычный",
+            "shared": true,
+            "builtin": true
+          }
+        ]
+      },
+      "expect": {
+        "name": "Профиль"
+      }
+    }
+  ]
+}

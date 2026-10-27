@@ -33,10 +33,10 @@ sf-profile-picker {
   inline-size: 100%;
   min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
   padding-inline: var(--sf-profile-picker--space-x);
-  border: var(--sf-px) solid var(--sf-outline-variant);
-  border-radius: var(--sf-radius--ui);
-  background-color: transparent;
-  color: var(--sf-on-surface);
+  border: var(--sf-px) solid var(--sf-profile-picker-border-color, var(--sf-outline-variant));
+  border-radius: var(--sf-profile-picker-radius, var(--sf-radius--ui));
+  background-color: var(--sf-profile-picker-background-color, transparent);
+  color: var(--sf-profile-picker-color, var(--sf-on-surface));
   font: inherit;
   text-align: start;
   cursor: pointer;
@@ -79,7 +79,7 @@ sf-profile-picker {
   padding: var(--sf-space-1\/4);
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--surface);
-  background-color: var(--sf-elevation-3--surface);
+  background-color: var(--sf-profile-picker-panel-background-color, var(--sf-elevation-3--surface));
   --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
   box-shadow: var(--sf-elevation-3--shadow);
   color: var(--sf-on-surface);
@@ -302,4 +302,19 @@ sf-profile-picker {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: calc(-1 * var(--sf-focus--width));
   }
+}
+
+@layer sf.components {
+/* The skeleton (skeleton.html, standard 1.3.8 §5.4): the folded trigger with
+   a bar where the profile's name will stand, the same box before the host's
+   profiles arrive. */
+.sf-profile-picker-skeleton-bar {
+  display: inline-block;
+  vertical-align: middle;
+  inline-size: 8em;
+  max-inline-size: 100%;
+  block-size: var(--sf-profile-picker--text);
+  border-radius: var(--sf-radius--ui);
+  background: var(--sf-ui-skeleton);
+}
 }
