@@ -13,9 +13,9 @@ export function renderLabelTemplate(context) {
         includeRootStyle: false,
       })}
       <div class="sf-avatar-label-group-container flex flex-col">
-        ${context.title
+        ${context.heading
           ? html`<div class="sf-avatar-label-group-title${context.noWrap ? ' overflow-hidden wrap-none t-ellipsis' : ''}">
-              ${context.title}
+              ${context.heading}
             </div>`
           : ""}
         ${context.description

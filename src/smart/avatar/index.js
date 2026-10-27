@@ -1,21 +1,27 @@
 import SfBaseElement from "../../core/js/smart-base";
+import { elementFromManifest } from "../../core/js/element-manifest";
 import { fieldSize } from "../../component/field-size";
 import { renderCardTemplate } from "./js/templates/card";
 import { renderDefaultTemplate } from "./js/templates/default";
 import { renderLabelTemplate } from "./js/templates/label";
 import { getInitials } from "../helpers/text";
-import {pageText} from "../../core/js/page-language";
 import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-avatar", code, words).
-const AVATAR_TEXT = {
-  en: {
-    ariaLabel: 'Avatar',
-  },
-  ru: {
-    ariaLabel: 'Аватар',
-  },
-};
+import manifest from "./component.json";
+import aliases from "./aliases.json";
+import en from "./lang/en.json";
+import ru from "./lang/ru.json";
+
+// sf-avatar from its component.json (standard simai.smart-component 1.3.8 §3,
+// §4, §11): the settings are the attributes and properties
+// core/js/element-manifest.js makes from the manifest; title is heading's
+// dated alias (aliases.json, §3.1); the default name is the language files'
+// runtime aria-label.
+const AvatarElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: "ru",
+  aliases,
+});
 
 
 const TEMPLATE_RENDERERS = {
@@ -24,47 +30,13 @@ const TEMPLATE_RENDERERS = {
   card: renderCardTemplate,
 };
 
-class SfAvatar extends SfBaseElement {
-  static get props() {
-    return {
-      templateName: { attribute: "template", default: "default" },
-      size: { default: "1" },
-      line: { default: "" },
-      shape: { default: "circle" },
-      imageUrl: { default: "" },
-      imageAlt: { default: "" },
-      noWrap: {type: Boolean, default: false},
-      text: { default: "" },
-      status: { default: "none" },
-      ariaLabel: { default: '' },
-      title: { default: "" },
-      description: { default: "" },
-      meta: { default: "" },
-      metaIcon: { default: "" },
-      cardVariant: { default: "square" },
-      disabled: { type: Boolean, default: false },
-      // A count or a dot on the avatar (simai/ui-source#12).
-      badgeCount: { default: "" },
-      badgeDot: { type: Boolean, default: false },
-      badgeCap: { type: Number, default: 99 },
-      badgeLabel: { default: "" },
-    };
-  }
-
-  constructor() {
-    super();
-  }
-
+class SfAvatar extends AvatarElement {
   get templateName() {
     return this.getAttribute("template") || "default";
   }
 
   set templateName(value) {
     this.setAttribute("template", value || "default");
-  }
-
-  get size() {
-    return this.getAttribute("size") || "1";
   }
 
   // Beside a label the avatar takes the label's text line of a form size
@@ -75,68 +47,14 @@ class SfAvatar extends SfBaseElement {
     return line ? fieldSize(line, "sf-avatar line") : "";
   }
 
-  set size(value) {
-    this.setAttribute("size", value);
+  set line(value) {
+    super.line = value;
   }
 
-  get shape() {
-    return this.getAttribute("shape") || "circle";
-  }
-
-  set shape(value) {
-    this.setAttribute("shape", value || "circle");
-  }
-
-
-  get imageUrl() {
-    return this.getAttribute("image-url") || "";
-  }
-
-  set imageUrl(value) {
-    if (value === null || value === undefined || value === "") {
-      this.removeAttribute("image-url");
-      return;
-    }
-
-    this.setAttribute("image-url", value);
-  }
-
-  get imageAlt() {
-    return this.getAttribute("image-alt") || "";
-  }
-
-  set imageAlt(value) {
-    if (value === null || value === undefined || value === "") {
-      this.removeAttribute("image-alt");
-      return;
-    }
-
-    this.setAttribute("image-alt", value);
-  }
-
-  get text() {
-    return this.getAttribute("text") || "";
-  }
-
-  set text(value) {
-    if (value === null || value === undefined || value === "") {
-      this.removeAttribute("text");
-      return;
-    }
-
-    this.setAttribute("text", value);
-  }
-
-  get status() {
-    return this.getAttribute("status") || "none";
-  }
-
-  set status(value) {
-    this.setAttribute("status", value || "none");
-  }
-
+  // The browser's own ariaLabel answers the attribute; the avatar answers its
+  // default word too, as it always did.
   get ariaLabel() {
-    return this.getAttribute("aria-label") || pageText(AVATAR_TEXT, "ariaLabel", this);
+    return this.getAttribute("aria-label") || this.sfWord("aria-label");
   }
 
   set ariaLabel(value) {
@@ -148,77 +66,14 @@ class SfAvatar extends SfBaseElement {
     this.setAttribute("aria-label", value);
   }
 
-  get title() {
-    return this.getAttribute("title") || "";
+  // The text attribute as given; the template draws displayText (the text,
+  // else initials), an exemption of contracts/template-context.json.
+  get text() {
+    return super.text;
   }
 
-  set title(value) {
-    if (!value) {
-      this.removeAttribute("title");
-      return;
-    }
-
-    this.setAttribute("title", value);
-  }
-
-  get description() {
-    return this.getAttribute("description") || "";
-  }
-
-  set description(value) {
-    if (!value) {
-      this.removeAttribute("description");
-      return;
-    }
-
-    this.setAttribute("description", value);
-  }
-
-  get meta() {
-    return this.getAttribute("meta") || "";
-  }
-
-  set meta(value) {
-    if (!value) {
-      this.removeAttribute("meta");
-      return;
-    }
-
-    this.setAttribute("meta", value);
-  }
-
-  get metaIcon() {
-    return this.getAttribute("meta-icon") || "";
-  }
-
-  set metaIcon(value) {
-    if (!value) {
-      this.removeAttribute("meta-icon");
-      return;
-    }
-
-    this.setAttribute("meta-icon", value);
-  }
-
-  get cardVariant() {
-    return this.getAttribute("card-variant") || "square";
-  }
-
-  set cardVariant(value) {
-    this.setAttribute("card-variant", value || "square");
-  }
-
-  get disabled() {
-    return this.getBooleanAttr("disabled", false);
-  }
-
-  set disabled(value) {
-    if (value) {
-      this.setAttribute("disabled", "");
-      return;
-    }
-
-    this.removeAttribute("disabled");
+  set text(value) {
+    super.text = value;
   }
 
   get isImage() {
@@ -239,7 +94,7 @@ class SfAvatar extends SfBaseElement {
     }
 
     return getInitials(
-      this.title || (this.hasAttribute("aria-label") ? this.ariaLabel : ""),
+      this.heading || (this.hasAttribute("aria-label") ? this.ariaLabel : ""),
     );
   }
 
@@ -249,9 +104,16 @@ class SfAvatar extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
-      ariaLabel: this.getAttribute("aria-label") || pageText(AVATAR_TEXT, "ariaLabel", this),
+      ariaLabel: this.ariaLabel,
       // The count joins the name: «Анна Белова, 3 непрочитанных».
-      buttonLabel: nameWithBadge(this.getAttribute("aria-label") || pageText(AVATAR_TEXT, "ariaLabel", this), badge.phrase),
+      buttonLabel: nameWithBadge(this.ariaLabel, badge.phrase),
+      size: this.size,
+      line: this.line,
+      shape: this.shape,
+      status: this.status,
+      heading: this.heading,
+      // An external project template written before the rename reads title.
+      title: this.heading,
       badge,
       component: this,
       isImage: this.isImage,
@@ -319,7 +181,7 @@ class SfAvatar extends SfBaseElement {
       text: this.text,
       status: this.status,
       ariaLabel: this.ariaLabel,
-      title: this.title,
+      heading: this.heading,
       description: this.description,
       meta: this.meta,
       metaIcon: this.metaIcon,

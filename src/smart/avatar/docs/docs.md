@@ -18,8 +18,10 @@ Loading model:
 - `image-alt`
 - `text`
 - `status`: `none | online | offline | company | verified`
-- `aria-label`
-- `title`
+- `aria-label` — a host attribute: the button's name, «Аватар» / "Avatar" when unset
+- `heading` — the name the label and card templates print; `title` is its
+  dated alias until 2026-12-01 (`title` is a property of every element,
+  standard 1.3.8 §3.1)
 - `description`
 - `meta`
 - `meta-icon`
@@ -34,7 +36,7 @@ Loading model:
 The default and label templates intentionally render a native button. Its
 `aria-label` must describe the action (for example, “Open Anna's profile”), not
 the visual photograph. The card template is non-interactive. Images inside a
-label or card use `alt=""` when the adjacent title already provides the same
+label or card use `alt=""` when the adjacent heading already provides the same
 identity; set `image-alt` only when the image contributes additional meaning.
 
 Availability and verification badges are decorative projections. Include the
@@ -76,7 +78,7 @@ Example:
 
 ```js
 export default function template({ html, nothing, context, component }) {
-  return html`<div>${context.title || nothing}</div>`;
+  return html`<div>${context.heading || nothing}</div>`;
 }
 ```
 
@@ -104,3 +106,6 @@ Priority:
 
 1. slot override
 2. built-in badge/indicator
+
+The interface is `component.json` (standard 1.3.8); examples are
+`examples.json`.

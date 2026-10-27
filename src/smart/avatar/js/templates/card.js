@@ -19,8 +19,8 @@ export function renderCardTemplate(context) {
             ></div>`}
       </div>
       <div class="sf-avatar-card-content flex-1 flex flex-col">
-        ${context.title
-          ? html`<div class="sf-avatar-card-title">${context.title}</div>`
+        ${context.heading
+          ? html`<div class="sf-avatar-card-title">${context.heading}</div>`
           : ""}
         ${context.meta || context.description
           ? html`

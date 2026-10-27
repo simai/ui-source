@@ -145,6 +145,10 @@
         "type": "string",
         "default": "",
         "description": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
+      },
+      "heading": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -251,7 +255,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "150b3582139dbff2ff24788b5e988b3cd4ed6892cb5c0a41cfa937bb1f070b76"
+        "sha256": "bdb4361e104c4f41fc9a6bf59b7f3d28fd15ffcea7d9bdcd349f6339ab87e7a7"
       }
     ],
     "generated_runtime": [

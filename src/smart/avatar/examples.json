@@ -1,0 +1,104 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Подпись: Анна Захарова",
+      "settings": {
+        "template": "label",
+        "text": "AZ",
+        "heading": "Анна Захарова",
+        "description": "Дизайнер продукта",
+        "status": "online",
+        "size": "2"
+      },
+      "expect": {
+        "heading": "Анна Захарова",
+        "status": "online"
+      }
+    },
+    {
+      "name": "image",
+      "title": "Фото",
+      "settings": {
+        "image-url": "https://example.test/a.jpg",
+        "image-alt": "Анна Захарова"
+      },
+      "attributes": {
+        "aria-label": "Анна Захарова"
+      },
+      "expect": {
+        "image-url": "https://example.test/a.jpg"
+      }
+    },
+    {
+      "name": "initials",
+      "title": "Инициалы из имени",
+      "settings": {
+        "heading": "Борис Ильин"
+      },
+      "attributes": {
+        "aria-label": "Борис Ильин"
+      },
+      "expect": {
+        "heading": "Борис Ильин"
+      }
+    },
+    {
+      "name": "card",
+      "title": "Карточка",
+      "settings": {
+        "template": "card",
+        "text": "ВП",
+        "heading": "Вера Петрова",
+        "description": "Руководитель отдела",
+        "meta": "Москва",
+        "meta-icon": "location_on",
+        "card-variant": "portrait"
+      },
+      "expect": {
+        "card-variant": "portrait"
+      }
+    },
+    {
+      "name": "badge",
+      "title": "Со счётчиком",
+      "settings": {
+        "text": "АБ",
+        "badge-count": "3"
+      },
+      "attributes": {
+        "aria-label": "Анна Белова"
+      },
+      "expect": {
+        "badge-count": "3"
+      }
+    },
+    {
+      "name": "verified",
+      "title": "Проверенный",
+      "settings": {
+        "text": "SI",
+        "status": "verified",
+        "shape": "square"
+      },
+      "attributes": {
+        "aria-label": "SIMAI"
+      },
+      "expect": {
+        "status": "verified",
+        "shape": "square"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "text": "НН",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    }
+  ]
+}

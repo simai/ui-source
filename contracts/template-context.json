@@ -8,7 +8,7 @@
     {
       "component": "avatar",
       "prop": "text",
-      "reason": "The template takes the text to display: the text attribute, else initials from the title or the accessible name."
+      "reason": "The template takes the text to display: the text attribute, else initials from the heading or the accessible name."
     },
     {
       "component": "progress-scale",
