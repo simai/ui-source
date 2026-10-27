@@ -13,7 +13,9 @@
       "<div id=\"area\"><sf-drawer id=\"d1\" heading=\"Фильтры\"><input id=\"d1-field\" aria-label=\"Поиск\"><button id=\"d1-close\" data-sf-action=\"d1.close\">Готово</button><button slot=\"edge\" id=\"d1-edge\">Край</button></sf-drawer></div>",
       "<sf-drawer id=\"d-old\" title=\"Старая панель\"><p>Старые имена</p></sf-drawer>",
       "<sf-drawer id=\"d-locked\" heading=\"Решите\" dismissible=\"false\" unsaved><button id=\"locked-ok\" data-sf-action=\"d-locked.close\">Понятно</button></sf-drawer>",
-      "<sf-drawer id=\"d-sheet\" placement=\"bottom\" label=\"Лист\"><p>Лист</p></sf-drawer>"
+      "<sf-drawer id=\"d-sheet\" placement=\"bottom\" label=\"Лист\"><p>Лист</p></sf-drawer>",
+      "<div id=\"dock-host\" data-sf-drawer-dock-host style=\"width: 1000px\"><button id=\"opener-dock\" data-sf-action=\"d-dock.open\">Чаты</button><button id=\"after-dock\">Дальше</button></div>",
+      "<sf-drawer id=\"d-dock\" docked dock-breakpoint=\"600px\" placement=\"inline-start\" label=\"Чаты\"><button id=\"d-dock-a\">Первый</button><button id=\"d-dock-b\">Второй</button></sf-drawer>"
     ]
   },
   "probes": [
@@ -403,6 +405,171 @@
         },
         {
           "check": "document.querySelector('[data-sf-drawer-portal=\"d1\"]').style.getPropertyValue('--sf-drawer-background') === 'rgb(1, 2, 3)' && document.querySelector('[data-sf-drawer-portal=\"d1\"]').getAttribute('lang') === 'ru'"
+        }
+      ]
+    },
+    {
+      "id": "p12-docked-narrow-is-modal",
+      "title": "a docked drawer without the room floats as a modal panel: focus inside, the page covered and locked, Tab kept, Escape closes, focus back to the opener",
+      "covers": "settings.modal with docked below dock-breakpoint (1.8.0, q-a49e2045c1), layer.traps-focus, layer.locks-page, §19.2",
+      "steps": [
+        {
+          "script": "(document.getElementById('dock-host').style.width = '400px', true)",
+          "wait": 100
+        },
+        {
+          "user": "click:#opener-dock",
+          "expect": {
+            "values": {
+              "#d-dock.open": true,
+              "#d-dock.modal": true
+            }
+          }
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d-dock\"] [data-sf-drawer-panel]"
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('role') === 'dialog' && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('aria-modal') === 'true' && !document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-overlay]').hidden && document.documentElement.style.overflow === 'hidden' && document.elementFromPoint(1200, 700)?.hasAttribute('data-sf-drawer-overlay') === true"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d-dock\"] [data-sf-drawer-panel]"
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d-dock\"] [data-sf-drawer-panel]"
+        },
+        {
+          "user": "keyboard:Escape",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-drawer-closed",
+                "count": 1,
+                "detail": {
+                  "drawerId": "d-dock",
+                  "reason": "escape"
+                }
+              }
+            ],
+            "values": {
+              "#d-dock.open": false
+            }
+          }
+        },
+        {
+          "focus": "expect returned to #opener-dock"
+        },
+        {
+          "check": "document.documentElement.style.overflow !== 'hidden'"
+        }
+      ]
+    },
+    {
+      "id": "p13-docked-wide-stays-a-column",
+      "title": "with the room the docked drawer is a modeless column: no scrim, no trap, no page lock, presses reach the page",
+      "covers": "settings.docked, settings.dock-breakpoint (wide)",
+      "steps": [
+        {
+          "user": "click:#opener-dock",
+          "expect": {
+            "values": {
+              "#d-dock.open": true,
+              "#d-dock.modal": false
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('role') === 'region' && !document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').hasAttribute('aria-modal') && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-overlay]').hidden && document.documentElement.style.overflow !== 'hidden' && !document.elementFromPoint(1200, 700)?.closest('[data-sf-drawer-portal]') && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-root]').getAttribute('data-sf-drawer-column') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p14-docked-narrows-while-open",
+      "title": "an open docked column that loses the room becomes modal and takes the focus; given the room back it is a modeless column again",
+      "covers": "syncModal: the stack re-declared when the dock host crosses dock-breakpoint",
+      "steps": [
+        {
+          "user": "click:#opener-dock"
+        },
+        {
+          "script": "(document.getElementById('after-dock').focus(), true)",
+          "wait": 60
+        },
+        {
+          "script": "(document.getElementById('dock-host').style.width = '400px', true)",
+          "wait": 300
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('role') === 'dialog' && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('aria-modal') === 'true' && !document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-overlay]').hidden && document.documentElement.style.overflow === 'hidden' && document.elementFromPoint(1200, 700)?.hasAttribute('data-sf-drawer-overlay') === true"
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d-dock\"] [data-sf-drawer-panel]"
+        },
+        {
+          "script": "(document.getElementById('dock-host').style.width = '1000px', true)",
+          "wait": 300
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('role') === 'region' && !document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').hasAttribute('aria-modal') && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-overlay]').hidden && document.documentElement.style.overflow !== 'hidden' && !document.elementFromPoint(1200, 700)?.closest('[data-sf-drawer-portal]')"
+        }
+      ]
+    },
+    {
+      "id": "p15-docked-modal-false-stays-modeless",
+      "title": "modal=\"false\" keeps a docked drawer modeless when it floats",
+      "covers": "settings.modal=false with docked (backwards compatible)",
+      "steps": [
+        {
+          "script": "(document.getElementById('d-dock').setAttribute('modal', 'false'), true)",
+          "wait": 60
+        },
+        {
+          "script": "(document.getElementById('dock-host').style.width = '400px', true)",
+          "wait": 100
+        },
+        {
+          "user": "click:#opener-dock",
+          "expect": {
+            "values": {
+              "#d-dock.open": true,
+              "#d-dock.modal": false
+            }
+          }
+        },
+        {
+          "check": "document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').getAttribute('role') === 'region' && !document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-panel]').hasAttribute('aria-modal') && document.querySelector('[data-sf-drawer-portal=\\\"d-dock\\\"] [data-sf-drawer-overlay]').hidden && document.documentElement.style.overflow !== 'hidden' && !document.elementFromPoint(1200, 700)?.closest('[data-sf-drawer-portal]')"
         }
       ]
     }

@@ -137,11 +137,14 @@ const drawerManager = {
 
   // What the drawer declares to the stack (§19.1): a modal drawer locks the
   // page -- unless it stands in an overlay container, which it covers instead
-  // -- and holds the focus.
+  // -- and holds the focus. The drawer remembers what it declared, so a docked
+  // drawer that starts or stops floating says so again (syncModal).
   declares(drawer) {
+    const modal = drawer.modal;
+    drawer._declaredModal = modal;
     return {
-      locksPage: drawer.modal && !drawer.closest(OVERLAY_CONTAINER),
-      trapsFocus: drawer.modal,
+      locksPage: modal && !drawer.closest(OVERLAY_CONTAINER),
+      trapsFocus: modal,
     };
   },
 
@@ -185,6 +188,7 @@ const drawerManager = {
       if (!drawer.openState || !drawer.docked) continue;
       const column = this.reservesDock(drawer);
       drawer.setDockColumn(column);
+      drawer.syncModal();
       if (!column) continue;
       const panel = drawer.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
       const width = panel ? Math.round(panel.getBoundingClientRect().width) : 0;
@@ -399,6 +403,7 @@ class SfDrawer extends DrawerElement {
     this.onHandleKeyDown = this.onHandleKeyDown.bind(this);
     this._switchVisible = false;
     this._dockColumn = true;
+    this._declaredModal = null;
   }
 
   connectedCallback() {
@@ -469,9 +474,34 @@ class SfDrawer extends DrawerElement {
     if (visible !== this._switchVisible) this.requestComponentUpdate('controlled');
   }
 
+  // A modal drawer -- the default -- covers the page while it floats over it:
+  // the scrim takes presses, Tab stays inside, the page does not scroll, and
+  // focus goes back to what opened it. A docked drawer that is a column of the
+  // page is part of the page layout and is modeless; without the room (the dock
+  // host or the window narrower than its dock-breakpoint) it floats over the
+  // page and is modal like any other drawer (q-a49e2045c1: a chat's side panel
+  // on a phone). modal="false" keeps a drawer modeless everywhere.
   get modal() {
-    // A docked drawer is part of the page layout and is always modeless.
-    return !this.docked && this.getBooleanAttr('modal', true);
+    if (!this.getBooleanAttr('modal', true)) return false;
+    if (!this.docked) return true;
+    return typeof document !== 'undefined' && !drawerManager.reservesDock(this);
+  }
+
+  // A docked drawer that started or stopped floating while open declares it
+  // to the stack again (the trap, the page lock), redraws its scrim, role and
+  // aria-modal, and -- now modal and on top -- takes the focus if it is
+  // outside (§19.2).
+  syncModal() {
+    if (!this.openState || layerIndex(this) < 0) return;
+    const modal = this.modal;
+    if (modal === this._declaredModal) return;
+    updateLayer(this, drawerManager.declares(this));
+    this.requestComponentUpdate('modal');
+    if (!modal || !drawerManager.isTop(this)) return;
+    globalThis.requestAnimationFrame?.(() => {
+      const root = this.getDrawerRoot();
+      if (this.openState && this.modal && !root?.querySelector('[data-sf-drawer-panel]')?.contains(document.activeElement)) this.focusFirst();
+    });
   }
 
   // A bottom sheet floats over the page; it is never a column of it.
@@ -764,7 +794,7 @@ class SfDrawer extends DrawerElement {
       <section
         class=${joinClasses('sf-drawer-panel', context.panelClass)}
         style=${`${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.gutter ? `--sf-drawer-gutter:${context.gutter};` : ''}${context.panelStyle || ''}`}
-        role=${context.docked ? 'region' : 'dialog'}
+        role=${context.docked && !context.modal ? 'region' : 'dialog'}
         aria-modal=${context.modal ? 'true' : nothing}
         aria-label=${context.label || nothing}
         aria-labelledby=${context.title ? context.titleId : nothing}

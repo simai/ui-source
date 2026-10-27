@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -135,7 +135,7 @@
       "dock-breakpoint": {
         "type": "string",
         "default": "",
-        "description": "From what width of the dock host (or the window, without a host) a docked drawer is a column of the page; narrower, it floats over the page. A length in rem, em or px. Empty: the --sf-drawer-dock-breakpoint variable where the drawer stands, else 48rem."
+        "description": "From what width of the dock host (or the window, without a host) a docked drawer is a column of the page; narrower, it floats over the page and is modal (unless modal=false). A length in rem, em or px. Empty: the --sf-drawer-dock-breakpoint variable where the drawer stands, else 48rem."
       },
       "block-start": {
         "type": "string",
@@ -682,6 +682,14 @@
           "onBeforeOpen, onAfterOpen, onBeforeClose and onAfterClose still receive only that drawer's own events.",
           "Ancestor listeners added with addEventListener now also see events of nested drawers; check event.detail.drawer."
         ]
+      },
+      {
+        "from": "1.7.0",
+        "to": "1.8.0",
+        "changes": [
+          "A docked drawer without the room (dock host or window narrower than its dock-breakpoint) floats over the page as a modal panel: scrim, focus kept inside, page lock, Escape, focus returned to its opener. A docked column is unchanged.",
+          "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before."
+        ]
       }
     ]
   },
@@ -691,11 +699,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "055f387f784351c106ca047ca4fd79905b18c3705439f7befa0c384af6cd3089"
+        "sha256": "d39cfd50560d0dd812c4770161bedcea86f4a1b92c89f40b495661d1fb9c8670"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "64fcbbebba4874c798fc5a1c895089ed02614ebfabdf3289109d2109b31655fd"
+        "sha256": "f528f72223f5a3b6a067c09e2435e982803f7a66bd3b32d713f4efdc4ba8069d"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -703,7 +711,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "895a90411e65f187851a39c31fd1ed0974438d2e7695ef4dc29f6d6e8a984fc6"
+        "sha256": "4cca6a175bb7476bd59afcb51afaf96442b070ff77172280ef9dc70c85bdffe2"
       }
     ],
     "generated_runtime": [
@@ -716,7 +724,7 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",
+    "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once; below its dock-breakpoint it floats over the page as a modal panel) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",
     "do_not": [
       "Do not use a modal sf-drawer for new interfaces; use sf-modal with a side position",
       "Do not copy generated ui-smart code",

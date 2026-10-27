@@ -276,8 +276,9 @@
     position: static;
   }
 
-  /* Docked drawers are modeless page columns: no scrim, square edges. */
-  .sf-drawer[data-sf-drawer-docked='true'] .sf-drawer-overlay {
+  /* Docked drawers are modeless page columns: no scrim, square edges. One
+     without the room floats over the page and is modal: it keeps its scrim. */
+  .sf-drawer[data-sf-drawer-docked='true'][data-sf-drawer-modal='false'] .sf-drawer-overlay {
     display: none;
   }
 
