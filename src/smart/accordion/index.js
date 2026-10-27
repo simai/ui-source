@@ -11,6 +11,8 @@
 // the sheet -- leaves the element's sections alone and two owners never toggle
 // one section.
 import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {instancePath, partId} from '../../core/js/instance-path';
 import {renderAccordionTemplate} from './js/templates/default';
 import {
   ACCORDION_APPEARANCES,
@@ -21,13 +23,31 @@ import {
   openSections,
 } from './sections.mjs';
 import './scss/index.scss';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8):
+// the settings are attributes and properties made by
+// core/js/element-manifest.js, open, close and toggle answer outcomes, and the
+// old event name sf-accordion:toggle is a dated alias of sf-accordion-toggle.
+const AccordionElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: {en, ru},
+  source: 'ru',
+  aliases,
+});
 
 const HEADING_LEVELS = ['2', '3', '4', '5', '6'];
-let sequence = 0;
 
-class SfSmartAccordion extends SfBaseElement {
+// open('main') and open({id: 'main'}) both name a section (§4.4).
+const sectionArgument = (value) => (value && typeof value === 'object' ? value.id : value);
+
+class SfSmartAccordion extends AccordionElement {
   static get props() {
     return {
+      ...super.props,
       templateName: {attribute: 'template', default: 'default'},
       items: {default: []},
       single: {type: Boolean, default: false},
@@ -44,7 +64,6 @@ class SfSmartAccordion extends SfBaseElement {
 
   constructor() {
     super();
-    this._id = `sf-smart-accordion-${++sequence}`;
     // undefined: follow the attribute. Set by the property; an attribute
     // written later takes over again.
     this._items = undefined;
@@ -88,7 +107,8 @@ class SfSmartAccordion extends SfBaseElement {
           icon: details.dataset.icon,
           badge: details.dataset.badge,
         }, index);
-        section.slot = `${this._id}-child-${index}`;
+        // A local name: the slot map is the element's own (§7.1.1, #41).
+        section.slot = `sf-accordion-child-${index}`;
         const nodes = Array.from(details.childNodes).filter((node) => node !== summary);
         if (nodes.length) this._liveSlotNodes.set(section.slot, nodes);
         this._childSections.push(section);
@@ -112,11 +132,9 @@ class SfSmartAccordion extends SfBaseElement {
     return items.length ? items : this._childSections;
   }
 
-  get single() { return this.getBooleanAttr('single', false); }
-  get size() { return this.getProp('size'); }
-  get appearance() { return this.getProp('appearance'); }
-  get marker() { return this.getProp('marker'); }
-  get headingLevel() { return this.getProp('headingLevel'); }
+  // single, size, appearance, marker and heading-level are the manifest's
+  // accessors (attribute and property); expanded is the open ids (§4 values).
+  get expanded() { return this.openIds; }
 
   // The one section that stands alone is a plain section: no toggle.
   get isStatic() {
@@ -138,29 +156,32 @@ class SfSmartAccordion extends SfBaseElement {
     return this.sections.find((section) => section.id === String(id)) || null;
   }
 
+  // The actions open, close and toggle {id} (§4.4): each answers an outcome.
   open(id) {
-    return this.setOpen(id, true, 'method');
+    return this.setOpen(sectionArgument(id), true, 'method');
   }
 
   close(id) {
-    return this.setOpen(id, false, 'method');
+    return this.setOpen(sectionArgument(id), false, 'method');
   }
 
   toggle(id) {
-    return this.setOpen(id, !this.isOpen(id), 'method');
+    const key = sectionArgument(id);
+    return this.setOpen(key, !this.isOpen(key), 'method');
   }
 
   // Opens or closes one section. In single mode opening one closes the one
   // that was open, and each change is reported, as a native <details name>
   // group reports the one it closes. A disabled section, a section that is
-  // already so, and the single section do nothing. Returns whether anything
-  // changed.
+  // already so, and the single section do nothing. Answers an outcome:
+  // applied, or refused with unknown, static, disabled or already.
   setOpen(id, open, source = 'method') {
     const section = this.section(id);
-    if (!section || this.isStatic) return false;
-    if (section.disabled && source === 'user') return false;
+    if (!section) return {outcome: 'refused', reason: 'unknown'};
+    if (this.isStatic) return {outcome: 'refused', reason: 'static'};
+    if (section.disabled && source === 'user') return {outcome: 'refused', reason: 'disabled'};
     const before = new Set(this.openIds);
-    if (before.has(section.id) === Boolean(open)) return false;
+    if (before.has(section.id) === Boolean(open)) return {outcome: 'refused', reason: 'already'};
     if (open && this.single) {
       for (const other of before) this._openState.set(other, false);
     }
@@ -170,14 +191,12 @@ class SfSmartAccordion extends SfBaseElement {
     const changed = this.sections.filter((one) => before.has(one.id) !== after.has(one.id));
     // The section asked for first, then the one single mode closed.
     changed.sort((a, b) => (a.id === section.id ? -1 : b.id === section.id ? 1 : 0));
+    // sf-accordion-toggle, then its old name sf-accordion:toggle with the same
+    // detail (aliases.json, until 2026-12-01).
     for (const one of changed) {
-      this.dispatchEvent(new CustomEvent('sf-accordion:toggle', {
-        bubbles: true,
-        composed: true,
-        detail: {id: one.id, open: after.has(one.id), source, section: one},
-      }));
+      this.sfEmit('toggle', {id: one.id, open: after.has(one.id), source, section: one});
     }
-    return true;
+    return {outcome: 'applied'};
   }
 
   // The header buttons of this element, not of an accordion nested inside it.
@@ -227,7 +246,9 @@ class SfSmartAccordion extends SfBaseElement {
     return this.createTemplateContext({
       ...props,
       component: this,
-      id: this._id,
+      // The host's path id (§7.1.1, simai/ui-source#41): the header and panel
+      // ids are <path>--trigger-<n> and <path>--panel-<n>.
+      id: partId(instancePath(this, {kind: 'sf-accordion'})),
       sections,
       open,
       single: this.single,
@@ -235,7 +256,8 @@ class SfSmartAccordion extends SfBaseElement {
       size: this.size,
       appearance: this.appearance,
       marker: this.marker,
-      headingLevel: this.headingLevel,
+      // The enum of the class sheet's levels; the property is the number.
+      headingLevel: this.getProp('headingLevel'),
       rootClass: this.getRootClass(),
     });
   }

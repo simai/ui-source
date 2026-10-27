@@ -10,7 +10,7 @@
 //   right, panels regions named by their headers;
 // - a click toggles once (the class runtime binds nothing to these
 //   sections), single mode closes the one that was open, and each change is
-//   one sf-accordion:toggle {id, open, source};
+//   one sf-accordion-toggle {id, open, source} (sf-accordion:toggle is its dated alias);
 // - Enter and Space toggle; ArrowDown and ArrowUp walk the headers and wrap,
 //   Home and End go to the ends, a disabled header is passed over;
 // - open(id), close(id), toggle(id) report source method;
@@ -82,7 +82,7 @@ try {
   await page.waitForTimeout(500);
   await page.evaluate(() => {
     window.__events = [];
-    document.addEventListener('sf-accordion:toggle', (event) => {
+    document.addEventListener('sf-accordion-toggle', (event) => {
       window.__events.push({host: event.target.id, id: event.detail.id, open: event.detail.open, source: event.detail.source});
     });
     window.__live = 0;
@@ -175,8 +175,10 @@ try {
   });
   await page.waitForTimeout(100);
   const methodEvents = await events();
-  check('methods: open, close and toggle say whether anything changed', method.opened && !method.again && method.closed && method.toggled
-    && !method.unknown && method.ids.join() === 'seo' && method.isOpen, {method});
+  // Each answers an outcome (standard 1.3.8 §4.4).
+  const applied = (one) => one?.outcome === 'applied';
+  check('methods: open, close and toggle answer whether anything changed', applied(method.opened) && method.again?.reason === 'already' && applied(method.closed) && applied(method.toggled)
+    && method.unknown?.reason === 'unknown' && method.ids.join() === 'seo' && method.isOpen, {method});
   check('methods: each change is an event with source method', methodEvents.length === 3 && methodEvents.every((one) => one.source === 'method'), {methodEvents});
 
   // <details> in the markup.

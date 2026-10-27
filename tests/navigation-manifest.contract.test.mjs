@@ -80,3 +80,19 @@ test('sf-breadcrumbs: a press is sf-breadcrumbs-press, cancelable, with data onl
   assert.match(source, /originalEvent: this\._pressOrigin \?\? null/u);
   assert.doesNotMatch(source, /new CustomEvent\('sf-breadcrumb-click'/u);
 });
+
+test('sf-accordion: sf-accordion-toggle with the same detail as its colon alias; outcomes; path ids', () => {
+  const manifest = json('src/smart/accordion/component.json');
+  assert.equal(readManifest(manifest).events.toggle.name, 'sf-accordion-toggle');
+  assert.deepEqual(Object.keys(manifest.actions), ['open', 'close', 'toggle']);
+  assert.equal(manifest.settings['heading-level'].type, 'number');
+  const {rows} = readAliasTable(json('src/smart/accordion/aliases.json'), {tag: 'sf-accordion'});
+  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-accordion:toggle', 'sf-accordion-toggle', 'same-detail']]);
+  const source = read('src/smart/accordion/index.js');
+  assert.match(source, /return \{outcome: 'refused', reason: 'already'\};/u);
+  assert.doesNotMatch(source, /\+\+sequence|let sequence/u, 'no module counter (#41)');
+  assert.match(source, /id: partId\(instancePath\(this, \{kind: 'sf-accordion'\}\)\)/u);
+  const klass = read('src/component/accordion/js/_accordion.js');
+  assert.doesNotMatch(klass, /accordionId/u, 'the class accordion has no module counter either');
+  assert.match(klass, /this\.trigger\.id = partId\(path, 'trigger'\)/u);
+});

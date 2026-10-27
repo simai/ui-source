@@ -1,0 +1,20 @@
+{
+  "$comment": "Dated aliases of sf-accordion for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+  "component": "sf-accordion",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "sf-accordion:toggle",
+      "to": "sf-accordion-toggle",
+      "kind": "event",
+      "component": "sf-accordion",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "cancelable": false,
+      "section": "§8, §16 item 6",
+      "note": "the detail {id, open, source, section} is data only, so both names carry the same object"
+    }
+  ]
+}

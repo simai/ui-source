@@ -1,0 +1,296 @@
+{
+  "$comment": "The source of sf-accordion's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/accordion (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
+  "id": "smart.accordion",
+  "tag": "sf-accordion",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "accordion",
+  "settings": {
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "title": "string",
+        "content": {
+          "type": "string",
+          "optional": true
+        },
+        "slot": {
+          "type": "string",
+          "optional": true
+        },
+        "open": {
+          "type": "boolean",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "badge": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-markup": "the attribute takes the same list as JSON; without it the <details> written inside are the sections"
+    },
+    "single": {
+      "type": "boolean",
+      "default": false
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "",
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": ""
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "default",
+        "outline",
+        "flush"
+      ],
+      "default": "default"
+    },
+    "marker": {
+      "type": "enum",
+      "values": [
+        "chevron",
+        "plus-minus"
+      ],
+      "default": "chevron"
+    },
+    "single-section": {
+      "type": "enum",
+      "values": [
+        "static",
+        "toggle"
+      ],
+      "default": "static"
+    },
+    "heading-level": {
+      "type": "number",
+      "integer": true,
+      "min": 2,
+      "max": 6,
+      "default": 3
+    }
+  },
+  "values": {
+    "expanded": {
+      "type": "list",
+      "summary": "the ids of the open sections, in order"
+    }
+  },
+  "events": {
+    "toggle": {
+      "carries": {
+        "id": "id",
+        "open": "boolean",
+        "source": {
+          "type": "enum",
+          "values": [
+            "user",
+            "method"
+          ]
+        },
+        "section": "object"
+      }
+    }
+  },
+  "actions": {
+    "open": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "close": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "toggle": {
+      "with": {
+        "id": "id"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "keyboard": {
+    "header": {
+      "Tab": "reach",
+      "Enter": "toggle:open",
+      "Space": "toggle:open",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "name": "none",
+    "keys": {
+      "Tab": "reach",
+      "Enter": "toggle:open",
+      "Space": "toggle:open",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last"
+    }
+  },
+  "css-variables": {
+    "--sf-accordion-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-accordion-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-accordion-border-width": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-accordion-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-accordion-title-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-accordion-content-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-accordion-icon-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-accordion-divider-color": {
+      "type": "color",
+      "state": "open"
+    }
+  },
+  "x-summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
+  "x-source": {
+    "package": "framework",
+    "folder": "accordion",
+    "manifest": "simai/ui-source@5100227 src/smart/accordion/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/accordion.component.json"
+  },
+  "x-renamed": [
+    "events.sf-accordion:toggle → toggle: the DOM name is sf-accordion-toggle (§8, §16 item 6), the colon name a dated same-detail alias",
+    "settings.heading-level: a string holding a numeral → number, integer 2–6 (§16 item 29)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "parsing record text as markup"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ -- or are written as <details> in the markup.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not put markup in content: it is shown as text; use a slot",
+        "Do not use it to switch between views of one thing: that is sf-tabs",
+        "Do not restyle its sections: they are the class accordion's, set its public variables"
+      ],
+      "required_reads": [
+        "inputs",
+        "item_contract",
+        "events",
+        "methods",
+        "accessibility",
+        "provenance"
+      ],
+      "minimal_example": "<sf-accordion single items='[{\"id\":\"main\",\"title\":\"Основное\",\"content\":\"Название и описание\",\"open\":true},{\"id\":\"seo\",\"title\":\"SEO\",\"content\":\"Заголовок страницы\"}]'></sf-accordion>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-accordion:toggle holds a dated alias (§4.10).",
+    "events: sf-accordion:toggle → sf-accordion-toggle by the alias table (§8, §16 item 6); its detail {id, open, source, section} holds data only, so the row is same-detail: one dispatch, the new name first, one shared detail.",
+    "toggle reports both a person (source user) and a call (source method), as before: it is the section's fact, not `change`, so §8's rule that `change` reports a person alone does not remove the method's report.",
+    "actions: open, close and toggle {id} answer an outcome (applied; refused unknown, static, disabled or already) instead of true/false (§4.4).",
+    "x-target: `expanded` is taken as a read-only value (the open ids, as openIds); `sections` is not added -- items is the list, and §7.2.3 binds a container's `settings.items` -- and `expand` is not added: open does it, and vocabulary §5 expand is the verb that asks a host for children.",
+    "a11y-role: none on the host; each header is a native button inside role=heading (aria-level from heading-level), each open panel a region labelled by its header while there are at most six (WAI-ARIA accordion pattern). a11y-name: none on the host -- each header is named by its section's title.",
+    "key-effects: on a header Enter and Space toggle its section (toggle:open, the button's own keys), ArrowDown and ArrowUp move to the next and previous enabled header, Home and End to the first and last; Tab reaches each enabled header.",
+    "opened (§7.2.1): a closed section's panel carries `hidden` and an open one does not, so a part with start opened inside a section starts when its section opens; the panel's content is the page's live nodes (a slot or the <details>), never copied.",
+    "instance ids (§7.1.1, simai/ui-source#41): the header and panel ids came from a module counter (sf-smart-accordion-<n>); they are the host's path id and a local name now, <path>--trigger-<n> and <path>--panel-<n>; the <details> slots are named locally.",
+    "item-shape: items name their fields with `of` (id, title, content, slot, open, disabled, icon, badge); content is text, markup comes through a slot.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus <details> in the markup, plus-minus markers and one plain section; probe.json drives the arrows, Home, End, Enter, Space and Tab (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: none."
+  ]
+}

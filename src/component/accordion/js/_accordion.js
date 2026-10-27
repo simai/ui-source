@@ -1,4 +1,5 @@
 import registerComponent from '../../register-helper';
+import { instancePath, partId } from '../../../core/js/instance-path.js';
 
 const accordionInstances = new WeakMap();
 const ACCORDION_GROUP_SELECTOR = '.sf-accordion-group';
@@ -10,7 +11,6 @@ const PLUS_MINUS_MODIFIER = 'sf-accordion--plus-minus';
 const SINGLE_MODIFIER = 'sf-accordion--single';
 // A group that keeps its one section a toggle says so.
 const SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section';
-let accordionId = 0;
 
 class SfAccordion {
   static componentName = 'Accordion';
@@ -110,12 +110,16 @@ class SfAccordion {
   bindRelationship() {
     if (!this.trigger || !this.content) return;
 
-    accordionId += 1;
+    // A section's path id and a local name (standard 1.3.8 §7.1.1,
+    // simai/ui-source#41): <path>--trigger and <path>--panel, the same in every
+    // bundle and in server markup. A module counter numbered them in creation
+    // order, once per bundle that carries this code.
+    const path = instancePath(this.el, { kind: 'sf-accordion' });
     if (!this.trigger.id) {
-      this.trigger.id = `sf-accordion-trigger-${accordionId}`;
+      this.trigger.id = partId(path, 'trigger');
     }
     if (!this.content.id) {
-      this.content.id = `sf-accordion-panel-${accordionId}`;
+      this.content.id = partId(path, 'panel');
     }
 
     this.trigger.setAttribute('aria-controls', this.content.id);

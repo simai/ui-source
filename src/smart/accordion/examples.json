@@ -1,0 +1,119 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Разделы записи",
+      "settings": {
+        "single": true,
+        "items": [
+          {
+            "id": "main",
+            "title": "Основное",
+            "content": "Название, адрес и описание",
+            "open": true
+          },
+          {
+            "id": "seo",
+            "title": "SEO",
+            "content": "Заголовок и описание страницы",
+            "badge": "3"
+          }
+        ]
+      },
+      "expect": {
+        "values": {
+          "expanded": [
+            "main"
+          ]
+        }
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "visible",
+      "title": "Видимый аккордеон",
+      "settings": {
+        "single": true,
+        "items": [
+          {
+            "id": "main",
+            "title": "Основное",
+            "content": "Название, адрес и описание",
+            "open": true
+          },
+          {
+            "id": "seo",
+            "title": "SEO",
+            "content": "Заголовок и описание страницы",
+            "badge": "3"
+          }
+        ]
+      },
+      "script": [
+        {
+          "act": "open",
+          "with": {
+            "id": "seo"
+          }
+        }
+      ],
+      "expect": {
+        "values": {
+          "expanded": [
+            "seo"
+          ]
+        },
+        "events": [
+          "toggle",
+          "toggle"
+        ]
+      },
+      "from": "studio.scenario.json"
+    },
+    {
+      "name": "plus-minus",
+      "title": "Плюс и минус",
+      "settings": {
+        "marker": "plus-minus",
+        "appearance": "outline",
+        "items": [
+          {
+            "id": "pay",
+            "title": "Как оплатить?",
+            "content": "Картой или по счёту."
+          },
+          {
+            "id": "ship",
+            "title": "Сколько идёт доставка?",
+            "content": "От одного до трёх дней."
+          }
+        ]
+      },
+      "expect": {
+        "values": {
+          "expanded": []
+        }
+      }
+    },
+    {
+      "name": "one-section",
+      "title": "Один раздел",
+      "settings": {
+        "items": [
+          {
+            "id": "only",
+            "title": "Описание",
+            "content": "Раздел без переключателя."
+          }
+        ]
+      },
+      "expect": {
+        "values": {
+          "expanded": [
+            "only"
+          ]
+        }
+      }
+    }
+  ]
+}

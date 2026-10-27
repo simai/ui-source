@@ -43,8 +43,8 @@ function renderHeaderContent(context, section, open) {
 
 function renderSection(context, section, index) {
   const open = context.open.has(section.id);
-  const triggerId = `${context.id}-trigger-${index}`;
-  const panelId = `${context.id}-panel-${index}`;
+  const triggerId = `${context.id}--trigger-${index}`;
+  const panelId = `${context.id}--panel-${index}`;
   // A landmark for each panel only while there are few of them.
   const region = context.sections.length <= REGION_LIMIT;
   // The single section is a plain section, as the class runtime draws it: a

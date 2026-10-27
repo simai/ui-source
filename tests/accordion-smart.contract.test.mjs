@@ -52,7 +52,8 @@ test('smart accordion: single mode keeps one open, the first; a change overrides
   // Opening one in single mode closes what was open, and every section that
   // changed is reported, the one asked for first.
   assert.match(source, /if \(open && this\.single\) \{\n      for \(const other of before\) this\._openState\.set\(other, false\);/u);
-  assert.match(source, /new CustomEvent\('sf-accordion:toggle', \{\n        bubbles: true,\n        composed: true,\n        detail: \{id: one\.id, open: after\.has\(one\.id\), source, section: one\},/u);
+  // sf-accordion-toggle; sf-accordion:toggle is its dated alias (aliases.json).
+  assert.match(source, /this\.sfEmit\('toggle', \{id: one\.id, open: after\.has\(one\.id\), source, section: one\}\);/u);
 });
 
 test('smart accordion: the class markup, the class runtime kept off it', () => {
@@ -118,8 +119,12 @@ test('smart accordion: buttons in headings, linked to their panels; regions only
 
 test('smart accordion: the manifest says the methods and the event the source has', () => {
   for (const method of Object.keys(manifest.methods)) assert.match(source, new RegExp(`\\n  ${method}\\(id\\) \\{`, 'u'), method);
-  const sent = new Set([...source.matchAll(/new CustomEvent\('([^']+)'/gu)].map((match) => match[1]));
-  assert.deepEqual(Object.keys(manifest.events).sort(), [...sent].sort());
+  // The events are component.json's verbs, sent through sfEmit (standard 1.3.8
+  // §8); the old colon name is aliases.json's.
+  const sent = new Set([...source.matchAll(/this\.sfEmit\('([^']+)'/gu)].map((match) => match[1]));
+  const declared = JSON.parse(readFileSync(new URL('../src/smart/accordion/component.json', import.meta.url), 'utf8'));
+  assert.deepEqual(Object.keys(declared.events).sort(), [...sent].sort());
+  assert.doesNotMatch(source, /new CustomEvent\(/u);
   assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'title', 'content', 'slot', 'open', 'disabled', 'icon', 'badge']);
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/u);
 });

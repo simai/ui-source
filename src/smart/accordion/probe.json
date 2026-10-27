@@ -1,0 +1,256 @@
+{
+  "component": "sf-accordion",
+  "probe": "sf-accordion against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/overlays-manifest.browser.mjs (SF_OVERLAYS names the folders)",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <div id=\"area\"><sf-accordion id=\"acc\" single items='[{\"id\": \"main\", \"title\": \"Основное\", \"content\": \"Название, адрес и описание\", \"open\": true}, {\"id\": \"seo\", \"title\": \"SEO\", \"content\": \"Заголовок и описание страницы\", \"badge\": \"3\"}, {\"id\": \"off\", \"title\": \"Недоступно\", \"content\": \"—\", \"disabled\": true}, {\"id\": \"faq\", \"title\": \"Вопросы\", \"content\": \"Ответы\"}]'></sf-accordion></div>",
+      "  <sf-accordion id=\"acc-md\"><details open><summary>Доставка</summary><p id=\"live\">Курьером</p></details><details><summary>Возврат</summary><p>14 дней</p></details></sf-accordion>",
+      "  <sf-accordion items='[{\"id\":\"x\",\"title\":\"Без id\",\"content\":\"…\"},{\"id\":\"y\",\"title\":\"Второй\",\"content\":\"…\"}]'></sf-accordion>",
+      "  <sf-accordion items='[{\"id\":\"x\",\"title\":\"Тоже без id\",\"content\":\"…\"},{\"id\":\"y\",\"title\":\"Второй\",\"content\":\"…\"}]'></sf-accordion>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-arrows-home-end",
+      "title": "ArrowDown and ArrowUp walk the enabled headers, Home and End go to the first and the last",
+      "covers": "keyboard.header ArrowDown focus:next, ArrowUp focus:prev, Home focus:first, End focus:last",
+      "steps": [
+        {
+          "script": "(document.querySelector('#acc [data-sf-accordion-section=\"main\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'seo'"
+        },
+        {
+          "user": "keyboard:ArrowDown",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'faq'"
+        },
+        {
+          "user": "keyboard:ArrowUp",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'seo'"
+        },
+        {
+          "user": "keyboard:End",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'faq'"
+        },
+        {
+          "user": "keyboard:Home",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'main'"
+        }
+      ]
+    },
+    {
+      "id": "p2-enter-toggles",
+      "title": "Enter on a header opens it; single closes the other: sf-accordion-toggle twice, sf-accordion:toggle twice, noted with its dates",
+      "covers": "keyboard.header Enter toggle:open, events.toggle, aliases sf-accordion:toggle, settings.single",
+      "steps": [
+        {
+          "script": "(document.querySelector('#acc [data-sf-accordion-section=\"seo\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-accordion-toggle",
+                "count": 2,
+                "detail": {
+                  "id": "seo",
+                  "open": true,
+                  "source": "user"
+                }
+              },
+              {
+                "name": "sf-accordion:toggle",
+                "count": 2,
+                "detail": {
+                  "id": "seo",
+                  "open": true
+                }
+              }
+            ],
+            "values": {
+              "#acc.expanded": [
+                "seo"
+              ]
+            },
+            "journal": [
+              {
+                "from": "sf-accordion:toggle",
+                "to": "sf-accordion-toggle",
+                "since": "2026-10-27",
+                "remove_after": "2026-12-01"
+              }
+            ]
+          },
+          "check": "document.querySelector('#acc [data-sf-accordion-id=\"seo\"] .sf-accordion-content').hidden === false && document.querySelector('#acc [data-sf-accordion-id=\"main\"] .sf-accordion-content').hidden === true"
+        }
+      ]
+    },
+    {
+      "id": "p3-space-tab",
+      "title": "Space closes the open section; Tab passes the disabled header",
+      "covers": "keyboard.header Space toggle:open, Tab reach",
+      "steps": [
+        {
+          "script": "(document.querySelector('#acc [data-sf-accordion-section=\"main\"]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Space",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-accordion-toggle",
+                "count": 1,
+                "detail": {
+                  "id": "main",
+                  "open": false
+                }
+              }
+            ],
+            "values": {
+              "#acc.expanded": []
+            }
+          }
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'seo'"
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 60,
+          "check": "document.activeElement?.dataset.sfAccordionSection === 'faq'"
+        }
+      ]
+    },
+    {
+      "id": "p4-actions-outcomes",
+      "title": "open, close and toggle answer outcomes and report source method",
+      "covers": "actions.open, actions.close, actions.toggle",
+      "steps": [
+        {
+          "action": {
+            "name": "open",
+            "with": {
+              "id": "faq"
+            }
+          },
+          "target": "#acc",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "events": [
+              {
+                "name": "sf-accordion-toggle",
+                "count": 2,
+                "detail": {
+                  "id": "faq",
+                  "open": true,
+                  "source": "method"
+                }
+              }
+            ],
+            "values": {
+              "#acc.expanded": [
+                "faq"
+              ]
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "open",
+            "with": "faq"
+          },
+          "target": "#acc",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "already"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "toggle",
+            "with": "nope"
+          },
+          "target": "#acc",
+          "expect": {
+            "returns": {
+              "outcome": "refused",
+              "reason": "unknown"
+            }
+          }
+        },
+        {
+          "action": {
+            "name": "close",
+            "with": {
+              "id": "faq"
+            }
+          },
+          "target": "#acc",
+          "expect": {
+            "returns": {
+              "outcome": "applied"
+            },
+            "values": {
+              "#acc.expanded": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5-details-live",
+      "title": "<details> in the markup are sections; their content is the same live node",
+      "covers": "settings.items (markup form), §4.5 place, never copy",
+      "steps": [
+        {
+          "script": "(window.__liveNode = document.getElementById('live'), true)",
+          "wait": 10,
+          "check": "document.querySelector('#acc-md .sf-accordion-content #live') === window.__liveNode && !document.querySelector('#acc-md > details') && document.getElementById('acc-md').expanded.length === 1"
+        }
+      ]
+    },
+    {
+      "id": "p6-path-ids",
+      "title": "header and panel ids are path ids, unique on the page, linked to each other (#41)",
+      "covers": "§7.1.1",
+      "steps": [
+        {
+          "check": "(() => { const ids = [...document.querySelectorAll('sf-accordion [id]')].map((n) => n.id); const t = document.querySelector('#acc [data-sf-accordion-section=\"seo\"]'); return new Set(ids).size === ids.length && t.id.startsWith('page-acc--') && document.getElementById(t.getAttribute('aria-controls'))?.classList.contains('sf-accordion-content') && document.querySelector('main > sf-accordion:nth-of-type(2) .sf-accordion-trigger').id.startsWith('sf-accordion-1--'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p7-public-variables",
+      "title": "a public variable on an ancestor reaches the sections",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.setProperty('--sf-accordion-title-color', 'rgb(1, 2, 3)'), true)",
+          "wait": 400,
+          "check": "getComputedStyle(document.querySelector('#acc .sf-accordion-title')).color === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}
