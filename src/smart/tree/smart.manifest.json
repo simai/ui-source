@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "title": "Tree",
   "summary": "Accessible hierarchical composite with roving focus, branch expansion and host-owned selection.",
   "kind": "smart",
@@ -59,9 +59,10 @@
         "default": "none",
         "enum": [
           "none",
-          "single",
-          "multiple"
-        ]
+          "one",
+          "many"
+        ],
+        "description": "What a press does: none opens the entry (or follows its link), one selects one entry, many toggles each. single and multiple are the former words of one and many, dated value aliases until 2026-12-01 (compatibility.aliases)."
       },
       "items": {
         "type": "array",
@@ -275,8 +276,22 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
-    "deprecations": [],
+    "aliases": [
+      "selection=single",
+      "selection=multiple"
+    ],
+    "deprecations": [
+      {
+        "path": "selection=single",
+        "since": "2.0.0",
+        "replacement": "selection=one"
+      },
+      {
+        "path": "selection=multiple",
+        "since": "2.0.0",
+        "replacement": "selection=many"
+      }
+    ],
     "replacement": null,
     "migrations": []
   },
