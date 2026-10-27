@@ -4,24 +4,75 @@ import {
   unbindFileUpload,
 } from '../../component/file-upload/js/_file_upload';
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { dispatchAliased } from '../../core/js/aliases';
 import { renderFileUploadTemplate } from './js/templates/default';
 import { FIELD_SIZES, fieldSize } from '../../component/field-size';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-file-upload", code, words).
-const FILE_UPLOAD_TEXT = {
-  en: {
-    linkText: 'Click to upload',
-    text: 'or drag and drop',
-    retry: 'Try again',
-  },
-  ru: {
-    linkText: 'Выберите файл',
-    text: 'или перетащите его сюда',
-    retry: 'Повторить',
-  },
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
+
+// Every word this component says is lang/<locale>.json runtime (standard
+// 1.3.8 §11); a product adds any other language through
+// SF.language.register("sf-file-upload", code, words).
+
+// The class component's events, each with the name the host sends it by
+// (vocabulary 1.1.5 §9.1). They stop at the host, which sends them through
+// sfEmit with the entry's id; the shim sends the old name after each one.
+const INNER_EVENTS = {
+  'sf-file-upload:select': 'attach',
+  'sf-file-upload:file-add': 'attached',
+  'sf-file-upload:remove': 'detach',
+  'sf-file-upload:reject': 'rejected',
+  'sf-file-upload:retry': 'retry',
+  'sf-file-upload:file-complete': 'completed',
+  'sf-file-upload:file-error': 'failed',
+  'sf-file-upload:complete': 'finished',
 };
 
+const itemState = (item) => {
+  const state = String(item?.state || item?.status || 'process').toLowerCase();
+  return ['process', 'done', 'error'].includes(state) ? state : 'process';
+};
+
+// An entry's id, as the class component keys its events.
+const itemId = (item, index) => {
+  if (item?.id) return String(item.id);
+  if (item?.file?.name) return `${item.file.name}-${item.file.size}-${item.file.lastModified}`;
+  if (item?.name || item?.fileName) return `${item.name || item.fileName}-${index}`;
+  return `item-${index}`;
+};
+
+const itemProgress = (item) => Math.max(0, Math.min(100, Number(item?.progress ?? 0) || 0));
+
+// sf-file-upload from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §4.4, §8, §10.8, §16.20): the settings are attributes and
+// properties made by core/js/element-manifest.js, the actions answer an
+// outcome, and each entry is a stream the host drives through items.
+const FileUploadElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+  actions: {
+    'remove-item'({ index } = {}) {
+      const nextItems = Array.from(this.items);
+      const normalizedIndex = Number(index);
+      if (!Number.isInteger(normalizedIndex) || normalizedIndex < 0 || normalizedIndex >= nextItems.length) {
+        return 'no-item';
+      }
+      nextItems.splice(normalizedIndex, 1);
+      this.items = nextItems;
+      return 'applied';
+    },
+    clear() {
+      if (!this.items.length) return 'unchanged';
+      this.items = [];
+      return 'applied';
+    },
+  },
+});
 
 function formatAcceptValue(value) {
   const parts = String(value || '')
@@ -41,19 +92,12 @@ function formatAcceptValue(value) {
   return parts.join(', ');
 }
 
-class SfFileUpload extends SfBaseElement {
+class SfFileUpload extends FileUploadElement {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
       size: { default: '1', values: FIELD_SIZES },
-      icon: { default: 'upload_file' },
-      linkText: { default: '' },
-      text: { default: 'or drag and drop' },
-      formats: { default: '' },
-      supportingText: { default: '' },
-      accept: { default: '' },
-      multiple: { type: Boolean, default: false },
-      disabled: { type: Boolean, default: false },
       ariaLabel: { default: '' },
     };
   }
@@ -66,7 +110,24 @@ class SfFileUpload extends SfBaseElement {
     this._onSelect = null;
     this._onRemove = null;
     this._onRetry = null;
+    // The streams the entries are (§10.8): id -> {state, progress}.
+    this._streams = new Map();
+    this._lastAttach = null;
+    // A file held over the area is said on the host (§5.3).
+    this.addEventListener('dragover', this._onDragState);
+    this.addEventListener('dragleave', this._onDragState);
+    this.addEventListener('drop', this._onDragState);
   }
+
+  _onDragState = (event) => {
+    if (event.type === 'dragover') {
+      const files = Array.from(event.dataTransfer?.types || []).includes('Files');
+      this.sfHostState('data-dragged-over', files && !this.disabled);
+      return;
+    }
+    if (event.type === 'dragleave' && event.relatedTarget && this.contains(event.relatedTarget)) return;
+    this.sfHostState('data-dragged-over', false);
+  };
 
   get componentName() {
     return 'file-upload';
@@ -86,18 +147,6 @@ class SfFileUpload extends SfBaseElement {
     return fieldSize(this.getAttribute('size') || '1', 'sf-file-upload');
   }
 
-  get icon() {
-    return this.getAttribute('icon') || 'upload_file';
-  }
-
-  get linkText() {
-    return this.getAttribute('link-text') || pageText(FILE_UPLOAD_TEXT, "linkText", this);
-  }
-
-  get text() {
-    return this.getAttribute('text') || pageText(FILE_UPLOAD_TEXT, "text", this);
-  }
-
   get formats() {
     return (
       this.getAttribute('formats') ||
@@ -115,18 +164,6 @@ class SfFileUpload extends SfBaseElement {
     );
   }
 
-  get accept() {
-    return this.getAttribute('accept') || '';
-  }
-
-  get multiple() {
-    return this.getBooleanAttr('multiple', false);
-  }
-
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
-  }
-
   get ariaLabel() {
     return this.getAttribute('aria-label') || '';
   }
@@ -138,17 +175,66 @@ class SfFileUpload extends SfBaseElement {
   set items(value) {
     this._items = Array.isArray(value) ? value : [];
     this.syncRuntimeItems();
+    this._trackStreams(this._items);
     this.requestComponentUpdate('items');
   }
+
+  // The stream facts of §10.8 that the class component does not send: begun
+  // when an entry enters process, chunk when the host moves its progress,
+  // cancelled when it leaves while in process. completed and failed are the
+  // class component's file-complete and file-error, sent on by the host.
+  _trackStreams(items = []) {
+    const seen = new Set();
+    items.forEach((item, index) => {
+      const id = itemId(item, index);
+      seen.add(id);
+      const state = itemState(item);
+      const progress = itemProgress(item);
+      const before = this._streams.get(id);
+      this._streams.set(id, {state, progress, item});
+      if (state !== 'process') return;
+      if (!before || before.state !== 'process') {
+        this.sfEmit('begun', { id, item });
+        if (progress > 0) this.sfEmit('chunk', { id, done: progress, total: 100, item });
+      } else if (progress !== before.progress) {
+        this.sfEmit('chunk', { id, done: progress, total: 100, item });
+      }
+    });
+    for (const [id, stream] of [...this._streams]) {
+      if (seen.has(id)) continue;
+      this._streams.delete(id);
+      if (stream.state === 'process') this.sfEmit('cancelled', { id, item: stream.item });
+    }
+  }
+
+  // The class component's events stop at the host and leave it by their
+  // vocabulary names, with the entry's id (§8, §10.8). Its change -- the file
+  // input's own, or the one it sends for a drop -- stops too: the host sends
+  // change once per choice, after the streams began, with the files chosen.
+  _onInnerEvent = (event) => {
+    if (event.target !== this._boundRoot && event.type !== 'change') return;
+    event.stopPropagation();
+    if (event.type === 'change') return;
+    const verb = INNER_EVENTS[event.type];
+    if (!verb) return;
+    const detail = { ...(event.detail || {}) };
+    if (detail.item) detail.id = itemId(detail.item, detail.index);
+    if (verb === 'failed') {
+      detail.reason = String(detail.item?.reason || 'error');
+      detail.message = String(detail.item?.errorMessage || detail.item?.error || '');
+    }
+    if (verb === 'attach') this._lastAttach = { files: detail.files, source: detail.source };
+    this.sfEmit(verb, detail);
+  };
 
   templateContext() {
     const props = this.getPropsContext();
 
     return this.createTemplateContext({
       ...props,
-      linkText: this.getAttribute("link-text") || pageText(FILE_UPLOAD_TEXT, "linkText", this),
-      text: this.getAttribute("text") || pageText(FILE_UPLOAD_TEXT, "text", this),
-      retryText: pageText(FILE_UPLOAD_TEXT, "retry", this),
+      linkText: this.linkText,
+      text: this.text,
+      retryText: this.sfWord('retry'),
       component: this,
       formats: this.formats,
       supportingText: this.supportingText,
@@ -227,29 +313,9 @@ class SfFileUpload extends SfBaseElement {
     return this;
   }
 
+  // items is a writable setting (§4.4); setItems stays for the pages that
+  // call it, outside the interface.
   setItems(nextItems = []) {
-    this.items = nextItems;
-    return this;
-  }
-
-  clear() {
-    this.items = [];
-    return this;
-  }
-
-  removeItem(index) {
-    const nextItems = Array.from(this.items);
-    const normalizedIndex = Number(index);
-
-    if (
-      !Number.isInteger(normalizedIndex) ||
-      normalizedIndex < 0 ||
-      normalizedIndex >= nextItems.length
-    ) {
-      return this;
-    }
-
-    nextItems.splice(normalizedIndex, 1);
     this.items = nextItems;
     return this;
   }
@@ -268,6 +334,7 @@ class SfFileUpload extends SfBaseElement {
 
     super.setState(attributeState);
     this.syncRuntimeItems();
+    this._trackStreams(this.items);
     this.requestComponentUpdate('state');
     return this;
   }
@@ -287,21 +354,24 @@ class SfFileUpload extends SfBaseElement {
     bindFileUpload(this._boundRoot);
     this.syncRuntimeItems();
 
-    this._onSelect = () => {
+    const refresh = () => {
       this._items = Array.from(this._boundRoot?.__sfFileUploadItems || []);
+      this._trackStreams(this._items);
+      if (this._lastAttach) {
+        const chosen = this._lastAttach;
+        this._lastAttach = null;
+        // change keeps its native name (§8, §17.3).
+        dispatchAliased(this, 'change', { detail: chosen });
+      }
       this.requestComponentUpdate('items');
     };
+    this._onSelect = refresh;
+    this._onRemove = refresh;
+    this._onRetry = refresh;
 
-    this._onRemove = () => {
-      this._items = Array.from(this._boundRoot?.__sfFileUploadItems || []);
-      this.requestComponentUpdate('items');
-    };
-
-    this._onRetry = () => {
-      this._items = Array.from(this._boundRoot?.__sfFileUploadItems || []);
-      this.requestComponentUpdate('items');
-    };
-
+    for (const type of [...Object.keys(INNER_EVENTS), 'change']) {
+      this._boundRoot.addEventListener(type, this._onInnerEvent);
+    }
     this._boundRoot.addEventListener('sf-file-upload:select', this._onSelect);
     this._boundRoot.addEventListener('sf-file-upload:remove', this._onRemove);
     this._boundRoot.addEventListener('sf-file-upload:retry', this._onRetry);
@@ -330,6 +400,12 @@ class SfFileUpload extends SfBaseElement {
 
     if (this._boundRoot && this._onRetry) {
       this._boundRoot.removeEventListener('sf-file-upload:retry', this._onRetry);
+    }
+
+    if (this._boundRoot) {
+      for (const type of [...Object.keys(INNER_EVENTS), 'change']) {
+        this._boundRoot.removeEventListener(type, this._onInnerEvent);
+      }
     }
 
     if (this._boundRoot) {

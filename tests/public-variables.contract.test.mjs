@@ -25,6 +25,7 @@ const FOLDERS = {
   // A Smart component whose sheet sits beside its template.
   color: 'smart/color/js/templates',
   'range-slider': 'range-slider',
+  'file-upload': 'file-upload',
 };
 
 const scss = async (folder) => {

@@ -78,6 +78,10 @@
       "aria-label": {
         "type": "string",
         "default": ""
+      },
+      "items": {
+        "type": "array",
+        "default": []
       }
     },
     "additionalProperties": false
@@ -276,8 +280,8 @@
       },
       "canonical": true
     },
-    "sf-file-upload:complete": {
-      "summary": "Every file finished.",
+    "sf-file-upload-finished": {
+      "summary": "Every file finished. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:complete follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -290,8 +294,22 @@
         }
       }
     },
-    "sf-file-upload:file-add": {
-      "summary": "A file entered the list.",
+    "sf-file-upload:complete": {
+      "summary": "Every file finished. Legacy name: sent after sf-file-upload-finished with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "sf-file-upload-attached": {
+      "summary": "A file entered the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-add follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -317,8 +335,77 @@
         }
       }
     },
+    "sf-file-upload:file-add": {
+      "summary": "A file entered the list. Legacy name: sent after sf-file-upload-attached with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object",
+            "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "source": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "sf-file-upload-completed": {
+      "summary": "A file finished uploading. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-complete follows it with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object",
+            "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
     "sf-file-upload:file-complete": {
-      "summary": "A file finished uploading.",
+      "summary": "A file finished uploading. Legacy name: sent after sf-file-upload-completed with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object",
+            "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "sf-file-upload-failed": {
+      "summary": "A file failed. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-error follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -339,7 +426,7 @@
       }
     },
     "sf-file-upload:file-error": {
-      "summary": "A file failed.",
+      "summary": "A file failed. Legacy name: sent after sf-file-upload-failed with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -359,8 +446,8 @@
         }
       }
     },
-    "sf-file-upload:reject": {
-      "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them.",
+    "sf-file-upload-rejected": {
+      "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:reject follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -376,8 +463,67 @@
         }
       }
     },
+    "sf-file-upload:reject": {
+      "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Legacy name: sent after sf-file-upload-rejected with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array"
+          },
+          "accept": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sf-file-upload-detach": {
+      "summary": "A file was removed from the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:remove follows it with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object",
+            "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
     "sf-file-upload:remove": {
-      "summary": "A file was removed from the list.",
+      "summary": "A file was removed from the list. Legacy name: sent after sf-file-upload-detach with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object",
+            "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "sf-file-upload-retry": {
+      "summary": "A failed file was retried. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:retry follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -398,7 +544,7 @@
       }
     },
     "sf-file-upload:retry": {
-      "summary": "A failed file was retried.",
+      "summary": "A failed file was retried. Legacy name: sent after sf-file-upload-retry with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -418,8 +564,8 @@
         }
       }
     },
-    "sf-file-upload:select": {
-      "summary": "Files were selected for upload.",
+    "sf-file-upload-attach": {
+      "summary": "Files were selected for upload. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:select follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "properties": {
@@ -438,6 +584,78 @@
           },
           "multiple": {
             "type": "boolean"
+          }
+        }
+      }
+    },
+    "sf-file-upload:select": {
+      "summary": "Files were selected for upload. Legacy name: sent after sf-file-upload-attach with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "input",
+              "drop"
+            ]
+          },
+          "multiple": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "sf-file-upload-begun": {
+      "summary": "An entry entered process -- chosen, dropped or retried: its upload stream began (standard simai.smart-component 1.3.8 §10.8, vocabulary 1.1.5 §5.2).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "item": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "sf-file-upload-chunk": {
+      "summary": "The host moved an entry's progress while it is in process: {id, done, total} with total 100 (§10.8).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "done": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "item": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "sf-file-upload-cancelled": {
+      "summary": "An entry left while in process -- removed by the person or by the host: its stream ended without completing (§10.8).",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "item": {
+            "type": "object"
           }
         }
       }
@@ -542,7 +760,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-upload/index.js",
-        "sha256": "1905e151b14d65eca2cc8f2e32d14cac94110047a8602f86c19acffb9d1a22fd"
+        "sha256": "854731030d5c58206772119349b092f1e4bc8c7708d1878653ac143f3045876e"
       }
     ],
     "generated_runtime": [

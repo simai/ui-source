@@ -2,12 +2,12 @@
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-file-upload {
   border-bottom-width: var(--sf-file-upload--border-bottom-width, var(--sf-px));
-  border-end-end-radius: var(--sf-file-upload--border-bottom-right-radius, var(--sf-radius--surface));
-  border-end-start-radius: var(--sf-file-upload--border-bottom-left-radius, var(--sf-radius--surface));
+  border-end-end-radius: var(--sf-file-upload--border-bottom-right-radius, var(--sf-file-upload-radius, var(--sf-radius--surface)));
+  border-end-start-radius: var(--sf-file-upload--border-bottom-left-radius, var(--sf-file-upload-radius, var(--sf-radius--surface)));
   border-inline-end-width: var(--sf-file-upload--border-right-width, var(--sf-px));
   border-inline-start-width: var(--sf-file-upload--border-left-width, var(--sf-px));
-  border-start-end-radius: var(--sf-file-upload--border-top-right-radius, var(--sf-radius--surface));
-  border-start-start-radius: var(--sf-file-upload--border-top-left-radius, var(--sf-radius--surface));
+  border-start-end-radius: var(--sf-file-upload--border-top-right-radius, var(--sf-file-upload-radius, var(--sf-radius--surface)));
+  border-start-start-radius: var(--sf-file-upload--border-top-left-radius, var(--sf-file-upload-radius, var(--sf-radius--surface)));
   border-top-width: var(--sf-file-upload--border-top-width, var(--sf-px));
   gap: var(--sf-file-upload--gap);
   padding-inline-start: var(--sf-file-upload--padding-inline-start);
@@ -17,8 +17,8 @@
   background-color: var(--sf-file-upload--background-color);
   border-color: var(--sf-file-upload--border-color, transparent);
   box-shadow: var(--sf-file-upload--box-shadow);
-  --sf-file-upload--background-color: var(--sf-surface-0);
-  --sf-file-upload--border-color: var(--sf-outline);
+  --sf-file-upload--background-color: var(--sf-file-upload-background-color, var(--sf-surface-0));
+  --sf-file-upload--border-color: var(--sf-file-upload-border-color, var(--sf-outline));
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-file-upload-bottom--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -38,7 +38,7 @@
 }
 
 .sf-file-upload .sf-file-upload-link {
-  --sf-file-upload-link--color: var(--sf-primary);
+  --sf-file-upload-link--color: var(--sf-file-upload-link-color, var(--sf-primary));
   --sf-file-upload-link--font-family: var(--sf-text--family);
   --sf-file-upload-link--font-weight: var(--sf-font-weight-medium);
   --sf-file-upload-link--margin-bottom: var(--sf-text--margin);
@@ -51,7 +51,7 @@
 }
 
 .sf-file-upload .sf-file-upload-block-text {
-  --sf-file-upload-block-text--color: var(--sf-on-surface-variant);
+  --sf-file-upload-block-text--color: var(--sf-file-upload-text-color, var(--sf-on-surface-variant));
   --sf-file-upload-block-text--font-family: var(--sf-text--family);
   --sf-file-upload-block-text--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-file-upload-block-text--color);
@@ -160,13 +160,17 @@
 }
 
 /* A file held over the area: the script set .dragover and nothing drew it, so a
-   person dropping had no sign the area would take the file. */
-.sf-file-upload.dragover:not([disabled]):not(.disabled) {
-  --sf-file-upload--background-color: var(--sf-primary-transparent-select);
-  --sf-file-upload--border-color: var(--sf-outline-primary);
+   person dropping had no sign the area would take the file. sf-file-upload
+   says it on its host as data-dragged-over (standard 1.3.8 §5.3); the class
+   component keeps its .dragover. */
+.sf-file-upload.dragover:not([disabled]):not(.disabled),
+sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disabled) {
+  --sf-file-upload--background-color: var(--sf-file-upload-dragged-over-background-color, var(--sf-primary-transparent-select));
+  --sf-file-upload--border-color: var(--sf-file-upload-dragged-over-border-color, var(--sf-outline-primary));
 }
 
-.sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon {
+.sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon,
+sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon {
   color: var(--sf-primary);
 }
 

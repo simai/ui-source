@@ -1,0 +1,10 @@
+{
+  "title": "File Upload",
+  "runtime": {
+    "link-text": "Click to upload",
+    "remove": "Remove",
+    "retry": "Try again",
+    "text": "or drag and drop",
+    "uploading": "Uploading"
+  }
+}

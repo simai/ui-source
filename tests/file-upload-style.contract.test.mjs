@@ -19,7 +19,9 @@ test('Smart FileUpload uses the upload action icon as its neutral default',async
     readFile(new URL('../src/smart/file-upload/index.js',import.meta.url),'utf8'),
     readFile(new URL('../src/smart/file-upload/smart.manifest.json',import.meta.url),'utf8').then(JSON.parse),
   ]);
-  assert.match(source,/icon: \{ default: 'upload_file' \}/);
-  assert.match(source,/return this\.getAttribute\('icon'\) \|\| 'upload_file'/);
+  // The setting comes from the component's manifest (standard 1.3.8 §4).
+  const own=JSON.parse(await readFile(new URL('../src/smart/file-upload/component.json',import.meta.url),'utf8'));
+  assert.deepEqual(own.settings.icon,{type:'icon',default:'upload_file'});
+  assert.doesNotMatch(source,/get icon\(\)/);
   assert.equal(manifest.inputs.properties.icon.default,'upload_file');
 });

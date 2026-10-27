@@ -177,7 +177,8 @@ try {
             if (kind === 'click') await page.locator(`${tag} ${argument}`).first().click();
             if (kind === 'focus') await page.locator(`${tag} ${argument}`).first().focus();
             if (kind === 'files') {
-              const [selector, list] = argument.split('=');
+              const cut = argument.lastIndexOf('=');
+              const [selector, list] = [argument.slice(0, cut), argument.slice(cut + 1)];
               const files = list.split(',').map((one) => {
                 const [fileName, mimeType = 'application/octet-stream'] = one.split('|');
                 return {name: fileName, mimeType, buffer: Buffer.from(`probe ${fileName}`)};

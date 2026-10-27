@@ -1,0 +1,7 @@
+[
+  {"name": "reference", "title": "Несколько документов", "settings": {"link-text": "Выберите файлы", "text": "или перетащите их сюда", "formats": "PDF, PNG или JPG", "supporting-text": "Можно загрузить несколько документов", "multiple": true}, "expect": {"values": {}}},
+  {"name": "accept", "title": "Только изображения", "settings": {"accept": "image/*"}, "expect": {"text": "IMAGE"}},
+  {"name": "progress", "title": "Загрузка идёт", "settings": {"items": [{"id": "a", "name": "report.pdf", "fileSize": "1.2MB", "progress": 40, "state": "process"}]}, "expect": {"events": []}},
+  {"name": "error", "title": "Ошибка с повтором", "settings": {"items": [{"id": "b", "name": "photo.png", "fileSize": "3MB", "state": "error", "errorMessage": "Сеть недоступна"}]}, "expect": {"events": []}},
+  {"name": "disabled", "title": "Недоступна", "settings": {"disabled": true}, "expect": {"values": {}}}
+]

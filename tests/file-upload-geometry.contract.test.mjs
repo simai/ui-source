@@ -4,7 +4,8 @@ import test from 'node:test';
 const read=p=>readFile(new URL(`../src/${p}`,import.meta.url),'utf8');
 test('FileUpload distinguishes surface and control semantic radii without removing corner overrides',async()=>{
   const css=await read('component/file-upload/scss/_css__file_upload.scss');
-  assert.equal((css.match(/var\(--sf-file-upload--border-[a-z-]+-radius, var\(--sf-radius--surface\)\)/g)||[]).length,4);
+  // The public radius stands before the role (standard 1.3.8 §6).
+  assert.equal((css.match(/var\(--sf-file-upload--border-[a-z-]+-radius, var\(--sf-file-upload-radius, var\(--sf-radius--surface\)\)\)/g)||[]).length,4);
   for(const path of ['component/file-upload/js/_file_upload.js','smart/file-upload/js/templates/default.js'])assert.doesNotMatch(await read(path),/sf-icon-button[^\n]*radius-default/);
 });
 test('FileUpload file rows wrap unbroken content and preserve action/icon geometry',async()=>{

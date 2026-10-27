@@ -1748,6 +1748,61 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "file-upload",
+      "selector": ".sf-file-upload",
+      "variables": [
+        {
+          "name": "--sf-file-upload-background-color",
+          "role": "background",
+          "summary": "The area's fill at rest; hover, focus, dragged-over and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-border-color",
+          "role": "border-color",
+          "summary": "The area's boundary at rest.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-radius",
+          "role": "radius",
+          "summary": "The area's corner radius; the per-corner hooks still win.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-link-color",
+          "role": "color",
+          "summary": "The ink of the words that open the file dialog.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-text-color",
+          "role": "color",
+          "summary": "The ink of the words after the link.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-dragged-over-background-color",
+          "role": "background",
+          "summary": "The area's fill while files are held over it.",
+          "default": "var(--sf-primary-transparent-select)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-file-upload-dragged-over-border-color",
+          "role": "border-color",
+          "summary": "The area's boundary while files are held over it.",
+          "default": "var(--sf-outline-primary)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

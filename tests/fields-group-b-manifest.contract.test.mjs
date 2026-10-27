@@ -18,6 +18,7 @@ const COMPONENTS = {
   'range-slider': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss'},
   'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
   'image-field': {class: 'SfImageField', sheets: 'src/smart/image-field/scss'},
+  'file-upload': {class: 'SfFileUpload', sheets: 'src/component/file-upload/scss'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -171,4 +172,24 @@ test('sf-image-field: vocabulary names with dated colon aliases, error is invali
     ['sf-image-field:reject', 'sf-image-field-rejected'],
     ['error', 'invalid'],
   ]);
+});
+
+test('sf-file-upload: each entry is a stream (§10.8); the colon names follow the vocabulary names (vocabulary 1.1.5 §9.1)', () => {
+  const source = read('src/smart/file-upload/index.js');
+  assert.match(source, /class SfFileUpload extends FileUploadElement/u);
+  for (const verb of ['begun', 'chunk', 'cancelled']) assert.match(source, new RegExp(`this\\.sfEmit\\('${verb}', `, 'u'), verb);
+  assert.match(source, /'sf-file-upload:file-complete': 'completed'/u);
+  assert.match(source, /'sf-file-upload:file-error': 'failed'/u);
+  assert.match(source, /dispatchAliased\(this, 'change', \{ detail: chosen \}\)/u);
+  assert.doesNotMatch(source, /FILE_UPLOAD_TEXT|pageText/u);
+  assert.doesNotMatch(source, /\n {2}removeItem\(index\) \{|\n {2}clear\(\) \{/u, 'remove-item and clear are the manifest\'s actions');
+  const manifest = json('src/smart/file-upload/component.json');
+  for (const verb of ['begun', 'chunk', 'completed', 'failed', 'cancelled']) assert.ok(manifest.events[verb], verb);
+  assert.deepEqual(manifest.events.failed.carries.reason, 'string');
+  assert.equal(manifest.form, undefined, 'the area submits nothing; the host uploads');
+  const rows = json('src/smart/file-upload/aliases.json').aliases.filter((row) => row.to);
+  assert.deepEqual(rows.map((row) => row.to.replace('sf-file-upload-', '')), ['attach', 'attached', 'detach', 'rejected', 'retry', 'completed', 'failed', 'finished']);
+  assert.ok(rows.every((row) => row.from.startsWith('sf-file-upload:')), 'only the names that shipped');
+  // The dragged-over look reads the host state too (§5.3).
+  assert.match(read('src/component/file-upload/scss/_css__file_upload.scss'), /sf-file-upload\[data-dragged-over\] > \.sf-file-upload:not\(\[disabled\]\):not\(\.disabled\) \{/u);
 });

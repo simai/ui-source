@@ -88,6 +88,9 @@ const DRAW = {
     html: '<sf-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-color><sf-color label="Цвет"></sf-color>'},
   'range-slider': {css: ['range-slider'], js: 'range-slider',
     html: '<div style="inline-size:400px;padding:40px 20px"><sf-range-slider aria-label="Громкость" value="40" label="text"></sf-range-slider></div>'},
+  'file-upload': {css: ['file-upload', 'featured-icon'], js: 'file-upload',
+    html: '<sf-file-upload aria-label="Документы"></sf-file-upload><sf-file-upload id="held" aria-label="Документы"></sf-file-upload>',
+    open: 'document.getElementById("held").setAttribute("data-dragged-over", "true")'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

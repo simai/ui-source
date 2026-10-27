@@ -73,7 +73,11 @@ test('FileUpload documents the item it exchanges, the two text attributes and bi
   assert.match(docs, /`process` \(the bar\), `done` \(the check\), `error` \(the retry button\)/);
 
   // text is the words after the link, not the whole prompt.
-  assert.match(smart, /text: this\.getAttribute\("text"\) \|\| pageText\(FILE_UPLOAD_TEXT, "text", this\)/);
+  // Its default is the language file's word (standard 1.3.8 §11, §16 item 44).
+  assert.match(smart, /text: this\.text,/);
+  const uploadManifest = JSON.parse(await read('src/smart/file-upload/component.json'));
+  assert.equal(uploadManifest.settings.text['default-from'], 'runtime.text');
+  assert.equal(JSON.parse(await read('src/smart/file-upload/lang/ru.json')).runtime.text, 'или перетащите его сюда');
   assert.match(docs, /the words \*\*after\*\* the link/);
 
   // The methods are addEventListener, so the event works before the upgrade.

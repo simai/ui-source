@@ -1,0 +1,366 @@
+{
+  "$comment": "The source of sf-file-upload's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-upload (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/file-upload/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
+  "id": "smart.file-upload",
+  "tag": "sf-file-upload",
+  "version": "1.1.0",
+  "kind": "leaf",
+  "family": "file",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1"
+    },
+    "icon": {
+      "type": "icon",
+      "default": "upload_file"
+    },
+    "link-text": {
+      "type": "string",
+      "default-from": "runtime.link-text"
+    },
+    "text": {
+      "type": "string",
+      "default-from": "runtime.text"
+    },
+    "formats": {
+      "type": "string",
+      "default": ""
+    },
+    "supporting-text": {
+      "type": "string",
+      "default": ""
+    },
+    "accept": {
+      "type": "string",
+      "default": ""
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "name": "string",
+        "file-size": {
+          "type": "string",
+          "optional": true
+        },
+        "progress": {
+          "type": "number",
+          "optional": true
+        },
+        "state": {
+          "type": "enum",
+          "values": [
+            "process",
+            "done",
+            "error"
+          ]
+        },
+        "error-message": {
+          "type": "string",
+          "optional": true
+        },
+        "retry-text": {
+          "type": "string",
+          "optional": true
+        },
+        "file": {
+          "type": "object",
+          "optional": true
+        }
+      },
+      "summary": "The files and their uploads, written by the host: each entry's state (process, done, error) and progress 0-100 is its stream (§10.8)"
+    }
+  },
+  "values": {},
+  "events": {
+    "change": {
+      "carries": {
+        "files": "list",
+        "source": {
+          "type": "enum",
+          "values": [
+            "input",
+            "drop"
+          ]
+        }
+      }
+    },
+    "attach": {
+      "carries": {
+        "files": "list",
+        "source": {
+          "type": "enum",
+          "values": [
+            "input",
+            "drop"
+          ]
+        },
+        "multiple": "boolean"
+      }
+    },
+    "attached": {
+      "carries": {
+        "id": "id",
+        "item": "object",
+        "index": "number",
+        "items": "list",
+        "source": "string",
+        "multiple": "boolean"
+      }
+    },
+    "detach": {
+      "carries": {
+        "id": "id",
+        "item": "object",
+        "index": "number",
+        "items": "list"
+      }
+    },
+    "rejected": {
+      "carries": {
+        "files": "list",
+        "accept": "string",
+        "source": "string"
+      }
+    },
+    "retry": {
+      "carries": {
+        "id": "id",
+        "item": "object",
+        "index": "number",
+        "items": "list"
+      }
+    },
+    "begun": {
+      "carries": {
+        "id": "id",
+        "item": "object"
+      }
+    },
+    "chunk": {
+      "carries": {
+        "id": "id",
+        "done": "number",
+        "total": "number",
+        "item": "object"
+      }
+    },
+    "completed": {
+      "carries": {
+        "id": "id",
+        "item": "object",
+        "index": "number",
+        "items": "list"
+      }
+    },
+    "failed": {
+      "carries": {
+        "id": "id",
+        "item": "object",
+        "index": "number",
+        "items": "list",
+        "reason": "string",
+        "message": "string"
+      }
+    },
+    "cancelled": {
+      "carries": {
+        "id": "id",
+        "item": "object"
+      }
+    },
+    "finished": {
+      "carries": {
+        "items": "list"
+      }
+    }
+  },
+  "actions": {
+    "remove-item": {
+      "with": {
+        "index": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    },
+    "clear": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ]
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open"
+    }
+  },
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js"
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "button",
+    "name": {
+      "from": [
+        "aria-label",
+        "link-text"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open"
+    }
+  },
+  "host-states": {
+    "data-dragged-over": "boolean"
+  },
+  "css-variables": {
+    "--sf-file-upload-background-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-file-upload-border-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-file-upload-radius": {
+      "type": "length"
+    },
+    "--sf-file-upload-link-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-file-upload-text-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-file-upload-dragged-over-background-color": {
+      "type": "color",
+      "state": "dragged-over"
+    },
+    "--sf-file-upload-dragged-over-border-color": {
+      "type": "color",
+      "state": "dragged-over"
+    }
+  },
+  "x-summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
+  "x-source": {
+    "package": "framework",
+    "folder": "file-upload",
+    "manifest": "simai/ui-source@5100227 src/smart/file-upload/smart.manifest.json",
+    "converted": "control/smart-architecture/stands/17-ports-migration/out/file-upload.component.json"
+  },
+  "x-words": [
+    "link-text",
+    "text",
+    "supporting-text"
+  ],
+  "x-renamed": [
+    "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
+    "events.sf-file-upload-complete → finished (vocabulary §5.1)",
+    "events.sf-file-upload-file-add → attached (vocabulary §5.1)",
+    "events.sf-file-upload-file-complete → completed (vocabulary §5.1)",
+    "events.sf-file-upload-file-error → failed (vocabulary §5.1)",
+    "events.sf-file-upload-reject → rejected (vocabulary §5.1)",
+    "events.sf-file-upload-remove → detach (vocabulary §5.1)",
+    "events.sf-file-upload-retry → retry (the DOM name without sf-<tag>-)",
+    "events.sf-file-upload-select → attach (vocabulary §5.1)",
+    "lang runtime also holds the words of FILE_UPLOAD_ITEM_TEXT (ui-source/src/component/file-upload/js/_file_upload.js): a shared script this component draws with (§11: no word lives only inside a bundle)",
+    "settings.text: its default words move to lang/en.json runtime.text (§11, §16 item 44)"
+  ],
+  "x-kept": {
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-file-upload for local file selection and item-state presentation. Consumer code owns transport and server validation. Shared root-class/style/root-style customize the drop zone, not the adjacent file list; cosmetic renders preserve item File objects. afterRender(callback) uses the base registration API.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-file-upload></sf-file-upload>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    }
+  },
+  "x-decisions": [
+    "alias-conflict: vocabulary 1.1.5 §9.1 decides -- the colon names follow attach, attached, detach, rejected, retry, completed, failed and finished; stand 18's planned hyphen names (sf-file-upload-select, -file-add, …) never shipped and get no alias",
+    "completed, not uploaded: vocabulary 1.1.5 §9.1 names the end of an upload stream completed (§5.2, standard §10.8); 1.1.2 had planned -uploaded",
+    "streams (§10.8): each entry is a stream keyed by its id -- begun when it enters process (a choice, a drop, a retry), chunk {done, total} when the host moves its progress, then exactly one of completed (done), failed {reason, message} (error) or cancelled (removed while in process); finished when every entry is done",
+    "version: 1.1.0 -- eight events take their vocabulary names behind dated aliases, and begun, chunk and cancelled are added; a minor while the aliases hold (§4.10)",
+    "key-effects: Enter and Space on the area open the platform file dialog",
+    "setter: items is a writable list setting (§4.4: no set-<name> action, no rule calls it); setItems stays a method of the class outside the interface",
+    "item-shape: id, name, file-size, progress, state, error-message, retry-text, file",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json, studio.scenario.json and the docs",
+    "css-variables: seven public variables read by the class sheet with the role as fallback, the dragged-over pair among them (§6)",
+    "form: none -- the area uploads nothing and submits nothing; the host uploads each file and writes items back (its x-summary)",
+    "actions answer outcomes (§4.4): remove-item {index} and clear are applied, or refused no-item / unchanged",
+    "host-states: data-dragged-over while files are held over the area (§5.3); the class component keeps its .dragover class"
+  ]
+}
