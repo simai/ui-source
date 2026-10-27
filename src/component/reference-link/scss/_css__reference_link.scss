@@ -3,8 +3,8 @@
     /* The card sits on whatever surface holds it; hover and press add the
        container overlay. --sf-surface is not a token, so this was transparent
        already -- now it says so. */
-    --sf-reference-link--background-color: transparent;
-    --sf-reference-link--border-color: var(--sf-outline-variant);
+    --sf-reference-link--background-color: var(--sf-reference-link-background-color, transparent);
+    --sf-reference-link--border-color: var(--sf-reference-link-border-color, var(--sf-outline-variant));
     --sf-reference-link--gap: var(--sf-space-1);
     --sf-reference-link--padding-block: var(--sf-space-1);
     --sf-reference-link--padding-inline: var(--sf-space-1);
@@ -14,16 +14,16 @@
     box-sizing: border-box;
     align-items: center;
     justify-content: space-between;
-    gap: var(--sf-reference-link--gap);
+    gap: var(--sf-reference-link-gap, var(--sf-reference-link--gap));
     inline-size: 100%;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
-    padding-block: var(--sf-reference-link--padding-block);
-    padding-inline: var(--sf-reference-link--padding-inline);
+    padding-block: var(--sf-reference-link-padding-block, var(--sf-reference-link--padding-block));
+    padding-inline: var(--sf-reference-link-padding-inline, var(--sf-reference-link--padding-inline));
     color: var(--sf-on-surface);
     background-color: var(--sf-reference-link--background-color);
     border: var(--sf-px) solid var(--sf-reference-link--border-color);
-    border-radius: var(--sf-radius--ui);
+    border-radius: var(--sf-reference-link-radius, var(--sf-radius--ui));
   }
 
   .sf-reference-link :where(.sf-reference-link__main, .sf-reference-link-left) {
@@ -41,7 +41,7 @@
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
     min-inline-size: var(--sf-0);
-    color: var(--sf-link);
+    color: var(--sf-reference-link-link-color, var(--sf-link));
     font: inherit;
     overflow-wrap: anywhere;
     text-decoration: underline;

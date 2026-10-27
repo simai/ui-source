@@ -1,0 +1,98 @@
+{
+  "component": "sf-reference-link",
+  "probe": "sf-reference-link against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main>",
+      "  <sf-reference-link id=\"r\" label=\"Начало работы\" text=\"/guides/\" href=\"#start\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-plain\" label=\"Договор\" href=\"#\" appearance=\"plain\" icon=\"\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-off\" label=\"Архив\" href=\"#\" disabled></sf-reference-link>",
+      "  <sf-reference-link id=\"r-named\" label=\"Ещё\" href=\"#\" aria-label=\"Все заказы клиента\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-bad\" label=\"Неизвестно\" href=\"#\" appearance=\"box\"></sf-reference-link>",
+      "</main>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-link",
+      "title": "href draws a native link named by its label, the arrow before it",
+      "covers": "accessibility.role link, accessibility.name label, settings.icon default",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#r a.sf-reference-link__link'); return a && a.getAttribute('href') === '#start' && a.textContent.trim() === 'Начало работы' && document.querySelector('#r .sf-reference-link__icon').textContent.trim() === 'arrow_forward' && document.querySelector('#r .sf-reference-link__meta').textContent.trim() === '/guides/'; })()",
+          "expect": {
+            "values": {
+              "#r.appearance": "card",
+              "#r.icon": "arrow_forward"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2-plain-no-icon",
+      "title": "plain drops the card; an empty icon drops the arrow",
+      "covers": "settings.appearance plain, settings.icon optional",
+      "steps": [
+        {
+          "check": "document.querySelector('#r-plain .sf-reference-link').classList.contains('sf-reference-link--plain') && !document.querySelector('#r-plain .sf-reference-link__icon')",
+          "expect": {
+            "values": {
+              "#r-plain.icon": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3-disabled",
+      "title": "disabled has no link and says aria-disabled",
+      "covers": "settings.disabled",
+      "steps": [
+        {
+          "check": "!document.querySelector('#r-off a') && document.querySelector('#r-off .sf-reference-link').getAttribute('aria-disabled') === 'true'"
+        }
+      ]
+    },
+    {
+      "id": "p4-aria-label",
+      "title": "the host's aria-label names the link",
+      "covers": "accessibility.name aria-label (host attribute, §3.1)",
+      "steps": [
+        {
+          "check": "document.querySelector('#r-named a').getAttribute('aria-label') === 'Все заказы клиента'"
+        }
+      ]
+    },
+    {
+      "id": "p5-unknown-appearance",
+      "title": "an appearance off the list is the card",
+      "covers": "settings.appearance enum",
+      "steps": [
+        {
+          "check": "!document.querySelector('#r-bad .sf-reference-link').classList.contains('sf-reference-link--plain')",
+          "expect": {
+            "values": {
+              "#r-bad.appearance": "card"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6-public-variable",
+      "title": "--sf-reference-link-border-color draws the border at rest",
+      "covers": "css-variables --sf-reference-link-border-color",
+      "steps": [
+        {
+          "script": "(() => { document.querySelector('#r').style.setProperty('--sf-reference-link-border-color', 'rgb(1, 2, 3)'); return true; })()"
+        },
+        {
+          "check": "getComputedStyle(document.querySelector('#r .sf-reference-link')).borderTopColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    }
+  ]
+}

@@ -13,7 +13,7 @@ test('Reference Link owns native navigation, complete geometry and BEM aliases',
 
   assert.match(css, /display: flex/);
   assert.match(css, /border: var\(--sf-px\)/);
-  assert.match(css, /border-radius: var\(--sf-radius--ui\)/);
+  assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
   assert.match(css, /:has\([^}]*:focus-visible/s);
   assert.match(css, /\.sf-reference-link__link/);
   assert.match(css, /\.sf-reference-link-left/);

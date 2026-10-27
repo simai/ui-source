@@ -2054,6 +2054,75 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "reference-link",
+      "selector": ".sf-reference-link",
+      "variables": [
+        {
+          "name": "--sf-reference-link-background-color",
+          "role": "background",
+          "summary": "The card's fill at rest; hover, press and disabled keep their own.",
+          "default": "transparent",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-border-color",
+          "role": "border-color",
+          "summary": "The card's border at rest; hover and disabled keep their own.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-radius",
+          "role": "radius",
+          "summary": "The card's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-link-color",
+          "role": "color",
+          "summary": "The link's colour.",
+          "default": "var(--sf-link)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space at the start and end of the card; plain draws none.",
+          "default": "var(--sf-space-1)",
+          "varies_with": [
+            "size",
+            "line",
+            "appearance"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-padding-block",
+          "role": "padding-block",
+          "summary": "Space above and below the card's content; plain draws none.",
+          "default": "var(--sf-space-1)",
+          "varies_with": [
+            "size",
+            "line",
+            "appearance"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-reference-link-gap",
+          "role": "gap",
+          "summary": "Space between the link and the text after it.",
+          "default": "var(--sf-space-1)",
+          "varies_with": [
+            "size",
+            "line"
+          ],
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

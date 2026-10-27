@@ -15,13 +15,18 @@ when `disabled` is set. Use ordinary Link when no secondary reference is needed.
 
 ## Attributes
 
-- `icon`
+- `icon` — absent is the arrow, `icon=""` is no icon
 - `label`
 - `text`
 - `href`
 - `target`
 - `disabled`
-- `aria-label`
+- `appearance="card|plain"` — plain inside something that is already a box
+- `size`, `line` — a form size, or the text line of one
+- `aria-label` — a host attribute, passed to the link
+
+The interface is `component.json` (standard 1.3.8); examples are
+`examples.json`.
 
 `target="_blank"` must be intentional and disclosed in the label. The template
 adds `rel="noopener noreferrer"`. The icon is decorative.
@@ -40,3 +45,10 @@ adds `rel="noopener noreferrer"`. The icon is decorative.
   href="/guides/getting-started/"
 ></sf-reference-link>
 ```
+
+## Public variables
+
+Each falls back to the internal token (standard simai.smart-component 1.3.8
+§6): `--sf-reference-link-background-color` and `-border-color` (at rest; hover,
+press and disabled keep their own), `-radius`, `-link-color`,
+`-padding-inline`, `-padding-block` and `-gap`.

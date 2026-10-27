@@ -1,0 +1,89 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Документация",
+      "settings": {
+        "text": "Документация",
+        "href": "#"
+      },
+      "expect": {
+        "href": "#",
+        "appearance": "card"
+      }
+    },
+    {
+      "name": "label",
+      "title": "С подписью и адресом",
+      "settings": {
+        "label": "Начало работы",
+        "text": "/guides/getting-started/",
+        "href": "/guides/getting-started/"
+      },
+      "expect": {
+        "label": "Начало работы"
+      }
+    },
+    {
+      "name": "plain",
+      "title": "Без рамки",
+      "settings": {
+        "label": "Договор № 12",
+        "href": "#",
+        "appearance": "plain"
+      },
+      "expect": {
+        "appearance": "plain"
+      }
+    },
+    {
+      "name": "no-icon",
+      "title": "Без значка",
+      "settings": {
+        "label": "Профиль",
+        "href": "#",
+        "icon": ""
+      },
+      "expect": {
+        "icon": ""
+      }
+    },
+    {
+      "name": "size",
+      "title": "Размер 1/2",
+      "settings": {
+        "label": "Заказ",
+        "text": "№ 1042",
+        "href": "#",
+        "size": "1/2"
+      },
+      "expect": {
+        "size": "1/2"
+      }
+    },
+    {
+      "name": "line",
+      "title": "На строке",
+      "settings": {
+        "label": "Клиент",
+        "href": "#",
+        "line": "1"
+      },
+      "expect": {
+        "line": "1"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "label": "Архив",
+        "href": "#",
+        "disabled": true
+      },
+      "expect": {
+        "disabled": true
+      }
+    }
+  ]
+}

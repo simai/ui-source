@@ -32,6 +32,7 @@ const FOLDERS = {
   steps: 'step',
   close: 'close',
   icon: 'icons',
+  'reference-link': 'reference-link',
 };
 
 const scss = async (folder) => {
