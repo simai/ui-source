@@ -156,11 +156,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Do not use sf-toggle for new work; use sf-switch, which draws the same control (sf-switch--short and sf-switch--icon give Toggle's two looks). Keep sf-toggle only in markup already written until it is moved.",

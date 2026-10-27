@@ -227,11 +227,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-alert for persistent inline guidance, warning, error or success feedback inside the page flow.",

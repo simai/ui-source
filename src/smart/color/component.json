@@ -192,11 +192,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",

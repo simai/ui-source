@@ -211,11 +211,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-range-slider to choose a number or a range of two within known bounds, where the position on a track says more than a typed number.",

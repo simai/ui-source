@@ -456,11 +456,7 @@
         "unclipped-tail-with-scrollable-content",
         "logical-position-aliases",
         "forced-colors-boundary"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language.",

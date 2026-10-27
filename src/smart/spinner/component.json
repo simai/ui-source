@@ -170,11 +170,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-spinner for a bounded waiting state whose progress cannot be expressed as a meaningful percentage.",

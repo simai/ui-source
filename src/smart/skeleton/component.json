@@ -151,11 +151,7 @@
         "mobile",
         "reduced motion",
         "content-matched geometry"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-skeleton while content with predictable geometry is loading. Match the expected text, avatar, media or card shape closely and set aria-busy on the host content region until replacement is complete.",

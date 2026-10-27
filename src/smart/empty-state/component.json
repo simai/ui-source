@@ -194,11 +194,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",

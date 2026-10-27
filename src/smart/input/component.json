@@ -282,11 +282,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-input for a single-line text, email, password, search, telephone or URL value that must participate in a native form.",

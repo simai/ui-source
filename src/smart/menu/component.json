@@ -170,6 +170,14 @@
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
     }
   },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The items arrive after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4).",
+      "late": [
+        "items"
+      ]
+    }
+  },
   "examples": "examples.json",
   "docs": "docs.md",
   "lang": "lang/",
@@ -287,11 +295,7 @@
         "mobile",
         "ltr",
         "rtl"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-menu for site, section or cabinet navigation that comes from data or from a nested list of links: a header row, a side panel, a documentation tree.",

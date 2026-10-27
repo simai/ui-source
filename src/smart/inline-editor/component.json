@@ -168,11 +168,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use the inline editor for text of content.heading and content.paragraph on an editor page. Save the committed content through the host Property contract, validate the Document and re-render.",

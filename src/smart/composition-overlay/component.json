@@ -318,11 +318,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-composition-overlay on an editor page over SF.Composition.render output. Treat every event as intent: the host changes the Document, saves it with an expected revision, validates and re-renders. For a canvas isolated in a same-origin iframe (a mail letter), use attachFrame (or frame=\"id\") and setNodes with a flat node list; edits arrive as sf-composition-overlay-edit.",

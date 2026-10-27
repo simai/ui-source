@@ -360,11 +360,7 @@
         "mobile",
         "ltr",
         "rtl"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",

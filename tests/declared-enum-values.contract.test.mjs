@@ -22,7 +22,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const sources = (directory) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {
   const path = resolve(directory, entry.name);
-  if (entry.isDirectory()) return entry.name === 'node_modules' ? [] : sources(path);
+  // static/ holds the first-paint snapshots (scripts/snapshot-first-paint.mjs):
+  // what the templates draw, generated; the templates are the sources.
+  if (entry.isDirectory()) return entry.name === 'node_modules' || entry.name === 'static' ? [] : sources(path);
   return ['.js', '.mjs', '.css', '.html'].includes(extname(entry.name)) ? [path] : [];
 });
 

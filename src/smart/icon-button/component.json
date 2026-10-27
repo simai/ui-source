@@ -233,11 +233,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-icon-button for a compact action that is unambiguous from one familiar icon and has a concise accessible name.",

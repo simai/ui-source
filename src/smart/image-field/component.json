@@ -304,11 +304,7 @@
         "mobile",
         "ltr",
         "rtl"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-image-field for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",

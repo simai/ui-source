@@ -322,11 +322,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-file-upload for local file selection and item-state presentation. Consumer code owns transport and server validation. Shared root-class/style/root-style customize the drop zone, not the adjacent file list; cosmetic renders preserve item File objects. afterRender(callback) uses the base registration API.",

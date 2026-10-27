@@ -23,7 +23,7 @@
         "max": "400",
         "step": 16
       },
-      "parent": "<nav style=\"inline-size: 300px\"></nav>",
+      "parent": "<nav style=\"inline-size: 300px; position: relative\"></nav>",
       "script": [
         {
           "key": "ArrowRight"
@@ -54,7 +54,7 @@
         "value": 320,
         "property": "--menu-width"
       },
-      "parent": "<nav style=\"inline-size: var(--menu-width, 250px)\"></nav>",
+      "parent": "<nav style=\"inline-size: var(--menu-width, 320px); position: relative\"></nav>",
       "expect": {
         "valuenow": 320
       }
@@ -65,7 +65,7 @@
       "settings": {
         "edge": "inline-start"
       },
-      "parent": "<aside style=\"inline-size: 20rem\"></aside>",
+      "parent": "<aside style=\"inline-size: 20rem; position: relative\"></aside>",
       "expect": {
         "role": "separator"
       }

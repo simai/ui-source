@@ -449,11 +449,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-pagination for a collection divided into numbered pages when the host owns data loading and reacts to pagination events.",

@@ -399,11 +399,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-gallery for one ordered media collection with one-based current state, an inline Slider and optional Modal lightbox. Nested Sliders inherit token-driven spacing, reduced-motion behavior, autoplay pause and hidden-slide focus protection unless the author supplies explicit compatibility overrides.",

@@ -265,11 +265,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-dropdown when a form needs one or several values from a concealed option set. Use direct sf-list-item children with stable machine values and visible labels. Use portal only when an ancestor clips the popup.",

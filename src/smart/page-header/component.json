@@ -144,11 +144,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-page-header at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",

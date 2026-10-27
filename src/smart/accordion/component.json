@@ -248,11 +248,7 @@
         "mobile",
         "ltr",
         "rtl"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ -- or are written as <details> in the markup.",

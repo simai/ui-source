@@ -283,11 +283,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "line",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-list-item as a direct child of sf-dropdown to declare an option, or as a list row: supporting for a second line, interactive for a row a person acts on (sf-list-item-open {id}), sortable-item inside sf-sortable, pinned for a row that stays in place.",

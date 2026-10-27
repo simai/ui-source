@@ -253,11 +253,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-tag for a compact category, filter, selected value or status with an explicit static, toggle or remove owner.",

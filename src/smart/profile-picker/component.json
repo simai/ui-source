@@ -140,7 +140,10 @@
   "presentation": {
     "skeleton": {
       "file": "skeleton.html",
-      "$comment": "The folded trigger with a bar for the profile's name: the first paint before the host sets profiles (§5.4)."
+      "$comment": "The folded trigger with a bar for the profile's name: the first paint before the host sets profiles (§5.4).",
+      "late": [
+        "profiles"
+      ]
     }
   },
   "styles": "scss/_smart__profile_picker.scss",
@@ -240,11 +243,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-profile-picker wherever a person chooses between profiles or views of something and may make, rename or remove them: the admin menu's profiles, a record's views.",

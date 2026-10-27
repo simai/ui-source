@@ -182,11 +182,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-slider to project the shared Slider/Swiper behavior. In the default template, root-class, author style and root-style customize the existing root; root-style wins. Cosmetic-only changes preserve the active slide, focus and Swiper instances and emit sf-updated with updateMode=dom, not slide-change. afterRender(callback) uses the base lifecycle API. The shared adapter uses navigation aria-label as default Swiper a11y messages; explicit a11y messages override them, disabled a11y remains disabled and aria-labelledby retains native precedence. Omitted space-between and speed inherit Framework spacing and duration tokens; explicit numeric attributes remain compatibility overrides. Reduced motion disables transitions and autoplay. Explicit autoplay pauses on focus and document visibility, while non-visible slides stay outside the keyboard order.",

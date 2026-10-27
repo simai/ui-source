@@ -198,11 +198,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-theme-generator where a person chooses a site's or a product's main colour and the rest of its palette should follow.",

@@ -230,11 +230,7 @@
         "mobile",
         "ltr",
         "rtl"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-code-input for a one-time code a person types or pastes -- from a text message, an authenticator app, an email -- as a field of a native form.",

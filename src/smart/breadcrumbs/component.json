@@ -224,11 +224,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "line",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-breadcrumbs to show the current page location in a hierarchy and provide native links to ancestor pages.",

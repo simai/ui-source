@@ -216,11 +216,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-sortable when people reorder or move host items, or drag library entries onto an editor canvas. Apply sf-sortable-intent to the host model with an expected revision; a refusal leaves the page unchanged. Give inserter-items when people insert new items at a place in the list; create the item on sf-sortable-insert.",

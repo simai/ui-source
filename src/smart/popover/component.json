@@ -254,11 +254,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-popover for a surface anchored to a control the consumer supplies -- a field's settings, a filter, a list of things to add -- that opens on its trigger and closes on Escape or outside.",

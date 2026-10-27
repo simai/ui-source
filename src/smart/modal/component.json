@@ -519,11 +519,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-modal for one bounded task that temporarily owns the top interaction layer. It shares stack, focus return and scroll-lock ownership with ordinary Modal. Prefer center or logical inline-start/inline-end/top/bottom positions; left/right are compatibility aliases. The dialog and iframe are large surfaces on --sf-radius--surface, while compact header actions retain --sf-radius--ui. Inline display stays in document flow and does not capture focus. Minimized instances remain open but leave the visible interaction stack.",

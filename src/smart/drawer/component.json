@@ -376,11 +376,7 @@
         "reduced-motion",
         "semantic-surface-radius",
         "logical-placement"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",

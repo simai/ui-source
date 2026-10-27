@@ -154,11 +154,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-tooltip for a short non-interactive description. Link it to a native trigger with the ordinary data-tooltip composition when Framework should own hover, focus and Escape behavior.",

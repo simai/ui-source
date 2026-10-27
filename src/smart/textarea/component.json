@@ -265,11 +265,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",

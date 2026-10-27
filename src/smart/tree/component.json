@@ -190,6 +190,14 @@
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16). The entries are rows of class markup drawn with sf-tree-item's js/templates/row.js, keyed by id."
     }
   },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The rows arrive as items after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4).",
+      "late": [
+        "items"
+      ]
+    }
+  },
   "examples": "examples.json",
   "docs": "docs/docs.md",
   "lang": "lang/",
@@ -287,11 +295,7 @@
       "responsive": [
         "desktop",
         "mobile"
-      ],
-      "skeleton": {
-        "shape": "menu",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-tree for file-like, taxonomy or navigation hierarchies that need composite keyboard navigation.",

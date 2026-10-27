@@ -414,11 +414,7 @@
         "mobile-popup",
         "inline",
         "visual-viewport-bounded-overlay"
-      ],
-      "skeleton": {
-        "shape": "block",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-datepicker for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",

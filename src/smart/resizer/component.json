@@ -189,11 +189,7 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-resizer when a person should widen or narrow a panel, a menu column or a side area by its edge. Put it inside the panel; give min and max; write the width to the variable the panel's stylesheet reads.",

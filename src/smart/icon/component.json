@@ -180,11 +180,7 @@
         "mobile",
         "inherited current color",
         "pre-upgrade reserved size"
-      ],
-      "skeleton": {
-        "shape": "none",
-        "while_loading": "none"
-      }
+      ]
     },
     "ai_guidance": {
       "use_when": "Use sf-icon for a Material Symbol that must participate in the Framework Loader and token scale. Omit label when adjacent text or a named control already conveys the meaning; provide a concise label only for an informative standalone symbol.",
