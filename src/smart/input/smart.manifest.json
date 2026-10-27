@@ -545,7 +545,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input/index.js",
-        "sha256": "1f38fb59b76f57b99e90b2033e1916cc2888acb2e0d6d0251ea6d3d88ff445fb"
+        "sha256": "b4a8310745787fe979e56d43e4b3b477593de1fd61325478ea9b71170a60f484"
       },
       {
         "path": "src/smart/input/rule.js",
@@ -553,7 +553,7 @@
       },
       {
         "path": "src/smart/input/js/templates/default.js",
-        "sha256": "f4a9337e9face34d84ca7be004682b00c358cf60a2a065042e660e941fda10cb"
+        "sha256": "1b94d6d0b00b97e0e97c1527490f35e1032e500bd7a2e86853ea6e2a2fae6c6e"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -358,7 +358,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/code-input/index.js",
-        "sha256": "d3089e9e5092b501a43ee33485cbccc206846aa59827bc9a76128f2a00348210"
+        "sha256": "6e3a68bc9b12bab80c9426ef141fe1fcb111e67a50b65b7663cb507d26350e1b"
       },
       {
         "path": "src/smart/code-input/code.mjs",
@@ -366,7 +366,7 @@
       },
       {
         "path": "src/smart/code-input/js/templates/default.js",
-        "sha256": "1ec2e8132d01c073221548c69bcfa5427a00e35f1e96614d6fffad71a5dc5077"
+        "sha256": "43ff055ef9987c198ae20d6b934a006b4cc18b3cfeee6bd65bef47318985fb34"
       },
       {
         "path": "src/smart/code-input/scss/_smart__code_input.scss",

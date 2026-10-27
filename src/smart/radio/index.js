@@ -78,7 +78,7 @@ class SfRadio extends FormField(RadioElement) {
     return this.createTemplateContext({
       ...props,
       // Without ElementInternals the named inner radio submits, as before.
-      name: internals ? groupKey(this) : props.name,
+      controlName: internals ? groupKey(this) : props.name,
       innerForm: internals ? NO_FORM : '',
       component: this,
     });

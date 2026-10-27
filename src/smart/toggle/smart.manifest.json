@@ -75,7 +75,8 @@
       },
       "value": {
         "type": "string",
-        "default": ""
+        "default": "on",
+        "description": "What a checked toggle submits; without it, \"on\", as a native checkbox (standard 1.3.8 §17.1 item 2)."
       },
       "type": {
         "type": "string",

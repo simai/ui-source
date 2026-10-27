@@ -663,7 +663,7 @@ class SfQuantity extends FormField(QuantityElement) {
       size: this.size,
       // The host is the form control where the browser has ElementInternals:
       // no hidden input then (§17.1 item 6).
-      name: innerControlName(this, this.name),
+      controlName: innerControlName(this, this.name),
       label: this.label,
       hint: this.hint,
       placeholder: this.placeholder,

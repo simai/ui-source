@@ -97,7 +97,7 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   assert.match(source, /clearOwnValue\(\) \{\n    this\.writeValue\(null, 'reset', \{change: true\}\);/u);
   assert.match(template, /renderInheritedSlot\(component, \{size: context\.size, disabled: !context\.interactive\}\)/u);
   // The form gets the number with a point from a hidden input; the box has no name.
-  assert.match(template, /<input type="hidden" class="sf-quantity-value" name=\$\{context\.name\} value=\$\{context\.formValue\} \?disabled=\$\{context\.disabled\}>/u);
+  assert.match(template, /<input type="hidden" class="sf-quantity-value" name=\$\{context\.controlName\} value=\$\{context\.formValue\} \?disabled=\$\{context\.disabled\}>/u);
   const box = template.slice(template.indexOf('<input type="text"'), template.indexOf('${inheritedSlot}'));
   assert.doesNotMatch(box, /\sname=/u);
   assert.match(box, /\?required=\$\{field\.required\}/u);

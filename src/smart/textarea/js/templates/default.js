@@ -18,7 +18,7 @@ export function renderTextareaTemplate(context) {
     wrap,
     hint,
     value,
-    name,
+    controlName,
     rows,
     disabled,
     readonly,
@@ -96,7 +96,7 @@ export function renderTextareaTemplate(context) {
         wrap=${wrap}
         .value=${value}
         .defaultValue=${value}
-        name=${name || nothing}
+        name=${controlName || nothing}
         rows=${autoGrow ? minRows : rows}
         ?disabled=${disabled}
         ?readonly=${readonly}

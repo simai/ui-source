@@ -27,14 +27,16 @@ const DRAW = {
   // anchored badge alone (simai/ui-source#12).
   badge: {css: ['badges'], js: 'badges', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
   button: {css: ['buttons'], js: 'buttons', html: '<sf-button text="Сохранить" size="1"></sf-button>'},
-  input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input>'},
+  // A variable of a state (standard 1.3.8 §6) is measured on an instance in
+  // that state, drawn beside the one at rest.
+  input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
   alert: {css: ['alerts', 'icon-buttons'], js: 'alert', html: '<sf-alert title="Сообщение" supporting-text="Текст"></sf-alert>'},
   tag: {css: ['tags'], js: 'tags', html: '<sf-tag text="Метка" size="1"></sf-tag>'},
   'icon-button': {css: ['icon-buttons'], js: 'icon-buttons', html: '<sf-icon-button icon="add" aria-label="Добавить" size="1"></sf-icon-button>'},
-  checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox>'},
-  'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio>'},
+  checkbox: {css: ['checkbox'], js: 'checkbox', html: '<sf-checkbox label="Флажок" size="1"></sf-checkbox><sf-checkbox label="Отмечен" checked size="1"></sf-checkbox><sf-checkbox label="Ошибка" invalid size="1"></sf-checkbox>'},
+  'radio-button': {css: ['radio'], js: 'radio', html: '<sf-radio label="Вариант" size="1"></sf-radio><sf-radio label="Выбран" name="r" checked size="1"></sf-radio><sf-radio label="Ошибка" invalid size="1"></sf-radio>'},
   switch: {css: ['switch'], js: 'switch', html: '<sf-switch label="Включено" size="1"></sf-switch>'},
-  textarea: {css: ['textarea'], js: 'textarea', html: '<sf-textarea label="Текст" value="Строка" size="1"></sf-textarea>'},
+  textarea: {css: ['textarea'], js: 'textarea', html: '<sf-textarea label="Текст" value="Строка" size="1"></sf-textarea><sf-textarea label="Ошибка" invalid size="1"></sf-textarea>'},
   toast: {css: ['toast', 'icon-buttons'], js: 'toast', html: '<sf-toast status="info" title="Сохранено" supporting-text="Изменения доступны."></sf-toast>'},
   modal: {css: ['modal', 'icon-buttons', 'buttons'], js: 'modal', html: '<sf-modal id="modal" title="Окно"><p>Текст</p><button slot="footer" type="button">Отмена</button><button slot="footer" type="button">Удалить</button></sf-modal>',
     open: 'document.getElementById("modal").open()'},
@@ -60,7 +62,9 @@ const DRAW = {
   // sf-quantity draws the class markup; the class sheet and the icon buttons
   // its steppers are draw it.
   quantity: {css: ['quantity', 'icon-buttons'], js: 'quantity',
-    html: '<sf-quantity label="Количество" value="3" min="0" max="10" size="1"></sf-quantity>'},
+    html: '<sf-quantity label="Количество" value="3" min="0" max="10" size="1"></sf-quantity><sf-quantity label="Ошибка" value="3" invalid size="1"></sf-quantity>'},
+  // sf-toggle (deprecated, standard 1.3.8 §6): off and checked.
+  toggle: {css: ['toggle'], js: 'toggle', html: '<sf-toggle label="Тумблер"></sf-toggle><sf-toggle label="Включён" checked></sf-toggle>'},
   // The class menu's sheet, drawn by sf-menu as a column and as a row whose
   // panel is open, so the panel's own variables have a part to reach.
   menu: {css: ['menu', 'icons', 'icon-buttons', 'smart/smart/menu/css/menu.css'], js: 'menu',
@@ -72,7 +76,7 @@ const DRAW = {
   // one's, and a character in the cells has a colour to take. Neither has
   // focus, so the current cell is the only one drawn in its own colour.
   verification: {css: ['verification', 'smart/smart/code-input/css/code-input.css'], js: 'code-input',
-    html: '<sf-code-input label="Код" value="12" size="1"></sf-code-input><sf-code-input label="Код" value="12" appearance="filled" size="1"></sf-code-input>'},
+    html: '<sf-code-input label="Код" value="12" size="1"></sf-code-input><sf-code-input label="Код" value="12" appearance="filled" size="1"></sf-code-input><sf-code-input label="Код" value="12" invalid size="1"></sf-code-input>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -81,6 +85,8 @@ const ROLES = {
   background: {properties: ['background-color', 'background-image'], value: 'rgb(1, 2, 3)'},
   color: {properties: ['color'], value: 'rgb(4, 5, 6)'},
   'border-color': {properties: ['border-top-color', 'border-bottom-color'], value: 'rgb(7, 8, 9)'},
+  // A track drawn with an outline (sf-toggle).
+  'outline-color': {properties: ['outline-color'], value: 'rgb(16, 17, 18)'},
   'border-width': {properties: ['border-top-width', 'border-bottom-width'], value: '7px'},
   radius: {properties: ['border-top-left-radius'], value: '13px'},
   'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},

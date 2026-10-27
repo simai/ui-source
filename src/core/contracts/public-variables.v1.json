@@ -581,8 +581,8 @@
         },
         {
           "name": "--sf-radio-button-checked-color",
-          "role": "color",
-          "summary": "The ring and the mark when checked; disabled keeps its own.",
+          "role": "border-color",
+          "summary": "The ring and the mark when checked (the ring's border, the mark's fill); disabled keeps its own.",
           "default": "var(--sf-primary)",
           "state": "checked",
           "since": "2026-10-27"
@@ -1602,8 +1602,8 @@
         },
         {
           "name": "--sf-toggle-border-color",
-          "role": "border-color",
-          "summary": "The track's outline at rest; checked and disabled keep their own.",
+          "role": "outline-color",
+          "summary": "The track's outline at rest (an outline, not a border); checked and disabled keep their own.",
           "default": "var(--sf-outline)",
           "since": "2026-10-27"
         },

@@ -29,7 +29,7 @@ export function renderCodeInputTemplate(context) {
     required,
     disabled,
     readonly,
-    name,
+    controlName,
     value,
     defaultCode,
     mode,
@@ -82,7 +82,7 @@ export function renderCodeInputTemplate(context) {
           spellcheck="false"
           dir="ltr"
           pattern=${pattern}
-          name=${name || nothing}
+          name=${controlName || nothing}
           .defaultValue=${defaultCode}
           .value=${live(value)}
           ?disabled=${disabled}

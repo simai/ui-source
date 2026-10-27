@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit';
 
 export function renderRadioTemplate(context) {
-  const { size, label, description, help, checked, disabled, name, value, invalid, innerForm } =
+  const { size, label, description, help, checked, disabled, controlName, value, invalid, innerForm } =
     context;
 
   const rootClasses = ['sf-radio-button', `sf-radio-button--size-${size}`, 'flex', context.rootClass];
@@ -38,7 +38,7 @@ export function renderRadioTemplate(context) {
       <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
         <input
           type="radio"
-          name=${name || nothing}
+          name=${controlName || nothing}
           form=${innerForm || nothing}
           .value=${value || 'on'}
           .checked=${checked}

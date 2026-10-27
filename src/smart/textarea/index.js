@@ -127,7 +127,7 @@ class SfTextarea extends FormField(TextareaElement) {
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
       // The host is the form control where the browser has ElementInternals,
       // so the textarea carries no name (§17.1 item 6).
-      name: innerControlName(this, props.name),
+      controlName: innerControlName(this, props.name),
       // Resolved names the template reads (contracts/template-context.json).
       type: this.appearance,
       minlength: this.minlength,

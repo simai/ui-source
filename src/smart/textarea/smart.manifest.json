@@ -397,7 +397,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/textarea/index.js",
-        "sha256": "29e5e2d5915d1fcacb189fb73adb36f7c1c5fc1373d87e4db3a77dbba3e71097"
+        "sha256": "165fa2c7df96e7c9c42e88a7128a3d82a46872a6ec1b98835107cebe3d4620d7"
       },
       {
         "path": "src/smart/textarea/rule.js",
@@ -405,7 +405,7 @@
       },
       {
         "path": "src/smart/textarea/js/templates/default.js",
-        "sha256": "43477bdd60f18891163ac7bff291f1536e38687ea10938008e0a381a87e33149"
+        "sha256": "4d092acb372912b3280b03fceabac693fa7b9e0d3d1536e8d64730fccdd44438"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

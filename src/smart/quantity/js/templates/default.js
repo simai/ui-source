@@ -102,10 +102,10 @@ export function renderQuantityTemplate(context) {
         ${renderStepper(context, 1)}
       </span>
 
-      ${context.name
+      ${context.controlName
         // The form gets the number with a point and no grouping, whatever the
         // box shows; the box itself has no name.
-        ? html`<input type="hidden" class="sf-quantity-value" name=${context.name} value=${context.formValue} ?disabled=${context.disabled}>`
+        ? html`<input type="hidden" class="sf-quantity-value" name=${context.controlName} value=${context.formValue} ?disabled=${context.disabled}>`
         : nothing}
 
       ${context.message

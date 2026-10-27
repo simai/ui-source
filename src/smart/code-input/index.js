@@ -413,7 +413,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       readonly: this.readonly,
       // The host is the form control where the browser has ElementInternals,
       // so the input carries no name (§17.1 item 6).
-      name: innerControlName(this, this.name),
+      controlName: innerControlName(this, this.name),
       value,
       defaultValue: this.defaultValue,
       defaultCode,

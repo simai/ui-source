@@ -151,7 +151,7 @@ class SfInput extends FormField(InputElement) {
       maskLazy: this.maskLazy,
       // The host is the form control where the browser has ElementInternals,
       // so the native input carries no name (§17.1 item 6).
-      name: innerControlName(this, props.name),
+      controlName: innerControlName(this, props.name),
       value: hasControlledValue ? props.value : (input ? input.value : this.defaultValue),
       defaultValue: this.defaultValue,
       hasControlledValue,

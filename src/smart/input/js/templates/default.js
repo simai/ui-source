@@ -20,7 +20,7 @@ export function renderInputTemplate(context) {
     value,
     defaultValue,
     hasControlledValue,
-    name,
+    controlName,
     leftIcon,
     rightText,
     hintIcon,
@@ -67,7 +67,7 @@ export function renderInputTemplate(context) {
               style=${rootStyle || nothing}
               type="hidden"
               .value=${inputValue}
-              name=${name || nothing}
+              name=${controlName || nothing}
               ?disabled=${disabled}
               ?readonly=${readonly}
               data-mask=${String(mask)}
@@ -160,7 +160,7 @@ export function renderInputTemplate(context) {
                 placeholder=${shownPlaceholder}
                 .value=${value}
                 .defaultValue=${defaultValue}
-                name=${name || nothing}
+                name=${controlName || nothing}
                 ?disabled=${disabled}
                 ?readonly=${readonly}
                 ?required=${field.required}
@@ -187,7 +187,7 @@ export function renderInputTemplate(context) {
                 placeholder=${shownPlaceholder}
                 .defaultValue=${inputValue}
                 .value=${value}
-                name=${name || nothing}
+                name=${controlName || nothing}
                 ?disabled=${disabled}
                 ?readonly=${readonly}
                 ?required=${field.required}
