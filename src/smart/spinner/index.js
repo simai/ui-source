@@ -1,103 +1,67 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import { bindSpinner, renderSpinner, unbindSpinner } from '../../component/spinner/js/_spinner';
-import { SPINNER_DOTS, SPINNER_DOTS_FILLED, SPINNER_LOOKS } from '../../component/spinner/js/_spinner-draw';
+import { SPINNER_LOOKS } from '../../component/spinner/js/_spinner-draw';
 import { renderSpinnerTemplate } from './js/templates/default';
-import {pageText} from "../../core/js/page-language";
-// Every word this component says, in the languages it ships with. A product
-// adds any other through SF.language.register("sf-spinner", code, words).
-const SPINNER_TEXT = {
-  en: {
-    label: 'Loading…',
-  },
-  ru: {
-    label: 'Загрузка…',
-  },
-};
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
+// sf-spinner from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §4.8): its settings are attributes and properties made by
+// core/js/element-manifest.js, its one word («Загрузка…») is lang/<locale>.json
+// (a product adds a language through SF.language.register("sf-spinner", code,
+// words)), and variant, the pixel geometry and getSpinnerRoot are dated rows
+// of aliases.json.
+const SpinnerElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+  actions: {
+    'refresh-spinner'() {
+      if (this._boundRoot) renderSpinner(this._boundRoot);
+      return { outcome: 'applied' };
+    },
+  },
+});
 
-class SfSpinner extends SfBaseElement {
+// The pixel geometry deprecated since 1.1.0 (journal
+// attribute-spinner-pixel-geometry): no longer settings, still drawn by the
+// shared spinner, which notes each use, until the sweep.
+const PIXEL_GEOMETRY = ['width', 'height', 'stroke-width', 'dot-radius'];
+
+class SfSpinner extends SpinnerElement {
   static get props() {
     return {
-      size: { default: '1' },
-      width: { default: '' },
-      height: { default: '' },
-      label: { default: '' },
+      ...super.props,
       // The axis is called kind, because that is the question it answers.
       // `variant` keeps working: see contracts/public-api-axes.json. Unset, the
       // spinner takes the page's look (data-sf-spinner on html, body or any
       // block; simai/ui-source#11), the arc when the page names none.
       kind: {default: '', values: ['', ...SPINNER_LOOKS], aliases: ['variant']},
-      dots: { default: String(SPINNER_DOTS) },
-      filled: { default: String(SPINNER_DOTS_FILLED) },
-      strokeWidth: { default: '' },
-      dotRadius: { default: '' },
-      infinite: { type: Boolean, default: false },
-      announce: { type: Boolean, default: false },
-      direction: { default: 'clockwise' },
       rootClass: { default: '' },
     };
   }
 
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, ...PIXEL_GEOMETRY])];
+  }
 
   constructor() {
     super();
     this._boundRoot = null;
   }
 
-  get size() {
-    return this.getAttribute('size') || '1';
-  }
-
-  get width() {
-    return this.getAttribute('width') || '';
-  }
-
-  get height() {
-    return this.getAttribute('height') || '';
-  }
-
-  // label="" is a spinner with no words -- the table's, which names its busy
-  // state elsewhere -- and it read as unset, so the page language's «Загрузка…»
-  // appeared under it. Only an absent label takes the dictionary's.
-  get label() {
-    return this.hasAttribute('label') ? this.getAttribute('label') : pageText(SPINNER_TEXT, "label", this);
-  }
-
   get kind() {
     return this.getProp('kind');
   }
 
-  // The legacy name, kept so a consumer reading el.variant still gets an answer.
-  get variant() {
-    return this.kind;
-  }
-
-  get dots() {
-    return this.getAttribute('dots') || String(SPINNER_DOTS);
-  }
-
-  get filled() {
-    return this.getAttribute('filled') || String(SPINNER_DOTS_FILLED);
-  }
-
-  get strokeWidth() {
-    return this.getAttribute('stroke-width') || '';
-  }
-
-  get dotRadius() {
-    return this.getAttribute('dot-radius') || '';
-  }
-
-  get infinite() {
-    return this.getBooleanAttr('infinite', false);
-  }
-
-  get announce() {
-    return this.getBooleanAttr('announce', false);
-  }
-
-  get direction() {
-    return this.getAttribute('direction') || 'clockwise';
+  set kind(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('kind');
+    else this.setAttribute('kind', String(value));
   }
 
   templateContext() {
@@ -105,7 +69,13 @@ class SfSpinner extends SfBaseElement {
 
     return this.createTemplateContext({
       ...props,
+      // label="" is a spinner with no words -- the table's, which names its
+      // busy state elsewhere; only an absent label takes the language file's.
       label: this.label,
+      width: this.getAttribute('width') || '',
+      height: this.getAttribute('height') || '',
+      strokeWidth: this.getAttribute('stroke-width') || '',
+      dotRadius: this.getAttribute('dot-radius') || '',
       component: this,
       rootClass: this.getRootClass(),
     });
@@ -121,7 +91,7 @@ class SfSpinner extends SfBaseElement {
       this._boundRoot = null;
     }
 
-    this._boundRoot = this.getSpinnerRoot();
+    this._boundRoot = this.querySelector('.sf-loader-container');
     if (this._boundRoot) {
       bindSpinner(this._boundRoot);
     }
@@ -140,16 +110,11 @@ class SfSpinner extends SfBaseElement {
     }
   }
 
+  // §4.4: a reader retires; kept until the date and noted on each call.
   getSpinnerRoot() {
+    noteDeprecated({ component: 'sf-spinner', tag: 'sf-spinner', kind: 'action', from: 'getSpinnerRoot', to: null,
+      since: aliases.since, remove_after: aliases.remove_after });
     return this.querySelector('.sf-loader-container');
-  }
-
-  refreshSpinner() {
-    if (this._boundRoot) {
-      renderSpinner(this._boundRoot);
-    }
-
-    return this;
   }
 }
 

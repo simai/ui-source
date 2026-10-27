@@ -39,6 +39,7 @@ const FOLDERS = {
   // Display group B of standard 1.3.8 (2026-10-27): the class sheets the Smart elements draw with.
   'progress-bar': 'progress-bar',
   'progress-scale': 'progress-scale',
+  spinner: 'spinner',
 };
 
 const scss = async (folder) => {

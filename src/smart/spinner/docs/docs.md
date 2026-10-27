@@ -83,8 +83,10 @@ Spinner — единственный индикатор загрузки SIMAI F
 | `3` | 24 | 36 | 1/12 диаметра |
 
 Цвет — текущий цвет текста (`currentColor`): внутри кнопки spinner окрашен
-как её подпись. Другой цвет задаёт публичная переменная `--sf-loader--color` на
-spinner или любом предке. При `prefers-reduced-motion` движения нет ни в одном виде:
+как её подпись. Другой цвет задаёт публичная переменная `--sf-spinner-color`
+(прежняя `--sf-loader--color` тоже читается) на spinner или любом предке.
+Ещё пять публичных переменных: `--sf-spinner-track-color`, `--sf-spinner-size`,
+`--sf-spinner-stroke-width`, `--sf-spinner-gap`, `--sf-spinner-text-color`. При `prefers-reduced-motion` движения нет ни в одном виде:
 остаётся неподвижный кадр — дуга `arc` в те же 30% кольца, дуга `breathing` в
 четверть кольца, комета на месте или точки с выделенными `filled`.
 
@@ -97,7 +99,11 @@ spinner в пикселях. Размер и линию теперь задаё�
 `attribute-spinner-pixel-geometry`): spinner с любым из них рисуется в
 пикселях, как раньше, и попадает в `SF.deprecations.list()`.
 
-## Методы
+## Действия
 
-- `getSpinnerRoot()`;
-- `refreshSpinner()`.
+- `refreshSpinner()` — перерисовать spinner по его настройкам; отвечает
+  `{outcome: 'applied'}`.
+
+`getSpinnerRoot()` читает корень и уходит вместе с чтецами (стандарт 1.3.8
+§4.4): он работает и отмечается в `SF.deprecations.list()` до 2026-12-01.
+`variant` — прежнее имя `kind` до той же даты.

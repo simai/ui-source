@@ -2407,6 +2407,60 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "spinner",
+      "selector": ".sf-loader-container",
+      "variables": [
+        {
+          "name": "--sf-spinner-color",
+          "role": "color",
+          "summary": "The arc, the dots or the comet: the current ink unless set.",
+          "default": "currentColor",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-spinner-track-color",
+          "role": "stroke",
+          "summary": "The ring under the arc.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-spinner-size",
+          "role": "size",
+          "summary": "The drawing's box, the icon of a button of the same size by default.",
+          "default": "var(--sf-text-height-1)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-spinner-stroke-width",
+          "role": "stroke-width",
+          "summary": "The ring's stroke, in units of the 24-unit icon grid.",
+          "default": "2",
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-spinner-gap",
+          "role": "gap",
+          "summary": "Space between the drawing and its words.",
+          "default": "var(--sf-space-1/2)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-spinner-text-color",
+          "role": "color",
+          "summary": "The words under the drawing.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-27"
+        }
+      ]
     }
   ]
 }

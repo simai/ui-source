@@ -66,7 +66,9 @@ test('both modals take the loading words from the page language, as a named stat
 });
 
 test('the spinner says the same English as the modals, with a true ellipsis', () => {
-  assert.match(read('src/smart/spinner/index.js'), /label: 'Loading…',/u);
+  // sf-spinner's word is its language file (standard 1.3.8 §11).
+  assert.equal(JSON.parse(read('src/smart/spinner/lang/en.json')).runtime.label, 'Loading…');
+  assert.equal(JSON.parse(read('src/smart/spinner/lang/ru.json')).runtime.label, 'Загрузка…');
   assert.match(read('src/component/spinner/js/_spinner.js'), /en: \{ label: 'Loading…' \}, ru: \{ label: 'Загрузка…' \}/u);
 });
 

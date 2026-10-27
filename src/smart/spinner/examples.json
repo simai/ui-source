@@ -1,0 +1,70 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Спиннер",
+      "settings": {
+        "label": "Загрузка данных",
+        "size": "2",
+        "infinite": true
+      },
+      "expect": {
+        "name": "Загрузка данных"
+      },
+      "from": "studio.fixture.json"
+    },
+    {
+      "name": "announced",
+      "title": "Объявляет загрузку",
+      "settings": {
+        "label": "Загрузка данных",
+        "announce": true
+      },
+      "expect": {
+        "role": "status",
+        "name": "Загрузка данных"
+      }
+    },
+    {
+      "name": "no-words",
+      "title": "Без слов",
+      "settings": {
+        "label": ""
+      },
+      "expect": {
+        "role": null,
+        "aria-hidden": true
+      }
+    },
+    {
+      "name": "dots",
+      "title": "Точки",
+      "settings": {
+        "kind": "dots",
+        "dots": 8,
+        "filled": 3
+      },
+      "expect": {
+        "name": "Загрузка…"
+      }
+    },
+    {
+      "name": "refresh",
+      "title": "Перерисовать",
+      "settings": {
+        "kind": "comet"
+      },
+      "script": [
+        {
+          "act": "refresh-spinner"
+        }
+      ],
+      "expect": {
+        "returns": {
+          "outcome": "applied"
+        }
+      },
+      "from": "studio.scenario.json"
+    }
+  ]
+}

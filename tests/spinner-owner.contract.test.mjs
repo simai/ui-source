@@ -26,7 +26,9 @@ test('Spinner owns optional polite status semantics without entering focus order
   assert.match(ordinary, /setAttribute\('role', 'status'\)/);
   assert.match(ordinary, /setAttribute\('aria-live', 'polite'\)/);
   assert.match(ordinary, /toggleAttribute\('aria-hidden', !hasLabel\)/);
-  assert.match(smart, /announce: \{ type: Boolean, default: false \}/);
+  // Standard 1.3.8: announce is a boolean setting of component.json, off by default.
+  assert.match(smart, /elementFromManifest\(manifest, \{/);
+  assert.deepEqual(JSON.parse(await read('src/smart/spinner/component.json')).settings.announce, {type: 'boolean', default: false});
   assert.match(template, /data-announce=\$\{String\(!!context\.announce\)\}/);
   assert.doesNotMatch(template, /tabindex=/);
 });
@@ -76,12 +78,13 @@ test('Spinner takes its geometry from the ladder and its colour from the ink', a
   const draw = await read('src/component/spinner/js/_spinner-draw.js');
 
   for (const step of ['1\\/3', '1\\/2', '1', '2', '3']) {
-    assert.ok(base.includes(`.sf-loader-container.sf-loader--size-${step} {\n  --sf-loader-svg-width: var(--sf-text-height-${step});`), `step ${step} is the button icon of that step`);
+    // The public --sf-spinner-size first, the step's icon its fallback (standard 1.3.8 §6).
+    assert.ok(base.includes(`.sf-loader-container.sf-loader--size-${step} {\n  --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-${step}));`), `step ${step} is the button icon of that step`);
   }
-  assert.match(base, /--sf-loader-stroke-width: 2;/, 'the regular icon stroke on the 24-unit grid');
+  assert.match(base, /--sf-loader-stroke-width: var\(--sf-spinner-stroke-width, 2\);/, 'the regular icon stroke on the 24-unit grid');
   assert.match(draw, /export const SPINNER_GRID = 24;/);
   assert.match(draw, /export const SPINNER_STROKE = 2;/);
-  assert.match(base, /color: var\(--sf-loader--color, currentColor\);/);
+  assert.match(base, /color: var\(--sf-spinner-color, var\(--sf-loader--color, currentColor\)\);/);
   assert.doesNotMatch(base, /--sf-loader--color\s*:/, 'the Framework never sets the colour variable');
   assert.doesNotMatch(base, /(?<![\w-])(?:\d*\.)?\d+(?:px|rem|em)\b/, 'dimensions on system tokens');
   for (const attribute of ['data-width', 'data-height', 'data-stroke-width', 'data-dot-radius']) {

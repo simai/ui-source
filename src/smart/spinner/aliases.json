@@ -1,0 +1,72 @@
+{
+  "$comment": "Dated aliases of sf-spinner for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+  "component": "sf-spinner",
+  "since": "2026-10-27",
+  "remove_after": "2026-12-01",
+  "aliases": [
+    {
+      "from": "variant",
+      "to": "kind",
+      "kind": "setting",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "section": "the axis's old name (contracts/public-api-axes.json)"
+    },
+    {
+      "from": "width",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+      "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+    },
+    {
+      "from": "height",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+      "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+    },
+    {
+      "from": "stroke-width",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+      "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+    },
+    {
+      "from": "dot-radius",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+      "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+    },
+    {
+      "from": "getSpinnerRoot",
+      "to": null,
+      "kind": "action",
+      "component": "sf-spinner",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "retired",
+      "section": "§4.4",
+      "note": "a reader retires; the method stays until the date and notes each call"
+    }
+  ]
+}
