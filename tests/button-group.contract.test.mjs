@@ -41,7 +41,9 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.match(component, /ORIENTED_ROLES\.has\(role\)/);
   assert.match(component, /removeAttribute\('aria-orientation'\)/);
   assert.doesNotMatch(component, /localStorage|fetch\(|XMLHttpRequest/);
-  assert.match(smart, /emitComponentEvent\('button-group-change'/);
+  // change is sent once through sfEmit; the shim sends sf-button-group-change
+  // after it (standard 1.3.8 §16.20, aliases.json).
+  assert.match(smart, /dispatchAliased\(this, 'change', \{ detail \}\)/);
   assert.match(smart, /ArrowLeft/);
   assert.match(smart, /ArrowRight/);
   assert.match(smart, /ArrowUp/);
@@ -116,9 +118,11 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.equal(manifest.accessibility.role, 'radiogroup');
   assert.ok(manifest.events.change.canonical);
   assert.doesNotMatch(template, /role="tab|tablist|aria-selected/);
-  assert.match(smart, /appearance: \{ default: 'default', values: \['default', 'segmented'\] \}/);
-  assert.match(smart, /plate: \{ default: 'scheme', values: \['scheme', 'raised'\] \}/);
-  assert.match(smart, /attribute: 'full-width', type: Boolean/);
+  // The settings come from the component's manifest (standard 1.3.8 §4).
+  const bgManifest = JSON.parse(await source('src/smart/button-group/component.json'));
+  assert.deepEqual(bgManifest.settings.appearance, {type: 'enum', values: ['default', 'segmented'], default: 'default'});
+  assert.deepEqual(bgManifest.settings.plate, {type: 'enum', values: ['scheme', 'raised'], default: 'scheme'});
+  assert.deepEqual(bgManifest.settings['full-width'], {type: 'boolean', default: false});
   assert.match(smart, /:scope > sf-button, :scope > button/);
   assert.ok(axes.components.some((entry) => entry.component === 'button-group' && entry.axis === 'appearance'));
   // Segments are buttons of the same size and text classes, all of one look, so
@@ -185,13 +189,16 @@ test('button group takes a radius, a form name and a theme switch', async () => 
   assert.deepEqual(inputs.radius.enum, ['', 'default', 'square', 'rounded']);
   assert.equal(inputs.name.type, 'string');
   assert.equal(inputs['theme-switch'].type, 'boolean');
-  assert.match(smart, /radius: \{ default: '', values: \['', 'default', 'square', 'rounded'\] \}/);
+  assert.deepEqual(JSON.parse(await source('src/smart/button-group/component.json')).settings.radius, {type: 'enum', values: ['', 'default', 'square', 'rounded'], default: ''});
   assert.match(template, /sf-button-group--radius-\$\{context\.radius\}/);
-  // The same mechanism as sf-dropdown: a hidden input outside the radiogroup,
+  // Where the browser has ElementInternals the host is the form control
+  // (standard 1.3.8 §17.1, through the manifest element); without them, the
+  // same mechanism as sf-dropdown: a hidden input outside the radiogroup,
   // disabled with the group, and the shared reset helper.
-  assert.match(template, /<input class="sf-button-group-input" type="hidden" name=\$\{context\.name\} value=\$\{context\.value \|\| ''\} \?disabled=\$\{context\.disabled\}>/);
+  assert.match(template, /<input class="sf-button-group-input" type="hidden" name=\$\{context\.hiddenName\} value=\$\{context\.value \|\| ''\} \?disabled=\$\{context\.disabled\}>/);
   assert.match(smart, /import \{ bindFormReset \} from '\.\.\/\.\.\/component\/form-reset-helper'/);
-  assert.doesNotMatch(smart, /attachInternals|formAssociated/);
+  assert.match(smart, /hiddenName: this\.sfInternals \? '' : this\.name/);
+  assert.match(smart, /class SfButtonGroup extends FormField\(ButtonGroupElement\)/);
   // The theme switch reads the preference, sets it through the Loader and
   // follows sf-theme-change; it never drives .sf-theme-button.
   assert.match(smart, /SF\?\.Loader\?\.themePreference/);
@@ -199,7 +206,10 @@ test('button group takes a radius, a form name and a theme switch', async () => 
   assert.match(smart, /addEventListener\('sf-theme-change'/);
   assert.match(smart, /removeEventListener\('sf-theme-change'/);
   assert.doesNotMatch(smart, /sf-theme-button/);
-  for (const word of ['Как в системе', 'Светлая', 'Тёмная', 'brightness_auto', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
+  // The words are the language file's (standard 1.3.8 §11), the icons the code's.
+  const bgRu = await source('src/smart/button-group/lang/ru.json');
+  for (const word of ['Как в системе', 'Светлая', 'Тёмная']) assert.ok(bgRu.includes(word), word);
+  for (const word of ['brightness_auto', 'light_mode', 'dark_mode']) assert.ok(smart.includes(word), word);
   assert.match(docs, /## Переключатель темы/);
   assert.match(docs, /theme-switch/);
   assert.match(docs, /## В форме/);

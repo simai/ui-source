@@ -180,7 +180,13 @@ try {
     check('Tab lands on the selected item, one tab stop', tabbed.focused === 'light' && tabbed.groups.one.stops.join() === 'light', tabbed);
     check('ArrowRight chooses dark and keeps focus on it', right.focused === 'dark' && right.preference === 'dark' && right.html.join() === 'theme-dark', right);
     check('Home chooses system', home.focused === 'system' && home.preference === 'system' && home.groups.two.value === 'system', home);
-    check('clear() does not empty a theme switch', await page.evaluate(() => document.getElementById('one').clear().value) === 'system');
+    // clear() answers an outcome (standard 1.3.8 §4.4): a theme preference is
+    // never empty, so it is refused and the value stays.
+    check('clear() does not empty a theme switch', await page.evaluate(() => {
+      const group = document.getElementById('one');
+      const outcome = group.clear();
+      return outcome.outcome === 'refused' && outcome.reason === 'theme' && group.value === 'system';
+    }));
     await page.context().close();
   }
 

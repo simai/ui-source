@@ -1,0 +1,8 @@
+[
+  {"name": "reference", "title": "Режим отображения", "settings": {"aria-label": "Режим отображения", "items": [{"value": "list", "label": "Список", "icon": "list"}, {"value": "grid", "label": "Сетка", "icon": "grid_view"}, {"value": "map", "label": "Карта", "icon": "map"}], "value": "list"}, "expect": {"values": {"value": "list"}}},
+  {"name": "segmented", "title": "Сегменты", "settings": {"aria-label": "Период", "appearance": "segmented", "items": [{"value": "day", "label": "День"}, {"value": "week", "label": "Неделя", "count": "3"}, {"value": "month", "label": "Месяц"}], "value": "week"}, "expect": {"values": {"value": "week"}}},
+  {"name": "form", "title": "В форме", "settings": {"aria-label": "Доставка", "name": "delivery", "items": [{"value": "courier", "label": "Курьер"}, {"value": "pickup", "label": "Самовывоз"}], "value": "pickup"}, "expect": {"values": {"value": "pickup"}, "form": {"delivery": "pickup"}}},
+  {"name": "vertical", "title": "Вертикально", "settings": {"aria-label": "Раздел", "orientation": "vertical", "items": [{"value": "a", "label": "Общее"}, {"value": "b", "label": "Доступ"}], "value": "a"}, "expect": {"values": {"value": "a"}}},
+  {"name": "theme-switch", "title": "Переключатель темы", "settings": {"theme-switch": true, "appearance": "segmented"}, "expect": {"name": "Тема"}},
+  {"name": "disabled", "title": "Недоступна", "settings": {"aria-label": "Режим", "items": [{"value": "a", "label": "А"}, {"value": "b", "label": "Б"}], "value": "a", "disabled": true}, "expect": {"values": {"value": "a"}}}
+]

@@ -16,6 +16,7 @@ const COMPONENTS = {
   'country-code': {class: 'SfCountryCode', sheets: 'src/component/country-code/scss'},
   color: {class: 'SfColor', sheets: 'src/smart/color/js/templates'},
   'range-slider': {class: 'SfRangeSlider', sheets: 'src/component/range-slider/scss'},
+  'button-group': {class: 'SfButtonGroup', sheets: 'src/component/button-group/scss'},
 };
 
 const sheets = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url))
@@ -134,4 +135,18 @@ test('sf-range-slider: prefix is prefix-text; step is a number or null; disabled
   assert.equal(manifest.form, undefined, 'not a form control in this version');
   const {rows} = readAliasTable(json('src/smart/range-slider/aliases.json'), {tag: 'sf-range-slider'});
   assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change']]);
+});
+
+test('sf-button-group: select and clear are the manifest\'s actions; change once; the host is the form control (§4.4, §8, §17.1)', () => {
+  const source = read('src/smart/button-group/index.js');
+  assert.match(source, /class SfButtonGroup extends FormField\(ButtonGroupElement\)/u);
+  assert.doesNotMatch(source, /\n {2}select\(nextValue\) \{|\n {2}clear\(\) \{/u, 'the actions are generated from the manifest');
+  assert.match(source, /actions: \{\n {4}select\(\{ value: nextValue \} = \{\}\) \{/u);
+  assert.doesNotMatch(source, /THEME_SWITCH_TEXT|Как в системе/u);
+  assert.doesNotMatch(source, /new CustomEvent\('change'/u);
+  assert.match(source, /hiddenName: this\.sfInternals \? '' : this\.name/u);
+  const manifest = json('src/smart/button-group/component.json');
+  assert.deepEqual(Object.keys(manifest.actions), ['select', 'clear']);
+  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'value', 'label', 'icon', 'count', 'icon-only', 'loading', 'disabled']);
+  assert.equal(json('src/smart/button-group/lang/ru.json').runtime.system, 'Как в системе');
 });

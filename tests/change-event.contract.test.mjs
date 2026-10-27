@@ -32,7 +32,9 @@ test('change event: one canonical name for every value control', async () => {
   }
 
   const group = await read('src/smart/button-group/index.js');
-  assert.match(group, /this\.emitComponentEvent\('button-group-change', detail\);\n    this\.dispatchEvent\(new CustomEvent\('change', \{/);
+  // Once, under its native name; the shim sends sf-button-group-change after
+  // it (standard 1.3.8 §16.20, aliases.json).
+  assert.match(group, /emitValueChange\(detail\) \{\n    dispatchAliased\(this, 'change', \{ detail \}\);\n  \}/);
   assert.equal(group.match(/this\.emitValueChange\(\{/g)?.length, 2, 'select and clear');
   const slider = await read('src/component/range-slider/js/_range_slider.js');
   assert.match(slider, /if \(!root\._sfSettingValue\) \{\n      dispatchSliderEvent\(root, 'change', unencoded, \{ handle \}, 'change'\);/);

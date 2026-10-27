@@ -1,0 +1,9 @@
+{
+  "title": "Button group",
+  "runtime": {
+    "dark": "Dark",
+    "group": "Theme",
+    "light": "Light",
+    "system": "System"
+  }
+}

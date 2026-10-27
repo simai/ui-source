@@ -450,7 +450,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-group/index.js",
-        "sha256": "2d9fcd8743768b019510b440f716345b46ca65ea069718845e6497b7de9e73bd"
+        "sha256": "3903ad70268306fe155a0ffadcf7c0382361553642dc955cd4e096aad7296bd2"
       }
     ],
     "generated_runtime": []

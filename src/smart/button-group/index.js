@@ -1,15 +1,17 @@
 import SfBaseElement from '../../core/js/smart-base';
+import { elementFromManifest } from '../../core/js/element-manifest';
+import { dispatchAliased } from '../../core/js/aliases';
 import { renderButtonGroupTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { bindFormReset } from '../../component/form-reset-helper';
-import { pageText } from '../../core/js/page-language';
+import { FormField } from '../helpers/form-field';
+import manifest from './component.json';
+import aliases from './aliases.json';
+import en from './lang/en.json';
+import ru from './lang/ru.json';
 
-// The theme switch's own words: the three Loader preferences, and the group's
-// name when the page gives none.
-const THEME_SWITCH_TEXT = {
-  en: { group: 'Theme', system: 'System', light: 'Light', dark: 'Dark' },
-  ru: { group: 'Тема', system: 'Как в системе', light: 'Светлая', dark: 'Тёмная' },
-};
+// The theme switch's own words -- the three Loader preferences, and the
+// group's name when the page gives none -- are lang/<locale>.json runtime.
 const THEME_PREFERENCES = ['system', 'light', 'dark'];
 const THEME_ICONS = { system: 'brightness_auto', light: 'light_mode', dark: 'dark_mode' };
 
@@ -82,32 +84,56 @@ function normalizeItems(items = []) {
     .filter(Boolean);
 }
 
-class SfButtonGroup extends SfBaseElement {
+// sf-button-group from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §4.4, §8, §16.20, §17.1): the settings are attributes and
+// properties made by core/js/element-manifest.js, select and clear are its
+// actions and answer an outcome, change is sent once through sfEmit (the shim
+// sends sf-button-group-change after it), and the host is the form control
+// through ElementInternals.
+const ButtonGroupElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: { en, ru },
+  source: 'ru',
+  aliases,
+  actions: {
+    select({ value: nextValue } = {}) {
+      const value = String(nextValue ?? '');
+      const item = this.normalizedItems.find((candidate) => candidate.value === value);
+      if (!item) return 'unknown';
+      if (item.disabled || this.disabled) return 'disabled';
+      if (value === this.value) return 'unchanged';
+      const previous = this.value;
+      // A theme switch sets the Loader's preference first, so a listener of
+      // change already finds the page in the theme it chose; a Loader that
+      // cannot change the theme (absent, or SF_BOOT_CONFIG.theme false)
+      // selects nothing.
+      if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) return 'theme';
+      this.value = value;
+      this.emitValueChange({ previous, value, item });
+      return 'applied';
+    },
+    clear() {
+      // A theme preference is never empty.
+      if (this.themeSwitch) return 'theme';
+      if (this.disabled) return 'disabled';
+      if (!this.value) return 'unchanged';
+      const previous = this.value;
+      this.value = '';
+      this.emitValueChange({ previous, value: '', item: null });
+      return 'applied';
+    },
+  },
+});
+
+class SfButtonGroup extends FormField(ButtonGroupElement) {
   static get props() {
     return {
+      ...super.props,
       templateName: { attribute: 'template', default: 'default' },
+      // The attribute takes JSON or value::label::flags|...; the property a list.
       items: { type: Array, default: [], parser: parseItems },
-      value: { default: '' },
-      // A form field name: the group submits its value with its form.
-      name: { default: '' },
-      // The theme switch: the group draws its own three items (system, light,
-      // dark), selects the Loader's theme preference and sets it on change.
-      themeSwitch: { attribute: 'theme-switch', type: Boolean, default: false },
-      size: { default: '1', values: ['1/3', '1/2', '1', '2', '3'] },
+      // No default: control-spacing reads the attribute and tightness.
       spacing: {type: String, default: null},
-      tightness: { default: '', values: ['', 'low', 'high', 'highest'] },
-      scheme: { default: 'primary', values: ['primary', 'secondary', 'on-surface'] },
-      // How the group looks. segmented: a sunken track with borderless segments
-      // and a plate under the selected one; the selection model is the same.
-      appearance: { default: 'default', values: ['default', 'segmented'] },
-      // The selected segment's plate in the segmented appearance: the scheme's
-      // fill, or a raised neutral surface.
-      plate: { default: 'scheme', values: ['scheme', 'raised'] },
-      fullWidth: { attribute: 'full-width', type: Boolean, default: false },
-      // The corner radius, as on sf-button: empty is the UI radius.
-      radius: { default: '', values: ['', 'default', 'square', 'rounded'] },
-      orientation: { default: 'horizontal', values: ['horizontal', 'vertical'] },
-      disabled: { type: Boolean, default: false },
       ariaLabel: { attribute: 'aria-label', default: '' },
       rootClass: { attribute: 'root-class', default: '' },
     };
@@ -125,17 +151,25 @@ class SfButtonGroup extends SfBaseElement {
     });
   }
 
-  get themeSwitch() {
-    return this.getBooleanAttr('theme-switch', false);
-  }
-
   get themeItems() {
     return THEME_PREFERENCES.map((value) => ({
       value,
-      label: pageText(THEME_SWITCH_TEXT, value, this),
+      label: this.sfWord(value),
       icon: THEME_ICONS[value],
       iconOnly: true,
     }));
+  }
+
+  // items is a list setting (§4.2) whose attribute keeps its JSON and
+  // value::label::flags forms: read through the prop's parser, and a list set
+  // as a property stays the instance's own, as it was before the manifest.
+  get items() {
+    return this.getProp('items');
+  }
+
+  set items(value) {
+    Object.defineProperty(this, 'items', {configurable: true, enumerable: true, writable: true, value});
+    this.requestComponentUpdate?.('items');
   }
 
   get normalizedItems() {
@@ -155,17 +189,23 @@ class SfButtonGroup extends SfBaseElement {
   set value(nextValue) {
     if (nextValue === null || typeof nextValue === 'undefined' || nextValue === '') {
       this.removeAttribute('value');
-      return;
+    } else {
+      this.setAttribute('value', String(nextValue));
     }
-    this.setAttribute('value', String(nextValue));
+    this.fieldSyncForm();
   }
 
-  get disabled() {
-    return this.getBooleanAttr('disabled', false);
+  // What the form gets (§17.1): the selected value, nothing while disabled.
+  sfFormValue() {
+    if (this.disabled) return null;
+    return this.value;
   }
 
-  get name() {
-    return this.getAttribute('name') || '';
+  // form.reset(): the value the group was written with, without events; a
+  // theme switch keeps the preference (§17.1 item 4).
+  fieldReset() {
+    if (this.themeSwitch) return;
+    this.value = this._resetValue;
   }
 
   connectedCallback() {
@@ -205,12 +245,17 @@ class SfButtonGroup extends SfBaseElement {
   templateContext() {
     return this.createTemplateContext({
       ...this.getPropsContext(),
-      ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? pageText(THEME_SWITCH_TEXT, 'group', this) : ''),
+      ariaLabel: this.getAttribute('aria-label') || (this.themeSwitch ? this.sfWord('group') : ''),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}),
       component: this,
-      items: this.normalizedItems,
+      // The entries drawn: normalised, numbered and flagged; items stays the
+      // setting as given (the template-context probe compares the two).
+      entries: this.normalizedItems,
       value: this.value,
       disabled: this.disabled,
+      // The host is the form control where the browser has ElementInternals;
+      // the hidden input is drawn only without them (§17.1 item 6).
+      hiddenName: this.sfInternals ? '' : this.name,
     });
   }
 
@@ -218,49 +263,24 @@ class SfButtonGroup extends SfBaseElement {
     return renderButtonGroupTemplate(this.templateContext());
   }
 
-  // Every form value control reports a committed change as `change` on its host.
-  // `sf-button-group-change` is the legacy name, still emitted with the same
-  // detail; see contracts/public-api-axes.json.
+  // Every form value control reports a committed change as `change` on its
+  // host, once, under its native name and without the element in its detail
+  // (§8, §17.3); the shim sends the legacy sf-button-group-change after it with
+  // the same detail (aliases.json). sfEmit would derive sf-button-group-change
+  // from a verb that carries a detail.
   emitValueChange(detail) {
-    this.emitComponentEvent('button-group-change', detail);
-    this.dispatchEvent(new CustomEvent('change', {
-      bubbles: true,
-      composed: true,
-      detail: { component: this, ...detail },
-    }));
-  }
-
-  select(nextValue) {
-    const value = String(nextValue ?? '');
-    const item = this.normalizedItems.find((candidate) => candidate.value === value);
-
-    if (!item || item.disabled || this.disabled || value === this.value) {
-      return this;
-    }
-    const previous = this.value;
-    // A theme switch sets the Loader's preference first, so a listener of
-    // change already finds the page in the theme it chose; a Loader that cannot
-    // change the theme (absent, or SF_BOOT_CONFIG.theme false) selects nothing.
-    if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) {
-      return this;
-    }
-    this.value = value;
-    this.emitValueChange({
-      previous,
-      value,
-      item,
-    });
-    return this;
+    dispatchAliased(this, 'change', { detail });
   }
 
   afterRender() {
     this.syncButtonSemantics();
     this.bindReset();
+    this.fieldSyncForm();
   }
 
-  // Form participation as every Smart field does it: a hidden input carries
-  // the name and value (and is disabled with the group), and a form reset
-  // brings back the value the group was written with.
+  // Without ElementInternals the hidden input carries the name and value (and
+  // is disabled with the group), and a form reset brings back the value the
+  // group was written with.
   bindReset() {
     const input = this.querySelector(':scope > .sf-button-group-input');
     if (this._resetInput === input) return;
@@ -287,20 +307,6 @@ class SfButtonGroup extends SfBaseElement {
       button.setAttribute('aria-checked', selected ? 'true' : 'false');
       button.tabIndex = item === tabStop ? 0 : -1;
     });
-  }
-
-  clear() {
-    // A theme preference is never empty.
-    if (!this.value || this.disabled || this.themeSwitch) return this;
-
-    const previous = this.value;
-    this.value = '';
-    this.emitValueChange({
-      previous,
-      value: '',
-      item: null,
-    });
-    return this;
   }
 
   focus(options) {

@@ -20,7 +20,7 @@ function renderItem(item, index, context) {
       spacing=${context.spacing && context.spacing !== 'normal' ? context.spacing : nothing}
       appearance=${selected ? 'default' : 'outline'}
       scheme=${selected ? context.scheme : 'on-surface'}
-      segment=${segmentFor(index, context.items.length)}
+      segment=${segmentFor(index, context.entries.length)}
       data-sf-button-group-value=${item.value}
       aria-label=${item.ariaLabel || nothing}
       class=${selected ? 'active' : nothing}
@@ -112,10 +112,10 @@ export function renderButtonGroupTemplate(context) {
       aria-orientation=${context.orientation}
       data-value=${context.value || ''}
     >
-      ${context.items.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
+      ${context.entries.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
     </div>
-    ${context.name
-      ? html`<input class="sf-button-group-input" type="hidden" name=${context.name} value=${context.value || ''} ?disabled=${context.disabled}>`
+    ${context.hiddenName
+      ? html`<input class="sf-button-group-input" type="hidden" name=${context.hiddenName} value=${context.value || ''} ?disabled=${context.disabled}>`
       : nothing}
   `;
 }
