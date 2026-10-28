@@ -2878,6 +2878,18 @@ SFLoaderPlugin.prototype.shouldSkipPluginCss = function (
   return false;
 };
 
+// Whether every tag of a Smart rule is already defined: a page that loads a
+// part's bundle itself (Larena's admin: the table and the data view as
+// <script defer> in <head>) had the Loader fetch and run the same part's
+// bundle again -- 190 KB gzipped at fast-4G, the table's and the data view's
+// code run twice, on the admin's list (stand 25). Its script is not asked for
+// again; its sheets and relations are, as before.
+function smartTagsDefined(rule) {
+  const tags = Array.isArray(rule?.tags) ? rule.tags : [];
+  return tags.length > 0 && typeof customElements !== 'undefined'
+      && tags.every((tag) => Boolean(customElements.get(String(tag).toLowerCase())));
+}
+
 SFLoaderPlugin.prototype.loadPlugin = function (
     pluginName,
     smart,
@@ -2898,7 +2910,8 @@ SFLoaderPlugin.prototype.loadPlugin = function (
   const skipJs =
       typeof ruleMeta?.js === 'undefined' ||
       (module && module.js === false) ||
-      ruleMeta?.js === false;
+      ruleMeta?.js === false ||
+      ((module === 'smart' || smart) && smartTagsDefined(ruleMeta));
   const skipCss = this.shouldSkipPluginCss(pluginName, module);
   const jsFile = skipJs
       ? null
@@ -3380,7 +3393,8 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
           ),
           skipJs:
               typeof relationMainRule?.js === 'undefined' ||
-              relationMainRule?.js === false,
+              relationMainRule?.js === false ||
+              (relationMainSmart && smartTagsDefined(relationMainRule)),
         };
         // The element that waits on this relation is fetched now too (the
         // same reason as in loadRelationPlugins: a data view waiting on its
