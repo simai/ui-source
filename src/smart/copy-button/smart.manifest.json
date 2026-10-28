@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.copy-button",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -280,7 +280,7 @@
       },
       {
         "path": "src/smart/copy-button/scss/_smart__copy_button.scss",
-        "sha256": "9bfe86eb0f4f8d7b8309cfddd4d3a527d70b1a86be1651f33c7aaa5451b07039"
+        "sha256": "161b82c334b985461453b47c562699b35c63c4fdc9c35bcfeead66d4ad427bd1"
       },
       {
         "path": "src/smart/copy-button/rule.js",

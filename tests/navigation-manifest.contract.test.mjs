@@ -27,7 +27,9 @@ test('every navigation component is made from its component.json, language files
     assert.ok(existsSync(new URL(`../src/smart/${folder}/${manifest.docs}`, import.meta.url)), `${folder}: docs ${manifest.docs}`);
     assert.ok(!('x-todo' in manifest), `${folder}: every x-todo is decided`);
     assert.ok(Array.isArray(manifest['x-decisions']) && manifest['x-decisions'].length, `${folder}: x-decisions`);
-    const variables = Object.keys(manifest['css-variables'] ?? {}).length;
+    // The look a page may set; a published box (x-published, standard 1.3.10
+    // §5.4: sf-pagination's --sf-pagination-block-size-<step>) is read, not set.
+    const variables = Object.values(manifest['css-variables'] ?? {}).filter((one) => !one['x-published']).length;
     assert.ok(variables >= 5 && variables <= 10, `${folder}: 5–10 public variables (§6)`);
     const en = json(`src/smart/${folder}/lang/en.json`);
     const ru = json(`src/smart/${folder}/lang/ru.json`);

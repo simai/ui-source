@@ -104,6 +104,40 @@ Public variables: `--sf-pagination-background-color`, `--sf-pagination-color`,
 `--sf-pagination-page-radius`, `--sf-pagination-current-background-color`,
 `--sf-pagination-current-color`.
 
+## The row's box
+
+So that a page can hold the room of a list and its pages before they draw (no
+shift when they arrive), the pagination publishes the height of its page row
+on `:root`, from the same tokens it draws the row with. One value per step of
+the size ladder (`size="1/2"` and `size="1"`; in CSS the slash is escaped:
+`1\/2`):
+
+| Variable | What it is | 1/2 | 1 |
+|---|---|---|---|
+| `--sf-pagination-block-size-<step>` | the page row on one line | 65px | 73px |
+
+The row is the control height of its step, the row's padding above and below
+it and the line under it:
+`2 × --sf-space-1 + --sf-ui-<step>--control-height + 1px`. The row is never
+shorter (a row of text alone, a count and no pages, is as tall as one with
+the arrows). The numbers are those of the default theme on a wide screen
+(`--sf-space-1` is 16px there and smaller on a phone); a page reads the
+variables, not the numbers. A row that wraps in a narrow column, and the
+band of bulk actions while rows are marked, add to it.
+
+A data view of 20 rows of a table and its pages under it:
+
+```css
+.list-room {
+  min-block-size: calc(var(--sf-table-toolbar-block-size-1\/2) + var(--sf-table-toolbar-gap)
+    + var(--sf-table-head-block-size-1\/2) + 20 * var(--sf-table-row-block-size-1\/2)
+    + var(--sf-data-view-gap, var(--sf-space-3)) + var(--sf-pagination-block-size-1\/2));
+}
+```
+
+These two are outputs a page reads, not a look it sets; the look variables
+are the nine above.
+
 Focus is shown with the shared `:focus-visible` treatment, including forced
 colors. Disabled actions are not operable, ellipses are not focusable, and
 reduced-motion removes state transitions.

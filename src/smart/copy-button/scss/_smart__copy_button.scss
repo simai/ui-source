@@ -10,6 +10,16 @@ sf-copy-button {
 .sf-copy-button {
   display: inline-flex;
   align-items: center;
+  /* The control's place in a line of text is its middle, not its glyph's
+     baseline. The host is display: contents (the variable above never reached
+     a box), so this wrapper is what sits in the line, and aligned by its
+     baseline it took the icon's: an sf-icon is font-size 0 until the icon
+     runtime marks it loaded (sf-icon-loaded), so the button rode 1 px lower,
+     and the line under it grew by 1 px, until then. When the runtime got to it
+     depended on the page's load -- the full first-paint run moved it, a run of
+     the component alone did not. The middle depends on the box and the text
+     around it only. */
+  vertical-align: var(--sf-copy-button-vertical-align, middle);
 }
 
 .sf-copy-button-status,
