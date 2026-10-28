@@ -46,6 +46,63 @@
       ]
     },
     {
+      "id": "smart.chat-composer",
+      "element": "sf-chat-composer",
+      "rule_name": "cl-chat-composer",
+      "folder": "chat-composer",
+      "requires": [
+        "component.icon-buttons",
+        "component.textarea",
+        "smart.icon",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.chat-interlocutor",
+      "element": "sf-chat-interlocutor",
+      "rule_name": "cl-chat-interlocutor",
+      "folder": "chat-interlocutor",
+      "requires": [
+        "smart.context-menu",
+        "smart.icon",
+        "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.chat-message",
+      "element": "sf-chat-message",
+      "rule_name": "cl-chat-message",
+      "folder": "chat-message",
+      "requires": [
+        "component.buttons",
+        "component.icon-buttons",
+        "component.inputs",
+        "smart.change-confirm",
+        "smart.icon"
+      ]
+    },
+    {
+      "id": "smart.chat-window",
+      "element": "sf-chat-window",
+      "rule_name": "cl-chat-window",
+      "folder": "chat-window",
+      "requires": [
+        "component.buttons",
+        "component.icon-buttons",
+        "component.inputs",
+        "smart.change-confirm",
+        "smart.chat-composer",
+        "smart.chat-interlocutor",
+        "smart.chat-message",
+        "smart.context-menu",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.message-log",
+        "smart.progress-bar",
+        "smart.thread-list"
+      ]
+    },
+    {
       "id": "smart.data-view",
       "element": "sf-table",
       "rule_name": "cl-table",
