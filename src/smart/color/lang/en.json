@@ -7,6 +7,8 @@
     "inherited": "inherited",
     "reset": "Reset to inherited",
     "described": "Inherited: {value}",
-    "value-missing": "Choose a colour."
+    "value-missing": "Choose a colour.",
+    "theme": "Theme colour",
+    "theme-reset": "Use the original theme colour"
   }
 }

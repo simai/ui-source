@@ -106,6 +106,27 @@
     border-color: var(--sf-outline);
   }
 
+  /* variant theme: an icon button that sits in a row of buttons, so the host
+     is inline rather than a block field. The native input lies under the
+     button for the picker to anchor at; the button takes every press. */
+  sf-color:has(> .sf-color--theme) {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .sf-color--theme {
+    display: inline-flex;
+  }
+
+  .sf-color-theme {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .sf-color--theme .sf-color-input {
+    pointer-events: none;
+  }
+
   @media (forced-colors: active) {
     .sf-color-chip,
     .sf-color-preset {

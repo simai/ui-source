@@ -73,6 +73,19 @@
           "value": "#1a7f37"
         }
       }
+    },
+    {
+      "name": "theme",
+      "title": "Цвет темы",
+      "settings": {
+        "variant": "theme",
+        "clearable": true
+      },
+      "expect": {
+        "values": {
+          "value": ""
+        }
+      }
     }
   ],
   "pages": [
