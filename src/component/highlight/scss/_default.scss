@@ -48,13 +48,6 @@
   /* Wrapped lines (the head's wrap toggle, or data-wrap="true"): long lines
      break inside the block instead of scrolling sideways. The toggle stands
      with copy at the end of the head. */
-  .sf-highlight--wrap pre,
-  .sf-highlight--wrap code,
-  .sf-highlight--wrap .sf-code-line__content {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
-
   .sf-highlight__wrap-toggle {
     margin-inline-start: auto;
   }
@@ -121,6 +114,15 @@
     padding: 0;
     white-space: pre;
     background: transparent;
+  }
+
+  /* After the code surface's own rule, which sizes the code to its longest
+     line (max-content) and keeps it on one: wrapped, the code is as wide as
+     the block and its lines break. */
+  .sf-highlight--wrap :is(pre, .sf-code-surface__scroll code, code, .sf-code-line__content) {
+    min-inline-size: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 
   li :is(.sf-highlight, .source) {
