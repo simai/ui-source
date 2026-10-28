@@ -292,7 +292,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "0e1cc3d56fb436f1cba2fafef0cd3627ad91a844",
+    "source_revision": "6a9c2b4be8830445e16ef8d01a347591dd18263a",
     "source_artifacts": [
       {
         "path": "src/smart/site-header/index.js",
@@ -304,7 +304,7 @@
       },
       {
         "path": "src/smart/site-header/scss/_smart__site_header.scss",
-        "sha256": "d58bfe0f28ad6310cef873c41d4392b98f1a0dd3dce2cdd91626e7e8ae7cfa9f"
+        "sha256": "a212f78b5e86c87c290d25f8ac8f26123935893a5ba1605b9f48d9c9445529fd"
       },
       {
         "path": "src/smart/site-header/rule.js",
