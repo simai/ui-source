@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-scale",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Progress Scale",
   "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "kind": "smart",
@@ -33,7 +33,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "size": {
         "type": "string",
@@ -49,17 +58,19 @@
       "line": {
         "type": "string",
         "default": "",
+        "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height.",
         "enum": [
           "",
           "1/2",
           "1",
           "2"
-        ],
-        "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height."
+        ]
       },
       "value": {
-        "type": "string",
-        "default": "0",
+        "type": "number",
+        "default": 0,
+        "minimum": 0,
+        "maximum": 100,
         "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
       },
       "show-text": {
@@ -69,20 +80,24 @@
       "status": {
         "type": "string",
         "default": "neutral",
+        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral.",
         "enum": [
           "neutral",
           "info",
           "success",
           "warning",
           "error"
-        ],
-        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
+        ]
       },
       "label": {
         "type": "string",
         "default": ""
       },
       "value-text": {
+        "type": "string",
+        "default": ""
+      },
+      "aria-label": {
         "type": "string",
         "default": ""
       },
@@ -104,6 +119,26 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "chunk": {
+      "summary": "The action chunk.",
+      "arguments": [
+        {
+          "name": "done",
+          "schema": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "total",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
     "getProgress": {
       "summary": "Returns the value as a number clamped to 0..100; a non-numeric value reads as 0.",
       "arguments": [],
@@ -239,7 +274,7 @@
       },
       {
         "path": "src/smart/progress-scale/rule.js",
-        "sha256": "8a9ab151e4473f9a67ce33ed68e3cb8ce0d440b16e0f155a6dfe53971cd0e97a"
+        "sha256": "f4200a61d3f1d131029fc2d680595d78208d71b214bbeef35db299dcaea0a530"
       },
       {
         "path": "src/smart/progress-scale/docs/docs.md",

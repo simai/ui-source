@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -15,7 +15,8 @@
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Button size token."
     },
     "appearance": {
       "type": "enum",
@@ -26,7 +27,8 @@
         "link",
         "surface"
       ],
-      "default": "default"
+      "default": "default",
+      "summary": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01)."
     },
     "scheme": {
       "type": "enum",
@@ -35,7 +37,8 @@
         "secondary",
         "on-surface"
       ],
-      "default": "primary"
+      "default": "primary",
+      "summary": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "type": "enum",
@@ -43,7 +46,8 @@
         "",
         "error"
       ],
-      "default": ""
+      "default": "",
+      "summary": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone."
     },
     "text-position": {
       "type": "string",
@@ -51,7 +55,8 @@
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Visible button text when no text slot is provided."
     },
     "segment": {
       "type": "string",
@@ -59,15 +64,42 @@
     },
     "icon": {
       "type": "icon",
-      "default": ""
+      "default": "",
+      "summary": "Single icon name shortcut.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
     "icon-start": {
       "type": "icon",
-      "default": ""
+      "default": "",
+      "summary": "Logical start icon name.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
     "icon-end": {
       "type": "icon",
-      "default": ""
+      "default": "",
+      "summary": "Logical end icon name.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
     "icon-position": {
       "type": "enum",
@@ -75,7 +107,8 @@
         "start",
         "end"
       ],
-      "default": "start"
+      "default": "start",
+      "summary": "Placement for the single icon shortcut."
     },
     "spacing": {
       "type": "enum",
@@ -85,7 +118,8 @@
         "comfortable",
         "spacious"
       ],
-      "default": "normal"
+      "default": "normal",
+      "summary": "Semantic internal spacing profile."
     },
     "radius": {
       "type": "enum",
@@ -95,15 +129,18 @@
         "square",
         "rounded"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Border radius modifier."
     },
     "loading": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Disabled state flag."
     },
     "native-type": {
       "type": "enum",
@@ -112,7 +149,8 @@
         "submit",
         "reset"
       ],
-      "default": "button"
+      "default": "button",
+      "summary": "Native button type attribute."
     },
     "expanded": {
       "type": "boolean",
@@ -132,6 +170,28 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "buttons"
+    },
+    {
+      "name": "pointer-events/default"
+    },
+    {
+      "name": "text-align/default"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "spinner",
+      "lazy": true,
+      "$comment": [
+        "The spinner a loading button shows: its slot is drawn by the button sheet,",
+        "the motion by the spinner's, fetched after the page is ready."
+      ]
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -184,6 +244,123 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-button for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "type",
+        "to": "appearance",
+        "kind": "setting",
+        "section": "§16 item 20, contracts/public-api-axes.json",
+        "note": "the legacy axis name; the shim maps the attribute and the property",
+        "summary": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "icon-left",
+        "to": "icon-start",
+        "kind": "setting",
+        "section": "§16 item 20",
+        "note": "journal attribute-icon-left-right-to-start-end; icon-start wins when both are given",
+        "summary": "Compatibility alias for icon-start."
+      },
+      {
+        "from": "icon-right",
+        "to": "icon-end",
+        "kind": "setting",
+        "section": "§16 item 20",
+        "note": "journal attribute-icon-left-right-to-start-end; icon-end wins when both are given",
+        "summary": "Compatibility alias for icon-end."
+      },
+      {
+        "from": "tightness",
+        "to": "spacing",
+        "kind": "setting",
+        "section": "§16 item 20",
+        "note": "journal attribute-tightness-to-spacing; its words are spacing's value aliases below, spacing wins when both are given",
+        "summary": "Compatibility alias for spacing.",
+        "values": [
+          "low",
+          "high",
+          "highest"
+        ],
+        "default": ""
+      },
+      {
+        "from": "ghost",
+        "to": "link",
+        "kind": "value",
+        "setting": "appearance",
+        "section": "§16 item 20",
+        "note": "journal value-button-ghost-to-link"
+      },
+      {
+        "from": "danger",
+        "to": "error",
+        "kind": "value",
+        "setting": "status",
+        "section": "§16 item 20",
+        "note": "journal value-status-danger-critical-to-error"
+      },
+      {
+        "from": "critical",
+        "to": "error",
+        "kind": "value",
+        "setting": "status",
+        "section": "§16 item 20",
+        "note": "journal value-status-danger-critical-to-error"
+      },
+      {
+        "from": "low",
+        "to": "compact",
+        "kind": "value",
+        "setting": "spacing",
+        "section": "§16 item 20",
+        "note": "tightness's word, journal attribute-tightness-to-spacing"
+      },
+      {
+        "from": "high",
+        "to": "comfortable",
+        "kind": "value",
+        "setting": "spacing",
+        "section": "§16 item 20",
+        "note": "tightness's word, journal attribute-tightness-to-spacing"
+      },
+      {
+        "from": "highest",
+        "to": "spacious",
+        "kind": "value",
+        "setting": "spacing",
+        "section": "§16 item 20",
+        "note": "tightness's word, journal attribute-tightness-to-spacing"
+      },
+      {
+        "from": "left",
+        "to": "start",
+        "kind": "value",
+        "setting": "icon-position",
+        "section": "§16 item 20",
+        "note": "the physical name the template read as start"
+      },
+      {
+        "from": "right",
+        "to": "end",
+        "kind": "value",
+        "setting": "icon-position",
+        "section": "§16 item 20",
+        "note": "the physical name the template read as end"
+      }
+    ]
+  },
   "x-summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "x-source": {
     "package": "framework",
@@ -197,14 +374,74 @@
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
+  "x-decisions": [
+    "a11y-role: button, the native <button> the template draws (the host is display:contents and takes no role). The name is the text (the setting, a text child or the text slot), else the host's aria-label, which the base passes to the native button (§3.1, §4.8).",
+    "key-effects: Tab reach. Enter and Space are the native button's own activation, not an effect of the closed list; they send press like a click, and probe.json drives Enter (gate 16).",
+    "press: the event the stands wrote as the 1.3.x target (x-target), sf-button-press with an empty detail, sent once per activation of the native button (a click, Enter, Space) and never while it is disabled or loading. The native click still bubbles as before; press is what a rule hears as <role>.press (§8, §9).",
+    "expanded: an optional boolean the stands added (x-target): present, it writes aria-expanded on the native button; absent, nothing is said. A page that wrote aria-expanded on the host keeps it: the host forwards it as before.",
+    "legacy names: type -> appearance, icon-left -> icon-start, icon-right -> icon-end and tightness -> spacing leave the settings and are dated setting aliases (aliases.json, until 2026-12-01; journal attribute-icon-left-right-to-start-end, attribute-tightness-to-spacing). The legacy values are dated value aliases: appearance ghost -> link (journal value-button-ghost-to-link), status danger and critical -> error (value-status-danger-critical-to-error), spacing low/high/highest -> compact/comfortable/spacious (tightness's words), icon-position left/right -> start/end.",
+    "icon-start and icon-end keep their own getters: an attribute written empty means «no icon here» and suppresses the icon shortcut, an absent one lets it through (null and \"\" differ), which a generated string setting cannot say.",
+    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift). The host stays display:contents: geometry lives on > button.",
+    "examples: examples.json from studio.fixture.json (Продолжить, default primary) plus tonal, outline, link and surface, the error status, icons at the start and the end, an icon-only button with aria-label, loading, disabled and the sizes.",
+    "css-variables: the seven public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
+    "folder: buttons takes the tag's name, button (§3, §21, §16 item 16); the loader bundle is cl-button, cl-buttons is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/buttons/js/buttons.js a forwarding script until 2026-12-01 (change journal path-smart-buttons-to-button). The registry id follows the folder: smart.button (smart.buttons is its dated alias in the same record).",
+    "version 1.1.0: renamed members behind dated aliases and two added members (press, expanded) are a minor (§4.10, §16.20).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.1.4: a text attribute, even an empty one, is the label: emptying it empties the button instead of falling back to a text-child label (simai.main, a toolbar clearing its labels on a narrow screen, 2026-10-28)."
+  ],
+  "x-rule": {
+    "$comment-after": [
+      "The bundle's former name cl-buttons (the folder was `buttons` until standard",
+      "1.3.8 §3, §21 gave it the tag's name) is not a rule here: a rule of type",
+      "smart is a Smart component to the registry, and this one has no element. The",
+      "Loader forwards it to cl-button from src/core/contracts/",
+      "smart-rule-forwards.v1.json until 2026-12-01."
+    ]
+  },
+  "x-registry": {
+    "tags": [
+      "buttons"
+    ],
+    "composition-declarative": {
+      "standard": "simai.composition.document.v1",
+      "type": "smart.button",
+      "mode": "leaf",
+      "profiles": [
+        "ui-layout"
       ],
-      "network_policy": "deny"
+      "props": [
+        "template",
+        "size",
+        "appearance",
+        "spacing",
+        "scheme",
+        "status",
+        "text",
+        "icon",
+        "icon-position",
+        "loading",
+        "disabled",
+        "native-type",
+        "aria-label"
+      ],
+      "presentation": {
+        "views": [
+          "default"
+        ],
+        "presets": [],
+        "modifiers": []
+      },
+      "slots": {},
+      "renderer": {
+        "kind": "custom-element",
+        "name": "sf-button"
+      },
+      "assets": [
+        "smart/button"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -214,6 +451,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -227,7 +472,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-button when the interface needs the buttons behavior.",
@@ -247,24 +496,140 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "methods": {
+      "onClick": {
+        "summary": "Adds a listener for click on the host. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFocus": {
+        "summary": "Adds a listener for focusin on the host. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBlur": {
+        "summary": "Adds a listener for focusout on the host. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onMouseEnter": {
+        "summary": "Adds a listener for mouseenter on the host. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onMouseLeave": {
+        "summary": "Adds a listener for mouseleave on the host. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setDisabled": {
+        "summary": "Sets the disabled attribute when nextValue is truthy and removes it otherwise. Returns the element.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
+    },
+    "inputs": {
+      "root-class": {
+        "description": "Extra classes applied to the inner button element."
+      },
+      "aria-label": {
+        "description": "Accessible label for icon-only or custom buttons."
+      }
     }
-  },
-  "x-decisions": [
-    "a11y-role: button, the native <button> the template draws (the host is display:contents and takes no role). The name is the text (the setting, a text child or the text slot), else the host's aria-label, which the base passes to the native button (§3.1, §4.8).",
-    "key-effects: Tab reach. Enter and Space are the native button's own activation, not an effect of the closed list; they send press like a click, and probe.json drives Enter (gate 16).",
-    "press: the event the stands wrote as the 1.3.x target (x-target), sf-button-press with an empty detail, sent once per activation of the native button (a click, Enter, Space) and never while it is disabled or loading. The native click still bubbles as before; press is what a rule hears as <role>.press (§8, §9).",
-    "expanded: an optional boolean the stands added (x-target): present, it writes aria-expanded on the native button; absent, nothing is said. A page that wrote aria-expanded on the host keeps it: the host forwards it as before.",
-    "legacy names: type -> appearance, icon-left -> icon-start, icon-right -> icon-end and tightness -> spacing leave the settings and are dated setting aliases (aliases.json, until 2026-12-01; journal attribute-icon-left-right-to-start-end, attribute-tightness-to-spacing). The legacy values are dated value aliases: appearance ghost -> link (journal value-button-ghost-to-link), status danger and critical -> error (value-status-danger-critical-to-error), spacing low/high/highest -> compact/comfortable/spacious (tightness's words), icon-position left/right -> start/end.",
-    "icon-start and icon-end keep their own getters: an attribute written empty means «no icon here» and suppresses the icon shortcut, an absent one lets it through (null and \"\" differ), which a generated string setting cannot say.",
-    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift). The host stays display:contents: geometry lives on > button.",
-    "examples: examples.json from studio.fixture.json (Продолжить, default primary) plus tonal, outline, link and surface, the error status, icons at the start and the end, an icon-only button with aria-label, loading, disabled and the sizes.",
-    "css-variables: the seven public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
-    "folder: buttons takes the tag's name, button (§3, §21, §16 item 16); the loader bundle is cl-button, cl-buttons is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/buttons/js/buttons.js a forwarding script until 2026-12-01 (change journal path-smart-buttons-to-button). The registry id follows the folder: smart.button (smart.buttons is its dated alias in the same record).",
-    "version 1.1.0: renamed members behind dated aliases and two added members (press, expanded) are a minor (§4.10, §16.20).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.4: a text attribute, even an empty one, is the label: emptying it empties the button instead of falling back to a text-child label (simai.main, a toolbar clearing its labels on a narrow screen, 2026-10-28)."
-  ]
+  }
 }

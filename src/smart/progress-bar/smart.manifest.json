@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-bar",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Progress Bar",
   "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
   "kind": "smart",
@@ -33,7 +33,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "size": {
         "type": "string",
@@ -47,8 +56,10 @@
         ]
       },
       "value": {
-        "type": "string",
-        "default": "0",
+        "type": "number",
+        "default": 0,
+        "minimum": 0,
+        "maximum": 100,
         "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
       },
       "text-position": {
@@ -64,20 +75,24 @@
       "status": {
         "type": "string",
         "default": "neutral",
+        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral.",
         "enum": [
           "neutral",
           "info",
           "success",
           "warning",
           "error"
-        ],
-        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
+        ]
       },
       "label": {
         "type": "string",
         "default": ""
       },
       "value-text": {
+        "type": "string",
+        "default": ""
+      },
+      "aria-label": {
         "type": "string",
         "default": ""
       },
@@ -99,6 +114,26 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "chunk": {
+      "summary": "The action chunk.",
+      "arguments": [
+        {
+          "name": "done",
+          "schema": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "total",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
     "getProgress": {
       "summary": "Returns the value attribute as a number (0 when absent); it is not clamped.",
       "arguments": [],
@@ -248,7 +283,7 @@
       },
       {
         "path": "src/smart/progress-bar/rule.js",
-        "sha256": "9383b6680135d38c42c1fc636bb52ab4b55a110750c7936d1eaacd1a699cde84"
+        "sha256": "c082ca94d31adc33faaef6448ba38d9efb21c6848d59511d0026d84e88562eb4"
       },
       {
         "path": "src/smart/progress-bar/docs/docs.md",

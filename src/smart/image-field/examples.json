@@ -1,7 +1,500 @@
-[
-  {"name": "reference", "title": "Логотип", "settings": {"label": "Логотип", "name": "logo", "hint": "PNG или SVG, до 1 МБ"}, "expect": {"values": {"value": null}}},
-  {"name": "stored", "title": "Сохранённое изображение", "settings": {"label": "Логотип", "name": "logo", "value": "{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}"}, "expect": {"values": {"value": {"value": "42", "label": "logo.png"}}, "form": {"logo": "42"}}},
-  {"name": "required", "title": "Обязательное", "settings": {"label": "Обложка", "name": "cover", "required": true}, "expect": {"validity": {"valueMissing": true}}},
-  {"name": "error", "title": "С ошибкой", "settings": {"label": "Логотип", "invalid": true, "error-message": "Файл больше 1 МБ"}, "expect": {"message": "Файл больше 1 МБ"}},
-  {"name": "readonly", "title": "Только просмотр", "settings": {"label": "Логотип", "readonly": true, "value": "/upload/logo.png"}, "expect": {"values": {"value": {"href": "/upload/logo.png"}}}}
-]
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Логотип",
+      "settings": {
+        "label": "Логотип",
+        "name": "logo",
+        "hint": "PNG или SVG, до 1 МБ"
+      },
+      "expect": {
+        "values": {
+          "value": null
+        }
+      },
+      "studio": {
+        "title": "image field reference",
+        "scenario": {}
+      }
+    },
+    {
+      "name": "stored",
+      "title": "Сохранённое изображение",
+      "settings": {
+        "label": "Логотип",
+        "name": "logo",
+        "value": "{\"value\":\"42\",\"label\":\"logo.png\",\"mime\":\"image/png\",\"size\":2048,\"href\":\"/upload/logo.png\"}"
+      },
+      "expect": {
+        "values": {
+          "value": {
+            "value": "42",
+            "label": "logo.png"
+          }
+        },
+        "form": {
+          "logo": "42"
+        }
+      }
+    },
+    {
+      "name": "required",
+      "title": "Обязательное",
+      "settings": {
+        "label": "Обложка",
+        "name": "cover",
+        "required": true
+      },
+      "expect": {
+        "validity": {
+          "valueMissing": true
+        }
+      }
+    },
+    {
+      "name": "error",
+      "title": "С ошибкой",
+      "settings": {
+        "label": "Логотип",
+        "invalid": true,
+        "error-message": "Файл больше 1 МБ"
+      },
+      "expect": {
+        "message": "Файл больше 1 МБ"
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Только просмотр",
+      "settings": {
+        "label": "Логотип",
+        "readonly": true,
+        "value": "/upload/logo.png"
+      },
+      "expect": {
+        "values": {
+          "value": {
+            "href": "/upload/logo.png"
+          }
+        }
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-image-field against component.json (standard simai.smart-component 1.3.8 §4.4, §5.3, §7.1.1, §8, §16.20, §17.1, §17.2; vocabulary 1.1.5 §9.1)",
+        "component": "sf-image-field",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change",
+            "sf-image-field-attach",
+            "sf-image-field:select",
+            "sf-image-field-detach",
+            "sf-image-field:remove",
+            "sf-image-field-rejected",
+            "sf-image-field:reject"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "a-chosen-file-is-attached-and-submitted",
+            "covers": "events input, change, attach {files} then the old sf-image-field:select (dated); form.submits the File from the host (§17.1)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "user": "files:.sf-image-field-input=logo.png|image/png",
+            "expect": {
+              "events": [
+                {
+                  "type": "input",
+                  "source": "input",
+                  "name": "logo",
+                  "file": {
+                    "name": "logo.png"
+                  }
+                },
+                {
+                  "type": "change",
+                  "source": "input",
+                  "file": {
+                    "name": "logo.png"
+                  }
+                },
+                {
+                  "type": "sf-image-field-attach",
+                  "files": [
+                    {
+                      "name": "logo.png"
+                    }
+                  ],
+                  "file": {
+                    "name": "logo.png"
+                  },
+                  "source": "input",
+                  "name": "logo"
+                },
+                {
+                  "type": "sf-image-field:select",
+                  "files": [
+                    {
+                      "name": "logo.png"
+                    }
+                  ],
+                  "file": {
+                    "name": "logo.png"
+                  },
+                  "source": "input"
+                }
+              ],
+              "deprecations": [
+                {
+                  "component": "sf-image-field",
+                  "kind": "event",
+                  "from": "sf-image-field:select",
+                  "to": "sf-image-field-attach",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "formData": {
+                "logo": {
+                  "name": "logo.png"
+                }
+              },
+              "evaluate": {
+                "el.querySelector('.sf-image-field-input').hasAttribute('name')": false,
+                "[...form.elements].includes(el)": true
+              }
+            }
+          },
+          {
+            "id": "a-refused-file-is-rejected",
+            "covers": "events.rejected, then the old sf-image-field:reject (dated)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "user": "files:.sf-image-field-input=brief.pdf|application/pdf",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-image-field-rejected",
+                  "files": [
+                    {
+                      "name": "brief.pdf"
+                    }
+                  ],
+                  "accept": "image/*",
+                  "source": "input"
+                },
+                {
+                  "type": "sf-image-field:reject",
+                  "files": [
+                    {
+                      "name": "brief.pdf"
+                    }
+                  ],
+                  "accept": "image/*",
+                  "source": "input"
+                }
+              ],
+              "value": null,
+              "deprecations": [
+                {
+                  "from": "sf-image-field:reject",
+                  "to": "sf-image-field-rejected",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "remove-detaches",
+            "covers": "events.detach, then the old sf-image-field:remove (dated); the form gets nothing",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+            "user": "click:sf-button.sf-image-field-remove button",
+            "expect": {
+              "value": null,
+              "events": [
+                {
+                  "type": "input",
+                  "value": null,
+                  "source": "remove"
+                },
+                {
+                  "type": "change",
+                  "value": null,
+                  "source": "remove"
+                },
+                {
+                  "type": "sf-image-field-detach",
+                  "value": {
+                    "value": "42"
+                  },
+                  "name": "logo"
+                },
+                {
+                  "type": "sf-image-field:remove",
+                  "value": {
+                    "value": "42"
+                  },
+                  "name": "logo"
+                }
+              ],
+              "deprecations": [
+                {
+                  "from": "sf-image-field:remove",
+                  "to": "sf-image-field-detach"
+                }
+              ],
+              "formData": {
+                "logo": null
+              }
+            }
+          },
+          {
+            "id": "a-stored-image-submits-its-id",
+            "covers": "form.submits: the stored image's id",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "logo": "42"
+              }
+            }
+          },
+          {
+            "id": "required-blocks-submit",
+            "covers": "form.required, validity value-missing (§17.2)",
+            "field": "<sf-image-field label=\"Обложка\" name=\"cover\" required></sf-image-field>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "checkValidity": false,
+              "validity": {
+                "host": {
+                  "valueMissing": true,
+                  "valid": false
+                }
+              },
+              "evaluate": {
+                "el.validationMessage": "Выберите изображение."
+              }
+            }
+          },
+          {
+            "id": "set-error-blocks-submit",
+            "covers": "actions.set-error {message} sets custom-error (§17.2): the form does not submit",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+            "action": {
+              "name": "set-error",
+              "with": {
+                "message": "Файл больше 1 МБ"
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "host": {
+                "attributes": {
+                  "invalid": "",
+                  "error-message": "Файл больше 1 МБ"
+                }
+              },
+              "checkValidity": false,
+              "validity": {
+                "host": {
+                  "customError": true
+                }
+              },
+              "evaluate": {
+                "el.textContent.includes('Файл больше 1 МБ')": true
+              }
+            }
+          },
+          {
+            "id": "error-is-invalid",
+            "covers": "aliases.json setting error -> invalid (§17.2), dated",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+            "setting": {
+              "name": "error",
+              "value": true
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "invalid": ""
+                },
+                "properties": {
+                  "invalid": true
+                }
+              },
+              "deprecations": [
+                {
+                  "from": "error",
+                  "to": "invalid",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "nothing-while-disabled",
+            "covers": "form.disabled (§17.1 item 3)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" disabled></sf-image-field>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "logo": null
+              }
+            }
+          },
+          {
+            "id": "read-only-still-submits",
+            "covers": "form.readonly (§17.1 item 3)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"/upload/logo.png\" readonly></sf-image-field>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "logo": "/upload/logo.png"
+              }
+            }
+          },
+          {
+            "id": "form-reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4): no events",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-image-field>",
+            "given": [
+              {
+                "user": "click:sf-button.sf-image-field-remove button"
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "events": [],
+              "value": {
+                "value": "42"
+              },
+              "formData": {
+                "logo": "42"
+              }
+            }
+          },
+          {
+            "id": "enter-opens-the-dialog",
+            "covers": "keyboard.host Enter open",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "given": [
+              {
+                "user": "focus:sf-button.sf-image-field-choose button"
+              }
+            ],
+            "user": "keyboard:Enter",
+            "expect": {
+              "fileChooser": true
+            }
+          },
+          {
+            "id": "space-opens-the-dialog",
+            "covers": "keyboard.host Space open",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "given": [
+              {
+                "user": "focus:sf-button.sf-image-field-choose button"
+              }
+            ],
+            "user": "keyboard:Space",
+            "expect": {
+              "fileChooser": true
+            }
+          },
+          {
+            "id": "choose-answers-an-outcome",
+            "covers": "actions.choose applied (§4.4)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "action": {
+              "name": "choose"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "fileChooser": true
+            }
+          },
+          {
+            "id": "a-file-held-over-is-a-host-state",
+            "covers": "host-states data-dragged-over (§5.3)",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'a.png', {type: 'image/png'})); el.querySelector('.sf-image-field-well').dispatchEvent(new DragEvent('dragover', {bubbles: true, cancelable: true, dataTransfer: transfer}));",
+            "expect": {
+              "host": {
+                "attributes": {
+                  "data-dragged-over": "true"
+                }
+              }
+            }
+          },
+          {
+            "id": "a-drop-attaches",
+            "covers": "a dropped file: attach {source: drop}; the host state ends",
+            "field": "<sf-image-field label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'drop.png', {type: 'image/png'})); const well = el.querySelector('.sf-image-field-well'); well.dispatchEvent(new DragEvent('dragover', {bubbles: true, cancelable: true, dataTransfer: transfer})); well.dispatchEvent(new DragEvent('drop', {bubbles: true, cancelable: true, dataTransfer: transfer}));",
+            "expect": {
+              "host": {
+                "attributes": {
+                  "data-dragged-over": null
+                }
+              },
+              "events": [
+                {
+                  "type": "input",
+                  "source": "drop"
+                },
+                {
+                  "type": "change",
+                  "source": "drop"
+                },
+                {
+                  "type": "sf-image-field-attach",
+                  "source": "drop",
+                  "files": [
+                    {
+                      "name": "drop.png"
+                    }
+                  ]
+                },
+                {
+                  "type": "sf-image-field:select",
+                  "source": "drop"
+                }
+              ],
+              "formData": {
+                "logo": {
+                  "name": "drop.png"
+                }
+              }
+            }
+          },
+          {
+            "id": "ids-come-from-the-instance-path",
+            "covers": "§7.1.1: no counter in the ids the template writes",
+            "field": "<sf-image-field id=\"brand-logo\" label=\"Логотип\" name=\"logo\"></sf-image-field>",
+            "script": "return [...el.querySelectorAll('[id]')].every((node) => node.id.startsWith('page-brand-logo'));",
+            "expect": {
+              "returns": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

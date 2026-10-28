@@ -16,9 +16,48 @@
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
-    "default": [
+    "aria-label": [
       "component/country-code/css/country-code.min.css",
       "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "disabled": [
+      "component/country-code/css/country-code.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "reference": [
+      "component/country-code/css/country-code.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "required": [
+      "component/country-code/css/country-code.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "single-country": [
+      "component/country-code/css/country-code.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",

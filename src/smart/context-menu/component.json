@@ -2,7 +2,7 @@
   "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.context-menu",
   "tag": "sf-context-menu",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -49,11 +49,13 @@
         "inline-end-start",
         "inline-end-end"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
     },
     "tooltip": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
     },
     "text": {
       "type": "string",
@@ -154,15 +156,18 @@
           "type": "list",
           "optional": true
         }
-      }
+      },
+      "summary": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
     },
     "popup": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Not drawn until opened through openFor(). A menu without it is drawn in place, as before."
     },
     "search": {
       "type": "object",
-      "optional": true
+      "optional": true,
+      "summary": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
     },
     "size": {
       "type": "enum",
@@ -170,40 +175,58 @@
         "1/2",
         "1"
       ],
-      "default": "1/2"
+      "default": "1/2",
+      "summary": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size."
     },
     "width": {
       "type": "string",
-      "default": "content"
+      "default": "content",
+      "summary": "How wide openFor() opens the menu: content (its longest line, between --sf-context-menu--min-inline-size and --sf-context-menu--max-inline-size), trigger (exactly the control that opened it; a long line ends in an ellipsis) or a CSS length. openFor(anchor, {width}) overrides it."
     },
     "tabs": {
       "type": "string",
       "default": "",
-      "x-note": "\"A|B\" in the attribute; the property also takes a list [{id, label}] (the component's own accessor), one member with one type (§4.2)"
+      "x-note": "\"A|B\" in the attribute; the property also takes a list [{id, label}] (the component's own accessor), one member with one type (§4.2)",
+      "summary": "A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
     },
     "active-tab": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The chosen tab's id or index; the host renders that tab's rows into the content slot."
     },
     "closable": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "A close button at the end of the panel's head."
     }
   },
   "values": {},
   "events": {
     "select": {
       "carries": {
-        "id": "string",
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
         "entry": "object",
-        "checked": "boolean",
-        "group": "string"
+        "checked": {
+          "type": "boolean",
+          "nullable": true,
+          "summary": "The state a check or radio row asks for; null for a plain item."
+        },
+        "group": {
+          "type": "string",
+          "nullable": true,
+          "summary": "The choice row's id when an option of it was chosen."
+        }
       },
-      "cancelable": true
+      "cancelable": true,
+      "summary": "An entry was chosen, at any depth. Cancel it to keep the menu open."
     },
     "open": {
       "carries": {},
-      "cancelable": true
+      "cancelable": true,
+      "summary": "Opened through openFor(). Bubbles and is composed; carries no detail."
     },
     "opened": {
       "carries": {}
@@ -222,7 +245,8 @@
         },
         "unsaved": "boolean"
       },
-      "cancelable": true
+      "cancelable": true,
+      "summary": "A menu opened through openFor() was closed. Bubbles and is composed; carries no detail."
     },
     "closed": {
       "carries": {
@@ -242,14 +266,16 @@
       "carries": {
         "query": "string"
       },
-      "own-verb": true
+      "own-verb": true,
+      "summary": "The query of a search the host answers (search.remote)."
     },
     "tab": {
       "carries": {
         "id": "string",
         "index": "number"
       },
-      "own-verb": true
+      "own-verb": true,
+      "summary": "A tab of the panel was chosen; the host shows its rows."
     }
   },
   "actions": {
@@ -258,7 +284,28 @@
         "anchor": "object",
         "options": {
           "type": "object",
-          "optional": true
+          "optional": true,
+          "schema": {
+            "properties": {
+              "side": {
+                "type": "string",
+                "default": "block-end"
+              },
+              "align": {
+                "type": "string",
+                "default": "start"
+              },
+              "focus": {
+                "type": "string",
+                "enum": [
+                  "first",
+                  "last",
+                  "none"
+                ],
+                "default": "first"
+              }
+            }
+          }
         }
       },
       "waits": true,
@@ -269,7 +316,12 @@
         "unavailable",
         "cancelled"
       ],
-      "emits": "open"
+      "emits": "open",
+      "summary": "Open beside an element: top layer, anchored by SF.Position with flip and shift, focus on the first item (or 'last', or 'none'). The menu then owns its lifecycle: Escape, Tab, a press outside and a choice close it and return the focus -- to where it was, or to the anchor's own control when it was nowhere.",
+      "x-returns": {
+        "type": "Promise<boolean>",
+        "description": "Resolves once the menu is rendered and open: whether it opened."
+      }
     },
     "toggle-for": {
       "with": {
@@ -286,7 +338,12 @@
         "refused",
         "unavailable",
         "cancelled"
-      ]
+      ],
+      "summary": "Close when already open for this anchor, otherwise openFor().",
+      "x-returns": {
+        "type": "Promise<boolean>",
+        "description": "Resolves to whether the menu is open afterwards."
+      }
     },
     "close": {
       "with": {
@@ -305,7 +362,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close this menu and any submenu.",
+      "x-returns": {
+        "type": "boolean",
+        "description": "Whether it was open."
+      }
     },
     "choose-tab": {
       "with": {
@@ -314,13 +376,18 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Choose a tab by index and emit sf-context-menu-tab."
     },
     "request-close": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close an owned menu; for a menu its host placed, emit sf-context-menu-close for the host to close it.",
+      "x-returns": {
+        "type": "boolean"
+      }
     }
   },
   "layer": {
@@ -345,6 +412,26 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "context-menu"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-tabs",
+      "lazy": true,
+      "$comment": [
+        "The tabs and the close button draw only a panel's head: fetched after the",
+        "page is ready, not held up front for every menu."
+      ]
+    },
+    {
+      "name": "cl-icon-button",
+      "lazy": true
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -408,6 +495,66 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-context-menu for the shim (core/js/aliases.js, standard §16 item 20). mode: host-attribute (no shim), manifest-only (the DOM name does not change; its meaning does), retired (no new name; kept until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "role",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute (menu by default); no shim"
+      },
+      {
+        "from": "sf-context-menu-open",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§19.3, vocabulary §4",
+        "note": "the same DOM name is the cancelable request now (sent before opening); the fact is sf-context-menu-opened",
+        "summary": "Opened through openFor(). Bubbles and is composed; carries no detail."
+      },
+      {
+        "from": "sf-context-menu-close",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§19.3, vocabulary §4",
+        "note": "the same DOM name is the cancelable request now ({reason, unsaved}, sent before closing); the fact is sf-context-menu-closed",
+        "summary": "A menu opened through openFor() was closed. Bubbles and is composed; carries no detail."
+      },
+      {
+        "from": "position",
+        "to": null,
+        "kind": "setting",
+        "mode": "retired",
+        "section": "compatibility.deprecations 1.3.0",
+        "note": "openFor(anchor, {side, align}) places the menu; read until the date",
+        "summary": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
+      },
+      {
+        "from": "tooltip",
+        "to": null,
+        "kind": "setting",
+        "mode": "retired",
+        "section": "compatibility.deprecations 1.3.0",
+        "note": "a menu has no tail; read until the date",
+        "summary": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
+      }
+    ],
+    "since-version": "1.3.0"
+  },
   "x-summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "x-source": {
     "package": "framework",
@@ -422,14 +569,84 @@
     "settings.aria-label, settings.role: host attributes, read from the host, never settings (§3.1); the menu's own role getter left the prototype's role alone",
     "events sf-context-menu-open, sf-context-menu-close: were facts sent after the state changed (close was also the placed menu's request to its host); by §19.3 and vocabulary §4 they are the cancelable requests, and the facts are sf-context-menu-opened and sf-context-menu-closed"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "own-verb-words: search (the host is told the query) and tab (a tab chosen) are verbs of the menu alone; their words are lang events.<verb>.label.",
+    "version: 1.3.1 → 1.4.0: added the facts opened and closed, the close reason and the entries' shape; nothing removed.",
+    "type-union: tabs is one string member (\"A|B\" in the attribute); the component's own property also takes a list [{id, label}], so the manifest declares the attribute form (§4.2).",
+    "item-shape: entries name their fields with `of` (the fields the template and the menu read: id, text, caption, icon, avatar, initials, shortcut, kind, type, value, lang, keywords, checked, disabled, danger, current, href, keep-open, submenu, search, options); items is the older list of {text, value}.",
+    "existing-aliases: compatibility.deprecations (position, tooltip: a menu has no tail since 1.3.0) fold into aliases.json as retired rows; both settings still answer until the date.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus entries with a check, a submenu, a search and a tabbed panel; probe.json drives the arrows, Home, End, Enter, Escape and Tab (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: portal -- an owned menu shows in the browser's top layer, and a submenu is drawn at the end of body (or of the open dialog).",
+    "layer: kind surface; it registers through core open-surface-mark while owned, so Escape and an outside press reach it only while it is the top layer; it does not trap focus (Tab leaves and closes it).",
+    "dismissing: an owned menu asks before it closes, sf-context-menu-close {reason, unsaved} (§19.3): escape, outside, close (its head's close button), api (a choice, Tab, a script). A placed menu's head button sends the same request for its host to close it, as before. The actions keep their boolean answers (openFor, toggleFor, close) until their callers move -- a leftover.",
+    "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "item_contract": {
+      "summary": "One entry of `entries`.",
+      "kinds": {
+        "item": {
+          "fields": {
+            "id": "string, returned in sf-context-menu-select",
+            "text": "string, the label",
+            "icon": "string, a Material Symbols name",
+            "caption": "string, a second line under the label",
+            "value": "string, read-only value at the row's end",
+            "shortcut": "string, shown at the row's end",
+            "kind": "'check' | 'radio' for a checkable row",
+            "checked": "boolean",
+            "danger": "boolean, a destructive action",
+            "disabled": "boolean",
+            "current": "boolean, the place the person is",
+            "href": "string, a link row",
+            "submenu": "entries, opened beside the row",
+            "keepOpen": "boolean, a choice does not close the menu",
+            "lang": "string, the language the label is written in",
+            "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
+            "keywords": "string, extra words a search matches",
+            "avatar": "string, a picture URL drawn in the lead (a site's logo, a person)",
+            "initials": "string, drawn in the lead when there is no picture"
+          }
+        },
+        "separator": {
+          "fields": {
+            "type": "'separator'"
+          }
+        },
+        "heading": {
+          "fields": {
+            "type": "'heading'",
+            "text": "string, names the items under it"
+          }
+        },
+        "header": {
+          "fields": {
+            "type": "'header'",
+            "text": "string, the name",
+            "caption": "string or string[], the lines under it",
+            "avatar": "string, a picture URL",
+            "initials": "string, drawn without a picture (from the name by default)"
+          }
+        },
+        "choice": {
+          "fields": {
+            "type": "'choice'",
+            "id": "string, reported as group",
+            "text": "string, the group's name",
+            "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
+          }
+        },
+        "note": {
+          "fields": {
+            "type": "'note'",
+            "text": "string, a line of explanation"
+          }
+        }
+      }
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -439,6 +656,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -456,7 +681,11 @@
         "unclipped-tail-with-scrollable-content",
         "logical-position-aliases",
         "forced-colors-boundary"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language.",
@@ -478,22 +707,78 @@
         "npm run contract:verify",
         "npm test"
       ]
-    }
-  },
-  "x-decisions": [
-    "own-verb-words: search (the host is told the query) and tab (a tab chosen) are verbs of the menu alone; their words are lang events.<verb>.label.",
-    "version: 1.3.1 → 1.4.0: added the facts opened and closed, the close reason and the entries' shape; nothing removed.",
-    "type-union: tabs is one string member (\"A|B\" in the attribute); the component's own property also takes a list [{id, label}], so the manifest declares the attribute form (§4.2).",
-    "item-shape: entries name their fields with `of` (the fields the template and the menu read: id, text, caption, icon, avatar, initials, shortcut, kind, type, value, lang, keywords, checked, disabled, danger, current, href, keep-open, submenu, search, options); items is the older list of {text, value}.",
-    "existing-aliases: compatibility.deprecations (position, tooltip: a menu has no tail since 1.3.0) fold into aliases.json as retired rows; both settings still answer until the date.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus entries with a check, a submenu, a search and a tabbed panel; probe.json drives the arrows, Home, End, Enter, Escape and Tab (gate 16).",
-    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
-    "side-effects: portal -- an owned menu shows in the browser's top layer, and a submenu is drawn at the end of body (or of the open dialog).",
-    "layer: kind surface; it registers through core open-surface-mark while owned, so Escape and an outside press reach it only while it is the top layer; it does not trap focus (Tab leaves and closes it).",
-    "dismissing: an owned menu asks before it closes, sf-context-menu-close {reason, unsaved} (§19.3): escape, outside, close (its head's close button), api (a choice, Tab, a script). A placed menu's head button sends the same request for its host to close it, as before. The actions keep their boolean answers (openFor, toggleFor, close) until their callers move -- a leftover.",
-    "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "ArrowDown",
+        "ArrowUp",
+        "Home",
+        "End",
+        "ArrowRight",
+        "ArrowLeft",
+        "Enter",
+        "Space",
+        "Escape",
+        "Tab",
+        "typeahead"
+      ],
+      "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
+    },
+    "compatibility": {
+      "deprecations": [
+        {
+          "path": "position",
+          "since": "1.3.0",
+          "replacement": "openFor(anchor, {side, align}) places the menu; no tail is drawn"
+        },
+        {
+          "path": "tooltip",
+          "since": "1.3.0",
+          "replacement": "none: a menu has no tail"
+        }
+      ]
+    },
+    "methods": {
+      "focus": {
+        "summary": "Focus the current available item. A host that renders the menu itself waits for rendering and owns opening and dismissal.",
+        "arguments": [
+          {
+            "name": "options",
+            "schema": {
+              "type": "object"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "null"
+        }
+      }
+    },
+    "inputs": {
+      "items": {
+        "items": {
+          "type": "object"
+        }
+      },
+      "entries": {
+        "items": {
+          "type": "object"
+        }
+      },
+      "tabs": {
+        "type": [
+          "string",
+          "array"
+        ]
+      },
+      "role": {
+        "default": "menu"
+      }
+    },
+    "inputs-required": [
+      "aria-label"
+    ]
+  }
 }

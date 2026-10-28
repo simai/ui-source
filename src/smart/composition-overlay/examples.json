@@ -11,6 +11,16 @@
       },
       "expect": {
         "for": "canvas"
+      },
+      "studio": {
+        "title": "composition-overlay reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -19,7 +29,16 @@
       "markup": "<div id=\"canvas-2\"><section data-sf-composition-id=\"root\"><p data-sf-composition-id=\"p\">Абзац</p></section></div>",
       "settings": {
         "for": "canvas-2",
-        "actions": [{"id": "move-up", "label": "Выше"}, {"id": "remove", "label": "Удалить"}]
+        "actions": [
+          {
+            "id": "move-up",
+            "label": "Выше"
+          },
+          {
+            "id": "remove",
+            "label": "Удалить"
+          }
+        ]
       },
       "expect": {
         "for": "canvas-2"
@@ -47,6 +66,122 @@
       "expect": {
         "accepts": "blocks"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-composition-overlay against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <div id=\"canvas\" style=\"padding: 40px\"><section data-sf-composition-id=\"root\"><h2 data-sf-composition-id=\"h\">Заголовок</h2><p data-sf-composition-id=\"p\">Абзац</p></section></div>",
+          "  <sf-composition-overlay id=\"o\" for=\"canvas\" accepts=\"blocks\"></sf-composition-overlay>",
+          "</main>",
+          "<script>window.addEventListener('load', () => customElements.whenDefined('sf-composition-overlay').then(() => { const o = document.getElementById('o'); o.setDocument({schema: 'simai.composition.document.v1', id: 'd', profile: 'ui-layout', root: {id: 'root', type: 'layout.section', slots: {default: [{id: 'h', type: 'content.heading'}, {id: 'p', type: 'content.paragraph'}]}}}, {describe: (node) => ({label: node.id})}); o.actions = [{id: 'remove', label: 'Удалить'}]; }));</script>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-tree-and-settings",
+          "title": "the structure tree is named by the language file; the settings are properties; actions are checked as setActions checks them",
+          "covers": "accessibility role tree, lang runtime.tree, settings.for, settings.actions",
+          "steps": [
+            {
+              "check": "(() => { const o = document.getElementById('o'); const tree = o.querySelector('.sf-composition-overlay-tree'); let refused = false; try { o.actions = [{id: 'Bad id', label: 'x'}]; } catch (error) { refused = error instanceof TypeError; } return tree.getAttribute('role') === 'tree' && tree.getAttribute('aria-label') === 'Структура страницы' && o.for === 'canvas' && o.accepts === 'blocks' && refused && o.actions.length === 1 && o.actions[0].id === 'remove'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-select",
+          "title": "selecting a node sends sf-composition-overlay-select {ids, id} with node_id kept",
+          "covers": "events.select",
+          "steps": [
+            {
+              "script": "(document.getElementById('o').select('h'), true)",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-composition-overlay-select",
+                    "count": 1,
+                    "detail": {
+                      "ids": [
+                        "h"
+                      ],
+                      "id": "h",
+                      "node_id": "h"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-apply",
+          "title": "a toolbar action sends sf-composition-overlay-apply {action, scope: entry, ids}, then the dated -action {action_id, node_id}",
+          "covers": "events.apply, aliases.json sf-composition-overlay-action",
+          "steps": [
+            {
+              "script": "(document.getElementById('o').select('p'), true)"
+            },
+            {
+              "user": "click:#o .sf-composition-overlay-action[data-action=remove]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-composition-overlay-apply",
+                    "count": 1,
+                    "detail": {
+                      "action": "remove",
+                      "scope": "entry",
+                      "ids": [
+                        "p"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "sf-composition-overlay-action",
+                    "count": 1,
+                    "detail": {
+                      "action_id": "remove",
+                      "node_id": "p"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-insert",
+          "title": "an insertion point sends sf-composition-overlay-insert {parent, slot, index} with parent_id kept",
+          "covers": "events.insert",
+          "steps": [
+            {
+              "script": "(document.getElementById('o').select('h'), true)"
+            },
+            {
+              "user": "click:#o .sf-composition-overlay-insert[data-index=\"1\"]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-composition-overlay-insert",
+                    "count": 1,
+                    "detail": {
+                      "parent": "root",
+                      "parent_id": "root",
+                      "slot": "default",
+                      "index": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

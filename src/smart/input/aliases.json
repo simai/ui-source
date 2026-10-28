@@ -19,41 +19,41 @@
       "from": "error",
       "to": "invalid",
       "kind": "setting",
-      "section": "§17.2",
-      "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
       "component": "sf-input",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§17.2",
+      "note": "error is a dated alias of invalid; the shim maps the attribute and the property"
     },
     {
       "from": "type",
       "to": "appearance",
       "kind": "setting",
-      "section": "§16 item 20",
-      "note": "the legacy axis name (contracts/public-api-axes.json)",
       "component": "sf-input",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "the legacy axis name (contracts/public-api-axes.json)"
     },
     {
       "from": "left-icon",
       "to": "icon-start",
       "kind": "setting",
-      "section": "§16 item 20",
-      "note": "the legacy name of icon-start; icon-start wins when both are given",
       "component": "sf-input",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "the legacy name of icon-start; icon-start wins when both are given"
     },
     {
       "from": "right-text",
       "to": "text-end",
       "kind": "setting",
-      "section": "§16 item 20",
-      "note": "the legacy name of text-end; text-end wins when both are given",
       "component": "sf-input",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "the legacy name of text-end; text-end wins when both are given"
     },
     {
       "from": "sf-field:reset",

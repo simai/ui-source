@@ -1,7 +1,310 @@
-[
-  {"name": "reference", "title": "Телефон с выбором страны", "settings": {"label": "Телефон", "value": "+7 999 123-45-67"}, "expect": {"values": {"value": "+7 999 123-45-67", "open": false}}},
-  {"name": "required", "title": "Обязательный номер", "settings": {"label": "Телефон", "name": "phone", "required": true}, "expect": {"values": {"value": ""}, "validity": {"valueMissing": true}}},
-  {"name": "single-country", "title": "Одна страна", "settings": {"label": "Телефон", "multi-country": false, "iso2": "ru"}, "expect": {"values": {"open": false}}},
-  {"name": "disabled", "title": "Недоступен", "settings": {"label": "Телефон", "name": "phone", "value": "+7 999 123-45-67", "disabled": true}, "expect": {"values": {"value": "+7 999 123-45-67"}}},
-  {"name": "aria-label", "title": "Подпись выводит страница", "settings": {"aria-label": "Телефон для связи"}, "expect": {"name": "Телефон для связи"}}
-]
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Телефон с выбором страны",
+      "settings": {
+        "label": "Телефон",
+        "value": "+7 999 123-45-67"
+      },
+      "expect": {
+        "values": {
+          "value": "+7 999 123-45-67",
+          "open": false
+        }
+      },
+      "studio": {
+        "scenario": {}
+      }
+    },
+    {
+      "name": "required",
+      "title": "Обязательный номер",
+      "settings": {
+        "label": "Телефон",
+        "name": "phone",
+        "required": true
+      },
+      "expect": {
+        "values": {
+          "value": ""
+        },
+        "validity": {
+          "valueMissing": true
+        }
+      }
+    },
+    {
+      "name": "single-country",
+      "title": "Одна страна",
+      "settings": {
+        "label": "Телефон",
+        "multi-country": false,
+        "iso2": "ru"
+      },
+      "expect": {
+        "values": {
+          "open": false
+        }
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "label": "Телефон",
+        "name": "phone",
+        "value": "+7 999 123-45-67",
+        "disabled": true
+      },
+      "expect": {
+        "values": {
+          "value": "+7 999 123-45-67"
+        }
+      }
+    },
+    {
+      "name": "aria-label",
+      "title": "Подпись выводит страница",
+      "settings": {
+        "aria-label": "Телефон для связи"
+      },
+      "expect": {
+        "name": "Телефон для связи"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-country-code against component.json (standard simai.smart-component 1.3.8 §4, §17.1, §17.2, §4.8 keys)",
+        "component": "sf-country-code",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "host-submits-the-tel-text",
+            "covers": "form.value, form.submits, §17.1 items 1 and 6",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "phone": "+7 999 123-45-67"
+              },
+              "evaluate": {
+                "el.querySelector('input[type=tel]').hasAttribute('name')": false,
+                "el.form === form": true,
+                "[...form.elements].includes(el)": true
+              }
+            }
+          },
+          {
+            "id": "nothing-while-disabled",
+            "covers": "form.disabled, §17.1 item 3",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\" disabled></sf-country-code>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "phone": null
+              }
+            }
+          },
+          {
+            "id": "required-blocks-submit",
+            "covers": "form.required, validity value-missing (§17.2)",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" required></sf-country-code>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "checkValidity": false,
+              "validity": {
+                "host": {
+                  "valid": false,
+                  "valueMissing": true
+                }
+              }
+            }
+          },
+          {
+            "id": "custom-error-blocks-submit",
+            "covers": "validity custom-error, setCustomValidity (§17.1 item 5)",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+            "script": "el.setCustomValidity('Номер занят'); form.requestSubmit();",
+            "expect": {
+              "submitted": false,
+              "validity": {
+                "host": {
+                  "customError": true,
+                  "valid": false
+                }
+              },
+              "evaluate": {
+                "el.validationMessage": "Номер занят"
+              }
+            }
+          },
+          {
+            "id": "typing-reaches-the-form",
+            "covers": "events.input, events.change (native), the current value (§4.3); the dial code the class script re-detects while typing is its own (seen: +7 typed to the end reads +61, on the old pair too)",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-6\"></sf-country-code>",
+            "given": [
+              {
+                "script": "const input = el.querySelector(\"input[type=tel]\"); input.focus(); input.setSelectionRange(input.value.length, input.value.length);"
+              }
+            ],
+            "expect": {
+              "evaluate": {
+                "el.value === el.querySelector(\"input[type=tel]\").value": true,
+                "new FormData(form).get(\"phone\") === el.value": true,
+                "el.value.endsWith(\"999 123-45-67\")": true
+              },
+              "events": [
+                {
+                  "type": "input"
+                }
+              ]
+            },
+            "user": "type:7"
+          },
+          {
+            "id": "reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4)",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-country-code>",
+            "given": [
+              {
+                "script": "const input = el.querySelector('input[type=tel]'); input.value = '+7 111'; input.dispatchEvent(new Event('input', {bubbles: true}));"
+              }
+            ],
+            "form": "reset",
+            "wait": 200,
+            "expect": {
+              "value": "+7 999 123-45-67",
+              "formData": {
+                "phone": "+7 999 123-45-67"
+              }
+            }
+          },
+          {
+            "id": "enter-opens-escape-closes",
+            "covers": "keyboard.host Enter open, Escape close",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+            "given": [
+              {
+                "user": [
+                  "focus:.sf-country-code-left",
+                  "keyboard:Enter"
+                ]
+              }
+            ],
+            "user": "keyboard:Escape",
+            "expect": {
+              "evaluate": {
+                "el.querySelector('.sf-country-code').classList.contains('open')": false
+              }
+            }
+          },
+          {
+            "id": "arrow-down-opens-the-list",
+            "covers": "keyboard.host ArrowDown open; keyboard.panel ArrowDown focus:next",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+            "given": [
+              {
+                "user": "focus:.sf-country-code-left"
+              }
+            ],
+            "user": [
+              "keyboard:ArrowDown",
+              "keyboard:ArrowDown"
+            ],
+            "expect": {
+              "evaluate": {
+                "el.querySelector('.sf-country-code').classList.contains('open')": true,
+                "document.activeElement.classList.contains('sf-country-code-item')": true
+              }
+            }
+          },
+          {
+            "id": "the-form-attribute-names-the-form",
+            "covers": "the host attribute form (aliases.json host-attribute row)",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" value=\"+7 1\"></sf-country-code>",
+            "script": "const other = document.createElement('form'); other.id = 'other'; document.body.append(other); el.setAttribute('form', 'other'); return el.form && el.form.id;",
+            "expect": {
+              "returns": "other"
+            }
+          },
+          {
+            "id": "space-opens",
+            "covers": "keyboard.host Space open",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+            "given": [
+              {
+                "user": "focus:.sf-country-code-left"
+              }
+            ],
+            "user": "keyboard:Space",
+            "expect": {
+              "evaluate": {
+                "el.querySelector(\".sf-country-code\").classList.contains(\"open\")": true
+              }
+            }
+          },
+          {
+            "id": "list-home-end-arrow-up",
+            "covers": "keyboard.panel End focus:last, Home focus:first, ArrowUp focus:prev; keyboard.host ArrowUp open",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\" max-items=\"5\"></sf-country-code>",
+            "given": [
+              {
+                "user": [
+                  "focus:.sf-country-code-left",
+                  "keyboard:ArrowUp"
+                ]
+              }
+            ],
+            "user": [
+              "keyboard:End",
+              "keyboard:ArrowUp",
+              "keyboard:Home"
+            ],
+            "expect": {
+              "evaluate": {
+                "el.querySelector(\".sf-country-code\").classList.contains(\"open\")": true,
+                "document.activeElement === el.querySelector(\".sf-country-code-item\")": true
+              }
+            }
+          },
+          {
+            "id": "enter-in-the-list",
+            "covers": "keyboard.panel Enter select, Space select",
+            "field": "<sf-country-code name=\"phone\" label=\"Телефон\"></sf-country-code>",
+            "given": [
+              {
+                "user": [
+                  "focus:.sf-country-code-left",
+                  "keyboard:ArrowDown",
+                  "keyboard:ArrowDown"
+                ]
+              }
+            ],
+            "user": "keyboard:Enter",
+            "expect": {
+              "evaluate": {
+                "el.querySelector(\".sf-country-code\").classList.contains(\"open\")": false,
+                "Boolean(el.querySelector(\".sf-country-code\").dataset.dialCode)": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

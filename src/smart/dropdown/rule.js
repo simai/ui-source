@@ -1,9 +1,10 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
+// css: its own sheet, the slot of an inherited value (simai/ui-source#28).
 SF.RuleLoader['cl-dropdown'] = {
   tags: ['sf-dropdown'],
   type: 'smart',
   mode: 'smart',
   js: true,
-  // Its own sheet: the slot of an inherited value (simai/ui-source#28).
   css: true,
   relation: [
     { name: 'dropdown' },

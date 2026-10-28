@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tooltip's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tooltip (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tooltip",
   "tag": "sf-tooltip",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "hint",
   "settings": {
@@ -12,7 +12,8 @@
         "light",
         "dark"
       ],
-      "default": "light"
+      "default": "light",
+      "summary": "How the tooltip looks: light on a dark surface or the reverse."
     },
     "size": {
       "type": "enum",
@@ -23,7 +24,8 @@
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Framework typography and spacing scale."
     },
     "arrow": {
       "type": "enum",
@@ -36,15 +38,18 @@
         "bottom-inline-start",
         "bottom-inline-end"
       ],
-      "default": "none"
+      "default": "none",
+      "summary": "Logical tail placement."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Short primary description."
     },
     "supporting-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Optional secondary description."
     }
   },
   "values": {},
@@ -60,6 +65,11 @@
     },
     "tail": {}
   },
+  "relations": [
+    {
+      "name": "tooltip"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -113,6 +123,20 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-tooltip for the shim (core/js/aliases.js, standard §16 item 20).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "type",
+        "to": "appearance",
+        "kind": "setting",
+        "section": "the axis's old name (contracts/public-api-axes.json)",
+        "summary": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+      }
+    ]
+  },
   "x-summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
   "x-source": {
     "package": "framework",
@@ -124,14 +148,36 @@
     "text",
     "supporting-text"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-renamed": [
+    "settings.type → appearance: the axis's old name (contracts/public-api-axes.json), alias dated"
+  ],
+  "x-decisions": [
+    "a11y-role: tooltip, one role; the name is the text (the setting, or the text slot). The data-tooltip controller of the class component links a trigger to it with aria-describedby.",
+    "a11y-name: from text, then slot:text (the old shape \"internal\" said the same).",
+    "layer: none. sf-tooltip is the tooltip's look, drawn where it stands; it neither opens nor closes and takes no keys. The tooltip that floats over the page is the class controller's ([data-tooltip], component/tooltip/js/_tooltip.js), a layer for its own migration.",
+    "version: 1.0.0 → 1.1.0: type is a dated alias of appearance.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; the slots content, text, supporting-text and tail are the page's nodes, placed.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the dark look, an arrow and supporting text; probe.json reads the drawn markup.",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: none.",
+    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "lifecycle": "released",
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "accessibility"
+    ],
+    "readiness": {
+      "level": "accepted",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -141,6 +187,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -154,7 +208,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-tooltip for a short non-interactive description. Link it to a native trigger with the ordinary data-tooltip composition when Framework should own hover, focus and Escape behavior.",
@@ -176,20 +234,21 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Escape dismisses a linked open tooltip without moving trigger focus"
+      ],
+      "focus": "The surface never receives focus. A linked native trigger owns focus and aria-describedby."
+    },
+    "inputs": {
+      "template": {
+        "description": "Template name."
+      },
+      "root-class": {
+        "description": "Framework utility classes for the visible surface root."
+      }
     }
-  },
-  "x-renamed": [
-    "settings.type → appearance: the axis's old name (contracts/public-api-axes.json), alias dated"
-  ],
-  "x-decisions": [
-    "a11y-role: tooltip, one role; the name is the text (the setting, or the text slot). The data-tooltip controller of the class component links a trigger to it with aria-describedby.",
-    "a11y-name: from text, then slot:text (the old shape \"internal\" said the same).",
-    "layer: none. sf-tooltip is the tooltip's look, drawn where it stands; it neither opens nor closes and takes no keys. The tooltip that floats over the page is the class controller's ([data-tooltip], component/tooltip/js/_tooltip.js), a layer for its own migration.",
-    "version: 1.0.0 → 1.1.0: type is a dated alias of appearance.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; the slots content, text, supporting-text and tail are the page's nodes, placed.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the dark look, an arrow and supporting text; probe.json reads the drawn markup.",
-    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
-    "side-effects: none.",
-    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "id": "smart.textarea",
-  "version": "1.4.0",
-  "title": "Textarea",
+  "version": "1.5.3",
+  "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
   "reuse_mode": "both",
@@ -22,6 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icon-buttons",
+      "component.icons",
       "component.textarea"
     ],
     "public_parts": [
@@ -33,6 +35,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -45,12 +60,12 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
+        "description": "How the field looks: a bordered box, a filled one, or flush -- no box of its own, inside a composite control that draws the box and the focus.",
         "enum": [
           "bordered",
           "filled",
           "flush"
-        ],
-        "description": "How the field looks: a bordered box, a filled one, or flush -- no box of its own, inside a composite control that draws the box and the focus."
+        ]
       },
       "label": {
         "type": "string",
@@ -84,14 +99,12 @@
         ]
       },
       "minlength": {
-        "type": "number",
-        "default": null
+        "type": "number"
       },
       "maxlength": {
-        "type": "number",
-        "default": null
+        "type": "number"
       },
-      "spellcheck": {
+      "spell-check": {
         "type": "boolean",
         "default": true
       },
@@ -104,10 +117,6 @@
         ]
       },
       "hint": {
-        "type": "string",
-        "default": ""
-      },
-      "value": {
         "type": "string",
         "default": ""
       },
@@ -131,7 +140,6 @@
       },
       "max-rows": {
         "type": "number",
-        "default": null,
         "description": "With auto-grow: the most rows before the field scrolls inside. Unset means no cap; a value below min-rows is min-rows."
       },
       "disabled": {
@@ -139,10 +147,6 @@
         "default": false
       },
       "readonly": {
-        "type": "boolean",
-        "default": false
-      },
-      "error": {
         "type": "boolean",
         "default": false
       },
@@ -165,6 +169,20 @@
       "mask-options": {
         "type": "string",
         "default": ""
+      },
+      "value": {
+        "type": "string",
+        "default": ""
+      },
+      "spellcheck": {
+        "type": "boolean",
+        "default": true,
+        "description": "Dated alias of spell-check until 2026-12-01."
+      },
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "Dated alias of invalid until 2026-12-01."
       },
       "type": {
         "type": "string",
@@ -190,14 +208,6 @@
         "type": "string",
         "default": "",
         "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
-      },
-      "spell-check": {
-        "type": "boolean",
-        "default": true
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
       }
     },
     "additionalProperties": false
@@ -265,14 +275,16 @@
     "change": {
       "summary": "The value was committed; the native event bubbles from the inner textarea, which is its target.",
       "payload": {
-        "type": "object"
+        "type": "null",
+        "description": "A native Event: there is no detail."
       },
       "canonical": true
     },
     "input": {
       "summary": "The value changed while typing; the native event bubbles from the inner textarea, which is its target.",
       "payload": {
-        "type": "object"
+        "type": "null",
+        "description": "A native Event: there is no detail."
       }
     },
     "sf-field:reset": {
@@ -401,7 +413,7 @@
       },
       {
         "path": "src/smart/textarea/rule.js",
-        "sha256": "493eef5df1b45606866ef7339b874a2045ee05d6dfaf56521e33859e96048911"
+        "sha256": "cf090096997360e618f591ad002ebde4dccd632368515da696690a76025ebb0c"
       },
       {
         "path": "src/smart/textarea/js/templates/default.js",

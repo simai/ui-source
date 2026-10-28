@@ -337,11 +337,13 @@ const DatepickerElement = elementFromManifest(manifest, {
             return 'applied';
         },
         'choose-preset'({item} = {}) {
+            if (this.disabled) return 'disabled';
             if (!item || item.disabled || !this.range) return 'unavailable-preset';
             this._choosePreset(item);
             return 'applied';
         },
         'choose-custom-range'() {
+            if (this.disabled) return 'disabled';
             if (!this.range) return 'not-a-range';
             this._chooseCustomRange();
             return 'applied';
@@ -636,6 +638,12 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.range ? [this.startValue, this.endValue] : this.date;
     }
 
+    // The value property takes what its getter gives back (component.json
+    // x-registry.inputs.value): an ISO date string, or [start, end] for a range.
+    // The object {start|startValue|date, end|endValue} older callers pass is
+    // still read as that pair, but it is outside the contract. Anything else is
+    // read as text (a number, a boolean) or, for any other object, cleared, and
+    // a console warning names the shape once per element.
     set value(nextValue) {
         if (Array.isArray(nextValue)) {
             const [startValue = '', endValue = ''] = nextValue;
@@ -652,6 +660,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             const startValue =
                 nextValue.start || nextValue.startValue || nextValue.date || '';
             const endValue = nextValue.end || nextValue.endValue || '';
+            if (!startValue && !endValue) this.warnValueShape(nextValue);
             this.setState({
                 date: nextValue.date || startValue || '',
                 startValue,
@@ -661,12 +670,20 @@ class SfDatepicker extends FormField(DatepickerElement) {
             return;
         }
 
+        if (nextValue != null && typeof nextValue !== 'string') this.warnValueShape(nextValue);
         this.setState({
             date: nextValue ? String(nextValue) : '',
             startValue: '',
             endValue: '',
             ...this.monthOf(nextValue),
         });
+    }
+
+    warnValueShape(nextValue) {
+        if (this._valueShapeWarned) return;
+        this._valueShapeWarned = true;
+        const shape = nextValue instanceof Date ? 'Date' : typeof nextValue;
+        globalThis.console?.warn?.(`[SIMAI Framework] sf-datepicker: value takes an ISO date string or [start, end]; a ${shape} was read as ${shape === 'object' || shape === 'Date' ? 'empty' : 'text'}.`);
     }
 
     setMaxDate() {
@@ -1030,7 +1047,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
             );
             const time = date.getTime();
 
+            // A disabled field disables every day: a panel a host holds open,
+            // or the inline one, takes no choice (see panelDisabled).
             const disabled = Boolean(
+                this.disabled ||
                 (minDate && time < minDate.getTime()) ||
                 (maxDate && time > maxDate.getTime()),
             );
@@ -1070,6 +1090,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             const time = date.getTime();
 
             const disabled = Boolean(
+                this.disabled ||
                 (minMonth && time < minMonth.getTime()) ||
                 (maxMonth && time > maxMonth.getTime()),
             );
@@ -1092,6 +1113,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             const year = start + index;
 
             const disabled = Boolean(
+                this.disabled ||
                 (minDate && year < minDate.getFullYear()) ||
                 (maxDate && year > maxDate.getFullYear()),
             );
@@ -1132,6 +1154,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     toggleContext(nextContext) {
+        if (this.disabled) return this;
         const nextMode = this.contextMode === nextContext ? '' : nextContext;
         const nextState = {
             context: nextMode,
@@ -1146,6 +1169,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     shiftYearPage(direction = 1) {
+        if (this.disabled) return this;
         this.set({
             yearPageStart: this.yearPageStart + YEARS_PAGE_SIZE * direction,
         });
@@ -1154,6 +1178,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     shiftMonth(direction = 1) {
+        if (this.disabled) return this;
         const next = new Date(this.year, this.month + direction, 1);
         const minDate = this.setMinDate();
         const maxDate = this.setMaxDate();
@@ -1311,6 +1336,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     handleDayKeydown(event, day) {
+        if (this.disabled) return;
         const horizontal = this.isRtl ? -1 : 1;
         const keySteps = {
             ArrowLeft: -horizontal,
@@ -1452,7 +1478,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     selectDate(day) {
-        if (!day?.date || day.disabled) {
+        if (this.disabled || !day?.date || day.disabled) {
             return this;
         }
 
@@ -1516,7 +1542,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // A quick range: its dates, the grid on the month it ends in, and the change
     // said once, by the person's choice -- never by a render.
     _choosePreset(item) {
-        if (!item || item.disabled) return this;
+        if (this.disabled || !item || item.disabled) return this;
         const from = formatIsoDate(item.from);
         const to = formatIsoDate(item.to);
         this.setState({
@@ -1536,6 +1562,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     // «Свой период»: the quick range lets go and the person picks on the grid.
     _chooseCustomRange() {
+        if (this.disabled) return this;
         if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
         this._focusDateAfterRender = true;
         this.requestComponentUpdate('custom-range');
@@ -1558,7 +1585,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     selectMonth(month) {
-        if (!month || month.disabled) {
+        if (this.disabled || !month || month.disabled) {
             return this;
         }
 
@@ -1572,7 +1599,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     selectYear(year) {
-        if (!year || year.disabled) {
+        if (this.disabled || !year || year.disabled) {
             return this;
         }
 

@@ -19,64 +19,64 @@
       "from": "type",
       "to": "appearance",
       "kind": "setting",
-      "section": "§16 item 20, contracts/public-api-axes.json",
-      "note": "the legacy axis name; the shim maps the attribute and the property",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20, contracts/public-api-axes.json",
+      "note": "the legacy axis name; the shim maps the attribute and the property"
     },
     {
       "from": "variant",
       "to": "kind",
       "kind": "setting",
-      "section": "§16 item 20, contracts/public-api-axes.json",
-      "note": "the legacy axis name; the shim maps the attribute and the property",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20, contracts/public-api-axes.json",
+      "note": "the legacy axis name; the shim maps the attribute and the property"
     },
     {
       "from": "tightness",
       "to": "spacing",
       "kind": "setting",
-      "section": "§16 item 20",
-      "note": "journal attribute-tightness-to-spacing; its words are spacing's value aliases below, spacing wins when both are given",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "journal attribute-tightness-to-spacing; its words are spacing's value aliases below, spacing wins when both are given"
     },
     {
       "from": "low",
       "to": "compact",
       "kind": "value",
       "setting": "spacing",
-      "section": "§16 item 20",
-      "note": "tightness's word, journal attribute-tightness-to-spacing",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "tightness's word, journal attribute-tightness-to-spacing"
     },
     {
       "from": "high",
       "to": "comfortable",
       "kind": "value",
       "setting": "spacing",
-      "section": "§16 item 20",
-      "note": "tightness's word, journal attribute-tightness-to-spacing",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "tightness's word, journal attribute-tightness-to-spacing"
     },
     {
       "from": "highest",
       "to": "spacious",
       "kind": "value",
       "setting": "spacing",
-      "section": "§16 item 20",
-      "note": "tightness's word, journal attribute-tightness-to-spacing",
       "component": "sf-icon-button",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "tightness's word, journal attribute-tightness-to-spacing"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.4.4",
+  "version": "1.4.6",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -23,31 +23,42 @@
   "composition": {
     "uses": [
       "component.dropdown",
-      "smart.list-item",
+      "component.icon-buttons",
+      "component.inputs",
+      "smart.icon-button",
       "smart.input",
-      "smart.icon-button"
+      "smart.list-item"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
-      "appearance": {
+      "template": {
         "type": "string",
-        "default": "outlined",
-        "enum": [
-          "filled",
-          "outlined"
-        ],
-        "description": "How the dropdown looks: a filled field or an outlined one."
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "aria-label": {
+      "root-class": {
         "type": "string",
         "default": ""
       },
-      "columns": {
+      "root-style": {
         "type": "string",
-        "default": "6",
+        "default": ""
+      },
+      "appearance": {
+        "type": "string",
+        "default": "outlined",
+        "description": "How the dropdown looks: a filled field or an outlined one.",
+        "enum": [
+          "filled",
+          "outlined"
+        ]
+      },
+      "columns": {
+        "type": "number",
+        "default": 6,
         "description": "How many options a row holds in the grid layout. Ignored in a list."
       },
       "disabled": {
@@ -61,11 +72,11 @@
       "layout": {
         "type": "string",
         "default": "list",
+        "description": "How the options are laid out. A list is one option a row; a grid puts several in a row, which is the only way a hundred glyphs can be looked at -- a column of them is a column nobody scrolls to the end of. In a grid an option shows its picture and keeps its text as the name a search reads and a pointer sees.",
         "enum": [
           "list",
           "grid"
-        ],
-        "description": "How the options are laid out. A list is one option a row; a grid puts several in a row, which is the only way a hundred glyphs can be looked at -- a column of them is a column nobody scrolls to the end of. In a grid an option shows its picture and keeps its text as the name a search reads and a pointer sees."
+        ]
       },
       "mode": {
         "type": "string",
@@ -84,11 +95,6 @@
         "type": "string",
         "default": "",
         "description": "Native form field name for the selected machine value."
-      },
-      "options": {
-        "type": "array",
-        "description": "Options given as data instead of as sf-list-item children: [{text, value, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row.",
-        "default": []
       },
       "placeholder": {
         "type": "string",
@@ -109,7 +115,6 @@
       },
       "search-placeholder": {
         "type": "string",
-        "default": "",
         "description": "Empty: the text of the page's language (\"Search\" in English)."
       },
       "size": {
@@ -121,9 +126,14 @@
           "2"
         ]
       },
-      "template": {
+      "value": {
         "type": "string",
-        "default": "default"
+        "default": "",
+        "description": "Selected machine value, or a comma-separated list of values for multiple selection."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       },
       "type": {
         "type": "string",
@@ -134,10 +144,10 @@
           "outlined"
         ]
       },
-      "value": {
-        "type": "string",
-        "default": "",
-        "description": "Selected machine value, or a comma-separated list of values for multiple selection."
+      "options": {
+        "type": "array",
+        "default": [],
+        "description": "Options given as data instead of as sf-list-item children: [{text, value, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
       },
       "inherited-value": {
         "type": "string",
@@ -233,7 +243,32 @@
     "change": {
       "summary": "The selection changed; dispatched on the host. The name to bind.",
       "payload": {
-        "$ref": "#/contracts/change_detail"
+        "type": "object",
+        "required": [
+          "value",
+          "label",
+          "values",
+          "item",
+          "multiple"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array"
+          },
+          "item": {
+            "type": "object"
+          },
+          "multiple": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
       },
       "canonical": true
     },
@@ -298,7 +333,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "button with listbox popup",
+    "role": "combobox",
     "accessible_name": "required",
     "keyboard": [
       "Tab",
@@ -385,7 +420,7 @@
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "7dde961e730252248c1c3e9e1b1055cf1f1564068f9a4049aaed3ab747e0ef24"
+        "sha256": "19edb09786996dd05bbf46562f99a2137e91e2ed31d57bbb661ff4fb003f08f0"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",

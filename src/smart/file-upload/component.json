@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-upload's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-upload (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/file-upload/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.file-upload",
   "tag": "sf-file-upload",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -21,7 +21,8 @@
     },
     "link-text": {
       "type": "string",
-      "default-from": "runtime.link-text"
+      "default-from": "runtime.link-text",
+      "summary": "Empty: the text of the page's language (\"Click to upload\" in English)."
     },
     "text": {
       "type": "string",
@@ -29,11 +30,13 @@
     },
     "formats": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Formats line shown under the action. When not set it is derived from accept, and is empty when neither is given: the component names no formats it cannot know."
     },
     "supporting-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Supporting line; falls back to formats."
     },
     "accept": {
       "type": "string",
@@ -97,11 +100,19 @@
             "drop"
           ]
         }
-      }
+      },
+      "summary": "Files were chosen: the native event from the inner file input for a pick, and a CustomEvent from the area for a drop (detail files and source 'drop'), so a form hears of both."
     },
     "attach": {
       "carries": {
-        "files": "list",
+        "files": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        },
         "source": {
           "type": "enum",
           "values": [
@@ -110,46 +121,82 @@
           ]
         },
         "multiple": "boolean"
-      }
+      },
+      "summary": "Files were selected for upload. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:select follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "attached": {
       "carries": {
         "id": "id",
-        "item": "object",
+        "item": {
+          "type": "object",
+          "summary": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+        },
         "index": "number",
-        "items": "list",
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        },
         "source": "string",
         "multiple": "boolean"
-      }
+      },
+      "summary": "A file entered the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-add follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "detach": {
       "carries": {
         "id": "id",
-        "item": "object",
+        "item": {
+          "type": "object",
+          "summary": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+        },
         "index": "number",
-        "items": "list"
-      }
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "summary": "A file was removed from the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:remove follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "rejected": {
       "carries": {
         "files": "list",
         "accept": "string",
         "source": "string"
-      }
+      },
+      "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:reject follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "retry": {
       "carries": {
         "id": "id",
-        "item": "object",
+        "item": {
+          "type": "object",
+          "summary": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+        },
         "index": "number",
-        "items": "list"
-      }
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "summary": "A failed file was retried. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:retry follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "begun": {
       "carries": {
         "id": "id",
         "item": "object"
-      }
+      },
+      "summary": "An entry entered process -- chosen, dropped or retried: its upload stream began (standard simai.smart-component 1.3.8 §10.8, vocabulary 1.1.5 §5.2)."
     },
     "chunk": {
       "carries": {
@@ -157,36 +204,68 @@
         "done": "number",
         "total": "number",
         "item": "object"
-      }
+      },
+      "summary": "The host moved an entry's progress while it is in process: {id, done, total} with total 100 (§10.8)."
     },
     "completed": {
       "carries": {
         "id": "id",
-        "item": "object",
+        "item": {
+          "type": "object",
+          "summary": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+        },
         "index": "number",
-        "items": "list"
-      }
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "summary": "A file finished uploading. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-complete follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "failed": {
       "carries": {
         "id": "id",
-        "item": "object",
+        "item": {
+          "type": "object",
+          "summary": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+        },
         "index": "number",
-        "items": "list",
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        },
         "reason": "string",
         "message": "string"
-      }
+      },
+      "summary": "A file failed. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-error follows it with the same detail until 2026-12-01 (aliases.json)."
     },
     "cancelled": {
       "carries": {
         "id": "id",
         "item": "object"
-      }
+      },
+      "summary": "An entry left while in process -- removed by the person or by the host: its stream ended without completing (§10.8)."
     },
     "finished": {
       "carries": {
-        "items": "list"
-      }
+        "items": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "summary": "Every file finished. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:complete follows it with the same detail until 2026-12-01 (aliases.json)."
     }
   },
   "actions": {
@@ -197,13 +276,23 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Remove the item at this index from the list; an index outside the list does nothing. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "clear": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Empty the list. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "keyboard": {
@@ -213,6 +302,20 @@
       "Space": "open"
     }
   },
+  "relations": [
+    {
+      "name": "file-upload"
+    },
+    {
+      "name": "featured-icon"
+    },
+    {
+      "name": "cl-progress-bar"
+    },
+    {
+      "name": "icon-buttons"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -267,6 +370,101 @@
       "state": "dragged-over"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "sf-file-upload:select",
+        "to": "sf-file-upload-attach",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "same detail",
+        "summary": "Files were selected for upload. Legacy name: sent after sf-file-upload-attach with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:file-add",
+        "to": "sf-file-upload-attached",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "the detail adds id; the old fields are all there",
+        "summary": "A file entered the list. Legacy name: sent after sf-file-upload-attached with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:remove",
+        "to": "sf-file-upload-detach",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "the detail adds id",
+        "summary": "A file was removed from the list. Legacy name: sent after sf-file-upload-detach with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:reject",
+        "to": "sf-file-upload-rejected",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "same detail",
+        "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Legacy name: sent after sf-file-upload-rejected with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:retry",
+        "to": "sf-file-upload-retry",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "the detail adds id",
+        "summary": "A failed file was retried. Legacy name: sent after sf-file-upload-retry with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:file-complete",
+        "to": "sf-file-upload-completed",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "the end of the stream; the detail adds id",
+        "summary": "A file finished uploading. Legacy name: sent after sf-file-upload-completed with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:file-error",
+        "to": "sf-file-upload-failed",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "the end of the stream; the detail adds id, reason and message",
+        "summary": "A file failed. Legacy name: sent after sf-file-upload-failed with the same detail until 2026-12-01 (aliases.json)."
+      },
+      {
+        "from": "sf-file-upload:complete",
+        "to": "sf-file-upload-finished",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §10.8, vocabulary 1.1.5 §9.1",
+        "note": "same detail",
+        "summary": "Every file finished. Legacy name: sent after sf-file-upload-finished with the same detail until 2026-12-01 (aliases.json)."
+      }
+    ]
+  },
   "x-summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
   "x-source": {
     "package": "framework",
@@ -292,15 +490,25 @@
     "lang runtime also holds the words of FILE_UPLOAD_ITEM_TEXT (ui-source/src/component/file-upload/js/_file_upload.js): a shared script this component draws with (§11: no word lives only inside a bundle)",
     "settings.text: its default words move to lang/en.json runtime.text (§11, §16 item 44)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-decisions": [
+    "alias-conflict: vocabulary 1.1.5 §9.1 decides -- the colon names follow attach, attached, detach, rejected, retry, completed, failed and finished; stand 18's planned hyphen names (sf-file-upload-select, -file-add, …) never shipped and get no alias",
+    "completed, not uploaded: vocabulary 1.1.5 §9.1 names the end of an upload stream completed (§5.2, standard §10.8); 1.1.2 had planned -uploaded",
+    "streams (§10.8): each entry is a stream keyed by its id -- begun when it enters process (a choice, a drop, a retry), chunk {done, total} when the host moves its progress, then exactly one of completed (done), failed {reason, message} (error) or cancelled (removed while in process); finished when every entry is done",
+    "version: 1.1.0 -- eight events take their vocabulary names behind dated aliases, and begun, chunk and cancelled are added; a minor while the aliases hold (§4.10)",
+    "key-effects: Enter and Space on the area open the platform file dialog",
+    "setter: items is a writable list setting (§4.4: no set-<name> action, no rule calls it); setItems stays a method of the class outside the interface",
+    "item-shape: id, name, file-size, progress, state, error-message, retry-text, file",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json, studio.scenario.json and the docs",
+    "css-variables: seven public variables read by the class sheet with the role as fallback, the dragged-over pair among them (§6)",
+    "form: none -- the area uploads nothing and submits nothing; the host uploads each file and writes items back (its x-summary)",
+    "actions answer outcomes (§4.4): remove-item {index} and clear are applied, or refused no-item / unchanged",
+    "host-states: data-dragged-over while files are held over the area (§5.3); the class component keeps its .dragover class",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -309,6 +517,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -322,7 +538,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-file-upload for local file selection and item-state presentation. Consumer code owns transport and server validation. Shared root-class/style/root-style customize the drop zone, not the adjacent file list; cosmetic renders preserve item File objects. afterRender(callback) uses the base registration API.",
@@ -342,24 +562,336 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "focus": "The enabled drop zone is the picker focus owner; nested file actions retain native activation. Use focus-visible and a real forced-colors outline. Disabled controls leave the tab order; re-enabling restores authored tabindex."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-file-upload:complete": {
+        "summary": "Every file finished. Legacy name: sent after sf-file-upload-finished with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "sf-file-upload:file-add": {
+        "summary": "A file entered the list. Legacy name: sent after sf-file-upload-attached with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "object",
+              "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "source": {
+              "type": "string"
+            },
+            "multiple": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "sf-file-upload:file-complete": {
+        "summary": "A file finished uploading. Legacy name: sent after sf-file-upload-completed with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "object",
+              "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "sf-file-upload:file-error": {
+        "summary": "A file failed. Legacy name: sent after sf-file-upload-failed with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "object",
+              "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "sf-file-upload:reject": {
+        "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Legacy name: sent after sf-file-upload-rejected with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array"
+            },
+            "accept": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-file-upload:remove": {
+        "summary": "A file was removed from the list. Legacy name: sent after sf-file-upload-detach with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "object",
+              "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "sf-file-upload:retry": {
+        "summary": "A failed file was retried. Legacy name: sent after sf-file-upload-retry with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "object",
+              "description": "name, fileName, fileSize, state (process, done, error), progress, errorMessage"
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "sf-file-upload:select": {
+        "summary": "Files were selected for upload. Legacy name: sent after sf-file-upload-attach with the same detail until 2026-12-01 (aliases.json).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "input",
+                "drop"
+              ]
+            },
+            "multiple": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "getItems": {
+        "summary": "The listed files as item objects.",
+        "arguments": [],
+        "returns": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "setItems": {
+        "summary": "Replace the list with these items (name, fileSize, state, progress, errorMessage). Returns the element.",
+        "arguments": [
+          {
+            "name": "items",
+            "type": "array",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setState": {
+        "summary": "Apply several inputs at once (size, icon, linkText, text, formats, supportingText, accept, multiple, disabled, items). Returns the element.",
+        "arguments": [
+          {
+            "name": "state",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFileAdd": {
+        "summary": "Listen for sf-file-upload:file-add; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFileError": {
+        "summary": "Listen for sf-file-upload:file-error; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFileComplete": {
+        "summary": "Listen for sf-file-upload:file-complete; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFileRemove": {
+        "summary": "Listen for sf-file-upload:remove; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFileRetry": {
+        "summary": "Listen for sf-file-upload:retry; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onComplete": {
+        "summary": "Listen for sf-file-upload:complete; handler receives the event. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "alias-conflict: vocabulary 1.1.5 §9.1 decides -- the colon names follow attach, attached, detach, rejected, retry, completed, failed and finished; stand 18's planned hyphen names (sf-file-upload-select, -file-add, …) never shipped and get no alias",
-    "completed, not uploaded: vocabulary 1.1.5 §9.1 names the end of an upload stream completed (§5.2, standard §10.8); 1.1.2 had planned -uploaded",
-    "streams (§10.8): each entry is a stream keyed by its id -- begun when it enters process (a choice, a drop, a retry), chunk {done, total} when the host moves its progress, then exactly one of completed (done), failed {reason, message} (error) or cancelled (removed while in process); finished when every entry is done",
-    "version: 1.1.0 -- eight events take their vocabulary names behind dated aliases, and begun, chunk and cancelled are added; a minor while the aliases hold (§4.10)",
-    "key-effects: Enter and Space on the area open the platform file dialog",
-    "setter: items is a writable list setting (§4.4: no set-<name> action, no rule calls it); setItems stays a method of the class outside the interface",
-    "item-shape: id, name, file-size, progress, state, error-message, retry-text, file",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
-    "examples: examples.json from studio.fixture.json, studio.scenario.json and the docs",
-    "css-variables: seven public variables read by the class sheet with the role as fallback, the dragged-over pair among them (§6)",
-    "form: none -- the area uploads nothing and submits nothing; the host uploads each file and writes items back (its x-summary)",
-    "actions answer outcomes (§4.4): remove-item {index} and clear are applied, or refused no-item / unchanged",
-    "host-states: data-dragged-over while files are held over the area (§5.3); the class component keeps its .dragover class",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

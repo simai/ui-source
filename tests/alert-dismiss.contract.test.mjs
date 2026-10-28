@@ -17,9 +17,10 @@ test('Alert default close is named and bound through the stable root', async () 
 test('Alert close label is present in its source-owned contract and reference fixture', async () => {
   const manifest = JSON.parse(await read('smart.manifest.json'));
   const fixture = JSON.parse(await read('studio.fixture.json'));
-  // Empty: the runtime reads the attribute, then the page language's dictionary;
-  // the English default the manifest used to show was never used (2026-10-13).
-  assert.equal(manifest.inputs.properties['close-label'].default, '');
+  // No fixed default: the runtime reads the attribute, then the page language's
+  // dictionary (default-from); the English default the manifest used to show was
+  // never used (2026-10-13), and the generated registry names none (standard 1.4).
+  assert.equal(manifest.inputs.properties['close-label'].default, undefined);
   assert.equal(fixture.props['close-label'], 'Закрыть уведомление');
 });
 

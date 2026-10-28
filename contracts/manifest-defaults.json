@@ -36,39 +36,9 @@
       "reason": "The template takes the initial value (value, else start, else 0); the start attribute itself is empty."
     },
     {
-      "component": "alert",
-      "prop": "closeLabel",
-      "reason": "The page language's text when not set: \"Close alert\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "breadcrumbs",
       "prop": "ariaLabel",
       "reason": "The page language's text when not set: \"Breadcrumb\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "drawer",
-      "prop": "closeLabel",
-      "reason": "The page language's text when not set: \"Close drawer\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "dropdown",
-      "prop": "searchPlaceholder",
-      "reason": "The page language's text when not set: \"Search\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "file-preview",
-      "prop": "downloadLabel",
-      "reason": "The page language's text when not set: \"Download file\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "file-preview",
-      "prop": "removeLabel",
-      "reason": "The page language's text when not set: \"Remove file\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "file-upload",
-      "prop": "linkText",
-      "reason": "The page language's text when not set: \"Click to upload\" on an English page, the dictionary's word on another."
     },
     {
       "component": "pagination",
@@ -76,129 +46,9 @@
       "reason": "The page language's text when not set: \"Result pages\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "pagination",
-      "prop": "pagesLabel",
-      "reason": "The page language's text when not set: \"Pages:\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "pageLabel",
-      "reason": "The page language's text when not set: \"Page\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "previousLabel",
-      "reason": "The page language's text when not set: \"Previous page\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "nextLabel",
-      "reason": "The page language's text when not set: \"Next page\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "lastLabel",
-      "reason": "The page language's text when not set: \"Last\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "totalLabel",
-      "reason": "The page language's text when not set: \"Total:\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "selectedLabel",
-      "reason": "The page language's text when not set: \"Selected:\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "showMoreText",
-      "reason": "The page language's text when not set: \"Show more\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "pageSizeLabel",
-      "reason": "The page language's text when not set: \"Per page:\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "actionApplyText",
-      "reason": "The page language's text when not set: \"Apply\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "actionForAllLabel",
-      "reason": "The page language's text when not set: \"For all\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "actionsLabel",
-      "reason": "The page language's text when not set: \"Action for the selected records\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "actionChooseLabel",
-      "reason": "The page language's text when not set: \"Choose an action\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "actionsRegionLabel",
-      "reason": "The page language's text when not set: \"Actions for the selected\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "clearSelectionLabel",
-      "reason": "The page language's text when not set: \"Clear the selection\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "showCountLabel",
-      "reason": "The page language's text when not set: \"Show the number\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "countingLabel",
-      "reason": "The page language's text when not set: \"Counting\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "firstLabel",
-      "reason": "The page language's text when not set: \"First\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "pagination",
-      "prop": "pageFieldLabel",
-      "reason": "The page language's text when not set: \"Page:\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "spinner",
-      "prop": "label",
-      "reason": "The page language's text when not set: \"Loading...\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "steps",
       "prop": "ariaLabel",
       "reason": "The page language's text when not set: \"Steps\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "toast",
-      "prop": "closeLabel",
-      "reason": "The page language's text when not set: \"Close message\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "tree-item",
-      "prop": "openLabel",
-      "reason": "The page language's text when not set: \"Open item\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "tree-item",
-      "prop": "closeLabel",
-      "reason": "The page language's text when not set: \"Close item\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "tag",
-      "prop": "closeLabel",
-      "reason": "The page language's text when not set: \"Remove\" on an English page, the dictionary's word on another."
     },
     {
       "component": "color",
@@ -229,26 +79,6 @@
       "component": "quantity",
       "prop": "locale",
       "reason": "Follows the page when not set: the document's lang, so the decimal mark is a comma on a Russian page."
-    },
-    {
-      "component": "quantity",
-      "prop": "precision",
-      "reason": "Taken from the step when not set: the digits after the point that step has (none for the default step 1)."
-    },
-    {
-      "component": "quantity",
-      "prop": "pageStep",
-      "reason": "Ten steps when not set, so it follows the step: 10 for the default step 1."
-    },
-    {
-      "component": "quantity",
-      "prop": "decrementLabel",
-      "reason": "The page language's text when not set: \"Decrease value\" on an English page, the dictionary's words on another."
-    },
-    {
-      "component": "quantity",
-      "prop": "incrementLabel",
-      "reason": "The page language's text when not set: \"Increase value\" on an English page, the dictionary's words on another."
     },
     {
       "component": "quantity",

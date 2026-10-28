@@ -1,15 +1,16 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 SF.RuleLoader['cl-input'] = {
-    tags: ['sf-input'],
-    type: 'smart',
-    mode: 'smart',
-    js: true,
-    css: true,
-    relation: [
+  tags: ['sf-input'],
+  type: 'smart',
+  mode: 'smart',
+  js: true,
+  css: true,
+  relation: [
     { name: 'inputs' },
     { name: 'cl-icon' },
     // The reset back to an inherited value is an icon button (simai/ui-source#28).
     { name: 'icon-buttons' },
-  ]
+  ],
 };
 
 // The bundle's former name cl-inputs (the folder was `inputs` until standard

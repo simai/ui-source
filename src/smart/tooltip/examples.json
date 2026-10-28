@@ -9,7 +9,17 @@
       "expect": {
         "name": "Сохранить черновик"
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "props": {
+          "text": "Полезная подсказка",
+          "supporting-text": "Дополнительная информация",
+          "type": "dark",
+          "size": "1",
+          "arrow": "bottom-center"
+        },
+        "scenario": {}
+      }
     },
     {
       "name": "dark",
@@ -45,6 +55,87 @@
       "expect": {
         "name": "Доступ"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-tooltip against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <div id=\"area\"><sf-tooltip id=\"t1\" text=\"Сохранить черновик\" supporting-text=\"Ctrl+S\" arrow=\"top-center\"></sf-tooltip></div>",
+          "  <sf-tooltip id=\"t-dark\" text=\"Тёмная\" appearance=\"dark\"></sf-tooltip>",
+          "  <sf-tooltip id=\"t-old\" text=\"Старое имя\" type=\"dark\"></sf-tooltip>",
+          "  <sf-tooltip id=\"t-slot\"><span slot=\"text\" id=\"slot-text\">Из слота</span></sf-tooltip>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-draws-text",
+          "title": "draws its text and supporting text",
+          "covers": "settings.text, settings.supporting-text",
+          "steps": [
+            {
+              "check": "document.querySelector('#t1 .sf-tooltip-text').textContent === 'Сохранить черновик' && document.querySelector('#t1 .sf-tooltip-supporting-text').textContent === 'Ctrl+S' && Boolean(document.querySelector('#t1 .sf-tooltip-tail'))"
+            }
+          ]
+        },
+        {
+          "id": "p2-appearance",
+          "title": "appearance dark reaches the class list",
+          "covers": "settings.appearance",
+          "steps": [
+            {
+              "check": "document.querySelector('#t-dark .sf-tooltip').className.includes('dark')",
+              "expect": {
+                "values": {
+                  "#t-dark.appearance": "dark"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-old-type-dated",
+          "title": "type still works and is noted with its dates",
+          "covers": "aliases.json type row",
+          "steps": [
+            {
+              "expect": {
+                "values": {
+                  "#t-old.appearance": "dark"
+                }
+              },
+              "check": "[...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-tooltip' && note.from === 'type' && note.remove_after === '2026-12-01')"
+            }
+          ]
+        },
+        {
+          "id": "p4-slot-placed",
+          "title": "a text slot is the page's node, placed",
+          "covers": "slots.text",
+          "steps": [
+            {
+              "check": "document.querySelector('#t-slot .sf-tooltip-text #slot-text')?.textContent === 'Из слота'"
+            }
+          ]
+        },
+        {
+          "id": "p5-public-variables",
+          "title": "a public variable on an ancestor reaches the tooltip",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "script": "(document.getElementById('area').style.setProperty('--sf-tooltip-background-color', 'rgb(1, 2, 3)'), true)",
+              "wait": 50,
+              "check": "getComputedStyle(document.querySelector('#t1 .sf-tooltip-tail')).getPropertyValue('--sf-tooltip-tail--background-color').trim() === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -30,6 +30,19 @@
     "words",
     "css-variables"
   ],
+  "component_manifest_drop": [
+    "$comment",
+    "description",
+    "examples",
+    "summary",
+    "x-detail",
+    "x-markup",
+    "x-note",
+    "x-outcomes",
+    "x-returns",
+    "x-shape",
+    "x-summary"
+  ],
   "modules": {
     "alias-table": {
       "source": "core/js/alias-table.js",

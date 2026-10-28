@@ -34,6 +34,17 @@
       "mode": "split",
       "section": "§8, vocabulary §5.1",
       "note": "the old detail adds root (the element), which §8 takes out of the new detail: the element's detail adapter makes it"
+    },
+    {
+      "from": "sf-field:reset",
+      "to": "sf-field-reset",
+      "kind": "event",
+      "component": "sf-dropdown",
+      "since": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "mode": "same-detail",
+      "section": "§8, §20.2",
+      "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first"
     }
   ]
 }

@@ -9,6 +9,23 @@
       },
       "expect": {
         "checked": true
+      },
+      "studio": {
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "setChecked",
+              "with": [
+                false
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -68,6 +85,182 @@
       },
       "expect": {
         "size": "2"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-toggle against component.json (standard simai.smart-component 1.3.8 §12, §17, gate 20)",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change"
+          ],
+          "box": "input[type=\"checkbox\"]"
+        },
+        "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
+        "checks": [
+          {
+            "id": "checked-without-value-submits-on",
+            "covers": "form.submits, settings.value default (§17.1 item 2)",
+            "field": "<sf-toggle name=\"auto\" checked label=\"Автоматически\"></sf-toggle>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "auto": "on"
+              },
+              "formNames": [
+                "auto"
+              ],
+              "innerNames": [
+                null
+              ],
+              "listed": 1
+            }
+          },
+          {
+            "id": "unchecked-submits-nothing",
+            "covers": "form.value",
+            "field": "<sf-toggle name=\"auto\" value=\"yes\" label=\"Автоматически\"></sf-toggle>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "auto": null
+              }
+            }
+          },
+          {
+            "id": "space-toggles",
+            "covers": "keyboard.host.Space toggle:checked, events.change (native)",
+            "field": "<sf-toggle name=\"auto\" value=\"yes\" label=\"Автоматически\"></sf-toggle>",
+            "user": "keyboard:Space",
+            "expect": {
+              "events": [
+                {
+                  "type": "input"
+                },
+                {
+                  "type": "change"
+                }
+              ],
+              "host": {
+                "attributes": {
+                  "checked": ""
+                },
+                "props": {
+                  "checked": true
+                }
+              },
+              "formData": {
+                "auto": "yes"
+              }
+            }
+          },
+          {
+            "id": "setting-checked-is-silent",
+            "covers": "§8: a value set from outside sends nothing",
+            "field": "<sf-toggle name=\"auto\" label=\"Автоматически\"></sf-toggle>",
+            "setting": {
+              "name": "checked",
+              "value": true
+            },
+            "expect": {
+              "events": [],
+              "formData": {
+                "auto": "on"
+              }
+            }
+          },
+          {
+            "id": "disabled-leaves-the-form",
+            "covers": "form.disabled (§17.1 item 3)",
+            "field": "<sf-toggle name=\"auto\" checked label=\"Автоматически\"></sf-toggle>",
+            "setting": {
+              "name": "disabled",
+              "value": true
+            },
+            "expect": {
+              "formData": {
+                "auto": null
+              },
+              "disabled": {
+                "input[type=\"checkbox\"]": true
+              }
+            }
+          },
+          {
+            "id": "form-reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4), no events",
+            "field": "<sf-toggle name=\"auto\" value=\"yes\" label=\"Автоматически\"></sf-toggle>",
+            "given": [
+              {
+                "user": "keyboard:Space"
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "events": [],
+              "host": {
+                "attributes": {
+                  "checked": null
+                }
+              },
+              "formData": {
+                "auto": null
+              }
+            }
+          },
+          {
+            "id": "custom-validity-blocks-submit",
+            "covers": "form.validity custom-error (§17.2)",
+            "field": "<sf-toggle name=\"auto\" checked label=\"Автоматически\"></sf-toggle>",
+            "action": {
+              "name": "set-custom-validity",
+              "with": "Нужно подтвердить"
+            },
+            "expect": {
+              "checkValidity": false,
+              "validity": {
+                "customError": true,
+                "valid": false
+              }
+            }
+          },
+          {
+            "id": "legacy-type-is-kind",
+            "covers": "aliases.json type -> kind (§16.20)",
+            "field": "<sf-toggle name=\"auto\" label=\"Автоматически\"></sf-toggle>",
+            "setting": {
+              "name": "type",
+              "value": "icon"
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "kind": "icon"
+                },
+                "props": {
+                  "kind": "icon"
+                }
+              },
+              "journal": [
+                {
+                  "from": "type",
+                  "to": "kind",
+                  "kind": "setting",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ]

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.1.2",
-  "title": "Tree Item",
-  "summary": "One accessible node in a Smart Tree hierarchy.",
+  "version": "1.1.3",
+  "title": "Tree item",
+  "summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -26,7 +26,6 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.tree",
       "component.tree-item"
     ],
     "public_parts": []
@@ -36,15 +35,21 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "label": {
         "type": "string",
-        "default": ""
-      },
-      "text": {
-        "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The node's name; without it the node's own text is"
       },
       "href": {
         "type": "string",
@@ -61,35 +66,20 @@
       "kind": {
         "type": "string",
         "default": "folder",
+        "description": "What the tree item is: a folder or a file.",
         "enum": [
           "folder",
           "file"
-        ],
-        "description": "What the tree item is: a folder or a file."
+        ]
       },
       "value": {
         "type": "string",
-        "default": ""
-      },
-      "open": {
-        "type": "boolean",
-        "default": false
-      },
-      "selected": {
-        "type": "boolean",
-        "default": false
-      },
-      "active": {
-        "type": "boolean",
-        "default": false
+        "default": "",
+        "description": "The node's id: data-value of its row, the id its events carry"
       },
       "disabled": {
         "type": "boolean",
         "default": false
-      },
-      "items-data": {
-        "type": "array",
-        "default": []
       },
       "open-icon": {
         "type": "string",
@@ -101,7 +91,8 @@
       },
       "icon": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "false hides the folder or file icon"
       },
       "chevron-open-icon": {
         "type": "string",
@@ -113,29 +104,45 @@
       },
       "open-label": {
         "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Open item\" in English)."
+        "description": "The chevron's name while the branch is closed"
       },
       "close-label": {
         "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Close item\" in English)."
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
+        "description": "The chevron's name while the branch is open"
       },
       "item-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes for the row's box"
       },
       "container-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes for the row's line"
       },
       "name-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes for the row's name"
+      },
+      "open": {
+        "type": "boolean",
+        "default": false,
+        "description": "The branch is open"
+      },
+      "selected": {
+        "type": "boolean",
+        "default": false
+      },
+      "active": {
+        "type": "boolean",
+        "default": false,
+        "description": "The node is the current page: aria-current"
+      },
+      "text": {
+        "type": "string",
+        "default": "",
+        "description": "Dated alias of label until 2026-12-01."
       },
       "type": {
         "type": "string",
@@ -145,6 +152,14 @@
           "folder",
           "file"
         ]
+      },
+      "items-data": {
+        "type": "array",
+        "default": [],
+        "items": {
+          "type": "object"
+        },
+        "description": "The node's children as data (sf-tree's entry shape); children written inside are read once otherwise"
       }
     },
     "additionalProperties": false
@@ -152,6 +167,45 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "expand": {
+      "summary": "Opens the branch; refused for a file, a leaf or a disabled node",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "collapse": {
+      "summary": "Closes the branch",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "toggleOpen": {
+      "summary": "Opens a closed branch, closes an open one",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "activate": {
+      "summary": "What Enter does on a leaf: follows its link, or sends open",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object"
+        ]
+      }
+    },
+    "focusItem": {
+      "summary": "Moves the focus to the node's row",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object"
+        ]
+      }
+    },
     "setOpen": {
       "summary": "Opens or closes a branch and emits sf-tree-item-toggle; does nothing for a file, a leaf, a disabled item or an unchanged state.",
       "arguments": [
@@ -180,24 +234,6 @@
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
-      }
-    },
-    "focusItem": {
-      "summary": "Moves DOM focus to this tree item.",
-      "arguments": [],
-      "returns": {
-        "type": [
-          "object"
-        ]
-      }
-    },
-    "activate": {
-      "summary": "Activates the item link or emits the item click event.",
-      "arguments": [],
-      "returns": {
-        "type": [
-          "object"
-        ]
       }
     },
     "toggle": {
@@ -229,6 +265,48 @@
     }
   },
   "events": {
+    "sf-tree-item-open": {
+      "summary": "A press on the name, or Enter on a leaf without a link: open {id} of vocabulary 1.1.5 §5",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-tree-item-toggle": {
+      "summary": "The branch opened or closed (vocabulary §5 toggle); the DOM name sf-tree-item-toggle is unchanged",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "open",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "open": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-tree-item-click": {
       "summary": "Runtime event sf-tree-item-click.",
       "payload": {
@@ -266,42 +344,6 @@
           "item",
           "value",
           "originalEvent"
-        ]
-      }
-    },
-    "sf-tree-item-toggle": {
-      "summary": "Runtime event sf-tree-item-toggle.",
-      "payload": {
-        "type": "object",
-        "properties": {
-          "component": {
-            "type": "object",
-            "description": "The emitting element."
-          },
-          "tagName": {
-            "type": "string"
-          },
-          "template": {
-            "type": "string"
-          },
-          "item": {
-            "type": "object",
-            "description": "The sf-tree-item."
-          },
-          "open": {
-            "type": "boolean"
-          },
-          "value": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "component",
-          "tagName",
-          "template",
-          "item",
-          "open",
-          "value"
         ]
       }
     }
@@ -434,7 +476,7 @@
       },
       {
         "path": "src/smart/tree-item/rule.js",
-        "sha256": "289dc72c6fe9fb9aa5138b255db8c53f70237adea82202edce6f3896aadf1ca7"
+        "sha256": "6e4ee60de1ceb9aab18b5d8af08dfaeed56db9793d5f11adfabe0058756849d4"
       },
       {
         "path": "src/smart/tree-item/docs/docs.md",

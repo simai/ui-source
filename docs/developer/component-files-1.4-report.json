@@ -6,12 +6,12 @@
     {
       "repository": "simai/ui-source",
       "root": ".",
-      "smart_tree": "be37217c839d0eb2f241f933756a604bd3d4ed5f+dirty"
+      "smart_tree": "1c87d05aec329c7c716453c9923faa9bed4b7396"
     },
     {
       "repository": "simai/ui-pro",
       "root": "../../ui-pro/components",
-      "smart_tree": "824010b892c27619e39c72dd338f84f68d1148fb"
+      "smart_tree": "c2c97a94ac2e1194f1429cd16b2de379d5bc4446"
     }
   ],
   "generated_files": [
@@ -25,633 +25,70 @@
   ],
   "totals": {
     "rule.js": {
-      "identical": 41,
-      "semantic": 29,
+      "identical": 59,
+      "semantic": 11,
       "differs": 0,
       "new": 0,
       "not-generated": 0
     },
     "aliases.json": {
-      "identical": 58,
-      "semantic": 12,
-      "differs": 0,
-      "new": 0,
-      "not-generated": 0
-    },
-    "meta.mjs": {
-      "identical": 0,
-      "semantic": 0,
-      "differs": 20,
-      "new": 0,
-      "not-generated": 0
-    },
-    "studio.fixture.json": {
-      "identical": 64,
-      "semantic": 2,
-      "differs": 0,
-      "new": 0,
-      "not-generated": 0
-    },
-    "studio.scenario.json": {
-      "identical": 61,
-      "semantic": 2,
-      "differs": 0,
-      "new": 0,
-      "not-generated": 0
-    },
-    "probe.json": {
-      "identical": 66,
+      "identical": 67,
       "semantic": 3,
       "differs": 0,
       "new": 0,
       "not-generated": 0
     },
-    "smart.manifest.json": {
-      "identical": 30,
+    "meta.mjs": {
+      "identical": 20,
       "semantic": 0,
-      "differs": 40,
+      "differs": 0,
+      "new": 0,
+      "not-generated": 0
+    },
+    "studio.fixture.json": {
+      "identical": 65,
+      "semantic": 1,
+      "differs": 0,
+      "new": 0,
+      "not-generated": 0
+    },
+    "studio.scenario.json": {
+      "identical": 62,
+      "semantic": 1,
+      "differs": 0,
+      "new": 0,
+      "not-generated": 0
+    },
+    "probe.json": {
+      "identical": 68,
+      "semantic": 1,
+      "differs": 0,
+      "new": 0,
+      "not-generated": 0
+    },
+    "smart.manifest.json": {
+      "identical": 59,
+      "semantic": 0,
+      "differs": 11,
       "new": 0,
       "not-generated": 0
     }
   },
   "manifest_classes": {
-    "a2-rule": 627,
-    "a1-fact": 243,
-    "a1-words": 63,
-    "c": 166
+    "a1-fact": 134,
+    "a2-rule": 366,
+    "c": 99,
+    "a1-words": 6
   },
   "manifest_kinds": {
-    "a2-rule input.description": {
-      "count": 32,
-      "components": [
-        "alert",
-        "badge",
-        "context-menu",
-        "drawer",
-        "dropdown",
-        "file-preview",
-        "file-upload",
-        "image-field",
-        "input",
-        "list-item",
-        "modal",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "textarea",
-        "tree-item",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "message-log",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule input.default": {
-      "count": 127,
-      "components": [
-        "alert",
-        "badge",
-        "country-code",
-        "drawer",
-        "dropdown",
-        "file-preview",
-        "file-upload",
-        "input",
-        "modal",
-        "pagination",
-        "quantity",
-        "spinner",
-        "tag",
-        "toast",
-        "tree-item",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule base-setting": {
-      "count": 77,
-      "components": [
-        "alert",
-        "badge",
-        "button",
-        "button-group",
-        "composition-overlay",
-        "context-menu",
-        "country-code",
-        "drawer",
-        "dropdown",
-        "file-preview",
-        "file-upload",
-        "icon-button",
-        "image-field",
-        "input",
-        "list-item",
-        "modal",
-        "pagination",
-        "popover",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "skeleton",
-        "spinner",
-        "tag",
-        "textarea",
-        "toast",
-        "toggle",
-        "tooltip",
-        "tree-item",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-message",
-        "chat-window",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule base-detail-field": {
-      "count": 15,
-      "components": [
-        "alert",
-        "button-group",
-        "popover",
-        "tag",
-        "toast",
-        "tree-item"
-      ]
-    },
-    "a2-rule payload.required": {
-      "count": 97,
-      "components": [
-        "alert",
-        "button-group",
-        "composition-overlay",
-        "context-menu",
-        "file-upload",
-        "image-field",
-        "popover",
-        "tag",
-        "toast",
-        "tree-item",
-        "admin-menu",
-        "chat-composer",
-        "chat-message",
-        "chat-window",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule payload.additionalProperties": {
-      "count": 129,
-      "components": [
-        "alert",
-        "button-group",
-        "composition-overlay",
-        "context-menu",
-        "file-upload",
-        "image-field",
-        "popover",
-        "tag",
-        "toast",
-        "tree-item",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-message",
-        "chat-window",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a1-fact payload-fields-missing": {
-      "count": 9,
-      "components": [
-        "alert",
-        "context-menu",
-        "property-view",
-        "table"
-      ]
-    },
-    "a1-fact accessibility.role": {
-      "count": 6,
-      "components": [
-        "alert",
-        "badge",
-        "button",
-        "country-code",
-        "tag",
-        "toast"
-      ]
-    },
-    "a1-fact version": {
-      "count": 5,
-      "components": [
-        "badge",
-        "country-code",
-        "quantity",
-        "textarea",
-        "toggle"
-      ]
-    },
-    "a1-fact compatibility.aliases": {
-      "count": 4,
-      "components": [
-        "badge",
-        "button",
-        "icon-button",
-        "tag"
-      ]
-    },
-    "a1-fact uses-missing": {
-      "count": 18,
-      "components": [
-        "button",
-        "button-group",
-        "context-menu",
-        "country-code",
-        "dropdown",
-        "file-upload",
-        "input",
-        "list-item",
-        "modal",
-        "pagination",
-        "tag",
-        "textarea",
-        "toast",
-        "toggle",
-        "tooltip",
-        "data-view",
-        "property-view",
-        "table"
-      ]
-    },
     "a1-fact declarative.props": {
-      "count": 6,
-      "components": [
-        "button",
-        "admin-menu",
-        "chat-window",
-        "data-view",
-        "property-view",
-        "table"
-      ]
-    },
-    "a2-rule input.enum-former": {
-      "count": 1,
-      "components": [
-        "button"
-      ]
-    },
-    "a2-rule input.enum-form": {
-      "count": 2,
-      "components": [
-        "button",
-        "icon-button"
-      ]
-    },
-    "a1-fact input.default": {
-      "count": 36,
-      "components": [
-        "button",
-        "button-group",
-        "dropdown",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "spinner",
-        "textarea",
-        "admin-menu",
-        "data-view"
-      ]
-    },
-    "a1-words input.description": {
-      "count": 32,
-      "components": [
-        "button",
-        "composition-overlay",
-        "file-upload",
-        "list-item",
-        "pagination",
-        "tag",
-        "tree-item",
-        "chat-composer",
-        "chat-interlocutor",
-        "thread-list"
-      ]
-    },
-    "a1-fact event-missing": {
-      "count": 37,
-      "components": [
-        "button",
-        "context-menu",
-        "country-code",
-        "drawer",
-        "file-preview",
-        "list-item",
-        "modal",
-        "pagination",
-        "popover",
-        "tag",
-        "toast",
-        "tree-item",
-        "table"
-      ]
-    },
-    "a2-rule method.arguments-form": {
-      "count": 56,
-      "components": [
-        "button-group",
-        "composition-overlay",
-        "context-menu",
-        "file-upload",
-        "image-field",
-        "pagination",
-        "popover",
-        "quantity",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-window",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a1-words summary": {
       "count": 5,
       "components": [
-        "composition-overlay",
-        "list-item",
-        "modal",
-        "tree-item",
-        "chat-composer"
-      ]
-    },
-    "a1-words method.summary": {
-      "count": 13,
-      "components": [
-        "composition-overlay",
-        "tree-item"
-      ]
-    },
-    "a1-words event.summary": {
-      "count": 6,
-      "components": [
-        "composition-overlay",
-        "tree-item"
-      ]
-    },
-    "a2-rule payload-field.type-form": {
-      "count": 47,
-      "components": [
-        "composition-overlay",
-        "file-upload",
-        "image-field",
         "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-message",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule payload-field.enum-form": {
-      "count": 2,
-      "components": [
-        "composition-overlay"
-      ]
-    },
-    "c payload-field": {
-      "count": 87,
-      "components": [
-        "composition-overlay",
-        "file-upload",
-        "image-field",
-        "popover",
-        "quantity",
-        "toast",
-        "tree-item",
-        "admin-menu",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table"
-      ]
-    },
-    "a2-rule host-attribute": {
-      "count": 3,
-      "components": [
-        "context-menu",
-        "popover",
-        "toast"
-      ]
-    },
-    "c input-undeclared": {
-      "count": 21,
-      "components": [
-        "context-menu",
-        "country-code",
-        "file-preview",
-        "image-field",
-        "modal",
-        "quantity",
-        "spinner",
-        "tag",
-        "chat-message",
-        "chat-window"
-      ]
-    },
-    "a1-fact input.type": {
-      "count": 16,
-      "components": [
-        "context-menu",
-        "dropdown",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "skeleton",
-        "spinner",
-        "change-confirm",
-        "message-log",
-        "thread-list"
-      ]
-    },
-    "c method.arguments": {
-      "count": 11,
-      "components": [
-        "context-menu",
-        "drawer",
-        "modal",
-        "pagination",
-        "popover",
         "chat-window",
-        "thread-list"
-      ]
-    },
-    "a1-fact payload-null": {
-      "count": 2,
-      "components": [
-        "context-menu"
-      ]
-    },
-    "a2-rule payload.description": {
-      "count": 9,
-      "components": [
-        "context-menu",
-        "quantity",
-        "textarea",
-        "toggle",
-        "data-view",
-        "table"
-      ]
-    },
-    "a2-rule order": {
-      "count": 7,
-      "components": [
-        "drawer",
-        "file-preview",
-        "icon-button",
-        "quantity",
-        "chat-composer",
-        "chat-message",
-        "chat-window"
-      ]
-    },
-    "a2-rule payload-ref": {
-      "count": 3,
-      "components": [
-        "dropdown"
-      ]
-    },
-    "a1-fact event-stale": {
-      "count": 11,
-      "components": [
-        "dropdown",
-        "modal",
-        "data-view",
-        "property-view"
-      ]
-    },
-    "a1-words accessibility.role-words": {
-      "count": 7,
-      "components": [
-        "dropdown",
-        "list-item",
-        "skeleton",
-        "spinner",
-        "tooltip",
-        "chat-window",
-        "table"
-      ]
-    },
-    "a1-fact input-stale": {
-      "count": 2,
-      "components": [
-        "file-preview",
-        "chat-window"
-      ]
-    },
-    "c payload-field.values": {
-      "count": 7,
-      "components": [
-        "file-upload",
-        "admin-menu",
         "data-view",
         "property-view",
         "table"
-      ]
-    },
-    "a1-fact input.minimum": {
-      "count": 7,
-      "components": [
-        "icon-button",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "spinner",
-        "chat-window"
-      ]
-    },
-    "a1-fact title": {
-      "count": 7,
-      "components": [
-        "input",
-        "list-item",
-        "textarea",
-        "tree-item",
-        "data-view",
-        "property-view",
-        "table"
-      ]
-    },
-    "a1-fact method-missing": {
-      "count": 12,
-      "components": [
-        "modal",
-        "progress-bar",
-        "progress-scale",
-        "toast",
-        "tree-item",
-        "data-view",
-        "property-view",
-        "table"
-      ]
-    },
-    "a1-fact input.maximum": {
-      "count": 4,
-      "components": [
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "chat-window"
-      ]
-    },
-    "a2-rule payload.type": {
-      "count": 7,
-      "components": [
-        "quantity",
-        "textarea",
-        "toggle",
-        "table"
-      ]
-    },
-    "c uses-not-loaded": {
-      "count": 2,
-      "components": [
-        "tree-item",
-        "data-view"
-      ]
-    },
-    "a2-rule input.items": {
-      "count": 1,
-      "components": [
-        "tree-item"
       ]
     },
     "a2-rule declarative.assets": {
@@ -677,12 +114,140 @@
         "property-view"
       ]
     },
+    "a2-rule input.description": {
+      "count": 7,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "message-log",
+        "table",
+        "thread-list"
+      ]
+    },
+    "a2-rule input.default": {
+      "count": 88,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "message-log",
+        "property-view",
+        "table",
+        "thread-list"
+      ]
+    },
+    "a1-fact input.default": {
+      "count": 26,
+      "components": [
+        "admin-menu",
+        "chat-message",
+        "chat-window",
+        "data-view"
+      ]
+    },
+    "a2-rule base-setting": {
+      "count": 24,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-message",
+        "chat-window",
+        "data-view",
+        "message-log",
+        "property-view",
+        "table",
+        "thread-list"
+      ]
+    },
     "a1-fact setting-missing": {
-      "count": 15,
+      "count": 18,
       "components": [
         "admin-menu",
         "data-view",
         "message-log",
+        "table",
+        "thread-list"
+      ]
+    },
+    "a2-rule method.arguments-form": {
+      "count": 35,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-window",
+        "data-view",
+        "message-log",
+        "property-view",
+        "table",
+        "thread-list"
+      ]
+    },
+    "a2-rule payload-field.type-form": {
+      "count": 37,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-message",
+        "data-view",
+        "message-log",
+        "property-view",
+        "table",
+        "thread-list"
+      ]
+    },
+    "c payload-field.values": {
+      "count": 6,
+      "components": [
+        "admin-menu",
+        "data-view",
+        "property-view",
+        "table"
+      ]
+    },
+    "a2-rule payload.additionalProperties": {
+      "count": 93,
+      "components": [
+        "admin-menu",
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-message",
+        "chat-window",
+        "data-view",
+        "message-log",
+        "property-view",
+        "table",
+        "thread-list"
+      ]
+    },
+    "c payload-field": {
+      "count": 50,
+      "components": [
+        "admin-menu",
+        "data-view",
+        "message-log",
+        "property-view",
+        "table"
+      ]
+    },
+    "a2-rule payload.required": {
+      "count": 63,
+      "components": [
+        "admin-menu",
+        "chat-composer",
+        "chat-message",
+        "chat-window",
+        "data-view",
+        "message-log",
+        "property-view",
         "table",
         "thread-list"
       ]
@@ -693,6 +258,16 @@
         "admin-menu",
         "chat-composer",
         "chat-window"
+      ]
+    },
+    "a1-fact input.type": {
+      "count": 12,
+      "components": [
+        "change-confirm",
+        "chat-message",
+        "chat-window",
+        "message-log",
+        "thread-list"
       ]
     },
     "a1-fact alias-event-missing": {
@@ -720,6 +295,28 @@
         "thread-list"
       ]
     },
+    "a1-words summary": {
+      "count": 1,
+      "components": [
+        "chat-composer"
+      ]
+    },
+    "a2-rule order": {
+      "count": 3,
+      "components": [
+        "chat-composer",
+        "chat-message",
+        "chat-window"
+      ]
+    },
+    "a1-words input.description": {
+      "count": 3,
+      "components": [
+        "chat-composer",
+        "chat-interlocutor",
+        "thread-list"
+      ]
+    },
     "a2-rule template-open": {
       "count": 2,
       "components": [
@@ -739,6 +336,76 @@
         "chat-window"
       ]
     },
+    "a1-fact input.minimum": {
+      "count": 1,
+      "components": [
+        "chat-window"
+      ]
+    },
+    "a1-fact input.maximum": {
+      "count": 1,
+      "components": [
+        "chat-window"
+      ]
+    },
+    "c method.arguments": {
+      "count": 4,
+      "components": [
+        "chat-window",
+        "thread-list"
+      ]
+    },
+    "a1-words accessibility.role-words": {
+      "count": 2,
+      "components": [
+        "chat-window",
+        "table"
+      ]
+    },
+    "a1-fact title": {
+      "count": 3,
+      "components": [
+        "data-view",
+        "property-view",
+        "table"
+      ]
+    },
+    "a1-fact uses-missing": {
+      "count": 3,
+      "components": [
+        "data-view",
+        "property-view",
+        "table"
+      ]
+    },
+    "c uses-not-loaded": {
+      "count": 1,
+      "components": [
+        "data-view"
+      ]
+    },
+    "a1-fact method-missing": {
+      "count": 3,
+      "components": [
+        "data-view",
+        "property-view",
+        "table"
+      ]
+    },
+    "a1-fact event-stale": {
+      "count": 8,
+      "components": [
+        "data-view",
+        "property-view"
+      ]
+    },
+    "a2-rule payload.description": {
+      "count": 2,
+      "components": [
+        "data-view",
+        "table"
+      ]
+    },
     "c event-undeclared": {
       "count": 8,
       "components": [
@@ -752,19 +419,33 @@
         "property-view"
       ]
     },
+    "a1-fact payload-fields-missing": {
+      "count": 6,
+      "components": [
+        "property-view",
+        "table"
+      ]
+    },
     "a1-fact input.enum-values-missing": {
       "count": 1,
       "components": [
         "table"
       ]
+    },
+    "a2-rule payload.type": {
+      "count": 2,
+      "components": [
+        "table"
+      ]
+    },
+    "a1-fact event-missing": {
+      "count": 2,
+      "components": [
+        "table"
+      ]
     }
   },
-  "meta_classes": {
-    "a2-rule": 296,
-    "c": 2,
-    "a1-fact": 6,
-    "a1-words": 4
-  },
+  "meta_classes": {},
   "registry_keys": {
     "capabilities": {
       "components": 42,
@@ -1407,7 +1088,7 @@
     },
     "alias-events": {
       "components": 41,
-      "lines": 2549,
+      "lines": 2569,
       "home": "?",
       "in": [
         "accordion",
@@ -1511,8 +1192,8 @@
       ]
     },
     "inputs": {
-      "components": 37,
-      "lines": 461,
+      "components": 38,
+      "lines": 500,
       "home": "base/host words and constraints §4.2 has no field for (minLength, required): add them to §4.2 or drop",
       "in": [
         "accordion",
@@ -1541,6 +1222,7 @@
         "steps",
         "switch",
         "tag",
+        "toast",
         "tooltip",
         "admin-menu",
         "change-confirm",
@@ -1556,7 +1238,7 @@
     },
     "composition-declarative": {
       "components": 6,
-      "lines": 431,
+      "lines": 432,
       "home": "derived except standard/profiles/data/persistence/presentation: generate it",
       "in": [
         "button",
@@ -1753,805 +1435,6 @@
     }
   },
   "conflicts": [
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-select.payload.properties.node_id",
-      "committed": "{\"type\":[\"string\",\"null\"]}",
-      "generated": "absent",
-      "why": "node_id only in the registry",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:405",
-        "src/smart/composition-overlay/component.json:51"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-select.payload.properties.ids",
-      "committed": "absent",
-      "generated": "{\"type\":\"array\"}",
-      "why": "ids only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:400",
-        "src/smart/composition-overlay/component.json:53"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-select.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:400",
-        "src/smart/composition-overlay/component.json:54"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-insert.payload.properties.parent_id",
-      "committed": "{\"type\":\"string\"}",
-      "generated": "absent",
-      "why": "parent_id only in the registry",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:437",
-        "src/smart/composition-overlay/component.json:74"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-insert.payload.properties.parent",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "parent only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:432",
-        "src/smart/composition-overlay/component.json:76"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.node_id",
-      "committed": "{\"type\":\"string\"}",
-      "generated": "absent",
-      "why": "node_id only in the registry",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:471",
-        "src/smart/composition-overlay/component.json:84"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.parent_id",
-      "committed": "{\"type\":\"string\"}",
-      "generated": "absent",
-      "why": "parent_id only in the registry",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:472",
-        "src/smart/composition-overlay/component.json:84"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.index",
-      "committed": "{\"type\":\"integer\"}",
-      "generated": "absent",
-      "why": "index only in the registry",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:474",
-        "src/smart/composition-overlay/component.json:84"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.ids",
-      "committed": "absent",
-      "generated": "{\"type\":\"array\"}",
-      "why": "ids only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:466",
-        "src/smart/composition-overlay/component.json:94"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:466",
-        "src/smart/composition-overlay/component.json:95"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.parent",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "parent only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:466",
-        "src/smart/composition-overlay/component.json:96"
-      ]
-    },
-    {
-      "component": "composition-overlay",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-composition-overlay-move.payload.properties.position",
-      "committed": "absent",
-      "generated": "{\"type\":\"number\"}",
-      "why": "position only in component.json",
-      "where": [
-        "src/smart/composition-overlay/smart.manifest.json:466",
-        "src/smart/composition-overlay/component.json:97"
-      ]
-    },
-    {
-      "component": "context-menu",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.search",
-      "committed": "{\"type\":\"object\",\"default\":null,\"description\":\"{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-s...",
-      "generated": "absent",
-      "why": "the code reads search; component.json does not declare it",
-      "where": [
-        "src/smart/context-menu/smart.manifest.json:131"
-      ]
-    },
-    {
-      "component": "context-menu",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.close.arguments",
-      "committed": "[{\"name\":\"options\",\"schema\":{\"type\":\"object\",\"properties\":{\"restoreFocus\":{\"type\":\"boolean\",\"default\":true}}},\"required\":false}]",
-      "generated": "[{\"name\":\"reason\",\"schema\":{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}}]",
-      "why": "arguments differ: registry [\"options\"], component.json [\"reason\"]",
-      "where": [
-        "src/smart/context-menu/smart.manifest.json:313",
-        "src/smart/context-menu/component.json:255"
-      ]
-    },
-    {
-      "component": "country-code",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.form",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"Optional id of the native owning form when the field is outside it.\"}",
-      "generated": "absent",
-      "why": "the code reads form; component.json does not declare it",
-      "where": [
-        "src/smart/country-code/smart.manifest.json:53"
-      ]
-    },
-    {
-      "component": "drawer",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.open.arguments",
-      "committed": "[{\"name\":\"options\",\"type\":\"object\",\"required\":false}]",
-      "generated": "[]",
-      "why": "arguments differ: registry [\"options\"], component.json []",
-      "where": [
-        "src/smart/drawer/smart.manifest.json:229",
-        "src/smart/drawer/component.json:212"
-      ]
-    },
-    {
-      "component": "drawer",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.close.arguments",
-      "committed": "[{\"name\":\"options\",\"type\":\"object\",\"required\":false}]",
-      "generated": "[{\"name\":\"reason\",\"schema\":{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}}]",
-      "why": "arguments differ: registry [\"options\"], component.json [\"reason\"]",
-      "where": [
-        "src/smart/drawer/smart.manifest.json:243",
-        "src/smart/drawer/component.json:212"
-      ]
-    },
-    {
-      "component": "file-preview",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.open",
-      "committed": "{\"type\":\"boolean\",\"default\":false}",
-      "generated": "absent",
-      "why": "the code reads open; component.json does not declare it",
-      "where": [
-        "src/smart/file-preview/smart.manifest.json:87"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field.values",
-      "path": "events.change.payload.properties.source.enum",
-      "committed": "absent",
-      "generated": "[\"input\",\"drop\"]",
-      "why": "the values differ",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:276",
-        "src/smart/file-upload/component.json:93"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-attached.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:311",
-        "src/smart/file-upload/component.json:117"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-completed.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:365",
-        "src/smart/file-upload/component.json:164"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-failed.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:407",
-        "src/smart/file-upload/component.json:172"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-failed.payload.properties.reason",
-      "committed": "absent",
-      "generated": "{\"type\":\"string\"}",
-      "why": "reason only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:407",
-        "src/smart/file-upload/component.json:176"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-failed.payload.properties.message",
-      "committed": "absent",
-      "generated": "{\"type\":\"string\"}",
-      "why": "message only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:407",
-        "src/smart/file-upload/component.json:177"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-detach.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:483",
-        "src/smart/file-upload/component.json:127"
-      ]
-    },
-    {
-      "component": "file-upload",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-file-upload-retry.payload.properties.id",
-      "committed": "absent",
-      "generated": "{}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/file-upload/smart.manifest.json:525",
-        "src/smart/file-upload/component.json:142"
-      ]
-    },
-    {
-      "component": "image-field",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.value",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"The image, in the file shape {value, label, mime, size, href}: value the host's id, label the file name (the thumbnail's alt), mime its type, size bytes...",
-      "generated": "absent",
-      "why": "the code reads value; component.json does not declare it",
-      "where": [
-        "src/smart/image-field/smart.manifest.json:43"
-      ]
-    },
-    {
-      "component": "image-field",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-image-field-attach.payload.properties.files",
-      "committed": "absent",
-      "generated": "{\"type\":\"array\"}",
-      "why": "files only in component.json",
-      "where": [
-        "src/smart/image-field/smart.manifest.json:298",
-        "src/smart/image-field/component.json:104"
-      ]
-    },
-    {
-      "component": "modal",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.unclose",
-      "committed": "{\"type\":\"boolean\",\"default\":false}",
-      "generated": "absent",
-      "why": "the code reads unclose; component.json does not declare it",
-      "where": [
-        "src/smart/modal/smart.manifest.json:61"
-      ]
-    },
-    {
-      "component": "modal",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.hide",
-      "committed": "{\"type\":\"boolean\",\"default\":false}",
-      "generated": "absent",
-      "why": "the code reads hide; component.json does not declare it",
-      "where": [
-        "src/smart/modal/smart.manifest.json:65"
-      ]
-    },
-    {
-      "component": "modal",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.open.arguments",
-      "committed": "[{\"name\":\"options\",\"type\":[\"object\",\"boolean\"],\"required\":false}]",
-      "generated": "[{\"name\":\"animate\",\"schema\":{\"type\":\"boolean\"}}]",
-      "why": "arguments differ: registry [\"options\"], component.json [\"animate\"]",
-      "where": [
-        "src/smart/modal/smart.manifest.json:258",
-        "src/smart/modal/component.json:282"
-      ]
-    },
-    {
-      "component": "modal",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.close.arguments",
-      "committed": "[{\"name\":\"options\",\"type\":\"object\",\"required\":false}]",
-      "generated": "[{\"name\":\"reason\",\"schema\":{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}}]",
-      "why": "arguments differ: registry [\"options\"], component.json [\"reason\"]",
-      "where": [
-        "src/smart/modal/smart.manifest.json:275",
-        "src/smart/modal/component.json:282"
-      ]
-    },
-    {
-      "component": "pagination",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.showMore.arguments",
-      "committed": "[{\"name\":\"item\",\"type\":\"object\",\"required\":false}]",
-      "generated": "[]",
-      "why": "arguments differ: registry [\"item\"], component.json []",
-      "where": [
-        "src/smart/pagination/smart.manifest.json:344",
-        "src/smart/pagination/component.json:100"
-      ]
-    },
-    {
-      "component": "popover",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "method.arguments",
-      "path": "methods.close.arguments",
-      "committed": "[]",
-      "generated": "[{\"name\":\"reason\",\"schema\":{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}}]",
-      "why": "arguments differ: registry [], component.json [\"reason\"]",
-      "where": [
-        "src/smart/popover/smart.manifest.json:140",
-        "src/smart/popover/component.json:94"
-      ]
-    },
-    {
-      "component": "popover",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-popover-open.payload.properties.open",
-      "committed": "{\"type\":\"boolean\",\"const\":true}",
-      "generated": "absent",
-      "why": "open only in the registry",
-      "where": [
-        "src/smart/popover/smart.manifest.json:170",
-        "src/smart/popover/component.json:56"
-      ]
-    },
-    {
-      "component": "popover",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-popover-close.payload.properties.open",
-      "committed": "{\"type\":\"boolean\",\"const\":false}",
-      "generated": "absent",
-      "why": "open only in the registry",
-      "where": [
-        "src/smart/popover/smart.manifest.json:198",
-        "src/smart/popover/component.json:63"
-      ]
-    },
-    {
-      "component": "popover",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-popover-close.payload.properties.reason",
-      "committed": "absent",
-      "generated": "{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}",
-      "why": "reason only in component.json",
-      "where": [
-        "src/smart/popover/smart.manifest.json:183",
-        "src/smart/popover/component.json:65"
-      ]
-    },
-    {
-      "component": "popover",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-popover-close.payload.properties.unsaved",
-      "committed": "absent",
-      "generated": "{\"type\":\"boolean\"}",
-      "why": "unsaved only in component.json",
-      "where": [
-        "src/smart/popover/smart.manifest.json:183",
-        "src/smart/popover/component.json:75"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.value",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"The number the field holds, written with a point (`2567.5`); empty for none. The property reads a number or null and takes a number, numeric text or nul...",
-      "generated": "absent",
-      "why": "the code reads value; component.json does not declare it",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:44"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.change.payload.properties.value",
-      "committed": "{\"type\":[\"number\",\"null\"],\"description\":\"The number the field now holds; null when it is empty.\"}",
-      "generated": "absent",
-      "why": "value only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:303",
-        "src/smart/quantity/component.json:104"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.change.payload.properties.text",
-      "committed": "{\"type\":\"string\",\"description\":\"The number as the field writes it, in the page's language.\"}",
-      "generated": "absent",
-      "why": "text only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:310",
-        "src/smart/quantity/component.json:104"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.change.payload.properties.name",
-      "committed": "{\"type\":\"string\"}",
-      "generated": "absent",
-      "why": "name only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:314",
-        "src/smart/quantity/component.json:104"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.change.payload.properties.source",
-      "committed": "{\"type\":\"string\",\"enum\":[\"typing\",\"commit\",\"button\",\"keyboard\",\"reset\"],\"description\":\"What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value.\"}",
-      "generated": "absent",
-      "why": "source only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:317",
-        "src/smart/quantity/component.json:104"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.input.payload.properties.value",
-      "committed": "{\"type\":[\"number\",\"null\"],\"description\":\"The number the field now holds; null when it is empty.\"}",
-      "generated": "absent",
-      "why": "value only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:337",
-        "src/smart/quantity/component.json:126"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.input.payload.properties.text",
-      "committed": "{\"type\":\"string\",\"description\":\"The number as the field writes it, in the page's language.\"}",
-      "generated": "absent",
-      "why": "text only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:344",
-        "src/smart/quantity/component.json:126"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.input.payload.properties.name",
-      "committed": "{\"type\":\"string\"}",
-      "generated": "absent",
-      "why": "name only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:348",
-        "src/smart/quantity/component.json:126"
-      ]
-    },
-    {
-      "component": "quantity",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.input.payload.properties.source",
-      "committed": "{\"type\":\"string\",\"enum\":[\"typing\",\"commit\",\"button\",\"keyboard\",\"reset\"],\"description\":\"What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value.\"}",
-      "generated": "absent",
-      "why": "source only in the registry",
-      "where": [
-        "src/smart/quantity/smart.manifest.json:351",
-        "src/smart/quantity/component.json:126"
-      ]
-    },
-    {
-      "component": "spinner",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.width",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz...",
-      "generated": "absent",
-      "why": "the code reads width; component.json does not declare it",
-      "where": [
-        "src/smart/spinner/smart.manifest.json:46"
-      ]
-    },
-    {
-      "component": "spinner",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.height",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz...",
-      "generated": "absent",
-      "why": "the code reads height; component.json does not declare it",
-      "where": [
-        "src/smart/spinner/smart.manifest.json:51"
-      ]
-    },
-    {
-      "component": "spinner",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.stroke-width",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz...",
-      "generated": "absent",
-      "why": "the code reads stroke-width; component.json does not declare it",
-      "where": [
-        "src/smart/spinner/smart.manifest.json:83"
-      ]
-    },
-    {
-      "component": "spinner",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.dot-radius",
-      "committed": "{\"type\":\"string\",\"default\":\"\",\"description\":\"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz...",
-      "generated": "absent",
-      "why": "the code reads dot-radius; component.json does not declare it",
-      "where": [
-        "src/smart/spinner/smart.manifest.json:88"
-      ]
-    },
-    {
-      "component": "tag",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.type",
-      "committed": "{\"type\":\"string\",\"default\":\"checkbox\",\"description\":\"Legacy name that answered both questions from one list: a content word reaches kind, a status word reaches status. See contracts/public-api-axes...",
-      "generated": "absent",
-      "why": "the code reads type; component.json does not declare it",
-      "where": [
-        "src/smart/tag/smart.manifest.json:35"
-      ]
-    },
-    {
-      "component": "toast",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-toast-action.payload.properties.trigger",
-      "committed": "{\"type\":\"object\",\"description\":\"The pressed control.\"}",
-      "generated": "absent",
-      "why": "trigger only in the registry",
-      "where": [
-        "src/smart/toast/smart.manifest.json:231",
-        "src/smart/toast/component.json:55"
-      ]
-    },
-    {
-      "component": "toast",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-toast-close.payload.properties.trigger",
-      "committed": "{\"type\":[\"object\",\"null\"],\"description\":\"The close control that was pressed; null when closed from code or by the timer.\"}",
-      "generated": "absent",
-      "why": "trigger only in the registry",
-      "where": [
-        "src/smart/toast/smart.manifest.json:252",
-        "src/smart/toast/component.json:61"
-      ]
-    },
-    {
-      "component": "toast",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-toast-close.payload.properties.reason",
-      "committed": "absent",
-      "generated": "{\"enum\":[\"close\",\"escape\",\"outside\",\"cancelled\",\"api\"]}",
-      "why": "reason only in component.json",
-      "where": [
-        "src/smart/toast/smart.manifest.json:243",
-        "src/smart/toast/component.json:63"
-      ]
-    },
-    {
-      "component": "tree-item",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "uses-not-loaded",
-      "path": "composition.uses",
-      "committed": "[\"component.tree\"]",
-      "generated": "[\"component.icon-buttons\",\"component.icons\",\"component.tree-item\"]",
-      "why": "the registry names a use rule.js does not load",
-      "where": [
-        "src/smart/tree-item/smart.manifest.json:26"
-      ]
-    },
-    {
-      "component": "tree-item",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-tree-item-toggle.payload.properties.item",
-      "committed": "{\"type\":\"object\",\"description\":\"The sf-tree-item.\"}",
-      "generated": "absent",
-      "why": "item only in the registry",
-      "where": [
-        "src/smart/tree-item/smart.manifest.json:287",
-        "src/smart/tree-item/component.json:151"
-      ]
-    },
-    {
-      "component": "tree-item",
-      "package": "simai/ui-source",
-      "class": "c",
-      "kind": "payload-field",
-      "path": "events.sf-tree-item-toggle.payload.properties.id",
-      "committed": "absent",
-      "generated": "{\"type\":\"string\"}",
-      "why": "id only in component.json",
-      "where": [
-        "src/smart/tree-item/smart.manifest.json:272",
-        "src/smart/tree-item/component.json:153"
-      ]
-    },
     {
       "component": "admin-menu",
       "package": "simai/ui-pro",
@@ -2972,45 +1855,6 @@
       ]
     },
     {
-      "component": "chat-message",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.message",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":null,\"description\":\"The message, a property or the JSON island; texts are drawn as text, html is sanitized.\"}",
-      "generated": "absent",
-      "why": "the code reads message; component.json does not declare it",
-      "where": [
-        "src/smart/chat-message/smart.manifest.json:49"
-      ]
-    },
-    {
-      "component": "chat-message",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.display",
-      "committed": "{\"type\":\"object\",\"default\":{},\"description\":\"What the host knows that the server does not (the 0.3 view): wait, busy, feedback, retried, note, code, sources_open, brief, brief_draft; for person own...",
-      "generated": "absent",
-      "why": "the code reads display; component.json does not declare it",
-      "where": [
-        "src/smart/chat-message/smart.manifest.json:57"
-      ]
-    },
-    {
-      "component": "chat-message",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.features",
-      "committed": "{\"type\":\"object\",\"default\":{\"feedback\":true,\"proposals\":true,\"memory\":true,\"brief\":false},\"description\":\"What the surface offers: rating, proposals, memory notices, the task brief.\"}",
-      "generated": "absent",
-      "why": "the code reads features; component.json does not declare it",
-      "where": [
-        "src/smart/chat-message/smart.manifest.json:62"
-      ]
-    },
-    {
       "component": "chat-window",
       "package": "simai/ui-pro",
       "class": "c",
@@ -3022,84 +1866,6 @@
       "where": [
         "src/smart/chat-window/smart.manifest.json:114",
         "src/smart/chat-window/component.json:478"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.me",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":null,\"description\":\"port data me {id, name}: who reads\"}",
-      "generated": "absent",
-      "why": "the code reads me; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:155"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.conversation",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":null,\"description\":\"port data conversation: the open one {id, title, interlocutor, can_send, archived, revoked}, null when none is open\"}",
-      "generated": "absent",
-      "why": "the code reads conversation; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:168"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.history",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":{\"has_older\":false},\"description\":\"port data history {has_older}\"}",
-      "generated": "absent",
-      "why": "the code reads history; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:181"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.limits",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":{},\"description\":\"port data limits {body_chars, files_per_message, file_bytes, file_types}\"}",
-      "generated": "absent",
-      "why": "the code reads limits; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:201"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.notice",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":null,\"description\":\"port data notice {kind: info|error, text, retry}: a line above the field, an error with «Повторить» when retry is a function\"}",
-      "generated": "absent",
-      "why": "the code reads notice; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:214"
-      ]
-    },
-    {
-      "component": "chat-window",
-      "package": "simai/ui-pro",
-      "class": "c",
-      "kind": "input-undeclared",
-      "path": "inputs.properties.my-files",
-      "committed": "{\"type\":[\"object\",\"null\"],\"default\":null,\"description\":\"the window's data (x-my-files) {files [{id, name, size, type, created_at, saved_to_base, download_url}], used_bytes, quota_bytes}; download_u...",
-      "generated": "absent",
-      "why": "the code reads my-files; component.json does not declare it",
-      "where": [
-        "src/smart/chat-window/smart.manifest.json:239"
       ]
     },
     {
@@ -3844,7 +2610,7 @@
       "generated": "[\"sf-table-select\",\"sf-table-apply\",\"sf-table-save\",\"sf-table-column-settings-reset\",\"sf-table-create\",\"sf-table-filter-change\",\"sf-table-query\",\"sf-table-refresh\",\"sf-table-search-change\",\"sf-tabl...",
       "why": "the registry lists sf-table-action-intent, which the code still names, and component.json does not declare",
       "where": [
-        "src/smart/table/smart.manifest.json:91"
+        "src/smart/table/smart.manifest.json:92"
       ]
     },
     {
@@ -3857,8 +2623,8 @@
       "generated": "absent",
       "why": "the values differ",
       "where": [
-        "src/smart/table/smart.manifest.json:1197",
-        "src/smart/table/component.json:315"
+        "src/smart/table/smart.manifest.json:1202",
+        "src/smart/table/component.json:318"
       ]
     },
     {
@@ -3871,8 +2637,8 @@
       "generated": "absent",
       "why": "tableSettingsKey only in the registry",
       "where": [
-        "src/smart/table/smart.manifest.json:1198",
-        "src/smart/table/component.json:313"
+        "src/smart/table/smart.manifest.json:1203",
+        "src/smart/table/component.json:316"
       ]
     },
     {
@@ -3885,8 +2651,8 @@
       "generated": "absent",
       "why": "templateKey only in the registry",
       "where": [
-        "src/smart/table/smart.manifest.json:1240",
-        "src/smart/table/component.json:325"
+        "src/smart/table/smart.manifest.json:1245",
+        "src/smart/table/component.json:328"
       ]
     },
     {
@@ -3899,8 +2665,8 @@
       "generated": "absent",
       "why": "templateLabel only in the registry",
       "where": [
-        "src/smart/table/smart.manifest.json:1241",
-        "src/smart/table/component.json:325"
+        "src/smart/table/smart.manifest.json:1246",
+        "src/smart/table/component.json:328"
       ]
     },
     {
@@ -3913,8 +2679,8 @@
       "generated": "absent",
       "why": "columnSettings only in the registry",
       "where": [
-        "src/smart/table/smart.manifest.json:1541",
-        "src/smart/table/component.json:301"
+        "src/smart/table/smart.manifest.json:1546",
+        "src/smart/table/component.json:304"
       ]
     },
     {
@@ -3927,8 +2693,8 @@
       "generated": "{\"type\":\"string\"}",
       "why": "reason only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1530",
-        "src/smart/table/component.json:309"
+        "src/smart/table/smart.manifest.json:1535",
+        "src/smart/table/component.json:312"
       ]
     },
     {
@@ -3941,8 +2707,8 @@
       "generated": "{\"type\":\"object\"}",
       "why": "context only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1564",
-        "src/smart/table/component.json:336"
+        "src/smart/table/smart.manifest.json:1569",
+        "src/smart/table/component.json:339"
       ]
     },
     {
@@ -3955,8 +2721,8 @@
       "generated": "{\"type\":\"object\"}",
       "why": "parent only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1605",
-        "src/smart/table/component.json:412"
+        "src/smart/table/smart.manifest.json:1610",
+        "src/smart/table/component.json:415"
       ]
     },
     {
@@ -3969,8 +2735,8 @@
       "generated": "{\"type\":\"string\"}",
       "why": "cursor only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1605",
-        "src/smart/table/component.json:413"
+        "src/smart/table/smart.manifest.json:1610",
+        "src/smart/table/component.json:416"
       ]
     },
     {
@@ -3983,8 +2749,8 @@
       "generated": "{\"type\":\"object\"}",
       "why": "before only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1618",
-        "src/smart/table/component.json:426"
+        "src/smart/table/smart.manifest.json:1623",
+        "src/smart/table/component.json:429"
       ]
     },
     {
@@ -3997,8 +2763,8 @@
       "generated": "{\"type\":\"array\"}",
       "why": "order only in component.json",
       "where": [
-        "src/smart/table/smart.manifest.json:1618",
-        "src/smart/table/component.json:427"
+        "src/smart/table/smart.manifest.json:1623",
+        "src/smart/table/component.json:430"
       ]
     },
     {
@@ -4044,26 +2810,7 @@
       ]
     }
   ],
-  "meta_conflicts": [
-    {
-      "component": "button-group",
-      "class": "c",
-      "kind": "attribute-undeclared",
-      "path": "attributes.items",
-      "committed": "{\"kind\":\"json\",\"valueType\":\"array\",\"default\":\"[]\",\"description\":\"Selectable items with stable value, label, icon, count, icon-only, disabled and loading fields.\"}",
-      "generated": "absent",
-      "why": "the committed meta.mjs describes an attribute component.json does not declare"
-    },
-    {
-      "component": "tag",
-      "class": "c",
-      "kind": "attribute-undeclared",
-      "path": "attributes.type",
-      "committed": "{\"kind\":\"enum\",\"values\":[\"checkbox\",\"icon\",\"default\",\"color\",\"avatar\",\"info\",\"success\",\"warning\",\"error\"],\"default\":\"checkbox\",\"description\":\"Legacy name that answered both questions from one list:...",
-      "generated": "absent",
-      "why": "the committed meta.mjs describes an attribute component.json does not declare"
-    }
-  ],
+  "meta_conflicts": [],
   "unclassified": [],
   "components": [
     {
@@ -4105,34 +2852,17 @@
       "files": {
         "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.action.carries: alert in smart.manifest.json only",
-        "events.close.carries: reason in component.json only",
-        "events.close.carries: alert in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a2-rule": 10,
-        "a1-fact": 2
-      },
-      "meta": {
-        "a2-rule": 15
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "contracts": 35,
         "ownership": 9,
@@ -4196,33 +2926,19 @@
       "component": "badge",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 7
-      },
-      "meta": {
-        "a2-rule": 14
-      },
+      "manifest": {},
       "registry": {
         "tags": 3,
         "ownership": 9,
@@ -4264,33 +2980,18 @@
       "package": "simai/ui-source",
       "files": {
         "rule.js": "identical",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 6,
-        "a2-rule": 3,
-        "a1-words": 1
-      },
-      "meta": {
-        "a2-rule": 8
-      },
+      "manifest": {},
       "registry": {
         "tags": 3,
         "composition-declarative": 38,
@@ -4306,35 +3007,19 @@
       "component": "button-group",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.change.carries: component in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 2,
-        "a2-rule": 5
-      },
-      "meta": {
-        "a2-rule": 2,
-        "c": 1
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -4478,36 +3163,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.select.carries: ids in component.json only",
-        "events.select.carries: id in component.json only",
-        "events.select.carries: node_id in smart.manifest.json only",
-        "events.insert.carries: parent in component.json only",
-        "events.insert.carries: parent_id in smart.manifest.json only",
-        "events.move.carries: ids in component.json only",
-        "events.move.carries: id in component.json only",
-        "events.move.carries: parent in component.json only",
-        "events.move.carries: position in component.json only",
-        "events.move.carries: node_id in smart.manifest.json only",
-        "events.move.carries: parent_id in smart.manifest.json only",
-        "events.move.carries: index in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-words": 22,
-        "a2-rule": 25,
-        "c": 12
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "capabilities": 6,
         "persistence": 6,
@@ -4527,35 +3189,18 @@
       "component": "context-menu",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.close.carries: reason in component.json only",
-        "events.close.carries: unsaved in component.json only",
-        "actions.open-for.with: anchor in component.json only",
-        "actions.toggle-for.with: anchor in component.json only",
-        "actions.close.with: reason in component.json only",
-        "actions.close.with: options in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 8,
-        "a2-rule": 17,
-        "c": 2
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "item_contract": 62,
         "ownership": 9,
@@ -4565,7 +3210,7 @@
         "accessibility": 17,
         "compatibility": 14,
         "methods": 17,
-        "inputs": 12,
+        "inputs": 21,
         "inputs-required": 3
       }
     },
@@ -4603,28 +3248,18 @@
       "component": "country-code",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "studio.fixture.json": "semantic",
+        "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 4,
-        "c": 1,
-        "a2-rule": 4
-      },
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
@@ -4701,28 +3336,18 @@
       "component": "drawer",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 6,
-        "c": 2,
-        "a1-fact": 5
-      },
+      "manifest": {},
       "registry": {
         "readiness": 9,
         "contracts": 31,
@@ -4741,34 +3366,19 @@
       "component": "dropdown",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.css true <- rule.js (the folder holds no sheet)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 4,
-        "a2-rule": 7,
-        "a1-words": 1
-      },
-      "meta": {
-        "a2-rule": 19
-      },
+      "manifest": {},
       "registry": {
         "contracts": 37,
         "state": 9,
@@ -4779,7 +3389,7 @@
         "accessibility": 4,
         "compatibility": 12,
         "event-fields": 5,
-        "alias-events": 9,
+        "alias-events": 29,
         "methods": 10,
         "trait-inputs": 17
       }
@@ -4818,33 +3428,19 @@
       "component": "file-preview",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
-        "studio.scenario.json": "semantic",
+        "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 7,
-        "a1-fact": 3,
-        "c": 1
-      },
-      "meta": {
-        "a2-rule": 23
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 6,
         "contracts": 20,
@@ -4868,33 +3464,14 @@
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
-        "probe.json": "semantic",
-        "smart.manifest.json": "differs"
+        "probe.json": "identical",
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.attached.carries: id in component.json only",
-        "events.detach.carries: id in component.json only",
-        "events.retry.carries: id in component.json only",
-        "events.completed.carries: id in component.json only",
-        "events.failed.carries: id in component.json only",
-        "events.failed.carries: reason in component.json only",
-        "events.failed.carries: message in component.json only"
-      ],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 35,
-        "a1-words": 1,
-        "c": 8
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
@@ -4994,33 +3571,18 @@
       "package": "simai/ui-source",
       "files": {
         "rule.js": "identical",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 3,
-        "a1-fact": 2
-      },
-      "meta": {
-        "a2-rule": 5,
-        "a1-fact": 1
-      },
+      "manifest": {},
       "registry": {
         "tags": 3,
         "contracts": 47,
@@ -5042,26 +3604,14 @@
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
-        "probe.json": "semantic",
-        "smart.manifest.json": "differs"
+        "probe.json": "identical",
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.attach.carries: files in component.json only"
-      ],
-      "manifest": {
-        "a2-rule": 17,
-        "c": 2
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "persistence": 6,
@@ -5115,34 +3665,19 @@
       "component": "input",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 2,
-        "a2-rule": 7
-      },
-      "meta": {
-        "a1-fact": 1,
-        "a2-rule": 34
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "tags": 3,
@@ -5167,31 +3702,17 @@
       "files": {
         "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a1-words": 8,
-        "a2-rule": 3
-      },
-      "meta": {
-        "a2-rule": 19
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 9,
         "readiness": 12,
@@ -5243,29 +3764,18 @@
       "component": "modal",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-words": 1,
-        "a1-fact": 16,
-        "a2-rule": 4,
-        "c": 4
-      },
+      "manifest": {},
       "registry": {
         "state": 8,
         "ownership": 9,
@@ -5313,34 +3823,17 @@
       "files": {
         "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 9,
-        "a2-rule": 22,
-        "a1-words": 2,
-        "c": 1
-      },
-      "meta": {
-        "a2-rule": 29,
-        "a1-fact": 4,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -5362,36 +3855,16 @@
       "component": "popover",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
+        "rule.js": "identical",
+        "aliases.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.open.carries: component in smart.manifest.json only",
-        "events.open.carries: tagName in smart.manifest.json only",
-        "events.open.carries: template in smart.manifest.json only",
-        "events.open.carries: open in smart.manifest.json only",
-        "events.close.carries: reason in component.json only",
-        "events.close.carries: unsaved in component.json only",
-        "events.close.carries: component in smart.manifest.json only",
-        "events.close.carries: tagName in smart.manifest.json only",
-        "events.close.carries: template in smart.manifest.json only",
-        "events.close.carries: open in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a2-rule": 14,
-        "c": 5,
-        "a1-fact": 2
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "tags": 6,
@@ -5441,32 +3914,19 @@
       "component": "progress-bar",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 4,
-        "a1-fact": 5
-      },
-      "meta": {
-        "a2-rule": 10
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 12,
@@ -5483,32 +3943,19 @@
       "component": "progress-scale",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 4,
-        "a1-fact": 5
-      },
-      "meta": {
-        "a2-rule": 11
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 12,
@@ -5526,29 +3973,17 @@
       "package": "simai/ui-source",
       "files": {
         "rule.js": "identical",
-        "aliases.json": "semantic",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "x-rule.css true <- rule.js (the folder holds no sheet)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 13,
-        "a2-rule": 12,
-        "c": 9
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -5563,7 +3998,7 @@
         "event-fields": 5,
         "alias-events": 22,
         "methods": 38,
-        "inputs": 5,
+        "inputs": 9,
         "trait-inputs": 17
       }
     },
@@ -5685,33 +4120,19 @@
       "component": "skeleton",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 2,
-        "a1-words": 1
-      },
-      "meta": {
-        "a2-rule": 11
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 8,
         "ownership": 9,
@@ -5784,34 +4205,19 @@
       "component": "spinner",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "c": 4,
-        "a2-rule": 3,
-        "a1-fact": 6,
-        "a1-words": 1
-      },
-      "meta": {
-        "a2-rule": 11
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 12,
@@ -5917,39 +4323,19 @@
       "component": "tag",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.change.carries: component in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 4,
-        "a1-words": 3,
-        "a2-rule": 5,
-        "c": 1
-      },
-      "meta": {
-        "a2-rule": 5,
-        "c": 1,
-        "a1-words": 3
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -5965,40 +4351,26 @@
         "event-fields": 5,
         "alias-events": 17,
         "methods": 24,
-        "inputs": 11
+        "inputs": 26
       }
     },
     {
       "component": "textarea",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.css true <- rule.js (the folder holds no sheet)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 6,
-        "a2-rule": 8
-      },
-      "meta": {
-        "a2-rule": 30
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "public-parts": 5,
@@ -6052,37 +4424,17 @@
       "files": {
         "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.action.carries: toast in smart.manifest.json only",
-        "events.action.carries: trigger in smart.manifest.json only",
-        "events.close.carries: reason in component.json only",
-        "events.close.carries: toast in smart.manifest.json only",
-        "events.close.carries: trigger in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 4,
-        "a2-rule": 10,
-        "c": 3
-      },
-      "meta": {
-        "a2-rule": 13
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "contracts": 33,
         "ownership": 9,
@@ -6090,40 +4442,27 @@
         "presentation": 18,
         "ai_guidance": 23,
         "accessibility": 4,
-        "methods": 54
+        "methods": 54,
+        "inputs": 11
       }
     },
     {
       "component": "toggle",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "meta.mjs": "differs",
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.css null <- rule.js (no css although the folder holds scss/index.scss, scss/styles_default.scss)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 2,
-        "a2-rule": 5
-      },
-      "meta": {
-        "a2-rule": 11
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "lifecycle": 1,
@@ -6144,33 +4483,19 @@
       "component": "tooltip",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 1,
-        "a1-words": 1
-      },
-      "meta": {
-        "a2-rule": 2
-      },
+      "manifest": {},
       "registry": {
         "lifecycle": 1,
         "capabilities": 6,
@@ -6217,39 +4542,17 @@
       "files": {
         "rule.js": "identical",
         "aliases.json": "identical",
-        "meta.mjs": "differs",
+        "meta.mjs": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "setting words <- meta.mjs",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.toggle.carries: id in component.json only",
-        "events.toggle.carries: component in smart.manifest.json only",
-        "events.toggle.carries: tagName in smart.manifest.json only",
-        "events.toggle.carries: template in smart.manifest.json only",
-        "events.toggle.carries: item in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 5,
-        "a1-words": 15,
-        "c": 3,
-        "a2-rule": 11
-      },
-      "meta": {
-        "a2-rule": 24
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 22,
@@ -6495,8 +4798,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a2-rule": 25,
-        "c": 3,
-        "a1-fact": 2
+        "a1-fact": 4
       },
       "registry": {
         "capabilities": 5,
@@ -6584,8 +4886,8 @@
       ],
       "manifest": {
         "a2-rule": 52,
-        "a1-fact": 28,
-        "c": 29,
+        "a1-fact": 38,
+        "c": 23,
         "a1-words": 1
       },
       "registry": {
@@ -6617,7 +4919,6 @@
       "bridge": [
         "relations <- rule.js",
         "x-rule.$comment <- rule.js (the comment before the rule)",
-        "x-rule.css false <- rule.js (the folder holds no sheet)",
         "aliases <- aliases.json",
         "x-registry <- smart.manifest.json",
         "stamp <- smart.manifest.json provenance, runtime_pair",
@@ -6633,7 +4934,7 @@
         "events.state.carries: instance_id in smart.manifest.json only"
       ],
       "manifest": {
-        "a1-fact": 32,
+        "a1-fact": 33,
         "c": 17,
         "a2-rule": 20
       },
@@ -6800,7 +5101,7 @@
         "events.move.carries: order in component.json only"
       ],
       "manifest": {
-        "a1-fact": 23,
+        "a1-fact": 25,
         "c": 12,
         "a2-rule": 44,
         "a1-words": 1
@@ -6812,7 +5113,7 @@
         "adapter": 5,
         "readiness": 10,
         "tags": 7,
-        "composition-declarative": 81,
+        "composition-declarative": 82,
         "item_contract": 27,
         "contracts": 217,
         "state": 35,
@@ -7027,7 +5328,28 @@
         "simai/ui-pro:table",
         "simai/ui-pro:thread-list"
       ],
-      "meta.mjs": [],
+      "meta.mjs": [
+        "alert",
+        "badge",
+        "button",
+        "button-group",
+        "dropdown",
+        "file-preview",
+        "icon-button",
+        "input",
+        "list-item",
+        "pagination",
+        "progress-bar",
+        "progress-scale",
+        "skeleton",
+        "spinner",
+        "tag",
+        "textarea",
+        "toast",
+        "toggle",
+        "tooltip",
+        "tree-item"
+      ],
       "studio.fixture.json": [
         "accordion",
         "alert",
@@ -7234,35 +5556,64 @@
       ],
       "smart.manifest.json": [
         "accordion",
+        "alert",
         "avatar",
         "avatars",
+        "badge",
         "breadcrumbs",
+        "button",
+        "button-group",
         "checkbox",
         "close",
         "code-input",
         "color",
+        "composition-overlay",
+        "context-menu",
         "copy-button",
+        "country-code",
         "datepicker",
         "download-file",
+        "drawer",
+        "dropdown",
         "empty-state",
+        "file-preview",
+        "file-upload",
         "gallery",
         "help-mark",
         "icon",
+        "icon-button",
+        "image-field",
         "inline-editor",
+        "input",
+        "list-item",
         "menu",
+        "modal",
         "page-header",
+        "pagination",
+        "popover",
         "profile-picker",
+        "progress-bar",
+        "progress-scale",
+        "quantity",
         "radio",
         "range-slider",
         "reference-link",
         "resizer",
+        "skeleton",
         "slider",
         "sortable",
+        "spinner",
         "steps",
         "switch",
         "tabs",
+        "tag",
+        "textarea",
         "theme-generator",
-        "tree"
+        "toast",
+        "toggle",
+        "tooltip",
+        "tree",
+        "tree-item"
       ]
     }
   },
@@ -7270,41 +5621,21 @@
     {
       "consumer": "ui-doc",
       "reads": "summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io)",
-      "wrong_facts": 431,
-      "components": 40,
+      "wrong_facts": 238,
+      "components": 11,
       "kinds": {
-        "a2-rule base-setting": {
-          "count": 77,
+        "a1-fact input.default": {
+          "count": 26,
           "components": [
-            "alert",
-            "badge",
-            "button",
-            "button-group",
-            "composition-overlay",
-            "context-menu",
-            "country-code",
-            "drawer",
-            "dropdown",
-            "file-preview",
-            "file-upload",
-            "icon-button",
-            "image-field",
-            "input",
-            "list-item",
-            "modal",
-            "pagination",
-            "popover",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "tag",
-            "textarea",
-            "toast",
-            "toggle",
-            "tooltip",
-            "tree-item",
+            "admin-menu",
+            "chat-message",
+            "chat-window",
+            "data-view"
+          ]
+        },
+        "a2-rule base-setting": {
+          "count": 24,
+          "components": [
             "admin-menu",
             "change-confirm",
             "chat-composer",
@@ -7318,174 +5649,8 @@
             "thread-list"
           ]
         },
-        "a1-fact payload-fields-missing": {
-          "count": 9,
-          "components": [
-            "alert",
-            "context-menu",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 36,
-          "components": [
-            "button",
-            "button-group",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "textarea",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "a1-fact event-missing": {
-          "count": 37,
-          "components": [
-            "button",
-            "context-menu",
-            "country-code",
-            "drawer",
-            "file-preview",
-            "list-item",
-            "modal",
-            "pagination",
-            "popover",
-            "tag",
-            "toast",
-            "tree-item",
-            "table"
-          ]
-        },
-        "c payload-field": {
-          "count": 87,
-          "components": [
-            "composition-overlay",
-            "file-upload",
-            "image-field",
-            "popover",
-            "quantity",
-            "toast",
-            "tree-item",
-            "admin-menu",
-            "data-view",
-            "message-log",
-            "property-view",
-            "table"
-          ]
-        },
-        "c input-undeclared": {
-          "count": 21,
-          "components": [
-            "context-menu",
-            "country-code",
-            "file-preview",
-            "image-field",
-            "modal",
-            "quantity",
-            "spinner",
-            "tag",
-            "chat-message",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.type": {
-          "count": 16,
-          "components": [
-            "context-menu",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "c method.arguments": {
-          "count": 11,
-          "components": [
-            "context-menu",
-            "drawer",
-            "modal",
-            "pagination",
-            "popover",
-            "chat-window",
-            "thread-list"
-          ]
-        },
-        "a1-fact payload-null": {
-          "count": 2,
-          "components": [
-            "context-menu"
-          ]
-        },
-        "a1-fact event-stale": {
-          "count": 11,
-          "components": [
-            "dropdown",
-            "modal",
-            "data-view",
-            "property-view"
-          ]
-        },
-        "a1-fact input-stale": {
-          "count": 2,
-          "components": [
-            "file-preview",
-            "chat-window"
-          ]
-        },
-        "c payload-field.values": {
-          "count": 7,
-          "components": [
-            "file-upload",
-            "admin-menu",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 7,
-          "components": [
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "chat-window"
-          ]
-        },
-        "a1-fact method-missing": {
-          "count": 12,
-          "components": [
-            "modal",
-            "progress-bar",
-            "progress-scale",
-            "toast",
-            "tree-item",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 4,
-          "components": [
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "chat-window"
-          ]
-        },
         "a1-fact setting-missing": {
-          "count": 15,
+          "count": 18,
           "components": [
             "admin-menu",
             "data-view",
@@ -7494,12 +5659,41 @@
             "thread-list"
           ]
         },
+        "c payload-field.values": {
+          "count": 6,
+          "components": [
+            "admin-menu",
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "c payload-field": {
+          "count": 50,
+          "components": [
+            "admin-menu",
+            "data-view",
+            "message-log",
+            "property-view",
+            "table"
+          ]
+        },
         "c payload-field.spelling": {
           "count": 24,
           "components": [
             "admin-menu",
             "chat-composer",
             "chat-window"
+          ]
+        },
+        "a1-fact input.type": {
+          "count": 12,
+          "components": [
+            "change-confirm",
+            "chat-message",
+            "chat-window",
+            "message-log",
+            "thread-list"
           ]
         },
         "a1-fact alias-event-missing": {
@@ -7521,6 +5715,40 @@
             "chat-message"
           ]
         },
+        "a1-fact input.minimum": {
+          "count": 1,
+          "components": [
+            "chat-window"
+          ]
+        },
+        "a1-fact input.maximum": {
+          "count": 1,
+          "components": [
+            "chat-window"
+          ]
+        },
+        "c method.arguments": {
+          "count": 4,
+          "components": [
+            "chat-window",
+            "thread-list"
+          ]
+        },
+        "a1-fact method-missing": {
+          "count": 3,
+          "components": [
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "a1-fact event-stale": {
+          "count": 8,
+          "components": [
+            "data-view",
+            "property-view"
+          ]
+        },
         "c event-undeclared": {
           "count": 8,
           "components": [
@@ -7528,8 +5756,21 @@
             "property-view"
           ]
         },
+        "a1-fact payload-fields-missing": {
+          "count": 6,
+          "components": [
+            "property-view",
+            "table"
+          ]
+        },
         "a1-fact input.enum-values-missing": {
           "count": 1,
+          "components": [
+            "table"
+          ]
+        },
+        "a1-fact event-missing": {
+          "count": 2,
           "components": [
             "table"
           ]
@@ -7539,292 +5780,17 @@
     {
       "consumer": "ui-studio",
       "reads": "title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs)",
-      "wrong_facts": 482,
-      "components": 40,
+      "wrong_facts": 257,
+      "components": 11,
       "kinds": {
-        "a2-rule base-setting": {
-          "count": 77,
-          "components": [
-            "alert",
-            "badge",
-            "button",
-            "button-group",
-            "composition-overlay",
-            "context-menu",
-            "country-code",
-            "drawer",
-            "dropdown",
-            "file-preview",
-            "file-upload",
-            "icon-button",
-            "image-field",
-            "input",
-            "list-item",
-            "modal",
-            "pagination",
-            "popover",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "tag",
-            "textarea",
-            "toast",
-            "toggle",
-            "tooltip",
-            "tree-item",
-            "admin-menu",
-            "change-confirm",
-            "chat-composer",
-            "chat-interlocutor",
-            "chat-message",
-            "chat-window",
-            "data-view",
-            "message-log",
-            "property-view",
-            "table",
-            "thread-list"
-          ]
-        },
-        "a1-fact payload-fields-missing": {
-          "count": 9,
-          "components": [
-            "alert",
-            "context-menu",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact accessibility.role": {
-          "count": 6,
-          "components": [
-            "alert",
-            "badge",
-            "button",
-            "country-code",
-            "tag",
-            "toast"
-          ]
-        },
-        "a1-fact version": {
+        "a1-fact declarative.props": {
           "count": 5,
           "components": [
-            "badge",
-            "country-code",
-            "quantity",
-            "textarea",
-            "toggle"
-          ]
-        },
-        "a1-fact uses-missing": {
-          "count": 18,
-          "components": [
-            "button",
-            "button-group",
-            "context-menu",
-            "country-code",
-            "dropdown",
-            "file-upload",
-            "input",
-            "list-item",
-            "modal",
-            "pagination",
-            "tag",
-            "textarea",
-            "toast",
-            "toggle",
-            "tooltip",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact declarative.props": {
-          "count": 6,
-          "components": [
-            "button",
             "admin-menu",
             "chat-window",
             "data-view",
             "property-view",
             "table"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 36,
-          "components": [
-            "button",
-            "button-group",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "textarea",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "a1-fact event-missing": {
-          "count": 37,
-          "components": [
-            "button",
-            "context-menu",
-            "country-code",
-            "drawer",
-            "file-preview",
-            "list-item",
-            "modal",
-            "pagination",
-            "popover",
-            "tag",
-            "toast",
-            "tree-item",
-            "table"
-          ]
-        },
-        "c payload-field": {
-          "count": 87,
-          "components": [
-            "composition-overlay",
-            "file-upload",
-            "image-field",
-            "popover",
-            "quantity",
-            "toast",
-            "tree-item",
-            "admin-menu",
-            "data-view",
-            "message-log",
-            "property-view",
-            "table"
-          ]
-        },
-        "c input-undeclared": {
-          "count": 21,
-          "components": [
-            "context-menu",
-            "country-code",
-            "file-preview",
-            "image-field",
-            "modal",
-            "quantity",
-            "spinner",
-            "tag",
-            "chat-message",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.type": {
-          "count": 16,
-          "components": [
-            "context-menu",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "c method.arguments": {
-          "count": 11,
-          "components": [
-            "context-menu",
-            "drawer",
-            "modal",
-            "pagination",
-            "popover",
-            "chat-window",
-            "thread-list"
-          ]
-        },
-        "a1-fact payload-null": {
-          "count": 2,
-          "components": [
-            "context-menu"
-          ]
-        },
-        "a1-fact event-stale": {
-          "count": 11,
-          "components": [
-            "dropdown",
-            "modal",
-            "data-view",
-            "property-view"
-          ]
-        },
-        "a1-fact input-stale": {
-          "count": 2,
-          "components": [
-            "file-preview",
-            "chat-window"
-          ]
-        },
-        "c payload-field.values": {
-          "count": 7,
-          "components": [
-            "file-upload",
-            "admin-menu",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 7,
-          "components": [
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "chat-window"
-          ]
-        },
-        "a1-fact title": {
-          "count": 7,
-          "components": [
-            "input",
-            "list-item",
-            "textarea",
-            "tree-item",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact method-missing": {
-          "count": 12,
-          "components": [
-            "modal",
-            "progress-bar",
-            "progress-scale",
-            "toast",
-            "tree-item",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 4,
-          "components": [
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "chat-window"
-          ]
-        },
-        "c uses-not-loaded": {
-          "count": 2,
-          "components": [
-            "tree-item",
-            "data-view"
           ]
         },
         "c declarative.events": {
@@ -7843,8 +5809,33 @@
             "property-view"
           ]
         },
+        "a1-fact input.default": {
+          "count": 26,
+          "components": [
+            "admin-menu",
+            "chat-message",
+            "chat-window",
+            "data-view"
+          ]
+        },
+        "a2-rule base-setting": {
+          "count": 24,
+          "components": [
+            "admin-menu",
+            "change-confirm",
+            "chat-composer",
+            "chat-interlocutor",
+            "chat-message",
+            "chat-window",
+            "data-view",
+            "message-log",
+            "property-view",
+            "table",
+            "thread-list"
+          ]
+        },
         "a1-fact setting-missing": {
-          "count": 15,
+          "count": 18,
           "components": [
             "admin-menu",
             "data-view",
@@ -7853,12 +5844,41 @@
             "thread-list"
           ]
         },
+        "c payload-field.values": {
+          "count": 6,
+          "components": [
+            "admin-menu",
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "c payload-field": {
+          "count": 50,
+          "components": [
+            "admin-menu",
+            "data-view",
+            "message-log",
+            "property-view",
+            "table"
+          ]
+        },
         "c payload-field.spelling": {
           "count": 24,
           "components": [
             "admin-menu",
             "chat-composer",
             "chat-window"
+          ]
+        },
+        "a1-fact input.type": {
+          "count": 12,
+          "components": [
+            "change-confirm",
+            "chat-message",
+            "chat-window",
+            "message-log",
+            "thread-list"
           ]
         },
         "a1-fact alias-event-missing": {
@@ -7880,6 +5900,62 @@
             "chat-message"
           ]
         },
+        "a1-fact input.minimum": {
+          "count": 1,
+          "components": [
+            "chat-window"
+          ]
+        },
+        "a1-fact input.maximum": {
+          "count": 1,
+          "components": [
+            "chat-window"
+          ]
+        },
+        "c method.arguments": {
+          "count": 4,
+          "components": [
+            "chat-window",
+            "thread-list"
+          ]
+        },
+        "a1-fact title": {
+          "count": 3,
+          "components": [
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "a1-fact uses-missing": {
+          "count": 3,
+          "components": [
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "c uses-not-loaded": {
+          "count": 1,
+          "components": [
+            "data-view"
+          ]
+        },
+        "a1-fact method-missing": {
+          "count": 3,
+          "components": [
+            "data-view",
+            "property-view",
+            "table"
+          ]
+        },
+        "a1-fact event-stale": {
+          "count": 8,
+          "components": [
+            "data-view",
+            "property-view"
+          ]
+        },
         "c event-undeclared": {
           "count": 8,
           "components": [
@@ -7893,8 +5969,21 @@
             "property-view"
           ]
         },
+        "a1-fact payload-fields-missing": {
+          "count": 6,
+          "components": [
+            "property-view",
+            "table"
+          ]
+        },
         "a1-fact input.enum-values-missing": {
           "count": 1,
+          "components": [
+            "table"
+          ]
+        },
+        "a1-fact event-missing": {
+          "count": 2,
           "components": [
             "table"
           ]
@@ -7904,41 +5993,21 @@
     {
       "consumer": "ui-vscode",
       "reads": "inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense)",
-      "wrong_facts": 184,
-      "components": 40,
+      "wrong_facts": 84,
+      "components": 11,
       "kinds": {
-        "a2-rule base-setting": {
-          "count": 77,
+        "a1-fact input.default": {
+          "count": 26,
           "components": [
-            "alert",
-            "badge",
-            "button",
-            "button-group",
-            "composition-overlay",
-            "context-menu",
-            "country-code",
-            "drawer",
-            "dropdown",
-            "file-preview",
-            "file-upload",
-            "icon-button",
-            "image-field",
-            "input",
-            "list-item",
-            "modal",
-            "pagination",
-            "popover",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "tag",
-            "textarea",
-            "toast",
-            "toggle",
-            "tooltip",
-            "tree-item",
+            "admin-menu",
+            "chat-message",
+            "chat-window",
+            "data-view"
+          ]
+        },
+        "a2-rule base-setting": {
+          "count": 24,
+          "components": [
             "admin-menu",
             "change-confirm",
             "chat-composer",
@@ -7952,89 +6021,8 @@
             "thread-list"
           ]
         },
-        "a1-fact compatibility.aliases": {
-          "count": 4,
-          "components": [
-            "badge",
-            "button",
-            "icon-button",
-            "tag"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 36,
-          "components": [
-            "button",
-            "button-group",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "textarea",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "c input-undeclared": {
-          "count": 21,
-          "components": [
-            "context-menu",
-            "country-code",
-            "file-preview",
-            "image-field",
-            "modal",
-            "quantity",
-            "spinner",
-            "tag",
-            "chat-message",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.type": {
-          "count": 16,
-          "components": [
-            "context-menu",
-            "dropdown",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "skeleton",
-            "spinner",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "a1-fact input-stale": {
-          "count": 2,
-          "components": [
-            "file-preview",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 7,
-          "components": [
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "spinner",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 4,
-          "components": [
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "chat-window"
-          ]
-        },
         "a1-fact setting-missing": {
-          "count": 15,
+          "count": 18,
           "components": [
             "admin-menu",
             "data-view",
@@ -8043,10 +6031,32 @@
             "thread-list"
           ]
         },
+        "a1-fact input.type": {
+          "count": 12,
+          "components": [
+            "change-confirm",
+            "chat-message",
+            "chat-window",
+            "message-log",
+            "thread-list"
+          ]
+        },
         "a1-fact alias-setting-missing": {
           "count": 1,
           "components": [
             "chat-message"
+          ]
+        },
+        "a1-fact input.minimum": {
+          "count": 1,
+          "components": [
+            "chat-window"
+          ]
+        },
+        "a1-fact input.maximum": {
+          "count": 1,
+          "components": [
+            "chat-window"
           ]
         },
         "a1-fact input.enum-values-missing": {
@@ -8060,16 +6070,12 @@
     {
       "consumer": "ui registry (ui-builder bind-generated-runtime-contracts.py)",
       "reads": "title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json",
-      "wrong_facts": 7,
-      "components": 7,
+      "wrong_facts": 3,
+      "components": 3,
       "kinds": {
         "a1-fact title": {
-          "count": 7,
+          "count": 3,
           "components": [
-            "input",
-            "list-item",
-            "textarea",
-            "tree-item",
             "data-view",
             "property-view",
             "table"
@@ -8080,65 +6086,6 @@
   ],
   "headline": {
     "event-missing": {
-      "button": [
-        "sf-button-press"
-      ],
-      "context-menu": [
-        "sf-context-menu-opened",
-        "sf-context-menu-closed"
-      ],
-      "country-code": [
-        "input"
-      ],
-      "drawer": [
-        "sf-drawer-open",
-        "sf-drawer-opened",
-        "sf-drawer-close",
-        "sf-drawer-closed",
-        "sf-drawer-snapped"
-      ],
-      "file-preview": [
-        "sf-file-preview-download",
-        "sf-file-preview-detach"
-      ],
-      "list-item": [
-        "sf-list-item-open"
-      ],
-      "modal": [
-        "sf-modal-open",
-        "sf-modal-opened",
-        "sf-modal-close",
-        "sf-modal-closed",
-        "sf-modal-minimize",
-        "sf-modal-minimized",
-        "sf-modal-expand",
-        "sf-modal-expanded",
-        "sf-modal-content-upload",
-        "sf-modal-content-uploaded"
-      ],
-      "pagination": [
-        "sf-pagination-change",
-        "sf-pagination-size-change",
-        "sf-pagination-count",
-        "sf-pagination-load-more",
-        "sf-pagination-selection-clear",
-        "sf-pagination-action-change",
-        "sf-pagination-action-for-all-change",
-        "sf-pagination-apply"
-      ],
-      "popover": [
-        "sf-popover-opened",
-        "sf-popover-closed"
-      ],
-      "tag": [
-        "sf-tag-close"
-      ],
-      "toast": [
-        "sf-toast-closed"
-      ],
-      "tree-item": [
-        "sf-tree-item-open"
-      ],
       "pro table": [
         "sf-table-reference-open",
         "sf-table-view-change"
@@ -8206,25 +6153,6 @@
       ]
     },
     "method-missing": {
-      "modal": [
-        "minimize",
-        "expand",
-        "confirm"
-      ],
-      "progress-bar": [
-        "chunk"
-      ],
-      "progress-scale": [
-        "chunk"
-      ],
-      "toast": [
-        "show"
-      ],
-      "tree-item": [
-        "expand",
-        "collapse",
-        "toggleOpen"
-      ],
       "pro data-view": [
         "clearSelection"
       ],
@@ -8240,7 +6168,8 @@
         "recent-results"
       ],
       "pro data-view": [
-        "bulk-actions"
+        "bulk-actions",
+        "first-answer"
       ],
       "pro message-log": [
         "messages"
@@ -8252,6 +6181,8 @@
         "create-items",
         "filter-fields",
         "rows",
+        "table-data",
+        "table-settings",
         "templates",
         "toolbar-actions",
         "sort",
@@ -8272,49 +6203,6 @@
         "data-state [\"ready\"]"
       ]
     },
-    "input-undeclared": {
-      "context-menu": [
-        "search"
-      ],
-      "country-code": [
-        "form"
-      ],
-      "file-preview": [
-        "open"
-      ],
-      "image-field": [
-        "value"
-      ],
-      "modal": [
-        "unclose",
-        "hide"
-      ],
-      "quantity": [
-        "value"
-      ],
-      "spinner": [
-        "width",
-        "height",
-        "stroke-width",
-        "dot-radius"
-      ],
-      "tag": [
-        "type"
-      ],
-      "pro chat-message": [
-        "message",
-        "display",
-        "features"
-      ],
-      "pro chat-window": [
-        "me",
-        "conversation",
-        "history",
-        "limits",
-        "notice",
-        "my-files"
-      ]
-    },
     "event-undeclared": {
       "pro data-view": [
         "sf-data-view-saved-view-intent",
@@ -8330,18 +6218,6 @@
       ]
     },
     "title": {
-      "input": [
-        "\"Inputs\" → \"Text fields\""
-      ],
-      "list-item": [
-        "\"List Item\" → \"List item\""
-      ],
-      "textarea": [
-        "\"Textarea\" → \"Text area\""
-      ],
-      "tree-item": [
-        "\"Tree Item\" → \"Tree item\""
-      ],
       "pro data-view": [
         "\"Data view composite\" → \"Data view\""
       ],
@@ -8350,43 +6226,6 @@
       ],
       "pro table": [
         "\"Data view\" → \"Table\""
-      ]
-    },
-    "version": {
-      "badge": [
-        "\"1.0.1\" → \"1.1.1\""
-      ],
-      "country-code": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
-      "quantity": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
-      "textarea": [
-        "\"1.4.0\" → \"1.5.1\""
-      ],
-      "toggle": [
-        "\"1.0.0\" → \"1.1.1\""
-      ]
-    },
-    "accessibility.role": {
-      "alert": [
-        "null → \"status\""
-      ],
-      "badge": [
-        "null → \"none\""
-      ],
-      "button": [
-        "null → \"button\""
-      ],
-      "country-code": [
-        "null → \"textbox\""
-      ],
-      "tag": [
-        "null → \"button\""
-      ],
-      "toast": [
-        "null → \"status\""
       ]
     }
   }

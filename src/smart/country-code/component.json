@@ -2,7 +2,7 @@
   "$comment": "The source of sf-country-code's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/country-code (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/country-code/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.country-code",
   "tag": "sf-country-code",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -21,11 +21,13 @@
     },
     "required": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Native required phone input; the country prefix alone does not satisfy the requirement."
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Native input name used by FormData and form submission."
     },
     "hint": {
       "type": "string",
@@ -41,7 +43,8 @@
     },
     "locale": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Language of the country names and the field's own words: ru or en. When not set it follows the page: Russian on a Russian page, English otherwise."
     },
     "use-mask": {
       "type": "boolean",
@@ -108,7 +111,8 @@
   },
   "events": {
     "change": {
-      "carries": "native"
+      "carries": "native",
+      "summary": "The phone value or country was committed; the native event bubbles from the inner input, which is its target. It carries no detail. The name to bind."
     },
     "input": {
       "carries": "native"
@@ -147,6 +151,11 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "country-code"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -195,6 +204,29 @@
       "state": "open"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "form",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§17.1",
+        "note": "stays a host attribute: the browser associates a form-associated element with the form it names; no shim"
+      }
+    ]
+  },
   "x-summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "x-source": {
     "package": "framework",
@@ -213,15 +245,20 @@
     "settings.placeholder: its default words move to lang/en.json runtime.placeholder (§11, §16 item 44)",
     "settings.form: a host attribute the browser reads for a form-associated element (§17.1); the host joins the form it names, the inner tel input no longer does"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-decisions": [
+    "lang-ru: runtime.placeholder in Russian is the same mask, +7(___)___-__-__; value-missing says «Введите номер телефона.» as the class script did",
+    "a11y-role: textbox -- the native tel input carries the role and the name; the country toggle is a button with a listbox popup inside it (keyboard.panel)",
+    "key-effects: host Enter/Space/ArrowDown/ArrowUp open the list, Escape closes it; in the list (panel) arrows, Home and End move focus, Enter and Space select, Escape closes",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates (one source of markup, not two)",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json",
+    "css-variables: five public variables read by the class sheet src/component/country-code/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
+    "version: 1.1.0 -- the setting form leaves for the host attribute behind a dated alias row; a minor while the alias holds (§4.10)",
+    "form: the host is the form control through ElementInternals (§17.1); it submits the tel text as the person sees it, required asks for digits after the dial code",
+    "host-states: none -- the open list and the disabled look are classes the class script writes on its own root (shared with the class component); moving them to host states is left for the class script",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -230,6 +267,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -243,7 +288,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-country-code when the interface needs the country code behavior.",
@@ -263,19 +312,45 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "Tab",
+        "Enter",
+        "Space",
+        "Escape",
+        "ArrowDown",
+        "ArrowUp",
+        "Home",
+        "End",
+        "Typeahead"
+      ],
+      "focus": "Country-code button opens a single-select listbox. Arrows, Home, End and typeahead move focus without changing the phone; Enter/Space commit and Escape cancels. Closing by confirmation or Escape returns focus to the button; Tab leaves without trapping focus. Disabled fields do not open."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "methods": {
+      "setState": {
+        "summary": "Applies disabled, open (or active), value, iso2 and dialCode to the rendered field; setting value dispatches native input and change from the inner input. Returns true when applied, false before render.",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      }
+    },
+    "inputs": {
+      "aria-label": {
+        "description": "Accessible name for a telephone field rendered without a visible label."
+      }
     }
-  },
-  "x-decisions": [
-    "lang-ru: runtime.placeholder in Russian is the same mask, +7(___)___-__-__; value-missing says «Введите номер телефона.» as the class script did",
-    "a11y-role: textbox -- the native tel input carries the role and the name; the country toggle is a button with a listbox popup inside it (keyboard.panel)",
-    "key-effects: host Enter/Space/ArrowDown/ArrowUp open the list, Escape closes it; in the list (panel) arrows, Home and End move focus, Enter and Space select, Escape closes",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates (one source of markup, not two)",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json",
-    "css-variables: five public variables read by the class sheet src/component/country-code/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
-    "version: 1.1.0 -- the setting form leaves for the host attribute behind a dated alias row; a minor while the alias holds (§4.10)",
-    "form: the host is the form control through ElementInternals (§17.1); it submits the tel text as the person sees it, required asks for digits after the dial code",
-    "host-states: none -- the open list and the disabled look are classes the class script writes on its own root (shared with the class component); moving them to host states is left for the class script",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

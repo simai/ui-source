@@ -186,13 +186,15 @@ export function attributesOf(component, lang = {}) {
     out['aria-label'] = {kind: 'custom', valueType: 'string', default: ''};
   }
   for (const row of aliasRows(component)) {
-    if (row.kind !== 'setting' || !row.to) continue;
+    if (!settingAlias(row)) continue;
     const target = settings[row.to];
     if (!target) continue;
     const attribute = attributeOf(target);
     if (attribute.kind === 'enum') attribute.values = row.values ?? aliasValues(component, row.to);
+    // An inverted boolean (unclose for dismissible): present means the target is false.
+    if (row.mode === 'inverted' && attribute.kind === 'boolean') attribute.default = 'false';
     if ('default' in row) attribute.default = row.default;
-    attribute.description = row.summary ?? `Dated alias of ${row.to} until ${row.remove_after}.`;
+    attribute.description = row.summary ?? `Dated alias of ${row.to} until ${row.remove_after}${row.mode === 'inverted' ? ', inverted' : ''}.`;
     delete attribute.examples;
     if (target.examples) attribute.examples = target.examples;
     out[row.from] = attribute;
@@ -208,6 +210,14 @@ export function attributesOf(component, lang = {}) {
   return out;
 }
 
+// A dated alias of a setting: a setting row, or an attribute row (the
+// attribute alone is renamed) that is neither a host attribute nor retired.
+export function settingAlias(row) {
+  if (!row.to) return false;
+  if (row.kind === 'setting') return true;
+  return row.kind === 'attribute' && !['host-attribute', 'retired', 'page-trigger'].includes(row.mode);
+}
+
 function attributeOf(spec) {
   const out = {};
   if (spec.type === 'boolean') Object.assign(out, {kind: 'boolean', values: ['true', 'false'], default: spec.default === true ? 'true' : 'false'});
@@ -221,11 +231,10 @@ function attributeOf(spec) {
   return out;
 }
 
-// An alias setting takes its target's values and the target's former values.
+// An alias setting offers what its target offers: the target's former values
+// are aliases of the target (compatibility.aliases), not values of either name.
 function aliasValues(component, setting) {
-  const own = component.settings?.[setting]?.values ?? [];
-  const former = aliasRows(component).filter((row) => row.kind === 'value' && row.setting === setting).map((row) => row.from);
-  return [...new Set([...own, ...former])];
+  return [...(component.settings?.[setting]?.values ?? [])];
 }
 
 export function metaObject(component, lang = {}) {
@@ -321,11 +330,11 @@ export function inputsOf(component, lang = {}) {
     if (attribute.maximum !== undefined) property.maximum = attribute.maximum;
     properties[name] = property;
   }
-  // Lists are properties only: they are inputs, not attributes.
+  // Lists and objects are properties only: they are inputs, not attributes.
   for (const [name, spec] of [...Object.entries(component.settings ?? {}), ...Object.entries(component.values ?? {})]) {
-    if (spec.type !== 'list' || properties[name]) continue;
+    if (!['list', 'object'].includes(spec.type) || properties[name]) continue;
     if (component.values?.[name] && spec.default === undefined && !spec['default-from']) continue;
-    const property = {type: 'array'};
+    const property = {type: jsonType(spec.type)};
     if (spec.default !== undefined) property.default = spec.default;
     if (spec.entries) property.items = {type: 'object'};
     if (spec.summary) property.description = spec.summary;
@@ -373,12 +382,14 @@ export function fieldSchema(spec) {
 export function eventsOf(component) {
   const out = {};
   for (const [verb, spec] of Object.entries(component.events ?? {})) {
-    const carries = spec?.carries && typeof spec.carries === 'object' ? spec.carries : {};
+    // A native name with a detail (x-detail: dropdown, quantity) describes that detail.
+    const detail = spec?.carries === 'native' && spec['x-detail'] && typeof spec['x-detail'] === 'object' ? spec['x-detail'] : null;
+    const carries = detail ?? (spec?.carries && typeof spec.carries === 'object' ? spec.carries : {});
     const properties = {};
     for (const [field, type] of Object.entries(carries)) properties[camel(field)] = fieldSchema(type);
     const required = Object.entries(carries).filter(([, type]) => !(type && typeof type === 'object' && type.optional)).map(([field]) => camel(field));
     // A native event (§8) is the browser's Event: it has no detail.
-    const payload = spec?.carries === 'native' ? {type: 'null', description: 'A native Event: there is no detail.'} : {type: 'object', required, properties, additionalProperties: true};
+    const payload = spec?.carries === 'native' && !detail ? {type: 'null', description: 'A native Event: there is no detail.'} : {type: 'object', required, properties, additionalProperties: true};
     out[domEvent(component, verb)] = {summary: spec?.summary ?? `${verb} (vocabulary).`, payload};
   }
   for (const [name, fields] of Object.entries(component['x-registry']?.['event-fields'] ?? {})) if (out[name]) Object.assign(out[name], fields);
@@ -490,8 +501,10 @@ export function genManifest(component, lang, stamp = {}) {
 function declarativeOf(component, carried, lang) {
   const out = {...carried};
   const attributes = attributesOf(component, lang);
-  const aliasNames = new Set(aliasRows(component).filter((row) => row.kind === 'setting').map((row) => row.from));
-  if ('props' in carried) out.props = Object.keys(attributes).filter((name) => !aliasNames.has(name));
+  const aliasNames = new Set(aliasRows(component).filter(settingAlias).map((row) => row.from));
+  // A document sets the interface, never arbitrary classes or styles: the base
+  // settings root-class and root-style stay out of the props a document holds.
+  if ('props' in carried) out.props = Object.keys(attributes).filter((name) => !aliasNames.has(name) && !['root-class', 'root-style'].includes(name));
   if ('events' in carried) out.events = Object.keys(component.events ?? {}).map((verb) => domEvent(component, verb));
   if ('renderer' in carried) out.renderer = {kind: 'custom-element', name: component.tag};
   if ('assets' in carried) out.assets = [`smart/${component.folder ?? short(component.tag)}`];
@@ -696,6 +709,7 @@ export async function viewOfToday(folder) {
   for (const [verb, spec] of Object.entries(component.events ?? {})) {
     const payload = manifest?.events?.[domEvent(component, verb)]?.payload;
     if (payload && spec?.carries && typeof spec.carries === 'object') enrich(spec.carries, payload.properties ?? {}, payload.required, `events.${verb}.carries`);
+    if (payload && spec?.carries === 'native' && spec['x-detail'] && typeof spec['x-detail'] === 'object') enrich(spec['x-detail'], payload.properties ?? {}, payload.required, `events.${verb}.x-detail`);
   }
   for (const [key, spec] of Object.entries(component.actions ?? {})) {
     const method = manifest?.methods?.[camel(key)];

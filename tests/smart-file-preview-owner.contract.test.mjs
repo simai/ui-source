@@ -57,6 +57,6 @@ test('Smart File Preview keeps bounded compatibility without restoring floating 
   assert.match(source, /toggleOpen\(\)/);
   assert.doesNotMatch(source, /document\.addEventListener\('click'/);
   assert.match(docs, /actions are no longer hidden/);
-  assert.match(rule, /\{name: 'file-preview'\}/);
-  assert.match(rule, /\{name: 'icon-buttons'\}/);
+  assert.match(rule, /\{ name: 'file-preview' \}/);
+  assert.match(rule, /\{ name: 'icon-buttons' \}/);
 });

@@ -15,9 +15,11 @@ test('button Studio contract preserves closed choices and open icon examples', a
   ]);
   const properties = manifest.inputs.properties;
 
-  // The list stays closed, and it now carries the two appearances built on the
-  // neutral alpha ramp. Studio offers exactly the types the button CSS styles.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface', 'ghost']);
+  // The list stays closed, and it carries the surface appearance built on the
+  // neutral alpha ramp; ghost reads as link (a dated value alias, listed in
+  // compatibility.aliases). Studio offers exactly the types the button CSS styles.
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface']);
+  assert.ok(manifest.compatibility.aliases.includes('appearance=ghost'));
   assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);
@@ -74,6 +76,7 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // top bar is gone; 47 with sf-resizer, a panel widened by its edge; 48 with
   // sf-profile-picker; 49 with sf-empty-state;
   // 50 with sf-copy-button; 51 with sf-help-mark;
-  // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu; 57 with sf-code-input; 58 with sf-site-header.
-  assert.equal(fixtureCount, 58);
+  // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu; 57 with sf-code-input;
+  // 58 with sf-progress-ring; 59 with sf-site-header.
+  assert.equal(fixtureCount, 59);
 });

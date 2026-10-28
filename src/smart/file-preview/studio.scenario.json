@@ -6,9 +6,17 @@
   "viewport": "desktop",
   "actions": [],
   "assertions": [
-    {"type": "upgraded"},
-    {"type": "visible"},
-    {"type": "no-console-error"},
-    {"type": "no-network"}
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "visible"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    }
   ]
 }

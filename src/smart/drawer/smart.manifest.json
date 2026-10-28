@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -22,8 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.icon-buttons",
-      "component.close"
+      "component.close",
+      "component.icon-buttons"
     ],
     "public_parts": []
   },
@@ -32,11 +32,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "open": {
-        "type": "boolean",
-        "default": false
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "placement": {
         "type": "string",
@@ -52,12 +57,12 @@
       "snap": {
         "type": "string",
         "default": "auto",
+        "description": "A bottom sheet's resting height: its content's, half the room under the app bar, or all of it.",
         "enum": [
           "auto",
           "half",
           "full"
-        ],
-        "description": "A bottom sheet's resting height: its content's, half the room under the app bar, or all of it."
+        ]
       },
       "overlay": {
         "type": "boolean",
@@ -110,7 +115,7 @@
           "outside"
         ]
       },
-      "title": {
+      "heading": {
         "type": "string",
         "default": ""
       },
@@ -120,7 +125,6 @@
       },
       "close-label": {
         "type": "string",
-        "default": "",
         "description": "Empty: the text of the page's language (\"Close drawer\" in English)."
       },
       "width": {
@@ -176,10 +180,6 @@
         "type": "string",
         "default": ""
       },
-      "heading": {
-        "type": "string",
-        "default": ""
-      },
       "unsaved": {
         "type": "boolean",
         "default": false
@@ -187,6 +187,15 @@
       "dismissible": {
         "type": "boolean",
         "default": true
+      },
+      "open": {
+        "type": "boolean",
+        "default": false
+      },
+      "title": {
+        "type": "string",
+        "default": "",
+        "description": "Dated alias of heading until 2026-12-01."
       }
     },
     "additionalProperties": false
@@ -226,13 +235,7 @@
   "methods": {
     "open": {
       "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches drawer:before-open (cancelable) and later drawer:after-open unless options.emit is false. Returns the element.",
-      "arguments": [
-        {
-          "name": "options",
-          "type": "object",
-          "required": false
-        }
-      ],
+      "arguments": [],
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -242,9 +245,16 @@
       "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
       "arguments": [
         {
-          "name": "options",
-          "type": "object",
-          "required": false
+          "name": "reason",
+          "schema": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
         }
       ],
       "returns": {
@@ -385,6 +395,113 @@
     }
   },
   "events": {
+    "sf-drawer-open": {
+      "summary": "open (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-drawer-opened": {
+      "summary": "opened (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-drawer-close": {
+      "summary": "close (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId",
+          "reason",
+          "unsaved"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          },
+          "unsaved": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-drawer-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId",
+          "reason"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-drawer-snapped": {
+      "summary": "snapped (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "drawerId",
+          "snap"
+        ],
+        "properties": {
+          "drawerId": {
+            "type": "string"
+          },
+          "snap": {
+            "enum": [
+              "auto",
+              "half",
+              "full"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "drawer:ready": {
       "summary": "The portal surface is ready. Bubbles and is composed; detail.drawer is the emitting drawer.",
       "payload": {
@@ -708,7 +825,7 @@
       },
       {
         "path": "src/smart/drawer/rule.js",
-        "sha256": "c64fe407994c86ce8d718fd4543ebbd89f0b5c8550985ffe15df3fe334fbfadc"
+        "sha256": "bf6cc989fc8821b3d1d3789fa93018894c3c0b3211eb1fdfd0cc6e3de602047c"
       },
       {
         "path": "src/smart/drawer/docs.md",

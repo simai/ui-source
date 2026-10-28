@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.spinner",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Spinner",
   "summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
   "kind": "smart",
@@ -31,64 +31,58 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The size ladder: at each step the spinner is the icon of an sf-button of the same size (diameter and stroke), so it can stand in for that icon.",
         "enum": [
           "1/3",
           "1/2",
           "1",
           "2",
           "3"
-        ],
-        "description": "The size ladder: at each step the spinner is the icon of an sf-button of the same size (diameter and stroke), so it can stand in for that icon."
-      },
-      "width": {
-        "type": "string",
-        "default": "",
-        "description": "Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write size."
-      },
-      "height": {
-        "type": "string",
-        "default": "",
-        "description": "Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write size."
+        ]
       },
       "label": {
         "type": "string",
-        "default": "",
         "description": "Empty: the text of the page's language (\"Loading…\" in English)."
       },
       "kind": {
         "type": "string",
         "default": "",
+        "description": "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc.",
         "enum": [
           "",
           "arc",
           "breathing",
           "comet",
           "dots"
-        ],
-        "description": "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc."
+        ]
       },
       "dots": {
-        "type": "string",
-        "default": "8",
+        "type": "integer",
+        "default": 8,
+        "minimum": 1,
         "pattern": "^(?:[3-9]|[12][0-9]|3[0-2])$"
       },
       "filled": {
-        "type": "string",
-        "default": "3",
+        "type": "integer",
+        "default": 3,
+        "minimum": 0,
         "pattern": "^(?:[1-9]|[12][0-9]|3[0-2])$"
-      },
-      "stroke-width": {
-        "type": "string",
-        "default": "",
-        "description": "Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write size."
-      },
-      "dot-radius": {
-        "type": "string",
-        "default": "",
-        "description": "Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write size."
       },
       "infinite": {
         "type": "boolean",
@@ -105,10 +99,6 @@
           "clockwise",
           "counterclockwise"
         ]
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
       },
       "variant": {
         "type": "string",
@@ -128,6 +118,14 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "refreshSpinner": {
+      "summary": "Re-renders the bound spinner root from its current configuration; does nothing before it is bound.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
     "getSpinnerRoot": {
       "summary": "Returns the inner spinner root (.sf-loader-container), or null before render.",
       "arguments": [],
@@ -136,14 +134,6 @@
           "object",
           "null"
         ]
-      }
-    },
-    "refreshSpinner": {
-      "summary": "Re-renders the bound spinner root from its current configuration; does nothing before it is bound.",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
       }
     }
   },
@@ -186,7 +176,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "status when announce is true and label is non-empty; otherwise no widget role",
+    "role": "status",
     "accessible_name": "recommended",
     "keyboard": [],
     "focus": "Spinner is not interactive and never enters the focus order."
@@ -280,7 +270,7 @@
       },
       {
         "path": "src/smart/spinner/rule.js",
-        "sha256": "d313ccac9d906fbb9f767a4a67beefa9a4e249b2bbc102cd6cfee312fab81648"
+        "sha256": "5434b94dfa1e549d0bf22e8d4316526d52b370c47a04ca996467db09b4b23fb9"
       },
       {
         "path": "src/smart/spinner/docs/docs.md",

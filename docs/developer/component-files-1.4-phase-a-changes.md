@@ -1,4 +1,9 @@
-# Component files 1.4, phase A waves 1 and 2: what changed for consumers
+# Component files 1.4, phase A: what changed for consumers
+
+Waves 1 and 2 first, then waves 3 to 6 (below), which finish the Framework's
+Smart components: every folder of src/smart is in the 1.4 form.
+
+## Waves 1 and 2
 
 Thirty Smart components moved to the 1.4 form on 2026-10-28 (standard
 simai.smart-component 1.4; docs/developer/component-files-1.4-report.md). The
@@ -317,3 +322,351 @@ pair before (ui-36116c01a792):
 - inputs removed: role
 - 8 summaries/descriptions now component.json's words
 
+## Waves 3 to 6
+
+The other twenty-nine Smart components moved to the 1.4 form the same day:
+skeleton, tooltip, alert, progress-bar, progress-scale, toggle, badge, button,
+icon-button, button-group, input, textarea, dropdown, list-item (the meta.mjs
+families), file-preview, country-code, tag, pagination, image-field, drawer,
+context-menu, toast, tree-item, spinner, popover (the small conflicts), modal,
+quantity, file-upload and composition-overlay (the large ones). The runtime
+is unchanged (what the element reads of component.json is the same, words
+aside); each component is a patch version up, and so are tabs and
+profile-picker, whose registry gains their object setting. Against the pair
+before (ui-519fa0814a02):
+
+- meta.mjs is generated for the twenty families that had a hand-written one:
+  it describes every attribute (the base settings, the dated aliases), not a
+  few. Only this repository's tests and the studio generator read it; the
+  distribution does not carry it.
+- The registry gains the events, actions and settings component.json declares
+  and it lacked: sf-button press, sf-modal's and sf-drawer's open/close family,
+  sf-pagination's eight verbs, sf-context-menu, sf-popover and sf-toast
+  opened/closed, sf-tag close, sf-list-item and sf-tree-item open, the
+  progress chunk, sf-toast show, sf-modal minimize/expand/confirm.
+- An event's detail is component.json's: the element, its tag name and
+  template are no longer described (§8: data only; additionalProperties stays
+  true); toast's toast/trigger and alert's alert left the detail with the code.
+  composition-overlay's select, insert and move describe both the vocabulary's
+  fields and the ones the composition host reads (node_id, parent_id, index).
+- A native event name that carries a detail (sf-dropdown and sf-quantity
+  change/input, x-detail) describes that detail; a native event from an inner
+  control (sf-textarea, sf-toggle, sf-input, sf-country-code) has none.
+- An object setting is a property input, as a list is: sf-context-menu search,
+  sf-image-field value, sf-icon-button button-attributes, composition-overlay
+  messages and insertion-target, sf-tabs settings, sf-profile-picker rights.
+- A dated attribute alias of a setting is an input until it ends: sf-modal
+  hide (minimizable) and unclose (dismissible, inverted).
+- A legacy name offers what its axis offers: sf-button type and appearance no
+  longer offer ghost, which reads as link (appearance=ghost in
+  compatibility.aliases); sf-icon-button keeps ghost as an appearance.
+- Kept although component.json does not declare them, because the code still
+  reads them (x-registry): sf-tag type (the split legacy name), sf-quantity
+  value (the attribute with a point), sf-context-menu and sf-toast role,
+  sf-context-menu tabs as a string or a list, sf-dropdown sf-field:reset (sent
+  by the trait).
+- Gone from the registry: retired attributes (sf-file-preview avatar-size and
+  open; sf-spinner width, height, stroke-width and dot-radius, which its
+  component.json took out of the interface in 1.2.0 and the code still draws
+  until 2026-12-01), host attributes (sf-country-code form, sf-popover role), the base
+  lifecycle events sf-modal listed (sf-before-render, sf-after-render).
+- sf-button's composition type (composition.declarative.props) is derived from
+  its settings: it gains text-position, segment, icon-start, icon-end, radius
+  and expanded; root-class and root-style stay out.
+- button-group, country-code, file-upload and image-field wrote examples.json
+  as a bare list; it is {examples: [...]} now, so the first-paint snapshots
+  draw their examples.
+- The words moved into component.json (summary of settings, events, actions)
+  are embedded in each bundle: what the twenty-nine bundles embed of their
+  component.json grows from 66.7 to 109.0 KB minified (19.7 to 35.1 KB gzip,
+  per file), 38 KB of it summaries, which the runtime does not read.
+
+### sf-alert 1.1.3 → 1.1.4
+
+- version 1.1.3 → 1.1.4
+- event detail described anew: sf-alert-action, sf-alert-close
+- inputs added: root-style, aria-label
+- input default: close-label "" → –
+- role null → "status"
+
+### sf-badge 1.1.2 → 1.1.3
+
+- version 1.0.1 → 1.1.3
+- inputs added: root-class, root-style
+- input default: icon-start null → ""; icon-end null → ""
+- role null → "none"
+- compatibility.aliases [] → ["status=danger","icon-position=left","icon-position=right"]
+
+### sf-button 1.1.4 → 1.1.5
+
+- version 1.1.4 → 1.1.5
+- events added: sf-button-press
+- inputs added: root-style
+- input default: expanded – → false
+- input enum: appearance ["default","tonal","outline","link","surface","ghost"] → ["default","tonal","outline","link","surface"]; type ["default","tonal","outline","link","surface","ghost"] → ["default","tonal","outline","link","surface"]; tightness ["","low","high","highest"] → ["low","high","highest"]
+- uses ["smart.icon","component.spinner"] → ["component.buttons","component.spinner","smart.icon"]
+- composition.declarative.props derived from the settings (root-class and root-style stay out)
+- role null → "button"
+- compatibility.aliases [] → ["appearance=ghost","status=danger","status=critical","spacing=low","spacing=high","spacing=highest","icon-position=left","icon-position=right"]
+
+### sf-button-group 1.1.2 → 1.1.3
+
+- version 1.1.2 → 1.1.3
+- event detail described anew: change
+- method arguments from component.json: select
+- inputs added: root-style
+- input default: items "[]" → []
+- uses ["component.button-group","smart.button","component.spinner"] → ["component.button-group","component.spinner","smart.button","smart.icon"]
+
+### sf-composition-overlay 1.2.2 → 1.2.3
+
+- version 1.2.2 → 1.2.3
+- summary: component.json's words
+- event detail described anew: sf-composition-overlay-select, sf-composition-overlay-apply, sf-composition-overlay-insert, sf-composition-overlay-move, sf-composition-overlay-change
+- method arguments from component.json: attach, attachFrame, setDocument, setNodes, setDropFilter, setActions, setMessages, setInsertionTarget, select, edit
+- inputs added: template, root-class, root-style, messages, insertion-target
+- 19 summaries/descriptions now component.json's words
+
+### sf-context-menu 1.4.3 → 1.4.4
+
+- version 1.4.3 → 1.4.4
+- events added: sf-context-menu-opened, sf-context-menu-closed
+- event detail described anew: sf-context-menu-select, sf-context-menu-open, sf-context-menu-close, sf-context-menu-search, sf-context-menu-tab
+- method arguments from component.json: openFor, toggleFor, close
+- inputs added: root-style
+- input default: search null → –
+- uses ["component.context-menu","smart.button"] → ["component.context-menu","smart.button","smart.icon-button","smart.tabs"]
+
+### sf-country-code 1.1.2 → 1.1.3
+
+- version 1.0.0 → 1.1.3
+- events added: input
+- inputs added: template, root-class, root-style
+- inputs removed: form
+- input default: placeholder "+7(___)___-__-__" → –
+- uses [] → ["component.country-code"]
+- role null → "textbox"
+
+### sf-drawer 1.8.1 → 1.8.2
+
+- version 1.8.1 → 1.8.2
+- events added: sf-drawer-open, sf-drawer-opened, sf-drawer-close, sf-drawer-closed, sf-drawer-snapped
+- method arguments from component.json: open, close
+- inputs added: root-class, root-style
+- input default: close-label "" → –
+- uses ["component.icon-buttons","component.close"] → ["component.close","component.icon-buttons"]
+
+### sf-dropdown 1.4.3 → 1.4.4
+
+- version 1.4.3 → 1.4.4
+- event detail described anew: change
+- inputs added: root-class, root-style
+- input type: columns "string" → "number"
+- input default: columns "6" → 6; search-placeholder "" → –
+- uses ["component.dropdown","smart.list-item","smart.input","smart.icon-button"] → ["component.dropdown","component.icon-buttons","component.inputs","smart.icon-button","smart.input","smart.list-item"]
+- role "button with listbox popup" → "combobox"
+
+### sf-file-preview 1.1.2 → 1.1.3
+
+- version 1.1.2 → 1.1.3
+- events added: sf-file-preview-download, sf-file-preview-detach
+- inputs added: root-class, root-style
+- inputs removed: avatar-size, open
+- input default: download-label "" → –; remove-label "" → –
+- uses ["component.file-preview","component.icons","component.icon-buttons"] → ["component.file-preview","component.icon-buttons","component.icons"]
+
+### sf-file-upload 1.1.3 → 1.1.4
+
+- version 1.1.3 → 1.1.4
+- event detail described anew: change, sf-file-upload-attach, sf-file-upload-attached, sf-file-upload-detach, sf-file-upload-rejected, sf-file-upload-retry, sf-file-upload-begun, sf-file-upload-chunk, sf-file-upload-completed, sf-file-upload-failed, sf-file-upload-cancelled, sf-file-upload-finished
+- method arguments from component.json: removeItem
+- inputs added: root-class, root-style
+- input default: link-text "" → –; text "or drag and drop" → –
+- uses [] → ["component.featured-icon","component.file-upload","component.icon-buttons","smart.progress-bar"]
+
+### sf-icon-button 1.1.3 → 1.1.4
+
+- version 1.1.3 → 1.1.4
+- inputs added: root-style, button-attributes
+- input minimum: badge-cap – → 1
+- input enum: tightness ["","low","high","highest"] → ["low","high","highest"]
+- uses ["component.icon-buttons","smart.icon","smart.close","component.spinner","component.badges"] → ["component.badges","component.icon-buttons","component.spinner","smart.close","smart.icon"]
+- compatibility.aliases [] → ["spacing=low","spacing=high","spacing=highest"]
+
+### sf-image-field 1.1.3 → 1.1.4
+
+- version 1.1.3 → 1.1.4
+- event detail described anew: change, input, sf-image-field-attach, sf-image-field-detach, sf-image-field-rejected
+- method arguments from component.json: takeFile, setError
+- inputs added: root-style
+- input type: value "string" → "object"
+- input default: value "" → null
+- 1 summaries/descriptions now component.json's words
+
+### sf-input 1.3.3 → 1.3.4
+
+- version 1.3.3 → 1.3.4
+- title «Inputs» → «Text fields»
+- inputs added: template, root-style
+- input default: icon-start null → ""; text-end null → ""
+- uses ["component.inputs","smart.icon"] → ["component.icon-buttons","component.inputs","smart.icon"]
+
+### sf-list-item 1.2.2 → 1.2.3
+
+- version 1.2.2 → 1.2.3
+- title «List Item» → «List item»
+- summary: component.json's words
+- events added: sf-list-item-open
+- inputs added: root-class, root-style
+- uses [] → ["component.avatars","component.checkbox","component.dropdown","component.icons","component.tags"]
+- role "option when rendered by Dropdown; none in standalone preview and list rows (the list owns the role; aria-current marks a selected row)" → "none"
+- 4 summaries/descriptions now component.json's words
+
+### sf-modal 1.4.1 → 1.4.2
+
+- version 1.4.1 → 1.4.2
+- summary: component.json's words
+- events added: sf-modal-open, sf-modal-opened, sf-modal-close, sf-modal-closed, sf-modal-minimize, sf-modal-minimized, sf-modal-expand, sf-modal-expanded, sf-modal-content-upload, sf-modal-content-uploaded
+- events removed: sf-after-render, sf-before-render
+- methods added: minimize, expand, confirm
+- method arguments from component.json: open, close
+- inputs added: root-style
+- input default: title "" → –
+- uses ["component.spinner"] → ["component.icon-buttons","component.modal","component.spinner"]
+
+### sf-pagination 1.3.1 → 1.3.2
+
+- version 1.3.1 → 1.3.2
+- events added: sf-pagination-change, sf-pagination-size-change, sf-pagination-count, sf-pagination-load-more, sf-pagination-selection-clear, sf-pagination-action-change, sf-pagination-action-for-all-change, sf-pagination-apply
+- method arguments from component.json: goToPage, showMore
+- inputs added: root-class, root-style
+- input default: pages-label "" → –; page-label "" → –; previous-label "" → –; next-label "" → –; last-label "" → –; total-label "" → –; selected-label "" → –; show-more-text "" → –; page-size-label "" → –; action-apply-text "" → –; action-for-all-label "" → –; actions-label "" → –; action-choose-label "" → –; actions-region-label "" → –; clear-selection-label "" → –; show-count-label "" → –; counting-label "" → –; first-label "" → –; page-field-label "" → –
+- uses ["smart.button","smart.checkbox","smart.dropdown","smart.icon-button","smart.input","smart.list-item","smart.spinner"] → ["component.pagination","smart.button","smart.checkbox","smart.dropdown","smart.icon-button","smart.input","smart.list-item","smart.spinner"]
+- 2 summaries/descriptions now component.json's words
+
+### sf-popover 1.1.1 → 1.1.2
+
+- version 1.1.1 → 1.1.2
+- events added: sf-popover-opened, sf-popover-closed
+- event detail described anew: sf-popover-open, sf-popover-close
+- method arguments from component.json: toggle, close
+- inputs added: root-class, root-style
+- inputs removed: role
+
+### sf-profile-picker 1.1.5 → 1.1.6
+
+- version 1.1.5 → 1.1.6
+- inputs added: rights
+
+### sf-progress-bar 1.1.1 → 1.1.2
+
+- version 1.1.1 → 1.1.2
+- methods added: chunk
+- inputs added: root-class, root-style, aria-label
+- input type: value "string" → "number"
+- input default: value "0" → 0
+- input minimum: value – → 0
+- input maximum: value – → 100
+
+### sf-progress-scale 1.1.1 → 1.1.2
+
+- version 1.1.1 → 1.1.2
+- methods added: chunk
+- inputs added: root-class, root-style, aria-label
+- input type: value "string" → "number"
+- input default: value "0" → 0
+- input minimum: value – → 0
+- input maximum: value – → 100
+
+### sf-quantity 1.1.2 → 1.1.3
+
+- version 1.0.0 → 1.1.3
+- event detail described anew: change, input
+- method arguments from component.json: stepUp, stepDown, setError
+- inputs added: root-style
+- input type: min "string" → "number"; max "string" → "number"; step "string" → "number"; page-step "string" → "number"; precision "string" → "integer"
+- input default: min "" → –; max "" → –; step "1" → 1; page-step "" → –; precision "" → –; decrement-label "" → –; increment-label "" → –
+- input minimum: precision – → 0
+- input maximum: precision – → 20
+- uses ["component.quantity","component.icons","component.icon-buttons"] → ["component.icon-buttons","component.icons","component.quantity"]
+
+### sf-skeleton 1.1.1 → 1.1.2
+
+- version 1.1.1 → 1.1.2
+- inputs added: template, root-style
+- input type: count "number" → "integer"
+- role "none; generated placeholder geometry is aria-hidden" → "none"
+
+### sf-spinner 1.2.1 → 1.2.2
+
+- version 1.2.1 → 1.2.2
+- inputs added: template, root-style
+- inputs removed: width, height, stroke-width, dot-radius
+- input type: dots "string" → "integer"; filled "string" → "integer"
+- input default: label "" → –; dots "8" → 8; filled "3" → 3
+- input minimum: dots – → 1; filled – → 0
+- role "status when announce is true and label is non-empty; otherwise no widget role" → "status"
+
+### sf-tabs 1.1.5 → 1.1.6
+
+- version 1.1.5 → 1.1.6
+- inputs added: settings
+
+### sf-tag 1.1.3 → 1.1.4
+
+- version 1.1.3 → 1.1.4
+- events added: sf-tag-close
+- event detail described anew: change
+- inputs added: root-style
+- input default: close-label "" → –; type "checkbox" → ""
+- uses ["component.avatars","component.dot","smart.icon-button","component.tags"] → ["component.avatars","component.dot","component.icon-buttons","component.tags","smart.icon-button"]
+- role null → "button"
+- compatibility.aliases [] → ["kind=quantity"]
+- 3 summaries/descriptions now component.json's words
+
+### sf-textarea 1.5.2 → 1.5.3
+
+- version 1.4.0 → 1.5.3
+- title «Textarea» → «Text area»
+- event detail described anew: change, input
+- inputs added: template, root-style
+- input default: minlength null → –; maxlength null → –; max-rows null → –
+- uses ["component.textarea"] → ["component.icon-buttons","component.icons","component.textarea"]
+
+### sf-toast 1.1.2 → 1.1.3
+
+- version 1.1.2 → 1.1.3
+- events added: sf-toast-closed
+- event detail described anew: sf-toast-action, sf-toast-close
+- methods added: show
+- inputs added: template, root-style
+- input default: close-label "" → –
+- uses ["component.toast","component.buttons","smart.icon-button","smart.icon"] → ["component.buttons","component.close","component.toast","smart.icon","smart.icon-button"]
+- role null → "status"
+
+### sf-toggle 1.1.2 → 1.1.3
+
+- version 1.0.0 → 1.1.3
+- event detail described anew: change
+- inputs added: template, root-class, root-style
+- uses ["component.toggle"] → ["component.icons","component.toggle"]
+
+### sf-tooltip 1.1.1 → 1.1.2
+
+- version 1.1.1 → 1.1.2
+- inputs added: root-style
+- uses [] → ["component.tooltip"]
+- role "tooltip when linked by the ordinary data-tooltip controller" → "tooltip"
+
+### sf-tree-item 1.1.2 → 1.1.3
+
+- version 1.1.2 → 1.1.3
+- title «Tree Item» → «Tree item»
+- summary: component.json's words
+- events added: sf-tree-item-open
+- event detail described anew: sf-tree-item-toggle
+- methods added: expand, collapse, toggleOpen
+- inputs added: root-style
+- input default: open-label "" → –; close-label "" → –
+- uses ["component.icon-buttons","component.icons","component.tree","component.tree-item"] → ["component.icon-buttons","component.icons","component.tree-item"]
+- 5 summaries/descriptions now component.json's words

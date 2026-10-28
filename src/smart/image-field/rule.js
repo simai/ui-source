@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // sf-image-field loads on demand like any other Smart element. Its relations
 // are what it draws with: the buttons «Заменить…», «Убрать» and «Выбрать…»
 // (sf-button, which brings its own icons) and the glyph of an empty or broken

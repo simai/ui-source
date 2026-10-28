@@ -2,7 +2,7 @@
   "$comment": "The source of sf-toggle's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/toggle (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.toggle",
   "tag": "sf-toggle",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "toggle",
   "settings": {
@@ -12,7 +12,8 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Toggle size token."
     },
     "kind": {
       "type": "enum",
@@ -21,7 +22,8 @@
         "icon",
         "short"
       ],
-      "default": "simple"
+      "default": "simple",
+      "summary": "What the toggle carries: nothing, an icon, or a short label."
     },
     "label": {
       "type": "string",
@@ -41,7 +43,8 @@
     },
     "value": {
       "type": "string",
-      "default": "on"
+      "default": "on",
+      "summary": "What a checked toggle submits; without it, \"on\", as a native checkbox (standard 1.3.8 §17.1 item 2)."
     }
   },
   "values": {
@@ -52,7 +55,8 @@
   },
   "events": {
     "change": {
-      "carries": "native"
+      "carries": "native",
+      "summary": "The pressed state changed; the native event bubbles from the inner checkbox, which is its target. The name to bind."
     }
   },
   "actions": {},
@@ -73,6 +77,14 @@
       "Space": "toggle:checked"
     }
   },
+  "relations": [
+    {
+      "name": "toggle"
+    },
+    {
+      "name": "icons"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -116,6 +128,21 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-toggle for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "type",
+        "to": "kind",
+        "kind": "setting",
+        "section": "§16 item 20, contracts/public-api-axes.json",
+        "note": "the legacy axis name; the shim maps the attribute and the property",
+        "summary": "Legacy name for kind, still honoured. See contracts/public-api-axes.json."
+      }
+    ]
+  },
   "x-summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
   "x-source": {
     "package": "framework",
@@ -126,14 +153,60 @@
   "x-words": [
     "label"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-replaced-by": {
+    "tag": "sf-switch",
+    "journal": "contracts/changes/journal.json component-toggle-to-switch",
+    "note": "the component itself is deprecated; aliases.json carries member renames only, the shim has no row for a tag"
+  },
+  "x-decisions": [
+    "existing-aliases: the legacy axis name `type` leaves the settings and is a dated setting alias of `kind` (aliases.json, until 2026-12-01); the component-level replacement by sf-switch has no alias kind in the shim, so it stays in the change journal and x-replaced-by.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (the checked reference) plus the three kinds, disabled and size 2; probe.json drives Space (gate 16).",
+    "css-variables: five public variables, one per recolourable state (off track, checked track, border, label, gap); the state rules read them with the role token as fallback (§6). Also in src/core/contracts/public-variables.v1.json.",
+    "value defaults to \"on\": a checked toggle without value submits \"on\", as a native checkbox (§17.1 item 2, simai/ui-source#38 as for sf-switch).",
+    "form: the host is the form control through ElementInternals; the inner checkbox carries no name (§17.1 item 6); the checked look reads :has(input:checked) and the thumb side is written by the template, not by a script class (§5.3).",
+    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-rule": {
+    "css": null
+  },
+  "x-registry": {
+    "reuse_mode": "both",
+    "lifecycle": "deprecated",
+    "public-parts": [
+      "native-input",
+      "track",
+      "thumb",
+      "label"
+    ],
+    "contracts": {
+      "state_owner": {
+        "const": "native_input"
+      },
+      "application": {
+        "const": "compact_immediate_binary_setting"
+      },
+      "reset": {
+        "const": "native_form_reset"
+      },
+      "toggle_states": {
+        "type": "string",
+        "enum": [
+          "unchecked",
+          "checked",
+          "disabled"
+        ]
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "selected",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -143,6 +216,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -156,7 +237,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Do not use sf-toggle for new work; use sf-switch, which draws the same control (sf-switch--short and sf-switch--icon give Toggle's two looks). Keep sf-toggle only in markup already written until it is moved.",
@@ -179,22 +264,128 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required"
+    },
+    "compatibility": {
+      "replacement": "smart.switch"
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "methods": {
+      "getInputElement": {
+        "summary": "Returns the inner native input (.sf-toggle input[type=\"checkbox\"]), or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "setChecked": {
+        "summary": "Sets the checked property and state of the inner input; does not dispatch change.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setDisabled": {
+        "summary": "Sets or clears disabled on the host and the inner input.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setState": {
+        "summary": "Applies checked and disabled, plus type, size, icon and label as host attributes, to the inner input and reflects them to host attributes; before render it falls back to the base setState.",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onChange": {
+        "summary": "Adds a listener for the native change event that bubbles from the inner input.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onFocus": {
+        "summary": "Adds a focusin listener on the host.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBlur": {
+        "summary": "Adds a focusout listener on the host.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-replaced-by": {
-    "tag": "sf-switch",
-    "journal": "contracts/changes/journal.json component-toggle-to-switch",
-    "note": "the component itself is deprecated; aliases.json carries member renames only, the shim has no row for a tag"
-  },
-  "x-decisions": [
-    "existing-aliases: the legacy axis name `type` leaves the settings and is a dated setting alias of `kind` (aliases.json, until 2026-12-01); the component-level replacement by sf-switch has no alias kind in the shim, so it stays in the change journal and x-replaced-by.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
-    "examples: examples.json from studio.fixture.json (the checked reference) plus the three kinds, disabled and size 2; probe.json drives Space (gate 16).",
-    "css-variables: five public variables, one per recolourable state (off track, checked track, border, label, gap); the state rules read them with the role token as fallback (§6). Also in src/core/contracts/public-variables.v1.json.",
-    "value defaults to \"on\": a checked toggle without value submits \"on\", as a native checkbox (§17.1 item 2, simai/ui-source#38 as for sf-switch).",
-    "form: the host is the form control through ElementInternals; the inner checkbox carries no name (§17.1 item 6); the checked look reads :has(input:checked) and the thumb side is written by the template, not by a script class (§5.3).",
-    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

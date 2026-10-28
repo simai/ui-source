@@ -121,9 +121,11 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.doesNotMatch(template, /role="tab|tablist|aria-selected/);
   // The settings come from the component's manifest (standard 1.3.8 §4).
   const bgManifest = JSON.parse(await source('src/smart/button-group/component.json'));
-  assert.deepEqual(bgManifest.settings.appearance, {type: 'enum', values: ['default', 'segmented'], default: 'default'});
-  assert.deepEqual(bgManifest.settings.plate, {type: 'enum', values: ['scheme', 'raised'], default: 'scheme'});
-  assert.deepEqual(bgManifest.settings['full-width'], {type: 'boolean', default: false});
+  // (the words, summary, are the registry's descriptions since standard 1.4)
+  const typed = ({summary, ...setting}) => setting;
+  assert.deepEqual(typed(bgManifest.settings.appearance), {type: 'enum', values: ['default', 'segmented'], default: 'default'});
+  assert.deepEqual(typed(bgManifest.settings.plate), {type: 'enum', values: ['scheme', 'raised'], default: 'scheme'});
+  assert.deepEqual(typed(bgManifest.settings['full-width']), {type: 'boolean', default: false});
   assert.match(smart, /:scope > sf-button, :scope > button/);
   assert.ok(axes.components.some((entry) => entry.component === 'button-group' && entry.axis === 'appearance'));
   // Segments are buttons of the same size and text classes, all of one look, so
@@ -190,7 +192,9 @@ test('button group takes a radius, a form name and a theme switch', async () => 
   assert.deepEqual(inputs.radius.enum, ['', 'default', 'square', 'rounded']);
   assert.equal(inputs.name.type, 'string');
   assert.equal(inputs['theme-switch'].type, 'boolean');
-  assert.deepEqual(JSON.parse(await source('src/smart/button-group/component.json')).settings.radius, {type: 'enum', values: ['', 'default', 'square', 'rounded'], default: ''});
+  const {summary, ...radius} = JSON.parse(await source('src/smart/button-group/component.json')).settings.radius;
+  assert.ok(summary);
+  assert.deepEqual(radius, {type: 'enum', values: ['', 'default', 'square', 'rounded'], default: ''});
   assert.match(template, /sf-button-group--radius-\$\{context\.radius\}/);
   // Where the browser has ElementInternals the host is the form control
   // (standard 1.3.8 §17.1, through the manifest element); without them, the

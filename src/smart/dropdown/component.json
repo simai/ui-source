@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.4.4",
+  "version": "1.4.6",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -15,11 +15,13 @@
         "filled",
         "outlined"
       ],
-      "default": "outlined"
+      "default": "outlined",
+      "summary": "How the dropdown looks: a filled field or an outlined one."
     },
     "columns": {
       "type": "number",
-      "default": 6
+      "default": 6,
+      "summary": "How many options a row holds in the grid layout. Ignored in a list."
     },
     "disabled": {
       "type": "boolean",
@@ -35,7 +37,8 @@
         "list",
         "grid"
       ],
-      "default": "list"
+      "default": "list",
+      "summary": "How the options are laid out. A list is one option a row; a grid puts several in a row, which is the only way a hundred glyphs can be looked at -- a column of them is a column nobody scrolls to the end of. In a grid an option shows its picture and keeps its text as the name a search reads and a pointer sees."
     },
     "mode": {
       "type": "enum",
@@ -47,11 +50,13 @@
     },
     "multiple": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Allow several values while preserving their serialized selection order. Tag mode is multiple by default."
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Native form field name for the selected machine value."
     },
     "options": {
       "type": "list",
@@ -72,7 +77,8 @@
           "optional": true
         }
       },
-      "x-shape": "ui-source 5100227 src/smart/dropdown/smart.manifest.json inputs.options; a string or a number is both the text and the value; constant options in a manifest give only the value, the text lives in lang roles.<role>.items.<value> (standard 1.3.8 §11.3)"
+      "x-shape": "ui-source 5100227 src/smart/dropdown/smart.manifest.json inputs.options; a string or a number is both the text and the value; constant options in a manifest give only the value, the text lives in lang roles.<role>.items.<value> (standard 1.3.8 §11.3)",
+      "summary": "Options given as data instead of as sf-list-item children: [{text, value, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
     },
     "placeholder": {
       "type": "string",
@@ -80,7 +86,8 @@
     },
     "portal": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Anchor the popup with the shared Framework positioning (SF.Position): native top layer, flip, shift and viewport-limited height. On by default; portal=\"false\" keeps the in-flow list."
     },
     "required": {
       "type": "boolean",
@@ -92,7 +99,8 @@
     },
     "search-placeholder": {
       "type": "string",
-      "default-from": "runtime.search"
+      "default-from": "runtime.search",
+      "summary": "Empty: the text of the page's language (\"Search\" in English)."
     },
     "size": {
       "type": "enum",
@@ -107,7 +115,8 @@
   "values": {
     "value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Selected machine value, or a comma-separated list of values for multiple selection."
     }
   },
   "events": {
@@ -119,7 +128,8 @@
         "values": "list",
         "item": "object",
         "multiple": "boolean"
-      }
+      },
+      "summary": "The selection changed; dispatched on the host. The name to bind."
     }
   },
   "actions": {
@@ -127,19 +137,34 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Opens the option list unless the control is disabled or already open. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "close-dropdown": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Closes the option list and clears the search text. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "toggle-dropdown": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Closes the list when open, opens it otherwise. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "layer": {
@@ -162,6 +187,26 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "dropdown"
+    },
+    {
+      "name": "inputs"
+    },
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "cl-list-item"
+    },
+    {
+      "name": "cl-input"
+    },
+    {
+      "name": "cl-icon-button"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -217,6 +262,46 @@
       "state": "open"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-dropdown for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (setting rows), split (the old detail from the element's adapter), host-attribute (no shim).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "type",
+        "to": "appearance",
+        "kind": "setting",
+        "section": "the axis's old name (contracts/public-api-axes.json)",
+        "summary": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read for the accessible name; no shim"
+      },
+      {
+        "from": "sf-dropdown:change",
+        "to": "change",
+        "kind": "event",
+        "mode": "split",
+        "section": "§8, vocabulary §5.1",
+        "note": "the old detail adds root (the element), which §8 takes out of the new detail: the element's detail adapter makes it",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      },
+      {
+        "from": "sf-field:reset",
+        "to": "sf-field-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, §20.2",
+        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
+      }
+    ]
+  },
   "x-summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "x-source": {
     "package": "framework",
@@ -235,60 +320,6 @@
     "settings.type → appearance: the axis's old name (contracts/public-api-axes.json), alias dated",
     "events.sf-dropdown:change → change: vocabulary §5.1 (a value changed), the colon name a dated alias"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
-    "ownership": {
-      "source": "simai/ui-source",
-      "data": "fixture",
-      "effects": "component",
-      "forbidden_client_responsibilities": [
-        "backend access decisions",
-        "host route invention"
-      ]
-    },
-    "presentation": {
-      "themes": [
-        "light",
-        "dark"
-      ],
-      "locales": [
-        "ru",
-        "en"
-      ],
-      "responsive": [
-        "desktop",
-        "mobile"
-      ]
-    },
-    "ai_guidance": {
-      "use_when": "Use sf-dropdown when a form needs one or several values from a concealed option set. Use direct sf-list-item children with stable machine values and visible labels. Use portal only when an ancestor clips the popup.",
-      "do_not": [
-        "Do not copy generated ui-smart code",
-        "Do not move host data or access decisions into the component",
-        "Do not use the visible label as the submitted value when a stable machine identifier exists",
-        "Do not make decorative checkbox, avatar or icon content independently focusable inside an option"
-      ],
-      "required_reads": [
-        "inputs",
-        "methods",
-        "events",
-        "ownership",
-        "provenance"
-      ],
-      "minimal_example": "<sf-dropdown label=\"Статус\" name=\"status\" placeholder=\"Выберите статус\"><sf-list-item value=\"open\" text=\"Открыт\"></sf-list-item><sf-list-item value=\"done\" text=\"Готов\"></sf-list-item></sf-dropdown>",
-      "owner_commands": [
-        "npm run contract:verify",
-        "npm test"
-      ]
-    }
-  },
   "x-form": {
     "value": "value",
     "name": "name",
@@ -317,6 +348,194 @@
     "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.4.4: options given as the options attribute (JSON) are read as data, as the property is, so the chosen option's text shows in the field; a changed attribute redraws the list (ui-effects site, 2026-10-28)."
-  ]
+    "version 1.4.5: the trait field-inherit@1 event sf-field-reset is dispatched, with sf-field:reset as its dated same-detail alias (aliases.json), as sf-input, sf-textarea and sf-quantity have it. The dropdown declared sf-field:reset but lacked the alias row, so the new name was never sent; the trait code still sends the old name and the shim now sends sf-field-reset first.",
+    "version 1.4.6: options given as the options attribute (JSON) are read as data, as the property is, so the chosen option's text shows in the field; the attribute is observed, so a changed one redraws the list (ui-effects site, 2026-10-28)."
+  ],
+  "x-rule": {
+    "$comment": [
+      "css: its own sheet, the slot of an inherited value (simai/ui-source#28)."
+    ],
+    "css": true
+  },
+  "x-registry": {
+    "contracts": {
+      "change_detail": {
+        "type": "object",
+        "required": [
+          "value",
+          "values",
+          "multiple"
+        ],
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The value of the item chosen or cleared; \"\" when none."
+          },
+          "label": {
+            "type": "string",
+            "description": "Its visible text."
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Every selected value after the change."
+          },
+          "item": {
+            "description": "The chosen option's data (text, value, type, icon, disabled, group, ...), not the sf-list-item element; null when a value was cleared."
+          },
+          "root": {
+            "description": "The emitting sf-dropdown, the live element (the detail is not JSON)."
+          },
+          "multiple": {
+            "type": "boolean",
+            "description": "Whether several values can be selected."
+          }
+        }
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open",
+        "selected",
+        "disabled"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-dropdown when a form needs one or several values from a concealed option set. Use direct sf-list-item children with stable machine values and visible labels. Use portal only when an ancestor clips the popup.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use the visible label as the submitted value when a stable machine identifier exists",
+        "Do not make decorative checkbox, avatar or icon content independently focusable inside an option"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-dropdown label=\"Статус\" name=\"status\" placeholder=\"Выберите статус\"><sf-list-item value=\"open\" text=\"Открыт\"></sf-list-item><sf-list-item value=\"done\" text=\"Готов\"></sf-list-item></sf-dropdown>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    },
+    "compatibility": {
+      "migrations": [
+        {
+          "from": "1.0.0",
+          "to": "1.1.0",
+          "changes": [
+            "portal is on by default: the list is positioned by SF.Position (Floating UI) in the native top layer, flips above near the bottom and stays inside the viewport.",
+            "portal=\"false\" keeps the previous in-flow list."
+          ]
+        }
+      ]
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-dropdown:change": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "$ref": "#/contracts/change_detail"
+        },
+        "alias_of": "change"
+      },
+      "sf-field:reset": {
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The field's own value before the reset."
+            },
+            "inheritedValue": {
+              "type": "string",
+              "description": "The inherited value it returns to."
+            },
+            "name": {
+              "type": "string",
+              "description": "The form name, empty when the field has none."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "resetToInherited": {
+        "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field:reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
+        "arguments": [],
+        "returns": {
+          "type": "boolean",
+          "description": "Whether the field was reset."
+        }
+      }
+    },
+    "trait-inputs": {
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "The option value (values joined by commas when several may be chosen) the field falls back to while nothing is chosen. Its options' labels are shown as inherited, in the placeholder's ink with an «inherited» marker, never as a choice: the form value stays empty. Once something is chosen, a reset button returns it here. Select mode; a tag-mode field does not draw it."
+      },
+      "inherited-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the marker shown while the inherited value applies. Unset, it follows the page's language («inherited», «наследуется»)."
+      },
+      "reset-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      }
+    }
+  }
 }

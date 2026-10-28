@@ -2,7 +2,7 @@
   "$comment": "The source of sf-quantity's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/quantity (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.quantity",
   "tag": "sf-quantity",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -11,50 +11,61 @@
   "settings": {
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The form name: a hidden input submits the value with a point and no grouping (`2567.50`), whatever the box shows. The box itself has no name."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The field label above the box; it names the spinbutton. Slot `label` takes markup instead."
     },
     "hint": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Help text under the field; slot `hint` takes markup instead."
     },
     "placeholder": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Shown in the empty box."
     },
     "min": {
       "type": "number",
-      "nullable": true
+      "nullable": true,
+      "summary": "The lower bound: «−» is disabled on it, Home goes to it, a typed value below it is raised to it on commit. Empty for none; with none, or one below zero, a minus sign may be typed."
     },
     "max": {
       "type": "number",
-      "nullable": true
+      "nullable": true,
+      "summary": "The upper bound: «+» is disabled on it, End goes to it, a typed value above it is lowered to it on commit. Empty for none."
     },
     "step": {
       "type": "number",
-      "default": 1
+      "default": 1,
+      "summary": "How far «−», «+», ArrowUp and ArrowDown move the value. A positive number; anything else is 1. Its decimals are the field's digits unless `precision` says otherwise."
     },
     "page-step": {
       "type": "number",
-      "nullable": true
+      "nullable": true,
+      "summary": "How far PageUp and PageDown move the value; ten steps when empty."
     },
     "precision": {
       "type": "number",
       "integer": true,
       "min": 0,
       "max": 20,
-      "nullable": true
+      "nullable": true,
+      "summary": "Digits after the decimal mark, shown and kept; empty takes them from `step` (0.25 has two). With none, a decimal mark cannot be typed."
     },
     "grouping": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Group thousands the page's language's way («2 567»); `grouping=\"false\"` writes the digits together, for a year or a code."
     },
     "locale": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The language the number is read and written in; unset, the page's (`lang`), so the decimal mark is a comma on a Russian page."
     },
     "size": {
       "type": "enum",
@@ -63,41 +74,50 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Field size: 1/2, 1 or 2, as every form field."
     },
     "required": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "The field must hold a number: the box is required, so a form will not submit while it is empty."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Shown and not changed: the box and both steppers are disabled, and the hidden input is not submitted."
     },
     "readonly": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Shown and not changed: the box is read-only, the steppers are disabled, the keys do not step."
     },
     "invalid": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "The error state: the edge and the message take the error colour and the box carries aria-invalid."
     },
     "error-message": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The error shown in place of the hint while the field is invalid; slot `error` takes markup instead."
     },
     "decrement-label": {
       "type": "string",
-      "default-from": "runtime.decrement"
+      "default-from": "runtime.decrement",
+      "summary": "The accessible name of «−». Unset, it follows the page's language («Уменьшить значение», «Decrease value»)."
     },
     "increment-label": {
       "type": "string",
-      "default-from": "runtime.increment"
+      "default-from": "runtime.increment",
+      "summary": "The accessible name of «+». Unset, it follows the page's language («Увеличить значение», «Increase value»)."
     }
   },
   "values": {
     "value": {
       "type": "number",
-      "nullable": true
+      "nullable": true,
+      "summary": "The number the field holds, written with a point (`2567.5`); empty for none. The property reads a number or null and takes a number, numeric text or null. Rounded to the field's digits. Set from code it fires nothing."
     }
   },
   "events": {
@@ -106,9 +126,13 @@
       "x-detail": {
         "value": {
           "type": "number",
-          "nullable": true
+          "nullable": true,
+          "summary": "The number the field now holds; null when it is empty."
         },
-        "text": "string",
+        "text": {
+          "type": "string",
+          "summary": "The number as the field writes it, in the page's language."
+        },
         "name": "string",
         "source": {
           "type": "enum",
@@ -118,19 +142,25 @@
             "button",
             "keyboard",
             "reset"
-          ]
+          ],
+          "summary": "What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."
         }
       },
-      "$comment": "Sent on the host as `change` with a detail: once per commit (Enter, leaving the box, a stepper press or a held run, a key) and for a reset to the inherited value (§17.3)."
+      "$comment": "Sent on the host as `change` with a detail: once per commit (Enter, leaving the box, a stepper press or a held run, a key) and for a reset to the inherited value (§17.3).",
+      "summary": "The value was committed: once per change the person made -- a commit of typed text (Enter or leaving the box), a stepper press (one for a whole held run), a key, a reset. A CustomEvent on the host; the box's own change does not leave the host. A commit that only rewrites the text fires nothing."
     },
     "input": {
       "carries": "native",
       "x-detail": {
         "value": {
           "type": "number",
-          "nullable": true
+          "nullable": true,
+          "summary": "The number the field now holds; null when it is empty."
         },
-        "text": "string",
+        "text": {
+          "type": "string",
+          "summary": "The number as the field writes it, in the page's language."
+        },
         "name": "string",
         "source": {
           "type": "enum",
@@ -140,10 +170,12 @@
             "button",
             "keyboard",
             "reset"
-          ]
+          ],
+          "summary": "What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."
         }
       },
-      "$comment": "Sent on the host as `input` with a detail each time the number moves; the text box's own input and change stop at the host."
+      "$comment": "Sent on the host as `input` with a detail each time the number moves; the text box's own input and change stop at the host.",
+      "summary": "The value moved: while typing, each time the text reads as a different number; on each step of a stepper or a key; before every change whose value it has not reported yet. Same detail as change."
     }
   },
   "actions": {
@@ -151,7 +183,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Empty the field from code; the same as setValue(null). Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "step-up": {
       "with": {
@@ -163,7 +200,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Move the value up by `count` steps (1 by default), held by the bounds, as a native field's stepUp(). Fires nothing. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "step-down": {
       "with": {
@@ -175,7 +217,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Move the value down by `count` steps (1 by default), held by the bounds. Fires nothing. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "set-error": {
       "with": {
@@ -185,7 +232,12 @@
       },
       "x-outcomes": [
         "applied"
-      ]
+      ],
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "form": {
@@ -218,6 +270,17 @@
       "Escape": "revert"
     }
   },
+  "relations": [
+    {
+      "name": "quantity"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "icon-buttons"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -295,6 +358,38 @@
       "state": "invalid"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-quantity for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "error",
+        "to": "invalid",
+        "kind": "setting",
+        "section": "§17.2",
+        "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
+        "summary": "The error state; the same as invalid."
+      },
+      {
+        "from": "sf-field:reset",
+        "to": "sf-field-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, §20.2",
+        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. Not prevented, the field empties, says so with input and change (source reset), shows the inherited value again and takes focus back."
+      }
+    ]
+  },
   "x-summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "x-source": {
     "package": "framework",
@@ -327,15 +422,105 @@
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children",
-        "typed and pasted text"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "number-type: page-step and precision are numbers with nullable (no number = the default: ten steps, the step's digits); precision is an integer 0..20, as the code clamps.",
+    "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
+    "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (count 2 of 0..99) plus a price with two digits, a bound reached, invalid with a message, disabled, read-only, inherited and size 2.",
+    "css-variables: the nine public variables of public-variables.v1.json plus --sf-quantity-invalid-border-color for the invalid state: ten (§6).",
+    "host-states: data-at-min and data-at-max say on the host that the value stands at a bound (§5.3, simai/ui-source#46 item 4), beside the trait's data-inherited.",
+    "events: input and change keep their native names and carry a detail {value, text, name, source}; the manifest says carries native (the DOM name) and x-detail (the fields), since a declared carries object would derive sf-quantity-input (§8).",
+    "actions: clear, step-up, step-down and the new set-error {message} answer an outcome (§4.4: chaining is not part of the interface; they returned the element). set-error now also sets custom-error, so the form does not submit over it (§17.2; it used to paint only, stand 15 A2).",
+    "form.validity: value-missing from the box, range-underflow, range-overflow and step-mismatch read off the value (a person may type past a bound until the commit clamps it), and custom-error.",
+    "form: the host submits the number with a point through ElementInternals; the hidden input is not drawn then and the box has no name (§17.1 items 2, 6).",
+    "focus: the pointer-focus class is no longer written by the element; the ring follows :focus-visible (§5.3, §16 item 9). The class component's binder still writes it for hand-written markup.",
+    "words: decrement and increment are lang runtime words (settings default-from them); range-underflow, range-overflow and step-mismatch are new runtime words for the validity message.",
+    "version 1.1.0: set-error and the host states are added members, error is renamed behind a dated alias (§4.10).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-rule": {
+    "$comment": [
+      "sf-quantity draws the class component's markup, so the class rule comes with",
+      "it: the quantity sheet, and through it the icon buttons its steppers are",
+      "drawn as. The glyphs are the icon font; the reset back to an inherited value",
+      "is an icon button too (simai/ui-source#28). Its own sheet is the inherited",
+      "value's marker and reset."
+    ],
+    "css": true
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive"
+    ],
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "quantity",
+      "number",
+      "stepper",
+      "field",
+      "form"
+    ],
+    "contracts": {
+      "value_shape": {
+        "const": "number_or_null"
+      },
+      "value_owner": {
+        "const": "component"
+      },
+      "form_owner": {
+        "const": "hidden_input"
+      },
+      "reset": {
+        "const": "native_form_reset"
+      },
+      "field_states": {
+        "type": "string",
+        "enum": [
+          "empty",
+          "filled",
+          "at-min",
+          "at-max",
+          "readonly",
+          "disabled",
+          "invalid",
+          "inherited"
+        ]
+      }
+    },
+    "state": {
+      "machines": {
+        "value": [
+          "empty",
+          "filled"
+        ],
+        "hold": [
+          "idle",
+          "repeating"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "active",
+        "disabled",
+        "error"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -345,6 +530,15 @@
         "backend access decisions",
         "validation beyond the bounds, the step and the digits"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children",
+        "typed and pasted text"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -360,7 +554,11 @@
         "mobile",
         "ltr",
         "rtl"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-quantity for a form value that is a number a person adjusts by steps -- an amount, a count, an integer property -- with bounds and digits.",
@@ -381,24 +579,101 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "One tab stop: the text box with role spinbutton, named by the label (aria-labelledby) or by aria-label, carrying aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext in the page's format, and described by the help or error. ArrowUp/ArrowDown step, PageUp/PageDown move ten steps, Home/End go to the bounds when there are bounds, Enter commits, Escape takes typing back. «−» and «+» are real buttons named «Уменьшить значение» / «Увеличить значение», out of the tab order as the APG pattern has them, controlling the box, disabled at the bounds; a pointer press does not take focus from the box. Pointer focus draws no ring, keyboard focus does."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-field:reset": {
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. Not prevented, the field empties, says so with input and change (source reset), shows the inherited value again and takes focus back.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The field's own value before the reset, written with a point."
+            },
+            "inheritedValue": {
+              "type": "string",
+              "description": "The inherited value it returns to."
+            },
+            "name": {
+              "type": "string",
+              "description": "The form name, empty when the field has none."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "setValue": {
+        "summary": "Set the number from code: a number, numeric text with a point, or null for none. Rounded to the field's digits, not clamped. Fires nothing, as a value set from code is not a change. Returns the element.",
+        "arguments": [
+          {
+            "name": "value",
+            "type": [
+              "number",
+              "string",
+              "null"
+            ],
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "resetToInherited": {
+        "summary": "Return the field to its inherited value, as the reset button does: sf-field:reset first (cancellable), then input and change. Returns whether it reset.",
+        "arguments": [],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "getInputElement": {
+        "summary": "Returns the spinbutton's text box, or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "The HTMLInputElement."
+        }
+      }
+    },
+    "inputs": {
+      "aria-label": {
+        "description": "The spinbutton's accessible name when no label is drawn inside the field: a form that prints the label beside it (the Framework's field renderers) names the field without a second, visible label."
+      },
+      "value": {
+        "description": "The number the field holds, written with a point (`2567.5`); empty for none. The property reads a number or null and takes a number, numeric text or null. Rounded to the field's digits. Set from code it fires nothing.",
+        "default": ""
+      }
+    },
+    "trait-inputs": {
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "What the field falls back to while it holds no number of its own -- a default from a parent setting. Shown in the empty box in the placeholder's ink with an «inherited» marker, never as the value: the form value stays empty. Once the field holds a number of its own, a reset button returns it here."
+      },
+      "inherited-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the marker shown while the inherited value applies. Unset, it follows the page's language («inherited», «наследуется»)."
+      },
+      "reset-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      }
     }
-  },
-  "x-decisions": [
-    "number-type: page-step and precision are numbers with nullable (no number = the default: ten steps, the step's digits); precision is an integer 0..20, as the code clamps.",
-    "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
-    "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
-    "examples: examples.json from studio.fixture.json (count 2 of 0..99) plus a price with two digits, a bound reached, invalid with a message, disabled, read-only, inherited and size 2.",
-    "css-variables: the nine public variables of public-variables.v1.json plus --sf-quantity-invalid-border-color for the invalid state: ten (§6).",
-    "host-states: data-at-min and data-at-max say on the host that the value stands at a bound (§5.3, simai/ui-source#46 item 4), beside the trait's data-inherited.",
-    "events: input and change keep their native names and carry a detail {value, text, name, source}; the manifest says carries native (the DOM name) and x-detail (the fields), since a declared carries object would derive sf-quantity-input (§8).",
-    "actions: clear, step-up, step-down and the new set-error {message} answer an outcome (§4.4: chaining is not part of the interface; they returned the element). set-error now also sets custom-error, so the form does not submit over it (§17.2; it used to paint only, stand 15 A2).",
-    "form.validity: value-missing from the box, range-underflow, range-overflow and step-mismatch read off the value (a person may type past a bound until the commit clamps it), and custom-error.",
-    "form: the host submits the number with a point through ElementInternals; the hidden input is not drawn then and the box has no name (§17.1 items 2, 6).",
-    "focus: the pointer-focus class is no longer written by the element; the ring follows :focus-visible (§5.3, §16 item 9). The class component's binder still writes it for hand-written markup.",
-    "words: decrement and increment are lang runtime words (settings default-from them); range-underflow, range-overflow and step-mismatch are new runtime words for the validity message.",
-    "version 1.1.0: set-error and the host states are added members, error is renamed behind a dated alias (§4.10).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

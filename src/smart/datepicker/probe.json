@@ -489,6 +489,109 @@
           "page-due--panel"
         ]
       }
+    },
+    {
+      "id": "disabled-reaches-the-inline-panel",
+      "covers": "settings.disabled: the inline panel's days, arrows and month and year toggles are disabled, and the grid paths choose nothing (1.1.5)",
+      "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" input=\"false\" disabled locale=\"ru\"></sf-datepicker>",
+      "given": [
+        {
+          "wait": 300
+        }
+      ],
+      "script": "const day = el.days.find((one) => one.value === '2026-09-10'); el.selectDate(day); el.shiftMonth(1); el.shiftYearPage(1); el.toggleContext('year'); return [...el.querySelectorAll('.sf-datepicker button')].filter((button) => !button.disabled).map((button) => button.className || button.textContent.trim());",
+      "wait": 300,
+      "expect": {
+        "returns": [],
+        "value": "2026-09-03",
+        "events": [],
+        "formData": {
+          "d": null
+        },
+        "disabled": {
+          ".sf-datepicker-day[data-date='2026-09-10']": true
+        },
+        "evaluate": {
+          "el.querySelectorAll('.sf-datepicker button').length": 46,
+          "el.month": 8,
+          "el.contextMode": "",
+          "el.querySelector('.sf-datepicker').getAttribute('aria-disabled')": "true"
+        }
+      }
+    },
+    {
+      "id": "disabled-reaches-a-panel-held-open",
+      "covers": "settings.disabled: a panel the host opens with the open attribute takes no click on a day (1.1.5)",
+      "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\" disabled open></sf-datepicker>",
+      "given": [
+        {
+          "wait": 300
+        }
+      ],
+      "script": "el.querySelector(\".sf-datepicker-day[data-date='2026-09-10']\").click(); return [...el.querySelectorAll('.sf-datepicker button')].filter((button) => !button.disabled).map((button) => button.className || button.textContent.trim());",
+      "wait": 300,
+      "expect": {
+        "returns": [],
+        "value": "2026-09-03",
+        "events": [],
+        "evaluate": {
+          "el.querySelectorAll('.sf-datepicker-day').length": 42
+        }
+      }
+    },
+    {
+      "id": "disabled-refuses-the-quick-ranges",
+      "covers": "settings.disabled: choose-preset and choose-custom-range refuse {reason: disabled}; every quick range and «Свой период» are disabled (1.1.5)",
+      "field": "<sf-datepicker name=\"p\" label=\"Период\" range input=\"false\" disabled presets=\"today,last-7-days\" start-value=\"2026-09-01\" end-value=\"2026-09-07\"></sf-datepicker>",
+      "given": [
+        {
+          "wait": 300
+        }
+      ],
+      "script": "const preset = el.choosePreset({item: el.presetItems[0]}); const custom = el.chooseCustomRange(); return [preset, custom, [...el.querySelectorAll('.sf-datepicker-preset')].filter((button) => !button.disabled).length, el.querySelectorAll('.sf-datepicker-preset').length];",
+      "wait": 300,
+      "expect": {
+        "returns": [
+          {
+            "outcome": "refused",
+            "reason": "disabled"
+          },
+          {
+            "outcome": "refused",
+            "reason": "disabled"
+          },
+          0,
+          3
+        ],
+        "value": [
+          "2026-09-01",
+          "2026-09-07"
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "value-takes-a-string-or-a-pair",
+      "covers": "values.value: an ISO string, [start, end] in range mode; the legacy object {start, end} is still read as the pair (1.1.5)",
+      "field": "<sf-datepicker name=\"p\" label=\"Период\" range></sf-datepicker>",
+      "script": "el.value = ['2026-09-01', '2026-09-07']; const pair = el.value; el.value = {start: '2026-10-01', end: '2026-10-05'}; const legacy = el.value; return [pair, legacy];",
+      "wait": 300,
+      "expect": {
+        "returns": [
+          [
+            "2026-09-01",
+            "2026-09-07"
+          ],
+          [
+            "2026-10-01",
+            "2026-10-05"
+          ]
+        ],
+        "events": [],
+        "formData": {
+          "p": "2026-10-01/2026-10-05"
+        }
+      }
     }
   ]
 }

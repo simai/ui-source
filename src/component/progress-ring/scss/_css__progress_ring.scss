@@ -1,0 +1,160 @@
+// SIMAI Framework
+// https://simai.io
+
+// PROGRESS RING
+//
+// A value from 0 to 100 drawn as a ring on the control ladder: at each size
+// the ring is the box of an sf-icon-button or an sf-avatar of that size
+// (36 px at 1). The line is drawn inside the box; whatever stands in the
+// middle -- the percentage, or a picture such as an avatar -- stands in the
+// content box, the ring's box less the line and a gap on every side, so a
+// picture never touches the line.
+//
+// The geometry is computed, so the lengths a page may set are read through
+// registered internal lengths: a bare 0 written for the gap or the line is
+// then a valid length and the arithmetic holds (docs/foundation-composition-
+// geometry.md). The value is a registered number, so the fill moves between
+// two values instead of jumping.
+
+@property --sf-progress-ring--value {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --sf-progress-ring--size {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --sf-progress-ring--line-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --sf-progress-ring--gap {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@layer sf.components {
+  .sf-progress-ring {
+    --sf-progress-ring--size: var(--sf-progress-ring-size, var(--sf-progress-ring--step-size));
+    --sf-progress-ring--line-width: var(--sf-progress-ring-line-width, var(--sf-progress-ring--step-line-width));
+    --sf-progress-ring--gap: var(--sf-progress-ring-gap, var(--sf-a2));
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-primary));
+    --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-outline-variant));
+    --sf-progress-ring--step-size: var(--sf-ui-1--control-height);
+    --sf-progress-ring--step-line-width: var(--sf-a2);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/4);
+    position: relative;
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: var(--sf-progress-ring--size);
+    block-size: var(--sf-progress-ring--size);
+    border-radius: var(--sf-radius-circle);
+    color: var(--sf-progress-ring-color, var(--sf-on-surface));
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-progress-ring--font-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--sf-font-weight-regular);
+    line-height: 1;
+    vertical-align: middle;
+    transition-property: --sf-progress-ring--value;
+    transition-duration: var(--sf-duration-normal);
+    transition-timing-function: var(--sf-animation, ease);
+  }
+
+  /* The ring: the track and the filled part in one drawing, the line cut out
+     of a disc. The cut is soft across one pixel centred on the line's inner
+     edge, so the line is as wide as it says and its inner edge is smooth. */
+  .sf-progress-ring .sf-progress-ring-indicator {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(var(--sf-progress-ring--fill) calc(var(--sf-progress-ring--value) * 1%), var(--sf-progress-ring--track) 0);
+    mask: radial-gradient(farthest-side, transparent calc(100% - var(--sf-progress-ring--line-width) - 0.5px), #000 calc(100% - var(--sf-progress-ring--line-width) + 0.5px));
+    pointer-events: none;
+  }
+
+  /* The middle: the ring's box less the line and the gap on every side. */
+  .sf-progress-ring .sf-progress-ring-content {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: calc(var(--sf-progress-ring--size) - 2 * (var(--sf-progress-ring--line-width) + var(--sf-progress-ring--gap)));
+    block-size: calc(var(--sf-progress-ring--size) - 2 * (var(--sf-progress-ring--line-width) + var(--sf-progress-ring--gap)));
+    border-radius: var(--sf-radius-circle);
+    white-space: nowrap;
+  }
+
+  /* A picture in the middle fills the content box, so the gap between it and
+     the line is the gap at every size: an avatar a step smaller than the ring
+     is that box already at sizes 1 and 2; elsewhere it is fitted to it. */
+  .sf-progress-ring .sf-progress-ring-content > .sf-avatar,
+  .sf-progress-ring .sf-progress-ring-content > sf-avatar > .sf-avatar {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sf-progress-ring.sf-progress-ring--info {
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-info));
+  }
+
+  .sf-progress-ring.sf-progress-ring--success {
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-success));
+  }
+
+  .sf-progress-ring.sf-progress-ring--warning {
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-warning));
+  }
+
+  .sf-progress-ring.sf-progress-ring--error {
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-error));
+  }
+
+  /* The ladder: the box is the control height of the size, the line and the
+     text steps of their own scales. */
+  .sf-progress-ring.sf-progress-ring--size-1\/2 {
+    --sf-progress-ring--step-size: var(--sf-ui-1\/2--control-height);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/5);
+  }
+
+  .sf-progress-ring.sf-progress-ring--size-1 {
+    --sf-progress-ring--step-size: var(--sf-ui-1--control-height);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/4);
+  }
+
+  .sf-progress-ring.sf-progress-ring--size-2 {
+    --sf-progress-ring--step-size: var(--sf-ui-2--control-height);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/3);
+  }
+
+  /* Indeterminate: the spinner's arc -- a fixed 30% of the ring going round
+     at one turn a second -- on the ring's own track. */
+  .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+    background: conic-gradient(var(--sf-progress-ring--fill) 0 30%, var(--sf-progress-ring--track) 0);
+    animation: sf-progress-ring-turn calc(var(--sf-duration-slow) * 2) linear infinite;
+  }
+
+  @keyframes sf-progress-ring-turn {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-progress-ring {
+      transition-duration: 0s;
+    }
+
+    .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+      animation: none;
+    }
+  }
+}

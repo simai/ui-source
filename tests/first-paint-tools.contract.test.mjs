@@ -210,7 +210,7 @@ test('7. a closed surface prints closed, and a snapshot keeps to its size', () =
   }
   assert.ok(checked.length > 250);
   // sf-country-code printed its whole open list (107 KB) for a closed field.
-  const country = readFileSync(join(root, 'src/smart/country-code/static/default/default.html'), 'utf8');
+  const country = readFileSync(join(root, 'src/smart/country-code/static/default/reference.html'), 'utf8');
   assert.doesNotMatch(country, /sf-country-code-item/u);
   assert.match(country, /<span class="sf-country-code-list" id="[^"]+" role="listbox"[^>]*><\/span>/u, 'the list is printed as its empty element');
   const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');

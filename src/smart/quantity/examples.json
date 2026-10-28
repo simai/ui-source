@@ -13,6 +13,18 @@
       },
       "expect": {
         "value": 2
+      },
+      "studio": {
+        "title": "quantity reference",
+        "props": {
+          "label": "Количество",
+          "name": "count",
+          "value": "2",
+          "min": "0",
+          "max": "99",
+          "hint": "От 0 до 99"
+        },
+        "scenario": {}
       }
     },
     {
@@ -101,6 +113,563 @@
       },
       "expect": {
         "size": "2"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-quantity against component.json (standard simai.smart-component 1.3.8 §12, §17, §20, gate 20); stand 15 A2 moved to 1.3.8",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change"
+          ],
+          "box": ".sf-quantity-wrap input"
+        },
+        "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
+        "checks": [
+          {
+            "id": "form-value-point-box-comma",
+            "covers": "values.value, form.submits (§17.1 item 2)",
+            "field": "<sf-quantity label=\"Цена\" name=\"price\" value=\"2567.5\" min=\"0\" step=\"0.01\" grouping=\"false\"></sf-quantity>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "price": "2567.50"
+              },
+              "formNames": [
+                "price"
+              ],
+              "value": 2567.5,
+              "box": {
+                "text": "2567,50",
+                "attributes": {
+                  "role": "spinbutton",
+                  "aria-valuenow": "2567.5",
+                  "inputmode": "decimal"
+                }
+              },
+              "innerNames": [
+                null
+              ],
+              "listed": 1
+            }
+          },
+          {
+            "id": "setting-value-is-silent",
+            "covers": "§8: a value set from outside sends nothing",
+            "field": "<sf-quantity name=\"count\" value=\"2\" step=\"0.5\"></sf-quantity>",
+            "setting": {
+              "name": "value",
+              "value": "3.5"
+            },
+            "expect": {
+              "value": 3.5,
+              "box": {
+                "text": "3,5"
+              },
+              "formData": {
+                "count": "3.5"
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "typing-russian-comma-enter-commits",
+            "covers": "events.input, events.change, keyboard Enter commit",
+            "field": "<sf-quantity name=\"price\" step=\"0.01\"></sf-quantity>",
+            "user": [
+              "type:12,5",
+              "keyboard:Enter"
+            ],
+            "expect": {
+              "events": [
+                {
+                  "type": "input",
+                  "value": 1,
+                  "source": "typing"
+                },
+                {
+                  "type": "input",
+                  "value": 12,
+                  "source": "typing"
+                },
+                {
+                  "type": "input",
+                  "value": 12.5,
+                  "source": "typing"
+                },
+                {
+                  "type": "change",
+                  "value": 12.5,
+                  "text": "12,50",
+                  "name": "price",
+                  "source": "commit"
+                }
+              ],
+              "box": {
+                "text": "12,50"
+              },
+              "formData": {
+                "price": "12.50"
+              }
+            }
+          },
+          {
+            "id": "escape-reverts-the-typing",
+            "covers": "keyboard Escape revert",
+            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "user": [
+              "type:7",
+              "keyboard:Escape"
+            ],
+            "expect": {
+              "value": 4,
+              "box": {
+                "text": "4"
+              },
+              "formData": {
+                "count": "4"
+              }
+            }
+          },
+          {
+            "id": "arrow-up-steps",
+            "covers": "keyboard ArrowUp step:+1, events input then change",
+            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:ArrowUp",
+            "expect": {
+              "events": [
+                {
+                  "type": "input",
+                  "value": 3,
+                  "source": "keyboard"
+                },
+                {
+                  "type": "change",
+                  "value": 3,
+                  "source": "keyboard"
+                }
+              ],
+              "formData": {
+                "count": "3"
+              }
+            }
+          },
+          {
+            "id": "arrow-down-steps",
+            "covers": "keyboard ArrowDown step:-1",
+            "field": "<sf-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:ArrowDown",
+            "expect": {
+              "value": 1,
+              "formData": {
+                "count": "1"
+              }
+            }
+          },
+          {
+            "id": "page-up-steps-ten",
+            "covers": "keyboard PageUp step:+page",
+            "field": "<sf-quantity name=\"count\" value=\"2\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:PageUp",
+            "expect": {
+              "value": 12
+            }
+          },
+          {
+            "id": "page-down-steps-ten",
+            "covers": "keyboard PageDown step:-page",
+            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:PageDown",
+            "expect": {
+              "value": 12
+            }
+          },
+          {
+            "id": "home-goes-to-min",
+            "covers": "keyboard Home to:min, data-at-min",
+            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:Home",
+            "expect": {
+              "value": 0,
+              "host": {
+                "attributes": {
+                  "data-at-min": "true",
+                  "data-at-max": null
+                }
+              },
+              "disabled": {
+                "button[aria-label='Уменьшить значение']": true,
+                "button[aria-label='Увеличить значение']": false
+              }
+            }
+          },
+          {
+            "id": "end-goes-to-max",
+            "covers": "keyboard End to:max, data-at-max",
+            "field": "<sf-quantity name=\"count\" value=\"22\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "keyboard:End",
+            "expect": {
+              "value": 99,
+              "host": {
+                "attributes": {
+                  "data-at-max": "true",
+                  "data-at-min": null
+                }
+              }
+            }
+          },
+          {
+            "id": "tab-reaches-the-box",
+            "covers": "keyboard Tab reach (the steppers are out of the tab order)",
+            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "user": "tab",
+            "expect": {
+              "focus": "sf-quantity .sf-quantity-wrap input"
+            }
+          },
+          {
+            "id": "plus-stops-at-max",
+            "covers": "settings.max, events.change source button, data-at-max (#46 item 4)",
+            "field": "<sf-quantity name=\"count\" value=\"98\" max=\"99\"></sf-quantity>",
+            "user": "click:button[aria-label='Увеличить значение']",
+            "expect": {
+              "events": [
+                {
+                  "type": "input",
+                  "value": 99,
+                  "source": "button"
+                },
+                {
+                  "type": "change",
+                  "value": 99,
+                  "source": "button"
+                }
+              ],
+              "disabled": {
+                "button[aria-label='Увеличить значение']": true,
+                "button[aria-label='Уменьшить значение']": false
+              },
+              "formData": {
+                "count": "99"
+              },
+              "host": {
+                "attributes": {
+                  "data-at-max": "true"
+                }
+              }
+            }
+          },
+          {
+            "id": "required-empty-blocks-submit",
+            "covers": "form.required, validity value-missing on the host",
+            "field": "<sf-quantity label=\"Количество\" name=\"count\" required></sf-quantity>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "checkValidity": false,
+              "validity": {
+                "valueMissing": true,
+                "valid": false
+              }
+            }
+          },
+          {
+            "id": "typed-past-max-is-range-overflow",
+            "covers": "form.validity range-overflow before the commit clamps",
+            "field": "<sf-quantity name=\"count\" min=\"0\" max=\"99\"></sf-quantity>",
+            "user": "type:150",
+            "expect": {
+              "checkValidity": false,
+              "validity": {
+                "rangeOverflow": true
+              }
+            }
+          },
+          {
+            "id": "set-error-blocks-submit",
+            "covers": "actions.set-error, form.validity custom-error (§17.2)",
+            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"5\" hint=\"От 0 до 99\"></sf-quantity>",
+            "action": {
+              "name": "set-error",
+              "with": {
+                "message": "Слишком много"
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "host": {
+                "attributes": {
+                  "invalid": "",
+                  "error-message": "Слишком много"
+                }
+              },
+              "box": {
+                "attributes": {
+                  "aria-invalid": "true"
+                }
+              },
+              "checkValidity": false,
+              "validity": {
+                "customError": true
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "set-error-empty-clears",
+            "covers": "actions.set-error with no message",
+            "field": "<sf-quantity label=\"Количество\" name=\"count\" value=\"5\"></sf-quantity>",
+            "given": [
+              {
+                "action": {
+                  "name": "set-error",
+                  "with": {
+                    "message": "Слишком много"
+                  }
+                }
+              }
+            ],
+            "action": {
+              "name": "set-error",
+              "with": {
+                "message": ""
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "host": {
+                "attributes": {
+                  "invalid": null
+                }
+              },
+              "checkValidity": true
+            }
+          },
+          {
+            "id": "step-up-answers-an-outcome",
+            "covers": "actions.step-up {count}, silent",
+            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "action": {
+              "name": "step-up",
+              "with": {
+                "count": 2
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "value": 4,
+              "events": [],
+              "formData": {
+                "count": "4"
+              }
+            }
+          },
+          {
+            "id": "clear-empties",
+            "covers": "actions.clear",
+            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "action": {
+              "name": "clear"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "value": null,
+              "formData": {
+                "count": ""
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "form-reset-returns-the-attribute",
+            "covers": "form.reset (§17.1 item 4), no events",
+            "field": "<sf-quantity name=\"count\" value=\"2\"></sf-quantity>",
+            "given": [
+              {
+                "user": [
+                  "keyboard:ArrowUp",
+                  "keyboard:ArrowUp"
+                ]
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "value": 2,
+              "box": {
+                "text": "2"
+              },
+              "formData": {
+                "count": "2"
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "inherited-submits-empty",
+            "covers": "trait field-inherit: shown, never the value",
+            "field": "<sf-quantity name=\"count\" inherited-value=\"5\"></sf-quantity>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "count": ""
+              },
+              "value": null,
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                }
+              },
+              "box": {
+                "text": "",
+                "attributes": {
+                  "placeholder": "5",
+                  "aria-description": "Наследуется: 5"
+                }
+              }
+            }
+          },
+          {
+            "id": "reset-to-inherited-new-then-old-event",
+            "covers": "sf-field-reset then sf-field:reset once each, input and change source reset, a dated journal note",
+            "field": "<sf-quantity name=\"count\" value=\"7\" inherited-value=\"5\"></sf-quantity>",
+            "listen": [
+              "sf-field-reset",
+              "sf-field:reset",
+              "input",
+              "change"
+            ],
+            "action": {
+              "name": "reset-to-inherited"
+            },
+            "expect": {
+              "returns": true,
+              "events": [
+                {
+                  "type": "sf-field-reset",
+                  "tag": "sf-quantity",
+                  "value": "7",
+                  "inheritedValue": "5",
+                  "name": "count"
+                },
+                {
+                  "type": "sf-field:reset",
+                  "tag": "sf-quantity",
+                  "value": "7",
+                  "inheritedValue": "5",
+                  "name": "count"
+                },
+                {
+                  "type": "input",
+                  "value": null,
+                  "source": "reset"
+                },
+                {
+                  "type": "change",
+                  "value": null,
+                  "source": "reset"
+                }
+              ],
+              "journal": [
+                {
+                  "from": "sf-field:reset",
+                  "to": "sf-field-reset",
+                  "kind": "event",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "formData": {
+                "count": ""
+              },
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                }
+              }
+            }
+          },
+          {
+            "id": "required-not-met-by-inherited",
+            "covers": "§20.2: an inherited number does not satisfy required",
+            "field": "<sf-quantity name=\"count\" required inherited-value=\"5\"></sf-quantity>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "validity": {
+                "valueMissing": true
+              }
+            }
+          },
+          {
+            "id": "disabled-leaves-the-form",
+            "covers": "form.disabled",
+            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "setting": {
+              "name": "disabled",
+              "value": true
+            },
+            "expect": {
+              "formData": {
+                "count": null
+              },
+              "box": {
+                "attributes": {
+                  "disabled": ""
+                }
+              },
+              "disabled": {
+                "button[aria-label='Увеличить значение']": true,
+                "button[aria-label='Уменьшить значение']": true
+              }
+            }
+          },
+          {
+            "id": "legacy-error-is-invalid",
+            "covers": "aliases.json error -> invalid (§17.2)",
+            "field": "<sf-quantity name=\"count\" value=\"4\"></sf-quantity>",
+            "setting": {
+              "name": "error",
+              "value": true
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "invalid": ""
+                }
+              },
+              "box": {
+                "attributes": {
+                  "aria-invalid": "true"
+                }
+              },
+              "journal": [
+                {
+                  "from": "error",
+                  "to": "invalid",
+                  "kind": "setting",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ]

@@ -62,5 +62,298 @@
         }
       }
     }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-popover against component.json (standard simai.smart-component 1.3.8 §12, §19, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <button id=\"before\">До</button>",
+          "  <div id=\"area\"><sf-popover id=\"p1\" label=\"Настройки\"><button slot=\"trigger\" id=\"trigger\" type=\"button\">Настроить</button><div slot=\"content\" id=\"surface\"><button id=\"inside\" type=\"button\">Внутри</button></div></sf-popover></div>",
+          "  <sf-popover id=\"p-locked\" label=\"Шаг\" dismissible=\"false\"><button slot=\"trigger\" id=\"trigger-locked\" type=\"button\">Шаг</button><div slot=\"content\">Шаг мастера</div></sf-popover>",
+          "  <sf-popover id=\"p-legacy\" role=\"menu\"><button slot=\"trigger\" id=\"trigger-legacy\" type=\"button\">Меню</button><div slot=\"content\" id=\"surface-legacy\">Пункты</div></sf-popover>",
+          "  <button id=\"outside\">Снаружи</button>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-enter-opens",
+          "title": "Enter on the trigger opens the surface: the request, then the fact",
+          "covers": "keyboard.host.Enter toggle, events.open, events.opened, values.open",
+          "steps": [
+            {
+              "script": "(document.getElementById('trigger').focus(), true)",
+              "wait": 50
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-popover-open",
+                    "count": 1
+                  },
+                  {
+                    "name": "sf-popover-opened",
+                    "count": 1
+                  }
+                ],
+                "values": {
+                  "#p1.open": true
+                }
+              }
+            },
+            {
+              "check": "getComputedStyle(document.getElementById('surface')).display !== 'none' && document.getElementById('trigger').getAttribute('aria-expanded') === 'true' && document.getElementById('surface').getAttribute('role') === 'dialog' && document.getElementById('surface').getAttribute('aria-label') === 'Настройки'"
+            }
+          ]
+        },
+        {
+          "id": "p2-escape-reason",
+          "title": "Escape closes with reason escape and returns focus to the trigger",
+          "covers": "keyboard.host.Escape close, events.close {reason, unsaved}, events.closed",
+          "steps": [
+            {
+              "user": "click:#trigger"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-popover-close",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape",
+                      "unsaved": false
+                    }
+                  },
+                  {
+                    "name": "sf-popover-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  }
+                ],
+                "values": {
+                  "#p1.open": false
+                }
+              }
+            },
+            {
+              "focus": "expect returned to #trigger"
+            }
+          ]
+        },
+        {
+          "id": "p3-outside-reason",
+          "title": "a press outside closes with reason outside; a press inside does not",
+          "covers": "§19.3 outside",
+          "steps": [
+            {
+              "user": "click:#trigger"
+            },
+            {
+              "script": "(document.getElementById('inside').dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})), true)",
+              "expect": {
+                "values": {
+                  "#p1.open": true
+                }
+              }
+            },
+            {
+              "script": "(document.getElementById('outside').dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})), true)",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-popover-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "outside"
+                    }
+                  }
+                ],
+                "values": {
+                  "#p1.open": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-trigger-again-close",
+          "title": "the trigger pressed again closes with reason close",
+          "covers": "§19.3 close",
+          "steps": [
+            {
+              "user": "click:#trigger"
+            },
+            {
+              "user": "click:#trigger",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-popover-close",
+                    "count": 1,
+                    "detail": {
+                      "reason": "close"
+                    }
+                  }
+                ],
+                "values": {
+                  "#p1.open": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-refused",
+          "title": "a page that prevents the request keeps the surface; the action answers refused",
+          "covers": "events.close cancelable, actions.close outcome",
+          "steps": [
+            {
+              "user": "click:#trigger"
+            },
+            {
+              "script": "(document.getElementById('p1').addEventListener('sf-popover-close', (event) => event.preventDefault()), true)"
+            },
+            {
+              "action": {
+                "name": "close",
+                "with": {
+                  "reason": "api"
+                }
+              },
+              "target": "#p1",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "prevented"
+                },
+                "values": {
+                  "#p1.open": true
+                }
+              }
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "values": {
+                  "#p1.open": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p6-not-dismissible",
+          "title": "dismissible=false ignores Escape and an outside press; close() still closes",
+          "covers": "settings.dismissible",
+          "steps": [
+            {
+              "user": "click:#trigger-locked"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "values": {
+                  "#p-locked.open": true
+                }
+              }
+            },
+            {
+              "script": "(document.getElementById('outside').dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})), true)",
+              "expect": {
+                "values": {
+                  "#p-locked.open": true
+                }
+              }
+            },
+            {
+              "action": {
+                "name": "close"
+              },
+              "target": "#p-locked",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                },
+                "values": {
+                  "#p-locked.open": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-legacy-role-dated",
+          "title": "a role on the host goes to surface-role and the surface; the use is noted with its dates",
+          "covers": "aliases.json role row",
+          "steps": [
+            {
+              "check": "!document.getElementById('p-legacy').hasAttribute('role') && document.getElementById('p-legacy').surfaceRole === 'menu' && document.getElementById('surface-legacy').getAttribute('role') === 'menu' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-popover' && note.from === 'role' && note.remove_after === '2026-12-01')"
+            }
+          ]
+        },
+        {
+          "id": "p8-surface-layer",
+          "title": "the open surface is a layer of the one stack: the root's mark is held while open",
+          "covers": "layer surface, §19.1",
+          "steps": [
+            {
+              "user": "click:#trigger",
+              "expect": {
+                "values": {
+                  "#p1.open": true
+                }
+              }
+            },
+            {
+              "check": "document.documentElement.dataset.sfPopoverOpen === '1'"
+            },
+            {
+              "action": {
+                "name": "toggle"
+              },
+              "target": "#p1",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                },
+                "values": {
+                  "#p1.open": false
+                }
+              }
+            },
+            {
+              "check": "!document.documentElement.dataset.sfPopoverOpen"
+            }
+          ]
+        },
+        {
+          "id": "p9-public-variables",
+          "title": "a public variable set on an ancestor reaches the surface",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "script": "(document.getElementById('area').style.setProperty('--sf-popover-background-color', 'rgb(1, 2, 3)'), true)",
+              "wait": 50
+            },
+            {
+              "user": "click:#trigger"
+            },
+            {
+              "check": "getComputedStyle(document.getElementById('surface')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

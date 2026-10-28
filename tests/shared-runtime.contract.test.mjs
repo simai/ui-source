@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {buildContract, exportsOf, COMPONENT_MANIFEST_KEYS} from '../scripts/shared-runtime-contract.mjs';
+import {buildContract, exportsOf, COMPONENT_MANIFEST_DROP, COMPONENT_MANIFEST_KEYS} from '../scripts/shared-runtime-contract.mjs';
 import {readdirSync, existsSync} from 'node:fs';
 
 const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
@@ -98,4 +98,102 @@ test('a Smart bundle embeds every key of its component.json the runtime reads', 
   for (const kept of ['$comment', 'x-registry', 'x-rule', 'x-decisions', 'relations', 'aliases', 'examples']) {
     assert.ok(!COMPONENT_MANIFEST_KEYS.includes(kept), `${kept} is the build's and the docs', not the runtime's`);
   }
+});
+
+// The runtime code a Smart bundle runs, and what reads the manifest it embeds:
+// Core's modules, the runtime entry, every file of every Smart element (not
+// its generated meta.mjs, which is data) and the first-paint tools.
+const runtimeFiles = () => {
+  const files = ['src/core/smart-base.js', 'scripts/first-paint-page.js'];
+  const walk = (folder) => {
+    for (const entry of readdirSync(new URL(`../${folder}/`, import.meta.url), {withFileTypes: true})) {
+      const file = `${folder}/${entry.name}`;
+      if (entry.isDirectory()) { if (!['tests', 'test', 'node_modules', 'docs', 'static'].includes(entry.name)) walk(file); }
+      else if (/\.(m?js)$/u.test(entry.name) && entry.name !== 'meta.mjs' && !/\.test\./u.test(entry.name)) files.push(file);
+    }
+  };
+  walk('src/core/js');
+  walk('src/smart');
+  return files;
+};
+
+// Reads of a dropped key that are not reads of a component manifest, each
+// with what it reads instead. A new one is a question for the contract.
+const NOT_A_MANIFEST = [
+  // An element's own setting `description` (sf-avatar), through itself or its template's context.
+  {file: 'src/smart/avatar/index.js', read: 'this.description'},
+  {file: 'src/smart/avatar/js/templates/label.js', read: 'context.description'},
+  {file: 'src/smart/avatar/js/templates/card.js', read: 'context.description'},
+  // A fragment descriptor's ports (simai.composition fragments), not a component.json.
+  {file: 'src/core/js/composition/fragments.mjs', read: 'port.summary'},
+  // A component's smart.manifest.json with `composition.declarative` (the
+  // composition type of a Smart component): a source file the build reads,
+  // never the embedded manifest, which keeps no `composition`.
+  {file: 'src/core/js/composition/index.mjs', read: 'name].summary'},
+];
+
+/** The dropped keys a text reads: `x.<key>`, `x?.<key>`, `x['<key>']`, `x?.['<key>']`. */
+export function droppedReads(text, drop = COMPONENT_MANIFEST_DROP) {
+  const code = text.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/^\s*(\/\/|\*).*$/gmu, '');
+  const found = [];
+  const names = drop.map((key) => key.replace(/\$/gu, '\\$'));
+  const dotted = drop.filter((key) => /^[A-Za-z_$][\w$]*$/u.test(key)).map((key) => key.replace(/\$/gu, '\\$'));
+  if (dotted.length) {
+    for (const m of code.matchAll(new RegExp(`([\\w$\\]\\)]+)\\??\\.(${dotted.join('|')})\\b(?![\\w$-])`, 'gu'))) found.push(`${m[1]}.${m[2]}`);
+  }
+  for (const m of code.matchAll(new RegExp(`([\\w$\\]\\)]+)\\??\\.?\\[\\s*['"](${names.join('|')})['"]\\s*\\]`, 'gu'))) found.push(`${m[1]}.${m[2]}`);
+  return found;
+}
+
+test('no runtime code reads a key a Smart bundle drops from its component.json', () => {
+  const reads = [];
+  for (const file of runtimeFiles()) {
+    for (const read_ of droppedReads(read(file))) {
+      if (NOT_A_MANIFEST.some((known) => known.file === file && known.read === read_)) continue;
+      reads.push(`${file}: ${read_}`);
+    }
+  }
+  assert.deepEqual(reads, [], 'the runtime reads a dropped key: take it off COMPONENT_MANIFEST_DROP (scripts/shared-runtime-contract.mjs) and rewrite the contract');
+  // The scan is not empty: it sees every form of a read.
+  assert.deepEqual(droppedReads("a.summary; b?.summary; c['x-outcomes']; d?.['$comment']; e.summaryText; f['x-outcomes-old'];\n  // g.summary\n/* h.summary */\n"),
+    ['a.summary', 'b.summary', 'c.x-outcomes', 'd.$comment']);
+  assert.ok(runtimeFiles().includes('src/core/js/element-manifest.js') && runtimeFiles().includes('src/core/js/assembly/link.mjs') && runtimeFiles().includes('src/smart/pagination/index.js'));
+});
+
+test('a component.json never names a member with a key a Smart bundle drops', () => {
+  assert.deepEqual(contract.component_manifest_drop, [...COMPONENT_MANIFEST_DROP]);
+  for (const kept of ['type', 'values', 'default', 'default-from', 'optional', 'carries', 'x-native', 'cancelable', 'dom', 'aliases', 'with', 'emits', 'of', 'timeout', 'retry', 'waits', 'concurrency', 'late', 'skeleton', 'value', 'submits', 'disabled']) {
+    assert.ok(!COMPONENT_MANIFEST_DROP.includes(kept), `${kept} is read by the runtime`);
+  }
+  // A map of typed members (carries, with, of, x-detail: every entry a type
+  // word or a declaration with a type) holds names; a dropped key there would
+  // drop a member the runtime checks a payload against.
+  const manifests = [];
+  for (const folder of readdirSync(new URL('../src/smart/', import.meta.url))) {
+    const file = `src/smart/${folder}/component.json`;
+    if (existsSync(new URL(`../${file}`, import.meta.url))) manifests.push([file, JSON.parse(read(file))]);
+  }
+  const types = new Set(['native']);
+  const collect = (node) => {
+    if (Array.isArray(node)) { node.forEach(collect); return; }
+    if (!node || typeof node !== 'object') return;
+    if (typeof node.type === 'string') types.add(node.type);
+    Object.values(node).forEach(collect);
+  };
+  manifests.forEach(([, manifest]) => collect(manifest));
+  const typed = (value) => (typeof value === 'string' && types.has(value)) || (value && typeof value === 'object' && !Array.isArray(value) && typeof value.type === 'string');
+  const named = [];
+  const walk = (node, where, depth) => {
+    if (Array.isArray(node)) { node.forEach((one, index) => walk(one, `${where}[${index}]`, depth + 1)); return; }
+    if (!node || typeof node !== 'object') return;
+    const entries = Object.entries(node);
+    const membersMap = depth >= 1 && entries.length && entries.every(([, value]) => typed(value));
+    for (const [key, value] of entries) {
+      if (membersMap && COMPONENT_MANIFEST_DROP.includes(key)) named.push(`${where}.${key}`);
+      walk(value, `${where}.${key}`, depth + 1);
+    }
+  };
+  for (const [file, manifest] of manifests) for (const key of COMPONENT_MANIFEST_KEYS) if (key in manifest) walk(manifest[key], `${file} ${key}`, 0);
+  assert.deepEqual(named, [], 'a member is named like a dropped key: rename it or take the key off COMPONENT_MANIFEST_DROP');
+  assert.ok(types.has('number') && types.has('enum'), 'the type words are read');
 });

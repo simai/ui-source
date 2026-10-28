@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // sf-quantity draws the class component's markup, so the class rule comes with
 // it: the quantity sheet, and through it the icon buttons its steppers are
 // drawn as. The glyphs are the icon font; the reset back to an inherited value

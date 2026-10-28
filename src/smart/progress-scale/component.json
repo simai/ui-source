@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-scale's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/progress-scale (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.progress-scale",
   "tag": "sf-progress-scale",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -25,7 +25,8 @@
         "1",
         "2"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height."
     },
     "value": {
       "type": "number",
@@ -46,7 +47,8 @@
         "warning",
         "error"
       ],
-      "default": "neutral"
+      "default": "neutral",
+      "summary": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
     },
     "label": {
       "type": "string",
@@ -72,6 +74,11 @@
       "x-summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100"
     }
   },
+  "relations": [
+    {
+      "name": "progress-scale"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -118,6 +125,35 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-progress-scale for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "tone",
+        "to": "status",
+        "kind": "setting",
+        "section": "the axis's old name (contracts/public-api-axes.json)",
+        "summary": "Legacy name for status, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "setProgress",
+        "to": "chunk",
+        "kind": "action",
+        "section": "§4.4, vocabulary §5.2",
+        "note": "setProgress(n) calls chunk(n): n of 100"
+      },
+      {
+        "from": "getProgress",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4",
+        "note": "a reader retires: read value; the method stays until the date and notes each call"
+      }
+    ]
+  },
   "x-summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "x-source": {
     "package": "framework",
@@ -129,65 +165,6 @@
     "label",
     "value-text"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
-    "ownership": {
-      "source": "simai/ui-source",
-      "data": "host",
-      "effects": "component",
-      "forbidden_client_responsibilities": [
-        "backend access decisions",
-        "host route invention",
-        "running, cancelling or retrying the task",
-        "inferring semantic state from the current segment count",
-        "inventing the accessible process label"
-      ]
-    },
-    "presentation": {
-      "themes": [
-        "light",
-        "dark"
-      ],
-      "locales": [
-        "ru",
-        "en"
-      ],
-      "responsive": [
-        "desktop",
-        "mobile"
-      ]
-    },
-    "ai_guidance": {
-      "use_when": "Use sf-progress-scale when a known progress value is meaningfully represented by ten coarse or staged segments.",
-      "do_not": [
-        "Do not copy generated ui-smart code",
-        "Do not move host data or access decisions into the component",
-        "Do not use segmented progress when continuous Progress Bar is clearer",
-        "Do not use Progress Scale for an unknown value; use Spinner",
-        "Do not infer error, warning or success from the percentage",
-        "Do not omit a localized accessible label"
-      ],
-      "required_reads": [
-        "inputs",
-        "methods",
-        "events",
-        "ownership",
-        "provenance"
-      ],
-      "minimal_example": "<sf-progress-scale label=\"Подготовка проекта\" value=\"40\"></sf-progress-scale>",
-      "owner_commands": [
-        "npm run contract:verify",
-        "npm test"
-      ]
-    }
-  },
   "x-target": {
     "added": {
       "actions": [
@@ -213,5 +190,119 @@
     "settings: tone leaves for its dated alias row (status answers), and progress, an object the conversion read off setProgress, is no setting: value is the setting and chunk the action.",
     "line: a form size of the text line the scale stands on (a row, a cell), kept as it is.",
     "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "determinate-progress",
+      "accessible-range"
+    ],
+    "state": {
+      "machines": {
+        "progress": [
+          "active",
+          "complete",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention",
+        "running, cancelling or retrying the task",
+        "inferring semantic state from the current segment count",
+        "inventing the accessible process label"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-progress-scale when a known progress value is meaningfully represented by ten coarse or staged segments.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not use segmented progress when continuous Progress Bar is clearer",
+        "Do not use Progress Scale for an unknown value; use Spinner",
+        "Do not infer error, warning or success from the percentage",
+        "Do not omit a localized accessible label"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-progress-scale label=\"Подготовка проекта\" value=\"40\"></sf-progress-scale>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "Progress Scale is not interactive and never enters the focus order."
+    },
+    "methods": {
+      "getProgress": {
+        "summary": "Returns the value as a number clamped to 0..100; a non-numeric value reads as 0.",
+        "arguments": [],
+        "returns": {
+          "type": "number"
+        }
+      },
+      "setProgress": {
+        "summary": "Sets the value attribute; null or undefined removes it.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "number|string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
+    },
+    "inputs": {
+      "value": {
+        "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
+      }
+    }
+  }
 }

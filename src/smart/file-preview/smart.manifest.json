@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-preview",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "File Preview",
   "summary": "Accessible Smart projection of the ordinary File Preview row.",
   "kind": "smart",
@@ -24,8 +24,8 @@
   "composition": {
     "uses": [
       "component.file-preview",
-      "component.icons",
-      "component.icon-buttons"
+      "component.icon-buttons",
+      "component.icons"
     ],
     "public_parts": []
   },
@@ -34,20 +34,20 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "name": {
+      "root-class": {
         "type": "string",
-        "default": "File"
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "file-name": {
         "type": "string",
         "default": "File"
-      },
-      "size": {
-        "type": "string",
-        "default": "",
-        "description": "Legacy name for file-size: the file's own size as text (\"12 KB\"), not the size ladder. Still honoured; pass file-size."
       },
       "file-size": {
         "type": "string",
@@ -65,12 +65,12 @@
       "kind": {
         "type": "string",
         "default": "auto",
+        "description": "What the preview shows: an icon, the image itself, or whichever suits the file.",
         "enum": [
           "auto",
           "icon",
           "image"
-        ],
-        "description": "What the preview shows: an icon, the image itself, or whichever suits the file."
+        ]
       },
       "mime-type": {
         "type": "string",
@@ -79,14 +79,6 @@
       "image-url": {
         "type": "string",
         "default": ""
-      },
-      "avatar-size": {
-        "type": "string",
-        "default": ""
-      },
-      "open": {
-        "type": "boolean",
-        "default": false
       },
       "surface": {
         "type": "boolean",
@@ -116,6 +108,14 @@
         "type": "boolean",
         "default": false
       },
+      "download-label": {
+        "type": "string",
+        "description": "Empty: the text of the page's language (\"Download file\" in English)."
+      },
+      "remove-label": {
+        "type": "string",
+        "description": "Empty: the text of the page's language (\"Remove file\" in English)."
+      },
       "compact": {
         "type": "boolean",
         "default": false,
@@ -126,15 +126,15 @@
         "default": "",
         "description": "Empty: the text of the page's language (\"File\" in English)."
       },
-      "download-label": {
+      "name": {
         "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Download file\" in English)."
+        "default": "File",
+        "description": "Dated alias of file-name until 2026-12-01."
       },
-      "remove-label": {
+      "size": {
         "type": "string",
         "default": "",
-        "description": "Empty: the text of the page's language (\"Remove file\" in English)."
+        "description": "Legacy name for file-size: the file's own size as text (\"12 KB\"), not the size ladder. Still honoured; pass file-size."
       },
       "type": {
         "type": "string",
@@ -208,6 +208,52 @@
     }
   },
   "events": {
+    "sf-file-preview-download": {
+      "summary": "download (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-file-preview-detach": {
+      "summary": "detach (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-file-preview:download": {
       "summary": "A download action was requested. Bubbles, is composed and is cancelable: preventDefault() stops the built-in navigation to href.",
       "payload": {

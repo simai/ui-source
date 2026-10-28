@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -35,10 +35,13 @@
         "default": "default",
         "description": "Template variant name."
       },
-      "open": {
-        "type": "boolean",
-        "default": false,
-        "description": "Whether the surface is shown. Reflected, so a consumer can read it and set it."
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "placement": {
         "type": "string",
@@ -58,17 +61,6 @@
         "default": "",
         "description": "The accessible name of the surface. A surface with a role and no name is announced as an unnamed one."
       },
-      "role": {
-        "type": "string",
-        "default": "dialog",
-        "description": "Legacy name for surface-role. Read once and removed from the host, which is not itself a menu or dialog.",
-        "enum": [
-          "dialog",
-          "menu",
-          "listbox",
-          "group"
-        ]
-      },
       "width": {
         "type": "string",
         "default": "",
@@ -82,17 +74,22 @@
       "surface-role": {
         "type": "string",
         "default": "dialog",
+        "description": "What the surface is to a reader: dialog, menu, listbox or group. Written on sf-popover; the surface gets the role and the trigger aria-haspopup.",
         "enum": [
           "dialog",
           "menu",
           "listbox",
           "group"
-        ],
-        "description": "What the surface is to a reader: dialog, menu, listbox or group. Written on sf-popover; the surface gets the role and the trigger aria-haspopup."
+        ]
       },
       "unsaved": {
         "type": "boolean",
         "default": false
+      },
+      "open": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the surface is shown. Reflected, so a consumer can read it and set it."
       }
     },
     "additionalProperties": false
@@ -118,8 +115,9 @@
       "arguments": [
         {
           "name": "force",
-          "type": "boolean",
-          "required": false
+          "schema": {
+            "type": "boolean"
+          }
         }
       ],
       "returns": {
@@ -137,7 +135,20 @@
     },
     "close": {
       "summary": "Close it.",
-      "arguments": [],
+      "arguments": [
+        {
+          "name": "reason",
+          "schema": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        }
+      ],
       "returns": {
         "type": "boolean",
         "description": "Whether it is open afterwards."
@@ -156,56 +167,64 @@
       "summary": "The surface opened.",
       "payload": {
         "type": "object",
-        "properties": {
-          "component": {
-            "type": "object",
-            "description": "The emitting element."
-          },
-          "tagName": {
-            "type": "string"
-          },
-          "template": {
-            "type": "string"
-          },
-          "open": {
-            "type": "boolean",
-            "const": true
-          }
-        },
-        "required": [
-          "component",
-          "tagName",
-          "template",
-          "open"
-        ]
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-popover-opened": {
+      "summary": "opened (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
       }
     },
     "sf-popover-close": {
       "summary": "The surface closed.",
       "payload": {
         "type": "object",
+        "required": [
+          "reason",
+          "unsaved"
+        ],
         "properties": {
-          "component": {
-            "type": "object",
-            "description": "The emitting element."
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
           },
-          "tagName": {
-            "type": "string"
-          },
-          "template": {
-            "type": "string"
-          },
-          "open": {
-            "type": "boolean",
-            "const": false
+          "unsaved": {
+            "type": "boolean"
           }
         },
+        "additionalProperties": true
+      }
+    },
+    "sf-popover-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
         "required": [
-          "component",
-          "tagName",
-          "template",
-          "open"
-        ]
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
       }
     }
   },
@@ -314,7 +333,7 @@
       },
       {
         "path": "src/smart/popover/rule.js",
-        "sha256": "88d63d31d61879d048bc901a4a8173d3af9a96d5f3a4fd532eac2ab02ebf351c"
+        "sha256": "ca3d39dd987342c551d528235f98fce7746d887410fdc1107e748417c7052267"
       },
       {
         "path": "src/smart/popover/js/templates/default.js",

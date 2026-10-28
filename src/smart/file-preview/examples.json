@@ -15,7 +15,10 @@
         "role": "group",
         "name": "Техническое задание.pdf"
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "scenario": {}
+      }
     },
     {
       "name": "image",
@@ -74,6 +77,129 @@
       "expect": {
         "name": "old.pdf"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-file-preview against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-file-preview id=\"f1\" file-name=\"Техническое задание.pdf\" file-size=\"2,4 МБ\"></sf-file-preview>",
+          "  <sf-file-preview id=\"f2\" aria-label=\"Вложение\" file-name=\"contract.docx\" href=\"/fixture/contract\"></sf-file-preview>",
+          "  <sf-file-preview id=\"f-old\" name=\"old-name.txt\" size=\"1 КБ\" type=\"default\"></sf-file-preview>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-group-name",
+          "title": "a row with buttons is a group named by aria-label, else the file name",
+          "covers": "accessibility (role when actions, name)",
+          "steps": [
+            {
+              "check": "document.querySelector('#f1 .sf-file-preview').getAttribute('role') === 'group' && document.querySelector('#f1 .sf-file-preview').getAttribute('aria-label') === 'Техническое задание.pdf' && document.querySelector('#f2 .sf-file-preview').getAttribute('aria-label') === 'Вложение'"
+            }
+          ]
+        },
+        {
+          "id": "p2-detach",
+          "title": "the remove button sends detach {id, action, value}, then the old name with the same detail",
+          "covers": "events.detach (vocabulary §5), aliases sf-file-preview:remove (detail-adds)",
+          "steps": [
+            {
+              "user": "click:#f1 [data-action=\"remove\"]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-file-preview-detach",
+                    "count": 1,
+                    "detail": {
+                      "id": "f1",
+                      "action": "remove",
+                      "value": {
+                        "fileName": "Техническое задание.pdf"
+                      }
+                    }
+                  },
+                  {
+                    "name": "sf-file-preview:remove",
+                    "count": 1,
+                    "detail": {
+                      "id": "f1",
+                      "action": "remove"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-download-refused",
+          "title": "a page that prevents download keeps the browser from opening the file",
+          "covers": "events.download cancelable",
+          "steps": [
+            {
+              "script": "(window.__opened = 0, document.getElementById('f2').addEventListener('sf-file-preview-download', (e) => e.preventDefault()), window.addEventListener('click', (e) => { if (e.target.localName === 'a' && !e.target.isConnected) window.__opened += 1; }, true), true)"
+            },
+            {
+              "user": "click:#f2 [data-action=\"download\"]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-file-preview-download",
+                    "count": 1,
+                    "detail": {
+                      "id": "f2",
+                      "action": "download"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "window.__opened === 0"
+            }
+          ]
+        },
+        {
+          "id": "p4-no-element-in-detail",
+          "title": "the detail is data only (§8)",
+          "covers": "§8",
+          "steps": [
+            {
+              "script": "(() => { let seen = null; const el = document.getElementById('f1'); el.addEventListener('sf-file-preview-detach', (e) => { seen = e.detail; }, {once: true}); el.querySelector('[data-action=\"remove\"]').click(); return Boolean(seen) && Object.values(seen).every((v) => !(v instanceof Node)); })()",
+              "expect": {
+                "returns": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-aliases",
+          "title": "name, size and type=default answer as file-name, file-size and kind=auto",
+          "covers": "aliases.json",
+          "steps": [
+            {
+              "check": "(() => { const el = document.getElementById('f-old'); return el.fileName === 'old-name.txt' && el.fileSize === '1 КБ' && el.kind === 'auto' && el.textContent.includes('old-name.txt'); })()"
+            },
+            {
+              "script": "(document.getElementById('f-old').toggleOpen(), true)",
+              "expect": {
+                "journal": [
+                  {
+                    "from": "toggleOpen",
+                    "remove_after": "2026-12-01"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

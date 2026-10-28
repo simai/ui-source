@@ -11,6 +11,28 @@
       "expect": {
         "appearance": "default",
         "scheme": "primary"
+      },
+      "studio": {
+        "props": {
+          "text": "Продолжить",
+          "type": "default",
+          "scheme": "primary"
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "setDisabled",
+              "with": [
+                true
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -143,6 +165,191 @@
         "size": "3",
         "spacing": "spacious"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-button against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-button id=\"b-text\" text=\"Продолжить\"></sf-button>",
+          "  <sf-button id=\"b-child\">Добавить</sf-button>",
+          "  <sf-button id=\"b-icon\" icon=\"search\" aria-label=\"Найти\"></sf-button>",
+          "  <sf-button id=\"b-old\" type=\"ghost\" status=\"danger\" icon-left=\"add\" tightness=\"high\" icon-position=\"right\" text=\"Старые имена\"></sf-button>",
+          "  <sf-button id=\"b-off\" text=\"Нельзя\" disabled></sf-button>",
+          "  <sf-button id=\"b-load\" text=\"Отправка\" loading></sf-button>",
+          "  <sf-button id=\"b-exp\" text=\"Ещё\" expanded=\"false\"></sf-button>",
+          "  <sf-button id=\"b-bad\" text=\"Неизвестно\" appearance=\"primary\" size=\"9\"></sf-button>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-native-button",
+          "title": "draws one native button named by its text; the host has no box",
+          "covers": "accessibility.role button, accessibility.name text",
+          "steps": [
+            {
+              "check": "(() => { const host = document.querySelector('#b-text'); const b = host.querySelector('button.sf-button'); return getComputedStyle(host).display === 'contents' && b && b.type === 'button' && b.textContent.trim() === 'Продолжить' && b.classList.contains('sf-button--default') && b.classList.contains('sf-button--primary') && b.classList.contains('sf-button--size-1'); })()",
+              "expect": {
+                "values": {
+                  "#b-text.appearance": "default",
+                  "#b-text.scheme": "primary",
+                  "#b-text.size": "1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2-text-child",
+          "title": "a text child is the label",
+          "covers": "settings.text from children",
+          "steps": [
+            {
+              "check": "document.querySelector('#b-child button').textContent.trim() === 'Добавить' && document.querySelector('#b-child').text === 'Добавить'"
+            }
+          ]
+        },
+        {
+          "id": "p3-aria-label",
+          "title": "an icon-only button takes the host's aria-label",
+          "covers": "accessibility.name aria-label (host attribute, §3.1)",
+          "steps": [
+            {
+              "check": "document.querySelector('#b-icon button').getAttribute('aria-label') === 'Найти' && document.querySelector('#b-icon button sf-icon').getAttribute('icon') === 'search'"
+            }
+          ]
+        },
+        {
+          "id": "p4-dated-aliases",
+          "title": "the old names and values still draw, each noted with its dates",
+          "covers": "aliases.json type, icon-left, tightness, ghost, danger, right",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#b-old button'); return b.classList.contains('sf-button--link') && b.classList.contains('sf-button--error') && b.classList.contains('spacing-comfortable') && Boolean(b.querySelector('sf-icon[icon=add]')); })()",
+              "expect": {
+                "values": {
+                  "#b-old.appearance": "link",
+                  "#b-old.status": "error",
+                  "#b-old.spacing": "comfortable",
+                  "#b-old.iconPosition": "end",
+                  "#b-old.iconStart": "add"
+                }
+              }
+            },
+            {
+              "check": "['type', 'ghost', 'danger', 'icon-left', 'tightness', 'right'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2026-12-01'))"
+            }
+          ]
+        },
+        {
+          "id": "p5-press",
+          "title": "a click sends sf-button-press once and the native click still bubbles",
+          "covers": "events.press",
+          "steps": [
+            {
+              "script": "(() => { window.__clicks = 0; document.addEventListener('click', () => { window.__clicks += 1; }, {once: true}); return true; })()"
+            },
+            {
+              "user": "click:#b-text button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-button-press",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "window.__clicks === 1"
+            }
+          ]
+        },
+        {
+          "id": "p6-enter-presses",
+          "title": "Enter on the focused native button sends press",
+          "covers": "keyboard Tab reach, Enter (native activation)",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#b-text button').focus(); return true; })()"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-button-press",
+                    "count": 1
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-disabled-loading-silent",
+          "title": "a disabled or loading button sends no press",
+          "covers": "events.press, settings.disabled, settings.loading",
+          "steps": [
+            {
+              "script": "(() => { window.__presses = 0; document.addEventListener('sf-button-press', () => { window.__presses += 1; }); document.querySelector('#b-off button').click(); document.querySelector('#b-load button').click(); return true; })()"
+            },
+            {
+              "check": "window.__presses === 0 && document.querySelector('#b-off button').disabled && document.querySelector('#b-load button').disabled && document.querySelector('#b-load button').getAttribute('aria-busy') === 'true'"
+            }
+          ]
+        },
+        {
+          "id": "p8-expanded",
+          "title": "expanded writes aria-expanded, absent says nothing",
+          "covers": "settings.expanded (optional)",
+          "steps": [
+            {
+              "check": "document.querySelector('#b-exp button').getAttribute('aria-expanded') === 'false' && !document.querySelector('#b-text button').hasAttribute('aria-expanded')"
+            },
+            {
+              "script": "document.querySelector('#b-exp').expanded = true"
+            },
+            {
+              "check": "document.querySelector('#b-exp button').getAttribute('aria-expanded') === 'true' && document.querySelector('#b-exp').expanded === true"
+            }
+          ]
+        },
+        {
+          "id": "p9-unknown-values",
+          "title": "a value off a list draws the default",
+          "covers": "settings.appearance enum, settings.size enum",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#b-bad button'); return b.classList.contains('sf-button--default') && b.classList.contains('sf-button--size-1'); })()",
+              "expect": {
+                "values": {
+                  "#b-bad.appearance": "default",
+                  "#b-bad.size": "1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p10-public-variable",
+          "title": "--sf-button-background-color fills the button",
+          "covers": "css-variables --sf-button-background-color",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#b-text').style.setProperty('--sf-button-background-color', 'rgb(1, 2, 3)'); return true; })()"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#b-text button')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

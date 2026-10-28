@@ -28,24 +28,24 @@
         "from": "sf-tag-close",
         "to": "close"
       },
+      "section": "§8",
+      "note": "the old DOM name of the request; the element left the detail (§8), the rest is the same",
       "alias-table": {
         "to": "sf-tag-close",
         "status": "planned",
         "alias_mode": "same-detail"
-      },
-      "section": "§8",
-      "note": "the old DOM name of the request; the element left the detail (§8), the rest is the same"
+      }
     },
     {
       "from": "quantity",
       "to": "default",
       "kind": "value",
       "setting": "kind",
-      "section": "§16 item 20",
-      "note": "journal value-tag-quantity-to-default; the number stays in count",
       "component": "sf-tag",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§16 item 20",
+      "note": "journal value-tag-quantity-to-default; the number stays in count"
     }
   ]
 }

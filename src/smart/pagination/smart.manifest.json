@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "title": "Pagination",
   "summary": "Source-driven navigation for a collection split into numbered pages.",
   "kind": "smart",
@@ -24,6 +24,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.pagination",
       "smart.button",
       "smart.checkbox",
       "smart.dropdown",
@@ -41,6 +42,14 @@
         "type": "string",
         "default": "default",
         "description": "Template name."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "top": {
         "type": "boolean",
@@ -72,74 +81,55 @@
         "default": "",
         "description": "Framework utility classes for the batch-action section."
       },
-      "aria-label": {
-        "type": "string",
-        "default": "",
-        "description": "Accessible name of the navigation landmark. Empty: the text of the page's language (\"Result pages\" in English)."
-      },
       "pages-label": {
         "type": "string",
-        "default": "",
         "description": "Visible label before page controls. Empty: the text of the page's language (\"Pages:\" in English)."
       },
       "page-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible prefix for a numbered page action. Empty: the text of the page's language (\"Page\" in English)."
       },
       "previous-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name of the previous-page action. Empty: the text of the page's language (\"Previous page\" in English)."
       },
       "next-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name of the next-page action. Empty: the text of the page's language (\"Next page\" in English)."
       },
       "last-label": {
         "type": "string",
-        "default": "",
         "description": "Visible label of the compatible last-page action. Empty: the text of the page's language (\"Last\" in English)."
       },
       "total-label": {
         "type": "string",
-        "default": "",
         "description": "Visible label for the total item count. Empty: the text of the page's language (\"Total:\" in English)."
       },
       "selected-label": {
         "type": "string",
-        "default": "",
         "description": "Visible label for the selected item count. Empty: the text of the page's language (\"Selected:\" in English)."
       },
       "selected-count": {
         "type": "integer",
         "default": 0,
-        "minimum": 0,
-        "description": "Selected item count, clamped between zero and total."
+        "description": "Selected item count, clamped between zero and total.",
+        "minimum": 0
       },
       "show-more-text": {
         "type": "string",
-        "default": "",
         "description": "Label of the compatible show-more action. Empty: the text of the page's language (\"Show more\" in English)."
-      },
-      "current": {
-        "type": "integer",
-        "minimum": 1,
-        "default": 1,
-        "description": "Current one-based page number."
       },
       "total": {
         "type": "integer",
-        "minimum": 0,
         "default": 10,
-        "description": "Non-negative total item count."
+        "description": "Non-negative total item count.",
+        "minimum": 0
       },
       "page-size": {
         "type": "integer",
-        "minimum": 1,
         "default": 10,
-        "description": "Positive number of items per page."
+        "description": "Positive number of items per page.",
+        "minimum": 1
       },
       "page-sizes": {
         "type": "string",
@@ -153,7 +143,6 @@
       },
       "page-size-label": {
         "type": "string",
-        "default": "",
         "description": "Visible and accessible label of the page-size selector. Empty: the text of the page's language (\"Per page:\" in English)."
       },
       "show-actions": {
@@ -173,7 +162,6 @@
       },
       "action-apply-text": {
         "type": "string",
-        "default": "",
         "description": "Label of the batch-action apply button. Empty: the text of the page's language (\"Apply\" in English)."
       },
       "show-action-for-all": {
@@ -188,27 +176,22 @@
       },
       "action-for-all-label": {
         "type": "string",
-        "default": "",
         "description": "Label of the all-items toggle. Empty: the text of the page's language (\"For all\" in English)."
       },
       "actions-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name of the batch-action selector. Empty: the text of the page's language (\"Action for the selected records\" in English)."
       },
       "action-choose-label": {
         "type": "string",
-        "default": "",
         "description": "Placeholder of the batch-action selector, shown until an action is chosen. Empty: the text of the page's language (\"Choose an action\" in English)."
       },
       "actions-region-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name of the panel that appears while rows are marked. Empty: the text of the page's language (\"Actions for the selected\" in English)."
       },
       "clear-selection-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name and tooltip of the control that drops the selection. Empty: the text of the page's language (\"Clear the selection\" in English)."
       },
       "count-known": {
@@ -219,7 +202,7 @@
       "total-exact": {
         "type": "boolean",
         "default": true,
-        "description": "Whether the total is exact. sf-data-view sets it false from the port's total_exact: the row then reads «~N», the last page and the page count are not offered as exact, and the count link asks for the number."
+        "description": "false when total is an estimate: the row reads «~N», the last page and the page count are not offered as exact, and the count link asks for the number (vocabulary 1.1.5 total-exact; gate 29)"
       },
       "can-count": {
         "type": "boolean",
@@ -238,22 +221,18 @@
       },
       "show-count-label": {
         "type": "string",
-        "default": "",
         "description": "Text of the control that asks the host for the number. Empty: the text of the page's language (\"Show the number\" in English)."
       },
       "counting-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name of the short wait shown while the count is on its way. Empty: the text of the page's language (\"Counting\" in English)."
       },
       "first-label": {
         "type": "string",
-        "default": "",
         "description": "Accessible name and tooltip of the control that goes to the first page. Empty: the text of the page's language (\"First\" in English)."
       },
       "page-field-label": {
         "type": "string",
-        "default": "",
         "description": "Label of the field that takes a page number. Empty: the text of the page's language (\"Page:\" in English)."
       },
       "show-more-busy": {
@@ -264,11 +243,22 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The step of the size ladder its fields, buttons, labels and page numbers take: 1, or the dense 1/2 of an admin.",
         "enum": [
           "1/2",
           "1"
-        ],
-        "description": "The step of the size ladder its fields, buttons, labels and page numbers take: 1, or the dense 1/2 of an admin."
+        ]
+      },
+      "current": {
+        "type": "integer",
+        "default": 1,
+        "description": "the page being read, from 1 (vocabulary 1.1.5 page)",
+        "minimum": 1
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name of the navigation landmark. Empty: the text of the page's language (\"Result pages\" in English)."
       }
     },
     "additionalProperties": false
@@ -295,6 +285,29 @@
     }
   },
   "methods": {
+    "goToPage": {
+      "summary": "Moves to a page: the number is parsed as an integer and clamped to 1..pageCount when the count is known (only to at least 1 when it is not). Emits sf-page-change when the page actually changes; does nothing when the total is a known zero.",
+      "arguments": [
+        {
+          "name": "page",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "showMore": {
+      "summary": "Emits sf-show-more with the current paging and the given item; performs no request and changes no state.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
     "getTopSection": {
       "summary": "Returns the top section element (.sf-pagination-top), or null when it is not rendered.",
       "arguments": [],
@@ -323,34 +336,6 @@
           "object",
           "null"
         ]
-      }
-    },
-    "goToPage": {
-      "summary": "Moves to a page: the number is parsed as an integer and clamped to 1..pageCount when the count is known (only to at least 1 when it is not). Emits sf-page-change when the page actually changes; does nothing when the total is a known zero.",
-      "arguments": [
-        {
-          "name": "page",
-          "type": "number|string",
-          "required": true
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "showMore": {
-      "summary": "Emits sf-show-more with the current paging and the given item; performs no request and changes no state.",
-      "arguments": [
-        {
-          "name": "item",
-          "type": "object",
-          "required": false
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
       }
     },
     "setPageSize": {
@@ -449,6 +434,237 @@
     }
   },
   "events": {
+    "sf-pagination-change": {
+      "summary": "change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "current",
+          "total",
+          "pageCount",
+          "pageSize"
+        ],
+        "properties": {
+          "previous": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-size-change": {
+      "summary": "size-change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "pageSize",
+          "current",
+          "total",
+          "pageCount"
+        ],
+        "properties": {
+          "previous": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-count": {
+      "summary": "count (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "current",
+          "pageSize"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "total",
+              "last-page",
+              "action-for-all"
+            ]
+          },
+          "current": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-load-more": {
+      "summary": "load-more (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "direction",
+          "current",
+          "total",
+          "pageSize",
+          "pageCount",
+          "hasNext"
+        ],
+        "properties": {
+          "direction": {
+            "const": "after"
+          },
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "hasNext": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-selection-clear": {
+      "summary": "selection-clear (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "selectedCount",
+          "total"
+        ],
+        "properties": {
+          "selectedCount": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-action-change": {
+      "summary": "action-change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "action"
+        ],
+        "properties": {
+          "previous": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-action-for-all-change": {
+      "summary": "action-for-all-change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "actionForAll"
+        ],
+        "properties": {
+          "previous": {
+            "type": "boolean"
+          },
+          "actionForAll": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pagination-apply": {
+      "summary": "apply (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action",
+          "scope",
+          "current",
+          "total",
+          "pageSize",
+          "pageCount"
+        ],
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "selection",
+              "filter"
+            ]
+          },
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "pageCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-action-apply": {
       "summary": "Runtime event sf-action-apply.",
       "payload": {

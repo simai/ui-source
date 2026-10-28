@@ -28,11 +28,11 @@ test('page language: no component falls back to Russian', async () => {
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
     'src/smart/datepicker/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
     // sf-tag's remove label is its language files' runtime.remove (standard 1.3.8 §11).
-    'src/smart/tag/component.json': [/"close-label": \{\s*"type": "string",\s*"default-from": "runtime.remove"\s*\}/],
+    'src/smart/tag/component.json': [/"close-label": \{\s*"type": "string",\s*"default-from": "runtime.remove"(,\s*"summary": "[^"]*")?\s*\}/],
     'src/smart/tag/lang/en.json': [/"remove": "Remove"/],
     // The setting comes from the component's manifest (standard 1.3.8 §4).
     'src/smart/country-code/index.js': [/pageLanguage\(this\)/],
-    'src/smart/country-code/component.json': [/"locale": \{\s*"type": "string",\s*"default": ""\s*\}/],
+    'src/smart/country-code/component.json': [/"locale": \{\s*"type": "string",\s*"default": ""(,\s*"summary": "[^"]*")?\s*\}/],
     'src/component/country-code/js/_country_code.js': [/pageLanguage\(root\)/, /locale: locale === 'ru' \? 'ru' : 'en'/],
     // These two followed the rule and could still only ever say two languages:
     // a ternary on «ru» is not something a product can add to. They ask the

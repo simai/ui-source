@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -22,8 +22,9 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icon",
-      "component.spinner"
+      "component.buttons",
+      "component.spinner",
+      "smart.icon"
     ],
     "public_parts": [],
     "declarative": {
@@ -37,15 +38,21 @@
         "template",
         "size",
         "appearance",
-        "spacing",
         "scheme",
         "status",
+        "text-position",
         "text",
+        "segment",
         "icon",
+        "icon-start",
+        "icon-end",
         "icon-position",
+        "spacing",
+        "radius",
         "loading",
         "disabled",
         "native-type",
+        "expanded",
         "aria-label"
       ],
       "presentation": {
@@ -73,6 +80,15 @@
         "default": "default",
         "description": "Template variant name for SfBaseElement external templates."
       },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Extra classes applied to the inner button element."
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -94,8 +110,7 @@
           "tonal",
           "outline",
           "link",
-          "surface",
-          "ghost"
+          "surface"
         ]
       },
       "scheme": {
@@ -169,6 +184,79 @@
           "close"
         ]
       },
+      "icon-position": {
+        "type": "string",
+        "default": "start",
+        "description": "Placement for the single icon shortcut.",
+        "enum": [
+          "start",
+          "end"
+        ]
+      },
+      "spacing": {
+        "type": "string",
+        "default": "normal",
+        "description": "Semantic internal spacing profile.",
+        "enum": [
+          "compact",
+          "normal",
+          "comfortable",
+          "spacious"
+        ]
+      },
+      "radius": {
+        "type": "string",
+        "default": "",
+        "description": "Border radius modifier.",
+        "enum": [
+          "",
+          "default",
+          "square",
+          "rounded"
+        ]
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false,
+        "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disabled state flag."
+      },
+      "native-type": {
+        "type": "string",
+        "default": "button",
+        "description": "Native button type attribute.",
+        "enum": [
+          "button",
+          "submit",
+          "reset"
+        ]
+      },
+      "expanded": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible label for icon-only or custom buttons."
+      },
+      "type": {
+        "type": "string",
+        "default": "default",
+        "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
+        "enum": [
+          "default",
+          "tonal",
+          "outline",
+          "link",
+          "surface"
+        ]
+      },
       "icon-left": {
         "type": "string",
         "default": "",
@@ -195,93 +283,15 @@
           "close"
         ]
       },
-      "icon-position": {
-        "type": "string",
-        "default": "start",
-        "description": "Placement for the single icon shortcut.",
-        "enum": [
-          "start",
-          "end"
-        ]
-      },
-      "spacing": {
-        "type": "string",
-        "default": "normal",
-        "description": "Semantic internal spacing profile.",
-        "enum": [
-          "compact",
-          "normal",
-          "comfortable",
-          "spacious"
-        ]
-      },
       "tightness": {
         "type": "string",
         "default": "",
         "description": "Compatibility alias for spacing.",
         "enum": [
-          "",
           "low",
           "high",
           "highest"
         ]
-      },
-      "radius": {
-        "type": "string",
-        "default": "",
-        "description": "Border radius modifier.",
-        "enum": [
-          "",
-          "default",
-          "square",
-          "rounded"
-        ]
-      },
-      "root-class": {
-        "type": "string",
-        "default": "",
-        "description": "Extra classes applied to the inner button element."
-      },
-      "loading": {
-        "type": "boolean",
-        "default": false,
-        "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
-      },
-      "disabled": {
-        "type": "boolean",
-        "default": false,
-        "description": "Disabled state flag."
-      },
-      "native-type": {
-        "type": "string",
-        "default": "button",
-        "description": "Native button type attribute.",
-        "enum": [
-          "button",
-          "submit",
-          "reset"
-        ]
-      },
-      "aria-label": {
-        "type": "string",
-        "default": "",
-        "description": "Accessible label for icon-only or custom buttons."
-      },
-      "type": {
-        "type": "string",
-        "default": "default",
-        "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
-        "enum": [
-          "default",
-          "tonal",
-          "outline",
-          "link",
-          "surface",
-          "ghost"
-        ]
-      },
-      "expanded": {
-        "type": "boolean"
       }
     },
     "additionalProperties": false
@@ -414,7 +424,17 @@
       }
     }
   },
-  "events": {},
+  "events": {
+    "sf-button-press": {
+      "summary": "press (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  },
   "state": {
     "machines": {},
     "visual_states": [
@@ -445,7 +465,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "button",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"
@@ -501,7 +521,16 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "appearance=ghost",
+      "status=danger",
+      "status=critical",
+      "spacing=low",
+      "spacing=high",
+      "spacing=highest",
+      "icon-position=left",
+      "icon-position=right"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []

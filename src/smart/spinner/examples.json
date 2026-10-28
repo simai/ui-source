@@ -11,7 +11,22 @@
       "expect": {
         "name": "Загрузка данных"
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "refreshSpinner",
+              "with": []
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
     },
     {
       "name": "announced",
@@ -65,6 +80,114 @@
         }
       },
       "from": "studio.scenario.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-spinner against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-spinner id=\"s1\" label=\"Загрузка данных\" announce></sf-spinner>",
+          "  <sf-spinner id=\"s2\"></sf-spinner>",
+          "  <sf-spinner id=\"s3\" label=\"\"></sf-spinner>",
+          "  <sf-spinner id=\"s-old\" variant=\"dots\"></sf-spinner>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-announce-status",
+          "title": "announce with a label: the root is a polite atomic status named by the label",
+          "covers": "accessibility.role (when announce)",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#s1 .sf-loader-container'); return r.getAttribute('role') === 'status' && r.getAttribute('aria-live') === 'polite' && r.getAttribute('aria-atomic') === 'true' && r.textContent.includes('Загрузка данных'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-no-announce",
+          "title": "without announce: no role; the label is the language file's word",
+          "covers": "accessibility.role, settings.label default-from runtime.label",
+          "steps": [
+            {
+              "check": "!document.querySelector('#s2 .sf-loader-container').hasAttribute('role')",
+              "expect": {
+                "values": {
+                  "#s2.label": "Загрузка…"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-no-words",
+          "title": "label=\"\" is a spinner with no words: hidden from the reader",
+          "covers": "settings.label",
+          "steps": [
+            {
+              "check": "document.querySelector('#s3 .sf-loader-container').hasAttribute('aria-hidden') && !document.querySelector('#s3 .sf-loader-container').hasAttribute('role')",
+              "expect": {
+                "values": {
+                  "#s3.label": ""
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-numbers",
+          "title": "dots and filled are numbers",
+          "covers": "settings.dots, settings.filled (§16 item 29)",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('s2'); el.setAttribute('dots', '6'); return [el.dots, el.filled]; })()",
+              "expect": {
+                "returns": [
+                  6,
+                  3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-aliases",
+          "title": "variant answers as kind; getSpinnerRoot is kept and noted",
+          "covers": "aliases.json",
+          "steps": [
+            {
+              "check": "document.getElementById('s-old').getAttribute('kind') === 'dots' && document.querySelector('#s-old .sf-loader-container').dataset.variant === 'dots'"
+            },
+            {
+              "script": "Boolean(document.getElementById('s1').getSpinnerRoot())",
+              "expect": {
+                "returns": true,
+                "journal": [
+                  {
+                    "from": "getSpinnerRoot",
+                    "remove_after": "2026-12-01"
+                  }
+                ]
+              }
+            },
+            {
+              "action": {
+                "name": "refresh-spinner"
+              },
+              "target": "#s1",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -20,7 +20,77 @@
     "utility/text-align/default/css/default.min.css"
   ],
   "examples": {
-    "default": [
+    "disabled": [
+      "component/button-group/css/button-group.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "form": [
+      "component/button-group/css/button-group.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "reference": [
+      "component/button-group/css/button-group.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "segmented": [
+      "component/button-group/css/button-group.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "theme-switch": [
+      "component/button-group/css/button-group.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "vertical": [
       "component/button-group/css/button-group.min.css",
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.2.2",
-  "title": "List Item",
-  "summary": "Declarative option descriptor owned by Dropdown, and a general list row: supporting line, interactive rows with roving focus, sf-sortable items and pinned rows.",
+  "version": "1.2.3",
+  "title": "List item",
+  "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -25,7 +25,13 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.avatars",
+      "component.checkbox",
+      "component.dropdown",
+      "component.icons",
+      "component.tags"
+    ],
     "public_parts": []
   },
   "inputs": {
@@ -33,23 +39,33 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "value": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The row's id: the machine value a parent sf-dropdown reads, and the id its open request carries"
       },
       "kind": {
         "type": "string",
         "default": "text",
+        "description": "What the list item carries: plain text, an icon, a checkbox, an avatar or a colour.",
         "enum": [
           "text",
           "icon",
           "checkbox",
           "avatar",
           "color"
-        ],
-        "description": "What the list item carries: plain text, an icon, a checkbox, an avatar or a colour."
+        ]
       },
       "size": {
         "type": "string",
@@ -70,14 +86,6 @@
         "type": "string",
         "default": "person"
       },
-      "checked": {
-        "type": "boolean",
-        "default": false
-      },
-      "selected": {
-        "type": "boolean",
-        "default": false
-      },
       "disabled": {
         "type": "boolean",
         "default": false
@@ -92,7 +100,36 @@
       },
       "avatar-title": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The avatar row's title; empty takes text"
+      },
+      "supporting": {
+        "type": "string",
+        "default": "",
+        "description": "A second line under the title"
+      },
+      "interactive": {
+        "type": "boolean",
+        "default": false,
+        "description": "A row a person acts on: one Tab stop of its list, open on a press or Enter"
+      },
+      "sortable-item": {
+        "type": "string",
+        "default": "",
+        "description": "The row's item id in the surrounding sf-sortable list; draws a drag handle"
+      },
+      "pinned": {
+        "type": "boolean",
+        "default": false,
+        "description": "A row of an sf-sortable list that does not move: no handle, its slot kept"
+      },
+      "checked": {
+        "type": "boolean",
+        "default": false
+      },
+      "selected": {
+        "type": "boolean",
+        "default": false
       },
       "aria-label": {
         "type": "string",
@@ -109,26 +146,6 @@
           "avatar",
           "color"
         ]
-      },
-      "supporting": {
-        "type": "string",
-        "default": "",
-        "description": "A second line under the title, one step of the size ladder smaller. Not used by a Dropdown option."
-      },
-      "interactive": {
-        "type": "boolean",
-        "default": false,
-        "description": "A row a person acts on: hover, focus and selection states, one Tab stop per list with arrow keys, Home and End, and sf-list-item-activate on click or Enter."
-      },
-      "sortable-item": {
-        "type": "string",
-        "default": "",
-        "description": "The row's item id in the surrounding sf-sortable list. The row carries data-sf-sortable-item and a drag handle; the list's keyboard reordering applies."
-      },
-      "pinned": {
-        "type": "boolean",
-        "default": false,
-        "description": "A row of an sf-sortable list that does not move: no handle, not an item of the list, its handle slot kept empty so the text columns line up."
       }
     },
     "additionalProperties": false
@@ -155,6 +172,28 @@
   },
   "methods": {},
   "events": {
+    "sf-list-item-open": {
+      "summary": "A person pressed an interactive row, or Enter on it: open {id} of vocabulary 1.1.5 §5, id being value",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "trigger"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "trigger": {
+            "enum": [
+              "pointer",
+              "keyboard"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-list-item-activate": {
       "summary": "An interactive row was clicked or took Enter (not a control inside it, and not Enter on a row of an sf-sortable list, where Enter picks the row up).",
       "payload": {
@@ -210,7 +249,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "option when rendered by Dropdown; none in standalone preview and list rows (the list owns the role; aria-current marks a selected row)",
+    "role": "none",
     "accessible_name": "required",
     "keyboard": [
       "ArrowDown",
