@@ -67,6 +67,19 @@ the contract test reads the runtime, the assembly's interface registry, the
 host port, the first-paint tools and every element's `index.js` for the keys
 they take, and fails on one that is not listed.
 
+Inside those keys the bundle also drops the words the runtime does not read,
+listed as `component_manifest_drop` (`$comment`, `description`, `examples`,
+`summary`, `x-detail`, `x-markup`, `x-note`, `x-outcomes`, `x-returns`,
+`x-shape`, `x-summary`). A key named there goes at least two levels under a
+kept key -- `settings.<name>.summary`, `events.<verb>.carries.<field>.summary`,
+`actions.<name>.x-returns` -- never as a name: the setting
+`settings.description` stays. The contract test fails on runtime code
+(`src/core/js`, every file of `src/smart`, the first-paint tools) that reads
+one of them, and on a `component.json` that names a member of a typed map
+(a carried field, a `with` parameter, an `of` field) like one. Over the 59
+Smart manifests of standard 1.4 phase A the embedded manifests go from 180
+to 98 KB minified.
+
 ## The rule for packages
 
 **A package carries no element layer of its own.** A product package
