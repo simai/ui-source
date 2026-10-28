@@ -49,7 +49,10 @@
     "dimensions:audit": "node scripts/audit-dimensions.mjs --summary",
     "linkage:check": "node scripts/linkage.mjs passports --check",
     "linkage:write": "node scripts/linkage.mjs passports --write",
-    "test:linkage": "node --test tests/linkage.contract.test.mjs"
+    "test:linkage": "node --test tests/linkage.contract.test.mjs",
+    "component-files:check": "node scripts/generate-component-files.mjs --check",
+    "component-files:report": "node scripts/report-component-files.mjs --package ../ui-pro/components",
+    "test:component-files": "node --test tests/component-files-generated.contract.test.mjs"
   },
   "author": "Rim Zabarov",
   "license": "Apache-2.0",
