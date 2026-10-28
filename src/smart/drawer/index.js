@@ -499,8 +499,11 @@ class SfDrawer extends DrawerElement {
     this.requestComponentUpdate('modal');
     if (!modal || !drawerManager.isTop(this)) return;
     globalThis.requestAnimationFrame?.(() => {
+      // The panel and its edge are the window (a focus on the edge is inside).
       const root = this.getDrawerRoot();
-      if (this.openState && this.modal && !root?.querySelector('[data-sf-drawer-panel]')?.contains(document.activeElement)) this.focusFirst();
+      const inside = ['[data-sf-drawer-panel]', '[data-sf-drawer-edge]']
+        .some((area) => root?.querySelector(area)?.contains(document.activeElement));
+      if (this.openState && this.modal && !inside) this.focusFirst();
     });
   }
 

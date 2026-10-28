@@ -147,8 +147,8 @@
     },
     {
       "id": "p4-focus-trap",
-      "title": "Tab and Shift+Tab stay inside the modal panel",
-      "covers": "keyboard.host.Tab, Shift+Tab reach",
+      "title": "Tab and Shift+Tab stay inside the modal drawer: its panel and then its edge",
+      "covers": "keyboard.host.Tab, Shift+Tab reach; the edge is in the cycle (9fe3044)",
       "steps": [
         {
           "user": "click:#opener"
@@ -170,24 +170,27 @@
           "wait": 60
         },
         {
-          "focus": "expect inside",
-          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-panel]"
-        },
-        {
-          "user": "keyboard:Shift+Tab",
-          "wait": 60
-        },
-        {
-          "user": "keyboard:Shift+Tab",
-          "wait": 60
-        },
-        {
-          "user": "keyboard:Shift+Tab",
-          "wait": 60
+          "check": "document.activeElement?.id === 'd1-edge'"
         },
         {
           "focus": "expect inside",
-          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-panel]"
+          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-root]"
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Shift+Tab",
+          "wait": 60
+        },
+        {
+          "focus": "expect inside",
+          "target": "[data-sf-drawer-portal=\"d1\"] [data-sf-drawer-root]"
         }
       ]
     },
