@@ -73,8 +73,13 @@ class SfButton extends ButtonElement {
     return this.getAttribute("template") || "default";
   }
 
+  // A text attribute, even an empty one, is the label: emptying it empties
+  // the button. Before, an empty attribute fell through to the text captured
+  // from children, and a toolbar that cleared a label kept the old one
+  // (simai.main, Main's isolated toolbar on ui-36116c01a792, 2026-10-28).
   get text() {
-    return this.getAttribute("text") || this._textFromChildren || "";
+    if (this.hasAttribute("text")) return this.getAttribute("text") || "";
+    return this._textFromChildren || "";
   }
 
   set text(value) {
