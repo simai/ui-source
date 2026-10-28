@@ -233,6 +233,9 @@ function codeBlocksIn(root = document) {
 async function highlightBlock(block) {
   if (!(block instanceof HTMLElement)) return false;
   if (block.dataset.highlighted || highlightedNodes.has(block)) return true;
+  // An empty block waits for its text: marked now, it was skipped for good
+  // when a page filled it later (ui-effects site, a code block in a tab).
+  if (block.textContent.trim() === '') return false;
   block.textContent = block.textContent.trim();
   sourceText.set(block, block.textContent);
   const requested = requestedLanguage(block);
@@ -265,9 +268,25 @@ async function refresh(target, nextSource) {
 
 if (typeof document !== 'undefined') {
   highlightAllLazy();
-  const observer = new MutationObserver((mutations) => mutations.forEach((mutation) =>
-    mutation.addedNodes.forEach((node) => { if (node instanceof Element) highlightAllLazy(node); })));
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  // A block is read when it arrives and again when its text changes: text
+  // written into a block (textContent, a text node, characterData) adds no
+  // element, so an observer of elements alone never saw it. A highlighted
+  // block whose text is no longer the source it was drawn from is drawn
+  // again; drawing writes that same text, so it does not come back here.
+  const blockOf = (node) => (node instanceof Element ? node : node?.parentElement)?.closest?.(CODE_SELECTOR) ?? null;
+  const textChanged = (block) => {
+    if (!block) return;
+    if (!block.dataset.highlighted && !highlightedNodes.has(block)) highlightBlock(block);
+    else if (block.textContent.trim() !== (sourceText.get(block) ?? '').trim()) refresh(block, block.textContent.trim());
+  };
+  const observer = new MutationObserver((mutations) => mutations.forEach((mutation) => {
+    if (mutation.type === 'characterData') return textChanged(blockOf(mutation.target));
+    mutation.addedNodes.forEach((node) => {
+      if (node instanceof Element) highlightAllLazy(node);
+      else if (node.nodeType === Node.TEXT_NODE) textChanged(blockOf(node));
+    });
+  }));
+  observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
 }
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
