@@ -2062,6 +2062,19 @@ SFLoaderPlugin.prototype.prepareSmartChildScanEvents = function () {
 
   this.smartChildScanEventsBound = true;
 
+  // Collected and scanned once per task: a table's render renders the
+  // elements in its cells, each one announced its own render, and its
+  // subtree was scanned again inside the table's -- 104 scans for the first
+  // page of the admin's list (stand 25). An element inside another collected
+  // one is covered by that one's scan.
+  const rendered = new Set();
+  const scanRendered = () => {
+    const targets = [...rendered].filter((target) => target.isConnected);
+    rendered.clear();
+    targets
+        .filter((target) => !targets.some((other) => other !== target && other.contains(target)))
+        .forEach((target) => this.scanCustomElements(target, true));
+  };
   document.addEventListener('sf-after-render', (event) => {
     const target = event.target;
 
@@ -2069,7 +2082,8 @@ SFLoaderPlugin.prototype.prepareSmartChildScanEvents = function () {
       return;
     }
 
-    this.scanCustomElements(target, true);
+    if (!rendered.size) queueMicrotask(scanRendered);
+    rendered.add(target);
   });
 };
 
@@ -4244,7 +4258,15 @@ SFLoaderPlugin.prototype.versionAssetUrl = function (pluginURL) {
 
 SFLoaderPlugin.prototype.addStyle = async function (pluginURL) {
   const src = this.versionAssetUrl(pluginURL);
-  return onceByUrl('styles', src, () => this.insertStyle(src, pluginURL));
+  // A sheet the page already links (in either form) is not linked again: a
+  // standard page links the sheets its first paint needs in <head>, and the
+  // Loader added a second <link> for each one its parts named -- 62 of 73 on
+  // the admin's list, every rule twice in every style recalculation of the
+  // opening (stand 25). The Loader waits for the page's link instead.
+  return onceByUrl('styles', src, () => {
+    const linked = typeof document !== 'undefined' ? linkedSheet(src) : null;
+    return linked ? sheetApplied(linked) : this.insertStyle(src, pluginURL);
+  });
 };
 
 SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
