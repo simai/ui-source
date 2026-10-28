@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -290,6 +290,15 @@
         "section": "§8, vocabulary §5.1",
         "note": "the old detail adds root (the element), which §8 takes out of the new detail: the element's detail adapter makes it",
         "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      },
+      {
+        "from": "sf-field:reset",
+        "to": "sf-field-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, §20.2",
+        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
       }
     ]
   },
@@ -338,7 +347,8 @@
     "change: the change the person made is sent as `change` on the host (a CustomEvent with {value, label, values, item, multiple}); the old name sf-dropdown:change follows with root added, once per change.",
     "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.4.5: the trait field-inherit@1 event sf-field-reset is dispatched, with sf-field:reset as its dated same-detail alias (aliases.json), as sf-input, sf-textarea and sf-quantity have it. The dropdown declared sf-field:reset but lacked the alias row, so the new name was never sent; the trait code still sends the old name and the shim now sends sf-field-reset first."
   ],
   "x-rule": {
     "$comment": [

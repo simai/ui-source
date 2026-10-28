@@ -179,6 +179,7 @@
           "<main>",
           "  <form id=\"f\"><div id=\"area\"><sf-dropdown id=\"dd\" name=\"city\" label=\"Город\" search=\"false\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item><sf-list-item value=\"spb\" text=\"Петербург\"></sf-list-item></sf-dropdown></div><button id=\"after\" type=\"button\">Дальше</button></form>",
           "  <sf-dropdown id=\"dd-old\" label=\"Старое имя\" type=\"filled\"><sf-list-item value=\"a\" text=\"Альфа\"></sf-list-item></sf-dropdown>",
+          "  <sf-dropdown id=\"dd-inh\" name=\"town\" label=\"Наследуемый город\" search=\"false\" value=\"moscow\" inherited-value=\"kazan\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item></sf-dropdown>",
           "</main>"
         ]
       },
@@ -376,6 +377,47 @@
               "script": "(document.getElementById('area').style.setProperty('--sf-dropdown-background-color', 'rgb(1, 2, 3)'), true)",
               "wait": 50,
               "check": "getComputedStyle(document.querySelector('#dd .sf-dropdown-field')).getPropertyValue('--sf-dropdown-field--background-color').trim() === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p9-reset-sends-the-new-name-first",
+          "title": "the reset to the inherited value sends sf-field-reset, then sf-field:reset, one detail",
+          "covers": "aliases.json sf-field:reset row, trait field-inherit@1 (§8, §16.20, §20.2; 1.4.5)",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('dd-inh'); const heard = []; for (const type of ['sf-field-reset', 'sf-field:reset']) el.addEventListener(type, (event) => heard.push([type, event.detail?.tag, event.detail?.value, event.detail?.inheritedValue, event.detail?.name])); return [el.resetToInherited(), heard, el.value]; })()",
+              "expect": {
+                "returns": [
+                  true,
+                  [
+                    [
+                      "sf-field-reset",
+                      "sf-dropdown",
+                      "moscow",
+                      "kazan",
+                      "town"
+                    ],
+                    [
+                      "sf-field:reset",
+                      "sf-dropdown",
+                      "moscow",
+                      "kazan",
+                      "town"
+                    ]
+                  ],
+                  ""
+                ],
+                "journal": [
+                  {
+                    "from": "sf-field:reset",
+                    "to": "sf-field-reset",
+                    "kind": "event",
+                    "since": "2026-10-27",
+                    "remove_after": "2026-12-01"
+                  }
+                ]
+              }
             }
           ]
         }
