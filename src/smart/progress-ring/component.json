@@ -1,0 +1,256 @@
+{
+  "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
+  "id": "smart.progress-ring",
+  "tag": "sf-progress-ring",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "progress",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size."
+    },
+    "value": {
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "summary": "Per cent, 0 to 100; clamped."
+    },
+    "status": {
+      "type": "enum",
+      "values": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "error"
+      ],
+      "default": "neutral",
+      "summary": "What the value reports, in the shared status vocabulary; the page decides it (a threshold is the page's), the ring never infers it from the value."
+    },
+    "indeterminate": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The value is unknown: the spinner's arc goes round the ring and no value is said."
+    },
+    "meter": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The ring shows an amount within a known range (a quota used), not a task's progress: role meter instead of progressbar."
+    },
+    "show-text": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Shows the percentage in the middle; the slot content takes its place when given."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The accessible name; without it the host's aria-label names the ring."
+    },
+    "value-text": {
+      "type": "string",
+      "default": "",
+      "summary": "The value as people say it («3 из 5 файлов»), read instead of the percentage."
+    }
+  },
+  "values": {},
+  "events": {},
+  "actions": {
+    "chunk": {
+      "with": {
+        "done": "number",
+        "total": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-summary": "Shows a part of a job (vocabulary §5.2 chunk {done, total}): value becomes done of total in per cent; total defaults to 100"
+    }
+  },
+  "slots": {
+    "content": {
+      "replaces": "show-text",
+      "$comment": "What stands in the middle: a picture such as an sf-avatar, fitted to the content box (the ring less its line and gap)."
+    }
+  },
+  "relations": [
+    {
+      "name": "progress-ring"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "role": "meter",
+    "when": {
+      "meter": true
+    },
+    "otherwise": "progressbar",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {},
+    "$comment": "The ring itself (.sf-progress-ring-indicator) carries role progressbar, or meter when meter is on, with aria-valuemin 0, aria-valuemax 100, aria-valuenow the value (none while indeterminate) and aria-valuetext the value-text when given; the slot content stays a sibling of it, so a picture keeps its own name. It takes no focus and no keys."
+  },
+  "css-variables": {
+    "--sf-progress-ring-size": {
+      "type": "length",
+      "state": "default",
+      "x-summary": "The ring's box; the control height of its size by default."
+    },
+    "--sf-progress-ring-line-width": {
+      "type": "length",
+      "state": "default",
+      "x-summary": "The line's width, 2 px by default."
+    },
+    "--sf-progress-ring-gap": {
+      "type": "length",
+      "state": "default",
+      "x-summary": "Space between the line and what stands in the middle, 2 px by default."
+    },
+    "--sf-progress-ring-fill-color": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The filled part; a status gives its own colour unless this is set."
+    },
+    "--sf-progress-ring-track-color": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The track under the filled part."
+    },
+    "--sf-progress-ring-color": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The percentage in the middle."
+    }
+  },
+  "x-summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
+  "x-words": [
+    "label",
+    "value-text"
+  ],
+  "x-decisions": [
+    "one-name-per-concept: the class is a component of its own, progress-ring, not a variant of progress-bar. A bar and a ring are two shapes with different geometry (a track's length against a box on the control ladder, a middle that holds content); a bar class carrying --ring would make one name mean two shapes. The family is shared (progress), and so are the words: value, status with the same five values and the same role tokens, label, value-text, chunk.",
+    "geometry: the box is the control height of the size (--sf-ui-<size>--control-height, the sf-icon-button and sf-avatar box: 36 px at 1 below the wide breakpoint, 40 px above it). The line is --sf-a2 (2 px) at every size and the gap --sf-a2, so the content box is the box less 2 x (line + gap): exactly the control height a step down at sizes 1 and 2 (an sf-avatar one step smaller fills it), and a slotted sf-avatar is fitted to it at every size, so the gap stays 2 px.",
+    "line-width: 2 px at every size, not 2.5-3 px at 1. Measured (core 1.3 tokens): in the dark theme primary is 11.1:1 against surface-0 and 5.8:1 against the track, in the light theme 6.5:1 and 4.8:1, every status within 0.1 of it -- above the 3:1 of WCAG 1.4.11 at 2 px. The prototype read faint because its mask put the soft edge outside the line (a 1.5 px line) and its gap colour named --sf-surface, which no theme defines. Here the cut is soft across one pixel centred on the line's inner edge, so the line is 2 px; a heavier line would also break the avatar fit (line + gap = one ladder step).",
+    "lengths: the published lengths are read through registered internal lengths (@property --sf-progress-ring--size, --line-width, --gap, syntax <length>), so a page that writes a bare 0 keeps the arithmetic; the public names stay unregistered so their fallbacks work. The value is a registered number (--sf-progress-ring--value), so the fill moves between values (--sf-duration-normal; none under prefers-reduced-motion).",
+    "drawing: one element, a conic gradient of fill and track cut to the line by a radial mask -- no SVG, so every length is a CSS length the page can set, and it draws in every engine.",
+    "indeterminate: the spinner's arc (30% of the ring, one turn per 2 x --sf-duration-slow, linear), on the ring's own track and in its status colour; still under prefers-reduced-motion, as the spinner is. No aria-valuenow while indeterminate (ARIA: an indeterminate progressbar). It is a setting, not value absent, because a value of 0 is a real value.",
+    "a11y-role: progressbar, or meter when meter is on (an amount in a known range, such as a quota: Mirai24's usage). The role sits on the ring (.sf-progress-ring-indicator), not on the root: a progressbar's children are presentational, and a slotted avatar keeps its own name beside it. aria-valuenow is the clamped value, aria-valuetext the value-text; the name is label, else the host's aria-label (§3.1, §4.8). No focus, no keys. The visible percentage is aria-hidden: the value is said once, by the ring.",
+    "status: the page's. The ring never infers warning or error from the value: thresholds (80, 100 for a quota) belong to the host, which passes status.",
+    "text: show-text prints the clamped value with a per cent sign; its size is a text step that keeps «100%» inside the line (--sf-text-size-1/5, 1/4, 1/3 at 1/2, 1, 2; measured in Inter: 23, 29, 35 px inside 24, 32, 40 px). The slot content takes its place when given.",
+    "chunk: the progress family's action (vocabulary §5.2), the same as sf-progress-bar's: done of total in per cent, refused for a total that is not positive.",
+    "skeleton: none; the ring has no port and no late data: its snapshot is its first paint (§5.4).",
+    "box: no x-published root variable. The ring's box is a token a page already has (--sf-ui-<size>--control-height, or --sf-progress-ring-size where the page sets one), and the printed first paint carries the class sheet's box, so nothing is published on :root for a page to reserve it (§5.4)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "determinate-progress",
+      "accessible-range"
+    ],
+    "state": {
+      "machines": {
+        "progress": [
+          "active",
+          "complete",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention",
+        "running, cancelling or retrying the task",
+        "inferring success, warning or error from the numeric percentage",
+        "inventing the accessible process label"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-progress-ring for a value from 0 to 100 in the room of a control (a toolbar, a rail, around an avatar), or for an unknown one with indeterminate.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not move host data or access decisions into the component",
+        "Do not omit a localized accessible label",
+        "Do not infer semantic status from the percentage",
+        "Do not make the progress indicator focusable",
+        "Do not use the ring for a long task in a page's body; use sf-progress-bar"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-progress-ring label=\"Использовано\" value=\"62\" meter></sf-progress-ring>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "Progress Ring is not interactive and never enters the focus order."
+    },
+    "inputs": {
+      "value": {
+        "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
+      }
+    }
+  }
+}

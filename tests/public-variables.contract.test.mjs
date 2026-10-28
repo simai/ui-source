@@ -40,6 +40,8 @@ const FOLDERS = {
   // sheets the Smart elements draw with, or a sheet of the element's own.
   'progress-bar': 'progress-bar',
   'progress-scale': 'progress-scale',
+  // sf-progress-ring draws with its class sheet (2026-10-29).
+  'progress-ring': 'progress-ring',
   spinner: 'spinner',
   skeleton: 'skeleton',
   'empty-state': 'smart/empty-state',

@@ -39,6 +39,8 @@ const PHASE_A = [
   'button-group', 'input', 'textarea', 'dropdown', 'list-item', 'file-preview', 'country-code', 'tag', 'pagination',
   'image-field', 'drawer', 'context-menu', 'toast', 'tree-item', 'spinner', 'popover', 'modal', 'quantity',
   'file-upload', 'composition-overlay',
+  // new in the 1.4 form
+  'progress-ring',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

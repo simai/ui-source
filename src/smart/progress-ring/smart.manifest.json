@@ -1,0 +1,278 @@
+{
+  "schema_version": 2,
+  "id": "smart.progress-ring",
+  "version": "1.0.0",
+  "title": "Progress Ring",
+  "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "progress-ring"
+  ],
+  "capabilities": [
+    "render",
+    "theme",
+    "responsive",
+    "determinate-progress",
+    "accessible-range"
+  ],
+  "custom_element": "sf-progress-ring",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.progress-ring"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "value": {
+        "type": "number",
+        "default": 0,
+        "description": "Per cent, 0 to 100; clamped.",
+        "minimum": 0,
+        "maximum": 100,
+        "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
+      },
+      "status": {
+        "type": "string",
+        "default": "neutral",
+        "description": "What the value reports, in the shared status vocabulary; the page decides it (a threshold is the page's), the ring never infers it from the value.",
+        "enum": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      },
+      "indeterminate": {
+        "type": "boolean",
+        "default": false,
+        "description": "The value is unknown: the spinner's arc goes round the ring and no value is said."
+      },
+      "meter": {
+        "type": "boolean",
+        "default": false,
+        "description": "The ring shows an amount within a known range (a quota used), not a task's progress: role meter instead of progressbar."
+      },
+      "show-text": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows the percentage in the middle; the slot content takes its place when given."
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name; without it the host's aria-label names the ring."
+      },
+      "value-text": {
+        "type": "string",
+        "default": "",
+        "description": "The value as people say it («3 из 5 файлов»), read instead of the percentage."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "chunk": {
+      "summary": "The action chunk.",
+      "arguments": [
+        {
+          "name": "done",
+          "schema": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "total",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {},
+  "state": {
+    "machines": {
+      "progress": [
+        "active",
+        "complete",
+        "error"
+      ]
+    },
+    "visual_states": [
+      "default"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "backend access decisions",
+      "host route invention",
+      "running, cancelling or retrying the task",
+      "inferring success, warning or error from the numeric percentage",
+      "inventing the accessible process label"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "meter",
+    "accessible_name": "required",
+    "keyboard": [],
+    "focus": "Progress Ring is not interactive and never enters the focus order."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "a87f2a1082f9ae8a4c77ab24a719ed43955420be",
+    "source_artifacts": [
+      {
+        "path": "src/smart/progress-ring/index.js",
+        "sha256": "d44b5dfe20353f04c9f980554ddf6f398faafb9893e6660adbc712f85d0bc0ce"
+      },
+      {
+        "path": "src/smart/progress-ring/js/templates/default.js",
+        "sha256": "36110392a5b0b4cebb011ac46bc6641ae6dd6e01f09c476bf3e20b368775fa41"
+      },
+      {
+        "path": "src/smart/progress-ring/rule.js",
+        "sha256": "18d6140c475aa91ad9c08a8c330cd6f7ea48610ec61038dc22f54e61d7eb83c1"
+      },
+      {
+        "path": "src/smart/progress-ring/docs.md",
+        "sha256": "058bb0cfcdffc91502d37695fa3b8d664019117ffd48cb242ebbd24713538f3e"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-progress-ring for a value from 0 to 100 in the room of a control (a toolbar, a rail, around an avatar), or for an unknown one with indeterminate.",
+    "do_not": [
+      "Do not copy generated ui-smart code",
+      "Do not move host data or access decisions into the component",
+      "Do not omit a localized accessible label",
+      "Do not infer semantic status from the percentage",
+      "Do not make the progress indicator focusable",
+      "Do not use the ring for a long task in a page's body; use sf-progress-bar"
+    ],
+    "required_reads": [
+      "inputs",
+      "methods",
+      "events",
+      "ownership",
+      "provenance"
+    ],
+    "minimal_example": "<sf-progress-ring label=\"Использовано\" value=\"62\" meter></sf-progress-ring>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

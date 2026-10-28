@@ -125,6 +125,9 @@ const DRAW = {
     html: '<sf-progress-bar label="Загрузка" value="40" text-position="inline-end"></sf-progress-bar>'},
   'progress-scale': {css: ['progress-scale'], js: 'progress-scale',
     html: '<sf-progress-scale label="Этапы" value="45"></sf-progress-scale>'},
+  // The percentage is shown, so its colour has a part to reach.
+  'progress-ring': {css: ['progress-ring'], js: 'progress-ring',
+    html: '<sf-progress-ring label="Загрузка" value="40" show-text></sf-progress-ring>'},
   spinner: {css: ['spinner'], js: 'spinner',
     html: '<sf-spinner label="Загрузка данных" size="2"></sf-spinner>'},
   skeleton: {css: ['skeleton'], js: 'skeleton',
@@ -178,6 +181,11 @@ const ROLES = {
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
   size: {properties: ['block-size', 'height'], value: '29px'},
+  // The ring's line and gap are drawn from registered lengths (a bare 0 stays
+  // a length): the public variable has to reach the length the drawing reads.
+  // The painted geometry is the conformance probe's (src/smart/progress-ring).
+  'line-width': {properties: ['--sf-progress-ring--line-width'], value: '7px'},
+  'ring-gap': {properties: ['--sf-progress-ring--gap'], value: '11px'},
   'indicator-color': {properties: ['border-bottom-color', 'background-color'], value: 'rgb(10, 11, 12)'},
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},
   // The ring of an anchored badge is a spread shadow in the surface's colour.

@@ -1498,6 +1498,42 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.progress-ring"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-progress-ring",
+      "id": "smart.progress-ring",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/progress-ring/smart.manifest.json",
+      "manifest_sha256": "14a3f52dd5fe96e27b442a73c7708c745575a34db73426a7ad209a272e9334ad",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
+      "tags": [
+        "progress-ring"
+      ],
+      "title": "Progress Ring"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "theme",
+        "responsive",
+        "determinate-progress",
+        "accessible-range"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
           "component.progress-scale"
         ]
       },

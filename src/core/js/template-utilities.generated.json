@@ -295,6 +295,10 @@
     "position/default",
     "transition-property/default"
   ],
+  "cl-progress-ring": [
+    "display/default",
+    "position/default"
+  ],
   "cl-progress-scale": [
     "align-items/default",
     "display/default",

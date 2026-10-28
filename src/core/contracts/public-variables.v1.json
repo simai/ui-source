@@ -2355,6 +2355,60 @@
       ]
     },
     {
+      "component": "progress-ring",
+      "selector": ".sf-progress-ring",
+      "variables": [
+        {
+          "name": "--sf-progress-ring-size",
+          "role": "size",
+          "summary": "The ring's box: the control height of its size unless this is set.",
+          "default": "var(--sf-ui-1--control-height)",
+          "varies_with": [
+            "size"
+          ],
+          "since": "2026-10-29"
+        },
+        {
+          "name": "--sf-progress-ring-line-width",
+          "role": "line-width",
+          "summary": "The width of the line; a bare 0 is valid.",
+          "default": "var(--sf-a2)",
+          "since": "2026-10-29"
+        },
+        {
+          "name": "--sf-progress-ring-gap",
+          "role": "ring-gap",
+          "summary": "Space between the line and what stands in the middle; a bare 0 is valid.",
+          "default": "var(--sf-a2)",
+          "since": "2026-10-29"
+        },
+        {
+          "name": "--sf-progress-ring-fill-color",
+          "role": "background",
+          "summary": "The filled part; a status gives its own colour unless this is set.",
+          "default": "var(--sf-primary)",
+          "varies_with": [
+            "status"
+          ],
+          "since": "2026-10-29"
+        },
+        {
+          "name": "--sf-progress-ring-track-color",
+          "role": "background",
+          "summary": "The track under the filled part.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-29"
+        },
+        {
+          "name": "--sf-progress-ring-color",
+          "role": "color",
+          "summary": "The percentage in the middle.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-29"
+        }
+      ]
+    },
+    {
       "component": "progress-scale",
       "selector": ".sf-progress-scale",
       "variables": [

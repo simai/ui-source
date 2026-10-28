@@ -1,0 +1,38 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "component.progress-ring",
+  "kind": "component",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/component/progress-ring/docs/docs.md",
+    "src/component/progress-ring/index.js",
+    "src/component/progress-ring/rule.js",
+    "src/component/progress-ring/scss/_css__progress_ring.scss",
+    "src/component/progress-ring/scss/index.scss"
+  ],
+  "content_sha256": "9d540c556cb1ef6a008c17b22f6fd4f1b63d92df15a413ba586cb90cfcd6b102",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.0.0"
+    }
+  ]
+}

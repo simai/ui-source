@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.progress-ring",
+  "title": "progress ring reference",
+  "summary": "Deterministic reference fixture for sf-progress-ring.",
+  "locale": "ru",
+  "props": {
+    "label": "Загрузка файлов",
+    "value": "62",
+    "show-text": true
+  },
+  "children": [],
+  "state": "default"
+}

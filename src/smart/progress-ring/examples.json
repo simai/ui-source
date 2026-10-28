@@ -1,0 +1,267 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Кольцо с процентом",
+      "settings": {
+        "label": "Загрузка файлов",
+        "value": 62,
+        "show-text": true
+      },
+      "expect": {
+        "name": "Загрузка файлов",
+        "role": "progressbar",
+        "valuenow": 62
+      },
+      "studio": {
+        "title": "progress ring reference",
+        "props": {
+          "label": "Загрузка файлов",
+          "value": "62",
+          "show-text": true
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "chunk",
+              "with": [
+                {
+                  "done": 30,
+                  "total": 120
+                }
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "status",
+      "title": "Со статусом",
+      "settings": {
+        "label": "Проверка",
+        "value": 100,
+        "status": "success",
+        "value-text": "Готово",
+        "show-text": true
+      },
+      "expect": {
+        "name": "Проверка",
+        "valuetext": "Готово"
+      }
+    },
+    {
+      "name": "indeterminate",
+      "title": "Без данных",
+      "settings": {
+        "label": "Подготовка",
+        "indeterminate": true
+      },
+      "expect": {
+        "name": "Подготовка",
+        "role": "progressbar"
+      }
+    },
+    {
+      "name": "avatar",
+      "title": "Расход лимита вокруг аватара",
+      "children": "<sf-avatar slot=\"content\" size=\"1/2\" text=\"АК\" aria-label=\"Анна Ким\"></sf-avatar>",
+      "settings": {
+        "label": "Использовано 85 % лимита",
+        "value": 85,
+        "status": "warning",
+        "meter": true
+      },
+      "expect": {
+        "name": "Использовано 85 % лимита",
+        "role": "meter",
+        "valuenow": 85
+      }
+    },
+    {
+      "name": "chunk",
+      "title": "Часть задачи",
+      "settings": {
+        "label": "Импорт",
+        "value": 10,
+        "size": "2",
+        "show-text": true
+      },
+      "script": [
+        {
+          "act": "chunk",
+          "with": {
+            "done": 30,
+            "total": 120
+          }
+        }
+      ],
+      "expect": {
+        "values": {
+          "value": 25
+        },
+        "valuenow": 25
+      }
+    },
+    {
+      "name": "aria-label",
+      "title": "Имя от страницы",
+      "settings": {
+        "value": 40,
+        "size": "1/2"
+      },
+      "attributes": {
+        "aria-label": "Копирование"
+      },
+      "expect": {
+        "name": "Копирование"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-progress-ring against component.json (standard simai.smart-component 1.3.11 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <style>#r-var { --sf-progress-ring-fill-color: rgb(1, 2, 3); --sf-progress-ring-line-width: 0; --sf-progress-ring-gap: 0; }</style>",
+          "  <sf-progress-ring id=\"r1\" label=\"Загрузка файлов\" value=\"62\" show-text></sf-progress-ring>",
+          "  <sf-progress-ring id=\"r2\" label=\"Использовано 85 % лимита\" value=\"85\" status=\"warning\" meter><sf-avatar slot=\"content\" size=\"1/2\" text=\"АК\" aria-label=\"Анна Ким\"></sf-avatar></sf-progress-ring>",
+          "  <sf-progress-ring id=\"r3\" label=\"Подготовка\" indeterminate></sf-progress-ring>",
+          "  <sf-progress-ring id=\"r4\" aria-label=\"Копирование\" value=\"40\" size=\"2\"></sf-progress-ring>",
+          "  <sf-progress-ring id=\"r-var\" label=\"Своя заливка\" value=\"50\"></sf-progress-ring>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "r1-role-and-value",
+          "title": "the ring is a progressbar named by label, its valuenow the value; the percentage is shown and hidden from the reader",
+          "covers": "accessibility (role, name, valuenow), settings.value, settings.show-text",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#r1 .sf-progress-ring-indicator'); const c = document.querySelector('#r1 .sf-progress-ring-content'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '62' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex') && c.textContent.trim() === '62%' && c.getAttribute('aria-hidden') === 'true'; })()",
+              "expect": {
+                "values": {
+                  "#r1.value": 62
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "r2-meter-and-avatar",
+          "title": "meter: role meter; the avatar stands beside the ring, fitted to the content box, 2 px from the line",
+          "covers": "settings.meter, slots.content, the content box",
+          "steps": [
+            {
+              "wait": 300,
+              "check": "(() => { const root = document.querySelector('#r2 .sf-progress-ring'); const ring = document.querySelector('#r2 .sf-progress-ring-indicator'); const avatar = document.querySelector('#r2 .sf-progress-ring-content .sf-avatar'); if (!avatar) return false; const a = root.getBoundingClientRect(); const b = avatar.getBoundingClientRect(); const line = parseFloat(getComputedStyle(root).getPropertyValue('--sf-progress-ring--line-width')); const gap = Math.round(b.left - a.left - line); return ring.getAttribute('role') === 'meter' && ring.getAttribute('aria-valuenow') === '85' && !ring.contains(avatar) && Math.abs(b.width - (a.width - 2 * (line + 2))) < 0.5 && gap === 2 && root.classList.contains('sf-progress-ring--warning'); })()"
+            }
+          ]
+        },
+        {
+          "id": "r3-indeterminate",
+          "title": "indeterminate: no valuenow, the turning arc",
+          "covers": "settings.indeterminate",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#r3 .sf-progress-ring-indicator'); return r.getAttribute('role') === 'progressbar' && !r.hasAttribute('aria-valuenow') && document.querySelector('#r3 .sf-progress-ring').classList.contains('sf-progress-ring--indeterminate'); })()"
+            },
+            {
+              "script": "(document.getElementById('r3').indeterminate = false, document.getElementById('r3').value = 30, true)",
+              "wait": 300,
+              "check": "document.querySelector('#r3 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '30' && !document.querySelector('#r3 .sf-progress-ring').classList.contains('sf-progress-ring--indeterminate')"
+            }
+          ]
+        },
+        {
+          "id": "r4-name-from-host-and-size",
+          "title": "without label the host's aria-label names the ring; size 2 is the control height of 2",
+          "covers": "accessibility.name, settings.size",
+          "steps": [
+            {
+              "check": "(() => { const root = document.querySelector('#r4 .sf-progress-ring'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-2--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return document.querySelector('#r4 .sf-progress-ring-indicator').getAttribute('aria-label') === 'Копирование' && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want; })()"
+            }
+          ]
+        },
+        {
+          "id": "r5-value-number",
+          "title": "value is a number, clamped to 0..100",
+          "covers": "settings.value (number)",
+          "steps": [
+            {
+              "script": "(document.getElementById('r1').value = 150, true)",
+              "wait": 300,
+              "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '100' && document.querySelector('#r1 .sf-progress-ring-content').textContent.trim() === '100%'"
+            }
+          ]
+        },
+        {
+          "id": "r6-chunk",
+          "title": "chunk {done, total} shows a part of a job in per cent",
+          "covers": "actions.chunk (vocabulary §5.2)",
+          "steps": [
+            {
+              "action": {
+                "name": "chunk",
+                "with": {
+                  "done": 30,
+                  "total": 120
+                }
+              },
+              "target": "#r1",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                },
+                "values": {
+                  "#r1.value": 25
+                }
+              }
+            },
+            {
+              "wait": 300,
+              "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '25'"
+            },
+            {
+              "action": {
+                "name": "chunk",
+                "with": {
+                  "done": 1,
+                  "total": 0
+                }
+              },
+              "target": "#r1",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                },
+                "values": {
+                  "#r1.value": 25
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "r7-public-variables",
+          "title": "a page's fill colour wins over the status; a bare 0 for the line and the gap is a valid length",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "check": "(() => { const root = document.querySelector('#r-var .sf-progress-ring'); const s = getComputedStyle(root); return s.getPropertyValue('--sf-progress-ring--fill').trim() === 'rgb(1, 2, 3)' && s.getPropertyValue('--sf-progress-ring--line-width').trim() === '0px' && s.getPropertyValue('--sf-progress-ring--gap').trim() === '0px'; })()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
