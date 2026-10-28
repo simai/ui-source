@@ -853,6 +853,7 @@ import '../../component/tabs/rule.js';
 import '../../component/tags/rule.js';
 import '../../component/textarea/rule.js';
 import '../../component/theme/rule.js';
+import '../../component/theme-palette/rule.js';
 import '../../component/toast/rule.js';
 import '../../component/toggle/rule.js';
 import '../../component/tooltip/rule.js';
