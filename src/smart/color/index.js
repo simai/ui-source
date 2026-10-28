@@ -40,6 +40,9 @@ const ColorElement = elementFromManifest(manifest, {
 // keeps. Anything else is not a colour this control will claim to hold.
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/iu;
 
+// How long a moving colour rests before the page theme follows it.
+const THEME_DEBOUNCE = 120;
+
 const normalise = (value) => {
     const text = String(value ?? "").trim();
     if (!text) return "";
@@ -127,6 +130,130 @@ class SfColor extends FormField(ColorElement) {
     afterRender() {
         this.syncInheritedState();
         this.sfSyncFormState();
+        // A value written from code (a page restoring the colour it kept) takes
+        // the theme silently; a drag waits for its debounce.
+        if (this.isTheme && this._themeTimer == null) this._applyTheme();
+    }
+
+    // ---------------------------------------------------------- variant theme
+    //
+    // One icon button that opens the platform picker and rebuilds the page
+    // theme from the colour while it moves (owner decision by delegation,
+    // 2026-10-28: a variant of sf-color, not a separate component). The theme
+    // is SF.ThemePalette, fetched through the Loader the first time a theme
+    // control draws: it is larger than this control and a field-variant colour
+    // has no use for it.
+
+    get isTheme() {
+        return this.variant === "theme";
+    }
+
+    get themeLabel() {
+        return this.label || this.sfWord("theme");
+    }
+
+    get themeResetLabel() {
+        return this.getAttribute("clear-label") || this.sfWord("theme-reset");
+    }
+
+    _palette() {
+        const palette = globalThis.SF?.ThemePalette;
+        if (palette?.applyTheme) return palette;
+        if (!this._paletteAsked) {
+            this._paletteAsked = true;
+            const ready = () => {
+                this._applyTheme();
+                this.requestComponentUpdate("palette");
+            };
+            globalThis.addEventListener?.("theme-palette:ready", ready, {once: true});
+            globalThis.SF?.Loader?.ensurePlugin?.("theme-palette");
+        }
+        return null;
+    }
+
+    // The colour on <html>: the previous application is taken off first, so the
+    // restore that is kept always returns the page to what it had before this
+    // control touched it. An empty value is that restore.
+    _applyTheme() {
+        const palette = this._palette();
+        if (!palette) return;
+        const color = this.value;
+        if (color === this._appliedColor) return;
+        this._restoreTheme?.();
+        this._restoreTheme = null;
+        if (color && palette.isThemeColor(color)) {
+            this._restoreTheme = palette.applyTheme(palette.themeFromColor(color));
+        }
+        this._appliedColor = color;
+    }
+
+    _scheduleTheme(delay) {
+        clearTimeout(this._themeTimer);
+        this._themeTimer = null;
+        if (!delay) {
+            this._applyTheme();
+            return;
+        }
+        this._themeTimer = setTimeout(() => {
+            this._themeTimer = null;
+            this._applyTheme();
+        }, delay);
+    }
+
+    // The icon button opens the native input's picker. showPicker needs the
+    // press's activation, which the click carries; without it, a click on the
+    // input does the same.
+    _openPicker() {
+        const input = this.querySelector(".sf-color-input");
+        if (!input || this.disabled) return;
+        this._watchUncommitted();
+        try {
+            input.showPicker();
+        } catch {
+            input.click();
+        }
+    }
+
+    // A colour that moved but was never committed (Escape, the picker's cancel)
+    // goes back to the committed one: the browser usually puts the old value
+    // back with an input of its own; if it does not, the next press or key on
+    // the page -- the picker is closed by then -- reverts it. A change that
+    // closes the picker on that same press wins: the check waits a moment.
+    _watchUncommitted() {
+        if (this._uncommittedWatch) return;
+        const document = this.ownerDocument;
+        const check = () => {
+            document.removeEventListener("pointerdown", check, true);
+            document.removeEventListener("keydown", check, true);
+            this._uncommittedWatch = null;
+            setTimeout(() => this._revertUncommitted(), 60);
+        };
+        this._uncommittedWatch = check;
+        document.addEventListener("pointerdown", check, true);
+        document.addEventListener("keydown", check, true);
+    }
+
+    _revertUncommitted() {
+        const committed = this._committed ?? normalise(this._initialValue);
+        if (this.value === committed) return;
+        if (committed) this.setAttribute("value", committed);
+        else this.removeAttribute("value");
+        this.requestComponentUpdate("value");
+        this.sfSyncFormState();
+        this._emit("input");
+        this._scheduleTheme(0);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        // The theme stays: the page chose it. Only the pending work goes.
+        clearTimeout(this._themeTimer);
+        this._themeTimer = null;
+        if (this._uncommittedWatch) {
+            this.ownerDocument.removeEventListener("pointerdown", this._uncommittedWatch, true);
+            this.ownerDocument.removeEventListener("keydown", this._uncommittedWatch, true);
+            this._uncommittedWatch = null;
+        }
     }
 
     get customText() {
@@ -223,11 +350,15 @@ class SfColor extends FormField(ColorElement) {
     _pickerInput(event) {
         event.stopPropagation();
         this._write(event.target.value);
+        // A drag across the picker sends an input per step; the theme is a
+        // whole page of variables, rebuilt once the colour rests for 120 ms.
+        if (this.isTheme) this._scheduleTheme(THEME_DEBOUNCE);
     }
 
     _pickerChange(event) {
         event.stopPropagation();
         this._write(event.target.value);
+        if (this.isTheme) this._scheduleTheme(0);
         this._commit();
     }
 
@@ -254,6 +385,13 @@ class SfColor extends FormField(ColorElement) {
             // ElementInternals; the hidden input is drawn only without them.
             hiddenName: this.sfInternals ? "" : this.name,
             label: this.label,
+            variant: this.variant,
+            themeLabel: this.themeLabel,
+            themeResetLabel: this.themeResetLabel,
+            // The picker opens on the theme's colour: the chosen one, else the
+            // Framework's once the palette is here.
+            pickerValue: this.value || this.inheritedValue
+                || (this.isTheme ? globalThis.SF?.ThemePalette?.DEFAULT_THEME_COLOR : "") || "",
         });
     }
 

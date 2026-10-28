@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.color",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -71,6 +71,15 @@
           "plain"
         ]
       },
+      "variant": {
+        "type": "string",
+        "default": "field",
+        "description": "What the control is. field: the swatch, the hex and the presets, a colour that is a value of something. theme: one icon-only primary button (icon palette) that opens the platform picker and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it on the picker's change.",
+        "enum": [
+          "field",
+          "theme"
+        ]
+      },
       "swatches": {
         "type": "string",
         "default": "",
@@ -79,7 +88,7 @@
       "clearable": {
         "type": "boolean",
         "default": false,
-        "description": "Whether a chosen colour can be returned to the inherited one."
+        "description": "Whether a chosen colour can be returned to the inherited one. With variant theme: a second button takes the theme back to what the page had before the control changed it (the Framework colour unless the page set its own)."
       },
       "disabled": {
         "type": "boolean",
@@ -93,7 +102,7 @@
       "label": {
         "type": "string",
         "default": "",
-        "description": "The accessible name of the control."
+        "description": "The accessible name of the control. With variant theme it names the icon button; unset, the page's language says \"Theme colour\"."
       },
       "choose-label": {
         "type": "string",
@@ -101,7 +110,7 @@
       },
       "clear-label": {
         "type": "string",
-        "description": "The words on the control that returns to the inherited colour. Unset, it follows the page's language."
+        "description": "The words on the control that returns to the inherited colour. Unset, it follows the page's language; with variant theme the default is the theme words (\"Use the original theme colour\")."
       },
       "value": {
         "type": "string",
@@ -320,7 +329,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/color/index.js",
-        "sha256": "8bb7296c4fdde4ba9d168b9eaee051eac774a4bbebc8238e182a371f4662ab6d"
+        "sha256": "3d11f5a15f8f88a186424bd0c90fb8274ab94d744481bc4fc764cc237977f79c"
       },
       {
         "path": "src/smart/color/rule.js",
@@ -328,11 +337,11 @@
       },
       {
         "path": "src/smart/color/js/templates/default.js",
-        "sha256": "572f2a00f6985195ce9c118418e3bca4c4967b0b1867e5d3cc3da5983a877059"
+        "sha256": "291f9a92b1feda341bb9973d2993781e08f88c8bec0049529056968427e1790c"
       },
       {
         "path": "src/smart/color/js/templates/default.css",
-        "sha256": "82fb434a7723767e263082c44ba06da4ff54495a1a02d442f8e8a85de0ebebec"
+        "sha256": "6d7a921f1210f34085320b8cc25af708198e1dd89be0ccd08e974ffbff449523"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

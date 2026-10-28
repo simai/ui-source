@@ -8,6 +8,7 @@ import './default.css';
 // keyboard, and reimplementing a colour wheel would be a worse version of a thing
 // the system already does well.
 export function renderColorTemplate(context) {
+    if (context.variant === 'theme') return renderThemeTemplate(context);
     const {painted, isSet, disabled, size, appearance} = context;
 
     return html`
@@ -78,6 +79,58 @@ export function renderColorTemplate(context) {
                                 icon="restart_alt"
                                 data-action="clear"
                                 aria-label=${context.clearLabel}
+                                ?disabled=${disabled}
+                                @click=${() => context.component.clear()}
+                        ></sf-icon-button>`
+                    : nothing}
+        </div>
+    `;
+}
+
+// variant theme: one icon-only primary button that opens the same native
+// picker. The input stays in the tree under the button -- transparent, out of
+// the focus order and out of the accessibility tree -- so the picker opens
+// where the button is; the button is what a keyboard reaches and what a screen
+// reader names («Цвет темы», «Theme colour»).
+function renderThemeTemplate(context) {
+    const {isSet, disabled, size} = context;
+
+    return html`
+        <div class="sf-color sf-color--theme sf-color--size-${size}"
+             data-set=${isSet ? 'true' : 'false'}>
+            <span class="sf-color-theme">
+                <input
+                        type="color"
+                        class="sf-color-input"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        .value=${context.pickerValue || '#000000'}
+                        ?disabled=${disabled}
+                        @input=${(event) => context.component._pickerInput(event)}
+                        @change=${(event) => context.component._pickerChange(event)}
+                >
+                <sf-icon-button
+                        size=${size}
+                        icon="palette"
+                        data-action="theme"
+                        aria-label=${context.themeLabel}
+                        title=${context.themeLabel}
+                        ?disabled=${disabled}
+                        @click=${() => context.component._openPicker()}
+                ></sf-icon-button>
+            </span>
+            ${context.hiddenName
+                    ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
+                    : nothing}
+            ${context.clearable && isSet
+                    ? html`
+                        <sf-icon-button
+                                appearance="link"
+                                size=${size}
+                                icon="restart_alt"
+                                data-action="clear"
+                                aria-label=${context.themeResetLabel}
+                                title=${context.themeResetLabel}
                                 ?disabled=${disabled}
                                 @click=${() => context.component.clear()}
                         ></sf-icon-button>`
