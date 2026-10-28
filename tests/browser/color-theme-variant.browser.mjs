@@ -43,14 +43,14 @@ try {
   for (const [lang, word] of [['ru', 'Цвет темы'], ['en', 'Theme colour']]) {
     const tab = await browser.newPage();
     await tab.goto(`http://127.0.0.1:${server.address().port}/${lang}`);
-    await tab.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#c [data-action="theme"] button'), null, {timeout: 15000})
+    await tab.waitForFunction(() => customElements.get('sf-color') && document.querySelector('#c button[data-action="theme"]'), null, {timeout: 15000})
       .catch(() => failures.push(`${lang}: the theme button never drew`));
     const button = await tab.evaluate(() => {
-      const native = document.querySelector('#c [data-action="theme"] button');
+      const native = document.querySelector('#c button[data-action="theme"]');
       const input = document.querySelector('#c .sf-color-input');
       return {
         name: native?.getAttribute('aria-label') ?? null,
-        icon: document.querySelector('#c [data-action="theme"]')?.getAttribute('icon') ?? null,
+        icon: document.querySelector('#c button[data-action="theme"]')?.closest('sf-icon-button')?.getAttribute('icon') ?? null,
         visible: Boolean(native && native.getBoundingClientRect().width > 0),
         hex: Boolean(document.querySelector('#c .sf-color-text')),
         inputTab: input?.tabIndex ?? null,
@@ -86,9 +86,9 @@ try {
     if (applied.value !== '#e5534b') failures.push(`${lang}: the value is ${applied.value}`);
     if (applied.changes.length !== 1 || applied.changes[0]?.value !== '#e5534b') failures.push(`${lang}: change fired ${JSON.stringify(applied.changes)}`);
 
-    await tab.waitForFunction(() => document.querySelector('#c [data-action="clear"] button'), null, {timeout: 5000})
+    await tab.waitForFunction(() => document.querySelector('#c button[data-action="clear"]'), null, {timeout: 5000})
       .catch(() => failures.push(`${lang}: no reset button after a colour`));
-    await tab.locator('#c [data-action="clear"] button').click().catch(() => {});
+    await tab.locator('#c button[data-action="clear"]').click().catch(() => {});
     await tab.waitForTimeout(100);
     const restored = await tab.evaluate(() => ({
       primary: document.documentElement.style.getPropertyValue('--sf-primary-40'),
