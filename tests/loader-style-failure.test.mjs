@@ -6,7 +6,7 @@ const source=fs.readFileSync(new URL('../src/core/js/loader.js',import.meta.url)
 const start=source.indexOf('SFLoaderPlugin.prototype.addStyle =');
 const end=source.indexOf('SFLoaderPlugin.prototype.addScript =',start);
 
-function fixture(event) {
+function fixture(event, {linked = null} = {}) {
   const listeners={};
   const nodes=[];
   const element={addEventListener:(name,fn)=>{listeners[name]=fn;},remove:()=>{nodes.splice(nodes.indexOf(element),1);}};
@@ -18,7 +18,11 @@ function fixture(event) {
   }}]};
   function SFLoaderPlugin() {}
   SFLoaderPlugin.prototype.versionAssetUrl=url=>`${url}?revision=test`;
-  vm.runInNewContext(source.slice(start,end),{SFLoaderPlugin,document});
+  // The page's own <link> of the same sheet (loader.js linkedSheet), and its
+  // applied state (sheetApplied): none unless the test gives one.
+  const linkedSheet=()=>linked;
+  const sheetApplied=link=>(link.sheet?Promise.resolve():new Promise(resolve=>{link.onload=resolve;}));
+  vm.runInNewContext(source.slice(start,end),{SFLoaderPlugin,document,linkedSheet,sheetApplied});
   return {loader:new SFLoaderPlugin(),nodes,element};
 }
 
@@ -32,6 +36,13 @@ test('successful CSS remains attached and uses the versioned URL',async()=>{
   await loader.addStyle('/module.css');
   assert.equal(nodes.length,1);
   assert.equal(element.href,'/module.css?revision=test');
+});
+
+test('a sheet the page already links is waited for, not linked again',async()=>{
+  const link={sheet:{}};
+  const {loader,nodes}=fixture('load',{linked:link});
+  await loader.addStyle('/module.css');
+  assert.equal(nodes.length,0,'no second <link> for a sheet in <head>');
 });
 
 test('transient CSS failures do not persist across pages and legacy CSS flags are discarded',()=>{
