@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// simai.effect 1.1, theme-follows-the-placement and area-takes-the-drawn-theme,
+// simai.effect 1.2, theme-follows-the-placement and area-takes-the-drawn-theme,
 // on the built core: SF.Effects.allowedModes offers an editor only the fixed
 // modes the effect or its trusted pair draws; resolveTheme takes every branch
-// of the order (the effect, its pair, a dark-only effect kept dark, nothing;
+// of the order (the effect, its pair, a single-scheme effect in its own
+// scheme, nothing;
 // a foreign pair drawn in the sandbox, or refused with foreign effects
 // refused); mountEffect with a themeMode draws what it
 // resolved, gives the area the drawn theme's class, and in auto follows a
@@ -85,7 +86,7 @@ try {
   expect('a pair that cannot draw the target: the dark effect kept dark', policy.pairCannotDraw, {effect: 'self', scheme: 'dark'});
   expect('a dark-only effect without a pair stays dark on a light page', policy.darkKeptDark, {effect: 'self', scheme: 'dark'});
   expect('a fixed mode the effect cannot draw: hidden', policy.darkFixedLight, {hidden: true, reason: 'mode-not-drawable'});
-  expect('a light-only effect on a dark page: hidden', policy.lightOnDark, {hidden: true, reason: 'light-only-on-dark'});
+  expect('a light-only effect on a dark page stays light', policy.lightOnDark, {effect: 'self', scheme: 'light'});
   expect('a light-only effect on a light page: itself', policy.lightOnLight, {effect: 'self', scheme: 'light'});
   expect('fixed dark on a light-only effect: hidden', policy.lightFixedDark, {hidden: true, reason: 'mode-not-drawable'});
   expect('a foreign pair is drawn in the sandbox', policy.foreignPair, {effect: 'pair', scheme: 'light', pair: FOREIGN_PAIR, sandboxed: true});
@@ -163,12 +164,12 @@ try {
   await setPage('light');
   expect('fixed dark is not moved by the page', (await state()).classes, ['theme-dark']);
 
-  // A light-only effect on a dark page: nothing drawn, the area in the page's dark.
+  // A light-only effect on a dark page stays light, its area light (1.2).
   await setPage('dark');
   await mount('lone-light', {themeMode: 'auto'});
-  expect('auto, light-only effect, dark page: hidden', await state(), {classes: ['theme-dark'], drawn: null, nodes: 0, state: 'hidden', reason: 'light-only-on-dark', effect: null, scheme: null, dark: null});
+  expect('auto, light-only effect, dark page: drawn light', await state(), {classes: ['theme-light'], drawn: 'lone-light', nodes: 1, state: 'running', reason: null, effect: 'self', scheme: 'light', dark: false});
   await setPage('light');
-  expect('and drawn once the page turns light', await state(), {classes: ['theme-light'], drawn: 'lone-light', nodes: 1, state: 'running', reason: null, effect: 'self', scheme: 'light', dark: false});
+  expect('and still light once the page turns light', await state(), {classes: ['theme-light'], drawn: 'lone-light', nodes: 1, state: 'running', reason: null, effect: 'self', scheme: 'light', dark: false});
 
   // update({themeMode}) changes the mode in place; destroy gives the area back.
   await page.evaluate(() => window.__handle.update({}, {themeMode: 'dark'}));

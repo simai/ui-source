@@ -100,7 +100,8 @@ test('the theme policy: allowed modes and the resolution order', () => {
   assert.deepEqual(r(sample, 'light', 'auto'), {effect: 'self', scheme: 'light'});
   assert.deepEqual(r(paired, 'light', 'auto'), {effect: 'pair', scheme: 'light', pair: 'mist-gradient'});
   assert.deepEqual(r(dark, 'light', 'auto'), {effect: 'self', scheme: 'dark'});
-  assert.deepEqual(r(light, 'dark', 'auto'), {hidden: true, reason: 'light-only-on-dark'});
+  // simai.effect 1.2: a light-only effect stays light on a dark page.
+  assert.deepEqual(r(light, 'dark', 'auto'), {effect: 'self', scheme: 'light'});
   assert.deepEqual(r(dark, 'dark', 'light'), {hidden: true, reason: 'mode-not-drawable'});
   assert.deepEqual(r(foreign, 'light', 'auto'), {effect: 'pair', scheme: 'light', pair: CATALOGUE_URL, sandboxed: true});
   assert.deepEqual(resolveTheme(foreign, {pageScheme: 'light', themeMode: 'auto', foreign: 'refuse'}), {hidden: true, reason: 'foreign-pair-needs-sandbox'});

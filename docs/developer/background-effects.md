@@ -49,9 +49,11 @@ A placement has a theme mode: `auto` (as the page, the default), `dark` or
   -> `{effect: 'self' | 'pair', scheme[, pair][, sandboxed: true]}` or
   `{hidden: true, reason}`.
   The order: the effect in the target scheme; its pair in the target scheme;
-  in `auto`, a dark-only effect kept dark on a light page; otherwise hidden.
+  in `auto`, a single-scheme effect in its own scheme (a dark-only effect
+  stays dark on a light page, a light-only one light on a dark page);
+  otherwise hidden.
   A pair given as an address resolves with `sandboxed: true`.
-  Reasons: `light-only-on-dark`, `mode-not-drawable`,
+  Reasons: `mode-not-drawable`,
   `foreign-pair-needs-sandbox` (only when foreign effects are refused),
   `unknown-theme-mode`.
 
@@ -166,7 +168,7 @@ window.SF_BOOT_CONFIG = {
   `pair-without-windows` (a windows placement whose pair does not declare
   `capabilities: ["windows"]`) or `foreign-pair-needs-sandbox`. A hidden
   placement also carries the theme policy's own reasons:
-  `light-only-on-dark`, `mode-not-drawable`, `unknown-theme-mode`.
+  `mode-not-drawable`, `unknown-theme-mode`.
 
 The pin is the commit in the base address: pin it, never a branch.
 

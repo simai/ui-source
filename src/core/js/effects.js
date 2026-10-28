@@ -551,9 +551,10 @@ export function allowedModes(manifest, {pair, foreign} = {}) {
 
 // Which effect a placement draws, and in which scheme: {effect: 'self' |
 // 'pair', scheme} or {hidden: true, reason}. The order: the effect in the
-// target scheme; its pair in the target scheme; in auto, a dark-only effect
-// kept dark on a light page; nothing -- a light-only effect is not shown on a
-// dark target. A pair given as an address is foreign: it is drawn only in the
+// target scheme; its pair in the target scheme; in auto, a single-scheme
+// effect in its own scheme -- a dark-only effect stays dark on a light page,
+// a light-only one light on a dark page; nothing -- a fixed mode the effect
+// cannot draw. A pair given as an address is foreign: it is drawn only in the
 // sandbox (sandboxed: true), and with foreign effects refused the placement
 // is hidden.
 export function resolveTheme(manifest, {pageScheme: page, themeMode = 'auto', pair, foreign} = {}) {
@@ -568,8 +569,8 @@ export function resolveTheme(manifest, {pageScheme: page, themeMode = 'auto', pa
       return Object.freeze(outside ? {effect: 'pair', scheme: target, pair: manifest.pair, sandboxed: true} : {effect: 'pair', scheme: target, pair: manifest.pair});
     }
   }
-  if (themeMode === 'auto' && target === 'light' && own.includes('dark')) return Object.freeze({effect: 'self', scheme: 'dark'});
-  return Object.freeze({hidden: true, reason: themeMode === 'auto' ? 'light-only-on-dark' : 'mode-not-drawable'});
+  if (themeMode === 'auto' && own.length) return Object.freeze({effect: 'self', scheme: own[0]});
+  return Object.freeze({hidden: true, reason: 'mode-not-drawable'});
 }
 
 // The areas a placement draws under take the theme it is drawn in
