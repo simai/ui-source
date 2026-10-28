@@ -126,6 +126,10 @@ The child is taken into the button as its label when the button draws; it is
 not left beside it. An unslotted child *element* is not a label — wrap it in
 `slot="text"` or use the attribute.
 
+A `text` attribute that is there, even empty, is the label: setting it to
+`''` empties the button, whatever text child it had. Remove the attribute to
+let a text child speak again.
+
 ## Host attributes
 
 Attributes the component does not own are copied to the native `<button>` it

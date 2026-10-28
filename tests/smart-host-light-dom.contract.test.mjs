@@ -101,7 +101,9 @@ test('a text child is the button label, not a second label beside it', async () 
   assert.match(button, /if \(this\.hasSlotContent\?\.\("text"\)\) return;/, 'a text slot still wins');
   assert.match(button, /node\.nodeType === 3 && String\(node\.textContent\)\.trim\(\) !== ""/);
   assert.match(button, /nodes\.forEach\(\(node\) => node\.remove\(\)\);/, 'the adopted node leaves the light DOM');
-  assert.match(button, /get text\(\) \{\s*return this\.getAttribute\("text"\) \|\| this\._textFromChildren \|\| "";/);
+  // A text attribute, even an empty one, is the label (1.1.4): only without
+  // one does the text child speak.
+  assert.match(button, /get text\(\) \{\s*if \(this\.hasAttribute\("text"\)\) return this\.getAttribute\("text"\) \|\| "";\s*return this\._textFromChildren \|\| "";/);
   // The props context knows only the attribute, so the template reads the
   // getter: a button whose label is a child has no text attribute.
   assert.match(button, /text: this\.text,/);
