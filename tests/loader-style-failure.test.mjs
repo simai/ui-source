@@ -19,10 +19,9 @@ function fixture(event, {linked = null} = {}) {
   function SFLoaderPlugin() {}
   SFLoaderPlugin.prototype.versionAssetUrl=url=>`${url}?revision=test`;
   // The page's own <link> of the same sheet (loader.js linkedSheet), and its
-  // applied state (sheetApplied): none unless the test gives one.
+  // none unless the test gives one.
   const linkedSheet=()=>linked;
-  const sheetApplied=link=>(link.sheet?Promise.resolve():new Promise(resolve=>{link.onload=resolve;}));
-  vm.runInNewContext(source.slice(start,end),{SFLoaderPlugin,document,linkedSheet,sheetApplied});
+  vm.runInNewContext(source.slice(start,end),{SFLoaderPlugin,document,linkedSheet});
   return {loader:new SFLoaderPlugin(),nodes,element};
 }
 
@@ -39,7 +38,7 @@ test('successful CSS remains attached and uses the versioned URL',async()=>{
 });
 
 test('a sheet the page already links is waited for, not linked again',async()=>{
-  const link={sheet:{}};
+  const link={sheet:{},hasAttribute:()=>false};
   const {loader,nodes}=fixture('load',{linked:link});
   await loader.addStyle('/module.css');
   assert.equal(nodes.length,0,'no second <link> for a sheet in <head>');

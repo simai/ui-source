@@ -4277,11 +4277,25 @@ SFLoaderPlugin.prototype.addStyle = async function (pluginURL) {
   // Loader added a second <link> for each one its parts named -- 62 of 73 on
   // the admin's list, every rule twice in every style recalculation of the
   // opening (stand 25). The Loader waits for the page's link instead.
+  // Only the page's own links: one the Loader inserted is its own load, and
+  // a failed one is tried again in its other form (insertStyle's callers).
   return onceByUrl('styles', src, () => {
     const linked = typeof document !== 'undefined' ? linkedSheet(src) : null;
-    return linked ? sheetApplied(linked) : this.insertStyle(src, pluginURL);
+    return linked && !linked.hasAttribute?.('data-sf-loader-link')
+        ? pageSheetLoaded(linked, pluginURL)
+        : this.insertStyle(src, pluginURL);
   });
 };
+
+// A sheet the page linked: settled when it is applied, refused when it failed
+// (the caller then asks for its other form, as for a sheet the Loader links).
+function pageSheetLoaded(link, pluginURL) {
+  if (link.sheet) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    link.addEventListener('load', () => resolve(), {once: true});
+    link.addEventListener('error', () => reject(new Error(`Failed to load styles: ${pluginURL}`)), {once: true});
+  });
+}
 
 SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
   return new Promise((resolve, reject) => {
@@ -4291,6 +4305,7 @@ SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
     style.href = src;
     style.type = 'text/css';
     style.rel = 'stylesheet';
+    style.setAttribute?.('data-sf-loader-link', '');
 
     style.addEventListener('load', () => {
       resolve();
