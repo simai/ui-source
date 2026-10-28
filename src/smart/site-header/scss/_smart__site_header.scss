@@ -1,0 +1,198 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
+@layer sf.components {
+/* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
+   Every length is a token of the one ladder (docs/foundation-composition-
+   geometry.md): the bar is the size's control height, a space-1 inset above
+   and below, and the 1px edge of a region. Gutters are the .container's, so a
+   product's --sf-container-gutter reaches the bar. The public variables are
+   read with the role token as their fallback and never set here. */
+.sf-site-header {
+  --sf-site-header--control-height: var(--sf-ui-1--control-height);
+  --sf-site-header--text-space: var(--sf-ui-1--text-space-x);
+  --sf-site-header--block-size: var(--sf-site-header-block-size,
+    calc(var(--sf-site-header--control-height) + 2 * var(--sf-space-1) + var(--sf-a1)));
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  min-block-size: var(--sf-site-header--block-size);
+  border-block-end: var(--sf-a1) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+  background: var(--sf-site-header-background, var(--sf-surface-0));
+  color: var(--sf-site-header-color, var(--sf-on-surface));
+}
+
+.sf-site-header--size-half {
+  --sf-site-header--control-height: var(--sf-ui-1\/2--control-height);
+  --sf-site-header--text-space: var(--sf-ui-1\/2--text-space-x);
+}
+
+.sf-site-header--sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--sf-site-header-z-index, var(--sf-z-index-5));
+}
+
+/* The row: brand · nav … actions · tools, on one centre line. */
+.sf-site-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-site-header-gap, var(--sf-space-2));
+  box-sizing: border-box;
+  min-block-size: calc(var(--sf-site-header--block-size) - var(--sf-a1));
+  padding-block: var(--sf-space-1);
+}
+
+.sf-site-header-brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+/* The brand's picture: the page's <img> or <svg>, one height. :where keeps the
+   rule at no weight, so the page's own markup stays in charge of the rest. */
+.sf-site-header-brand :where(a) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-site-header--text-space);
+  color: inherit;
+  text-decoration: none;
+}
+
+.sf-site-header-brand :where(img, svg) {
+  display: block;
+  flex: none;
+  block-size: var(--sf-site-header-brand-size, var(--sf-ui-1\/2--control-height));
+  inline-size: auto;
+}
+
+/* Wide: the panel is no box of its own, so the nav and the actions stand in
+   the row; its heading, the scrim, the sheet slot and the menu button are not
+   shown. */
+.sf-site-header-panel {
+  display: contents;
+}
+
+.sf-site-header-panel-head,
+.sf-site-header-scrim,
+.sf-site-header-sheet,
+.sf-site-header-menu-button {
+  display: none;
+}
+
+.sf-site-header-nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+.sf-site-header-actions,
+.sf-site-header-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1);
+}
+
+/* Collapsed: the menu button first, the brand, then the tools at the end; the
+   panel is shown only while open, as a side panel at the inline start over a
+   scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
+   which lifts the whole header to the layer's z-index while it is open. */
+@mixin collapsed {
+  .sf-site-header-menu-button {
+    display: contents;
+  }
+
+  .sf-site-header-tools {
+    margin-inline-start: auto;
+  }
+
+  .sf-site-header-panel {
+    display: none;
+  }
+
+  &.sf-site-header--open .sf-site-header-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--sf-black);
+    opacity: var(--sf-opacity-60);
+  }
+
+  &.sf-site-header--open .sf-site-header-panel {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    inline-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g1)));
+    block-size: 100dvh;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: var(--sf-elevation-4--surface);
+    box-shadow: var(--sf-elevation-4--shadow);
+    color: var(--sf-on-surface);
+    outline: none;
+  }
+
+  /* The panel's head is as tall as the bar, its close button on the axis of
+     the menu button. */
+  &.sf-site-header--open .sf-site-header-panel-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--sf-site-header--block-size);
+    padding-block: var(--sf-space-1);
+    padding-inline: var(--sf-space-2) var(--sf-space-1);
+    border-block-end: var(--sf-a1) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+  }
+
+  .sf-site-header-panel-heading {
+    font-size: var(--sf-text-medium--size);
+    line-height: var(--sf-text-medium--height);
+    font-weight: 700;
+  }
+
+  &.sf-site-header--open .sf-site-header-nav,
+  &.sf-site-header--open .sf-site-header-actions,
+  &.sf-site-header--open .sf-site-header-sheet {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sf-space-1);
+    padding: var(--sf-space-2);
+  }
+
+  &.sf-site-header--open .sf-site-header-actions,
+  &.sf-site-header--open .sf-site-header-sheet {
+    border-block-start: var(--sf-a1) solid var(--sf-outline-variant);
+  }
+
+  /* A plain list of links in the nav stands as a column in the panel; an
+     sf-menu turns vertical through its own setting (index.js). */
+  .sf-site-header-nav :where(nav, ul) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.sf-site-header--collapse-always {
+  @include collapsed;
+}
+
+@each $step in (sm, md, lg, xl) {
+  @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
+    .sf-site-header--collapse-#{$step} {
+      @include collapsed;
+    }
+  }
+}
+}
