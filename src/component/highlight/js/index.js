@@ -9,10 +9,12 @@ const HIGHLIGHT_TEXT = {
   en: {
     copy: 'Copy code',
     copied: 'Code copied',
+    wrap: 'Wrap lines',
   },
   ru: {
     copy: 'Копировать код',
     copied: 'Код скопирован',
+    wrap: 'Переносить строки',
   },
 };
 
@@ -157,6 +159,40 @@ function ensureCopyButton(block, root, head) {
   return button;
 }
 
+// Line wrapping, beside copy: a toggle that wraps long lines instead of
+// scrolling them sideways (owner request through the effects catalogue,
+// 2026-10-29; projects put a switch over their code blocks for it). The page
+// sets the starting state with data-wrap="true" on the block's root, or
+// data-wrap-control="none" to leave the button out; the button says its state
+// with aria-pressed.
+function ensureWrapButton(block, root, head) {
+  if (root.dataset.wrapControl === 'none') return null;
+  let button = head.querySelector(':scope > .sf-highlight__wrap-toggle');
+  if (button) return button;
+  const wrapped = root.dataset.wrap === 'true';
+  root.classList.toggle('sf-highlight--wrap', wrapped);
+  button = block.ownerDocument.createElement('button');
+  button.type = 'button';
+  button.className = 'sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
+  button.setAttribute('aria-label', root.dataset.wrapLabel || pageText(HIGHLIGHT_TEXT, 'wrap', block, 'sf-highlight'));
+  button.setAttribute('aria-pressed', String(wrapped));
+  button.setAttribute('aria-controls', ensureCodeId(block));
+  const icon = block.ownerDocument.createElement('span');
+  icon.className = 'sf-icon';
+  icon.textContent = 'wrap_text';
+  icon.setAttribute('aria-hidden', 'true');
+  button.append(icon);
+  button.addEventListener('click', () => {
+    const next = !root.classList.contains('sf-highlight--wrap');
+    root.classList.toggle('sf-highlight--wrap', next);
+    root.dataset.wrap = String(next);
+    button.setAttribute('aria-pressed', String(next));
+  });
+  const copy = head.querySelector(':scope > .sf-highlight__copy');
+  head.insertBefore(button, copy);
+  return button;
+}
+
 function ensureStructure(block) {
   let root = block.closest(ROOT_SELECTOR);
   const mode = chromeMode(block, root);
@@ -213,6 +249,7 @@ function updateChrome(block, result) {
   }
   language.textContent = block.dataset.requestedLang || result.language || 'text';
   ensureCopyButton(block, root, head);
+  ensureWrapButton(block, root, head);
 }
 
 hljs.addPlugin({
