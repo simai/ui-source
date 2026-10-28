@@ -172,6 +172,12 @@ class SfDropdown extends DropdownElement {
     };
   }
 
+  // options is data, not a setting the manifest maps to an attribute, so it
+  // is observed here: a page that rewrites the attribute redraws the list.
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, 'options'])];
+  }
+
   connectedCallback() {
     // A printed JSON island first (standard 1.3.8 §5.4): what is read below may be in it.
     this.sfReadIsland();
