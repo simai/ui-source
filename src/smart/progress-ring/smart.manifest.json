@@ -231,7 +231,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "a87f2a1082f9ae8a4c77ab24a719ed43955420be",
+    "source_revision": "72e2f6c1ed36f3f47da8386b435174bc27556b45",
     "source_artifacts": [
       {
         "path": "src/smart/progress-ring/index.js",
