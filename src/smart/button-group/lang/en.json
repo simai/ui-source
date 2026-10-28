@@ -4,6 +4,7 @@
     "dark": "Dark",
     "group": "Theme",
     "light": "Light",
-    "system": "System"
+    "system": "System",
+    "value-missing": "Choose an option."
   }
 }

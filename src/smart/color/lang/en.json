@@ -6,6 +6,7 @@
     "custom": "Custom",
     "inherited": "inherited",
     "reset": "Reset to inherited",
-    "described": "Inherited: {value}"
+    "described": "Inherited: {value}",
+    "value-missing": "Choose a colour."
   }
 }

@@ -6,6 +6,7 @@
     "custom": "Свой",
     "inherited": "наследуется",
     "reset": "Сбросить к наследуемому",
-    "described": "Наследуется: {value}"
+    "described": "Наследуется: {value}",
+    "value-missing": "Выберите цвет."
   }
 }

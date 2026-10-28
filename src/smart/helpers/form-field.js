@@ -135,9 +135,13 @@ export const FormField = (Base) => class extends Base {
     if (this.sfValidityAnchor()) return null;
     const required = this.hasAttribute('required') && this.getAttribute('required') !== 'false';
     const value = this.sfFormValue?.();
+    const valueMissing = required && !this.disabled && (value === null || value === undefined || value === '');
+    // The word only when it is said: asked on every sync, a component without
+    // it warned «no word value-missing» on each optional field (simai.main,
+    // sf-button-group in property-view's choice field, 2026-10-28).
     return {
-      valueMissing: required && !this.disabled && (value === null || value === undefined || value === ''),
-      message: this.sfWord?.('value-missing') || 'value-missing',
+      valueMissing,
+      message: valueMissing ? (this.sfWord?.('value-missing') || 'value-missing') : '',
       anchor: null,
     };
   }
