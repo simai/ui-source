@@ -335,6 +335,13 @@
     "resize/default",
     "text-max-width/default"
   ],
+  "cl-site-header": [
+    "container/default",
+    "display/default",
+    "margin/default",
+    "position/default",
+    "width/default"
+  ],
   "cl-skeleton": [
     "animation/default",
     "display/default",
