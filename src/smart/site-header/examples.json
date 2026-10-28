@@ -42,7 +42,7 @@
     {
       "name": "documentation",
       "title": "Сайт документации: меню и поиск, шапка прилипает",
-      "children": "<a slot=\"brand\" href=\"/ru/\"><span>Docara</span></a><sf-menu orientation=\"horizontal\" collapse=\"none\" label=\"Основная навигация\" items='[{\"id\":\"guide\",\"label\":\"Руководство\",\"href\":\"/ru/guide/\",\"current\":true},{\"id\":\"reference\",\"label\":\"Справочник\",\"href\":\"/ru/reference/\"}]'></sf-menu><sf-button slot=\"tools\" size=\"1\" appearance=\"outline\" scheme=\"on-surface\" icon-start=\"search\">Поиск</sf-button><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "children": "<a slot=\"brand\" href=\"/ru/\"><span>Docara</span></a><nav aria-label=\"Основная навигация\"><a href=\"/ru/guide/\" aria-current=\"page\">Руководство</a> <a href=\"/ru/reference/\">Справочник</a></nav><sf-button slot=\"tools\" size=\"1\" appearance=\"outline\" scheme=\"on-surface\" icon-start=\"search\" text=\"Поиск\"></sf-button><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
       "settings": {
         "collapse": "xl",
         "sticky": true
