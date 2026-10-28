@@ -3004,6 +3004,69 @@
           "since": "2026-10-27"
         }
       ]
+    },
+    {
+      "component": "site-header",
+      "selector": "sf-site-header, .sf-site-header",
+      "variables": [
+        {
+          "name": "--sf-site-header-background",
+          "role": "background",
+          "summary": "The bar's fill.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-color",
+          "role": "color",
+          "summary": "The bar's ink.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-border-color",
+          "role": "border-color",
+          "summary": "The edge under the bar and under the open panel's heading.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-block-size",
+          "role": "min-block-size",
+          "summary": "The bar's height.",
+          "default": "calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1) + var(--sf-a1))",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-gap",
+          "role": "gap",
+          "summary": "The space between the brand, the navigation, the actions and the tools.",
+          "default": "var(--sf-space-2)",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-brand-size",
+          "role": "size",
+          "summary": "The height of the brand's picture.",
+          "default": "var(--sf-ui-1\\/2--control-height)",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-sheet-inline-size",
+          "role": "inline-size",
+          "summary": "The open side panel's width.",
+          "default": "min(90vw, var(--sf-g1))",
+          "state": "open",
+          "since": "2026-10-28"
+        },
+        {
+          "name": "--sf-site-header-z-index",
+          "role": "z-index",
+          "summary": "The sticky bar's place above the page, under every layer.",
+          "default": "var(--sf-z-index-5)",
+          "since": "2026-10-28"
+        }
+      ]
     }
   ]
 }
