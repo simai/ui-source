@@ -23,6 +23,15 @@
   const RAW = new Set(['script', 'style']);
   const XHTML = 'http://www.w3.org/1999/xhtml';
   const pageText = new WeakSet();
+  // Each page element is marked with its own number and its tag kept here: a
+  // component that forwards its data-* to the control it draws (sf-button)
+  // passed the mark on, and that control printed as a page node without
+  // data-sf-static -- adopted, the button drew a second one beside it
+  // (sf-site-header and sf-page-header examples, 2026-10-28). A node is the
+  // page's when it carries a mark given to an element of its own tag; a copy
+  // a component makes of a page node keeps both, a forwarded mark does not.
+  const pageTags = new Map();
+  const isPage = (node) => node.hasAttribute(PAGE) && pageTags.get(node.getAttribute(PAGE)) === node.localName;
   const originals = new Map();
   let host = null;
   let hosts = [];
@@ -83,7 +92,9 @@
       for (const node of el.childNodes) {
         if (node.nodeType === 3) pageText.add(node);
         if (node.nodeType !== 1 || island(node)) continue;
-        node.setAttribute(PAGE, '');
+        const id = String(pageTags.size + 1);
+        pageTags.set(id, node.localName);
+        node.setAttribute(PAGE, id);
         mark(node);
       }
     };
@@ -288,7 +299,7 @@
       }
       if (node.nodeType !== 1) continue;
       if (node.matches('script[data-sf-settings]')) continue;
-      if (node.hasAttribute(PAGE)) inner += holder(node, mode);
+      if (isPage(node)) inner += holder(node, mode);
       else if (custom) inner += picture(node, true, mode);
       else inner += picture(node, false, mode);
     }
@@ -312,7 +323,7 @@
     }
     const extra = [];
     if (hosts.includes(el) && mode.skeleton) extra.push(['data-sf-first-paint', 'skeleton'], ['aria-busy', 'true']);
-    return `${open(el, extra)}${inner}${close(el)}`.replaceAll(` ${PAGE}`, '');
+    return `${open(el, extra)}${inner}${close(el)}`.replace(/ data-sf-snap-page="\d+"/g, '');
   }
 
   // Ids the code made up are named after the example, so the snapshot is the
@@ -385,7 +396,7 @@
     skeletonParts.length = 0;
     const layout = host.querySelector(':scope > [data-sf-layout]');
     if (!layout) throw new Error(`${host.localName} has no layout box`);
-    const html = `${open(host)}${composed(layout, true)}${close(host)}`.replaceAll(` ${PAGE}`, '');
+    const html = `${open(host)}${composed(layout, true)}${close(host)}`.replace(/ data-sf-snap-page="\d+"/g, '');
     return {html: stableIds(html, prefix), skeletons: skeletonParts.slice()};
   }
 

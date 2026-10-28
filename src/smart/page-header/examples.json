@@ -47,7 +47,7 @@
     {
       "name": "path-and-action",
       "title": "Путь и главное действие",
-      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button>",
+      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button>",
       "settings": {
         "heading": "Каталог решений",
         "count": "448",
