@@ -13,6 +13,7 @@ import './effects.js';
 import './notify.js';
 import './sanitize.js';
 import {installReady} from './ready.js';
+import {installEarlyPort} from './early-port.js';
 import {holdUndefinedElements, installPendingTags} from './pending-tags.js';
 import {
   createPreloaderContent,
@@ -33,6 +34,9 @@ if (typeof window !== 'undefined') {
   const SF = window.SF;
   // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
   installReady(window);
+  // The ports declared on elements (data-sf-port islands): their first calls
+  // leave now, while the components' code is still on its way (stand 27).
+  installEarlyPort(window);
   if (!SF.loadRuntime) {
     let loading = null;
     const coreScript = () => [...document.scripts]
