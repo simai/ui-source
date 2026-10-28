@@ -21,8 +21,8 @@ $infix: sm;
            filling stays right whatever the gutter takes. */
         width: 100%;
         max-width: var(--sf-breakpoint-sm);
-        padding-inline-start: var(--sf-space-2);
-        padding-inline-end: var(--sf-space-2);
+        padding-inline-start: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-2)));
+        padding-inline-end: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-2)));
     }
 }
 }

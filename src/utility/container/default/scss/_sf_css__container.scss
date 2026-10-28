@@ -1,6 +1,16 @@
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
 @use 'sf_var__container' as *;
+
+// The inset a container takes: --sf-container-gutter when a product sets it
+// (on :root or any ancestor), else the step of the current width. It does
+// not inherit, so container-flush empties one container and a container
+// nested inside it keeps its own gutter.
+@property --sf-container--inset {
+    syntax: "*";
+    inherits: false;
+}
+
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -11,8 +21,8 @@
 // Adaptive container
 .container {
     width: 100%;
-    padding-inline-start: var(--sf-space-1);
-    padding-inline-end: var(--sf-space-1);
+    padding-inline-start: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-1)));
+    padding-inline-end: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-1)));
 }
 
 @each $container-key, $container-value in $container-array {
@@ -20,9 +30,15 @@
         .container {
             width: 100%;
             max-width: var(--sf-breakpoint-#{$container-key});
-            padding-inline-start: var(--sf-space-#{$container-value});
-            padding-inline-end: var(--sf-space-#{$container-value});
+            padding-inline-start: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-#{$container-value})));
+            padding-inline-end: var(--sf-container--inset, var(--sf-container-gutter, var(--sf-space-#{$container-value})));
         }
     }
+}
+
+// A container without a gutter: the inner one of a container nested in a
+// block or a full-width band, whose outer container already holds the edge.
+.container-flush {
+    --sf-container--inset: 0px;
 }
 }
