@@ -338,7 +338,13 @@ try {
 
     const cleared = await page.evaluate(async () => {
       const settle = () => new Promise((done) => setTimeout(done, 300));
-      const label = (host) => host.querySelector('button')?.textContent.trim() ?? null;
+      // The words alone: an icon's glyph name is text in the button too.
+      const label = (host) => {
+        const button = host.querySelector('button')?.cloneNode(true);
+        if (!button) return null;
+        button.querySelectorAll('sf-icon').forEach((icon) => icon.remove());
+        return button.textContent.trim();
+      };
       const admin = document.querySelector('#admin');
       await settle();
       const before = label(admin);
