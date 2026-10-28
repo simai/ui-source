@@ -34,6 +34,25 @@ export const COMPONENT_MANIFEST_KEYS = Object.freeze([
   'port', 'layer', 'implements', 'traits', 'words',
   'css-variables',
 ]);
+
+// What a bundle drops inside those keys (standard 1.4 moved the docs' words
+// into component.json): a key named here, at least two levels under a kept
+// key -- inside a named entry (settings.<name>.summary,
+// events.<verb>.carries.<field>.summary, actions.<name>.x-returns), never a
+// name itself (settings.description, a setting, stays) -- is dropped with
+// all it holds. The runtime reads none of them: under the kept keys it reads
+// type, values, default, default-from, optional, carries and the names it
+// holds, x-native, cancelable, dom, aliases, with and its names, emits,
+// timeout, retry, waits, concurrency, of and its names, form.value/submits/
+// disabled, host-states, presentation.skeleton.late and the names of
+// css-variables (element-manifest.js, host-port.js, the
+// assembly's link, definition and core, first-paint-page.js, the elements'
+// index.js). tests/shared-runtime.contract.test.mjs fails on code that reads
+// one of these keys and on a component.json that uses one as a member's name.
+export const COMPONENT_MANIFEST_DROP = Object.freeze([
+  '$comment', 'description', 'examples', 'summary',
+  'x-detail', 'x-markup', 'x-note', 'x-outcomes', 'x-returns', 'x-shape', 'x-summary',
+]);
 const CONTRACT = 'src/core/contracts/shared-runtime.v1.json';
 const read = (file) => readFileSync(path.join(root, file), 'utf8');
 
@@ -91,6 +110,7 @@ export function buildContract() {
     script: 'core/js/smart-base.js',
     core_hosted: coreHosted,
     component_manifest_keys: [...COMPONENT_MANIFEST_KEYS],
+    component_manifest_drop: [...COMPONENT_MANIFEST_DROP],
     modules: Object.fromEntries(Object.entries(modules).sort(([a], [b]) => (a < b ? -1 : 1))),
   };
 }
