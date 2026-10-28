@@ -166,11 +166,30 @@ class SfIcon extends IconElement {
     };
   }
 
+  // Classes someone else put on the glyph stay through a re-render: the
+  // template writes the whole class attribute, and Docara's icon runtime lost
+  // the face class it had set (sf-icon-complete), so a name outside the fast
+  // subset drew as broken ligatures (simai/docara#35). The glyph's classes
+  // that the last render did not write are carried into the next.
+  foreignGlyphClasses() {
+    const glyph = this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
+    if (!glyph) return "";
+    const written = new Set(String(this.__sfIconWrittenClass || "").split(/\s+/).filter(Boolean));
+    // The element's own family is never foreign, so a first paint printed
+    // before the element ran (its classes not yet recorded) hands over no
+    // stale size or weight.
+    const own = /^sf-icon(?:$|--)|^sf-icon-loaded$/;
+    return [...glyph.classList].filter((name) => !written.has(name) && !own.test(name)).join(" ");
+  }
+
   template() {
-    return renderIconTemplate({
+    const result = renderIconTemplate({
       ...this.templateContext(),
       ...this.templateData,
+      foreignClass: this.foreignGlyphClasses(),
     });
+    this.__sfIconWrittenClass = result.__sfIconClass;
+    return result;
   }
 }
 
