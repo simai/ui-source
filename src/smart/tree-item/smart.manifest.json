@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Tree Item",
   "summary": "One accessible node in a Smart Tree hierarchy.",
   "kind": "smart",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.range-slider",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
   "kind": "smart",

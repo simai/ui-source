@@ -1,0 +1,101 @@
+// The shared Smart runtime (core/js/runtime.js, core/js/smart-base.js beside
+// core.js): its contract is current, its modules hold no live bindings, Core
+// publishes the modules it runs for the runtime to take, and a bundle's ABI is
+// checked when it asks for a module.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {buildContract, exportsOf, COMPONENT_MANIFEST_KEYS} from '../scripts/shared-runtime-contract.mjs';
+import {readdirSync, existsSync} from 'node:fs';
+
+const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
+const contract = JSON.parse(read('src/core/contracts/shared-runtime.v1.json'));
+
+test('the shared runtime contract is current (node scripts/shared-runtime-contract.mjs --write)', () => {
+  assert.deepEqual(contract, buildContract());
+});
+
+test('no shared runtime module exports a live binding (export let / var / *)', () => {
+  // The runtime hands a bundle a frozen copy of each module's namespace
+  // (asModule): a `let` the module reassigns later would stay at its first
+  // value in every bundle.
+  for (const [id, module] of Object.entries(contract.modules)) {
+    if (!module.exports) continue;
+    const text = read(`src/${module.source}`);
+    assert.doesNotMatch(text, /^export\s+(let|var)\b/mu, `${id} (${module.source}) exports a let/var`);
+    assert.doesNotMatch(text, /^export\s+\*/mu, `${id} (${module.source}) re-exports *`);
+    assert.doesNotThrow(() => exportsOf(text, module.source));
+  }
+  assert.throws(() => exportsOf('export let late = 1;\n'), /live binding/u);
+  assert.throws(() => exportsOf("export * from './x.js';\n"), /export \*/u);
+});
+
+test('the element layer is shared, not carried by every Smart bundle', () => {
+  for (const id of ['element-manifest', 'aliases', 'alias-table', 'host-port', 'deprecations', 'page-actions', 'layer-stack', 'open-surface-mark', 'instance-path', 'smart-base', 'page-language', 'position', 'lit']) {
+    assert.ok(contract.modules[id], `the runtime hands out ${id}`);
+  }
+});
+
+test('Core publishes the modules it runs; the runtime hands those out and still stands alone', () => {
+  assert.deepEqual(contract.core_hosted, ['alias-table', 'aliases', 'deprecations', 'layer-stack', 'page-language', 'position']);
+  assert.match(read('src/core/js/index.js'), /^import '\.\/core-modules\.js';$/mu);
+  const runtime = read('src/core/js/runtime.js');
+  assert.match(runtime, /globalThis\.SF\?\.__internal\?\.coreModules\?\.\[id\] \?\? RUNTIME_MODULES\[id\]/u, 'Core\'s instance first, the runtime\'s own copy without Core');
+  assert.match(runtime, /get: \(\) => sharedModule\(id\)/u, 'read when a bundle asks, not when the runtime ran');
+  const entry = read('src/core/smart-base.js');
+  assert.match(entry, /SHARED_MODULES as RUNTIME_MODULES/u);
+  // A page, a test or a probe includes smart-base.js alone (no Core, or a Core
+  // that failed): the runtime must not wait for Core.
+  assert.doesNotMatch(entry, /coreModule\(|core-module-wait/u);
+});
+
+test('a bundle built for another runtime ABI is refused, loudly', () => {
+  assert.equal(contract.abi, Number(read('src/core/js/runtime.js').match(/RUNTIME_ABI = (\d+)/u)[1]));
+  const index = read('src/core/js/index.js');
+  assert.match(index, /SF\.runtimeModule = \(id, abi\) =>/u);
+  assert.match(index, /abi !== have/u);
+  assert.match(index, /console\.error\(error\)/u);
+  const entry = read('src/core/smart-base.js');
+  assert.match(entry, /SF\.__internal\.runtimeAbi = RUNTIME_ABI;/u);
+  assert.match(entry, /checkRuntimeAbi\(id, abi, RUNTIME_ABI\)/u);
+});
+
+test('Core preloads the runtime for a page with a Smart part, and loads it once even when the page includes it by hand', () => {
+  const index = read('src/core/js/index.js');
+  assert.match(index, /if \(runtimeScript\(\)\) return;/u);
+  assert.match(index, /link\.rel = 'preload';\n\s+link\.as = 'script';/u, 'a page with a Smart part preloads the runtime with Core');
+  assert.doesNotMatch(index, /smartPartWaiting\(\)\) SF\.loadRuntime\(\)/u, 'preloaded, not run early: the first paint must be seen');
+});
+
+test('a Smart bundle embeds every key of its component.json the runtime reads', () => {
+  // What the code takes off a component manifest, read where it is taken:
+  // `manifest.<key>`, `manifest['<key>']`, `manifest?.<key>` in the runtime and
+  // the elements, `source.<key>` in the assembly's interface of a part.
+  const files = ['src/core/js/element-manifest.js', 'src/core/js/host-port.js', 'src/core/js/composition/manifest-host.mjs', 'scripts/first-paint-page.js'];
+  for (const folder of readdirSync(new URL('../src/smart/', import.meta.url))) {
+    for (const file of [`src/smart/${folder}/index.js`]) if (existsSync(new URL(`../${file}`, import.meta.url))) files.push(file);
+  }
+  const read_ = new Set();
+  const take = (text, name) => {
+    for (const m of text.matchAll(new RegExp(`\\b${name}\\??\\.([A-Za-z_$][\\w$]*)`, 'gu'))) read_.add(m[1]);
+    for (const m of text.matchAll(new RegExp(`\\b${name}\\??\\.?\\[['"]([^'"]+)['"]\\]`, 'gu'))) read_.add(m[1]);
+  };
+  for (const file of files) take(read(file).replace(/^\s*\/\/.*$/gmu, ''), 'manifest');
+  const definition = read('src/core/js/assembly/definition.mjs');
+  const normalise = definition.slice(definition.indexOf('export function normaliseInterface'), definition.indexOf('export const interfaces'));
+  take(normalise, 'source');
+  for (const part of definition.match(/const PARTS = \[([^\]]*)\]/u)[1].matchAll(/'([^']+)'/gu)) read_.add(part[1]);
+  const keys = new Set();
+  for (const folder of readdirSync(new URL('../src/smart/', import.meta.url))) {
+    const file = `src/smart/${folder}/component.json`;
+    if (existsSync(new URL(`../${file}`, import.meta.url))) for (const key of Object.keys(JSON.parse(read(file)))) keys.add(key);
+  }
+  // Only the names that are keys of some component.json are a manifest's reads
+  // (manifest.js, a file name in a comment, is not).
+  const missing = [...read_].filter((key) => keys.has(key) && !COMPONENT_MANIFEST_KEYS.includes(key));
+  assert.deepEqual(missing, [], 'add them to COMPONENT_MANIFEST_KEYS (scripts/shared-runtime-contract.mjs) and rewrite the contract');
+  assert.deepEqual(contract.component_manifest_keys, [...COMPONENT_MANIFEST_KEYS]);
+  for (const kept of ['$comment', 'x-registry', 'x-rule', 'x-decisions', 'relations', 'aliases', 'examples']) {
+    assert.ok(!COMPONENT_MANIFEST_KEYS.includes(kept), `${kept} is the build's and the docs', not the runtime's`);
+  }
+});

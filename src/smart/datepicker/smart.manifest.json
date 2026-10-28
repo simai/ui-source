@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.datepicker",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Datepicker",
   "summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
   "kind": "composite",

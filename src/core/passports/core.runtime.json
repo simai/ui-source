@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -63,6 +63,7 @@
     "src/core/contracts/public-js-api.json",
     "src/core/contracts/public-variables.v1.json",
     "src/core/contracts/public-variables.v1.schema.json",
+    "src/core/contracts/shared-runtime.v1.json",
     "src/core/contracts/smart-rule-forwards.v1.json",
     "src/core/contracts/third-party-notices.v1.json",
     "src/core/contracts/unit-change-report.v1.schema.json",
@@ -100,6 +101,7 @@
     "src/core/js/composition/sortable-inserter.mjs",
     "src/core/js/composition/sortable.mjs",
     "src/core/js/control-spacing.js",
+    "src/core/js/core-modules.js",
     "src/core/js/deprecations.js",
     "src/core/js/effects.js",
     "src/core/js/element-manifest.js",
@@ -150,7 +152,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "164e63f4adb61bf3cca02909599602153b4ae52fa42f030ac0a5cb794e44daf2",
+  "content_sha256": "421ed600c85baa5f5dc95beaf045a8f29b41c829aeca3f212a2078622499a377",
   "dependencies": [
     {
       "id": "core.styles",

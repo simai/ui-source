@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-group",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Button group",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",

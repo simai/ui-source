@@ -1,0 +1,202 @@
+{
+  "schema": "simai.framework.shared-runtime",
+  "version": 1,
+  "abi": 1,
+  "script": "core/js/smart-base.js",
+  "core_hosted": [
+    "alias-table",
+    "aliases",
+    "deprecations",
+    "layer-stack",
+    "page-language",
+    "position"
+  ],
+  "component_manifest_keys": [
+    "id",
+    "tag",
+    "version",
+    "kind",
+    "settings",
+    "values",
+    "events",
+    "actions",
+    "form",
+    "presentation",
+    "host-states",
+    "port",
+    "layer",
+    "implements",
+    "traits",
+    "words",
+    "css-variables"
+  ],
+  "modules": {
+    "alias-table": {
+      "source": "core/js/alias-table.js",
+      "exports": [
+        "ALIAS_KINDS",
+        "ALIAS_MODES",
+        "aliasExpired",
+        "propertyOf",
+        "readAliasTable"
+      ]
+    },
+    "aliases": {
+      "source": "core/js/aliases.js",
+      "exports": [
+        "aliasExpired",
+        "aliasesOf",
+        "aliasesStrict",
+        "dispatchAliased",
+        "installAliases",
+        "readAliasTable",
+        "setAliasClock",
+        "uninstallAliases"
+      ]
+    },
+    "control-spacing": {
+      "source": "core/js/control-spacing.js",
+      "exports": [
+        "resolveControlSpacing"
+      ]
+    },
+    "deprecations": {
+      "source": "core/js/deprecations.js",
+      "exports": [
+        "clearDeprecations",
+        "listDeprecations",
+        "noteDeprecated"
+      ]
+    },
+    "element-manifest": {
+      "source": "core/js/element-manifest.js",
+      "exports": [
+        "camelName",
+        "elementFromManifest",
+        "eventName",
+        "propsFromManifest",
+        "readManifest",
+        "toOutcome"
+      ]
+    },
+    "host-port": {
+      "source": "core/js/host-port.js",
+      "exports": [
+        "connectPort",
+        "installPortAction",
+        "portFromParams",
+        "portIdOf",
+        "portOf"
+      ]
+    },
+    "instance-path": {
+      "source": "core/js/instance-path.js",
+      "exports": [
+        "instancePath",
+        "partId",
+        "pathIsSettled"
+      ]
+    },
+    "layer-stack": {
+      "source": "core/js/layer-stack.js",
+      "exports": [
+        "carryLayerOrigin",
+        "closeLayer",
+        "hasLayer",
+        "hasLayerAbove",
+        "isOutsideTopLayer",
+        "isTopLayer",
+        "landmarksAround",
+        "layerIndex",
+        "layerZIndex",
+        "layerZIndexAt",
+        "openLayer",
+        "openLayers",
+        "raiseLayer",
+        "returnLayerFocus",
+        "topLayer",
+        "tryFocus",
+        "updateLayer"
+      ]
+    },
+    "lit": {
+      "source": "lit",
+      "exports": null
+    },
+    "lit/directive-helpers.js": {
+      "source": "lit/directive-helpers.js",
+      "exports": null
+    },
+    "lit/directive.js": {
+      "source": "lit/directive.js",
+      "exports": null
+    },
+    "lit/directives/keyed.js": {
+      "source": "lit/directives/keyed.js",
+      "exports": null
+    },
+    "lit/directives/ref.js": {
+      "source": "lit/directives/ref.js",
+      "exports": null
+    },
+    "lit/directives/repeat.js": {
+      "source": "lit/directives/repeat.js",
+      "exports": null
+    },
+    "lit/directives/unsafe-html.js": {
+      "source": "lit/directives/unsafe-html.js",
+      "exports": null
+    },
+    "open-surface-mark": {
+      "source": "core/js/open-surface-mark.js",
+      "exports": [
+        "OPEN_SURFACE_MARK",
+        "holdOpenSurfaceMark",
+        "isOpenSurfaceMarked",
+        "isTopOpenSurface"
+      ]
+    },
+    "page-actions": {
+      "source": "core/js/page-actions.js",
+      "exports": [
+        "bindPageActions",
+        "readPageAction",
+        "runPageAction"
+      ]
+    },
+    "page-language": {
+      "source": "core/js/page-language.js",
+      "exports": [
+        "followLanguage",
+        "isRussianPage",
+        "language",
+        "pageLanguage",
+        "pageLocale",
+        "pageText",
+        "pageWord"
+      ]
+    },
+    "position": {
+      "source": "core/js/position.js",
+      "exports": [
+        "anchor",
+        "default",
+        "resolveLength"
+      ]
+    },
+    "smart-base": {
+      "source": "core/js/smart-base.js",
+      "exports": [
+        "applySmartProps",
+        "createSmartElement",
+        "default",
+        "normalizeEnum",
+        "parseJsonAttribute",
+        "smartElement",
+        "toAttributeName",
+        "toBoolean",
+        "toNumber"
+      ]
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -287,6 +287,7 @@
     "css-variables: six public variables of the surface (background, colour, radius, shadow, max width, max height) read by default.css with the old internal --sf-popover--max-* and the elevation tokens as fallbacks (§6).",
     "side-effects: none. The surface is drawn in place, absolutely positioned against the host, not at the end of body; it registers as a surface layer of the one stack (core open-surface-mark), so Escape and an outside press reach it only while it is the top layer.",
     "dismissing: reasons escape (Escape), outside (a press outside), close (the trigger pressed again), api (a script); dismissible=false removes escape and outside.",
-    "docs: the folder has no docs.md yet (the page lives in ui-doc); a leftover for the docs fold of §16 item 30."
+    "docs: the folder has no docs.md yet (the page lives in ui-doc); a leftover for the docs fold of §16 item 30.",
+    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ]
 }

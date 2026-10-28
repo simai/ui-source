@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.color",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",

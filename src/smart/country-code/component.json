@@ -2,7 +2,7 @@
   "$comment": "The source of sf-country-code's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/country-code (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/country-code/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.country-code",
   "tag": "sf-country-code",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -275,6 +275,7 @@
     "version: 1.1.0 -- the setting form leaves for the host attribute behind a dated alias row; a minor while the alias holds (§4.10)",
     "form: the host is the form control through ElementInternals (§17.1); it submits the tel text as the person sees it, required asks for digits after the dial code",
     "host-states: none -- the open list and the disabled look are classes the class script writes on its own root (shared with the class component); moving them to host states is left for the class script",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ]
 }

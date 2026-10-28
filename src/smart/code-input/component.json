@@ -2,7 +2,7 @@
   "$comment": "The source of sf-code-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/code-input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.code-input",
   "tag": "sf-code-input",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -275,7 +275,8 @@
     "form.validity: value-missing and pattern-mismatch (an incomplete code) from the input, and custom-error (§17.2).",
     "form: the host submits the code through ElementInternals; the input carries no name (§17.1 item 6).",
     "ids: the label, position line and message ids come from the field's instance path (field.base), not the module counter it had (§7.1.1, simai/ui-source#41).",
-    "words: digit, character and group are lang runtime words read with sfWord; CODE_INPUT_TEXT stays in code.mjs for its unit tests only."
+    "words: digit, character and group are lang runtime words read with sfWord; CODE_INPUT_TEXT stays in code.mjs for its unit tests only.",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-rule": {
     "$comment": [

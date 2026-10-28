@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu",
   "tag": "sf-menu",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -366,7 +366,8 @@
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus a row, the documentation tree and the menu drawn as a button; probe.json drives Tab, Enter, Space and Escape in a row and in a column (gate 16).",
     "css-variables: the nine public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
     "layer: none declared. A row's open panel and the button's panel hold the shared open-surface mark (core/js/open-surface-mark), so a drawer or modal behind stands back on Escape; they are placed by SF.Position in place, not moved to the end of body (side-effects: none).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-rule": {
     "$comment": [

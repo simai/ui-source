@@ -1,5 +1,6 @@
 import './public-path';
 import './internal.js';
+import './core-modules.js';
 import './aliases.js';
 import './rule';
 import './mask';
@@ -36,6 +37,8 @@ if (typeof window !== 'undefined') {
     let loading = null;
     const coreScript = () => [...document.scripts]
       .find((script) => /\/core\/js\/core(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+    const runtimeScript = () => [...document.scripts]
+      .find((script) => /\/core\/js\/smart-base(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
     SF.loadRuntime = () => {
       if (loading) return loading;
       if (SF.__internal.runtimeModules) {
@@ -47,6 +50,10 @@ if (typeof window !== 'undefined') {
             SF.__internal.runtimeSettled = true;
             resolve(modules);
           };
+          // Included by hand (a <script> of the runtime on the page, run or
+          // not yet): it calls runtimeArrived when it runs. A second copy
+          // would be a second set of shared modules.
+          if (runtimeScript()) return;
           const core = coreScript();
           if (!core) return; // included by hand: it calls runtimeArrived when it runs
           const script = document.createElement('script');
@@ -60,10 +67,46 @@ if (typeof window !== 'undefined') {
       SF.__internal.runtimeLoading = loading;
       return loading;
     };
-    SF.runtimeModule = (id) => SF.loadRuntime().then((modules) => {
+    // A bundle asks with the runtime ABI it was built against (ui-builder
+    // libs/sharedRuntime.js); one built against another ABI is refused, loudly
+    // (core/js/runtime.js checkRuntimeAbi), not handed modules it does not know.
+    SF.runtimeModule = (id, abi) => SF.loadRuntime().then((modules) => {
+      const have = SF.__internal.runtimeAbi;
+      if (abi !== undefined && abi !== null && abi !== have) {
+        const error = new Error(`SF runtime: a bundle built for runtime ABI ${abi} asks for "${id}"; this page's runtime is ABI ${have ?? 'unknown'}. Rebuild the package against the SIMAI Framework release the page runs.`);
+        console.error(error);
+        throw error;
+      }
       if (!modules[id]) throw new Error(`SF runtime: no shared module "${id}"`);
       return modules[id];
     });
+    // A page that already holds a Smart part (printed by the server, waiting
+    // for its definition) preloads the runtime now, with Core, rather than
+    // when the Loader's own chunk arrives and queues the part (stand 25): the
+    // bytes are fetched early, the script runs when the Loader asks for it.
+    // Running it early as well let the bundles define their elements before
+    // the page's sheets arrived, and the first paint went unseen (first-paint
+    // gate 24, admin-head and document-browser at 390 and 1280).
+    const smartPartWaiting = () => {
+      for (const element of document.querySelectorAll(':not(:defined)')) {
+        if (element.localName.startsWith('sf-')) return true;
+      }
+      return false;
+    };
+    const startEarly = () => {
+      if (SF.__internal.runtimeModules || runtimeScript() || !smartPartWaiting()) return;
+      const core = coreScript();
+      if (!core) return;
+      const href = core.src.replace(/core(\.min)?\.js(?=[?#]|$)/u, (match, min) => `smart-base${min || ''}.js`);
+      if ([...document.querySelectorAll('link[rel="preload"]')].some((link) => link.href === href)) return;
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'script';
+      link.href = href;
+      document.head.append(link);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEarly, {once: true});
+    else startEarly();
   }
 }
 

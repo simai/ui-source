@@ -2,7 +2,7 @@
   "$comment": "The source of sf-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.color",
   "tag": "sf-color",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -222,7 +222,8 @@
     "shown: renamed effective-value; the shim cannot serve the old name, because shown is the base value (§4.1) on every element, so the row is documentary (shim none)",
     "actions.clear answers an outcome (§4.4): applied, or refused with reason unchanged when there was nothing to clear; setValue stays a method of the class outside the interface (a person-like write that sends input and change)",
     "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals",
-    "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+    "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.2.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-rule": {
     "$comment": [

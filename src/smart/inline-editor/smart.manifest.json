@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code and links -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",

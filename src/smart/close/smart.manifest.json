@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.close",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Close",
   "summary": "The decorative cross glyph of a close action, sized on the control ladder. It is aria-hidden and never focusable; the containing native button owns the action and its name.",
   "kind": "smart",

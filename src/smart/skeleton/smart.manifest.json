@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.skeleton",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Skeleton",
   "summary": "Decorative loading placeholder that reserves source-backed content geometry with semantic tokens and reduced-motion support.",
   "kind": "smart",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-accordion's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/accordion (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.accordion",
   "tag": "sf-accordion",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "accordion",
   "settings": {
@@ -295,7 +295,8 @@
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus <details> in the markup, plus-minus markers and one plain section; probe.json drives the arrows, Home, End, Enter, Space and Tab (gate 16).",
     "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
     "side-effects: none.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-rule": {
     "$comment": [

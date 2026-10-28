@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Composition overlay",
   "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML. A framed mode draws the same chrome over a same-origin iframe fed a flat node list, with plain-string inline editing.",
   "kind": "smart",
