@@ -199,6 +199,27 @@
       "summary": "A component's word in the language of a node, with the page's registered words first."
     },
     {
+      "name": "SF.EarlyPort",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Ports declared on elements (a <script type=\"application/json\" data-sf-port> island: port, version, url, capabilities, first {intent, payload}): Core sends the first call when it runs, before any component's code, and hands the element the port with connect-port when it is defined; the port's first matching call takes that answer (one request). register(id, adapter) is the page's port registry for an island without a url; start and take are the adoption contract for a product's own adapter (one early answer per port, taken once, matched by port, version, intent and canonical payload, younger than 10 s). docs/developer/early-port.md.",
+      "members": [
+        "start",
+        "take",
+        "register",
+        "scan",
+        "declareIn",
+        "waiting",
+        "firstTags",
+        "preferTags",
+        "adapterOf",
+        "canonical",
+        "callKey",
+        "log"
+      ]
+    },
+    {
       "name": "SF.ready",
       "status": "public",
       "kind": "function",

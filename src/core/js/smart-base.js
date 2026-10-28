@@ -105,11 +105,12 @@ function pendingDefinitions() {
   return globalThis[DEFINITIONS].queue;
 }
 
-// Defines what is queued, in the order the bundles ran.
-function defineQueued() {
+// Defines what is queued, in the order the bundles ran; `only`, when given,
+// defines those tags alone and leaves the rest queued.
+function defineQueued(only = null) {
   const state = globalThis[DEFINITIONS];
-  const batch = [...state.queue];
-  state.queue.clear();
+  const batch = [...state.queue].filter(([tagName]) => !only || only.has(tagName));
+  batch.forEach(([tagName]) => state.queue.delete(tagName));
   batch.forEach(([tagName, constructor]) => {
     if (customElements.get(tagName)) return;
     try {
@@ -120,9 +121,57 @@ function defineQueued() {
   });
 }
 
+// The parts of an element holding a declared port (standard §4.9, §7.3; stand
+// 27): the element, the parts inside it and their relations (core
+// early-port.js, SF.EarlyPort.firstTags). Defined in a batch of their own,
+// before the rest of the page's: the element is handed its port and draws its
+// first answer in that task, and the other definitions follow in the next
+// frame instead of standing in front of it.
+function firstTags() {
+  try {
+    const tags = globalThis.SF?.EarlyPort?.firstTags?.();
+    return tags instanceof Set ? tags : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
 function flushDefinitions() {
-  globalThis[DEFINITIONS].scheduled = false;
+  const state = globalThis[DEFINITIONS];
+  state.scheduled = false;
+  const first = firstTags();
+  if (first.size) {
+    const queued = [...state.queue.keys()];
+    const mine = new Set(queued.filter((tagName) => first.has(tagName)));
+    if (mine.size && mine.size < queued.length) {
+      defineQueued(mine);
+      scheduleFlush();
+      return;
+    }
+  }
   defineQueued();
+}
+
+// A frame, or a short timer when none comes (an iframe out of view); a timer
+// in a hidden tab, which has no frames.
+function scheduleFlush() {
+  const state = globalThis[DEFINITIONS];
+  if (state.scheduled) return;
+  state.scheduled = true;
+  if (document.hidden) {
+    setTimeout(flushDefinitions, 0);
+    return;
+  }
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    cancelAnimationFrame(frame);
+    flushDefinitions();
+  };
+  const frame = requestAnimationFrame(run);
+  const timer = setTimeout(run, 100);
 }
 
 function queueDefinition(tagName, constructor) {
@@ -138,24 +187,7 @@ function queueDefinition(tagName, constructor) {
     return;
   }
   pendingDefinitions().set(tagName, constructor);
-  const state = globalThis[DEFINITIONS];
-  if (state.scheduled) return;
-  state.scheduled = true;
-  if (document.hidden) {
-    setTimeout(flushDefinitions, 0);
-    return;
-  }
-  // A frame, or a short timer when none comes (an iframe out of view).
-  let done = false;
-  const run = () => {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    cancelAnimationFrame(frame);
-    flushDefinitions();
-  };
-  const frame = requestAnimationFrame(run);
-  const timer = setTimeout(run, 100);
+  scheduleFlush();
 }
 
 function smartTagName(type) {

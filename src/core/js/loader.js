@@ -2126,6 +2126,12 @@ SFLoaderPlugin.prototype.scanCustomElements = function (
       return;
     }
 
+    // An element added later with a declared port (§4.9): its first call
+    // leaves now, before its code is asked for.
+    if (tagName.startsWith('sf-') && !customElements.get(tagName)) {
+      window.SF?.EarlyPort?.declareIn?.(el);
+    }
+
     const componentName = tagRules[tagName];
     if (componentName === 'cl-icon') {
       iconItemCount += this.trackIconElement(el);
@@ -4046,7 +4052,19 @@ SFLoaderPlugin.prototype.getLoader = async function (
         rest.push(mod);
       }
     });
-    PluginList = [...priorityFirst, ...rest];
+    // The parts of an element holding a declared port (§4.9, §7.3; stand 27)
+    // come right after the base utilities: its rule, the rules of the parts
+    // inside it and their relations, relations first. The list is asked for
+    // and defined before the menu, the header and the inputs.
+    const portFirst = this.portFirstModules();
+    if (portFirst.length) {
+      const wanted = new Set(rest);
+      const first = portFirst.filter((mod) => wanted.has(mod));
+      const firstSet = new Set(first);
+      PluginList = [...priorityFirst, ...first, ...rest.filter((mod) => !firstSet.has(mod))];
+    } else {
+      PluginList = [...priorityFirst, ...rest];
+    }
   }
 
   const deferredModules = [];
@@ -4174,6 +4192,46 @@ SFLoaderPlugin.prototype.getLoader = async function (
   }
 
   return true;
+};
+
+// The rules an element holding a declared port needs (SF.EarlyPort,
+// core/js/early-port.js): its own, those of the undefined parts inside it, and
+// their relations, a relation before the rule naming it. Their tags are handed
+// back to SF.EarlyPort, so the Smart base defines them in a batch of their own.
+SFLoaderPlugin.prototype.portFirstModules = function () {
+  const early = window.SF?.EarlyPort;
+  const elements = early?.waiting?.() ?? [];
+  if (!elements.length) return [];
+  const ordered = [];
+  const seen = new Set();
+  const visit = (name) => {
+    if (!name || seen.has(name)) return;
+    seen.add(name);
+    const rule = this.findPlugins?.[name];
+    const relations = [
+      ...(this.relationPlugins?.[name] || []),
+      ...(Array.isArray(rule?.relation) ? rule.relation : [])
+          .filter((named) => named && named.lazy !== true)
+          .map((named) => (typeof named === 'string' ? named : named.name)),
+    ];
+    relations.forEach(visit);
+    ordered.push(name);
+  };
+  elements.forEach((element) => {
+    visit(this.getSmartElementRuleName(element));
+    element.querySelectorAll?.('*').forEach((inner) => {
+      if (inner.localName?.startsWith('sf-') && !customElements.get(inner.localName)) {
+        visit(this.getSmartElementRuleName(inner));
+      }
+    });
+  });
+  const tags = [];
+  ordered.forEach((name) => {
+    const rule = this.findPlugins?.[name];
+    if (Array.isArray(rule?.tags)) tags.push(...rule.tags.map((tag) => String(tag).trim().toLowerCase()).filter((tag) => tag.startsWith('sf-')));
+  });
+  early.preferTags?.(tags);
+  return ordered;
 };
 
 SFLoaderPlugin.prototype.hashCode = function (s) {
