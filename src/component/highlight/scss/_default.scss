@@ -35,7 +35,8 @@
 
       &-wrap {
         padding: 0;
-        height: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
 
         > .sf-scrollbar__viewport:not([class*='p-']) {
           padding: var(--sf-space-1);
@@ -50,9 +51,20 @@
     border-block-end: var(--sf-px) solid var(--sf-outline-variant);
   }
 
+  /* The block is a column: the head, then the code taking the rest. The code
+     was height: 100%, which a block with a definite height -- a grid item
+     stretched to its row -- resolved against the whole block, head included,
+     so the last lines were clipped (ui-effects site, a code block in a grid).
+     A block given a height still scrolls its code inside. */
+  .sf-highlight:has(> .sf-highlight__wrap, > .sf--highlight-wrap) {
+    display: flex;
+    flex-direction: column;
+  }
+
   .sf-highlight__wrap {
     min-width: 0;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 0;
   }
 
