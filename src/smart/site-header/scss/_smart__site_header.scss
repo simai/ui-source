@@ -77,9 +77,13 @@
 .sf-site-header-panel-head,
 .sf-site-header-scrim,
 .sf-site-header-sheet,
-.sf-site-header-menu-button {
+.sf-site-header-menu-button > button {
   display: none;
 }
+
+/* The menu button's host is sf-icon-button, display: contents written on the
+   element itself: a display on the host is overruled, so the native button
+   inside is what is shown and hidden. */
 
 .sf-site-header-nav {
   display: flex;
@@ -101,8 +105,9 @@
    scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
    which lifts the whole header to the layer's z-index while it is open. */
 @mixin collapsed {
-  .sf-site-header-menu-button {
-    display: contents;
+  /* flex, as the icon button's own utility draws it. */
+  .sf-site-header-menu-button > button {
+    display: flex;
   }
 
   .sf-site-header-tools {
