@@ -45,6 +45,8 @@ const PHASE_A = [
   'color', 'switch', 'page-header', 'menu', 'inline-editor', 'sortable', 'copy-button', 'code-input', 'radio', 'checkbox',
   'accordion', 'resizer', 'tabs', 'icon', 'gallery', 'steps', 'profile-picker', 'range-slider', 'theme-generator',
   'datepicker', 'tree',
+  // Made in the 1.4 form from the start (2026-10-28).
+  'site-header',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

@@ -1,0 +1,350 @@
+{
+  "$comment": "The source of sf-site-header's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
+  "id": "smart.site-header",
+  "tag": "sf-site-header",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "header",
+  "settings": {
+    "collapse": {
+      "type": "enum",
+      "values": [
+        "none",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "always"
+      ],
+      "default": "lg",
+      "summary": "Below this Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A media rule, so the first paint is right without the script"
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The bar stays at the top of the window while the page scrolls"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1",
+      "summary": "The ladder rung of the bar's controls: the bar's height follows it, and the menu and close buttons take it. Slotted controls are given the same size by the page"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The side panel's heading and accessible name; «Навигация» / «Navigation» in the page language when not set"
+    },
+    "menu-label": {
+      "type": "string",
+      "default-from": "runtime.menu-label",
+      "summary": "The menu button's name; «Открыть меню» / «Open menu» in the page language when not set"
+    },
+    "close-label": {
+      "type": "string",
+      "default-from": "runtime.close-label",
+      "summary": "The panel's close button's name; «Закрыть меню» / «Close menu» in the page language when not set"
+    }
+  },
+  "values": {},
+  "events": {
+    "open": {
+      "carries": {},
+      "cancelable": true,
+      "summary": "The side panel is about to open: a request a page may cancel"
+    },
+    "opened": {
+      "carries": {},
+      "summary": "The side panel opened; a page that fills the sheet slot late does it here"
+    },
+    "close": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "cancelable": true,
+      "summary": "The side panel is about to close, and why: its close button, Escape, a press on the scrim, or the action (a link chosen in the panel and a window widened past the breakpoint say api)"
+    },
+    "closed": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "summary": "The side panel closed, and why"
+    }
+  },
+  "actions": {
+    "open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the side panel; refused while the bar is not collapsed, or when a page cancels sf-site-header-open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Closes the side panel; refused when it is closed already or a page cancels sf-site-header-close",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the side panel when it is closed and closes it when it is open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "slots": {
+    "brand": {},
+    "nav": {
+      "default": true
+    },
+    "actions": {},
+    "tools": {},
+    "sheet": {}
+  },
+  "layer": {
+    "kind": "panel",
+    "locks-page": true,
+    "traps-focus": true
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The element draws a <header>, the page's banner landmark when it stands outside article, aside, main, nav and section. The navigation landmark is the page's own <nav aria-label> in the nav slot. The menu button is the native button of the sf-icon-button it draws, with aria-haspopup dialog, aria-controls and aria-expanded; the open panel is a dialog named by its heading.",
+    "role": "banner",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-open": "boolean",
+    "data-collapsed": "boolean"
+  },
+  "css-variables": {
+    "--sf-site-header-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-site-header-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-site-header-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-site-header-block-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-site-header-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-site-header-brand-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-site-header-sheet-inline-size": {
+      "type": "length",
+      "state": "open"
+    },
+    "--sf-site-header-z-index": {
+      "type": "number",
+      "state": "default"
+    }
+  },
+  "x-summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
+  "x-source": {
+    "package": "framework",
+    "folder": "site-header",
+    "brief": "simai/ui-control site-header design brief, 2026-10-28 (owner approved one shared site header; dispatcher decisions: name sf-site-header, sticky off, collapse lg, no footer, no product switcher)"
+  },
+  "x-words": [
+    "label",
+    "menu-label",
+    "close-label"
+  ],
+  "x-decisions": [
+    "name: sf-site-header (dispatcher, owner-delegated, 2026-10-28). A leaf with slots: its content is the page's, drawn with Framework components (sf-menu, sf-button-group theme-switch, sf-color, sf-button), so it owns no bus and no rules.",
+    "layer: kind panel, locks-page, traps-focus (§19.1), registered in the shared layer stack of core/js/layer-stack.js the way sf-drawer registers -- openLayer with lockPage, root, focusIn, onEscape, onTab and place; closeLayer, then returnLayerFocus. No overlay system of its own: the stack orders it, hands it Escape and Tab only while it is the top layer, holds the one page lock and gives focus back.",
+    "sheet: the panel is the header's own element, not a portal and not an sf-drawer. Wide, the panel is display: contents, so the nav and the actions stand in the row; collapsed and closed it is not shown; collapsed and open it is a fixed side panel at the inline start with a scrim. The page's nav and actions nodes are placed once and never move or get copied (§4.5): one nav in the page, its listeners and state kept. sf-drawer was the other option; it collects its children as content, so the nav would have had to move between the bar and the drawer on every width change.",
+    "collapse: a ladder step, not a length, so the switch is one media rule per step in the sheet: the first paint is right without the script and nothing is measured. A measured auto mode was left out: it decides after layout and would move the first paint (gate 24).",
+    "reason: the close event keeps §19.3's closed list. A link chosen in the panel and a window widened past the breakpoint close it with api; the brief's navigate and resize would be vocabulary additions, not made here.",
+    "values: none. open is the host state data-open (as sf-help-mark), not a value: a value open would collide with the action open.",
+    "nav slot: the default slot. Children without a slot attribute are the navigation: a <nav aria-label> with a list of links, or sf-menu orientation=horizontal collapse=none, which the header turns vertical while the bar is collapsed (its public orientation setting, never its look).",
+    "geometry (docs/foundation-composition-geometry.md): the bar is the size's control height plus a space-1 inset above and below plus the 1px region edge; the brand mark is the size 1/2 control height; gutters are the .container's, so a product's --sf-container-gutter reaches the bar; every length is a token.",
+    "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one, so the bar's height a page reads is the internal --sf-site-header--block-size the sheet computes.",
+    "words (§11): label, menu-label and close-label default to the language files' runtime words."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive",
+      "navigation",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "site-header",
+      "header",
+      "navigation",
+      "banner"
+    ],
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "fetching the site's navigation",
+        "keeping the theme choice",
+        "styling a site's own header"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-site-header as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+      "do_not": [
+        "Do not draw a header of your own on a SIMAI site",
+        "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",
+        "Do not put a second <nav> around the nav slot; the page's own <nav aria-label> is the landmark"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-site-header><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-site-header>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches the brand, the navigation, the actions and the tools in order",
+        "Enter or Space on the menu button opens the side panel",
+        "Escape closes the side panel and gives focus back to the menu button"
+      ],
+      "focus": "The open panel takes focus (the current page's link, else its first link, else its close button), keeps Tab inside while it is the top layer and gives focus back to the menu button when it closes."
+    }
+  }
+}

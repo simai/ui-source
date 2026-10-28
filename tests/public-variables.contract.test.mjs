@@ -50,6 +50,8 @@ const FOLDERS = {
   'profile-picker': 'smart/profile-picker',
   // The editors and screens, with their move to standard 1.3.8 (2026-10-27).
   'page-header': 'smart/page-header',
+  // The top bar of a SIMAI site (2026-10-28): a sheet of its own.
+  'site-header': 'smart/site-header',
   // sf-list-item draws with the class sheet of the dropdown's rows.
   'list-item': 'dropdown',
   // sf-tree draws its rows with the tree and tree-item class sheets.

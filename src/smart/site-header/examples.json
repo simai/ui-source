@@ -1,0 +1,283 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Бренд, разделы и тема",
+      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a> <a href=\"/effects/\">Эффекты</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "settings": {
+        "collapse": "lg",
+        "size": "1"
+      },
+      "expect": {
+        "collapse": "lg",
+        "sticky": false,
+        "size": "1"
+      },
+      "studio": {
+        "title": "site header reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "catalogue",
+      "title": "Каталог эффектов: цвет и тема",
+      "children": "<a slot=\"brand\" href=\"/\"><span>Фоновые эффекты</span></a><nav aria-label=\"Разделы\"><a href=\"https://simai.io/\">simai.io</a> <a href=\"/\" aria-current=\"page\">Галерея</a></nav><a slot=\"actions\" href=\"https://github.com/simai/ui-effects\">GitHub</a><sf-color slot=\"tools\" size=\"1/2\" appearance=\"plain\" clearable label=\"Основной цвет сайта\"></sf-color><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "settings": {
+        "size": "1/2"
+      },
+      "expect": {
+        "size": "1/2"
+      }
+    },
+    {
+      "name": "documentation",
+      "title": "Сайт документации: меню и поиск, шапка прилипает",
+      "children": "<a slot=\"brand\" href=\"/ru/\"><span>Docara</span></a><sf-menu orientation=\"horizontal\" collapse=\"none\" label=\"Основная навигация\" items='[{\"id\":\"guide\",\"label\":\"Руководство\",\"href\":\"/ru/guide/\",\"current\":true},{\"id\":\"reference\",\"label\":\"Справочник\",\"href\":\"/ru/reference/\"}]'></sf-menu><sf-button slot=\"tools\" size=\"1\" appearance=\"outline\" scheme=\"on-surface\" icon-start=\"search\">Поиск</sf-button><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "settings": {
+        "collapse": "xl",
+        "sticky": true
+      },
+      "expect": {
+        "collapse": "xl",
+        "sticky": true
+      }
+    },
+    {
+      "name": "collapsed",
+      "title": "Всегда меню",
+      "children": "<a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"/framework/\">Framework</a> <a href=\"/docara/\">Docara</a></nav><a slot=\"actions\" href=\"https://github.com/simai\">GitHub</a><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\" aria-label=\"Тема\"></sf-button-group>",
+      "settings": {
+        "collapse": "always"
+      },
+      "expect": {
+        "collapse": "always"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-site-header against component.json (standard simai.smart-component 1.3.11 §12, §19, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<sf-site-header id=\"wide\" collapse=\"none\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a id=\"wide-link\" href=\"#framework\">Framework</a> <a href=\"#docara\">Docara</a></nav><a slot=\"actions\" id=\"wide-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"wide-tool\" type=\"button\">Тема</button></sf-site-header>",
+          "<sf-site-header id=\"narrow\" collapse=\"always\"><a slot=\"brand\" href=\"/\"><span>SIMAI</span></a><nav aria-label=\"Разделы\"><a href=\"#framework\">Framework</a> <a id=\"narrow-current\" href=\"#docara\" aria-current=\"page\">Docara</a></nav><a slot=\"actions\" id=\"narrow-action\" href=\"#github\">GitHub</a><button slot=\"tools\" id=\"narrow-tool\" type=\"button\">Тема</button></sf-site-header>",
+          "<div lang=\"en\"><sf-site-header id=\"en\" collapse=\"always\"><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Sections\"><a href=\"#a\">A</a></nav></sf-site-header></div>",
+          "<main><p>Страница</p></main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-wide-row",
+          "title": "wide, the brand, the nav, the actions and the tools stand in one row and the menu button is not shown",
+          "covers": "slots brand, nav (default), actions, tools; settings.collapse none",
+          "steps": [
+            {
+              "check": "(() => { const h = document.querySelector('#wide'); const shown = (s) => { const n = h.querySelector(s); return Boolean(n && n.getClientRects().length); }; return shown('#wide-link') && shown('#wide-action') && shown('#wide-tool') && !shown('.sf-site-header-menu-button button') && h.querySelector('header .sf-site-header-nav nav[aria-label=\"Разделы\"]') !== null; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-banner",
+          "title": "the element draws one banner landmark and keeps the page's named nav",
+          "covers": "accessibility.role banner",
+          "steps": [
+            {
+              "check": "document.querySelectorAll('#wide > header').length === 1 && !document.querySelector('#wide').closest('main, article, aside, nav, section') && document.querySelectorAll('#wide nav').length === 1"
+            }
+          ]
+        },
+        {
+          "id": "p3-collapsed",
+          "title": "collapsed, the nav and the actions are out of the bar and the menu button names the panel",
+          "covers": "settings.collapse always, settings.menu-label, lang runtime.menu-label",
+          "steps": [
+            {
+              "check": "(() => { const h = document.querySelector('#narrow'); const b = h.querySelector('.sf-site-header-menu-button button'); return b && b.getClientRects().length > 0 && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-haspopup') === 'dialog' && b.getAttribute('aria-label') === 'Открыть меню' && h.querySelector('#narrow-action').getClientRects().length === 0 && h.querySelector('#narrow-tool').getClientRects().length > 0 && h.getAttribute('data-collapsed') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-open",
+          "title": "the menu button opens the panel: focus on the current page's link, aria-expanded true, sf-site-header-open and -opened",
+          "covers": "actions.open, events.open, events.opened, layer.traps-focus, host-states data-open",
+          "steps": [
+            {
+              "user": "click:#narrow .sf-site-header-menu-button button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-site-header-open",
+                    "count": 1
+                  },
+                  {
+                    "name": "sf-site-header-opened",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const h = document.querySelector('#narrow'); const p = h.querySelector('.sf-site-header-panel'); return h.querySelector('.sf-site-header-menu-button button').getAttribute('aria-expanded') === 'true' && p.getAttribute('role') === 'dialog' && p.getAttribute('aria-modal') === 'true' && h.getAttribute('data-open') === 'true' && h.querySelector('#narrow-action').getClientRects().length > 0 && document.activeElement === document.querySelector('#narrow-current') && document.documentElement.style.overflow === 'hidden'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-escape",
+          "title": "Escape closes the panel and gives focus back to the menu button",
+          "covers": "keyboard Escape, events.close reason escape, events.closed, §19.2 focus return",
+          "steps": [
+            {
+              "user": "click:#narrow .sf-site-header-menu-button button"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-site-header-close",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  },
+                  {
+                    "name": "sf-site-header-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const h = document.querySelector('#narrow'); const b = h.querySelector('.sf-site-header-menu-button button'); return b.getAttribute('aria-expanded') === 'false' && document.activeElement === b && !h.hasAttribute('data-open') && document.documentElement.style.overflow === ''; })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-tab-trap",
+          "title": "Tab stays inside the open panel",
+          "covers": "layer.traps-focus",
+          "steps": [
+            {
+              "user": "click:#narrow .sf-site-header-menu-button button"
+            },
+            {
+              "user": "keyboard:Tab"
+            },
+            {
+              "user": "keyboard:Tab"
+            },
+            {
+              "user": "keyboard:Tab"
+            },
+            {
+              "user": "keyboard:Tab"
+            },
+            {
+              "check": "document.querySelector('#narrow .sf-site-header-panel').contains(document.activeElement)"
+            }
+          ]
+        },
+        {
+          "id": "p7-outside",
+          "title": "a press on the scrim closes the panel as outside",
+          "covers": "events.close reason outside",
+          "steps": [
+            {
+              "user": "click:#narrow .sf-site-header-menu-button button"
+            },
+            {
+              "user": "click:#narrow .sf-site-header-scrim",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-site-header-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "outside"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p8-cancelled",
+          "title": "a page that cancels sf-site-header-open keeps the panel closed and the action answers refused",
+          "covers": "events.open cancelable, actions.open outcome",
+          "steps": [
+            {
+              "script": "(document.addEventListener('sf-site-header-open', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "action": {
+                "name": "open"
+              },
+              "target": "#narrow",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            },
+            {
+              "check": "!document.querySelector('#narrow').hasAttribute('data-open')"
+            }
+          ]
+        },
+        {
+          "id": "p9-wide-refuses",
+          "title": "the wide bar has no panel to open",
+          "covers": "actions.open refused not-collapsed",
+          "steps": [
+            {
+              "action": {
+                "name": "open"
+              },
+              "target": "#wide",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p10-language",
+          "title": "the words follow the element's language",
+          "covers": "lang runtime.menu-label, runtime.label (§11.1)",
+          "steps": [
+            {
+              "check": "document.querySelector('#en .sf-site-header-menu-button button').getAttribute('aria-label') === 'Open menu' && document.querySelector('#en .sf-site-header-panel-heading').textContent.trim() === 'Navigation'"
+            }
+          ]
+        },
+        {
+          "id": "p11-public-variables",
+          "title": "the public variables reach what the bar draws",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "script": "(document.querySelector('#wide').style.setProperty('--sf-site-header-gap', '17px'), document.querySelector('#wide').style.setProperty('--sf-site-header-background', 'rgb(1, 2, 3)'), true)"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#wide .sf-site-header-row')).columnGap === '17px' && getComputedStyle(document.querySelector('#wide > header')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

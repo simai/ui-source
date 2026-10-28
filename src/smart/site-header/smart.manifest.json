@@ -1,0 +1,338 @@
+{
+  "schema_version": 2,
+  "id": "smart.site-header",
+  "version": "1.0.0",
+  "title": "Site header",
+  "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "site-header",
+    "header",
+    "navigation",
+    "banner"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive",
+    "navigation",
+    "i18n"
+  ],
+  "custom_element": "sf-site-header",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.icon",
+      "smart.icon-button"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "collapse": {
+        "type": "string",
+        "default": "lg",
+        "description": "Below this Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A media rule, so the first paint is right without the script",
+        "enum": [
+          "none",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "always"
+        ]
+      },
+      "sticky": {
+        "type": "boolean",
+        "default": false,
+        "description": "The bar stays at the top of the window while the page scrolls"
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung of the bar's controls: the bar's height follows it, and the menu and close buttons take it. Slotted controls are given the same size by the page",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "description": "The side panel's heading and accessible name; «Навигация» / «Navigation» in the page language when not set"
+      },
+      "menu-label": {
+        "type": "string",
+        "description": "The menu button's name; «Открыть меню» / «Open menu» in the page language when not set"
+      },
+      "close-label": {
+        "type": "string",
+        "description": "The panel's close button's name; «Закрыть меню» / «Close menu» in the page language when not set"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "open": {
+      "summary": "Opens the side panel; refused while the bar is not collapsed, or when a page cancels sf-site-header-open",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "summary": "Closes the side panel; refused when it is closed already or a page cancels sf-site-header-close",
+      "arguments": [
+        {
+          "name": "reason",
+          "schema": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "summary": "Opens the side panel when it is closed and closes it when it is open",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-site-header-open": {
+      "summary": "The side panel is about to open: a request a page may cancel",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-site-header-opened": {
+      "summary": "The side panel opened; a page that fills the sheet slot late does it here",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-site-header-close": {
+      "summary": "The side panel is about to close, and why: its close button, Escape, a press on the scrim, or the action (a link chosen in the panel and a window widened past the breakpoint say api)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-site-header-closed": {
+      "summary": "The side panel closed, and why",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {},
+    "visual_states": [
+      "default",
+      "open"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "fetching the site's navigation",
+      "keeping the theme choice",
+      "styling a site's own header"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "banner",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches the brand, the navigation, the actions and the tools in order",
+      "Enter or Space on the menu button opens the side panel",
+      "Escape closes the side panel and gives focus back to the menu button"
+    ],
+    "focus": "The open panel takes focus (the current page's link, else its first link, else its close button), keeps Tab inside while it is the top layer and gives focus back to the menu button when it closes."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "6a9c2b4be8830445e16ef8d01a347591dd18263a",
+    "source_artifacts": [
+      {
+        "path": "src/smart/site-header/index.js",
+        "sha256": "9a1552b4e57b9b33a1f1209e3d8f10c6afd3eb78e0435df547f48da818ba966d"
+      },
+      {
+        "path": "src/smart/site-header/js/templates/default.js",
+        "sha256": "d9785d86f499e67b98a3fbe24ca16ab987d4342adf0be203bcea6628be050e02"
+      },
+      {
+        "path": "src/smart/site-header/scss/_smart__site_header.scss",
+        "sha256": "a212f78b5e86c87c290d25f8ac8f26123935893a5ba1605b9f48d9c9445529fd"
+      },
+      {
+        "path": "src/smart/site-header/rule.js",
+        "sha256": "a130787f6b879851d96b2f47bc355958217810fe205c8c1e344d5204c64eadee"
+      },
+      {
+        "path": "src/smart/site-header/docs.md",
+        "sha256": "c0f58b82def02b2334bd9f1a4ea518a79fce5a98db4d3b9f243d6692ab38d138"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-site-header as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+    "do_not": [
+      "Do not draw a header of your own on a SIMAI site",
+      "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",
+      "Do not put a second <nav> around the nav slot; the page's own <nav aria-label> is the landmark"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-site-header><a slot=\"brand\" href=\"/\">SIMAI</a><nav aria-label=\"Разделы\"><a href=\"/docs/\">Документация</a></nav><sf-button-group slot=\"tools\" appearance=\"segmented\" theme-switch size=\"1/2\"></sf-button-group></sf-site-header>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

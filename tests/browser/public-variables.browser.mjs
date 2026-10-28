@@ -159,6 +159,9 @@ const DRAW = {
   // The generator's own markup at rest: the labels and the palettes' rows.
   'theme-generator': {css: ['smart/smart/theme-generator/css/theme-generator.css'], js: 'theme-generator',
     html: '<sf-theme-generator value="#2e7d32"></sf-theme-generator>'},
+  // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
+  'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
+    html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

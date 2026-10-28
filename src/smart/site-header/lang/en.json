@@ -1,0 +1,8 @@
+{
+  "title": "Site header",
+  "runtime": {
+    "label": "Navigation",
+    "menu-label": "Open menu",
+    "close-label": "Close menu"
+  }
+}
