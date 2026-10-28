@@ -1,10 +1,29 @@
 (() => {
+  // A toggle (no data-theme) shows the theme it switches to: a sun on a dark
+  // page, a moon on a light one. Each project swapped the glyph on
+  // sf-theme-change itself (ui-effects site, 2026-10-28). Only an icon left
+  // empty or already one of the two is written, so an author's own glyph
+  // stays.
+  const THEME_GLYPHS = new Set(['light_mode', 'dark_mode']);
+  const syncGlyph = (button, isDark) => {
+    const glyph = isDark ? 'light_mode' : 'dark_mode';
+    if (button.localName.includes('-')) {
+      const icon = button.getAttribute('icon');
+      if ((icon === null || icon === '' || THEME_GLYPHS.has(icon)) && icon !== glyph) button.setAttribute('icon', glyph);
+      return;
+    }
+    const icon = button.querySelector(':scope > .sf-icon');
+    const text = icon?.textContent.trim();
+    if (icon && (text === '' || THEME_GLYPHS.has(text)) && text !== glyph) icon.textContent = glyph;
+  };
+
   const syncControls = () => {
     const isDark = document.documentElement.classList.contains('theme-dark');
     const preference = window.SF?.Loader?.themePreference;
     document.querySelectorAll('.sf-theme-button').forEach((button) => {
       const requested = button.dataset.theme;
       const pressed = requested ? requested === preference : isDark;
+      if (!requested) syncGlyph(button, isDark);
       button.setAttribute('aria-pressed', String(pressed));
       // The look says it too: a button shows itself pressed with .active, and
       // aria-pressed alone left the chosen mode looking unchosen (docs trial
