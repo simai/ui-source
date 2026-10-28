@@ -1,7 +1,327 @@
-[
-  {"name": "single", "title": "Одно значение", "settings": {"aria-label": "Громкость", "min": 0, "max": 100, "value": "40"}, "expect": {"values": {"value": "40"}}},
-  {"name": "reference", "title": "Диапазон с подписями", "settings": {"min": 0, "max": 100, "value": "20,80", "multiple": true, "prefix-text": "от ", "suffix": " %", "label": "text", "lower-label": "Нижняя граница", "upper-label": "Верхняя граница"}, "expect": {"values": {"value": "20,80"}}},
-  {"name": "stepped", "title": "С шагом", "settings": {"aria-label": "Оценка", "min": 0, "max": 10, "step": 2, "value": "4"}, "expect": {"values": {"value": "4"}}},
-  {"name": "tooltip", "title": "Значение над ручкой", "settings": {"aria-label": "Цена", "min": 0, "max": 1000, "value": "250", "label": "tooltip", "suffix": " ₽"}, "expect": {"values": {"value": "250"}}},
-  {"name": "disabled", "title": "Недоступен", "settings": {"aria-label": "Громкость", "value": "40", "disabled": true}, "expect": {"values": {"value": "40"}}}
-]
+{
+  "examples": [
+    {
+      "name": "single",
+      "title": "Одно значение",
+      "settings": {
+        "aria-label": "Громкость",
+        "min": 0,
+        "max": 100,
+        "value": "40"
+      },
+      "expect": {
+        "values": {
+          "value": "40"
+        }
+      }
+    },
+    {
+      "name": "reference",
+      "title": "Диапазон с подписями",
+      "settings": {
+        "min": 0,
+        "max": 100,
+        "value": "20,80",
+        "multiple": true,
+        "prefix-text": "от ",
+        "suffix": " %",
+        "label": "text",
+        "lower-label": "Нижняя граница",
+        "upper-label": "Верхняя граница"
+      },
+      "expect": {
+        "values": {
+          "value": "20,80"
+        }
+      },
+      "studio": {
+        "props": {
+          "min": "0",
+          "max": "100",
+          "value": "20,80",
+          "multiple": true,
+          "prefix": "от ",
+          "suffix": " %",
+          "label": "text"
+        },
+        "scenario": {}
+      }
+    },
+    {
+      "name": "stepped",
+      "title": "С шагом",
+      "settings": {
+        "aria-label": "Оценка",
+        "min": 0,
+        "max": 10,
+        "step": 2,
+        "value": "4"
+      },
+      "expect": {
+        "values": {
+          "value": "4"
+        }
+      }
+    },
+    {
+      "name": "tooltip",
+      "title": "Значение над ручкой",
+      "settings": {
+        "aria-label": "Цена",
+        "min": 0,
+        "max": 1000,
+        "value": "250",
+        "label": "tooltip",
+        "suffix": " ₽"
+      },
+      "expect": {
+        "values": {
+          "value": "250"
+        }
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "aria-label": "Громкость",
+        "value": "40",
+        "disabled": true
+      },
+      "expect": {
+        "values": {
+          "value": "40"
+        }
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-range-slider against component.json (standard simai.smart-component 1.3.8 §4.2, §4.8 keys, §5.3, §8, §16.20)",
+        "component": "sf-range-slider",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "change",
+            "sf-range-slider-change",
+            "onSliderChange"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "arrow-right-steps-and-the-old-names-follow",
+            "covers": "keyboard.host ArrowRight step:+1; events.change once, then sf-range-slider-change and onSliderChange with one detail and a dated journal entry",
+            "field": "<sf-range-slider aria-label=\"Громкость\" min=\"0\" max=\"100\" step=\"10\" value=\"50\"></sf-range-slider>",
+            "given": [
+              {
+                "user": "focus:[role=slider]"
+              }
+            ],
+            "user": "keyboard:ArrowRight",
+            "expect": {
+              "value": "60",
+              "events": [
+                {
+                  "type": "change",
+                  "value": 60,
+                  "values": [
+                    60
+                  ],
+                  "handleCount": 1,
+                  "handle": 0
+                },
+                {
+                  "type": "sf-range-slider-change",
+                  "value": 60,
+                  "values": [
+                    60
+                  ],
+                  "handleCount": 1
+                },
+                {
+                  "type": "onSliderChange",
+                  "value": 60,
+                  "handleCount": 1
+                }
+              ],
+              "deprecations": [
+                {
+                  "component": "sf-range-slider",
+                  "kind": "event",
+                  "from": "sf-range-slider-change",
+                  "to": "change",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                },
+                {
+                  "component": "sf-range-slider",
+                  "kind": "event",
+                  "from": "onSliderChange",
+                  "to": "change",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "arrow-left-steps-down",
+            "covers": "keyboard.host ArrowLeft step:-1",
+            "field": "<sf-range-slider aria-label=\"Громкость\" min=\"0\" max=\"100\" step=\"10\" value=\"50\"></sf-range-slider>",
+            "given": [
+              {
+                "user": "focus:[role=slider]"
+              }
+            ],
+            "user": "keyboard:ArrowLeft",
+            "expect": {
+              "value": "40",
+              "events": [
+                {
+                  "type": "change",
+                  "value": 40
+                },
+                {
+                  "type": "sf-range-slider-change"
+                },
+                {
+                  "type": "onSliderChange"
+                }
+              ]
+            }
+          },
+          {
+            "id": "arrow-up-and-down",
+            "covers": "keyboard.host ArrowUp step:+1, ArrowDown step:-1",
+            "field": "<sf-range-slider aria-label=\"Громкость\" min=\"0\" max=\"100\" step=\"10\" value=\"50\"></sf-range-slider>",
+            "given": [
+              {
+                "user": "focus:[role=slider]"
+              }
+            ],
+            "user": [
+              "keyboard:ArrowUp",
+              "keyboard:ArrowUp",
+              "keyboard:ArrowDown"
+            ],
+            "expect": {
+              "value": "60"
+            }
+          },
+          {
+            "id": "home-and-end",
+            "covers": "keyboard.host Home to:min, End to:max",
+            "field": "<sf-range-slider aria-label=\"Громкость\" min=\"10\" max=\"90\" value=\"50\"></sf-range-slider>",
+            "given": [
+              {
+                "user": [
+                  "focus:[role=slider]",
+                  "keyboard:End"
+                ]
+              }
+            ],
+            "user": "keyboard:Home",
+            "expect": {
+              "value": "10",
+              "evaluate": {
+                "el.querySelector('[role=slider]').getAttribute('aria-valuenow')": "10"
+              }
+            }
+          },
+          {
+            "id": "end-goes-to-max",
+            "covers": "keyboard.host End to:max",
+            "field": "<sf-range-slider aria-label=\"Громкость\" min=\"10\" max=\"90\" value=\"50\"></sf-range-slider>",
+            "given": [
+              {
+                "user": "focus:[role=slider]"
+              }
+            ],
+            "user": "keyboard:End",
+            "expect": {
+              "value": "90"
+            }
+          },
+          {
+            "id": "value-from-code-is-silent",
+            "covers": "§8: a value set from outside is not reported back, under no name",
+            "field": "<sf-range-slider aria-label=\"Громкость\" value=\"50\"></sf-range-slider>",
+            "property": {
+              "name": "value",
+              "value": "30"
+            },
+            "expect": {
+              "value": "30",
+              "events": []
+            }
+          },
+          {
+            "id": "prefix-is-prefix-text",
+            "covers": "aliases.json setting prefix -> prefix-text (§3.1, §16 item 26)",
+            "field": "<sf-range-slider aria-label=\"Цена\" value=\"50\" label=\"text\"></sf-range-slider>",
+            "setting": {
+              "name": "prefix",
+              "value": "от "
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "prefix-text": "от "
+                },
+                "properties": {
+                  "prefixText": "от "
+                }
+              },
+              "evaluate": {
+                "el.querySelector('.sf-range-slider').dataset.prefix": "от "
+              },
+              "deprecations": [
+                {
+                  "component": "sf-range-slider",
+                  "from": "prefix",
+                  "to": "prefix-text",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "disabled-is-drawn-by-the-template",
+            "covers": "§5.3: the disabled look follows the setting through the template",
+            "field": "<sf-range-slider aria-label=\"Громкость\" value=\"50\"></sf-range-slider>",
+            "setting": {
+              "name": "disabled",
+              "value": true
+            },
+            "expect": {
+              "evaluate": {
+                "el.querySelector('.sf-range-slider').classList.contains('disabled')": true,
+                "el.querySelector('[role=slider]').getAttribute('aria-disabled')": "true"
+              }
+            }
+          },
+          {
+            "id": "settings-are-typed",
+            "covers": "settings.min, max (number), step (number, nullable), a range value",
+            "field": "<sf-range-slider aria-label=\"Цена\" min=\"5\" max=\"95\" value=\"20,80\"></sf-range-slider>",
+            "script": "return [el.min, el.max, el.step, el.multiple, el.value];",
+            "expect": {
+              "returns": [
+                5,
+                95,
+                null,
+                true,
+                "20,80"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

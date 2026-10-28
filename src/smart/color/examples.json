@@ -1,7 +1,330 @@
-[
-  {"name": "set", "title": "Выбранный цвет", "settings": {"label": "Цвет акцента", "name": "accent", "value": "#1f6feb"}, "expect": {"values": {"value": "#1f6feb", "effective-value": "#1f6feb"}}},
-  {"name": "inherited", "title": "Цвет наследуется", "settings": {"label": "Цвет акцента", "name": "accent", "inherited-value": "#d1242f"}, "expect": {"values": {"value": "", "effective-value": "#d1242f"}, "host-states": {"data-inherited": true}}},
-  {"name": "swatches", "title": "Цвета продукта", "settings": {"label": "Цвет метки", "swatches": "#1f6feb|Синий, #d1242f|Красный, #1a7f37|Зелёный"}, "expect": {"values": {"value": ""}}},
-  {"name": "clearable", "title": "Со сбросом", "settings": {"label": "Цвет", "value": "#1a7f37", "clearable": true}, "expect": {"values": {"value": "#1a7f37"}}},
-  {"name": "disabled", "title": "Недоступен", "settings": {"label": "Цвет", "value": "#1a7f37", "disabled": true}, "expect": {"values": {"value": "#1a7f37"}}}
-]
+{
+  "examples": [
+    {
+      "name": "set",
+      "title": "Выбранный цвет",
+      "settings": {
+        "label": "Цвет акцента",
+        "name": "accent",
+        "value": "#1f6feb"
+      },
+      "expect": {
+        "values": {
+          "value": "#1f6feb",
+          "effective-value": "#1f6feb"
+        }
+      }
+    },
+    {
+      "name": "inherited",
+      "title": "Цвет наследуется",
+      "settings": {
+        "label": "Цвет акцента",
+        "name": "accent",
+        "inherited-value": "#d1242f"
+      },
+      "expect": {
+        "values": {
+          "value": "",
+          "effective-value": "#d1242f"
+        },
+        "host-states": {
+          "data-inherited": true
+        }
+      }
+    },
+    {
+      "name": "swatches",
+      "title": "Цвета продукта",
+      "settings": {
+        "label": "Цвет метки",
+        "swatches": "#1f6feb|Синий, #d1242f|Красный, #1a7f37|Зелёный"
+      },
+      "expect": {
+        "values": {
+          "value": ""
+        }
+      }
+    },
+    {
+      "name": "clearable",
+      "title": "Со сбросом",
+      "settings": {
+        "label": "Цвет",
+        "value": "#1a7f37",
+        "clearable": true
+      },
+      "expect": {
+        "values": {
+          "value": "#1a7f37"
+        }
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступен",
+      "settings": {
+        "label": "Цвет",
+        "value": "#1a7f37",
+        "disabled": true
+      },
+      "expect": {
+        "values": {
+          "value": "#1a7f37"
+        }
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-color against component.json (standard simai.smart-component 1.3.8 §4.1, §4.3, §4.4, §8, §16.20, §17.1, §20.2)",
+        "component": "sf-color",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change",
+            "sf-field-reset",
+            "sf-field:reset"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "swatch-press-commits",
+            "covers": "events.input, events.change {value, name}, form.submits",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "user": "click:.sf-color-preset[aria-label='Красный']",
+            "expect": {
+              "value": "#d1242f",
+              "events": [
+                {
+                  "type": "input",
+                  "value": "#d1242f",
+                  "name": "accent"
+                },
+                {
+                  "type": "change",
+                  "value": "#d1242f",
+                  "name": "accent"
+                }
+              ],
+              "formData": {
+                "accent": "#d1242f"
+              },
+              "evaluate": {
+                "el.querySelector('input[type=hidden]')": null,
+                "[...form.elements].includes(el)": true
+              }
+            }
+          },
+          {
+            "id": "enter-on-a-swatch-selects",
+            "covers": "keyboard.host Enter select",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "given": [
+              {
+                "user": "focus:.sf-color-preset[aria-label='Синий']"
+              }
+            ],
+            "user": "keyboard:Enter",
+            "expect": {
+              "value": "#1f6feb",
+              "formData": {
+                "accent": "#1f6feb"
+              }
+            }
+          },
+          {
+            "id": "space-on-a-swatch-selects",
+            "covers": "keyboard.host Space select",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-color>",
+            "given": [
+              {
+                "user": "focus:.sf-color-preset[aria-label='Красный']"
+              }
+            ],
+            "user": "keyboard:Space",
+            "expect": {
+              "value": "#d1242f"
+            }
+          },
+          {
+            "id": "inherited-submits-empty",
+            "covers": "§20.2: the form value is empty and the host carries data-inherited; effective-value is the inherited colour; shown is the base value",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" inherited-value=\"#D1242F\"></sf-color>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "accent": ""
+              },
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                },
+                "properties": {
+                  "effectiveValue": "#d1242f",
+                  "shown": true,
+                  "started": true
+                }
+              }
+            }
+          },
+          {
+            "id": "reset-to-inherited-sends-the-new-name-first",
+            "covers": "aliases.json sf-field:reset -> sf-field-reset (same-detail, dated), then input and change",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" inherited-value=\"#d1242f\"></sf-color>",
+            "script": "return el.resetToInherited();",
+            "expect": {
+              "returns": true,
+              "value": "",
+              "events": [
+                {
+                  "type": "sf-field-reset",
+                  "tag": "sf-color",
+                  "value": "#1a7f37",
+                  "inheritedValue": "#d1242f",
+                  "name": "accent"
+                },
+                {
+                  "type": "sf-field:reset",
+                  "tag": "sf-color",
+                  "value": "#1a7f37",
+                  "inheritedValue": "#d1242f",
+                  "name": "accent"
+                },
+                {
+                  "type": "input",
+                  "value": ""
+                },
+                {
+                  "type": "change",
+                  "value": ""
+                }
+              ],
+              "deprecations": [
+                {
+                  "component": "sf-color",
+                  "kind": "event",
+                  "from": "sf-field:reset",
+                  "to": "sf-field-reset",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                }
+              }
+            }
+          },
+          {
+            "id": "clear-answers-an-outcome",
+            "covers": "actions.clear (§4.4)",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" clearable></sf-color>",
+            "action": {
+              "name": "clear"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "value": "",
+              "events": [
+                {
+                  "type": "input",
+                  "value": ""
+                },
+                {
+                  "type": "change",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          {
+            "id": "clear-with-nothing-is-refused",
+            "covers": "actions.clear refused {reason}",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\"></sf-color>",
+            "action": {
+              "name": "clear"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "unchanged"
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "value-from-code-is-silent",
+            "covers": "§8: a value set from outside is not reported back",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\"></sf-color>",
+            "property": {
+              "name": "value",
+              "value": "ABCDEF"
+            },
+            "expect": {
+              "value": "#abcdef",
+              "events": [],
+              "formData": {
+                "accent": "#abcdef"
+              }
+            }
+          },
+          {
+            "id": "nothing-while-disabled",
+            "covers": "form.disabled (§17.1 item 3)",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" disabled></sf-color>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "accent": null
+              }
+            }
+          },
+          {
+            "id": "form-reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4): no events",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" swatches=\"#d1242f|Красный\"></sf-color>",
+            "given": [
+              {
+                "user": "click:.sf-color-preset"
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "value": "#1a7f37",
+              "events": [],
+              "formData": {
+                "accent": "#1a7f37"
+              }
+            }
+          },
+          {
+            "id": "custom-error-blocks-submit",
+            "covers": "validity custom-error (§17.2)",
+            "field": "<sf-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\"></sf-color>",
+            "script": "el.setCustomValidity('Слишком светлый'); form.requestSubmit();",
+            "expect": {
+              "submitted": false,
+              "validity": {
+                "host": {
+                  "customError": true,
+                  "valid": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

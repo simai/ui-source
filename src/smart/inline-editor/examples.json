@@ -4,7 +4,25 @@
       "name": "reference",
       "title": "Носитель редактора на странице",
       "settings": {},
-      "expect": {}
+      "expect": {},
+      "studio": {
+        "title": "inline-editor reference",
+        "children": [
+          {
+            "element": "p",
+            "props": {},
+            "text": "Текст абзаца для правки на месте",
+            "children": []
+          }
+        ],
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
     },
     {
       "name": "paragraph",
@@ -14,7 +32,10 @@
         "name": "edit",
         "with": {
           "element": "#p1",
-          "options": {"nodeId": "p1", "label": "Абзац"}
+          "options": {
+            "nodeId": "p1",
+            "label": "Абзац"
+          }
         }
       },
       "settings": {},
@@ -28,11 +49,138 @@
         "name": "edit",
         "with": {
           "element": "#h1",
-          "options": {"nodeId": "h1", "label": "Заголовок", "links": false, "marks": ["em"]}
+          "options": {
+            "nodeId": "h1",
+            "label": "Заголовок",
+            "links": false,
+            "marks": [
+              "em"
+            ]
+          }
         }
       },
       "settings": {},
       "expect": {}
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-inline-editor against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-inline-editor id=\"ed\"></sf-inline-editor>",
+          "  <p id=\"p1\">Текст <strong>абзаца</strong></p>",
+          "  <h2 id=\"h1\">Заголовок</h2>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-carrier",
+          "title": "the carrier is hidden, has no role and puts SF.InlineEditor in place",
+          "covers": "accessibility.role none, actions.edit (the port)",
+          "steps": [
+            {
+              "check": "document.querySelector('#ed').hidden === true && !document.querySelector('#ed').getAttribute('role') && typeof window.SF.InlineEditor.startInlineEdit === 'function' && window.SF.InlineEditor.INLINE_EVENTS.commit === 'sf-inline-editor-change'"
+            }
+          ]
+        },
+        {
+          "id": "p2-edit-and-commit",
+          "title": "edit() makes the element a named textbox; Enter commits: sf-inline-editor-change {id, content}, then the dated sf-inline-edit-commit {node_id, content}",
+          "covers": "actions.edit, events.change, aliases.json sf-inline-edit-commit, keyboard Enter, lang runtime.editing",
+          "steps": [
+            {
+              "script": "(window.__session = document.querySelector('#ed').edit(document.querySelector('#p1'), {nodeId: 'p1', label: 'Абзац'}), true)"
+            },
+            {
+              "check": "(() => { const p = document.querySelector('#p1'); return p.getAttribute('role') === 'textbox' && p.getAttribute('aria-label') === 'Абзац: редактирование. Enter — сохранить, Escape — отменить.' && document.activeElement === p && !!document.querySelector('.sf-inline-editor-toolbar[role=toolbar]'); })()"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-inline-editor-change",
+                    "count": 1,
+                    "detail": {
+                      "id": "p1"
+                    }
+                  },
+                  {
+                    "name": "sf-inline-edit-commit",
+                    "count": 1,
+                    "detail": {
+                      "node_id": "p1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "!document.querySelector('#p1').hasAttribute('data-sf-inline-editing') && !document.querySelector('.sf-inline-editor-toolbar')"
+            }
+          ]
+        },
+        {
+          "id": "p3-format-and-cancel",
+          "title": "Mod+B toggles bold and sends input {id, content}; Escape puts the element back: cancel {id}, then the dated sf-inline-edit-cancel",
+          "covers": "events.input, events.cancel, keyboard Mod+B, Escape, aliases.json sf-inline-edit-input, sf-inline-edit-cancel",
+          "steps": [
+            {
+              "script": "(document.querySelector('#ed').edit(document.querySelector('#h1'), {nodeId: 'h1', label: 'Заголовок'}), (() => { const range = document.createRange(); range.selectNodeContents(document.querySelector('#h1')); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); })(), true)"
+            },
+            {
+              "user": "keyboard:ControlOrMeta+b",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-inline-editor-input",
+                    "count": 1,
+                    "detail": {
+                      "id": "h1"
+                    }
+                  },
+                  {
+                    "name": "sf-inline-edit-input",
+                    "count": 1,
+                    "detail": {
+                      "node_id": "h1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-inline-editor-cancel",
+                    "count": 1,
+                    "detail": {
+                      "id": "h1"
+                    }
+                  },
+                  {
+                    "name": "sf-inline-edit-cancel",
+                    "count": 1,
+                    "detail": {
+                      "node_id": "h1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#h1').innerHTML === 'Заголовок' && !document.querySelector('#h1').hasAttribute('role')"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -2,45 +2,53 @@
   "$comment": "The source of sf-datepicker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.datepicker",
   "tag": "sf-datepicker",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "field",
   "settings": {
     "date": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The ISO date (yyyy-mm-dd) chosen; value is read only when date is absent, so date=\"\" is a cleared value."
     },
     "start-value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Range only: the ISO start date."
     },
     "end-value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Range only: the ISO end date."
     },
     "max-date": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The latest ISO date that can be chosen; later days are disabled."
     },
     "min-date": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The earliest ISO date that can be chosen; earlier days are disabled."
     },
     "range": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Pick a start and an end instead of one date."
     },
     "month": {
       "type": "number",
       "optional": true,
       "integer": true,
       "min": 0,
-      "max": 11
+      "max": 11,
+      "summary": "The month shown when the panel opens, 0-11; defaults to the chosen date's month, else the current one."
     },
     "year": {
       "type": "number",
       "optional": true,
-      "integer": true
+      "integer": true,
+      "summary": "The year shown when the panel opens; defaults to the chosen date's year, else the current one."
     },
     "context": {
       "type": "enum",
@@ -49,38 +57,46 @@
         "month",
         "year"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Which grid the panel opens on: days (empty), month or year."
     },
     "week-start": {
       "type": "number",
       "optional": true,
       "integer": true,
       "min": 0,
-      "max": 6
+      "max": 6,
+      "summary": "The first day of the week, 0 Sunday to 6 Saturday (1 Monday). Without the attribute it follows the page's language (ru: Monday, en-US: Sunday, ar-EG: Saturday)."
     },
     "locale": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The language of month and day names; defaults to the page language."
     },
     "format": {
       "type": "string",
-      "default": "DD.MM.YYYY"
+      "default": "DD.MM.YYYY",
+      "summary": "How the date is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one date, a four-digit year from 1000 to 9999. The value stays ISO."
     },
     "close-on-select": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Close the panel once a date (or a range end) is chosen."
     },
     "input": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draw the text field; without it only the panel is drawn."
     },
     "portal": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Draw the panel at the end of the document so no clipping ancestor cuts it."
     },
     "input-type": {
       "type": "string",
-      "default": "bordered"
+      "default": "bordered",
+      "summary": "The field's appearance (bordered by default), as on sf-inputs."
     },
     "size": {
       "type": "enum",
@@ -89,7 +105,8 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Form size of the field."
     },
     "input-size": {
       "type": "enum",
@@ -98,79 +115,98 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json."
     },
     "input-name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The form field name of the value; wins over name."
     },
     "placeholder": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The field's placeholder text."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The field's visible label."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Disable the field and the panel."
     },
     "required": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Mark the field required in its form."
     },
     "invalid": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draw the field invalid: the error border and aria-invalid on the native input. Removing it restores the valid field."
     },
     "error-message": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The message under an invalid field; ignored while the field is valid."
     },
     "icon-start": {
       "type": "icon",
-      "default": "calendar_today"
+      "default": "calendar_today",
+      "summary": "The icon at the start of the field; the canonical name for left-icon."
     },
     "left-icon": {
       "type": "icon",
-      "default": "calendar_today"
+      "default": "calendar_today",
+      "summary": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
     },
     "input-root-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes added to the field's root."
     },
     "mask": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Mask what can be typed in the field to the format."
     },
     "mask-pattern": {
       "type": "string",
-      "default": "00.00.0000"
+      "default": "00.00.0000",
+      "summary": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
     },
     "mask-lazy": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Show the mask's placeholder characters only as they are typed."
     },
     "mask-placeholder-char": {
       "type": "string",
-      "default": "_"
+      "default": "_",
+      "summary": "The character that stands for a position not yet typed."
     },
     "mask-options": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Further mask options as JSON, passed to the field's mask."
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The form field name of the value. input-name is the same and wins when both are set."
     },
     "preset": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The chosen quick range's id. Set by a host it wins over start-value and end-value, and a relative one is resolved against today in the person's time zone when drawn; nothing is emitted for it."
     },
     "readonly": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
     },
     "presets": {
       "type": "list",
@@ -205,11 +241,13 @@
   "values": {
     "value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The ISO date (yyyy-mm-dd). As a property, [start, end] for a range. The attribute is the initial value: once the date is cleared it stays empty."
     },
     "open": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Whether the panel is open."
     }
   },
   "events": {
@@ -224,7 +262,8 @@
         "range": "boolean",
         "format": "string",
         "preset": "object"
-      }
+      },
+      "summary": "A date or range endpoint was selected; dispatched on the host. The name to bind."
     }
   },
   "actions": {
@@ -235,7 +274,8 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open the popup; optionally move focus into the calendar."
     },
     "close-panel": {
       "with": {
@@ -244,13 +284,15 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close the popup; optionally restore focus to the field."
     },
     "toggle-panel": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Toggle the popup without changing the selected value."
     },
     "choose-preset": {
       "with": {
@@ -259,13 +301,15 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Choose a quick range: set its dates, show the month it ends in and emit change once."
     },
     "choose-custom-range": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Let go of the quick range and move focus to the grid."
     }
   },
   "form": {
@@ -307,6 +351,23 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "datepicker"
+    },
+    {
+      "name": "cl-input"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -365,6 +426,39 @@
       "state": "rest"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "sf-datepicker-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      },
+      {
+        "from": "sf-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      }
+    ]
+  },
   "x-summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
   "x-source": {
     "package": "framework",
@@ -379,14 +473,157 @@
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "assembly: it stays a leaf. The one interactive Smart part it places is its own text box (sf-input), wired privately for typing, masks and focus; the grid, the month and year lists and the quick ranges are its own markup. An assembly would declare keys, roles and rules to wire a single text box no rule can reach better than the leaf does (the smaller mechanism)",
+    "version: 1.1.0 -- sf-datepicker-change and sf-change follow change behind dated aliases, presets becomes a list, the actions answer outcomes; a minor while the aliases hold (§4.10)",
+    "a11y-role: dialog while it opens from its text box; inline (input=false) the panel is a group. The role field takes one value in 1.3.8, so the inline case is written here",
+    "key-effects: the text box opens the calendar with ArrowDown and closes it with Escape; in the grid (panel) Left and Right move a day, Up and Down a week (step:-7/+7), Home and End to the week's first and last day, PageUp and PageDown a month, Enter and Space choose",
+    "type-union: presets is a list of {id, label?, relative?, range?}; the attribute keeps its comma list of built-in ids",
+    "item-shape: value is the date in the ISO form (YYYY-MM-DD); in range mode the property is [start-value, end-value] and the form submits start/end (ISO 8601 interval); the host owns the stored value",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json and the docs",
+    "css-variables: six public variables read by the class sheets with the role as fallback (§6)",
+    "side-effects: none -- with portal the panel is positioned as fixed in place; it is never moved to the end of body",
+    "form: the host is the form control through ElementInternals (§17.1): the ISO date (a range as start/end), never the display text; nothing while disabled; read-only submits; form.reset() returns the written value without events. The inner sf-input carries no name. value-missing while required and empty",
+    "actions: open-panel, close-panel, toggle-panel, choose-preset {item} and choose-custom-range answer outcomes (§4.4)",
+    "ids: the panel id comes from the instance path (§7.1.1), not a module counter",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The default example now prints the input with its panel relation (aria-haspopup, aria-expanded, aria-controls): the snapshot is taken after the element has drawn with its sheets."
+  ],
+  "x-registry": {
+    "kind": "composite",
+    "capabilities": [
+      "date-selection",
+      "date-range",
+      "keyboard-navigation",
+      "popup",
+      "inline",
+      "theme",
+      "responsive"
+    ],
+    "readiness": {
+      "level": "accepted",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard-navigation",
+        "browser-matrix",
+        "visual-viewport"
+      ]
+    },
+    "tags": [
+      "calendar",
+      "date",
+      "datepicker",
+      "form",
+      "range"
+    ],
+    "item_contract": {
+      "value_format": "ISO date strings are stored in YYYY-MM-DD form; format controls only the visible field value.",
+      "range_value": "Range mode exposes start-value and end-value and restarts the range after a completed selection.",
+      "host_owned": [
+        "validation beyond min-date and max-date",
+        "persistence",
+        "timezone and domain-date interpretation"
+      ]
+    },
+    "contracts": {
+      "change_detail": {
+        "type": "object",
+        "required": [
+          "value",
+          "range",
+          "format"
+        ],
+        "properties": {
+          "value": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "description": "The ISO date (yyyy-mm-dd), or [start, end] for a range; \"\" when cleared."
+          },
+          "range": {
+            "type": "boolean",
+            "description": "Whether the field picks a range."
+          },
+          "format": {
+            "type": "string",
+            "description": "The display format."
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "The value as shown, in format."
+          },
+          "date": {
+            "type": "string",
+            "description": "The ISO date; for a range, the ISO 8601 interval start/end (the start alone until the end is chosen)."
+          },
+          "isoValue": {
+            "type": "string",
+            "description": "The same as date: the ISO date, or for a range the interval start/end."
+          },
+          "startValue": {
+            "type": "string",
+            "description": "Range only: the ISO start."
+          },
+          "endValue": {
+            "type": "string",
+            "description": "Range only: the ISO end."
+          },
+          "startIsoValue": {
+            "type": "string",
+            "description": "Range only: the ISO start."
+          },
+          "endIsoValue": {
+            "type": "string",
+            "description": "Range only: the ISO end."
+          },
+          "formattedStartValue": {
+            "type": "string",
+            "description": "Range only: the start as shown."
+          },
+          "formattedEndValue": {
+            "type": "string",
+            "description": "Range only: the end as shown."
+          },
+          "preset": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Range only: the quick range chosen, {id, relative} or {id}; null for a range picked on the grid."
+          }
+        }
+      }
+    },
+    "state": {
+      "machines": {
+        "panel": [
+          "closed",
+          "open-below",
+          "open-above"
+        ],
+        "context": [
+          "day",
+          "month",
+          "year"
+        ],
+        "selection": [
+          "empty",
+          "single",
+          "range-start",
+          "range-complete"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "selected",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source source and machine manifest",
@@ -399,6 +636,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -414,7 +659,11 @@
         "mobile-popup",
         "inline",
         "visual-viewport-bounded-overlay"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-datepicker for a single date or date range that benefits from calendar navigation. Use a plain input when free-form entry is the primary task.",
@@ -436,23 +685,78 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab",
+        "Shift+Tab",
+        "Enter",
+        "Space",
+        "Escape",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+        "PageUp",
+        "PageDown"
+      ],
+      "focus": "ArrowDown opens the popup and moves focus to the active day. Only one day is in the tab order. Escape closes the popup and restores focus to the field. RTL reverses physical horizontal arrows while preserving chronological movement."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-datepicker-change": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "$ref": "#/contracts/change_detail"
+        },
+        "alias_of": "change"
+      },
+      "sf-change": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "$ref": "#/contracts/change_detail"
+        },
+        "alias_of": "change"
+      }
+    },
+    "methods": {
+      "setContext": {
+        "summary": "Open the day, month or year calendar context.",
+        "arguments": [
+          {
+            "name": "context",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "month",
+                "year"
+              ]
+            }
+          }
+        ],
+        "returns": {
+          "type": "object"
+        }
+      }
+    },
+    "inputs": {
+      "template": {
+        "description": "Which template draws it."
+      },
+      "root-class": {
+        "description": "Classes added to the component's root."
+      },
+      "aria-label": {
+        "description": "Accessible name for a date field rendered without a visible label."
+      }
     }
-  },
-  "x-decisions": [
-    "assembly: it stays a leaf. The one interactive Smart part it places is its own text box (sf-input), wired privately for typing, masks and focus; the grid, the month and year lists and the quick ranges are its own markup. An assembly would declare keys, roles and rules to wire a single text box no rule can reach better than the leaf does (the smaller mechanism)",
-    "version: 1.1.0 -- sf-datepicker-change and sf-change follow change behind dated aliases, presets becomes a list, the actions answer outcomes; a minor while the aliases hold (§4.10)",
-    "a11y-role: dialog while it opens from its text box; inline (input=false) the panel is a group. The role field takes one value in 1.3.8, so the inline case is written here",
-    "key-effects: the text box opens the calendar with ArrowDown and closes it with Escape; in the grid (panel) Left and Right move a day, Up and Down a week (step:-7/+7), Home and End to the week's first and last day, PageUp and PageDown a month, Enter and Space choose",
-    "type-union: presets is a list of {id, label?, relative?, range?}; the attribute keeps its comma list of built-in ids",
-    "item-shape: value is the date in the ISO form (YYYY-MM-DD); in range mode the property is [start-value, end-value] and the form submits start/end (ISO 8601 interval); the host owns the stored value",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
-    "examples: examples.json from studio.fixture.json and the docs",
-    "css-variables: six public variables read by the class sheets with the role as fallback (§6)",
-    "side-effects: none -- with portal the panel is positioned as fixed in place; it is never moved to the end of body",
-    "form: the host is the form control through ElementInternals (§17.1): the ISO date (a range as start/end), never the display text; nothing while disabled; read-only submits; form.reset() returns the written value without events. The inner sf-input carries no name. value-missing while required and empty",
-    "actions: open-panel, close-panel, toggle-panel, choose-preset {item} and choose-custom-range answer outcomes (§4.4)",
-    "ids: the panel id comes from the instance path (§7.1.1), not a module counter",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The default example now prints the input with its panel relation (aria-haspopup, aria-expanded, aria-controls): the snapshot is taken after the element has drawn with its sheets."
-  ]
+  }
 }

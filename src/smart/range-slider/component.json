@@ -2,7 +2,7 @@
   "$comment": "The source of sf-range-slider's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/range-slider (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/range-slider/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.range-slider",
   "tag": "sf-range-slider",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "slider",
   "settings": {
@@ -46,7 +46,8 @@
         "text",
         "tooltip"
       ],
-      "default": "none"
+      "default": "none",
+      "summary": "How each handle shows its value: not at all, as text beside it, or as a tooltip."
     },
     "prefix-text": {
       "type": "string",
@@ -94,11 +95,30 @@
   "events": {
     "change": {
       "carries": {
-        "values": "list",
-        "value": "object",
+        "values": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "value": {
+          "type": "object",
+          "summary": "A number with one handle, an array of two with two.",
+          "schema": {
+            "items": {
+              "type": "number"
+            }
+          }
+        },
         "handle-count": "number",
-        "handle": "number"
-      }
+        "handle": {
+          "type": "number",
+          "summary": "Index of the handle that moved."
+        }
+      },
+      "summary": "A value was committed by the user (drag end, click, key); bubbles from the slider root with values, value, handleCount and handle. A value set from code is not a change. The name to bind."
     }
   },
   "actions": {},
@@ -113,6 +133,11 @@
       "End": "to:max"
     }
   },
+  "relations": [
+    {
+      "name": "range-slider"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -163,6 +188,38 @@
       "state": "rest"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "prefix",
+        "to": "prefix-text",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26",
+        "note": "the old attribute and property write prefix-text; the property prefix is the browser's own (Element.prototype.prefix), so only the attribute is mapped"
+      },
+      {
+        "from": "sf-range-slider-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "note": "sent by the shim after change, with the same detail",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      },
+      {
+        "from": "onSliderChange",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "note": "sent by the shim after change, with the same detail",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      }
+    ]
+  },
   "x-summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
   "x-source": {
     "package": "framework",
@@ -181,15 +238,19 @@
     "settings.min: type string with the numeral default \"0\" → number (§16 item 29)",
     "settings.max: type string with the numeral default \"100\" → number (§16 item 29)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-decisions": [
+    "number-type: step is a number, nullable -- null is «no step», the engine's own; margin stays a string (it holds a number or nothing, and the engine reads it as given)",
+    "version: 1.1.0 -- prefix is prefix-text and sf-range-slider-change and onSliderChange follow change, behind dated aliases; a minor while they hold (§4.10)",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json and the docs",
+    "css-variables: five public variables read by the class sheet src/component/range-slider/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
+    "form: none -- the slider has no name and no form value today; a page reads value (it is not a form control in this version)",
+    "events.change: sent once by the host through sfEmit for a person's change, without the element in its detail (§8); the shim sends sf-range-slider-change and onSliderChange after it. A value set from code sends neither any more (§8), where sf-range-slider-change used to follow it",
+    "events sf-range-slider-update/-set/-start/-end and their onSlider* copies stay as they are, outside the interface: the class component's, read by the drag lock",
+    "host-states: none -- disabled is drawn by the template from the setting (the script no longer toggles the class)",
+    "accessibility.name: each handle is named from the host's aria-label or aria-labelledby, or in a range from lower-label and upper-label"
+  ],
+  "x-registry": {
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -198,6 +259,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -211,7 +280,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-range-slider to choose a number or a range of two within known bounds, where the position on a track says more than a typed number.",
@@ -231,18 +304,328 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "aria-label or aria-labelledby on the host reaches each handle; with two handles lower-label and upper-label name each one. Each handle is a tab stop with a visible focus ring. Arrows move by step (mirrored in RTL), Home and End go to the handle's bounds; keyboard=false turns the keys off."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-range-slider-change": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "type": "object",
+              "description": "The inner slider root, not the sf-range-slider host."
+            },
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            "value": {
+              "type": [
+                "number",
+                "array"
+              ],
+              "items": {
+                "type": "number"
+              },
+              "description": "A number with one handle, an array of two with two."
+            },
+            "handleCount": {
+              "type": "number"
+            },
+            "handle": {
+              "type": "number",
+              "description": "Index of the handle that moved."
+            }
+          },
+          "required": [
+            "component",
+            "values",
+            "value",
+            "handleCount",
+            "handle"
+          ]
+        },
+        "alias_of": "change"
+      },
+      "onSliderChange": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "type": "object"
+        },
+        "alias_of": "change"
+      }
+    },
+    "methods": {
+      "getSliderRoot": {
+        "summary": "Returns the inner slider root (.sf-range-slider), or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "getValue": {
+        "summary": "Returns the slider's current value: a number with one handle, an array of two numbers with two; null before the slider is built.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "number",
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "setValue": {
+        "summary": "Sets the value from code (a number, a comma-separated string or an array). The handle count follows the value unless multiple is set explicitly; the value admitted by range, step and margin is reflected to the value attribute. Does not dispatch change.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "number|string|array",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setDisabled": {
+        "summary": "Sets or removes the disabled attribute and re-renders.",
+        "arguments": [
+          {
+            "name": "nextValue",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setState": {
+        "summary": "Applies keys: value goes through setValue, multiple fixes the handle count explicitly, disabled through setDisabled; any other key is written as its kebab-case attribute (false, null, undefined or empty removes it, true sets it empty).",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onUpdateValue": {
+        "summary": "Adds a listener for sf-range-slider-update; the handler is called with (value, detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onSliderUpdate": {
+        "summary": "Same as onUpdateValue.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onChange": {
+        "summary": "Bind change, the committed value: handler(value, detail, event). Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": [
+            "object",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "onSliderChange": {
+        "summary": "Same as onChange: listens to change, the canonical name.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onSet": {
+        "summary": "Adds a listener for sf-range-slider-set; the handler is called with (value, detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onSliderSet": {
+        "summary": "Same as onSet.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onStart": {
+        "summary": "Adds a listener for sf-range-slider-start; the handler is called with (value, detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onSliderStart": {
+        "summary": "Same as onStart.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onEnd": {
+        "summary": "Adds a listener for sf-range-slider-end; the handler is called with (value, detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onSliderEnd": {
+        "summary": "Same as onEnd.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "number-type: step is a number, nullable -- null is «no step», the engine's own; margin stays a string (it holds a number or nothing, and the engine reads it as given)",
-    "version: 1.1.0 -- prefix is prefix-text and sf-range-slider-change and onSliderChange follow change, behind dated aliases; a minor while they hold (§4.10)",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
-    "examples: examples.json from studio.fixture.json and the docs",
-    "css-variables: five public variables read by the class sheet src/component/range-slider/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
-    "form: none -- the slider has no name and no form value today; a page reads value (it is not a form control in this version)",
-    "events.change: sent once by the host through sfEmit for a person's change, without the element in its detail (§8); the shim sends sf-range-slider-change and onSliderChange after it. A value set from code sends neither any more (§8), where sf-range-slider-change used to follow it",
-    "events sf-range-slider-update/-set/-start/-end and their onSlider* copies stay as they are, outside the interface: the class component's, read by the drag lock",
-    "host-states: none -- disabled is drawn by the template from the setting (the script no longer toggles the class)",
-    "accessibility.name: each handle is named from the host's aria-label or aria-labelledby, or in a range from lower-label and upper-label"
-  ]
+  }
 }

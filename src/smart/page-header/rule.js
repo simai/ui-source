@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // The header draws a badge for its count and its install mark, and an icon
 // button for its star; a tag it renders is a tag it fetches.
 SF.RuleLoader['cl-page-header'] = {
@@ -7,8 +8,8 @@ SF.RuleLoader['cl-page-header'] = {
   js: true,
   css: true,
   relation: [
-    {name: 'cl-badge'},
-    {name: 'cl-icon-button'},
-    {name: 'cl-icon'},
+    { name: 'cl-badge' },
+    { name: 'cl-icon-button' },
+    { name: 'cl-icon' },
   ],
 };

@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // sf-accordion loads on demand like any other Smart element. It draws the
 // class accordion's markup, so the class accordion is what it draws with: its
 // sheet (and its runtime, which leaves the element's sections alone), the

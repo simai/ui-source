@@ -11,6 +11,9 @@
       },
       "expect": {
         "download": true
+      },
+      "studio": {
+        "scenario": {}
       }
     },
     {
@@ -76,6 +79,128 @@
       "expect": {
         "disabled": true
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-download-file against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-download-file id=\"d\" file-name=\"Отчёт.pdf\" file-size=\"2,4 МБ\" href=\"/fixture/report\" download></sf-download-file>",
+          "  <sf-download-file id=\"d-btn\" file-name=\"Выгрузка.csv\" file-size=\"—\"></sf-download-file>",
+          "  <sf-download-file id=\"d-off\" file-name=\"Архив.zip\" file-size=\"120 МБ\" href=\"/fixture/zip\" disabled></sf-download-file>",
+          "  <sf-download-file id=\"d-bad\" file-name=\"x.txt\" file-size=\"1 КБ\" size=\"7\"></sf-download-file>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-link",
+          "title": "href draws a native download link named by the file",
+          "covers": "settings.href, settings.download, accessibility.role link",
+          "steps": [
+            {
+              "check": "(() => { const a = document.querySelector('#d a.sf-download-file'); return a && a.getAttribute('href') === '/fixture/report' && a.getAttribute('download') === 'Отчёт.pdf' && a.textContent.includes('Отчёт.pdf') && a.textContent.includes('2,4 МБ'); })()",
+              "expect": {
+                "values": {
+                  "#d.download": true,
+                  "#d.fileName": "Отчёт.pdf"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2-request-then-alias",
+          "title": "a press sends sf-download-file-download, then the dated sf-download-file:click, one detail",
+          "covers": "events.download, aliases.json sf-download-file:click",
+          "steps": [
+            {
+              "script": "(() => { document.addEventListener('sf-download-file-download', (e) => e.preventDefault(), {once: true}); return true; })()"
+            },
+            {
+              "user": "click:#d-btn button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-download-file-download",
+                    "count": 1,
+                    "detail": {
+                      "href": "",
+                      "fileName": "Выгрузка.csv",
+                      "download": false
+                    }
+                  },
+                  {
+                    "name": "sf-download-file:click",
+                    "count": 1,
+                    "detail": {
+                      "fileName": "Выгрузка.csv"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-cancel-stops",
+          "title": "a refused request stops the link",
+          "covers": "events.download cancelable",
+          "steps": [
+            {
+              "script": "(() => { window.__prevented = null; document.addEventListener('sf-download-file-download', (e) => e.preventDefault(), {once: true}); document.addEventListener('click', (e) => { window.__prevented = e.defaultPrevented; }, {once: true}); document.querySelector('#d a').click(); return true; })()"
+            },
+            {
+              "check": "window.__prevented === true && location.pathname === '/probe'"
+            }
+          ]
+        },
+        {
+          "id": "p4-disabled",
+          "title": "disabled draws a disabled button and sends nothing",
+          "covers": "settings.disabled",
+          "steps": [
+            {
+              "script": "(() => { window.__dl = 0; document.addEventListener('sf-download-file-download', () => { window.__dl += 1; }); document.querySelector('#d-off button').click(); return true; })()"
+            },
+            {
+              "check": "window.__dl === 0 && document.querySelector('#d-off button').disabled && !document.querySelector('#d-off a')"
+            }
+          ]
+        },
+        {
+          "id": "p5-size",
+          "title": "a size off the ladder reads as 1",
+          "covers": "settings.size enum",
+          "steps": [
+            {
+              "check": "document.querySelector('#d-bad .sf-download-file').classList.contains('sf-download-file--size-1')",
+              "expect": {
+                "values": {
+                  "#d-bad.size": "1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p6-public-variable",
+          "title": "--sf-download-file-border-color draws the border at rest",
+          "covers": "css-variables --sf-download-file-border-color",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#d-btn').style.setProperty('--sf-download-file-border-color', 'rgb(1, 2, 3)'); return true; })()"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#d-btn .sf-download-file')).borderTopColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

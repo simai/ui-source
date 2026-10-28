@@ -7,6 +7,7 @@
   ],
   "sheets": [
     "component/range-slider/css/range-slider.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
@@ -17,8 +18,53 @@
     "utility/position/default/css/default.min.css"
   ],
   "examples": {
-    "default": [
+    "disabled": [
       "component/range-slider/css/range-slider.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "reference": [
+      "component/range-slider/css/range-slider.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "single": [
+      "component/range-slider/css/range-slider.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "stepped": [
+      "component/range-slider/css/range-slider.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/isolate/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
+    ],
+    "tooltip": [
+      "component/range-slider/css/range-slider.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",

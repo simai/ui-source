@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -24,6 +24,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.avatars",
       "component.badges"
     ],
     "public_parts": []
@@ -33,7 +34,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "size": {
         "type": "string",
@@ -50,13 +60,13 @@
       "line": {
         "type": "string",
         "default": "",
+        "description": "Takes the text line of this form size instead of a control height, for an avatar beside a label in a row or a table cell.",
         "enum": [
           "",
           "1/2",
           "1",
           "2"
-        ],
-        "description": "Takes the text line of this form size instead of a control height, for an avatar beside a label in a row or a table cell."
+        ]
       },
       "shape": {
         "type": "string",
@@ -93,12 +103,7 @@
           "verified"
         ]
       },
-      "aria-label": {
-        "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Avatar\" in English)."
-      },
-      "title": {
+      "heading": {
         "type": "string",
         "default": ""
       },
@@ -139,16 +144,23 @@
       "badge-cap": {
         "type": "integer",
         "default": 99,
-        "description": "The largest count drawn as a number; a larger one reads «<cap>+»."
+        "description": "The largest count drawn as a number; a larger one reads «<cap>+».",
+        "minimum": 1
       },
       "badge-label": {
         "type": "string",
         "default": "",
         "description": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
       },
-      "heading": {
+      "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Empty: the text of the page's language (\"Avatar\" in English)."
+      },
+      "title": {
+        "type": "string",
+        "default": "",
+        "description": "Dated alias of heading until 2026-12-01."
       }
     },
     "additionalProperties": false
@@ -188,7 +200,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "button",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"

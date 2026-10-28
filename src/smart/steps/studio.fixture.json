@@ -10,7 +10,17 @@
     "completed-label": "Завершено",
     "current": 1,
     "error-label": "Ошибка",
-    "items": "Черновик|Проверка|Готово"
+    "items": [
+      {
+        "label": "Черновик"
+      },
+      {
+        "label": "Проверка"
+      },
+      {
+        "label": "Готово"
+      }
+    ]
   },
   "children": [],
   "state": "default"

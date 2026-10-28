@@ -2,27 +2,31 @@
   "$comment": "The source of sf-resizer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/resizer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.resizer",
   "tag": "sf-resizer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "kind": "leaf",
   "family": "resizer",
   "settings": {
     "min": {
       "type": "string",
       "default": "12rem",
-      "x-summary": "The narrowest width: a CSS length, tokens included"
+      "x-summary": "The narrowest width: a CSS length, tokens included",
+      "summary": "The narrowest width, a CSS length (tokens and percentages of the panel's parent too)."
     },
     "max": {
       "type": "string",
       "default": "40rem",
-      "x-summary": "The widest width: a CSS length, tokens included"
+      "x-summary": "The widest width: a CSS length, tokens included",
+      "summary": "The widest width, a CSS length."
     },
     "property": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A CSS custom property the width is written to on the target; empty writes inline-size."
     },
     "target": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A selector of the closest ancestor that is the panel; empty is the parent."
     },
     "edge": {
       "type": "enum",
@@ -36,15 +40,18 @@
       "type": "number",
       "default": 16,
       "min": 1,
-      "x-summary": "Pixels an arrow key moves; Shift, PageUp and PageDown move four steps"
+      "x-summary": "Pixels an arrow key moves; Shift, PageUp and PageDown move four steps",
+      "summary": "Pixels an arrow key moves; Shift moves four steps."
     },
     "storage-key": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Remembers the width in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
     },
     "label": {
       "type": "string",
-      "default-from": "runtime.label"
+      "default-from": "runtime.label",
+      "summary": "The accessible name; defaults to the page language's «Resize»."
     },
     "disabled": {
       "type": "boolean",
@@ -54,7 +61,8 @@
       "type": "number",
       "nullable": true,
       "default": null,
-      "x-summary": "A width the host keeps for the person, in pixels; it wins over this browser's memory"
+      "x-summary": "A width the host keeps for the person, in pixels; it wins over this browser's memory",
+      "summary": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory."
     }
   },
   "values": {},
@@ -89,6 +97,7 @@
       "Space": "revert"
     }
   },
+  "relations": [],
   "templates": {
     "default": {
       "file": "none",
@@ -142,6 +151,22 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-resizer for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-resize",
+        "to": "sf-resizer-resize",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, vocabulary §7",
+        "note": "the old name follows with the same detail {width, phase}",
+        "summary": "The width changed: while dragging (move), after a drag or a key (end), or back to the stylesheet's width (reset)."
+      }
+    ]
+  },
   "x-summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
   "x-source": {
     "package": "framework",
@@ -156,14 +181,82 @@
     "events.sf-resize → resize (sf-resizer-resize): the DOM name takes the tag (§8, vocabulary §7)",
     "settings.step: a numeral → number (§16 item 29); value: a width in pixels → number, nullable"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "number-type: min and max are CSS lengths with tokens (12rem, var(--sf-g3)), resolved in the target's context, so they stay strings; step is a number of pixels from 1; value is a number of pixels, nullable (no width kept).",
+    "own-verb-words: resize is a verb of the resizer alone (vocabulary §5 has none for a width); its word is lang events.resize.label. It reports, it does not ask: not cancelable.",
+    "version: 1.0.0 → 1.1.0: sf-resize is a dated alias of sf-resizer-resize, step and value are numbers; a minor while the alias holds (§4.10).",
+    "key-effects: role separator; ArrowLeft and ArrowRight step:-1 and step:+1 (step pixels, in the writing direction), PageUp and PageDown step:+page and step:-page (four steps), Home and End to:min and to:max, Enter and Space revert (back to the width the stylesheet gives, forgotten); keyboard.host says the same.",
+    "persistence (§7.5): the width is a person's view preference; with storage-key it is kept in this browser through SF.Preferences (persist local, key sf-resizer/<storage-key>) and the host may keep it for the person and hand it back as value; a leaf has no keys, so the manifest keeps it as these two settings.",
+    "base: the handle draws nothing, so it stays an HTMLElement: elementFromManifest over a host base that gives the scope (§7.7) and installs aliases.json (§16.20); the Smart renderer would add nothing.",
+    "target: the setting is its attribute (a selector of the ancestor to resize); the property target stays the method target() that answers that element, public since 1.0.0, so a page that calls it does not break; the property form waits for the next major.",
+    "template: none; the host is the separator and its line is a ::after of its sheet (scss/_smart__resizer.scss).",
+    "examples: examples.json from studio.fixture.json plus a remembered width, the inline-start edge and a disabled handle; probe.json drives the keys, the value and the alias.",
+    "skeleton: none; the handle has no data of its own: the target's width is the page's first paint, restored after layout.",
+    "side-effects: none outside its target: it writes the width (inline-size or the named custom property) on the panel it stands in, which is its job, and marks html[data-sf-resizer-active] while dragging.",
+    "css-variables: five public variables read by its own sheet (src/core/contracts/public-variables.v1.json)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null,
+      "view_preference": {
+        "key": "sf-resizer/<storage-key>",
+        "general_key": null,
+        "v": 1,
+        "fields": {
+          "width": {
+            "type": "integer",
+            "description": "The width the person dragged to, in CSS pixels, clamped to min and max when it is applied.",
+            "seed": true,
+            "written_by": [
+              "sf-resizer"
+            ]
+          }
+        }
+      }
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "resizer",
+      "splitter",
+      "layout"
+    ],
+    "contracts": {
+      "attach": {
+        "type": "object",
+        "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value."
+      }
+    },
+    "state": {
+      "machines": {
+        "drag": [
+          "idle",
+          "resizing"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "active",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -173,6 +266,14 @@
         "backend access decisions",
         "saving the width on a server"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -189,7 +290,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-resizer when a person should widen or narrow a panel, a menu column or a side area by its edge. Put it inside the panel; give min and max; write the width to the variable the panel's stylesheet reads.",
@@ -209,20 +314,43 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "ArrowLeft",
+        "ArrowRight",
+        "Home",
+        "End",
+        "PageUp",
+        "PageDown",
+        "Enter",
+        "Space"
+      ],
+      "focus": "The handle is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows change the width by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
+    },
+    "alias-events": {
+      "sf-resize": {
+        "summary": "The width changed: while dragging (move), after a drag or a key (end), or back to the stylesheet's width (reset).",
+        "payload": {
+          "type": "object",
+          "required": [
+            "width",
+            "phase"
+          ],
+          "properties": {
+            "width": {
+              "type": "number"
+            },
+            "phase": {
+              "enum": [
+                "move",
+                "end",
+                "reset"
+              ]
+            }
+          }
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "number-type: min and max are CSS lengths with tokens (12rem, var(--sf-g3)), resolved in the target's context, so they stay strings; step is a number of pixels from 1; value is a number of pixels, nullable (no width kept).",
-    "own-verb-words: resize is a verb of the resizer alone (vocabulary §5 has none for a width); its word is lang events.resize.label. It reports, it does not ask: not cancelable.",
-    "version: 1.0.0 → 1.1.0: sf-resize is a dated alias of sf-resizer-resize, step and value are numbers; a minor while the alias holds (§4.10).",
-    "key-effects: role separator; ArrowLeft and ArrowRight step:-1 and step:+1 (step pixels, in the writing direction), PageUp and PageDown step:+page and step:-page (four steps), Home and End to:min and to:max, Enter and Space revert (back to the width the stylesheet gives, forgotten); keyboard.host says the same.",
-    "persistence (§7.5): the width is a person's view preference; with storage-key it is kept in this browser through SF.Preferences (persist local, key sf-resizer/<storage-key>) and the host may keep it for the person and hand it back as value; a leaf has no keys, so the manifest keeps it as these two settings.",
-    "base: the handle draws nothing, so it stays an HTMLElement: elementFromManifest over a host base that gives the scope (§7.7) and installs aliases.json (§16.20); the Smart renderer would add nothing.",
-    "target: the setting is its attribute (a selector of the ancestor to resize); the property target stays the method target() that answers that element, public since 1.0.0, so a page that calls it does not break; the property form waits for the next major.",
-    "template: none; the host is the separator and its line is a ::after of its sheet (scss/_smart__resizer.scss).",
-    "examples: examples.json from studio.fixture.json plus a remembered width, the inline-start edge and a disabled handle; probe.json drives the keys, the value and the alias.",
-    "skeleton: none; the handle has no data of its own: the target's width is the page's first paint, restored after layout.",
-    "side-effects: none outside its target: it writes the width (inline-size or the named custom property) on the panel it stands in, which is its job, and marks html[data-sf-resizer-active] while dragging.",
-    "css-variables: five public variables read by its own sheet (src/core/contracts/public-variables.v1.json)."
-  ]
+  }
 }

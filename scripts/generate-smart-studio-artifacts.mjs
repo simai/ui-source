@@ -348,7 +348,20 @@ if (componentFilter !== '' && directories.length === 0) {
 }
 const changes = [];
 
+// A folder in the standard 1.4 form (component.json names its relations) has
+// its manifest, fixture and scenario written by
+// scripts/generate-component-files.mjs from component.json and examples.json;
+// this script leaves it alone (it retires with phase A).
+async function isComponentFiles14(name) {
+  try {
+    return Array.isArray(JSON.parse(await readFile(path.join(root, 'src/smart', name, 'component.json'), 'utf8')).relations);
+  } catch {
+    return false;
+  }
+}
+
 for (const {name} of directories) {
+  if (await isComponentFiles14(name)) continue;
   const componentRoot = path.join(root, 'src/smart', name);
   const manifestFile = path.join(componentRoot, 'smart.manifest.json');
   const sourceFile = path.join(componentRoot, 'index.js');

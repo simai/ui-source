@@ -16,16 +16,6 @@
       "reason": "Follows the page: the document's lang, else the browser's language."
     },
     {
-      "component": "datepicker",
-      "prop": "month",
-      "reason": "The current month when not set; the manifest's null means 'today'."
-    },
-    {
-      "component": "datepicker",
-      "prop": "year",
-      "reason": "The current year when not set; the manifest's null means 'today'."
-    },
-    {
       "component": "drawer",
       "prop": "zIndex",
       "reason": "The template composes the drawer's layer from its token when no z-index is given."
@@ -34,11 +24,6 @@
       "component": "gallery",
       "prop": "modalId",
       "reason": "Generated per instance when not set."
-    },
-    {
-      "component": "menu",
-      "prop": "toggleLabel",
-      "reason": "Follows the page language when not set: «Меню» on a Russian page, «Menu» otherwise."
     },
     {
       "component": "modal",
@@ -59,11 +44,6 @@
       "component": "breadcrumbs",
       "prop": "ariaLabel",
       "reason": "The page language's text when not set: \"Breadcrumb\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "breadcrumbs",
-      "prop": "expandLabel",
-      "reason": "The page language's text when not set: \"Show hidden breadcrumbs\" on an English page, the dictionary's word on another."
     },
     {
       "component": "drawer",
@@ -201,16 +181,6 @@
       "reason": "The page language's text when not set: \"Steps\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "steps",
-      "prop": "completedLabel",
-      "reason": "The page language's text when not set: \"Completed\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "steps",
-      "prop": "errorLabel",
-      "reason": "The page language's text when not set: \"Error\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "toast",
       "prop": "closeLabel",
       "reason": "The page language's text when not set: \"Close message\" on an English page, the dictionary's word on another."
@@ -231,34 +201,9 @@
       "reason": "The page language's text when not set: \"Remove\" on an English page, the dictionary's word on another."
     },
     {
-      "component": "help-mark",
-      "prop": "label",
-      "reason": "The page language's text when not set: \"More information\" on an English page, the dictionary's word on another (lang runtime.label)."
-    },
-    {
-      "component": "color",
-      "prop": "chooseLabel",
-      "reason": "The page language's text when not set: \"Choose a colour\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "color",
-      "prop": "clearLabel",
-      "reason": "The page language's text when not set: \"Use the inherited colour\" on an English page, the dictionary's word on another."
-    },
-    {
       "component": "color",
       "prop": "inheritedText",
       "reason": "The page language's text when not set: \"inherited\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "theme-generator",
-      "prop": "hue",
-      "reason": "Read from the colour when not set: the hue the main colour stands for (265 and 85 for the Framework's own #005bbe)."
-    },
-    {
-      "component": "theme-generator",
-      "prop": "chroma",
-      "reason": "Read from the colour when not set: the chroma the main colour stands for (265 and 85 for the Framework's own #005bbe)."
     },
     {
       "component": "input",
@@ -269,11 +214,6 @@
       "component": "input",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
-    },
-    {
-      "component": "profile-picker",
-      "prop": "label",
-      "reason": "The language file's word when not set (standard 1.3.8 §11, label default-from runtime.label): \"Profile\" on an English page, «Профиль» on a Russian one."
     },
     {
       "component": "textarea",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -21,7 +21,10 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "smart.modal",
+      "smart.slider"
+    ],
     "public_parts": []
   },
   "inputs": {
@@ -29,27 +32,27 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "modal-id": {
         "type": "string",
         "default": ""
       },
-      "title": {
-        "type": "string",
-        "default": "Gallery"
+      "heading": {
+        "type": "string"
       },
       "text": {
         "type": "string",
         "default": ""
-      },
-      "open": {
-        "type": "boolean",
-        "default": false
-      },
-      "current": {
-        "type": "number",
-        "default": 1
       },
       "inline": {
         "type": "boolean",
@@ -104,10 +107,6 @@
         "default": ""
       },
       "thumb-class": {
-        "type": "string",
-        "default": ""
-      },
-      "root-class": {
         "type": "string",
         "default": ""
       },
@@ -170,7 +169,7 @@
         "type": "string",
         "default": ""
       },
-      "blur": {
+      "backdrop-blur": {
         "type": "boolean",
         "default": false
       },
@@ -220,12 +219,23 @@
         "type": "string",
         "default": ""
       },
-      "heading": {
-        "type": "string"
-      },
-      "backdrop-blur": {
+      "open": {
         "type": "boolean",
         "default": false
+      },
+      "current": {
+        "type": "integer",
+        "default": 1,
+        "minimum": 1
+      },
+      "title": {
+        "type": "string",
+        "description": "Dated alias of heading until 2026-12-01."
+      },
+      "blur": {
+        "type": "boolean",
+        "default": false,
+        "description": "Dated alias of backdrop-blur until 2026-12-01."
       }
     },
     "additionalProperties": false
@@ -233,6 +243,75 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "open": {
+      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "close": {
+      "summary": "Removes open and closes the lightbox modal. Returns the element.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "toggle": {
+      "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "goTo": {
+      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches sf-change when it moved. Returns the element.",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "next": {
+      "summary": "goTo(current + 1); stops at the last slide. Returns the element.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "prev": {
+      "summary": "goTo(current - 1); stops at the first slide. Returns the element.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
     "getModal": {
       "summary": "Returns the lightbox sf-modal, or null when there is none.",
       "arguments": [],
@@ -262,75 +341,78 @@
           "null"
         ]
       }
-    },
-    "open": {
-      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
-      "arguments": [
-        {
-          "name": "index",
-          "type": "number",
-          "required": false
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "close": {
-      "summary": "Removes open and closes the lightbox modal. Returns the element.",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "toggle": {
-      "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
-      "arguments": [
-        {
-          "name": "index",
-          "type": "number",
-          "required": false
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "goTo": {
-      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches sf-change when it moved. Returns the element.",
-      "arguments": [
-        {
-          "name": "index",
-          "type": "number",
-          "required": true
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "next": {
-      "summary": "goTo(current + 1); stops at the last slide. Returns the element.",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "prev": {
-      "summary": "goTo(current - 1); stops at the first slide. Returns the element.",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
     }
   },
   "events": {
+    "change": {
+      "summary": "change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "current",
+          "total",
+          "from"
+        ],
+        "properties": {
+          "previous": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "from": {
+            "enum": [
+              "api",
+              "inline",
+              "lightbox"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-gallery-opened": {
+      "summary": "opened (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "current",
+          "total"
+        ],
+        "properties": {
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-gallery-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "current",
+          "total"
+        ],
+        "properties": {
+          "current": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-change": {
       "summary": "The current slide changed through the API or either slider. Bubbles and is composed.",
       "payload": {
@@ -450,7 +532,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "none",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"

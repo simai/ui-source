@@ -1,0 +1,28 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "studio": {
+        "props": {
+          "label": "Включено",
+          "checked": true
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "setChecked",
+              "with": [
+                false
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -10,6 +10,9 @@
       "expect": {
         "icon": "home",
         "size": "1"
+      },
+      "studio": {
+        "scenario": {}
       }
     },
     {
@@ -70,6 +73,114 @@
       "expect": {
         "badge-dot": true
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-icon against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-icon id=\"i-home\" icon=\"home\" size=\"1\"></sf-icon>",
+          "  <sf-icon id=\"i-label\" icon=\"verified\" label=\"Проверено\"></sf-icon>",
+          "  <sf-icon id=\"i-old\" icon=\"star\" type=\"shape\"></sf-icon>",
+          "  <sf-icon id=\"i-axes\" icon=\"settings\" weight=\"700\" grade=\"500\" optical-size=\"10\" filled></sf-icon>",
+          "  <sf-icon id=\"i-count\" icon=\"mail\" label=\"Почта\" badge-count=\"5\" size=\"3\"></sf-icon>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-decorative",
+          "title": "an icon without label is aria-hidden and draws its ligature on the size class",
+          "covers": "settings.icon, settings.size, accessibility (decorative)",
+          "steps": [
+            {
+              "check": "(() => { const i = document.querySelector('#i-home i.sf-icon'); return i.textContent.trim() === 'home' && i.getAttribute('aria-hidden') === 'true' && !i.hasAttribute('role') && i.classList.contains('sf-icon--size-1'); })()",
+              "expect": {
+                "values": {
+                  "#i-home.icon": "home",
+                  "#i-home.size": "1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2-labelled",
+          "title": "label makes the glyph an image named by it",
+          "covers": "accessibility.role img, accessibility.name label",
+          "steps": [
+            {
+              "check": "(() => { const i = document.querySelector('#i-label i.sf-icon'); return i.getAttribute('role') === 'img' && i.getAttribute('aria-label') === 'Проверено' && !i.hasAttribute('aria-hidden'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-shape-dated",
+          "title": "the old family name shape draws sharp and is noted with its dates",
+          "covers": "aliases.json value shape -> sharp",
+          "steps": [
+            {
+              "check": "document.querySelector('#i-old i.sf-icon').classList.contains('sf-icon--sharp') && document.querySelector('#i-old').getAttribute('type') === 'sharp' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-icon' && note.from === 'shape' && note.remove_after === '2026-12-01')"
+            }
+          ]
+        },
+        {
+          "id": "p4-axes-bounded",
+          "title": "weight, filled and the clamped axes reach the glyph",
+          "covers": "settings.weight, settings.filled, settings.grade max, settings.optical-size min",
+          "steps": [
+            {
+              "check": "(() => { const i = document.querySelector('#i-axes i.sf-icon'); return i.classList.contains('sf-icon--weight-bold') && i.classList.contains('sf-icon--filled') && i.style.getPropertyValue('--sf-icon--grade') === '200' && i.style.getPropertyValue('--sf-icon--optical-size') === '20'; })()",
+              "expect": {
+                "values": {
+                  "#i-axes.weight": 700,
+                  "#i-axes.filled": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-count-badge",
+          "title": "a count stands on the icon and joins the name",
+          "covers": "settings.badge-count, lang runtime.count",
+          "steps": [
+            {
+              "check": "(() => { const anchor = document.querySelector('#i-count .sf-badge-anchor'); return Boolean(anchor) && anchor.getAttribute('role') === 'img' && anchor.getAttribute('aria-label').startsWith('Почта') && anchor.getAttribute('aria-label').includes('5'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-property",
+          "title": "the icon property writes the attribute and the glyph follows",
+          "covers": "settings.icon property",
+          "steps": [
+            {
+              "script": "document.querySelector('#i-home').icon = 'search'"
+            },
+            {
+              "check": "document.querySelector('#i-home').getAttribute('icon') === 'search' && document.querySelector('#i-home i.sf-icon').textContent.trim() === 'search'"
+            }
+          ]
+        },
+        {
+          "id": "p7-public-variable",
+          "title": "--sf-icon-glyph-size sizes the glyph",
+          "covers": "css-variables --sf-icon-glyph-size",
+          "steps": [
+            {
+              "script": "document.querySelector('#i-home').style.setProperty('--sf-icon-glyph-size', '40px')"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#i-home i.sf-icon')).width === '40px'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

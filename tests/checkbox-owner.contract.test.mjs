@@ -40,9 +40,11 @@ test('Checkbox public contract closes size, position, state and keyboard axes', 
   // The closed axes are the component.json's (standard 1.3.8), from which
   // core/js/element-manifest.js makes the props.
   const declared = JSON.parse(await source('src/smart/checkbox/component.json'));
+  // A setting's words (summary) are component.json's own since standard 1.4.
+  const bare = ({summary, examples, ...rest}) => rest;
   assert.match(runtime, /elementFromManifest\(manifest,/);
-  assert.deepEqual(declared.settings.size, {type: 'enum', values: ['1/2', '1', '2'], default: '1'});
-  assert.deepEqual(declared.settings.position, {type: 'enum', values: ['start', 'end'], default: 'start'});
+  assert.deepEqual(bare(declared.settings.size), {type: 'enum', values: ['1/2', '1', '2'], default: '1'});
+  assert.deepEqual(bare(declared.settings.position), {type: 'enum', values: ['start', 'end'], default: 'start'});
   assert.deepEqual(Object.keys(declared.accessibility.keys), ['Tab', 'Space']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.deepEqual(manifest.inputs.properties.position.enum, ['start', 'end']);

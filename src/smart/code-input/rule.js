@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // sf-code-input loads on demand like any other Smart element. It draws the
 // class verification's markup, so the class verification is what it draws
 // with: its sheet (and its runtime, which leaves the element's field alone),

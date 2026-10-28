@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -22,6 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icon-buttons",
+      "component.icons",
       "component.switch"
     ],
     "public_parts": [
@@ -35,6 +37,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -57,10 +72,6 @@
         "type": "string",
         "default": ""
       },
-      "checked": {
-        "type": "boolean",
-        "default": false
-      },
       "disabled": {
         "type": "boolean",
         "default": false
@@ -73,6 +84,10 @@
         "type": "string",
         "default": "on",
         "description": "What a checked switch submits; without it, \"on\", as a native checkbox (simai/ui-source#38)."
+      },
+      "checked": {
+        "type": "boolean",
+        "default": false
       },
       "aria-label": {
         "type": "string",
@@ -240,7 +255,8 @@
     "change": {
       "summary": "The on state changed; the native event bubbles from the inner checkbox, which is its target.",
       "payload": {
-        "type": "object"
+        "type": "null",
+        "description": "A native Event: there is no detail."
       },
       "canonical": true
     },
@@ -369,7 +385,7 @@
       },
       {
         "path": "src/smart/switch/rule.js",
-        "sha256": "c2235953a04aafc36207326d0ce146dd7d97fbaecbb32eeacb045ff1301d5119"
+        "sha256": "d403c7ea02a0bf62234774f710690be219dd4c100469905cf14568467e30e6bf"
       },
       {
         "path": "src/smart/switch/js/templates/default.js",

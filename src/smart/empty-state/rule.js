@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 SF.RuleLoader['cl-empty-state'] = {
   tags: ['sf-empty-state'],
   type: 'smart',

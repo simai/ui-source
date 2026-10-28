@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // sf-menu loads on demand like any other Smart element. It draws the class
 // menu's markup, so the class menu is what it draws with: its sheet (and its
 // runtime, which leaves the element's markup alone), the icon font for the

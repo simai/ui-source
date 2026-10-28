@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.accordion",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Accordion",
   "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "kind": "smart",
@@ -29,6 +29,7 @@
   "composition": {
     "uses": [
       "component.accordion",
+      "component.icons",
       "smart.badge"
     ],
     "public_parts": []
@@ -38,69 +39,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "items": {
-        "type": "array",
-        "default": [],
-        "description": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
-            },
-            "title": {
-              "type": "string",
-              "description": "The header's title."
-            },
-            "content": {
-              "type": "string",
-              "description": "The section's text. Text, never markup: markup goes in a slot."
-            },
-            "slot": {
-              "type": "string",
-              "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
-            },
-            "open": {
-              "type": "boolean",
-              "description": "Open at first. In single mode only the first open section stays open."
-            },
-            "disabled": {
-              "type": "boolean",
-              "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
-            },
-            "icon": {
-              "type": "string",
-              "description": "An icon before the title, a name from the icon font."
-            },
-            "badge": {
-              "type": "string",
-              "description": "A count or a label after the title, drawn by sf-badge."
-            }
-          },
-          "required": [
-            "title"
-          ],
-          "additionalProperties": false
-        },
-        "examples": [
-          [
-            {
-              "id": "main",
-              "title": "Основное",
-              "content": "Название и описание",
-              "open": true
-            },
-            {
-              "id": "seo",
-              "title": "SEO",
-              "content": "Заголовок страницы",
-              "badge": "3"
-            }
-          ]
-        ]
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "single": {
         "type": "boolean",
@@ -149,20 +97,73 @@
         ]
       },
       "heading-level": {
-        "type": "string",
-        "default": "3",
+        "type": "integer",
+        "default": 3,
         "description": "The level of each section's heading (role heading, aria-level).",
-        "enum": [
-          "2",
-          "3",
-          "4",
-          "5",
-          "6"
-        ]
+        "minimum": 2,
+        "maximum": 6
       },
-      "root-class": {
-        "type": "string",
-        "default": ""
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it.",
+        "examples": [
+          [
+            {
+              "id": "main",
+              "title": "Основное",
+              "content": "Название и описание",
+              "open": true
+            },
+            {
+              "id": "seo",
+              "title": "SEO",
+              "content": "Заголовок страницы",
+              "badge": "3"
+            }
+          ]
+        ],
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
+            },
+            "title": {
+              "type": "string",
+              "description": "The header's title."
+            },
+            "content": {
+              "type": "string",
+              "description": "The section's text. Text, never markup: markup goes in a slot."
+            },
+            "slot": {
+              "type": "string",
+              "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "Open at first. In single mode only the first open section stays open."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
+            },
+            "icon": {
+              "type": "string",
+              "description": "An icon before the title, a name from the icon font."
+            },
+            "badge": {
+              "type": "string",
+              "description": "A count or a label after the title, drawn by sf-badge."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        }
       }
     },
     "additionalProperties": false
@@ -225,8 +226,7 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
       "returns": {
@@ -238,8 +238,7 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
       "returns": {
@@ -251,8 +250,7 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
       "returns": {
@@ -274,6 +272,34 @@
     }
   },
   "events": {
+    "sf-accordion-toggle": {
+      "summary": "toggle (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "open",
+          "source",
+          "section"
+        ],
+        "properties": {
+          "id": {},
+          "open": {
+            "type": "boolean"
+          },
+          "source": {
+            "enum": [
+              "user",
+              "method"
+            ]
+          },
+          "section": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-accordion:toggle": {
       "summary": "A section opened or closed, by the person (source user) or by a method (source method). In single mode the section it closed sends its own, after the one asked for, as a native <details name> group does.",
       "payload": {
@@ -433,7 +459,7 @@
       },
       {
         "path": "src/smart/accordion/rule.js",
-        "sha256": "93a6b08c16c0b6e05b68ca2bdfc4ee4059316aa718a2f826143b986d05b5ea12"
+        "sha256": "cfab5a4eb5b9ebbd0f821bf34cbb42a8d07ee6811bdf07179e991fa2781e2277"
       },
       {
         "path": "src/smart/accordion/docs.md",

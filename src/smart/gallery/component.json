@@ -2,7 +2,7 @@
   "$comment": "The source of sf-gallery's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/gallery (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.gallery",
   "tag": "sf-gallery",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "gallery",
   "settings": {
@@ -239,14 +239,24 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Opens the lightbox, at index when given; refused (no-lightbox) without a lightbox"
+      "x-summary": "Opens the lightbox, at index when given; refused (no-lightbox) without a lightbox",
+      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "close": {
       "x-outcomes": [
         "applied",
         "refused"
       ],
-      "x-summary": "Closes the lightbox; refused (closed) when it is closed"
+      "x-summary": "Closes the lightbox; refused (closed) when it is closed",
+      "summary": "Removes open and closes the lightbox modal. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "toggle": {
       "with": {
@@ -258,7 +268,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "go-to": {
       "with": {
@@ -268,19 +283,34 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Shows the slide at index (1-based, clamped to the slides)"
+      "x-summary": "Shows the slide at index (1-based, clamped to the slides)",
+      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches sf-change when it moved. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "next": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "goTo(current + 1); stops at the last slide. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "prev": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "goTo(current - 1); stops at the first slide. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "slots": {
@@ -298,6 +328,14 @@
       "Space": "open"
     }
   },
+  "relations": [
+    {
+      "name": "cl-slider"
+    },
+    {
+      "name": "cl-modal"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -344,6 +382,76 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-gallery for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26"
+      },
+      {
+        "from": "blur",
+        "to": "backdrop-blur",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26: blur is the base action blur"
+      },
+      {
+        "from": "sf-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the detail is data only now: component, tagName and template leave it",
+        "summary": "The current slide changed through the API or either slider. Bubbles and is composed."
+      },
+      {
+        "from": "sf-open",
+        "to": "sf-gallery-opened",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, vocabulary §4 (a fact)",
+        "note": "the detail is data only now",
+        "summary": "The lightbox modal finished opening. Bubbles and is composed."
+      },
+      {
+        "from": "sf-close",
+        "to": "sf-gallery-closed",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, vocabulary §4 (a fact)",
+        "note": "the detail is data only now",
+        "summary": "The lightbox modal finished closing. Bubbles and is composed."
+      },
+      {
+        "from": "getModal",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4",
+        "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "getInlineSlider",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4",
+        "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "getLightboxSlider",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4",
+        "note": "a reader retires; the method stays until the date and notes each call"
+      }
+    ]
+  },
   "x-summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "x-source": {
     "package": "framework",
@@ -369,14 +477,32 @@
     "events.open → opened and close → closed: they are sent after the lightbox opened or closed, so they are facts and take the past form (§8, vocabulary §4); the DOM names are sf-gallery-opened and sf-gallery-closed",
     "methods.getModal, getInlineSlider, getLightboxSlider: readers retire (§4.4), kept and noted until the date"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0: title, blur, sf-change, sf-open, sf-close and the three readers are dated rows, the actions answer outcomes; a minor while the rows hold (§4.10).",
+    "events: change {previous, current, total, from} keeps the DOM name change (§8); the lightbox's facts are opened and closed {current, total} (sf-gallery-opened, -closed), sent after the modal opened or closed, so the past form. sf-change, sf-open and sf-close follow with the same detail until 2026-12-01; component, tagName and template leave the detail (§8). A nested slider's change stops at the gallery, which reports it as its own change.",
+    "a11y-role: none on the root. The inline view is sf-slider; the lightbox is sf-modal (role dialog, named by heading, traps focus, Escape closes when close-on-esc).",
+    "key-effects: Enter and Space on a [data-sf-gallery-open] trigger open the lightbox (open); Tab reaches the slider's and the modal's controls.",
+    "number-type: button-size and dots-size are steps of the size ladder (1/2, 1, 2) handed to sf-slider, not numbers; they stay strings. current is an integer from 1.",
+    "words: the lightbox's heading was the English «Gallery» on every page; it is the language file's word now (heading default-from runtime.heading: «Галерея», «Gallery»).",
+    "lightbox: the template hands sf-modal its own names, heading and backdrop-blur, so the modal's dated aliases are not used by the Framework itself; a trigger's data-sf-modal-title and data-sf-modal-blur keep configuring the delegated lightbox.",
+    "template: templates.default names the Lit template js/templates/default.js and styles its sheet js/templates/default.css, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the lightbox and the actions; probe.json drives go-to, next, open, close and the aliases.",
+    "skeleton: none; the slides are the page's children, drawn before any code; the lightbox is closed at first paint (§5.4).",
+    "css-variables: five public variables read by the gallery's own sheet; the slider's and the modal's pass through (src/core/contracts/public-variables.v1.json).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The slide attributes are printed in the order the element sets them."
+  ],
+  "x-rule": {
+    "regex": "/data-sf-gallery(?:\\s|=|>|$)/"
+  },
+  "x-registry": {
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open",
+        "closed"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -386,6 +512,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -399,7 +533,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-gallery for one ordered media collection with one-based current state, an inline Slider and optional Modal lightbox. Nested Sliders inherit token-driven spacing, reduced-motion behavior, autoplay pause and hidden-slide focus protection unless the author supplies explicit compatibility overrides.",
@@ -424,21 +562,131 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "Tab"
+      ]
+    },
+    "alias-events": {
+      "sf-change": {
+        "summary": "The current slide changed through the API or either slider. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting element."
+            },
+            "tagName": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string",
+              "description": "The active template name."
+            },
+            "previous": {
+              "type": "number"
+            },
+            "current": {
+              "type": "number",
+              "description": "One-based."
+            },
+            "total": {
+              "type": "number"
+            },
+            "from": {
+              "enum": [
+                "api",
+                "inline",
+                "lightbox"
+              ],
+              "description": "What moved the gallery."
+            }
+          }
+        }
+      },
+      "sf-close": {
+        "summary": "The lightbox modal finished closing. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting element."
+            },
+            "tagName": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string",
+              "description": "The active template name."
+            },
+            "current": {
+              "type": "number",
+              "description": "One-based."
+            },
+            "total": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "sf-open": {
+        "summary": "The lightbox modal finished opening. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting element."
+            },
+            "tagName": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string",
+              "description": "The active template name."
+            },
+            "current": {
+              "type": "number",
+              "description": "One-based."
+            },
+            "total": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "getModal": {
+        "summary": "Returns the lightbox sf-modal, or null when there is none.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "getInlineSlider": {
+        "summary": "Returns the inline sf-slider, or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "getLightboxSlider": {
+        "summary": "Returns the lightbox sf-slider, or null when there is none.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.0.0 → 1.1.0: title, blur, sf-change, sf-open, sf-close and the three readers are dated rows, the actions answer outcomes; a minor while the rows hold (§4.10).",
-    "events: change {previous, current, total, from} keeps the DOM name change (§8); the lightbox's facts are opened and closed {current, total} (sf-gallery-opened, -closed), sent after the modal opened or closed, so the past form. sf-change, sf-open and sf-close follow with the same detail until 2026-12-01; component, tagName and template leave the detail (§8). A nested slider's change stops at the gallery, which reports it as its own change.",
-    "a11y-role: none on the root. The inline view is sf-slider; the lightbox is sf-modal (role dialog, named by heading, traps focus, Escape closes when close-on-esc).",
-    "key-effects: Enter and Space on a [data-sf-gallery-open] trigger open the lightbox (open); Tab reaches the slider's and the modal's controls.",
-    "number-type: button-size and dots-size are steps of the size ladder (1/2, 1, 2) handed to sf-slider, not numbers; they stay strings. current is an integer from 1.",
-    "words: the lightbox's heading was the English «Gallery» on every page; it is the language file's word now (heading default-from runtime.heading: «Галерея», «Gallery»).",
-    "lightbox: the template hands sf-modal its own names, heading and backdrop-blur, so the modal's dated aliases are not used by the Framework itself; a trigger's data-sf-modal-title and data-sf-modal-blur keep configuring the delegated lightbox.",
-    "template: templates.default names the Lit template js/templates/default.js and styles its sheet js/templates/default.css, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the lightbox and the actions; probe.json drives go-to, next, open, close and the aliases.",
-    "skeleton: none; the slides are the page's children, drawn before any code; the lightbox is closed at first paint (§5.4).",
-    "css-variables: five public variables read by the gallery's own sheet; the slider's and the modal's pass through (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The slide attributes are printed in the order the element sets them."
-  ]
+  }
 }

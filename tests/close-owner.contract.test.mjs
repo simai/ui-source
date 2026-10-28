@@ -25,7 +25,10 @@ test('Smart Close closes the complete released size axis and rejects unknown inp
   const component = JSON.parse(await source('src/smart/close/component.json'));
   const sizes = ['1/4', '1/3', '1/2', '1', '2', '3', '4', '5', '6', '7'];
   assert.deepEqual(manifest.inputs.properties.size.enum, sizes);
-  assert.deepEqual(component.settings.size, {type: 'enum', values: sizes, default: '1/3'});
+  // The words (summary) are component.json's own since standard 1.4.
+  const {summary, ...size} = component.settings.size;
+  assert.equal(typeof summary, 'string');
+  assert.deepEqual(size, {type: 'enum', values: sizes, default: '1/3'});
   assert.match(runtime, /elementFromManifest\(manifest/);
   assert.match(runtime, /size: this\.size/);
 });

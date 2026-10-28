@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatar (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar",
   "tag": "sf-avatar",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -26,7 +26,8 @@
         "1",
         "2"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Takes the text line of this form size instead of a control height, for an avatar beside a label in a row or a table cell."
     },
     "shape": {
       "type": "enum",
@@ -93,21 +94,25 @@
     },
     "badge-count": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A count on the avatar (simai/ui-source#12): a whole number above 0 shows, 0 or empty hides the badge. Above badge-cap it reads «<cap>+»; the exact number joins the avatar's accessible name («Анна Белова, 3 непрочитанных») and the badge's tooltip. On an anchor of size 1/3 or 1/2 a count is drawn as a dot."
     },
     "badge-dot": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "A dot on the avatar, a count with no number: something new. Shown when badge-count is not set; with a count, the count is drawn as a dot. Its text equivalent («есть новое» / «new» by default, badge-label to change it) joins the accessible name."
     },
     "badge-cap": {
       "type": "number",
       "integer": true,
       "min": 1,
-      "default": 99
+      "default": 99,
+      "summary": "The largest count drawn as a number; a larger one reads «<cap>+»."
     },
     "badge-label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
     }
   },
   "values": {},
@@ -118,6 +123,14 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "avatars"
+    },
+    {
+      "name": "badges"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -169,6 +182,28 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-avatar for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26",
+        "note": "title is a property of every element (§3.1); the shim maps the attribute, the browser keeps its title property"
+      }
+    ]
+  },
   "x-summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "x-source": {
     "package": "framework",
@@ -184,14 +219,30 @@
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
     "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "a11y-role: button -- every template draws the avatar as a native button (Enter and Space press it, Tab reaches it). The name is the host's aria-label, the language file's runtime aria-label («Аватар», \"Avatar\") when unset, with the badge phrase after it (§4.8); the label and card templates print the heading beside it.",
+    "title -> heading: title is a property of every element (§3.1, §16 item 26), so the setting is heading and title its dated setting alias (aliases.json, until 2026-12-01). The browser's own title property is left alone (the component no longer overrides it); the attribute still maps. Initials fall back to the heading.",
+    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
+    "words: the default name is runtime aria-label of the language files, read with sfWord; AVATAR_TEXT is gone. The element keeps answering el.ariaLabel with that word, as it did.",
+    "templates: default, label and card name their Lit templates in JavaScript, the migration form §5.2 allows; no template.html until the build compiles them (a copy nothing draws would drift).",
+    "badge-cap is a number with min 1; badge-count stays a string capped by badge-cap.",
+    "examples: examples.json from studio.fixture.json (the label template: AZ, Анна Захарова, online, size 2) plus an image, initials from the heading, the card, a count badge, verified and disabled.",
+    "css-variables: the five public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+  ],
+  "x-rule": {
+    "$comment-after": [
+      "The badge sheet places a count or a dot on the avatar",
+      "(simai/ui-source#12)."
+    ]
+  },
+  "x-registry": {
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -201,6 +252,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -214,7 +273,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-avatar when the interface needs the avatar behavior.",
@@ -234,17 +297,11 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "inputs": {
+      "aria-label": {
+        "description": "Empty: the text of the page's language (\"Avatar\" in English)."
+      }
     }
-  },
-  "x-decisions": [
-    "a11y-role: button -- every template draws the avatar as a native button (Enter and Space press it, Tab reaches it). The name is the host's aria-label, the language file's runtime aria-label («Аватар», \"Avatar\") when unset, with the badge phrase after it (§4.8); the label and card templates print the heading beside it.",
-    "title -> heading: title is a property of every element (§3.1, §16 item 26), so the setting is heading and title its dated setting alias (aliases.json, until 2026-12-01). The browser's own title property is left alone (the component no longer overrides it); the attribute still maps. Initials fall back to the heading.",
-    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
-    "words: the default name is runtime aria-label of the language files, read with sfWord; AVATAR_TEXT is gone. The element keeps answering el.ariaLabel with that word, as it did.",
-    "templates: default, label and card name their Lit templates in JavaScript, the migration form §5.2 allows; no template.html until the build compiles them (a copy nothing draws would drift).",
-    "badge-cap is a number with min 1; badge-count stays a string capped by badge-cap.",
-    "examples: examples.json from studio.fixture.json (the label template: AZ, Анна Захарова, online, size 2) plus an image, initials from the heading, the card, a count badge, verified and disabled.",
-    "css-variables: the five public variables of src/core/contracts/public-variables.v1.json the class sheet already reads (§6).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
-  ]
+  }
 }

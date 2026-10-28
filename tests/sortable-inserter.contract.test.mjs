@@ -157,8 +157,8 @@ test('the rule, the manifest and both documents name the inserter', async () => 
     read('src/smart/sortable/scss/_smart__sortable.scss'),
   ]);
   const manifest = JSON.parse(manifestText);
-  assert.match(rule, /\{ name: 'icon-buttons', lazy: true \}, \{ name: 'icons', lazy: true \}, \{ name: 'cl-context-menu', lazy: true \}/);
-  assert.deepEqual(manifest.composition.uses, ['smart.context-menu', 'component.icon-buttons', 'component.icons']);
+  assert.match(rule, /\{ name: 'icon-buttons', lazy: true \},\n    \{ name: 'icons', lazy: true \},\n    \{ name: 'cl-context-menu', lazy: true \},/);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'smart.context-menu']);
   assert.equal(manifest.inputs.properties['inserter-items'].default, '');
   assert.deepEqual(manifest.events['sf-sortable-insert'].payload.required, ['index', 'item', 'to']);
   assert.ok(manifest.accessibility.keyboard.includes('+'));

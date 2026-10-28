@@ -47,7 +47,10 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const file of [manifest.examples, 'probe.json', manifest.templates.default.file]) {
       assert.ok(existsSync(new URL(`../${base}/${file}`, import.meta.url)), `${folder}/${file} exists`);
     }
-    const examples = json(`${base}/${manifest.examples}`);
+    // {examples: [...]} since standard 1.4 (the studio example and the
+    // conformance page beside them); a bare list before.
+    const file = json(`${base}/${manifest.examples}`);
+    const examples = Array.isArray(file) ? file : file.examples;
     assert.ok(Array.isArray(examples) && examples.length >= 3, 'named examples');
     for (const example of examples) assert.ok(example.name && example.settings && example.expect, JSON.stringify(example));
     const probe = json(`${base}/probe.json`);

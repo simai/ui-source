@@ -53,7 +53,8 @@ test('Smart Breadcrumbs projects the ordinary owner and native navigation semant
   assert.deepEqual(manifest.composition.uses, ['component.breadcrumbs', 'component.icons', 'smart.icon']);
   // Empty: the runtime reads the attribute, then the page language's dictionary;
   // the English default the manifest used to show was never used (2026-10-13).
-  assert.equal(manifest.inputs.properties['expand-label'].default, '');
+  // The page language's word (default-from): the registry names no fixed default.
+  assert.equal(manifest.inputs.properties['expand-label'].default, undefined);
   assert.equal(manifest.accessibility.role, 'navigation');
   assert.match(manifest.accessibility.focus, /focus-visible/);
   assert.match(source, /expandLabel: \{ default: '' \}/);

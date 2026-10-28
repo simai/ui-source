@@ -34,6 +34,34 @@ committed ones, and classifies every difference of smart.manifest.json.
   without its ten events and three actions, sf-table without `columns`,
   `rows`, `sort`, `selection`).
 
+## Phase A, waves 1 and 2 (2026-10-28)
+
+Thirty components are in the 1.4 form and generate every file byte for byte:
+close, help-mark, reference-link, avatar, avatars, slider, breadcrumbs,
+empty-state, download-file, color, switch, page-header, menu, inline-editor,
+sortable, copy-button, code-input, radio, checkbox, accordion, resizer, tabs,
+icon, gallery, steps, profile-picker, range-slider, theme-generator,
+datepicker, tree. Their component.json carries `relations`, `aliases`,
+`x-rule` and `x-registry` (x-kept goes: x-registry holds its blocks);
+examples.json carries the studio example (`studio`) and the conformance page
+(`pages`); each is a patch version up. Their smart.manifest.json is generated,
+so the stale facts above are fixed for them; the old files stay in the folder
+until phase B. The tables below are the state after the two waves (the
+numbers in «Answer» are phase 1's, over all 70).
+
+Rules settled while converting: a default taken from the words (default-from)
+names no fixed default (it is the page language's word, read at run time); an enum is the
+setting's values (no added `""`); an action's `x-returns` in words is the
+description of its outcome object; a former event name keeps the detail the
+registry described (`x-registry.alias-events`, with `alias_of`) until its
+alias ends; a native event's payload is `{type: "null"}` with its words; a
+list setting's examples reach the registry. examples.json written as a bare
+list (color, datepicker, range-slider) becomes `{examples: [...]}`, and switch,
+which had none, gets one: the first-paint snapshot now draws their examples. The first-paint gate measured
+range-slider's `tooltip` example for the first time and found a shift (48 px
+printed, 54 adopted): listed in tests/fixtures/first-paint/gate-known.json and
+queued to the component.
+
 ## How it is made
 
 ```
@@ -79,85 +107,80 @@ or one spelling of a field) it is quoted.
 
 <!-- generated:start (scripts/report-component-files.mjs) -->
 
-Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 824010b892c2. Components: 70 (59 simai/ui-source, 11 simai/ui-pro).
+Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 824010b892c2. Components: 70 (59 simai/ui-source, 11 simai/ui-pro).
 
 ### Per generated file
 
 | File | identical (bytes) | semantically identical | differs | committed, not generated | generated, not committed |
 |:---|---:|---:|---:|---:|---:|
-| rule.js | 24 | 46 | 0 | 0 | 0 |
-| aliases.json | 52 | 18 | 0 | 0 | 0 |
+| rule.js | 41 | 29 | 0 | 0 | 0 |
+| aliases.json | 58 | 12 | 0 | 0 | 0 |
 | meta.mjs | 0 | 0 | 20 | 0 | 0 |
-| studio.fixture.json | 65 | 1 | 0 | 0 | 0 |
+| studio.fixture.json | 64 | 2 | 0 | 0 | 0 |
 | studio.scenario.json | 61 | 2 | 0 | 0 | 0 |
-| probe.json | 64 | 5 | 0 | 0 | 0 |
-| smart.manifest.json | 0 | 0 | 70 | 0 | 0 |
+| probe.json | 66 | 3 | 0 | 0 | 0 |
+| smart.manifest.json | 30 | 0 | 40 | 0 | 0 |
 
 ### smart.manifest.json differences by class
 
 | Class | Differences | Share |
 |:---|---:|---:|
-| a1-fact | 384 | 25 % |
-| a1-words | 115 | 8 % |
-| a2-rule | 852 | 56 % |
-| c | 166 | 11 % |
-| total | 1517 | |
+| a1-fact | 243 | 22 % |
+| a1-words | 63 | 6 % |
+| a2-rule | 627 | 57 % |
+| c | 166 | 15 % |
+| total | 1099 | |
 
 ### smart.manifest.json differences by kind
 
 | Class | Kind | Differences | Components |
 |:---|:---|---:|:---|
-| a1-fact | accessibility.role | 15 | alert, avatar, avatars, badge, button, checkbox, country-code, download-file … (15) |
-| a1-fact | alias-event-missing | 45 | tree, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table … (9) |
+| a1-fact | accessibility.role | 6 | alert, badge, button, country-code, tag, toast |
+| a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
 | a1-fact | alias-setting-missing | 1 | chat-message |
-| a1-fact | compatibility.aliases | 5 | badge, button, icon, icon-button, tag |
+| a1-fact | compatibility.aliases | 4 | badge, button, icon-button, tag |
 | a1-fact | declarative.events | 1 | property-view |
 | a1-fact | declarative.props | 6 | button, admin-menu, chat-window, data-view, property-view, table |
-| a1-fact | event-missing | 68 | accordion, breadcrumbs, button, context-menu, copy-button, country-code, download-file, drawer … (29) |
+| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination … (13) |
 | a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
 | a1-fact | input-stale | 2 | file-preview, chat-window |
-| a1-fact | input.default | 53 | accordion, button, button-group, code-input, copy-button, datepicker, dropdown, empty-state … (20) |
-| a1-fact | input.enum-missing | 1 | tabs |
+| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea … (10) |
 | a1-fact | input.enum-values-missing | 1 | table |
-| a1-fact | input.maximum | 11 | accordion, datepicker, empty-state, icon, progress-bar, progress-scale, quantity, theme-generator … (9) |
-| a1-fact | input.minimum | 23 | accordion, avatar, breadcrumbs, copy-button, datepicker, empty-state, gallery, icon … (18) |
-| a1-fact | input.type | 42 | accordion, breadcrumbs, code-input, context-menu, copy-button, datepicker, dropdown, empty-state … (24) |
-| a1-fact | method-missing | 18 | modal, profile-picker, progress-bar, progress-scale, toast, tree, tree-item, data-view … (10) |
+| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
+| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
+| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm … (10) |
+| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
 | a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
 | a1-fact | payload-null | 2 | context-menu |
 | a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | title | 10 | code-input, input, list-item, radio, sortable, textarea, tree-item, data-view … (10) |
-| a1-fact | uses-missing | 34 | accordion, avatar, avatars, button, button-group, checkbox, close, color … (34) |
-| a1-fact | version | 11 | avatar, avatars, badge, code-input, country-code, icon, quantity, radio … (11) |
-| a1-words | accessibility.role-words | 11 | close, datepicker, dropdown, icon, list-item, page-header, skeleton, spinner … (11) |
-| a1-words | event.summary | 11 | composition-overlay, inline-editor, sortable, tree-item |
-| a1-words | input.description | 65 | avatars, button, composition-overlay, copy-button, datepicker, download-file, file-upload, icon … (22) |
-| a1-words | input.examples | 3 | accordion, button-group, menu |
-| a1-words | method.returns | 1 | inline-editor |
-| a1-words | method.summary | 15 | composition-overlay, inline-editor, theme-generator, tree-item |
-| a1-words | summary | 9 | composition-overlay, inline-editor, list-item, modal, sortable, theme-generator, tree, tree-item … (9) |
-| a2-rule | base-detail-field | 16 | alert, button-group, popover, range-slider, tag, toast, tree-item |
-| a2-rule | base-setting | 133 | accordion, alert, avatar, avatars, badge, breadcrumbs, button, button-group … (70) |
+| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
+| a1-fact | uses-missing | 18 | button, button-group, context-menu, country-code, dropdown, file-upload, input, list-item … (18) |
+| a1-fact | version | 5 | badge, country-code, quantity, textarea, toggle |
+| a1-words | accessibility.role-words | 7 | dropdown, list-item, skeleton, spinner, tooltip, chat-window, table |
+| a1-words | event.summary | 6 | composition-overlay, tree-item |
+| a1-words | input.description | 32 | button, composition-overlay, file-upload, list-item, pagination, tag, tree-item, chat-composer … (10) |
+| a1-words | method.summary | 13 | composition-overlay, tree-item |
+| a1-words | summary | 5 | composition-overlay, list-item, modal, tree-item, chat-composer |
+| a2-rule | base-detail-field | 15 | alert, button-group, popover, tag, toast, tree-item |
+| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer … (40) |
 | a2-rule | declarative.assets | 2 | admin-menu, property-view |
-| a2-rule | empty-block | 14 | code-input, copy-button, empty-state, help-mark, profile-picker, resizer, theme-generator, change-confirm … (14) |
-| a2-rule | event.alias_of | 6 | button-group, datepicker, dropdown, range-slider |
-| a2-rule | host-attribute | 4 | context-menu, popover, toast, tree |
-| a2-rule | input.default | 56 | alert, badge, breadcrumbs, color, drawer, dropdown, file-preview, file-upload … (28) |
-| a2-rule | input.description | 56 | accordion, alert, avatar, avatars, badge, breadcrumbs, code-input, context-menu … (40) |
-| a2-rule | input.enum-as-range | 3 | accordion, empty-state, chat-window |
-| a2-rule | input.enum-form | 1 | page-header |
-| a2-rule | input.enum-former | 2 | button, icon |
+| a2-rule | empty-block | 7 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, thread-list |
+| a2-rule | host-attribute | 3 | context-menu, popover, toast |
+| a2-rule | input.default | 127 | alert, badge, country-code, drawer, dropdown, file-preview, file-upload, input … (22) |
+| a2-rule | input.description | 32 | alert, badge, context-menu, drawer, dropdown, file-preview, file-upload, image-field … (23) |
+| a2-rule | input.enum-as-range | 1 | chat-window |
+| a2-rule | input.enum-form | 2 | button, icon-button |
+| a2-rule | input.enum-former | 1 | button |
 | a2-rule | input.items | 1 | tree-item |
-| a2-rule | method.arguments-form | 70 | accordion, button-group, composition-overlay, context-menu, file-upload, gallery, image-field, inline-editor … (24) |
-| a2-rule | old-event-payload | 151 | accordion, breadcrumbs, button-group, code-input, color, composition-overlay, copy-button, datepicker … (40) |
-| a2-rule | order | 14 | copy-button, datepicker, drawer, file-preview, help-mark, icon, icon-button, page-header … (14) |
+| a2-rule | method.arguments-form | 56 | button-group, composition-overlay, context-menu, file-upload, image-field, pagination, popover, quantity … (18) |
+| a2-rule | order | 7 | drawer, file-preview, icon-button, quantity, chat-composer, chat-message, chat-window |
 | a2-rule | payload-field.enum-form | 2 | composition-overlay |
-| a2-rule | payload-field.type-form | 49 | composition-overlay, file-upload, image-field, range-slider, tabs, admin-menu, change-confirm, chat-composer … (15) |
-| a2-rule | payload-ref | 7 | datepicker, dropdown |
-| a2-rule | payload.additionalProperties | 141 | alert, button-group, code-input, color, composition-overlay, context-menu, empty-state, file-upload … (28) |
-| a2-rule | payload.description | 10 | checkbox, code-input, context-menu, country-code, input, data-view, table |
-| a2-rule | payload.required | 103 | alert, button-group, code-input, color, composition-overlay, context-menu, file-upload, image-field … (24) |
-| a2-rule | payload.type | 9 | quantity, radio, switch, textarea, toggle, table |
+| a2-rule | payload-field.type-form | 47 | composition-overlay, file-upload, image-field, admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message … (13) |
+| a2-rule | payload-ref | 3 | dropdown |
+| a2-rule | payload.additionalProperties | 129 | alert, button-group, composition-overlay, context-menu, file-upload, image-field, popover, tag … (21) |
+| a2-rule | payload.description | 9 | context-menu, quantity, textarea, toggle, data-view, table |
+| a2-rule | payload.required | 97 | alert, button-group, composition-overlay, context-menu, file-upload, image-field, popover, tag … (19) |
+| a2-rule | payload.type | 7 | quantity, textarea, toggle, table |
 | a2-rule | template-open | 2 | chat-message, property-view |
 | c | declarative.events | 3 | admin-menu, data-view, table |
 | c | event-undeclared | 8 | data-view, property-view |
@@ -414,6 +437,7 @@ Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 82401
 | Key | Components | Lines | Belongs in 1.4 |
 |:---|---:|---:|:---|
 | methods | 50 | 4518 | dated `method` aliases in component.json, or retired (§4.4: no reader methods) |
+| alias-events | 41 | 2549 | ? |
 | contracts | 41 | 1600 | the port contract (src/core/contracts/ports) or the change journal: it restates them |
 | ai_guidance | 70 | 1457 | one `registry` block (already copied in component.json x-kept) |
 | presentation | 70 | 1302 | one `registry` block (already copied in component.json x-kept) |
@@ -444,35 +468,34 @@ Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 82401
 
 | Consumer | Reads | Wrong facts | Components |
 |:---|:---|---:|---:|
-| ui-doc | summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io) | 593 | 70 |
-| ui-studio | title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs) | 678 | 70 |
-| ui-vscode | inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense) | 308 | 70 |
-| ui registry (ui-builder bind-generated-runtime-contracts.py) | title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json | 10 | 10 |
+| ui-doc | summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io) | 431 | 40 |
+| ui-studio | title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs) | 482 | 40 |
+| ui-vscode | inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense) | 184 | 40 |
+| ui registry (ui-builder bind-generated-runtime-contracts.py) | title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json | 7 | 7 |
 
 **ui-doc**
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a2-rule | base-setting | 133 | accordion, alert, avatar, avatars, badge, breadcrumbs, button, button-group, checkbox, close … (70) |
 | c | payload-field | 87 | composition-overlay, file-upload, image-field, popover, quantity, toast, tree-item, admin-menu, data-view, message-log … (12) |
-| a1-fact | event-missing | 68 | accordion, breadcrumbs, button, context-menu, copy-button, country-code, download-file, drawer, file-preview, gallery … (29) |
-| a1-fact | input.default | 53 | accordion, button, button-group, code-input, copy-button, datepicker, dropdown, empty-state, page-header, progress-bar … (20) |
-| a1-fact | alias-event-missing | 45 | tree, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
-| a1-fact | input.type | 42 | accordion, breadcrumbs, code-input, context-menu, copy-button, datepicker, dropdown, empty-state, gallery, icon … (24) |
+| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
+| a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
+| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination, popover, tag … (13) |
+| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
 | c | payload-field.spelling | 24 | admin-menu, chat-composer, chat-window |
-| a1-fact | input.minimum | 23 | accordion, avatar, breadcrumbs, copy-button, datepicker, empty-state, gallery, icon, icon-button, progress-bar … (18) |
 | c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
-| a1-fact | method-missing | 18 | modal, profile-picker, progress-bar, progress-scale, toast, tree, tree-item, data-view, property-view, table |
+| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
 | a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | input.maximum | 11 | accordion, datepicker, empty-state, icon, progress-bar, progress-scale, quantity, theme-generator, chat-window |
+| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
 | c | method.arguments | 11 | context-menu, drawer, modal, pagination, popover, chat-window, thread-list |
 | a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
 | a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
 | c | event-undeclared | 8 | data-view, property-view |
 | c | payload-field.values | 7 | file-upload, admin-menu, data-view, property-view, table |
+| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
+| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
 | a1-fact | payload-null | 2 | context-menu |
 | a1-fact | input-stale | 2 | file-preview, chat-window |
-| a1-fact | input.enum-missing | 1 | tabs |
 | a1-fact | alias-setting-missing | 1 | chat-message |
 | a1-fact | input.enum-values-missing | 1 | table |
 
@@ -480,34 +503,33 @@ Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 82401
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a2-rule | base-setting | 133 | accordion, alert, avatar, avatars, badge, breadcrumbs, button, button-group, checkbox, close … (70) |
 | c | payload-field | 87 | composition-overlay, file-upload, image-field, popover, quantity, toast, tree-item, admin-menu, data-view, message-log … (12) |
-| a1-fact | event-missing | 68 | accordion, breadcrumbs, button, context-menu, copy-button, country-code, download-file, drawer, file-preview, gallery … (29) |
-| a1-fact | input.default | 53 | accordion, button, button-group, code-input, copy-button, datepicker, dropdown, empty-state, page-header, progress-bar … (20) |
-| a1-fact | alias-event-missing | 45 | tree, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
-| a1-fact | input.type | 42 | accordion, breadcrumbs, code-input, context-menu, copy-button, datepicker, dropdown, empty-state, gallery, icon … (24) |
-| a1-fact | uses-missing | 34 | accordion, avatar, avatars, button, button-group, checkbox, close, color, context-menu, country-code … (34) |
+| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
+| a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
+| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination, popover, tag … (13) |
+| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
 | c | payload-field.spelling | 24 | admin-menu, chat-composer, chat-window |
-| a1-fact | input.minimum | 23 | accordion, avatar, breadcrumbs, copy-button, datepicker, empty-state, gallery, icon, icon-button, progress-bar … (18) |
 | c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
-| a1-fact | method-missing | 18 | modal, profile-picker, progress-bar, progress-scale, toast, tree, tree-item, data-view, property-view, table |
-| a1-fact | accessibility.role | 15 | alert, avatar, avatars, badge, button, checkbox, country-code, download-file, gallery, inline-editor … (15) |
+| a1-fact | uses-missing | 18 | button, button-group, context-menu, country-code, dropdown, file-upload, input, list-item, modal, pagination … (18) |
+| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
 | a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | input.maximum | 11 | accordion, datepicker, empty-state, icon, progress-bar, progress-scale, quantity, theme-generator, chat-window |
-| a1-fact | version | 11 | avatar, avatars, badge, code-input, country-code, icon, quantity, radio, range-slider, textarea … (11) |
+| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
 | c | method.arguments | 11 | context-menu, drawer, modal, pagination, popover, chat-window, thread-list |
 | a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
-| a1-fact | title | 10 | code-input, input, list-item, radio, sortable, textarea, tree-item, data-view, property-view, table |
 | a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
 | c | event-undeclared | 8 | data-view, property-view |
 | c | payload-field.values | 7 | file-upload, admin-menu, data-view, property-view, table |
+| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
+| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
+| a1-fact | accessibility.role | 6 | alert, badge, button, country-code, tag, toast |
 | a1-fact | declarative.props | 6 | button, admin-menu, chat-window, data-view, property-view, table |
+| a1-fact | version | 5 | badge, country-code, quantity, textarea, toggle |
+| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
 | c | declarative.events | 3 | admin-menu, data-view, table |
 | c | host-port | 3 | admin-menu, chat-window, property-view |
 | a1-fact | payload-null | 2 | context-menu |
 | a1-fact | input-stale | 2 | file-preview, chat-window |
 | c | uses-not-loaded | 2 | tree-item, data-view |
-| a1-fact | input.enum-missing | 1 | tabs |
 | a1-fact | alias-setting-missing | 1 | chat-message |
 | a1-fact | declarative.events | 1 | property-view |
 | a1-fact | input.enum-values-missing | 1 | table |
@@ -516,16 +538,15 @@ Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 82401
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a2-rule | base-setting | 133 | accordion, alert, avatar, avatars, badge, breadcrumbs, button, button-group, checkbox, close … (70) |
-| a1-fact | input.default | 53 | accordion, button, button-group, code-input, copy-button, datepicker, dropdown, empty-state, page-header, progress-bar … (20) |
-| a1-fact | input.type | 42 | accordion, breadcrumbs, code-input, context-menu, copy-button, datepicker, dropdown, empty-state, gallery, icon … (24) |
-| a1-fact | input.minimum | 23 | accordion, avatar, breadcrumbs, copy-button, datepicker, empty-state, gallery, icon, icon-button, progress-bar … (18) |
+| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
+| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
 | c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
+| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
 | a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | input.maximum | 11 | accordion, datepicker, empty-state, icon, progress-bar, progress-scale, quantity, theme-generator, chat-window |
-| a1-fact | compatibility.aliases | 5 | badge, button, icon, icon-button, tag |
+| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
+| a1-fact | compatibility.aliases | 4 | badge, button, icon-button, tag |
+| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
 | a1-fact | input-stale | 2 | file-preview, chat-window |
-| a1-fact | input.enum-missing | 1 | tabs |
 | a1-fact | alias-setting-missing | 1 | chat-message |
 | a1-fact | input.enum-values-missing | 1 | table |
 
@@ -533,23 +554,23 @@ Inputs (Git tree of src/smart): simai/ui-source eed647c2d9fd, simai/ui-pro 82401
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a1-fact | title | 10 | code-input, input, list-item, radio, sortable, textarea, tree-item, data-view, property-view, table |
+| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
 
 ### The facts by name
 
 What the committed registry lacks or names wrongly, per component (`registry → component.json` where a value).
 
-**event-missing** (68)
+**event-missing** (37)
 
-accordion: sf-accordion-toggle; breadcrumbs: sf-breadcrumbs-press; button: sf-button-press; context-menu: sf-context-menu-opened, sf-context-menu-closed; copy-button: sf-copy-button-copied, sf-copy-button-copy-failed; country-code: input; download-file: sf-download-file-download; drawer: sf-drawer-open, sf-drawer-opened, sf-drawer-close, sf-drawer-closed, sf-drawer-snapped; file-preview: sf-file-preview-download, sf-file-preview-detach; gallery: change, sf-gallery-opened, sf-gallery-closed; help-mark: sf-help-mark-opened, sf-help-mark-closed; list-item: sf-list-item-open; menu: sf-menu-navigate, sf-menu-toggle; modal: sf-modal-open, sf-modal-opened, sf-modal-close, sf-modal-closed, sf-modal-minimize, sf-modal-minimized, sf-modal-expand, sf-modal-expanded, sf-modal-content-upload, sf-modal-content-uploaded; page-header: sf-page-header-toggle; pagination: sf-pagination-change, sf-pagination-size-change, sf-pagination-count, sf-pagination-load-more, sf-pagination-selection-clear, sf-pagination-action-change, sf-pagination-action-for-all-change, sf-pagination-apply; popover: sf-popover-opened, sf-popover-closed; profile-picker: sf-profile-picker-select, sf-profile-picker-create, sf-profile-picker-rename, sf-profile-picker-delete, sf-profile-picker-reset; resizer: sf-resizer-resize; slider: change; sortable: sf-sortable-move; steps: sf-steps-change; tabs: sf-tabs-change; tag: sf-tag-close; theme-generator: change, sf-theme-generator-committed; toast: sf-toast-closed; tree: sf-tree-open, sf-tree-select, sf-tree-toggle, sf-tree-move, sf-tree-attach, sf-tree-window; tree-item: sf-tree-item-open; pro table: sf-table-reference-open, sf-table-view-change
+button: sf-button-press; context-menu: sf-context-menu-opened, sf-context-menu-closed; country-code: input; drawer: sf-drawer-open, sf-drawer-opened, sf-drawer-close, sf-drawer-closed, sf-drawer-snapped; file-preview: sf-file-preview-download, sf-file-preview-detach; list-item: sf-list-item-open; modal: sf-modal-open, sf-modal-opened, sf-modal-close, sf-modal-closed, sf-modal-minimize, sf-modal-minimized, sf-modal-expand, sf-modal-expanded, sf-modal-content-upload, sf-modal-content-uploaded; pagination: sf-pagination-change, sf-pagination-size-change, sf-pagination-count, sf-pagination-load-more, sf-pagination-selection-clear, sf-pagination-action-change, sf-pagination-action-for-all-change, sf-pagination-apply; popover: sf-popover-opened, sf-popover-closed; tag: sf-tag-close; toast: sf-toast-closed; tree-item: sf-tree-item-open; pro table: sf-table-reference-open, sf-table-view-change
 
-**alias-event-missing** (45)
+**alias-event-missing** (43)
 
-tree: sf-tree-item-click, sf-tree-item-toggle; pro change-confirm: sf-change-confirm-accept, sf-change-confirm-decline, sf-change-confirm-expire; pro chat-composer: sf-chat-send, sf-chat-stop, sf-chat-files, sf-chat-action; pro chat-interlocutor: sf-chat-interlocutor; pro chat-message: sf-chat-action; pro chat-window: chat-port:open, chat-port:older, chat-port:send, chat-port:retry, chat-port:edit, chat-port:delete, chat-port:read, chat-port:rate, chat-port:file-retry, chat-port:decide, chat-port:check, chat-port:stop, chat-port:create, chat-port:rename, chat-port:archive, chat-port:interlocutor, chat-window:view, chat-window:more, chat-window:search, chat-window:pin, chat-window:attach, chat-window:detach, chat-window:files, chat-window:file-remove; pro message-log: sf-message-log-load-earlier; pro table: sf-table:column-settings-change, onColumnSettingsChange, onSearchEnd, onTemplateSave, onFilterUpdate; pro thread-list: sf-thread-list-select, sf-thread-list-unarchive, sf-thread-list-action, sf-thread-list-view
+pro change-confirm: sf-change-confirm-accept, sf-change-confirm-decline, sf-change-confirm-expire; pro chat-composer: sf-chat-send, sf-chat-stop, sf-chat-files, sf-chat-action; pro chat-interlocutor: sf-chat-interlocutor; pro chat-message: sf-chat-action; pro chat-window: chat-port:open, chat-port:older, chat-port:send, chat-port:retry, chat-port:edit, chat-port:delete, chat-port:read, chat-port:rate, chat-port:file-retry, chat-port:decide, chat-port:check, chat-port:stop, chat-port:create, chat-port:rename, chat-port:archive, chat-port:interlocutor, chat-window:view, chat-window:more, chat-window:search, chat-window:pin, chat-window:attach, chat-window:detach, chat-window:files, chat-window:file-remove; pro message-log: sf-message-log-load-earlier; pro table: sf-table:column-settings-change, onColumnSettingsChange, onSearchEnd, onTemplateSave, onFilterUpdate; pro thread-list: sf-thread-list-select, sf-thread-list-unarchive, sf-thread-list-action, sf-thread-list-view
 
-**method-missing** (18)
+**method-missing** (12)
 
-modal: minimize, expand, confirm; profile-picker: open, close, toggle; progress-bar: chunk; progress-scale: chunk; toast: show; tree: expand, collapse, focusEntry; tree-item: expand, collapse, toggleOpen; pro data-view: clearSelection; pro property-view: refresh; pro table: focusRow
+modal: minimize, expand, confirm; progress-bar: chunk; progress-scale: chunk; toast: show; tree-item: expand, collapse, toggleOpen; pro data-view: clearSelection; pro property-view: refresh; pro table: focusRow
 
 **setting-missing** (15)
 
@@ -563,10 +584,6 @@ pro chat-message: view
 
 pro table: data-state ["ready"]
 
-**input.enum-missing** (1)
-
-tabs: type ["","underline","pills","full","vertical"]
-
 **input-undeclared** (21)
 
 context-menu: search; country-code: form; file-preview: open; image-field: value; modal: unclose, hide; quantity: value; spinner: width, height, stroke-width, dot-radius; tag: type; pro chat-message: message, display, features; pro chat-window: me, conversation, history, limits, notice, my-files
@@ -575,25 +592,25 @@ context-menu: search; country-code: form; file-preview: open; image-field: value
 
 pro data-view: sf-data-view-saved-view-intent, sf-table-column-settings-reset, sf-table-template-delete, sf-table-template-save, sf-table-template-select, sf-host-port-request, sf-table-cell-set; pro property-view: sf-host-port-request
 
-**title** (10)
+**title** (7)
 
-code-input: "Code Input" → "Code input"; input: "Inputs" → "Text fields"; list-item: "List Item" → "List item"; radio: "Radio" → "Radio buttons"; sortable: "Sortable" → "Drag and drop"; textarea: "Textarea" → "Text area"; tree-item: "Tree Item" → "Tree item"; pro data-view: "Data view composite" → "Data view"; pro property-view: "Property view" → "Record"; pro table: "Data view" → "Table"
+input: "Inputs" → "Text fields"; list-item: "List Item" → "List item"; textarea: "Textarea" → "Text area"; tree-item: "Tree Item" → "Tree item"; pro data-view: "Data view composite" → "Data view"; pro property-view: "Property view" → "Record"; pro table: "Data view" → "Table"
 
-**version** (11)
+**version** (5)
 
-avatar: "1.0.0" → "1.1.1"; avatars: "1.0.0" → "1.1.1"; badge: "1.0.1" → "1.1.1"; code-input: "1.0.0" → "1.1.0"; country-code: "1.0.0" → "1.1.1"; icon: "1.0.0" → "1.1.1"; quantity: "1.0.0" → "1.1.1"; radio: "1.0.0" → "1.1.1"; range-slider: "1.0.0" → "1.1.0"; textarea: "1.4.0" → "1.5.1"; toggle: "1.0.0" → "1.1.1"
+badge: "1.0.1" → "1.1.1"; country-code: "1.0.0" → "1.1.1"; quantity: "1.0.0" → "1.1.1"; textarea: "1.4.0" → "1.5.1"; toggle: "1.0.0" → "1.1.1"
 
-**accessibility.role** (15)
+**accessibility.role** (6)
 
-alert: null → "status"; avatar: null → "button"; avatars: null → "none"; badge: null → "none"; button: null → "button"; checkbox: null → "checkbox"; country-code: null → "textbox"; download-file: null → "link"; gallery: null → "none"; inline-editor: null → "none"; reference-link: null → "link"; slider: null → "none"; sortable: null → "none"; tag: null → "button"; toast: null → "status"
+alert: null → "status"; badge: null → "none"; button: null → "button"; country-code: null → "textbox"; tag: null → "button"; toast: null → "status"
 
 ### meta.mjs differences by class
 
 | Class | Differences |
 |:---|---:|
-| a2-rule | 283 |
+| a2-rule | 296 |
 | c | 2 |
-| a1-fact | 19 |
+| a1-fact | 6 |
 | a1-words | 4 |
 
 meta.mjs conflicts:
@@ -605,75 +622,75 @@ meta.mjs conflicts:
 
 | Component | rule | aliases | meta | fixture | scenario | probe | manifest a1-fact / a1-words / a2 / c | x-registry lines |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|
-| accordion | = | = | – | = | = | = | 6 / 1 / 7 / 0 | 216 |
+| accordion | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 243 |
 | alert | = | = | ≠ | = | = | = | 2 / 0 / 10 / 0 | 150 |
-| avatar | ≈ | = | – | = | = | = | 4 / 0 / 4 / 0 | 66 |
-| avatars | ≈ | ≈ | – | = | = | = | 3 / 3 / 3 / 0 | 59 |
+| avatar | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 66 |
+| avatars | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 59 |
 | badge | ≈ | ≈ | ≠ | = | = | = | 3 / 0 / 7 / 0 | 63 |
-| breadcrumbs | = | = | – | = | = | = | 4 / 0 / 4 / 0 | 135 |
-| button | = | ≈ | ≠ | = | = | = | 6 / 1 / 2 / 0 | 229 |
-| button-group | ≈ | = | ≠ | = | = | = | 2 / 1 / 8 / 0 | 174 |
-| checkbox | ≈ | ≈ | – | = | = | = | 2 / 0 / 3 / 0 | 261 |
-| close | ≈ | = | – | = | = | = | 1 / 1 / 2 / 0 | 60 |
-| code-input | = | ≈ | – | = | = | = | 4 / 0 / 8 / 0 | 180 |
-| color | ≈ | ≈ | – | – | – | ≈ | 1 / 0 / 9 / 0 | 134 |
-| composition-overlay | = | = | – | = | = | = | 0 / 22 / 29 / 12 | 227 |
+| breadcrumbs | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 172 |
+| button | = | ≈ | ≠ | = | = | = | 6 / 1 / 3 / 0 | 229 |
+| button-group | ≈ | = | ≠ | = | = | = | 2 / 0 / 5 / 0 | 202 |
+| checkbox | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 261 |
+| close | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 60 |
+| code-input | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 194 |
+| color | = | = | – | – | – | = | 0 / 0 / 0 / 0 | 156 |
+| composition-overlay | = | = | – | = | = | = | 0 / 22 / 25 / 12 | 269 |
 | context-menu | ≈ | = | – | = | = | = | 8 / 0 / 17 / 2 | 185 |
-| copy-button | = | = | – | = | = | = | 5 / 1 / 8 / 0 | 106 |
-| country-code | ≈ | = | – | = | = | = | 4 / 0 / 4 / 1 | 93 |
-| datepicker | = | = | – | = | = | = | 12 / 2 / 13 / 0 | 251 |
-| download-file | = | = | – | = | = | = | 3 / 1 / 4 / 0 | 93 |
-| drawer | ≈ | = | – | = | = | = | 5 / 0 / 13 / 2 | 291 |
-| dropdown | ≈ | = | ≠ | = | = | = | 4 / 1 / 9 / 0 | 150 |
-| empty-state | = | = | – | = | = | = | 4 / 0 / 6 / 0 | 115 |
-| file-preview | ≈ | = | ≠ | = | ≈ | = | 3 / 0 / 9 / 1 | 156 |
-| file-upload | = | = | – | = | = | ≈ | 1 / 1 / 42 / 8 | 216 |
-| gallery | ≈ | = | – | = | = | = | 7 / 0 / 12 / 0 | 104 |
-| help-mark | = | = | – | = | = | = | 2 / 0 / 8 / 0 | 100 |
-| icon | ≈ | ≈ | – | = | = | = | 7 / 2 / 5 / 0 | 75 |
-| icon-button | = | ≈ | ≠ | = | = | = | 2 / 0 / 2 / 0 | 273 |
-| image-field | = | = | – | = | = | ≈ | 0 / 0 / 20 / 2 | 169 |
-| inline-editor | ≈ | = | – | = | = | = | 1 / 6 / 12 / 0 | 144 |
-| input | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 10 / 0 | 294 |
-| list-item | = | = | ≠ | = | = | = | 3 / 8 / 5 / 0 | 120 |
-| menu | = | = | – | = | = | = | 3 / 2 / 9 / 0 | 242 |
-| modal | ≈ | = | – | = | = | = | 16 / 1 / 16 / 4 | 387 |
-| page-header | ≈ | = | – | = | = | = | 3 / 5 / 6 / 0 | 86 |
-| pagination | = | = | ≠ | = | = | = | 9 / 2 / 38 / 1 | 265 |
+| copy-button | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 148 |
+| country-code | ≈ | = | – | ≈ | = | = | 4 / 0 / 4 / 1 | 93 |
+| datepicker | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 267 |
+| download-file | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 113 |
+| drawer | ≈ | = | – | = | = | = | 5 / 0 / 6 / 2 | 453 |
+| dropdown | ≈ | = | ≠ | = | = | = | 4 / 1 / 7 / 0 | 159 |
+| empty-state | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 115 |
+| file-preview | ≈ | = | ≠ | = | ≈ | = | 3 / 0 / 7 / 1 | 188 |
+| file-upload | = | = | – | = | = | ≈ | 1 / 1 / 35 / 8 | 384 |
+| gallery | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 192 |
+| help-mark | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 116 |
+| icon | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 75 |
+| icon-button | = | ≈ | ≠ | = | = | = | 2 / 0 / 3 / 0 | 273 |
+| image-field | = | = | – | = | = | ≈ | 0 / 0 / 17 / 2 | 226 |
+| inline-editor | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 202 |
+| input | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 7 / 0 | 316 |
+| list-item | = | = | ≠ | = | = | = | 3 / 8 / 3 / 0 | 143 |
+| menu | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 292 |
+| modal | ≈ | = | – | = | = | = | 16 / 1 / 4 / 4 | 719 |
+| page-header | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 102 |
+| pagination | = | = | ≠ | = | = | = | 9 / 2 / 22 / 1 | 593 |
 | popover | ≈ | ≈ | – | – | – | = | 2 / 0 / 14 / 5 | 106 |
-| profile-picker | = | = | – | = | = | = | 8 / 0 / 14 / 0 | 126 |
+| profile-picker | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 209 |
 | progress-bar | ≈ | = | ≠ | = | = | = | 5 / 0 / 4 / 0 | 126 |
 | progress-scale | ≈ | = | ≠ | = | = | = | 5 / 0 / 4 / 0 | 112 |
-| quantity | = | ≈ | – | = | = | = | 13 / 0 / 11 / 9 | 198 |
-| radio | ≈ | ≈ | – | = | = | = | 3 / 0 / 3 / 0 | 216 |
-| range-slider | ≈ | = | – | = | = | ≈ | 8 / 0 / 12 / 0 | 324 |
-| reference-link | = | = | – | = | = | = | 2 / 1 / 3 / 0 | 111 |
-| resizer | ≈ | = | – | = | = | = | 6 / 0 / 8 / 0 | 132 |
+| quantity | = | ≈ | – | = | = | = | 13 / 0 / 12 / 9 | 220 |
+| radio | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 216 |
+| range-slider | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 376 |
+| reference-link | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 111 |
+| resizer | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 156 |
 | skeleton | ≈ | = | ≠ | = | = | = | 1 / 1 / 2 / 0 | 87 |
-| slider | ≈ | = | – | = | = | = | 3 / 0 / 4 / 0 | 69 |
-| sortable | ≈ | = | – | = | = | = | 3 / 9 / 10 / 0 | 189 |
+| slider | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 106 |
+| sortable | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 225 |
 | spinner | ≈ | = | ≠ | = | = | = | 6 / 1 / 3 / 4 | 127 |
-| steps | ≈ | = | – | = | = | = | 8 / 0 / 7 / 0 | 115 |
-| switch | ≈ | = | – | = | = | – | 1 / 0 / 5 / 0 | 241 |
-| tabs | ≈ | = | – | = | = | = | 6 / 1 / 13 / 0 | 140 |
-| tag | ≈ | ≈ | ≠ | = | = | = | 4 / 3 / 7 / 1 | 164 |
-| textarea | ≈ | ≈ | ≠ | = | = | = | 6 / 0 / 7 / 0 | 160 |
-| theme-generator | = | = | – | = | = | = | 10 / 9 / 9 / 0 | 131 |
+| steps | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 175 |
+| switch | = | = | – | = | = | – | 0 / 0 / 0 / 0 | 263 |
+| tabs | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 186 |
+| tag | ≈ | ≈ | ≠ | = | = | = | 4 / 3 / 5 / 1 | 181 |
+| textarea | ≈ | ≈ | ≠ | = | = | = | 6 / 0 / 8 / 0 | 182 |
+| theme-generator | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 253 |
 | toast | = | = | ≠ | = | = | = | 4 / 0 / 10 / 3 | 149 |
-| toggle | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 4 / 0 | 214 |
+| toggle | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 5 / 0 | 214 |
 | tooltip | ≈ | = | ≠ | = | = | = | 1 / 1 / 1 / 0 | 87 |
-| tree | = | = | – | = | = | = | 11 / 7 / 5 / 0 | 120 |
-| tree-item | = | = | ≠ | = | = | = | 5 / 15 / 13 / 3 | 157 |
-| pro admin-menu | ≈ | ≈ | – | = | = | = | 3 / 0 / 51 / 29 | 397 |
+| tree | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 170 |
+| tree-item | = | = | ≠ | = | = | = | 5 / 15 / 11 / 3 | 199 |
+| pro admin-menu | ≈ | ≈ | – | = | = | = | 3 / 0 / 49 / 29 | 483 |
 | pro change-confirm | ≈ | ≈ | – | = | – | = | 5 / 0 / 11 / 0 | 228 |
 | pro chat-composer | ≈ | = | – | = | = | = | 4 / 2 / 14 / 1 | 257 |
 | pro chat-interlocutor | ≈ | = | – | = | = | = | 1 / 1 / 7 / 0 | 192 |
 | pro chat-message | ≈ | = | – | ≈ | = | = | 2 / 0 / 25 / 3 | 193 |
 | pro chat-window | ≈ | ≈ | – | = | ≈ | ≈ | 28 / 1 / 52 / 29 | 1187 |
-| pro data-view | ≈ | = | – | – | – | = | 32 / 0 / 23 / 17 | 400 |
+| pro data-view | ≈ | = | – | – | – | = | 32 / 0 / 20 / 17 | 421 |
 | pro message-log | ≈ | = | – | = | – | = | 3 / 0 / 27 / 3 | 300 |
-| pro property-view | ≈ | = | – | – | – | = | 11 / 0 / 31 / 11 | 516 |
-| pro table | ≈ | = | – | = | = | = | 23 / 1 / 50 / 12 | 1074 |
+| pro property-view | ≈ | = | – | – | – | = | 11 / 0 / 93 / 11 | 530 |
+| pro table | ≈ | = | – | = | = | = | 23 / 1 / 44 / 12 | 1258 |
 | pro thread-list | ≈ | = | – | = | – | = | 7 / 1 / 24 / 3 | 301 |
 
 `=` byte-identical, `≈` semantically identical, `≠` differs, `!` committed but not generated, `–` neither.

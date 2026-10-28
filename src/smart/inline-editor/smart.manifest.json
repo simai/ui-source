@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Inline editor",
-  "summary": "In-place editor for content.heading and content.paragraph text: strong, em, code and safe links, own history, safe paste; reports normalized content, never HTML.",
+  "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code and links -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -29,7 +29,21 @@
   },
   "inputs": {
     "type": "object",
-    "properties": {},
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      }
+    },
     "additionalProperties": false
   },
   "item_contract": {},
@@ -61,25 +75,30 @@
   },
   "methods": {
     "edit": {
-      "summary": "Starts editing a rendered heading or paragraph; returns {element, commit, cancel, value}.",
+      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages",
       "arguments": [
         {
           "name": "element",
-          "type": "Element"
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "options",
-          "type": "object"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
-        "type": "object"
+        "type": "object",
+        "description": "the session {element, commit(), cancel(), value()}"
       }
     }
   },
   "events": {
     "sf-inline-editor-input": {
-      "summary": "Live normalized content after a change: {id, content}, id being the edit's nodeId. Dispatched on the edited element; bubbles to document.",
+      "summary": "The text changed while it is edited; sent on the edited element",
       "payload": {
         "type": "object",
         "required": [
@@ -96,11 +115,12 @@
           "content": {
             "type": "array"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-inline-editor-change": {
-      "summary": "The edit was committed with Enter or the focus leaving; the host saves {id, content}. Dispatched on the edited element; bubbles to document.",
+      "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element",
       "payload": {
         "type": "object",
         "required": [
@@ -117,11 +137,12 @@
           "content": {
             "type": "array"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-inline-editor-cancel": {
-      "summary": "Escape put the element back as it was: {id}. Dispatched on the edited element; bubbles to document.",
+      "summary": "The edit was put back (Escape): the element shows its HTML from before; sent on the edited element",
       "payload": {
         "type": "object",
         "required": [
@@ -134,7 +155,8 @@
               "null"
             ]
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-inline-edit-input": {
@@ -233,7 +255,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "none",
     "accessible_name": "internal",
     "keyboard": [
       "Mod+B",
@@ -322,7 +344,7 @@
       },
       {
         "path": "src/smart/inline-editor/rule.js",
-        "sha256": "bbdbebe550848cc0e208a9dd0dfe1eb2add719d4dfcc15857f8b86d5a3b77795"
+        "sha256": "246e60f710f620830782fc9b5a73d55486e8d30b35ceb7bbdcec7d95ff4aec71"
       },
       {
         "path": "src/smart/inline-editor/docs.md",

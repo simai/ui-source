@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Steps",
   "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
   "kind": "smart",
@@ -23,12 +23,28 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.icons",
+      "component.step"
+    ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -37,40 +53,35 @@
           "1/2"
         ]
       },
-      "items": {
-        "type": "string",
-        "default": []
-      },
-      "current": {
-        "type": "number",
-        "default": 0
-      },
       "error-step": {
-        "type": "string",
-        "default": ""
+        "type": "integer",
+        "minimum": 0
       },
       "separator-icon": {
         "type": "string",
         "default": "chevron_right"
+      },
+      "completed-label": {
+        "type": "string",
+        "description": "Empty: the text of the page's language (\"Completed\" in English)."
+      },
+      "error-label": {
+        "type": "string",
+        "description": "Empty: the text of the page's language (\"Error\" in English)."
+      },
+      "current": {
+        "type": "integer",
+        "default": 0,
+        "minimum": 0
       },
       "aria-label": {
         "type": "string",
         "default": "",
         "description": "Empty: the text of the page's language (\"Steps\" in English)."
       },
-      "completed-label": {
-        "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Completed\" in English)."
-      },
-      "error-label": {
-        "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Error\" in English)."
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
+      "items": {
+        "type": "array",
+        "default": []
       }
     },
     "additionalProperties": false
@@ -78,13 +89,14 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
-    "setState": {
-      "summary": "Writes each key as its kebab-case attribute; an array (items) is serialised as label::disabled entries joined by |. false, null, undefined or empty removes the attribute, true sets it empty.",
+    "goToStep": {
+      "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-step-change.",
       "arguments": [
         {
-          "name": "nextState",
-          "type": "object",
-          "required": true
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
         }
       ],
       "returns": {
@@ -92,12 +104,12 @@
         "description": "The element, for chaining."
       }
     },
-    "goToStep": {
-      "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-step-change.",
+    "setState": {
+      "summary": "Writes each key as its kebab-case attribute; an array (items) is serialised as label::disabled entries joined by |. false, null, undefined or empty removes the attribute, true sets it empty.",
       "arguments": [
         {
-          "name": "index",
-          "type": "number|string",
+          "name": "nextState",
+          "type": "object",
           "required": true
         }
       ],
@@ -127,6 +139,33 @@
     }
   },
   "events": {
+    "sf-steps-change": {
+      "summary": "change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "current",
+          "item",
+          "items"
+        ],
+        "properties": {
+          "previous": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "item": {
+            "type": "object"
+          },
+          "items": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-step-change": {
       "summary": "Runtime event sf-step-change.",
       "payload": {

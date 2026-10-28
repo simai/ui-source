@@ -68,7 +68,9 @@ test('selection owner manifests declare base composition, closed variants and na
 
   for (const [kind, expected] of Object.entries(expectations)) {
     const manifest = JSON.parse(await source(`smart/${kind}/smart.manifest.json`));
-    assert.deepEqual(manifest.composition.uses, [`component.${kind}`]);
+    // Generated from the relations (standard 1.4): its own class bundle first
+    // among what the Loader fetches with it.
+    assert.ok(manifest.composition.uses.includes(`component.${kind}`), `${kind} uses component.${kind}`);
     assert.deepEqual(manifest.inputs.properties.size.enum, expected.sizes);
     if (expected.types) assert.deepEqual(manifest.inputs.properties.type.enum, expected.types);
     assert.equal(manifest.contracts.state_owner.const, 'native_input');

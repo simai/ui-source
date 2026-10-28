@@ -133,8 +133,10 @@ test('smart accordion: the loader knows it and asks for what it draws with', () 
   const rule = read('src/smart/accordion/rule.js');
   assert.match(rule, /SF\.RuleLoader\['cl-accordion'\] = \{\n  tags: \['sf-accordion'\],/u);
   assert.match(rule, /\{ name: 'accordion' \},\n    \{ name: 'icons' \},\n    \{ name: 'cl-badge', lazy: true \},/u);
+  // composition.uses is generated from the relations (standard 1.4): every
+  // bundle the Loader fetches with it, the icon font's sheet among them.
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/accordion\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.accordion', 'smart.badge']);
+  assert.deepEqual(manifest.composition.uses, ['component.accordion', 'component.icons', 'smart.badge']);
 });
 
 // The public variables (2026-10-25): eight, read by the class sheet that

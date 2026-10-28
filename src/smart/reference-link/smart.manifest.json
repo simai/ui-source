@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.reference-link",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "title": "Reference Link",
   "summary": "Navigation surface that pairs a real destination with a compact reference.",
   "kind": "smart",
@@ -22,6 +22,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icons",
       "component.reference-link",
       "smart.icon"
     ],
@@ -30,18 +31,27 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "appearance": {
         "type": "string",
+        "default": "card",
+        "description": "card is the reference as its own box: frame, fill and padding. plain is the link alone, taking the width of its text, for a reference inside something that is already a box -- a record’s field, a table cell -- where a second frame reads as a control the value is not.",
         "enum": [
           "card",
           "plain"
-        ],
-        "default": "card",
-        "description": "card is the reference as its own box: frame, fill and padding. plain is the link alone, taking the width of its text, for a reference inside something that is already a box -- a record’s field, a table cell -- where a second frame reads as a control the value is not."
-      },
-      "aria-label": {
-        "type": "string",
-        "default": ""
+        ]
       },
       "disabled": {
         "type": "boolean",
@@ -56,7 +66,7 @@
       "icon": {
         "type": "string",
         "default": "arrow_forward",
-        "description": "Decorative icon name. An absent attribute is the arrow; an empty one draws no icon, for a reference that stands beside its own label."
+        "description": "Absent: the arrow; empty: no icon at all"
       },
       "label": {
         "type": "string",
@@ -66,38 +76,38 @@
       "line": {
         "type": "string",
         "default": "",
+        "description": "Takes the text line of this form size as a link without the card, for a table cell, so the row keeps its control height.",
         "enum": [
           "",
           "1/2",
           "1",
           "2"
-        ],
-        "description": "Takes the text line of this form size as a link without the card, for a table cell, so the row keeps its control height."
+        ]
       },
       "size": {
         "type": "string",
         "default": "",
+        "description": "Form size: the reference becomes a control of that size, for a row of fields or a table cell. Empty keeps the card spacing.",
         "enum": [
           "",
           "1/2",
           "1",
           "2"
-        ],
-        "description": "Form size: the reference becomes a control of that size, for a row of fields or a table cell. Empty keeps the card spacing."
+        ]
       },
       "target": {
         "type": "string",
         "default": "_self",
         "description": "Native browsing-context target. Disclose new-context navigation in the name."
       },
-      "template": {
-        "type": "string",
-        "default": "default"
-      },
       "text": {
         "type": "string",
         "default": "",
         "description": "Compact route, source or reference shown beside the label."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -181,7 +191,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "link",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"

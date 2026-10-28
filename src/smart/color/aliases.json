@@ -22,9 +22,9 @@
       "component": "sf-color",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
-      "shim": "none",
       "section": "§4.1, §4.3",
-      "note": "the getter shown returned the painted colour; shown is now the base value (a boolean) on every element, so the old meaning cannot be served beside it: read effectiveValue"
+      "note": "the getter shown returned the painted colour; shown is now the base value (a boolean) on every element, so the old meaning cannot be served beside it: read effectiveValue",
+      "shim": "none"
     }
   ]
 }

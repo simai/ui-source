@@ -30,6 +30,10 @@
 // Usage:
 //   node scripts/generate-component-files.mjs --check [--bytes] [--component <name>]... [--package <root>]... [--json <file>]
 //   node scripts/generate-component-files.mjs --write [--component <name>]... [--package <root>]
+//   node scripts/generate-component-files.mjs --convert --component <name>... [--package <root>]
+//
+//   --convert    phase A: rewrite a 1.3.10 folder's component.json and examples.json in
+//                the 1.4 form (then --write the generated files from them)
 //
 //   --check      compare generated with committed; exit 1 when a committed file differs
 //                (semantically: JSON with sorted keys, rule.js as the evaluated rule,
@@ -129,9 +133,11 @@ export function genRule(component, folderFiles = []) {
   const rule = ruleObject(component, folderFiles);
   const q = (value) => `'${String(value).replace(/\\/gu, '\\\\').replace(/'/gu, "\\'")}'`;
   const lines = [];
+  if (component.relations && !component['x-bridged']) lines.push(`// Generated from component.json by ${GENERATOR}; do not edit.`);
   for (const line of component['x-rule']?.$comment ?? []) lines.push(line ? `// ${line}` : '//');
   lines.push(`SF.RuleLoader[${q(name)}] = {`, `  tags: [${rule.tags.map(q).join(', ')}],`);
-  if ('regex' in rule) lines.push(`  regex: ${isRegExp(rule.regex) ? String(rule.regex) : JSON.stringify(rule.regex)},`);
+  // x-rule.regex is the Loader's regular expression literal, written as text.
+  if ('regex' in rule) lines.push(`  regex: ${isRegExp(rule.regex) || /^\/.+\/[a-z]*$/u.test(String(rule.regex)) ? String(rule.regex) : JSON.stringify(rule.regex)},`);
   lines.push(`  type: 'smart',`, `  mode: 'smart',`, `  js: true,`);
   if ('css' in rule) lines.push(`  css: ${rule.css},`);
   lines.push('  relation: [');
@@ -163,12 +169,9 @@ export function attributesOf(component, lang = {}) {
   out.template = {kind: 'custom', valueType: 'string', default: 'default', description: BASE_TEMPLATE_DESCRIPTION};
   out['root-class'] = {kind: 'custom', valueType: 'string', default: ''};
   out['root-style'] = {kind: 'custom', valueType: 'string', default: ''};
-  // A default taken from the words (default-from runtime.<key>) is the source
-  // language's word for tools; the element reads it from lang/ at run time.
-  const word = (spec) => {
-    const key = /^runtime\.(.+)$/u.exec(spec['default-from'] ?? '')?.[1];
-    return key && lang.en?.runtime?.[key] !== undefined ? {...spec, default: lang.en.runtime[key]} : spec;
-  };
+  // A default taken from the words (default-from runtime.<key>) is the page
+  // language's word, read at run time: the registry names no fixed default.
+  const word = (spec) => spec;
   for (const [name, spec] of Object.entries(settings)) {
     if (['list', 'object', 'state'].includes(spec.type)) continue;
     out[name] = attributeOf(word(spec));
@@ -209,7 +212,7 @@ function attributeOf(spec) {
   const out = {};
   if (spec.type === 'boolean') Object.assign(out, {kind: 'boolean', values: ['true', 'false'], default: spec.default === true ? 'true' : 'false'});
   else if (spec.type === 'enum') Object.assign(out, {kind: 'enum', values: [...spec.values], default: spec.default ?? ''});
-  else Object.assign(out, {kind: 'custom', valueType: spec.type === 'number' ? (spec.integer ? 'integer' : 'number') : 'string', default: spec.default ?? (spec.type === 'number' ? undefined : '')});
+  else Object.assign(out, {kind: 'custom', valueType: spec.type === 'number' ? (spec.integer ? 'integer' : 'number') : 'string', default: spec.default ?? (spec.type === 'number' || spec['default-from'] ? undefined : '')});
   if (spec.min !== undefined) out.minimum = spec.min;
   if (spec.max !== undefined) out.maximum = spec.max;
   if (out.default === undefined) delete out.default;
@@ -312,7 +315,7 @@ export function inputsOf(component, lang = {}) {
     const property = {type: attribute.kind === 'boolean' ? 'boolean' : attribute.valueType ?? 'string'};
     if (attribute.default !== undefined) property.default = attribute.kind === 'boolean' ? attribute.default === 'true' : attribute.default;
     if (attribute.description) property.description = attribute.description;
-    if (attribute.kind === 'enum') property.enum = [...new Set([...(attribute.default === '' ? [''] : []), ...attribute.values])];
+    if (attribute.kind === 'enum') property.enum = [...attribute.values];
     if (attribute.examples) property.examples = attribute.examples;
     if (attribute.minimum !== undefined) property.minimum = attribute.minimum;
     if (attribute.maximum !== undefined) property.maximum = attribute.maximum;
@@ -326,6 +329,7 @@ export function inputsOf(component, lang = {}) {
     if (spec.default !== undefined) property.default = spec.default;
     if (spec.entries) property.items = {type: 'object'};
     if (spec.summary) property.description = spec.summary;
+    if (spec.examples) property.examples = spec.examples;
     properties[name] = property;
   }
   // The inputs a trait brings (phase 1: carried from the registry; a trait
@@ -374,10 +378,13 @@ export function eventsOf(component) {
     for (const [field, type] of Object.entries(carries)) properties[camel(field)] = fieldSchema(type);
     const required = Object.entries(carries).filter(([, type]) => !(type && typeof type === 'object' && type.optional)).map(([field]) => camel(field));
     // A native event (§8) is the browser's Event: it has no detail.
-    const payload = spec?.carries === 'native' ? {type: 'null'} : {type: 'object', required, properties, additionalProperties: true};
+    const payload = spec?.carries === 'native' ? {type: 'null', description: 'A native Event: there is no detail.'} : {type: 'object', required, properties, additionalProperties: true};
     out[domEvent(component, verb)] = {summary: spec?.summary ?? `${verb} (vocabulary).`, payload};
   }
   for (const [name, fields] of Object.entries(component['x-registry']?.['event-fields'] ?? {})) if (out[name]) Object.assign(out[name], fields);
+  // A former event name as the registry described it (its detail, alias_of):
+  // phase A keeps it until the alias ends.
+  for (const [name, event] of Object.entries(component['x-registry']?.['alias-events'] ?? {})) out[name] = event;
   for (const row of aliasRows(component)) {
     if (row.kind !== 'event' || out[row.from]) continue;
     out[row.from] = {summary: row.summary ?? `Dated alias of ${row.to} until ${row.remove_after} (${row.mode ?? 'same-detail'}).`, payload: {type: 'object'}};
@@ -391,7 +398,9 @@ export function methodsOf(component) {
     out[camel(name)] = {
       summary: spec?.summary ?? `The action ${name}.`,
       arguments: Object.entries(spec?.with ?? {}).map(([field, type]) => ({name: camel(field), schema: fieldSchema(type)})),
-      returns: spec?.['x-returns'] ?? {type: 'object'},
+      // An action answers with an outcome (an object); x-returns in words is
+      // that object's description.
+      returns: typeof spec?.['x-returns'] === 'string' ? {type: 'object', description: spec['x-returns']} : spec?.['x-returns'] ?? {type: 'object'},
     };
   }
   return {...out, ...(component['x-registry']?.methods ?? {})};
@@ -602,18 +611,15 @@ export async function viewOfToday(folder) {
   const extraRuleKeys = Object.keys(rule).filter((key) => !['tags', 'type', 'mode', 'js', 'css', 'relation'].includes(key));
   const xRule = component['x-rule'] ?? {};
   for (const key of extraRuleKeys) {
-    if (key === 'regex') { xRule.regex = rule.regex; log.bridge.push('x-rule.regex <- rule.js'); } else throw new Error(`rule.js has ${key}: not derivable`);
+    if (key === 'regex') { xRule.regex = isRegExp(rule.regex) ? String(rule.regex) : rule.regex; log.bridge.push('x-rule.regex <- rule.js'); } else throw new Error(`rule.js has ${key}: not derivable`);
   }
   const cssFiles = files.filter((file) => /\.s?css$/u.test(file));
-  if (cssFiles.length && !component.styles && rule.css === true) {
-    component.styles = cssFiles[0];
-    note(`styles: the folder holds ${cssFiles[0]} but component.json names no styles; "styles": "${cssFiles[0]}" (rule.js css: true is derived from it)`);
-  }
   const derivedCss = Boolean(component.styles) || cssFiles.length > 0;
   if (rule.css !== undefined && !(rule.css === true && derivedCss)) { xRule.css = rule.css; log.bridge.push(`x-rule.css ${rule.css} <- rule.js (the folder ${cssFiles.length ? 'holds' : 'holds no'} sheet)`); }
   if (rule.css === undefined && derivedCss) { xRule.css = null; log.bridge.push(`x-rule.css null <- rule.js (no css although the folder holds ${cssFiles.join(', ')})`); }
   if (Object.keys(xRule).length) component['x-rule'] = xRule;
   component.relations = relations;
+  Object.defineProperty(component, 'x-bridged', {value: true, enumerable: false});
 
   // --------------------------------------------------------------- aliases.json
   if (has('aliases.json')) {
@@ -771,6 +777,9 @@ export async function viewOfToday(folder) {
       if (Object.keys(extra).length && draft.events[eventName]) eventFields[eventName] = extra;
     }
     if (Object.keys(eventFields).length) carry('event-fields', eventFields, 'registry-only fields of an event (canonical)');
+    const aliasNames = new Set((component.aliases?.rows ?? []).filter((row) => row.kind === 'event').map((row) => row.from));
+    const aliasEvents = Object.fromEntries(Object.entries(manifest.events ?? {}).filter(([eventName, event]) => !draft.events[eventName]?.payload?.properties && (aliasNames.has(eventName) || event.alias_of)));
+    if (Object.keys(aliasEvents).length) carry('alias-events', aliasEvents, `former event names as the registry describes them: ${Object.keys(aliasEvents).join(', ')}`);
     const derivedMethods = methodsOf({...component, 'x-registry': {}});
     const legacy = Object.fromEntries(Object.entries(manifest.methods ?? {}).filter(([key]) => !derivedMethods[key]));
     if (Object.keys(legacy).length) carry('methods', legacy, `public methods the manifest names and component.json does not declare: ${Object.keys(legacy).join(', ')}`);
@@ -802,7 +811,11 @@ export async function viewOfToday(folder) {
   }
 
   // ---------------------------------------------------------------- examples.json
-  const examples = has('examples.json') ? read('examples.json') : {examples: []};
+  // examples.json is {examples: [...]}; seven folders write a bare list (read
+  // as the list of examples by the instance-scope probe, not by the snapshot).
+  const examplesIn = has('examples.json') ? read('examples.json') : {examples: []};
+  const examples = Array.isArray(examplesIn) ? {examples: examplesIn} : examplesIn;
+  if (Array.isArray(examplesIn)) note('examples.json: a bare list becomes {examples: [...]}');
   examples.examples ??= [];
   if (has('studio.fixture.json')) {
     log.bridge.push('studio <- studio.fixture.json');
@@ -862,6 +875,54 @@ export async function viewOfToday(folder) {
   return {component, examples, lang, files, folder: name, stamp, log, hasMeta: has('meta.mjs')};
 }
 
+// A folder in the 1.4 form (component.json has "relations"): its five files
+// are the whole source; only the build stamp still comes from the committed
+// registry (provenance, runtime pair: a build computes them, never a person).
+export async function viewOf(folder) {
+  const component = readJson(path.join(folder, 'component.json'));
+  if (!Array.isArray(component.relations)) return viewOfToday(folder);
+  const name = path.basename(folder);
+  if (short(component.tag) !== name) component.folder = name;
+  const log = {bridge: [], decisions: [], dropped: [], conflicts: [], identity: [], form: '1.4'};
+  const examples = existsSync(path.join(folder, 'examples.json')) ? readJson(path.join(folder, 'examples.json')) : {examples: []};
+  const lang = {};
+  for (const file of readdirSync(path.join(folder, 'lang'))) if (file.endsWith('.json')) lang[path.basename(file, '.json')] = readJson(path.join(folder, 'lang', file));
+  let stamp = {};
+  const manifestPath = path.join(folder, 'smart.manifest.json');
+  if (existsSync(manifestPath)) {
+    const manifest = readJson(manifestPath);
+    stamp = {provenance: manifest.provenance, runtime_pair: manifest.compatibility?.runtime_pair};
+    log.bridge.push('stamp <- smart.manifest.json provenance, runtime_pair');
+  }
+  return {component, examples, lang, files: listFiles(folder), folder: name, stamp, log, hasMeta: existsSync(path.join(folder, 'meta.mjs'))};
+}
+
+// Phase A: write a 1.3.10 folder's component.json and examples.json in the
+// 1.4 form (relations, aliases, x-rule, x-registry; the studio example and the
+// conformance page). component.json keeps its key order: relations go before
+// templates, aliases before the first x- field, x-rule and x-registry last;
+// x-kept goes (x-registry carries its blocks).
+export async function convertFolder(folder) {
+  const original = readJson(path.join(folder, 'component.json'));
+  if (Array.isArray(original.relations)) return {component: path.basename(folder), skipped: 'already 1.4'};
+  const view = await viewOfToday(folder);
+  const c = view.component;
+  const out = {};
+  const place = (key) => { if (key in c && !(key in out) && c[key] !== undefined) out[key] = c[key]; };
+  for (const key of Object.keys(original)) {
+    if (key === 'x-kept') continue;
+    if (key === 'templates') place('relations');
+    if (key.startsWith('x-')) { place('relations'); place('aliases'); }
+    place(key);
+  }
+  place('relations');
+  place('aliases');
+  for (const key of Object.keys(c)) if (key !== 'folder') place(key);
+  writeFileSync(path.join(folder, 'component.json'), json(out));
+  writeFileSync(path.join(folder, 'examples.json'), json(view.examples));
+  return {component: path.basename(folder), log: view.log};
+}
+
 // ======================================================================
 // Comparison
 
@@ -915,7 +976,7 @@ export function componentFolders(packageRoot) {
 export async function checkComponent(folder) {
   const name = path.basename(folder);
   let view;
-  try { view = await viewOfToday(folder); } catch (error) {
+  try { view = await viewOf(folder); } catch (error) {
     return {component: name, error: String(error.message ?? error), files: {}};
   }
   const generated = generateFiles(view, {stamp: view.stamp, withMeta: view.hasMeta});
@@ -939,11 +1000,12 @@ export const passes = (result, {bytes = false} = {}) => !result.error && Object.
 // CLI
 
 function parseArgs(argv) {
-  const options = {check: false, write: false, bytes: false, quiet: false, components: [], files: [], packages: [], json: null};
+  const options = {convert: false, check: false, write: false, bytes: false, quiet: false, components: [], files: [], packages: [], json: null};
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--check') options.check = true;
     else if (arg === '--write') options.write = true;
+    else if (arg === '--convert') options.convert = true;
     else if (arg === '--bytes') options.bytes = true;
     else if (arg === '--quiet') options.quiet = true;
     else if (arg === '--component') options.components.push(argv[++i]);
@@ -954,7 +1016,8 @@ function parseArgs(argv) {
     else if (arg === '--json') options.json = path.resolve(argv[++i]);
     else throw new Error(`unknown argument ${arg}`);
   }
-  if (options.check === options.write) throw new Error('give exactly one of --check, --write');
+  if ([options.check, options.write, options.convert].filter(Boolean).length !== 1) throw new Error('give exactly one of --check, --write, --convert');
+  if (options.convert && !options.components.length) throw new Error('--convert takes the components by name (--component)');
   if (!options.packages.length) options.packages.push(repositoryRoot);
   for (const file of options.files) if (!GENERATED.includes(file)) throw new Error(`--file ${file}: not a generated file (${GENERATED.join(', ')})`);
   for (const name of options.components) if (!/^[a-z][a-z0-9-]*$/u.test(name ?? '')) throw new Error(`invalid component name ${name}`);
@@ -986,6 +1049,15 @@ export async function run(options) {
 async function main() {
   let options;
   try { options = parseArgs(process.argv.slice(2)); } catch (error) { console.error(String(error.message)); process.exit(2); }
+  if (options.convert) {
+    for (const packageRoot of options.packages) {
+      for (const folder of componentFolders(packageRoot).filter((item) => options.components.includes(path.basename(item)))) {
+        const result = await convertFolder(folder);
+        console.log(`${result.component}: ${result.skipped ?? `component.json and examples.json in the 1.4 form (${result.log.bridge.length} facts moved)`}`);
+      }
+    }
+    return;
+  }
   const results = await run(options);
   if (options.write) {
     for (const result of results) {

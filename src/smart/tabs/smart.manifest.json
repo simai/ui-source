@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -26,7 +26,10 @@
     "uses": [
       "component.tabs",
       "smart.button",
-      "smart.icon-button"
+      "smart.checkbox",
+      "smart.context-menu",
+      "smart.icon-button",
+      "smart.sortable"
     ],
     "public_parts": []
   },
@@ -35,11 +38,26 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "type": {
         "type": "string",
-        "default": null
+        "default": "",
+        "enum": [
+          "underline",
+          "pills",
+          "full",
+          "vertical"
+        ]
       },
       "size": {
         "type": "string",
@@ -64,17 +82,9 @@
         "default": "start"
       },
       "active-index": {
-        "type": "number",
-        "default": 0
-      },
-      "items": {
-        "type": "string",
-        "default": [],
-        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings)."
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
+        "type": "integer",
+        "default": 0,
+        "minimum": 0
       },
       "top-class": {
         "type": "string",
@@ -86,13 +96,13 @@
       },
       "overflow": {
         "type": "string",
+        "default": "scroll",
+        "description": "What the tabs do when they do not fit: scroll (the row scrolls), wrap (rows wrap), or more (the tabs that do not fit go into a trailing «Ещё (n)» menu; the active one always stays).",
         "enum": [
           "scroll",
           "wrap",
           "more"
-        ],
-        "default": "scroll",
-        "description": "What the tabs do when they do not fit: scroll (the row scrolls), wrap (rows wrap), or more (the tabs that do not fit go into a trailing «Ещё (n)» menu; the active one always stays)."
+        ]
       },
       "configurable": {
         "type": "boolean",
@@ -101,7 +111,17 @@
       },
       "selected": {
         "type": "string",
+        "default": "",
+        "description": "the id of the selected tab's entry (its key, else its place)"
+      },
+      "aria-label": {
+        "type": "string",
         "default": ""
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings)."
       }
     },
     "additionalProperties": false
@@ -109,30 +129,68 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
-    "getData": {
-      "summary": "Returns the data set with setData: {tabs, panels, ...}; {tabs: [], panels: []} when none was set.",
-      "arguments": [],
-      "returns": {
-        "type": "object"
-      }
-    },
     "setData": {
       "summary": "Merges data into the current data (a function receives the current data and returns the next) and re-renders. tabs or items become tab items; panels or content become panels. A non-object is ignored.",
       "arguments": [
         {
           "name": "data",
-          "type": "object|function",
-          "required": true
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "reason",
-          "type": "string",
-          "required": false
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
+      }
+    },
+    "setPanels": {
+      "summary": "Replaces the panels in the data (a function receives the current panels) and re-renders.",
+      "arguments": [
+        {
+          "name": "panels",
+          "schema": {
+            "type": "array"
+          }
+        },
+        {
+          "name": "reason",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "goTo": {
+      "summary": "Activates the tab at index (an index out of range means 0); does nothing for a disabled or the active tab. Sets active-index and emits sf-tab-change.",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "getData": {
+      "summary": "Returns the data set with setData: {tabs, panels, ...}; {tabs: [], panels: []} when none was set.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
       }
     },
     "setItems": {
@@ -154,45 +212,12 @@
         "description": "The element, for chaining."
       }
     },
-    "setPanels": {
-      "summary": "Replaces the panels in the data (a function receives the current panels) and re-renders.",
-      "arguments": [
-        {
-          "name": "panels",
-          "type": "array|function",
-          "required": true
-        },
-        {
-          "name": "reason",
-          "type": "string",
-          "required": false
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
     "setState": {
       "summary": "Writes each key as its kebab-case attribute; an array (items) is serialised as label::flags entries joined by |. false, null, undefined or empty removes the attribute, true sets it empty.",
       "arguments": [
         {
           "name": "nextState",
           "type": "object",
-          "required": true
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "goTo": {
-      "summary": "Activates the tab at index (an index out of range means 0); does nothing for a disabled or the active tab. Sets active-index and emits sf-tab-change.",
-      "arguments": [
-        {
-          "name": "index",
-          "type": "number|string",
           "required": true
         }
       ],
@@ -236,6 +261,75 @@
     }
   },
   "events": {
+    "sf-tabs-change": {
+      "summary": "change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "selected",
+          "previous",
+          "current",
+          "item",
+          "items"
+        ],
+        "properties": {
+          "selected": {},
+          "previous": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "item": {
+            "type": "object"
+          },
+          "items": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-tabs-settings-change": {
+      "summary": "The person ordered or showed/hid a tab in the settings; applied at once. The host keeps it and gives it back with setSettings.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "order",
+          "hidden"
+        ],
+        "properties": {
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "enum": [
+              "order",
+              "visibility"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-tabs-settings-reset": {
+      "summary": "The person asked for the declared order back; the component shows it until the host answers with setSettings.",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
     "sf-tab-change": {
       "summary": "Runtime event sf-tab-change.",
       "payload": {
@@ -278,44 +372,6 @@
           "item",
           "items"
         ]
-      }
-    },
-    "sf-tabs-settings-change": {
-      "summary": "The person ordered or showed/hid a tab in the settings; applied at once. The host keeps it and gives it back with setSettings.",
-      "payload": {
-        "type": "object",
-        "required": [
-          "order",
-          "hidden"
-        ],
-        "properties": {
-          "order": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "hidden": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "reason": {
-            "type": "string",
-            "enum": [
-              "order",
-              "visibility"
-            ]
-          }
-        }
-      }
-    },
-    "sf-tabs-settings-reset": {
-      "summary": "The person asked for the declared order back; the component shows it until the host answers with setSettings.",
-      "payload": {
-        "type": "object",
-        "properties": {}
       }
     }
   },

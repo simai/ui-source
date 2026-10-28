@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -21,12 +21,28 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.slider",
+      "smart.icon-button"
+    ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "button-type": {
         "type": "string",
         "default": "primary"
@@ -75,10 +91,6 @@
         "type": "number",
         "default": 450
       },
-      "root-class": {
-        "type": "string",
-        "default": ""
-      },
       "slide-class": {
         "type": "string",
         "default": ""
@@ -89,16 +101,6 @@
   "item_contract": {},
   "contracts": {},
   "methods": {
-    "getSlider": {
-      "summary": "The Swiper instance behind the slider, or null before it is bound.",
-      "arguments": [],
-      "returns": {
-        "type": [
-          "object",
-          "null"
-        ]
-      }
-    },
     "refresh": {
       "summary": "Rebind the slider after its slides changed: forwards the data attributes and rebuilds Swiper, keeping the events bound. Returns the element.",
       "arguments": [],
@@ -122,9 +124,42 @@
         "type": "object",
         "description": "The element, for chaining."
       }
+    },
+    "getSlider": {
+      "summary": "The Swiper instance behind the slider, or null before it is bound.",
+      "arguments": [],
+      "returns": {
+        "type": [
+          "object",
+          "null"
+        ]
+      }
     }
   },
   "events": {
+    "change": {
+      "summary": "change (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "activeIndex",
+          "realIndex",
+          "previousIndex"
+        ],
+        "properties": {
+          "activeIndex": {
+            "type": "number"
+          },
+          "realIndex": {
+            "type": "number"
+          },
+          "previousIndex": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-slide-change": {
       "summary": "Runtime event sf-slide-change.",
       "payload": {
@@ -191,7 +226,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "none",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"

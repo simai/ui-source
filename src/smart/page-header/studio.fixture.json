@@ -8,7 +8,7 @@
   "props": {
     "heading": "Каталог решений",
     "count": "448",
-    "star": "off"
+    "star": false
   },
   "children": [],
   "state": "default"

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.color",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -24,6 +24,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icons",
       "smart.icon-button"
     ],
     "public_parts": [
@@ -36,47 +37,44 @@
   },
   "inputs": {
     "type": "object",
-    "additionalProperties": false,
     "properties": {
       "template": {
         "type": "string",
         "default": "default",
         "description": "Which template draws it."
       },
-      "value": {
+      "root-class": {
         "type": "string",
-        "default": "",
-        "description": "The colour, as #rgb, #rrggbb or #rrggbbaa. Empty means nothing is chosen and the inherited colour applies."
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The size ladder step, so a colour beside a text field lines up with it.",
         "enum": [
           "1/2",
           "1",
           "2"
-        ],
-        "description": "The size ladder step, so a colour beside a text field lines up with it."
+        ]
       },
       "appearance": {
         "type": "string",
         "default": "bordered",
+        "description": "How the swatch is bounded.",
         "enum": [
           "bordered",
           "outlined",
           "plain"
-        ],
-        "description": "How the swatch is bounded."
+        ]
       },
       "swatches": {
         "type": "string",
         "default": "",
         "description": "The colours a product already has, comma separated, each #hex or #hex|Name; a name may hold spaces. A piece without a name may list several colours by spaces. A person picks the brand colour rather than matching a hex by eye."
-      },
-      "inherited-value": {
-        "type": "string",
-        "default": "",
-        "description": "The colour that applies while nothing is chosen. Shown as inherited rather than drawn as the value: a control that drew it as the value would make «not set» and «set to the same colour» look identical, and only one of them follows the theme when the theme changes."
       },
       "clearable": {
         "type": "boolean",
@@ -99,13 +97,21 @@
       },
       "choose-label": {
         "type": "string",
-        "default": "",
         "description": "The words on the swatch. Unset, the component answers in the page's language (\"Choose a colour\" in English)."
       },
       "clear-label": {
         "type": "string",
-        "default": "",
         "description": "The words on the control that returns to the inherited colour. Unset, it follows the page's language."
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The colour, as #rgb, #rrggbb or #rrggbbaa. Empty means nothing is chosen and the inherited colour applies."
+      },
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "The colour that applies while nothing is chosen. Shown as inherited rather than drawn as the value: a control that drew it as the value would make «not set» and «set to the same colour» look identical, and only one of them follows the theme when the theme changes."
       },
       "inherited-text": {
         "type": "string",
@@ -117,11 +123,19 @@
         "default": "",
         "description": "The accessible name of the button that returns to the inherited colour; `clear-label` still names it. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
       }
-    }
+    },
+    "additionalProperties": false
   },
   "item_contract": {},
   "contracts": {},
   "methods": {
+    "clear": {
+      "summary": "Return to the inherited colour; the same as setValue(\"\"). Returns whether it changed.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
     "setValue": {
       "summary": "Set and commit the colour as a person would: normalised, reflected to value, input and then change dispatched when it differs from the committed one. Returns whether the value changed.",
       "arguments": [
@@ -131,13 +145,6 @@
           "required": true
         }
       ],
-      "returns": {
-        "type": "boolean"
-      }
-    },
-    "clear": {
-      "summary": "Return to the inherited colour; the same as setValue(\"\"). Returns whether it changed.",
-      "arguments": [],
       "returns": {
         "type": "boolean"
       }
@@ -156,6 +163,10 @@
       "summary": "A colour was committed: once when the platform picker closes or a swatch or clear is pressed, not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. The picker's own change does not leave the host.",
       "payload": {
         "type": "object",
+        "required": [
+          "value",
+          "name"
+        ],
         "properties": {
           "value": {
             "type": "string"
@@ -163,13 +174,18 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "input": {
       "summary": "The colour moved, on every step of a drag across the platform picker and before each change. Carries the value and the form name.",
       "payload": {
         "type": "object",
+        "required": [
+          "value",
+          "name"
+        ],
         "properties": {
           "value": {
             "type": "string"
@@ -177,7 +193,8 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-field:reset": {
@@ -307,7 +324,7 @@
       },
       {
         "path": "src/smart/color/rule.js",
-        "sha256": "a2f07a806db6d631d84bf0c99855ef9d468615bb262626dc0cd85040786ab196"
+        "sha256": "f33c39c38338a58b4f73f43636e96b7bff63379d1914b683cc8b89e6b28faaf3"
       },
       {
         "path": "src/smart/color/js/templates/default.js",

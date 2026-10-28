@@ -14,7 +14,9 @@ test('datepicker tolerates the first render before the nested input ref is ready
 test('steps Studio fixture renders a meaningful multi-step example', async () => {
   const fixture = JSON.parse(await readFile(path.join(root, 'src/smart/steps/studio.fixture.json'), 'utf8'));
   assert.equal(fixture.component, 'smart.steps');
-  assert.ok(String(fixture.props.items).split('|').length >= 3);
+  // A list, as the manifest declares items (standard 1.4); "a|b|c" before.
+  const items = Array.isArray(fixture.props.items) ? fixture.props.items : String(fixture.props.items).split('|');
+  assert.ok(items.length >= 3);
 });
 
 test('button link segments keep a closed perimeter without a double selected join', async () => {

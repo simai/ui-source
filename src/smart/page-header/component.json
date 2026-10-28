@@ -2,7 +2,7 @@
   "$comment": "The source of sf-page-header's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/page-header (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.page-header",
   "tag": "sf-page-header",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -54,6 +54,17 @@
       "Space": "toggle:star"
     }
   },
+  "relations": [
+    {
+      "name": "cl-badge"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -99,6 +110,23 @@
       "state": "on"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-page-header for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-page-header-star",
+        "to": "sf-page-header-toggle",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": true,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5 toggle; stand 24",
+        "summary": "The person pressed the star. Cancelable: a host that waits for its own answer cancels it and sets star itself."
+      }
+    ]
+  },
   "x-summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "x-source": {
     "package": "framework",
@@ -113,58 +141,6 @@
     "events.sf-page-header-star → toggle: the star's request is the vocabulary's toggle (§5), as stand 24 decided; sf-page-header-toggle {on}, cancelable, the old sf-page-header-star its dated same-detail alias",
     "settings.star: enum '' | off | on → an optional boolean (§4.2): absent draws no star; off and on are read as false and true, so the markup written today keeps its meaning"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
-    "ownership": {
-      "source": "simai/ui-source",
-      "data": "host",
-      "effects": "host",
-      "forbidden_client_responsibilities": [
-        "backend access decisions",
-        "host route invention",
-        "keeping favourites"
-      ]
-    },
-    "presentation": {
-      "themes": [
-        "light",
-        "dark"
-      ],
-      "locales": [
-        "ru",
-        "en"
-      ],
-      "responsive": [
-        "desktop",
-        "mobile"
-      ]
-    },
-    "ai_guidance": {
-      "use_when": "Use sf-page-header at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",
-      "do_not": [
-        "Do not keep favourites in the component; answer sf-page-header-toggle from the host",
-        "Do not put totals in the menu; they belong here",
-        "Do not style the heading yourself; it is the fourth heading step"
-      ],
-      "required_reads": [
-        "inputs",
-        "events",
-        "ownership"
-      ],
-      "minimal_example": "<sf-page-header heading=\"Каталог решений\" count=\"448\" star=\"false\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button></sf-page-header>",
-      "owner_commands": [
-        "npm run contract:verify",
-        "npm test"
-      ]
-    }
-  },
   "x-decisions": [
     "toggle (vocabulary 1.1.5 §5, stand 24): pressing the star sends sf-page-header-toggle {on}, cancelable; not cancelled, the header writes star itself; a host that waits for its own answer cancels it and writes star when it knows. The old sf-page-header-star follows as a dated same-detail alias until 2026-12-01 (aliases.json).",
     "star is an optional boolean (§4.2): absent is unset and draws no star; the attribute's words off and on read as false and true (the base's reading), so star=\"off\"/\"on\" written today keep their meaning. star=\"\" (present and empty) is now true, the standard's attribute form; the old empty meant «no star», which absent says.",
@@ -181,5 +157,115 @@
     "source-drift: the shipped manifest differs from 5100227 only in its provenance hashes and the rule's relation names (cl-badge, cl-icon-button, cl-icon); the interface is the same, nothing to carry.",
     "version 1.1.2: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  ],
+  "x-rule": {
+    "$comment": [
+      "The header draws a badge for its count and its install mark, and an icon",
+      "button for its star; a tag it renders is a tag it fetches."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "page-header",
+      "admin",
+      "navigation"
+    ],
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "selected"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention",
+        "keeping favourites"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-page-header at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",
+      "do_not": [
+        "Do not keep favourites in the component; answer sf-page-header-star from the host",
+        "Do not put totals in the menu; they belong here",
+        "Do not style the heading yourself; it is the fourth heading step"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-page-header heading=\"Каталог решений\" count=\"448\" star=\"off\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button></sf-page-header>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches the star and the actions",
+        "Enter or Space toggles the star"
+      ],
+      "focus": "The star is a native button in sf-icon-button with aria-pressed and a label that says what pressing it does."
+    },
+    "alias-events": {
+      "sf-page-header-star": {
+        "summary": "The person pressed the star. Cancelable: a host that waits for its own answer cancels it and sets star itself.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "on"
+          ],
+          "properties": {
+            "on": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
 }

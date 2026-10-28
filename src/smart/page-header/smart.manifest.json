@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.page-header",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Page header",
   "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "kind": "smart",
@@ -26,46 +26,50 @@
   "composition": {
     "uses": [
       "smart.badge",
-      "smart.icon-button",
-      "smart.icon"
+      "smart.icon",
+      "smart.icon-button"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
-      "heading": {
+      "template": {
         "type": "string",
-        "default": "",
-        "description": "The page heading."
-      },
-      "count": {
-        "type": "string",
-        "default": "",
-        "description": "How many records the page holds; empty draws no count. The admin menu carries no totals, so this is where they are."
-      },
-      "level": {
-        "type": "string",
-        "default": "site",
-        "enum": [
-          "site",
-          "install"
-        ],
-        "description": "install marks a page shared by every site."
-      },
-      "star": {
-        "type": "string",
-        "default": "",
-        "enum": [
-          "",
-          "off",
-          "on"
-        ],
-        "description": "Empty draws no star; off and on draw it in that state."
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
       "root-class": {
         "type": "string",
         "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "heading": {
+        "type": "string",
+        "default": "",
+        "description": "The page heading, drawn as the fourth heading step"
+      },
+      "count": {
+        "type": "string",
+        "default": "",
+        "description": "How many records the page holds, as the host writes it (448, ~1 200); empty draws no count"
+      },
+      "level": {
+        "type": "string",
+        "default": "site",
+        "description": "install marks a page shared by every site",
+        "enum": [
+          "site",
+          "install"
+        ]
+      },
+      "star": {
+        "type": "boolean",
+        "default": false,
+        "description": "Absent draws no star; false (or off) and true (or on) draw it in that state"
       }
     },
     "additionalProperties": false
@@ -74,6 +78,21 @@
   "contracts": {},
   "methods": {},
   "events": {
+    "sf-page-header-toggle": {
+      "summary": "The person pressed the star: the request to make the page a favourite (on) or not; a host that answers itself cancels it and writes star",
+      "payload": {
+        "type": "object",
+        "required": [
+          "on"
+        ],
+        "properties": {
+          "on": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-page-header-star": {
       "summary": "The person pressed the star. Cancelable: a host that waits for its own answer cancels it and sets star itself.",
       "payload": {
@@ -121,7 +140,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "banner content; the heading is an h1",
+    "role": "none",
     "accessible_name": "internal",
     "keyboard": [
       "Tab reaches the star and the actions",

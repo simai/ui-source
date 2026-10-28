@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatars's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatars (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatars",
   "tag": "sf-avatars",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -82,6 +82,14 @@
   },
   "events": {},
   "actions": {},
+  "relations": [
+    {
+      "name": "avatars"
+    },
+    {
+      "name": "icons"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -134,6 +142,20 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-avatars for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "data",
+        "to": "fields",
+        "kind": "setting",
+        "section": "§3.1",
+        "note": "data is a reserved name; the shim maps the attribute and the property"
+      }
+    ]
+  },
   "x-summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
   "x-source": {
     "package": "framework",
@@ -145,15 +167,25 @@
     "label-text",
     "label-second-text"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-renamed": [
+    "settings.data → fields: \"data\" is a reserved name (§3.1); data is its dated alias"
+  ],
+  "x-decisions": [
+    "a11y-role: none; a11y-name: none (the old shape \"internal\" meant the same). The avatars are pictures beside visible text -- the image alt=\"\" and aria-hidden, the name, label or remainder printed -- and nothing takes focus; for an avatar that is a control use sf-avatar.",
+    "data -> fields: data is a reserved name (§3.1), so the JSON text of the fields is fields and data its dated setting alias (aliases.json, until 2026-12-01). It stays a string of JSON text, as the attribute always was; an attribute of the same field wins over it.",
+    "item-shape: avatars is a list whose entries are {image-url, text} (§4.2); image_url and initials are still read. The attribute takes the list as JSON text, as before; the property takes the list itself.",
+    "active is a value (out): the online dot the default template shows; it keeps its default, so a page that wrote active still writes the attribute.",
+    "templates: default, user, group, label and profile are the combinations of one Lit template in JavaScript (js/templates/default.js), the migration form §5.2 allows; the old template/*/index.html files are not compiled and stay as they were.",
+    "docs: the folder had no docs.md; it gains one (§3).",
+    "examples: examples.json from studio.fixture.json (the label combination: Команда проекта, 5 участников) plus a person with a source, a group with a remainder, a profile and the default with the online dot.",
+    "css-variables: the five --sf-avatar-* public variables of the class sheet sf-avatars draws with (src/core/contracts/public-variables.v1.json, avatar), as sf-code-input declares the verification sheet's (§6).",
+    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+  ],
+  "x-rule": {
+    "regex": "/<sf-avatars\\b/i"
+  },
+  "x-registry": {
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -162,6 +194,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -175,7 +215,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-avatars when the interface needs the avatars behavior.",
@@ -195,21 +239,11 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [],
+      "focus": "Nothing here takes focus: every avatar is a decorative picture (alt \"\"), and the visible text names the person -- name in user, label-text in label. An avatar that opens a profile is an sf-avatar with aria-label inside the host's own link or button."
     }
-  },
-  "x-renamed": [
-    "settings.data → fields: \"data\" is a reserved name (§3.1); data is its dated alias"
-  ],
-  "x-decisions": [
-    "a11y-role: none; a11y-name: none (the old shape \"internal\" meant the same). The avatars are pictures beside visible text -- the image alt=\"\" and aria-hidden, the name, label or remainder printed -- and nothing takes focus; for an avatar that is a control use sf-avatar.",
-    "data -> fields: data is a reserved name (§3.1), so the JSON text of the fields is fields and data its dated setting alias (aliases.json, until 2026-12-01). It stays a string of JSON text, as the attribute always was; an attribute of the same field wins over it.",
-    "item-shape: avatars is a list whose entries are {image-url, text} (§4.2); image_url and initials are still read. The attribute takes the list as JSON text, as before; the property takes the list itself.",
-    "active is a value (out): the online dot the default template shows; it keeps its default, so a page that wrote active still writes the attribute.",
-    "templates: default, user, group, label and profile are the combinations of one Lit template in JavaScript (js/templates/default.js), the migration form §5.2 allows; the old template/*/index.html files are not compiled and stay as they were.",
-    "docs: the folder had no docs.md; it gains one (§3).",
-    "examples: examples.json from studio.fixture.json (the label combination: Команда проекта, 5 участников) plus a person with a source, a group with a remainder, a profile and the default with the online dot.",
-    "css-variables: the five --sf-avatar-* public variables of the class sheet sf-avatars draws with (src/core/contracts/public-variables.v1.json, avatar), as sf-code-input declares the verification sheet's (§6).",
-    "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
-  ]
+  }
 }

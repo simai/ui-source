@@ -173,6 +173,9 @@ test('smart menu: the manifest is the element', () => {
   assert.deepEqual(manifest.inputs.properties.collapse.enum, [...MENU_COLLAPSE]);
   const props = source.slice(source.indexOf('static get props()'), source.indexOf('constructor()'));
   for (const name of Object.keys(manifest.inputs.properties)) {
+    // root-class and root-style are the base's (§4.1), aria-label the host's:
+    // not the element's props.
+    if (['root-class', 'root-style', 'aria-label'].includes(name)) continue;
     const key = name.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
     assert.ok(props.includes(`${key === 'template' ? 'templateName' : key}:`), name);
   }
@@ -193,7 +196,7 @@ test('smart menu: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-menu'\] = \{\n  tags: \['sf-menu'\],/u);
   assert.match(rule, /\{ name: 'menu' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},\n    \{ name: 'badges' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/menu\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.menu', 'component.badges']);
+  assert.deepEqual(manifest.composition.uses, ['component.badges', 'component.icon-buttons', 'component.icons', 'component.menu']);
 });
 
 // The public variables (2026-10-25): nine, read by the class sheet sf-menu

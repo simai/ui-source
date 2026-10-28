@@ -14,6 +14,17 @@
       "expect": {
         "heading": "Анна Захарова",
         "status": "online"
+      },
+      "studio": {
+        "props": {
+          "template": "label",
+          "text": "AZ",
+          "title": "Анна Захарова",
+          "description": "Дизайнер продукта",
+          "status": "online",
+          "size": "2"
+        },
+        "scenario": {}
       }
     },
     {
@@ -99,6 +110,118 @@
       "expect": {
         "disabled": true
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-avatar against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-avatar id=\"a\" text=\"AZ\" aria-label=\"Анна Захарова\"></sf-avatar>",
+          "  <sf-avatar id=\"a-word\" text=\"НН\"></sf-avatar>",
+          "  <sf-avatar id=\"a-label\" template=\"label\" heading=\"Анна Захарова\" description=\"Дизайнер\" status=\"online\" size=\"2\"></sf-avatar>",
+          "  <sf-avatar id=\"a-old\" template=\"card\" title=\"Вера Петрова\"></sf-avatar>",
+          "  <sf-avatar id=\"a-badge\" text=\"АБ\" aria-label=\"Анна Белова\" badge-count=\"3\"></sf-avatar>",
+          "  <sf-avatar id=\"a-bad\" text=\"X\" size=\"9\" shape=\"oval\"></sf-avatar>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-button",
+          "title": "the avatar is a native button named by the host's aria-label",
+          "covers": "accessibility.role button, accessibility.name aria-label",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#a button.sf-avatar'); return b && b.type === 'button' && b.getAttribute('aria-label') === 'Анна Захарова' && b.textContent.includes('AZ'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-default-word",
+          "title": "without aria-label the button says the page's word",
+          "covers": "lang runtime aria-label",
+          "steps": [
+            {
+              "check": "document.querySelector('#a-word button').getAttribute('aria-label') === 'Аватар'",
+              "expect": {
+                "values": {
+                  "#a-word.ariaLabel": "Аватар"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-label-template",
+          "title": "the label template prints the heading and the description",
+          "covers": "templates.label, settings.heading",
+          "steps": [
+            {
+              "check": "(() => { const t = document.querySelector('#a-label .sf-avatar-label-group-title'); return t && t.textContent.trim() === 'Анна Захарова' && document.querySelector('#a-label').textContent.includes('Дизайнер'); })()",
+              "expect": {
+                "values": {
+                  "#a-label.heading": "Анна Захарова",
+                  "#a-label.status": "online",
+                  "#a-label.size": "2"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-title-dated",
+          "title": "title still draws the heading and its initials, noted with its dates",
+          "covers": "aliases.json title -> heading, templates.card",
+          "steps": [
+            {
+              "check": "document.querySelector('#a-old .sf-avatar-card-title')?.textContent.trim() === 'Вера Петрова' && document.querySelector('#a-old').heading === 'Вера Петрова' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-avatar' && note.from === 'title' && note.remove_after === '2026-12-01')"
+            }
+          ]
+        },
+        {
+          "id": "p5-badge",
+          "title": "a count stands on the avatar and joins its name",
+          "covers": "settings.badge-count",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#a-badge button'); return Boolean(b.querySelector('.sf-badge')) && b.getAttribute('aria-label').startsWith('Анна Белова') && b.getAttribute('aria-label').includes('3'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-unknown-values",
+          "title": "values off the lists read as the defaults",
+          "covers": "settings.size enum, settings.shape enum",
+          "steps": [
+            {
+              "check": "true",
+              "expect": {
+                "values": {
+                  "#a-bad.size": "1",
+                  "#a-bad.shape": "circle"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-disabled-property",
+          "title": "disabled written as a property disables the button",
+          "covers": "settings.disabled property",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#a').disabled = true; return true; })()"
+            },
+            {
+              "check": "document.querySelector('#a button').disabled && document.querySelector('#a').hasAttribute('disabled')"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

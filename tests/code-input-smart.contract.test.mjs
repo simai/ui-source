@@ -179,7 +179,8 @@ test('code input: the loader knows it and asks for what it draws with', () => {
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/code-input\/rule\.js';/u);
   assert.deepEqual(manifest.composition.uses, ['component.verification']);
   assert.deepEqual(manifest.inputs.properties.mode.enum, [...CODE_MODES]);
-  assert.equal(manifest.inputs.properties.length.default, String(CODE_LENGTH_DEFAULT));
+  // A number setting is a number in the generated registry (standard 1.4).
+  assert.equal(manifest.inputs.properties.length.default, CODE_LENGTH_DEFAULT);
 });
 
 // The public variables (2026-10-25): seven, read by the class sheet that

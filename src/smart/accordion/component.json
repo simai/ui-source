@@ -2,7 +2,7 @@
   "$comment": "The source of sf-accordion's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/accordion (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.accordion",
   "tag": "sf-accordion",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "accordion",
   "settings": {
@@ -37,11 +37,29 @@
           "optional": true
         }
       },
-      "x-markup": "the attribute takes the same list as JSON; without it the <details> written inside are the sections"
+      "x-markup": "the attribute takes the same list as JSON; without it the <details> written inside are the sections",
+      "summary": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it.",
+      "examples": [
+        [
+          {
+            "id": "main",
+            "title": "Основное",
+            "content": "Название и описание",
+            "open": true
+          },
+          {
+            "id": "seo",
+            "title": "SEO",
+            "content": "Заголовок страницы",
+            "badge": "3"
+          }
+        ]
+      ]
     },
     "single": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "One section open at a time: opening one closes the one that was open."
     },
     "size": {
       "type": "enum",
@@ -53,7 +71,8 @@
         "2",
         "3"
       ],
-      "default": ""
+      "default": "",
+      "summary": "A step of the control ladder: the header is exactly the control height of the step, the height of an sf-input and an sf-button of the same size. Without it the roomy header of a content page."
     },
     "appearance": {
       "type": "enum",
@@ -62,7 +81,8 @@
         "outline",
         "flush"
       ],
-      "default": "default"
+      "default": "default",
+      "summary": "default: a filled surface; outline: a hairline border, no fill; flush: no fill and no radius, sections divided by a line, for panels and lists."
     },
     "marker": {
       "type": "enum",
@@ -70,7 +90,8 @@
         "chevron",
         "plus-minus"
       ],
-      "default": "chevron"
+      "default": "chevron",
+      "summary": "What marks a section open or closed: the chevron, or plus and minus."
     },
     "single-section": {
       "type": "enum",
@@ -78,14 +99,16 @@
         "static",
         "toggle"
       ],
-      "default": "static"
+      "default": "static",
+      "summary": "One section is a plain section -- its content shown, its heading not a toggle; toggle keeps it a disclosure, for a list that fills in later."
     },
     "heading-level": {
       "type": "number",
       "integer": true,
       "min": 2,
       "max": 6,
-      "default": 3
+      "default": 3,
+      "summary": "The level of each section's heading (role heading, aria-level)."
     }
   },
   "values": {
@@ -118,7 +141,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open the section with this id; in single mode the open one closes. sf-accordion:toggle fires for each section that changed, source method. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     },
     "close": {
       "with": {
@@ -127,7 +154,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close the section with this id. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     },
     "toggle": {
       "with": {
@@ -136,7 +167,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open the section if it is closed, close it if it is open. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     }
   },
   "keyboard": {
@@ -150,6 +185,18 @@
       "End": "focus:last"
     }
   },
+  "relations": [
+    {
+      "name": "accordion"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-badge",
+      "lazy": true
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -205,6 +252,23 @@
       "state": "open"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-accordion for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-accordion:toggle",
+        "to": "sf-accordion-toggle",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §16 item 6",
+        "note": "the detail {id, open, source, section} is data only, so both names carry the same object",
+        "summary": "A section opened or closed, by the person (source user) or by a method (source method). In single mode the section it closed sends its own, after the one asked for, as a native <details name> group does."
+      }
+    ]
+  },
   "x-summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "x-source": {
     "package": "framework",
@@ -216,14 +280,125 @@
     "events.sf-accordion:toggle → toggle: the DOM name is sf-accordion-toggle (§8, §16 item 6), the colon name a dated same-detail alias",
     "settings.heading-level: a string holding a numeral → number, integer 2–6 (§16 item 29)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-accordion:toggle holds a dated alias (§4.10).",
+    "events: sf-accordion:toggle → sf-accordion-toggle by the alias table (§8, §16 item 6); its detail {id, open, source, section} holds data only, so the row is same-detail: one dispatch, the new name first, one shared detail.",
+    "toggle reports both a person (source user) and a call (source method), as before: it is the section's fact, not `change`, so §8's rule that `change` reports a person alone does not remove the method's report.",
+    "actions: open, close and toggle {id} answer an outcome (applied; refused unknown, static, disabled or already) instead of true/false (§4.4).",
+    "x-target: `expanded` is taken as a read-only value (the open ids, as openIds); `sections` is not added -- items is the list, and §7.2.3 binds a container's `settings.items` -- and `expand` is not added: open does it, and vocabulary §5 expand is the verb that asks a host for children.",
+    "a11y-role: none on the host; each header is a native button inside role=heading (aria-level from heading-level), each open panel a region labelled by its header while there are at most six (WAI-ARIA accordion pattern). a11y-name: none on the host -- each header is named by its section's title.",
+    "key-effects: on a header Enter and Space toggle its section (toggle:open, the button's own keys), ArrowDown and ArrowUp move to the next and previous enabled header, Home and End to the first and last; Tab reaches each enabled header.",
+    "opened (§7.2.1): a closed section's panel carries `hidden` and an open one does not, so a part with start opened inside a section starts when its section opens; the panel's content is the page's live nodes (a slot or the <details>), never copied.",
+    "instance ids (§7.1.1, simai/ui-source#41): the header and panel ids came from a module counter (sf-smart-accordion-<n>); they are the host's path id and a local name now, <path>--trigger-<n> and <path>--panel-<n>; the <details> slots are named locally.",
+    "item-shape: items name their fields with `of` (id, title, content, slot, open, disabled, icon, badge); content is text, markup comes through a slot.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus <details> in the markup, plus-minus markers and one plain section; probe.json drives the arrows, Home, End, Enter, Space and Tab (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: none.",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+  ],
+  "x-rule": {
+    "$comment": [
+      "sf-accordion loads on demand like any other Smart element. It draws the",
+      "class accordion's markup, so the class accordion is what it draws with: its",
+      "sheet (and its runtime, which leaves the element's sections alone), the",
+      "icon font for the marker and an icon before a title, and sf-badge, only",
+      "when a section carries a badge."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive"
+    ],
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "accordion",
+      "disclosure",
+      "sections",
+      "faq",
+      "collapse"
+    ],
+    "item_contract": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
+        },
+        "title": {
+          "type": "string",
+          "description": "The header's title."
+        },
+        "content": {
+          "type": "string",
+          "description": "The section's text. Text, never markup: markup goes in a slot."
+        },
+        "slot": {
+          "type": "string",
+          "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
+        },
+        "open": {
+          "type": "boolean",
+          "description": "Open at first. In single mode only the first open section stays open."
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
+        },
+        "icon": {
+          "type": "string",
+          "description": "An icon before the title, a name from the icon font."
+        },
+        "badge": {
+          "type": "string",
+          "description": "A count or a label after the title, drawn by sf-badge."
+        }
+      },
+      "required": [
+        "title"
       ],
-      "network_policy": "deny"
+      "additionalProperties": false
+    },
+    "contracts": {
+      "markup": {
+        "const": "component.accordion"
+      },
+      "open_state_owner": {
+        "const": "component"
+      },
+      "content_markup": {
+        "const": "slot_only"
+      }
+    },
+    "state": {
+      "machines": {
+        "section": [
+          "open",
+          "closed",
+          "disabled"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "closed",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -233,6 +408,14 @@
         "backend access decisions",
         "parsing record text as markup"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -248,7 +431,11 @@
         "mobile",
         "ltr",
         "rtl"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ -- or are written as <details> in the markup.",
@@ -271,23 +458,97 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "focus": "Each header is a native button inside a heading (role heading, aria-level), with aria-expanded and aria-controls; Enter and Space open and close it. ArrowDown and ArrowUp move between the headers and wrap, Home and End go to the first and the last; a disabled header is a disabled button, passed over and out of the tab order. Each panel is a region named by its header while there are six sections or fewer. The single section is a plain heading with nothing in the tab order."
+    },
+    "alias-events": {
+      "sf-accordion:toggle": {
+        "summary": "A section opened or closed, by the person (source user) or by a method (source method). In single mode the section it closed sends its own, after the one asked for, as a native <details name> group does.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "open": {
+              "type": "boolean"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "user",
+                "method"
+              ]
+            },
+            "section": {
+              "type": "object",
+              "description": "The section as the element draws it."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "isOpen": {
+        "summary": "Whether the section with this id is open. The single section always is.",
+        "arguments": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      }
+    },
+    "inputs": {
+      "items": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The section's name in open(id), close(id), toggle(id) and the event; its place (section-1, section-2…) without it. One id names one section: a repeated one is left out."
+            },
+            "title": {
+              "type": "string",
+              "description": "The header's title."
+            },
+            "content": {
+              "type": "string",
+              "description": "The section's text. Text, never markup: markup goes in a slot."
+            },
+            "slot": {
+              "type": "string",
+              "description": "The name of a light-DOM slot holding the section's markup; it replaces content."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "Open at first. In single mode only the first open section stays open."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Neither opened nor closed by the person: the header is a disabled button, out of the tab order."
+            },
+            "icon": {
+              "type": "string",
+              "description": "An icon before the title, a name from the icon font."
+            },
+            "badge": {
+              "type": "string",
+              "description": "A count or a label after the title, drawn by sf-badge."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.0.0 → 1.1.0, a minor while sf-accordion:toggle holds a dated alias (§4.10).",
-    "events: sf-accordion:toggle → sf-accordion-toggle by the alias table (§8, §16 item 6); its detail {id, open, source, section} holds data only, so the row is same-detail: one dispatch, the new name first, one shared detail.",
-    "toggle reports both a person (source user) and a call (source method), as before: it is the section's fact, not `change`, so §8's rule that `change` reports a person alone does not remove the method's report.",
-    "actions: open, close and toggle {id} answer an outcome (applied; refused unknown, static, disabled or already) instead of true/false (§4.4).",
-    "x-target: `expanded` is taken as a read-only value (the open ids, as openIds); `sections` is not added -- items is the list, and §7.2.3 binds a container's `settings.items` -- and `expand` is not added: open does it, and vocabulary §5 expand is the verb that asks a host for children.",
-    "a11y-role: none on the host; each header is a native button inside role=heading (aria-level from heading-level), each open panel a region labelled by its header while there are at most six (WAI-ARIA accordion pattern). a11y-name: none on the host -- each header is named by its section's title.",
-    "key-effects: on a header Enter and Space toggle its section (toggle:open, the button's own keys), ArrowDown and ArrowUp move to the next and previous enabled header, Home and End to the first and last; Tab reaches each enabled header.",
-    "opened (§7.2.1): a closed section's panel carries `hidden` and an open one does not, so a part with start opened inside a section starts when its section opens; the panel's content is the page's live nodes (a slot or the <details>), never copied.",
-    "instance ids (§7.1.1, simai/ui-source#41): the header and panel ids came from a module counter (sf-smart-accordion-<n>); they are the host's path id and a local name now, <path>--trigger-<n> and <path>--panel-<n>; the <details> slots are named locally.",
-    "item-shape: items name their fields with `of` (id, title, content, slot, open, disabled, icon, badge); content is text, markup comes through a slot.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus <details> in the markup, plus-minus markers and one plain section; probe.json drives the arrows, Home, End, Enter, Space and Tab (gate 16).",
-    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
-    "side-effects: none.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
-  ]
+  }
 }

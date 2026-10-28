@@ -7,7 +7,16 @@
   "locale": "ru",
   "props": {
     "active-index": 0,
-    "items": "Обзор|История"
+    "items": [
+      {
+        "id": "overview",
+        "label": "Обзор"
+      },
+      {
+        "id": "history",
+        "label": "История"
+      }
+    ]
   },
   "children": [
     {

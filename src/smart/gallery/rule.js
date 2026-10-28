@@ -1,6 +1,7 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 SF.RuleLoader['cl-gallery'] = {
-  regex: /data-sf-gallery(?:\s|=|>|$)/,
   tags: ['sf-gallery'],
+  regex: /data-sf-gallery(?:\s|=|>|$)/,
   type: 'smart',
   mode: 'smart',
   js: true,

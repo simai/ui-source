@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.sortable",
-  "version": "1.1.1",
-  "title": "Sortable",
-  "summary": "Drag-and-drop list primitive for reordering, moving between lists and copying from a library by mouse, pen, touch and keyboard, with an optional insertion point that opens a searchable inserter; reports intent only.",
+  "version": "1.1.2",
+  "title": "Drag and drop",
+  "summary": "A list whose items move by pointer, touch and keyboard, between lists of a group and onto registered drop targets; it asks the host to move and never moves the host's DOM or data.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -25,27 +25,43 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.context-menu",
       "component.icon-buttons",
-      "component.icons"
+      "component.icons",
+      "smart.context-menu"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "group": {
         "type": "string",
-        "pattern": "^[a-z][a-z0-9-]{0,31}$",
-        "default": ""
+        "default": "",
+        "description": "The list's group: an item moves between lists of one group; required for a list whose items move",
+        "pattern": "^[a-z][a-z0-9-]{0,31}$"
       },
       "accepts": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Other groups whose items this list takes, separated by spaces"
       },
       "mode": {
         "type": "string",
         "default": "move",
+        "description": "copy: a library list; its items are copied out and stay",
         "enum": [
           "move",
           "copy"
@@ -61,21 +77,26 @@
       },
       "label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The list's name in what is announced"
       },
       "preview": {
         "type": "string",
         "default": "silhouette",
+        "description": "silhouette opens a gap the size of the item; line draws a line",
         "enum": [
           "silhouette",
           "line"
-        ],
-        "description": "How a pointer drag shows where the item lands: silhouette lifts the item out of the list and opens an outline of its size at the place it would take, the list making room; line draws a thin line there and leaves the list as it is. Keyboard moves and external targets always use the line; a list that wraps into a grid opens the outline as one of its cells, in reading order."
+        ]
       },
       "inserter-items": {
         "type": "string",
         "default": "",
-        "description": "Opt-in insertion point. JSON array (or the inserterItems property) of [{value, label, icon?, caption?, keywords?, disabled?}], with {type: \"heading\", label} and {type: \"separator\"} to group them. When it holds at least one item, a \"+\" on the gap between items (and before the first, after the last) opens a searchable inserter of these kinds; empty or absent, the list draws and does nothing more than before."
+        "description": "The items an insertion point offers, as JSON [{item, label, icon?, description?}]; empty: no insertion point"
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
@@ -139,6 +160,87 @@
   },
   "methods": {},
   "events": {
+    "sf-sortable-move": {
+      "summary": "The request to move (or copy) an item to a place: one manual move of vocabulary 1.1.5 §5 move, {id, parent, position} named item, to and index; the host applies it",
+      "payload": {
+        "type": "object",
+        "required": [
+          "item",
+          "from",
+          "to",
+          "index",
+          "mode"
+        ],
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "index": {
+            "type": "number"
+          },
+          "mode": {
+            "enum": [
+              "move",
+              "copy"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-sortable-state": {
+      "summary": "A drag's step: picked up, dropped or cancelled",
+      "payload": {
+        "type": "object",
+        "required": [
+          "state",
+          "item"
+        ],
+        "properties": {
+          "state": {
+            "enum": [
+              "picked",
+              "dropped",
+              "cancelled"
+            ]
+          },
+          "item": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-sortable-insert": {
+      "summary": "The inserter's request to put a new item of the palette at a place; cancelable",
+      "payload": {
+        "type": "object",
+        "required": [
+          "index",
+          "item",
+          "to"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "item": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-sortable-intent": {
       "summary": "The person dropped an item; the host applies or refuses the change.",
       "payload": {
@@ -169,47 +271,6 @@
               "move",
               "copy"
             ]
-          }
-        }
-      }
-    },
-    "sf-sortable-state": {
-      "summary": "A drag session started (picked) or ended (dropped, cancelled).",
-      "payload": {
-        "type": "object",
-        "properties": {
-          "state": {
-            "enum": [
-              "picked",
-              "dropped",
-              "cancelled"
-            ]
-          },
-          "item": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "sf-sortable-insert": {
-      "summary": "The person chose a kind in the inserter for a place in the list; the host creates the item at index. Bubbles, is composed and is cancelable: preventDefault() refuses and keeps the inserter open.",
-      "payload": {
-        "type": "object",
-        "required": [
-          "index",
-          "item",
-          "to"
-        ],
-        "properties": {
-          "index": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "item": {
-            "type": "string"
-          },
-          "to": {
-            "type": "string"
           }
         }
       }
@@ -260,7 +321,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "none",
     "accessible_name": "recommended",
     "keyboard": [
       "Space",
@@ -351,7 +412,7 @@
       },
       {
         "path": "src/smart/sortable/rule.js",
-        "sha256": "b57af898729e1a942d2097d75cffab5aaf17c28f479cddecb876c23e266a7781"
+        "sha256": "879aa49480db913c8c3274366845be6d7784e131dcb65d38bcb24f5cad25de9e"
       },
       {
         "path": "src/smart/sortable/docs.md",

@@ -6,7 +6,7 @@
     {
       "repository": "simai/ui-source",
       "root": ".",
-      "smart_tree": "eed647c2d9fdf73b4886c2997c309510fb5e10b1"
+      "smart_tree": "be37217c839d0eb2f241f933756a604bd3d4ed5f+dirty"
     },
     {
       "repository": "simai/ui-pro",
@@ -25,15 +25,15 @@
   ],
   "totals": {
     "rule.js": {
-      "identical": 24,
-      "semantic": 46,
+      "identical": 41,
+      "semantic": 29,
       "differs": 0,
       "new": 0,
       "not-generated": 0
     },
     "aliases.json": {
-      "identical": 52,
-      "semantic": 18,
+      "identical": 58,
+      "semantic": 12,
       "differs": 0,
       "new": 0,
       "not-generated": 0
@@ -46,8 +46,8 @@
       "not-generated": 0
     },
     "studio.fixture.json": {
-      "identical": 65,
-      "semantic": 1,
+      "identical": 64,
+      "semantic": 2,
       "differs": 0,
       "new": 0,
       "not-generated": 0
@@ -60,101 +60,45 @@
       "not-generated": 0
     },
     "probe.json": {
-      "identical": 64,
-      "semantic": 5,
+      "identical": 66,
+      "semantic": 3,
       "differs": 0,
       "new": 0,
       "not-generated": 0
     },
     "smart.manifest.json": {
-      "identical": 0,
+      "identical": 30,
       "semantic": 0,
-      "differs": 70,
+      "differs": 40,
       "new": 0,
       "not-generated": 0
     }
   },
   "manifest_classes": {
-    "a1-fact": 384,
-    "a2-rule": 852,
-    "a1-words": 115,
+    "a2-rule": 627,
+    "a1-fact": 243,
+    "a1-words": 63,
     "c": 166
   },
   "manifest_kinds": {
-    "a1-fact uses-missing": {
-      "count": 34,
-      "components": [
-        "accordion",
-        "avatar",
-        "avatars",
-        "button",
-        "button-group",
-        "checkbox",
-        "close",
-        "color",
-        "context-menu",
-        "country-code",
-        "download-file",
-        "dropdown",
-        "file-upload",
-        "gallery",
-        "input",
-        "list-item",
-        "menu",
-        "modal",
-        "pagination",
-        "radio",
-        "range-slider",
-        "reference-link",
-        "slider",
-        "steps",
-        "switch",
-        "tabs",
-        "tag",
-        "textarea",
-        "toast",
-        "toggle",
-        "tooltip",
-        "data-view",
-        "property-view",
-        "table"
-      ]
-    },
     "a2-rule input.description": {
-      "count": 56,
+      "count": 32,
       "components": [
-        "accordion",
         "alert",
-        "avatar",
-        "avatars",
         "badge",
-        "breadcrumbs",
-        "code-input",
         "context-menu",
-        "copy-button",
-        "download-file",
         "drawer",
         "dropdown",
-        "empty-state",
         "file-preview",
         "file-upload",
-        "gallery",
-        "help-mark",
         "image-field",
         "input",
         "list-item",
-        "menu",
         "modal",
-        "profile-picker",
         "progress-bar",
         "progress-scale",
         "quantity",
-        "range-slider",
-        "reference-link",
-        "tabs",
         "textarea",
-        "theme-generator",
-        "tree",
         "tree-item",
         "admin-menu",
         "change-confirm",
@@ -165,174 +109,64 @@
         "thread-list"
       ]
     },
-    "a1-words input.examples": {
-      "count": 3,
+    "a2-rule input.default": {
+      "count": 127,
       "components": [
-        "accordion",
-        "button-group",
-        "menu"
-      ]
-    },
-    "a1-fact input.type": {
-      "count": 42,
-      "components": [
-        "accordion",
-        "breadcrumbs",
-        "code-input",
-        "context-menu",
-        "copy-button",
-        "datepicker",
+        "alert",
+        "badge",
+        "country-code",
+        "drawer",
         "dropdown",
-        "empty-state",
-        "gallery",
-        "icon",
-        "page-header",
-        "progress-bar",
-        "progress-scale",
+        "file-preview",
+        "file-upload",
+        "input",
+        "modal",
+        "pagination",
         "quantity",
-        "range-slider",
-        "resizer",
-        "skeleton",
         "spinner",
-        "steps",
-        "tabs",
-        "theme-generator",
+        "tag",
+        "toast",
+        "tree-item",
+        "admin-menu",
         "change-confirm",
+        "chat-composer",
         "message-log",
+        "property-view",
+        "table",
         "thread-list"
       ]
     },
-    "a1-fact input.default": {
-      "count": 53,
-      "components": [
-        "accordion",
-        "button",
-        "button-group",
-        "code-input",
-        "copy-button",
-        "datepicker",
-        "dropdown",
-        "empty-state",
-        "page-header",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "range-slider",
-        "resizer",
-        "spinner",
-        "steps",
-        "textarea",
-        "theme-generator",
-        "admin-menu",
-        "data-view"
-      ]
-    },
-    "a2-rule input.enum-as-range": {
-      "count": 3,
-      "components": [
-        "accordion",
-        "empty-state",
-        "chat-window"
-      ]
-    },
-    "a1-fact input.minimum": {
-      "count": 23,
-      "components": [
-        "accordion",
-        "avatar",
-        "breadcrumbs",
-        "copy-button",
-        "datepicker",
-        "empty-state",
-        "gallery",
-        "icon",
-        "icon-button",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "resizer",
-        "spinner",
-        "steps",
-        "tabs",
-        "theme-generator",
-        "chat-window"
-      ]
-    },
-    "a1-fact input.maximum": {
-      "count": 11,
-      "components": [
-        "accordion",
-        "datepicker",
-        "empty-state",
-        "icon",
-        "progress-bar",
-        "progress-scale",
-        "quantity",
-        "theme-generator",
-        "chat-window"
-      ]
-    },
     "a2-rule base-setting": {
-      "count": 133,
+      "count": 77,
       "components": [
-        "accordion",
         "alert",
-        "avatar",
-        "avatars",
         "badge",
-        "breadcrumbs",
         "button",
         "button-group",
-        "checkbox",
-        "close",
-        "code-input",
-        "color",
         "composition-overlay",
         "context-menu",
-        "copy-button",
         "country-code",
-        "datepicker",
-        "download-file",
         "drawer",
         "dropdown",
-        "empty-state",
         "file-preview",
         "file-upload",
-        "gallery",
-        "help-mark",
-        "icon",
         "icon-button",
         "image-field",
-        "inline-editor",
         "input",
         "list-item",
-        "menu",
         "modal",
-        "page-header",
         "pagination",
         "popover",
-        "profile-picker",
         "progress-bar",
         "progress-scale",
         "quantity",
-        "radio",
-        "range-slider",
-        "reference-link",
-        "resizer",
         "skeleton",
-        "slider",
-        "sortable",
         "spinner",
-        "steps",
-        "switch",
-        "tabs",
         "tag",
         "textarea",
-        "theme-generator",
         "toast",
         "toggle",
         "tooltip",
-        "tree",
         "tree-item",
         "admin-menu",
         "change-confirm",
@@ -347,174 +181,27 @@
         "thread-list"
       ]
     },
-    "a2-rule method.arguments-form": {
-      "count": 70,
-      "components": [
-        "accordion",
-        "button-group",
-        "composition-overlay",
-        "context-menu",
-        "file-upload",
-        "gallery",
-        "image-field",
-        "inline-editor",
-        "menu",
-        "pagination",
-        "popover",
-        "quantity",
-        "steps",
-        "tabs",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-window",
-        "data-view",
-        "message-log",
-        "property-view",
-        "table",
-        "thread-list"
-      ]
-    },
-    "a2-rule old-event-payload": {
-      "count": 151,
-      "components": [
-        "accordion",
-        "breadcrumbs",
-        "button-group",
-        "code-input",
-        "color",
-        "composition-overlay",
-        "copy-button",
-        "datepicker",
-        "download-file",
-        "drawer",
-        "dropdown",
-        "file-preview",
-        "file-upload",
-        "gallery",
-        "help-mark",
-        "image-field",
-        "inline-editor",
-        "input",
-        "list-item",
-        "menu",
-        "modal",
-        "page-header",
-        "pagination",
-        "profile-picker",
-        "quantity",
-        "range-slider",
-        "resizer",
-        "slider",
-        "sortable",
-        "steps",
-        "switch",
-        "tabs",
-        "tag",
-        "textarea",
-        "theme-generator",
-        "tree",
-        "tree-item",
-        "admin-menu",
-        "data-view",
-        "table"
-      ]
-    },
-    "a1-fact event-missing": {
-      "count": 68,
-      "components": [
-        "accordion",
-        "breadcrumbs",
-        "button",
-        "context-menu",
-        "copy-button",
-        "country-code",
-        "download-file",
-        "drawer",
-        "file-preview",
-        "gallery",
-        "help-mark",
-        "list-item",
-        "menu",
-        "modal",
-        "page-header",
-        "pagination",
-        "popover",
-        "profile-picker",
-        "resizer",
-        "slider",
-        "sortable",
-        "steps",
-        "tabs",
-        "tag",
-        "theme-generator",
-        "toast",
-        "tree",
-        "tree-item",
-        "table"
-      ]
-    },
-    "a2-rule input.default": {
-      "count": 56,
-      "components": [
-        "alert",
-        "badge",
-        "breadcrumbs",
-        "color",
-        "drawer",
-        "dropdown",
-        "file-preview",
-        "file-upload",
-        "gallery",
-        "help-mark",
-        "input",
-        "menu",
-        "modal",
-        "pagination",
-        "profile-picker",
-        "quantity",
-        "resizer",
-        "spinner",
-        "steps",
-        "tabs",
-        "tag",
-        "toast",
-        "tree-item",
-        "admin-menu",
-        "change-confirm",
-        "chat-composer",
-        "message-log",
-        "thread-list"
-      ]
-    },
     "a2-rule base-detail-field": {
-      "count": 16,
+      "count": 15,
       "components": [
         "alert",
         "button-group",
         "popover",
-        "range-slider",
         "tag",
         "toast",
         "tree-item"
       ]
     },
     "a2-rule payload.required": {
-      "count": 103,
+      "count": 97,
       "components": [
         "alert",
         "button-group",
-        "code-input",
-        "color",
         "composition-overlay",
         "context-menu",
         "file-upload",
         "image-field",
         "popover",
-        "range-slider",
-        "sortable",
-        "tabs",
         "tag",
         "toast",
         "tree-item",
@@ -530,22 +217,15 @@
       ]
     },
     "a2-rule payload.additionalProperties": {
-      "count": 141,
+      "count": 129,
       "components": [
         "alert",
         "button-group",
-        "code-input",
-        "color",
         "composition-overlay",
         "context-menu",
-        "empty-state",
         "file-upload",
         "image-field",
-        "inline-editor",
         "popover",
-        "range-slider",
-        "sortable",
-        "tabs",
         "tag",
         "toast",
         "tree-item",
@@ -572,76 +252,56 @@
       ]
     },
     "a1-fact accessibility.role": {
-      "count": 15,
+      "count": 6,
       "components": [
         "alert",
-        "avatar",
-        "avatars",
         "badge",
         "button",
-        "checkbox",
         "country-code",
-        "download-file",
-        "gallery",
-        "inline-editor",
-        "reference-link",
-        "slider",
-        "sortable",
         "tag",
         "toast"
       ]
     },
     "a1-fact version": {
-      "count": 11,
+      "count": 5,
       "components": [
-        "avatar",
-        "avatars",
         "badge",
-        "code-input",
         "country-code",
-        "icon",
         "quantity",
-        "radio",
-        "range-slider",
         "textarea",
         "toggle"
       ]
     },
-    "a1-words input.description": {
-      "count": 65,
-      "components": [
-        "avatars",
-        "button",
-        "composition-overlay",
-        "copy-button",
-        "datepicker",
-        "download-file",
-        "file-upload",
-        "icon",
-        "list-item",
-        "menu",
-        "page-header",
-        "pagination",
-        "reference-link",
-        "sortable",
-        "tabs",
-        "tag",
-        "theme-generator",
-        "tree",
-        "tree-item",
-        "chat-composer",
-        "chat-interlocutor",
-        "thread-list"
-      ]
-    },
     "a1-fact compatibility.aliases": {
-      "count": 5,
+      "count": 4,
       "components": [
         "badge",
         "button",
-        "icon",
         "icon-button",
         "tag"
+      ]
+    },
+    "a1-fact uses-missing": {
+      "count": 18,
+      "components": [
+        "button",
+        "button-group",
+        "context-menu",
+        "country-code",
+        "dropdown",
+        "file-upload",
+        "input",
+        "list-item",
+        "modal",
+        "pagination",
+        "tag",
+        "textarea",
+        "toast",
+        "toggle",
+        "tooltip",
+        "data-view",
+        "property-view",
+        "table"
       ]
     },
     "a1-fact declarative.props": {
@@ -656,123 +316,119 @@
       ]
     },
     "a2-rule input.enum-former": {
+      "count": 1,
+      "components": [
+        "button"
+      ]
+    },
+    "a2-rule input.enum-form": {
       "count": 2,
       "components": [
         "button",
-        "icon"
+        "icon-button"
       ]
     },
-    "a2-rule event.alias_of": {
-      "count": 6,
+    "a1-fact input.default": {
+      "count": 36,
       "components": [
+        "button",
         "button-group",
-        "datepicker",
         "dropdown",
-        "range-slider"
+        "progress-bar",
+        "progress-scale",
+        "quantity",
+        "spinner",
+        "textarea",
+        "admin-menu",
+        "data-view"
       ]
     },
-    "a2-rule payload.description": {
-      "count": 10,
+    "a1-words input.description": {
+      "count": 32,
       "components": [
-        "checkbox",
-        "code-input",
+        "button",
+        "composition-overlay",
+        "file-upload",
+        "list-item",
+        "pagination",
+        "tag",
+        "tree-item",
+        "chat-composer",
+        "chat-interlocutor",
+        "thread-list"
+      ]
+    },
+    "a1-fact event-missing": {
+      "count": 37,
+      "components": [
+        "button",
         "context-menu",
         "country-code",
-        "input",
-        "data-view",
-        "table"
-      ]
-    },
-    "a1-words accessibility.role-words": {
-      "count": 11,
-      "components": [
-        "close",
-        "datepicker",
-        "dropdown",
-        "icon",
+        "drawer",
+        "file-preview",
         "list-item",
-        "page-header",
-        "skeleton",
-        "spinner",
-        "tooltip",
-        "chat-window",
-        "table"
-      ]
-    },
-    "a1-fact title": {
-      "count": 10,
-      "components": [
-        "code-input",
-        "input",
-        "list-item",
-        "radio",
-        "sortable",
-        "textarea",
+        "modal",
+        "pagination",
+        "popover",
+        "tag",
+        "toast",
         "tree-item",
-        "data-view",
-        "property-view",
         "table"
       ]
     },
-    "a2-rule empty-block": {
-      "count": 14,
+    "a2-rule method.arguments-form": {
+      "count": 56,
       "components": [
-        "code-input",
-        "copy-button",
-        "empty-state",
-        "help-mark",
-        "profile-picker",
-        "resizer",
-        "theme-generator",
+        "button-group",
+        "composition-overlay",
+        "context-menu",
+        "file-upload",
+        "image-field",
+        "pagination",
+        "popover",
+        "quantity",
+        "admin-menu",
         "change-confirm",
         "chat-composer",
         "chat-interlocutor",
-        "chat-message",
         "chat-window",
+        "data-view",
         "message-log",
+        "property-view",
+        "table",
         "thread-list"
       ]
     },
     "a1-words summary": {
-      "count": 9,
+      "count": 5,
       "components": [
         "composition-overlay",
-        "inline-editor",
         "list-item",
         "modal",
-        "sortable",
-        "theme-generator",
-        "tree",
         "tree-item",
         "chat-composer"
       ]
     },
     "a1-words method.summary": {
-      "count": 15,
+      "count": 13,
       "components": [
         "composition-overlay",
-        "inline-editor",
-        "theme-generator",
         "tree-item"
       ]
     },
     "a1-words event.summary": {
-      "count": 11,
+      "count": 6,
       "components": [
         "composition-overlay",
-        "inline-editor",
-        "sortable",
         "tree-item"
       ]
     },
     "a2-rule payload-field.type-form": {
-      "count": 49,
+      "count": 47,
       "components": [
         "composition-overlay",
         "file-upload",
         "image-field",
-        "range-slider",
-        "tabs",
         "admin-menu",
         "change-confirm",
         "chat-composer",
@@ -809,12 +465,11 @@
       ]
     },
     "a2-rule host-attribute": {
-      "count": 4,
+      "count": 3,
       "components": [
         "context-menu",
         "popover",
-        "toast",
-        "tree"
+        "toast"
       ]
     },
     "c input-undeclared": {
@@ -830,6 +485,21 @@
         "tag",
         "chat-message",
         "chat-window"
+      ]
+    },
+    "a1-fact input.type": {
+      "count": 16,
+      "components": [
+        "context-menu",
+        "dropdown",
+        "progress-bar",
+        "progress-scale",
+        "quantity",
+        "skeleton",
+        "spinner",
+        "change-confirm",
+        "message-log",
+        "thread-list"
       ]
     },
     "c method.arguments": {
@@ -850,29 +520,32 @@
         "context-menu"
       ]
     },
-    "a2-rule order": {
-      "count": 14,
+    "a2-rule payload.description": {
+      "count": 9,
       "components": [
-        "copy-button",
-        "datepicker",
+        "context-menu",
+        "quantity",
+        "textarea",
+        "toggle",
+        "data-view",
+        "table"
+      ]
+    },
+    "a2-rule order": {
+      "count": 7,
+      "components": [
         "drawer",
         "file-preview",
-        "help-mark",
-        "icon",
         "icon-button",
-        "page-header",
         "quantity",
-        "sortable",
-        "theme-generator",
         "chat-composer",
         "chat-message",
         "chat-window"
       ]
     },
     "a2-rule payload-ref": {
-      "count": 7,
+      "count": 3,
       "components": [
-        "datepicker",
         "dropdown"
       ]
     },
@@ -883,6 +556,18 @@
         "modal",
         "data-view",
         "property-view"
+      ]
+    },
+    "a1-words accessibility.role-words": {
+      "count": 7,
+      "components": [
+        "dropdown",
+        "list-item",
+        "skeleton",
+        "spinner",
+        "tooltip",
+        "chat-window",
+        "table"
       ]
     },
     "a1-fact input-stale": {
@@ -902,62 +587,58 @@
         "table"
       ]
     },
-    "a1-words method.returns": {
-      "count": 1,
+    "a1-fact input.minimum": {
+      "count": 7,
       "components": [
-        "inline-editor"
-      ]
-    },
-    "a1-fact method-missing": {
-      "count": 18,
-      "components": [
-        "modal",
-        "profile-picker",
+        "icon-button",
         "progress-bar",
         "progress-scale",
-        "toast",
-        "tree",
+        "quantity",
+        "spinner",
+        "chat-window"
+      ]
+    },
+    "a1-fact title": {
+      "count": 7,
+      "components": [
+        "input",
+        "list-item",
+        "textarea",
         "tree-item",
         "data-view",
         "property-view",
         "table"
       ]
     },
-    "a2-rule input.enum-form": {
-      "count": 1,
+    "a1-fact method-missing": {
+      "count": 12,
       "components": [
-        "page-header"
-      ]
-    },
-    "a2-rule payload.type": {
-      "count": 9,
-      "components": [
-        "quantity",
-        "radio",
-        "switch",
-        "textarea",
-        "toggle",
+        "modal",
+        "progress-bar",
+        "progress-scale",
+        "toast",
+        "tree-item",
+        "data-view",
+        "property-view",
         "table"
       ]
     },
-    "a1-fact input.enum-missing": {
-      "count": 1,
+    "a1-fact input.maximum": {
+      "count": 4,
       "components": [
-        "tabs"
+        "progress-bar",
+        "progress-scale",
+        "quantity",
+        "chat-window"
       ]
     },
-    "a1-fact alias-event-missing": {
-      "count": 45,
+    "a2-rule payload.type": {
+      "count": 7,
       "components": [
-        "tree",
-        "change-confirm",
-        "chat-composer",
-        "chat-interlocutor",
-        "chat-message",
-        "chat-window",
-        "message-log",
-        "table",
-        "thread-list"
+        "quantity",
+        "textarea",
+        "toggle",
+        "table"
       ]
     },
     "c uses-not-loaded": {
@@ -1014,6 +695,31 @@
         "chat-window"
       ]
     },
+    "a1-fact alias-event-missing": {
+      "count": 43,
+      "components": [
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-message",
+        "chat-window",
+        "message-log",
+        "table",
+        "thread-list"
+      ]
+    },
+    "a2-rule empty-block": {
+      "count": 7,
+      "components": [
+        "change-confirm",
+        "chat-composer",
+        "chat-interlocutor",
+        "chat-message",
+        "chat-window",
+        "message-log",
+        "thread-list"
+      ]
+    },
     "a2-rule template-open": {
       "count": 2,
       "components": [
@@ -1025,6 +731,12 @@
       "count": 1,
       "components": [
         "chat-message"
+      ]
+    },
+    "a2-rule input.enum-as-range": {
+      "count": 1,
+      "components": [
+        "chat-window"
       ]
     },
     "c event-undeclared": {
@@ -1048,9 +760,9 @@
     }
   },
   "meta_classes": {
-    "a2-rule": 283,
+    "a2-rule": 296,
     "c": 2,
-    "a1-fact": 19,
+    "a1-fact": 6,
     "a1-words": 4
   },
   "registry_keys": {
@@ -1691,6 +1403,54 @@
         "property-view",
         "table",
         "thread-list"
+      ]
+    },
+    "alias-events": {
+      "components": 41,
+      "lines": 2549,
+      "home": "?",
+      "in": [
+        "accordion",
+        "breadcrumbs",
+        "button-group",
+        "code-input",
+        "color",
+        "composition-overlay",
+        "copy-button",
+        "datepicker",
+        "download-file",
+        "drawer",
+        "dropdown",
+        "file-preview",
+        "file-upload",
+        "gallery",
+        "help-mark",
+        "image-field",
+        "inline-editor",
+        "input",
+        "list-item",
+        "menu",
+        "modal",
+        "page-header",
+        "pagination",
+        "profile-picker",
+        "quantity",
+        "range-slider",
+        "resizer",
+        "slider",
+        "sortable",
+        "steps",
+        "switch",
+        "tabs",
+        "tag",
+        "textarea",
+        "theme-generator",
+        "tree",
+        "tree-item",
+        "admin-menu",
+        "data-view",
+        "property-view",
+        "table"
       ]
     },
     "methods": {
@@ -4315,24 +4075,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 6,
-        "a2-rule": 7,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -4345,6 +4094,7 @@
         "presentation": 20,
         "ai_guidance": 22,
         "accessibility": 4,
+        "alias-events": 27,
         "methods": 15,
         "inputs": 45
       }
@@ -4397,28 +4147,18 @@
       "component": "avatar",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 4,
-        "a2-rule": 4
-      },
+      "manifest": {},
       "registry": {
         "state": 7,
         "ownership": 9,
@@ -4432,29 +4172,18 @@
       "component": "avatars",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
+        "rule.js": "identical",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.regex <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 3,
-        "a1-words": 3
-      },
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
@@ -4512,28 +4241,20 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 4,
-        "a1-fact": 4
-      },
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
         "presentation": 18,
         "ai_guidance": 22,
         "accessibility": 9,
+        "alias-events": 37,
         "methods": 64,
         "inputs": 5
       }
@@ -4564,7 +4285,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 6,
-        "a2-rule": 2,
+        "a2-rule": 3,
         "a1-words": 1
       },
       "meta": {
@@ -4608,8 +4329,7 @@
       ],
       "manifest": {
         "a1-fact": 2,
-        "a1-words": 1,
-        "a2-rule": 8
+        "a2-rule": 5
       },
       "meta": {
         "a2-rule": 2,
@@ -4627,6 +4347,7 @@
         "ai_guidance": 20,
         "accessibility": 4,
         "event-fields": 5,
+        "alias-events": 28,
         "methods": 12,
         "inputs": 56
       }
@@ -4635,27 +4356,18 @@
       "component": "checkbox",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
+        "rule.js": "identical",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 2,
-        "a2-rule": 3
-      },
+      "manifest": {},
       "registry": {
         "contracts": 12,
         "state": 10,
@@ -4673,28 +4385,18 @@
       "component": "close",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 2,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
@@ -4708,27 +4410,17 @@
       "package": "simai/ui-source",
       "files": {
         "rule.js": "identical",
-        "aliases.json": "semantic",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 4,
-        "a2-rule": 8
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "readiness": 12,
@@ -4741,6 +4433,7 @@
         "ai_guidance": 21,
         "accessibility": 13,
         "event-fields": 5,
+        "alias-events": 14,
         "methods": 26,
         "inputs": 5
       }
@@ -4749,24 +4442,16 @@
       "component": "color",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
-        "probe.json": "semantic",
-        "smart.manifest.json": "differs"
+        "rule.js": "identical",
+        "aliases.json": "identical",
+        "probe.json": "identical",
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 9
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "tags": 5,
@@ -4778,6 +4463,7 @@
         "presentation": 18,
         "ai_guidance": 21,
         "accessibility": 3,
+        "alias-events": 22,
         "methods": 23,
         "inputs": 5,
         "trait-inputs": 17
@@ -4819,7 +4505,7 @@
       ],
       "manifest": {
         "a1-words": 22,
-        "a2-rule": 29,
+        "a2-rule": 25,
         "c": 12
       },
       "registry": {
@@ -4833,7 +4519,8 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 24,
-        "accessibility": 14
+        "accessibility": 14,
+        "alias-events": 42
       }
     },
     {
@@ -4891,23 +4578,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 8,
-        "a1-fact": 5,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -4918,7 +4595,8 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 18,
-        "accessibility": 7
+        "accessibility": 7,
+        "alias-events": 42
       }
     },
     {
@@ -4927,7 +4605,7 @@
       "files": {
         "rule.js": "semantic",
         "aliases.json": "identical",
-        "studio.fixture.json": "identical",
+        "studio.fixture.json": "semantic",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
         "smart.manifest.json": "differs"
@@ -4967,33 +4645,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.change.carries: value in component.json only",
-        "events.change.carries: date in component.json only",
-        "events.change.carries: start-value in component.json only",
-        "events.change.carries: end-value in component.json only",
-        "events.change.carries: formatted-value in component.json only",
-        "events.change.carries: iso-value in component.json only",
-        "events.change.carries: range in component.json only",
-        "events.change.carries: format in component.json only",
-        "events.change.carries: preset in component.json only"
-      ],
-      "manifest": {
-        "a2-rule": 13,
-        "a1-fact": 12,
-        "a1-words": 2
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "kind": 1,
         "capabilities": 9,
@@ -5008,6 +4666,7 @@
         "ai_guidance": 21,
         "accessibility": 19,
         "event-fields": 5,
+        "alias-events": 16,
         "methods": 21,
         "inputs": 11
       }
@@ -5021,30 +4680,21 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 4,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "contracts": 28,
         "state": 8,
         "ownership": 9,
         "security": 8,
         "presentation": 18,
-        "ai_guidance": 22
+        "ai_guidance": 22,
+        "alias-events": 20
       }
     },
     {
@@ -5069,7 +4719,7 @@
       ],
       "bridge_conflicts": [],
       "manifest": {
-        "a2-rule": 13,
+        "a2-rule": 6,
         "c": 2,
         "a1-fact": 5
       },
@@ -5083,6 +4733,7 @@
         "ai_guidance": 22,
         "accessibility": 4,
         "compatibility": 52,
+        "alias-events": 162,
         "methods": 125
       }
     },
@@ -5112,7 +4763,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 4,
-        "a2-rule": 9,
+        "a2-rule": 7,
         "a1-words": 1
       },
       "meta": {
@@ -5128,6 +4779,7 @@
         "accessibility": 4,
         "compatibility": 12,
         "event-fields": 5,
+        "alias-events": 9,
         "methods": 10,
         "trait-inputs": 17
       }
@@ -5141,22 +4793,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 6,
-        "a1-fact": 4
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -5195,7 +4838,7 @@
       ],
       "bridge_conflicts": [],
       "manifest": {
-        "a2-rule": 9,
+        "a2-rule": 7,
         "a1-fact": 3,
         "c": 1
       },
@@ -5212,6 +4855,7 @@
         "ai_guidance": 19,
         "accessibility": 9,
         "compatibility": 16,
+        "alias-events": 32,
         "methods": 37,
         "inputs": 5
       }
@@ -5247,7 +4891,7 @@
       ],
       "manifest": {
         "a1-fact": 1,
-        "a2-rule": 42,
+        "a2-rule": 35,
         "a1-words": 1,
         "c": 8
       },
@@ -5258,6 +4902,7 @@
         "ai_guidance": 19,
         "accessibility": 3,
         "event-fields": 5,
+        "alias-events": 168,
         "methods": 154
       }
     },
@@ -5265,28 +4910,18 @@
       "component": "gallery",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.regex <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 7,
-        "a2-rule": 12
-      },
+      "manifest": {},
       "registry": {
         "state": 8,
         "ownership": 9,
@@ -5294,6 +4929,7 @@
         "presentation": 18,
         "ai_guidance": 24,
         "accessibility": 5,
+        "alias-events": 88,
         "methods": 32
       }
     },
@@ -5306,22 +4942,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 8,
-        "a1-fact": 2
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -5332,36 +4959,26 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 19,
-        "accessibility": 3
+        "accessibility": 3,
+        "alias-events": 16
       }
     },
     {
       "component": "icon",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
+        "rule.js": "identical",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment-after <- rule.js (the comment after the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 7,
-        "a2-rule": 5,
-        "a1-words": 2
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 9,
         "tags": 3,
@@ -5397,7 +5014,7 @@
       ],
       "bridge_conflicts": [],
       "manifest": {
-        "a2-rule": 2,
+        "a2-rule": 3,
         "a1-fact": 2
       },
       "meta": {
@@ -5442,7 +5059,7 @@
         "events.attach.carries: files in component.json only"
       ],
       "manifest": {
-        "a2-rule": 20,
+        "a2-rule": 17,
         "c": 2
       },
       "registry": {
@@ -5458,6 +5075,7 @@
         "ai_guidance": 21,
         "accessibility": 3,
         "event-fields": 5,
+        "alias-events": 57,
         "methods": 20,
         "inputs": 5
       }
@@ -5466,28 +5084,18 @@
       "component": "inline-editor",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-words": 6,
-        "a2-rule": 12,
-        "a1-fact": 1
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -5499,7 +5107,8 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 21,
-        "accessibility": 15
+        "accessibility": 15,
+        "alias-events": 58
       }
     },
     {
@@ -5528,7 +5137,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 2,
-        "a2-rule": 10
+        "a2-rule": 7
       },
       "meta": {
         "a1-fact": 1,
@@ -5546,6 +5155,7 @@
         "ai_guidance": 21,
         "accessibility": 8,
         "event-fields": 5,
+        "alias-events": 22,
         "methods": 153,
         "inputs": 5,
         "trait-inputs": 17
@@ -5577,7 +5187,7 @@
       "manifest": {
         "a1-fact": 3,
         "a1-words": 8,
-        "a2-rule": 5
+        "a2-rule": 3
       },
       "meta": {
         "a2-rule": 19
@@ -5592,7 +5202,8 @@
         "security": 8,
         "presentation": 18,
         "ai_guidance": 22,
-        "accessibility": 13
+        "accessibility": 13,
+        "alias-events": 23
       }
     },
     {
@@ -5604,24 +5215,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 9,
-        "a1-words": 2
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 8,
         "readiness": 12,
@@ -5634,6 +5234,7 @@
         "presentation": 20,
         "ai_guidance": 24,
         "accessibility": 3,
+        "alias-events": 50,
         "methods": 15,
         "inputs": 52
       }
@@ -5662,7 +5263,7 @@
       "manifest": {
         "a1-words": 1,
         "a1-fact": 16,
-        "a2-rule": 16,
+        "a2-rule": 4,
         "c": 4
       },
       "registry": {
@@ -5673,6 +5274,7 @@
         "ai_guidance": 22,
         "accessibility": 4,
         "compatibility": 13,
+        "alias-events": 332,
         "methods": 305
       }
     },
@@ -5680,29 +5282,18 @@
       "component": "page-header",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 6,
-        "a1-words": 5,
-        "a1-fact": 3
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 6,
         "persistence": 6,
@@ -5712,7 +5303,8 @@
         "security": 8,
         "presentation": 18,
         "ai_guidance": 18,
-        "accessibility": 8
+        "accessibility": 8,
+        "alias-events": 16
       }
     },
     {
@@ -5740,13 +5332,13 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 9,
-        "a2-rule": 38,
+        "a2-rule": 22,
         "a1-words": 2,
         "c": 1
       },
       "meta": {
-        "a2-rule": 17,
-        "a1-fact": 16,
+        "a2-rule": 29,
+        "a1-fact": 4,
         "a1-words": 1
       },
       "registry": {
@@ -5761,6 +5353,7 @@
         "ai_guidance": 22,
         "accessibility": 7,
         "compatibility": 18,
+        "alias-events": 328,
         "methods": 126,
         "inputs": 8
       }
@@ -5822,22 +5415,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a2-rule": 14,
-        "a1-fact": 8
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -5849,7 +5433,8 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 20,
-        "accessibility": 14
+        "accessibility": 14,
+        "alias-events": 83
       }
     },
     {
@@ -5961,7 +5546,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 13,
-        "a2-rule": 11,
+        "a2-rule": 12,
         "c": 9
       },
       "registry": {
@@ -5976,6 +5561,7 @@
         "ai_guidance": 20,
         "accessibility": 4,
         "event-fields": 5,
+        "alias-events": 22,
         "methods": 38,
         "inputs": 5,
         "trait-inputs": 17
@@ -5985,27 +5571,18 @@
       "component": "radio",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
-        "aliases.json": "semantic",
+        "rule.js": "identical",
+        "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 3
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "public-parts": 6,
@@ -6024,29 +5601,18 @@
       "component": "range-slider",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
-        "probe.json": "semantic",
-        "smart.manifest.json": "differs"
+        "probe.json": "identical",
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
-      "bridge_conflicts": [
-        "events.change.carries: component in smart.manifest.json only"
-      ],
-      "manifest": {
-        "a1-fact": 8,
-        "a2-rule": 12
-      },
+      "bridge_conflicts": [],
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
@@ -6054,6 +5620,7 @@
         "ai_guidance": 19,
         "accessibility": 4,
         "event-fields": 5,
+        "alias-events": 52,
         "methods": 261
       }
     },
@@ -6066,23 +5633,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 2,
-        "a1-words": 1,
-        "a2-rule": 3
-      },
+      "manifest": {},
       "registry": {
         "contracts": 24,
         "state": 8,
@@ -6097,27 +5654,18 @@
       "component": "resizer",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 6,
-        "a2-rule": 8
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 21,
@@ -6129,7 +5677,8 @@
         "security": 8,
         "presentation": 21,
         "ai_guidance": 19,
-        "accessibility": 13
+        "accessibility": 13,
+        "alias-events": 24
       }
     },
     {
@@ -6177,32 +5726,24 @@
       "component": "slider",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a2-rule": 4
-      },
+      "manifest": {},
       "registry": {
         "ownership": 9,
         "security": 8,
         "presentation": 18,
         "ai_guidance": 22,
+        "alias-events": 37,
         "methods": 12
       }
     },
@@ -6210,29 +5751,18 @@
       "component": "sortable",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 3,
-        "a1-words": 9,
-        "a2-rule": 10
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 5,
         "persistence": 6,
@@ -6246,6 +5776,7 @@
         "presentation": 21,
         "ai_guidance": 23,
         "accessibility": 16,
+        "alias-events": 36,
         "inputs": 5
       }
     },
@@ -6298,27 +5829,18 @@
       "component": "steps",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 8,
-        "a2-rule": 7
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 10,
@@ -6327,6 +5849,7 @@
         "presentation": 18,
         "ai_guidance": 19,
         "accessibility": 4,
+        "alias-events": 60,
         "methods": 35,
         "inputs": 5
       }
@@ -6335,26 +5858,17 @@
       "component": "switch",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.css true <- rule.js (the folder holds no sheet)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 1,
-        "a2-rule": 5
-      },
+      "manifest": {},
       "registry": {
         "reuse_mode": 1,
         "public-parts": 7,
@@ -6366,6 +5880,7 @@
         "ai_guidance": 21,
         "accessibility": 4,
         "event-fields": 5,
+        "alias-events": 22,
         "methods": 119,
         "inputs": 5,
         "trait-inputs": 17
@@ -6375,29 +5890,18 @@
       "component": "tabs",
       "package": "simai/ui-source",
       "files": {
-        "rule.js": "semantic",
+        "rule.js": "identical",
         "aliases.json": "identical",
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.css null <- rule.js (no css although the folder holds js/templates/default.css)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-fact": 6,
-        "a2-rule": 13,
-        "a1-words": 1
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "ownership": 9,
@@ -6405,6 +5909,7 @@
         "presentation": 18,
         "ai_guidance": 19,
         "accessibility": 4,
+        "alias-events": 46,
         "methods": 75
       }
     },
@@ -6437,14 +5942,13 @@
       "manifest": {
         "a1-fact": 4,
         "a1-words": 3,
-        "a2-rule": 7,
+        "a2-rule": 5,
         "c": 1
       },
       "meta": {
-        "a2-rule": 4,
+        "a2-rule": 5,
         "c": 1,
-        "a1-words": 3,
-        "a1-fact": 1
+        "a1-words": 3
       },
       "registry": {
         "capabilities": 7,
@@ -6459,6 +5963,7 @@
         "accessibility": 9,
         "compatibility": 12,
         "event-fields": 5,
+        "alias-events": 17,
         "methods": 24,
         "inputs": 11
       }
@@ -6489,7 +5994,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 6,
-        "a2-rule": 7
+        "a2-rule": 8
       },
       "meta": {
         "a2-rule": 30
@@ -6505,6 +6010,7 @@
         "ai_guidance": 22,
         "accessibility": 8,
         "event-fields": 5,
+        "alias-events": 22,
         "methods": 23,
         "trait-inputs": 17
       }
@@ -6518,24 +6024,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-words": 9,
-        "a2-rule": 9,
-        "a1-fact": 10
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 6,
         "persistence": 6,
@@ -6547,6 +6042,7 @@
         "presentation": 21,
         "ai_guidance": 20,
         "accessibility": 8,
+        "alias-events": 122,
         "methods": 24
       }
     },
@@ -6623,7 +6119,7 @@
       "bridge_conflicts": [],
       "manifest": {
         "a1-fact": 2,
-        "a2-rule": 4
+        "a2-rule": 5
       },
       "meta": {
         "a2-rule": 11
@@ -6696,24 +6192,13 @@
         "studio.fixture.json": "identical",
         "studio.scenario.json": "identical",
         "probe.json": "identical",
-        "smart.manifest.json": "differs"
+        "smart.manifest.json": "identical"
       },
       "bridge": [
-        "relations <- rule.js",
-        "x-rule.$comment <- rule.js (the comment before the rule)",
-        "aliases <- aliases.json",
-        "x-registry <- smart.manifest.json",
-        "stamp <- smart.manifest.json provenance, runtime_pair",
-        "studio <- studio.fixture.json",
-        "studio.scenario <- studio.scenario.json",
-        "pages[conformance] <- probe.json"
+        "stamp <- smart.manifest.json provenance, runtime_pair"
       ],
       "bridge_conflicts": [],
-      "manifest": {
-        "a1-words": 7,
-        "a2-rule": 5,
-        "a1-fact": 11
-      },
+      "manifest": {},
       "registry": {
         "capabilities": 7,
         "state": 21,
@@ -6722,6 +6207,7 @@
         "presentation": 18,
         "ai_guidance": 20,
         "accessibility": 16,
+        "alias-events": 50,
         "methods": 21
       }
     },
@@ -6759,7 +6245,7 @@
         "a1-fact": 5,
         "a1-words": 15,
         "c": 3,
-        "a2-rule": 13
+        "a2-rule": 11
       },
       "meta": {
         "a2-rule": 24
@@ -6772,6 +6258,7 @@
         "presentation": 18,
         "ai_guidance": 20,
         "accessibility": 14,
+        "alias-events": 42,
         "methods": 59
       }
     },
@@ -6825,7 +6312,7 @@
       ],
       "manifest": {
         "a1-fact": 3,
-        "a2-rule": 51,
+        "a2-rule": 49,
         "c": 29
       },
       "registry": {
@@ -6846,6 +6333,7 @@
         "ai_guidance": 21,
         "accessibility": 10,
         "compatibility": 41,
+        "alias-events": 86,
         "methods": 59,
         "inputs": 9,
         "inputs-required": 3
@@ -7147,7 +6635,7 @@
       "manifest": {
         "a1-fact": 32,
         "c": 17,
-        "a2-rule": 23
+        "a2-rule": 20
       },
       "registry": {
         "kind": 1,
@@ -7166,6 +6654,7 @@
         "ai_guidance": 19,
         "accessibility": 7,
         "compatibility": 18,
+        "alias-events": 21,
         "methods": 157,
         "inputs": 5
       }
@@ -7252,7 +6741,7 @@
       ],
       "manifest": {
         "a1-fact": 11,
-        "a2-rule": 31,
+        "a2-rule": 93,
         "c": 11
       },
       "registry": {
@@ -7272,6 +6761,7 @@
         "ai_guidance": 20,
         "accessibility": 7,
         "compatibility": 76,
+        "alias-events": 14,
         "methods": 175,
         "inputs": 5
       }
@@ -7312,7 +6802,7 @@
       "manifest": {
         "a1-fact": 23,
         "c": 12,
-        "a2-rule": 50,
+        "a2-rule": 44,
         "a1-words": 1
       },
       "registry": {
@@ -7333,6 +6823,7 @@
         "ai_guidance": 21,
         "accessibility": 13,
         "compatibility": 106,
+        "alias-events": 184,
         "methods": 344,
         "inputs": 13,
         "inputs-required": 4
@@ -7741,168 +7232,78 @@
         "simai/ui-pro:table",
         "simai/ui-pro:thread-list"
       ],
-      "smart.manifest.json": []
+      "smart.manifest.json": [
+        "accordion",
+        "avatar",
+        "avatars",
+        "breadcrumbs",
+        "checkbox",
+        "close",
+        "code-input",
+        "color",
+        "copy-button",
+        "datepicker",
+        "download-file",
+        "empty-state",
+        "gallery",
+        "help-mark",
+        "icon",
+        "inline-editor",
+        "menu",
+        "page-header",
+        "profile-picker",
+        "radio",
+        "range-slider",
+        "reference-link",
+        "resizer",
+        "slider",
+        "sortable",
+        "steps",
+        "switch",
+        "tabs",
+        "theme-generator",
+        "tree"
+      ]
     }
   },
   "consumers": [
     {
       "consumer": "ui-doc",
       "reads": "summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io)",
-      "wrong_facts": 593,
-      "components": 70,
+      "wrong_facts": 431,
+      "components": 40,
       "kinds": {
-        "a1-fact input.type": {
-          "count": 42,
-          "components": [
-            "accordion",
-            "breadcrumbs",
-            "code-input",
-            "context-menu",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "gallery",
-            "icon",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "skeleton",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 53,
-          "components": [
-            "accordion",
-            "button",
-            "button-group",
-            "code-input",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "spinner",
-            "steps",
-            "textarea",
-            "theme-generator",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 23,
-          "components": [
-            "accordion",
-            "avatar",
-            "breadcrumbs",
-            "copy-button",
-            "datepicker",
-            "empty-state",
-            "gallery",
-            "icon",
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "resizer",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 11,
-          "components": [
-            "accordion",
-            "datepicker",
-            "empty-state",
-            "icon",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
         "a2-rule base-setting": {
-          "count": 133,
+          "count": 77,
           "components": [
-            "accordion",
             "alert",
-            "avatar",
-            "avatars",
             "badge",
-            "breadcrumbs",
             "button",
             "button-group",
-            "checkbox",
-            "close",
-            "code-input",
-            "color",
             "composition-overlay",
             "context-menu",
-            "copy-button",
             "country-code",
-            "datepicker",
-            "download-file",
             "drawer",
             "dropdown",
-            "empty-state",
             "file-preview",
             "file-upload",
-            "gallery",
-            "help-mark",
-            "icon",
             "icon-button",
             "image-field",
-            "inline-editor",
             "input",
             "list-item",
-            "menu",
             "modal",
-            "page-header",
             "pagination",
             "popover",
-            "profile-picker",
             "progress-bar",
             "progress-scale",
             "quantity",
-            "radio",
-            "range-slider",
-            "reference-link",
-            "resizer",
             "skeleton",
-            "slider",
-            "sortable",
             "spinner",
-            "steps",
-            "switch",
-            "tabs",
             "tag",
             "textarea",
-            "theme-generator",
             "toast",
             "toggle",
             "tooltip",
-            "tree",
             "tree-item",
             "admin-menu",
             "change-confirm",
@@ -7917,46 +7318,45 @@
             "thread-list"
           ]
         },
-        "a1-fact event-missing": {
-          "count": 68,
-          "components": [
-            "accordion",
-            "breadcrumbs",
-            "button",
-            "context-menu",
-            "copy-button",
-            "country-code",
-            "download-file",
-            "drawer",
-            "file-preview",
-            "gallery",
-            "help-mark",
-            "list-item",
-            "menu",
-            "modal",
-            "page-header",
-            "pagination",
-            "popover",
-            "profile-picker",
-            "resizer",
-            "slider",
-            "sortable",
-            "steps",
-            "tabs",
-            "tag",
-            "theme-generator",
-            "toast",
-            "tree",
-            "tree-item",
-            "table"
-          ]
-        },
         "a1-fact payload-fields-missing": {
           "count": 9,
           "components": [
             "alert",
             "context-menu",
             "property-view",
+            "table"
+          ]
+        },
+        "a1-fact input.default": {
+          "count": 36,
+          "components": [
+            "button",
+            "button-group",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "spinner",
+            "textarea",
+            "admin-menu",
+            "data-view"
+          ]
+        },
+        "a1-fact event-missing": {
+          "count": 37,
+          "components": [
+            "button",
+            "context-menu",
+            "country-code",
+            "drawer",
+            "file-preview",
+            "list-item",
+            "modal",
+            "pagination",
+            "popover",
+            "tag",
+            "toast",
+            "tree-item",
             "table"
           ]
         },
@@ -7990,6 +7390,21 @@
             "tag",
             "chat-message",
             "chat-window"
+          ]
+        },
+        "a1-fact input.type": {
+          "count": 16,
+          "components": [
+            "context-menu",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "skeleton",
+            "spinner",
+            "change-confirm",
+            "message-log",
+            "thread-list"
           ]
         },
         "c method.arguments": {
@@ -8036,39 +7451,37 @@
             "table"
           ]
         },
+        "a1-fact input.minimum": {
+          "count": 7,
+          "components": [
+            "icon-button",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "spinner",
+            "chat-window"
+          ]
+        },
         "a1-fact method-missing": {
-          "count": 18,
+          "count": 12,
           "components": [
             "modal",
-            "profile-picker",
             "progress-bar",
             "progress-scale",
             "toast",
-            "tree",
             "tree-item",
             "data-view",
             "property-view",
             "table"
           ]
         },
-        "a1-fact input.enum-missing": {
-          "count": 1,
+        "a1-fact input.maximum": {
+          "count": 4,
           "components": [
-            "tabs"
-          ]
-        },
-        "a1-fact alias-event-missing": {
-          "count": 45,
-          "components": [
-            "tree",
-            "change-confirm",
-            "chat-composer",
-            "chat-interlocutor",
-            "chat-message",
-            "chat-window",
-            "message-log",
-            "table",
-            "thread-list"
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "chat-window"
           ]
         },
         "a1-fact setting-missing": {
@@ -8087,6 +7500,19 @@
             "admin-menu",
             "chat-composer",
             "chat-window"
+          ]
+        },
+        "a1-fact alias-event-missing": {
+          "count": 43,
+          "components": [
+            "change-confirm",
+            "chat-composer",
+            "chat-interlocutor",
+            "chat-message",
+            "chat-window",
+            "message-log",
+            "table",
+            "thread-list"
           ]
         },
         "a1-fact alias-setting-missing": {
@@ -8113,200 +7539,40 @@
     {
       "consumer": "ui-studio",
       "reads": "title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs)",
-      "wrong_facts": 678,
-      "components": 70,
+      "wrong_facts": 482,
+      "components": 40,
       "kinds": {
-        "a1-fact uses-missing": {
-          "count": 34,
-          "components": [
-            "accordion",
-            "avatar",
-            "avatars",
-            "button",
-            "button-group",
-            "checkbox",
-            "close",
-            "color",
-            "context-menu",
-            "country-code",
-            "download-file",
-            "dropdown",
-            "file-upload",
-            "gallery",
-            "input",
-            "list-item",
-            "menu",
-            "modal",
-            "pagination",
-            "radio",
-            "range-slider",
-            "reference-link",
-            "slider",
-            "steps",
-            "switch",
-            "tabs",
-            "tag",
-            "textarea",
-            "toast",
-            "toggle",
-            "tooltip",
-            "data-view",
-            "property-view",
-            "table"
-          ]
-        },
-        "a1-fact input.type": {
-          "count": 42,
-          "components": [
-            "accordion",
-            "breadcrumbs",
-            "code-input",
-            "context-menu",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "gallery",
-            "icon",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "skeleton",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 53,
-          "components": [
-            "accordion",
-            "button",
-            "button-group",
-            "code-input",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "spinner",
-            "steps",
-            "textarea",
-            "theme-generator",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 23,
-          "components": [
-            "accordion",
-            "avatar",
-            "breadcrumbs",
-            "copy-button",
-            "datepicker",
-            "empty-state",
-            "gallery",
-            "icon",
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "resizer",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 11,
-          "components": [
-            "accordion",
-            "datepicker",
-            "empty-state",
-            "icon",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
         "a2-rule base-setting": {
-          "count": 133,
+          "count": 77,
           "components": [
-            "accordion",
             "alert",
-            "avatar",
-            "avatars",
             "badge",
-            "breadcrumbs",
             "button",
             "button-group",
-            "checkbox",
-            "close",
-            "code-input",
-            "color",
             "composition-overlay",
             "context-menu",
-            "copy-button",
             "country-code",
-            "datepicker",
-            "download-file",
             "drawer",
             "dropdown",
-            "empty-state",
             "file-preview",
             "file-upload",
-            "gallery",
-            "help-mark",
-            "icon",
             "icon-button",
             "image-field",
-            "inline-editor",
             "input",
             "list-item",
-            "menu",
             "modal",
-            "page-header",
             "pagination",
             "popover",
-            "profile-picker",
             "progress-bar",
             "progress-scale",
             "quantity",
-            "radio",
-            "range-slider",
-            "reference-link",
-            "resizer",
             "skeleton",
-            "slider",
-            "sortable",
             "spinner",
-            "steps",
-            "switch",
-            "tabs",
             "tag",
             "textarea",
-            "theme-generator",
             "toast",
             "toggle",
             "tooltip",
-            "tree",
             "tree-item",
             "admin-menu",
             "change-confirm",
@@ -8321,40 +7587,6 @@
             "thread-list"
           ]
         },
-        "a1-fact event-missing": {
-          "count": 68,
-          "components": [
-            "accordion",
-            "breadcrumbs",
-            "button",
-            "context-menu",
-            "copy-button",
-            "country-code",
-            "download-file",
-            "drawer",
-            "file-preview",
-            "gallery",
-            "help-mark",
-            "list-item",
-            "menu",
-            "modal",
-            "page-header",
-            "pagination",
-            "popover",
-            "profile-picker",
-            "resizer",
-            "slider",
-            "sortable",
-            "steps",
-            "tabs",
-            "tag",
-            "theme-generator",
-            "toast",
-            "tree",
-            "tree-item",
-            "table"
-          ]
-        },
         "a1-fact payload-fields-missing": {
           "count": 9,
           "components": [
@@ -8365,39 +7597,47 @@
           ]
         },
         "a1-fact accessibility.role": {
-          "count": 15,
+          "count": 6,
           "components": [
             "alert",
-            "avatar",
-            "avatars",
             "badge",
             "button",
-            "checkbox",
             "country-code",
-            "download-file",
-            "gallery",
-            "inline-editor",
-            "reference-link",
-            "slider",
-            "sortable",
             "tag",
             "toast"
           ]
         },
         "a1-fact version": {
-          "count": 11,
+          "count": 5,
           "components": [
-            "avatar",
-            "avatars",
             "badge",
-            "code-input",
             "country-code",
-            "icon",
             "quantity",
-            "radio",
-            "range-slider",
             "textarea",
             "toggle"
+          ]
+        },
+        "a1-fact uses-missing": {
+          "count": 18,
+          "components": [
+            "button",
+            "button-group",
+            "context-menu",
+            "country-code",
+            "dropdown",
+            "file-upload",
+            "input",
+            "list-item",
+            "modal",
+            "pagination",
+            "tag",
+            "textarea",
+            "toast",
+            "toggle",
+            "tooltip",
+            "data-view",
+            "property-view",
+            "table"
           ]
         },
         "a1-fact declarative.props": {
@@ -8411,18 +7651,36 @@
             "table"
           ]
         },
-        "a1-fact title": {
-          "count": 10,
+        "a1-fact input.default": {
+          "count": 36,
           "components": [
-            "code-input",
-            "input",
-            "list-item",
-            "radio",
-            "sortable",
+            "button",
+            "button-group",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "spinner",
             "textarea",
+            "admin-menu",
+            "data-view"
+          ]
+        },
+        "a1-fact event-missing": {
+          "count": 37,
+          "components": [
+            "button",
+            "context-menu",
+            "country-code",
+            "drawer",
+            "file-preview",
+            "list-item",
+            "modal",
+            "pagination",
+            "popover",
+            "tag",
+            "toast",
             "tree-item",
-            "data-view",
-            "property-view",
             "table"
           ]
         },
@@ -8456,6 +7714,21 @@
             "tag",
             "chat-message",
             "chat-window"
+          ]
+        },
+        "a1-fact input.type": {
+          "count": 16,
+          "components": [
+            "context-menu",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "skeleton",
+            "spinner",
+            "change-confirm",
+            "message-log",
+            "thread-list"
           ]
         },
         "c method.arguments": {
@@ -8502,39 +7775,49 @@
             "table"
           ]
         },
-        "a1-fact method-missing": {
-          "count": 18,
+        "a1-fact input.minimum": {
+          "count": 7,
           "components": [
-            "modal",
-            "profile-picker",
+            "icon-button",
             "progress-bar",
             "progress-scale",
-            "toast",
-            "tree",
+            "quantity",
+            "spinner",
+            "chat-window"
+          ]
+        },
+        "a1-fact title": {
+          "count": 7,
+          "components": [
+            "input",
+            "list-item",
+            "textarea",
             "tree-item",
             "data-view",
             "property-view",
             "table"
           ]
         },
-        "a1-fact input.enum-missing": {
-          "count": 1,
+        "a1-fact method-missing": {
+          "count": 12,
           "components": [
-            "tabs"
+            "modal",
+            "progress-bar",
+            "progress-scale",
+            "toast",
+            "tree-item",
+            "data-view",
+            "property-view",
+            "table"
           ]
         },
-        "a1-fact alias-event-missing": {
-          "count": 45,
+        "a1-fact input.maximum": {
+          "count": 4,
           "components": [
-            "tree",
-            "change-confirm",
-            "chat-composer",
-            "chat-interlocutor",
-            "chat-message",
-            "chat-window",
-            "message-log",
-            "table",
-            "thread-list"
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "chat-window"
           ]
         },
         "c uses-not-loaded": {
@@ -8578,6 +7861,19 @@
             "chat-window"
           ]
         },
+        "a1-fact alias-event-missing": {
+          "count": 43,
+          "components": [
+            "change-confirm",
+            "chat-composer",
+            "chat-interlocutor",
+            "chat-message",
+            "chat-window",
+            "message-log",
+            "table",
+            "thread-list"
+          ]
+        },
         "a1-fact alias-setting-missing": {
           "count": 1,
           "components": [
@@ -8608,161 +7904,40 @@
     {
       "consumer": "ui-vscode",
       "reads": "inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense)",
-      "wrong_facts": 308,
-      "components": 70,
+      "wrong_facts": 184,
+      "components": 40,
       "kinds": {
-        "a1-fact input.type": {
-          "count": 42,
-          "components": [
-            "accordion",
-            "breadcrumbs",
-            "code-input",
-            "context-menu",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "gallery",
-            "icon",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "skeleton",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "change-confirm",
-            "message-log",
-            "thread-list"
-          ]
-        },
-        "a1-fact input.default": {
-          "count": 53,
-          "components": [
-            "accordion",
-            "button",
-            "button-group",
-            "code-input",
-            "copy-button",
-            "datepicker",
-            "dropdown",
-            "empty-state",
-            "page-header",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "range-slider",
-            "resizer",
-            "spinner",
-            "steps",
-            "textarea",
-            "theme-generator",
-            "admin-menu",
-            "data-view"
-          ]
-        },
-        "a1-fact input.minimum": {
-          "count": 23,
-          "components": [
-            "accordion",
-            "avatar",
-            "breadcrumbs",
-            "copy-button",
-            "datepicker",
-            "empty-state",
-            "gallery",
-            "icon",
-            "icon-button",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "resizer",
-            "spinner",
-            "steps",
-            "tabs",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
-        "a1-fact input.maximum": {
-          "count": 11,
-          "components": [
-            "accordion",
-            "datepicker",
-            "empty-state",
-            "icon",
-            "progress-bar",
-            "progress-scale",
-            "quantity",
-            "theme-generator",
-            "chat-window"
-          ]
-        },
         "a2-rule base-setting": {
-          "count": 133,
+          "count": 77,
           "components": [
-            "accordion",
             "alert",
-            "avatar",
-            "avatars",
             "badge",
-            "breadcrumbs",
             "button",
             "button-group",
-            "checkbox",
-            "close",
-            "code-input",
-            "color",
             "composition-overlay",
             "context-menu",
-            "copy-button",
             "country-code",
-            "datepicker",
-            "download-file",
             "drawer",
             "dropdown",
-            "empty-state",
             "file-preview",
             "file-upload",
-            "gallery",
-            "help-mark",
-            "icon",
             "icon-button",
             "image-field",
-            "inline-editor",
             "input",
             "list-item",
-            "menu",
             "modal",
-            "page-header",
             "pagination",
             "popover",
-            "profile-picker",
             "progress-bar",
             "progress-scale",
             "quantity",
-            "radio",
-            "range-slider",
-            "reference-link",
-            "resizer",
             "skeleton",
-            "slider",
-            "sortable",
             "spinner",
-            "steps",
-            "switch",
-            "tabs",
             "tag",
             "textarea",
-            "theme-generator",
             "toast",
             "toggle",
             "tooltip",
-            "tree",
             "tree-item",
             "admin-menu",
             "change-confirm",
@@ -8778,13 +7953,27 @@
           ]
         },
         "a1-fact compatibility.aliases": {
-          "count": 5,
+          "count": 4,
           "components": [
             "badge",
             "button",
-            "icon",
             "icon-button",
             "tag"
+          ]
+        },
+        "a1-fact input.default": {
+          "count": 36,
+          "components": [
+            "button",
+            "button-group",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "spinner",
+            "textarea",
+            "admin-menu",
+            "data-view"
           ]
         },
         "c input-undeclared": {
@@ -8802,6 +7991,21 @@
             "chat-window"
           ]
         },
+        "a1-fact input.type": {
+          "count": 16,
+          "components": [
+            "context-menu",
+            "dropdown",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "skeleton",
+            "spinner",
+            "change-confirm",
+            "message-log",
+            "thread-list"
+          ]
+        },
         "a1-fact input-stale": {
           "count": 2,
           "components": [
@@ -8809,10 +8013,24 @@
             "chat-window"
           ]
         },
-        "a1-fact input.enum-missing": {
-          "count": 1,
+        "a1-fact input.minimum": {
+          "count": 7,
           "components": [
-            "tabs"
+            "icon-button",
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "spinner",
+            "chat-window"
+          ]
+        },
+        "a1-fact input.maximum": {
+          "count": 4,
+          "components": [
+            "progress-bar",
+            "progress-scale",
+            "quantity",
+            "chat-window"
           ]
         },
         "a1-fact setting-missing": {
@@ -8842,17 +8060,14 @@
     {
       "consumer": "ui registry (ui-builder bind-generated-runtime-contracts.py)",
       "reads": "title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json",
-      "wrong_facts": 10,
-      "components": 10,
+      "wrong_facts": 7,
+      "components": 7,
       "kinds": {
         "a1-fact title": {
-          "count": 10,
+          "count": 7,
           "components": [
-            "code-input",
             "input",
             "list-item",
-            "radio",
-            "sortable",
             "textarea",
             "tree-item",
             "data-view",
@@ -8865,12 +8080,6 @@
   ],
   "headline": {
     "event-missing": {
-      "accordion": [
-        "sf-accordion-toggle"
-      ],
-      "breadcrumbs": [
-        "sf-breadcrumbs-press"
-      ],
       "button": [
         "sf-button-press"
       ],
@@ -8878,15 +8087,8 @@
         "sf-context-menu-opened",
         "sf-context-menu-closed"
       ],
-      "copy-button": [
-        "sf-copy-button-copied",
-        "sf-copy-button-copy-failed"
-      ],
       "country-code": [
         "input"
-      ],
-      "download-file": [
-        "sf-download-file-download"
       ],
       "drawer": [
         "sf-drawer-open",
@@ -8899,21 +8101,8 @@
         "sf-file-preview-download",
         "sf-file-preview-detach"
       ],
-      "gallery": [
-        "change",
-        "sf-gallery-opened",
-        "sf-gallery-closed"
-      ],
-      "help-mark": [
-        "sf-help-mark-opened",
-        "sf-help-mark-closed"
-      ],
       "list-item": [
         "sf-list-item-open"
-      ],
-      "menu": [
-        "sf-menu-navigate",
-        "sf-menu-toggle"
       ],
       "modal": [
         "sf-modal-open",
@@ -8926,9 +8115,6 @@
         "sf-modal-expanded",
         "sf-modal-content-upload",
         "sf-modal-content-uploaded"
-      ],
-      "page-header": [
-        "sf-page-header-toggle"
       ],
       "pagination": [
         "sf-pagination-change",
@@ -8944,45 +8130,11 @@
         "sf-popover-opened",
         "sf-popover-closed"
       ],
-      "profile-picker": [
-        "sf-profile-picker-select",
-        "sf-profile-picker-create",
-        "sf-profile-picker-rename",
-        "sf-profile-picker-delete",
-        "sf-profile-picker-reset"
-      ],
-      "resizer": [
-        "sf-resizer-resize"
-      ],
-      "slider": [
-        "change"
-      ],
-      "sortable": [
-        "sf-sortable-move"
-      ],
-      "steps": [
-        "sf-steps-change"
-      ],
-      "tabs": [
-        "sf-tabs-change"
-      ],
       "tag": [
         "sf-tag-close"
       ],
-      "theme-generator": [
-        "change",
-        "sf-theme-generator-committed"
-      ],
       "toast": [
         "sf-toast-closed"
-      ],
-      "tree": [
-        "sf-tree-open",
-        "sf-tree-select",
-        "sf-tree-toggle",
-        "sf-tree-move",
-        "sf-tree-attach",
-        "sf-tree-window"
       ],
       "tree-item": [
         "sf-tree-item-open"
@@ -8993,10 +8145,6 @@
       ]
     },
     "alias-event-missing": {
-      "tree": [
-        "sf-tree-item-click",
-        "sf-tree-item-toggle"
-      ],
       "pro change-confirm": [
         "sf-change-confirm-accept",
         "sf-change-confirm-decline",
@@ -9063,11 +8211,6 @@
         "expand",
         "confirm"
       ],
-      "profile-picker": [
-        "open",
-        "close",
-        "toggle"
-      ],
       "progress-bar": [
         "chunk"
       ],
@@ -9076,11 +8219,6 @@
       ],
       "toast": [
         "show"
-      ],
-      "tree": [
-        "expand",
-        "collapse",
-        "focusEntry"
       ],
       "tree-item": [
         "expand",
@@ -9132,11 +8270,6 @@
     "input.enum-values-missing": {
       "pro table": [
         "data-state [\"ready\"]"
-      ]
-    },
-    "input.enum-missing": {
-      "tabs": [
-        "type [\"\",\"underline\",\"pills\",\"full\",\"vertical\"]"
       ]
     },
     "input-undeclared": {
@@ -9197,20 +8330,11 @@
       ]
     },
     "title": {
-      "code-input": [
-        "\"Code Input\" → \"Code input\""
-      ],
       "input": [
         "\"Inputs\" → \"Text fields\""
       ],
       "list-item": [
         "\"List Item\" → \"List item\""
-      ],
-      "radio": [
-        "\"Radio\" → \"Radio buttons\""
-      ],
-      "sortable": [
-        "\"Sortable\" → \"Drag and drop\""
       ],
       "textarea": [
         "\"Textarea\" → \"Text area\""
@@ -9229,32 +8353,14 @@
       ]
     },
     "version": {
-      "avatar": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
-      "avatars": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
       "badge": [
         "\"1.0.1\" → \"1.1.1\""
-      ],
-      "code-input": [
-        "\"1.0.0\" → \"1.1.0\""
       ],
       "country-code": [
         "\"1.0.0\" → \"1.1.1\""
       ],
-      "icon": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
       "quantity": [
         "\"1.0.0\" → \"1.1.1\""
-      ],
-      "radio": [
-        "\"1.0.0\" → \"1.1.1\""
-      ],
-      "range-slider": [
-        "\"1.0.0\" → \"1.1.0\""
       ],
       "textarea": [
         "\"1.4.0\" → \"1.5.1\""
@@ -9267,41 +8373,14 @@
       "alert": [
         "null → \"status\""
       ],
-      "avatar": [
-        "null → \"button\""
-      ],
-      "avatars": [
-        "null → \"none\""
-      ],
       "badge": [
         "null → \"none\""
       ],
       "button": [
         "null → \"button\""
       ],
-      "checkbox": [
-        "null → \"checkbox\""
-      ],
       "country-code": [
         "null → \"textbox\""
-      ],
-      "download-file": [
-        "null → \"link\""
-      ],
-      "gallery": [
-        "null → \"none\""
-      ],
-      "inline-editor": [
-        "null → \"none\""
-      ],
-      "reference-link": [
-        "null → \"link\""
-      ],
-      "slider": [
-        "null → \"none\""
-      ],
-      "sortable": [
-        "null → \"none\""
       ],
       "tag": [
         "null → \"button\""

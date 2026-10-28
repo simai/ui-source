@@ -12,7 +12,22 @@
         "name": "Ничего не найдено",
         "role": "status"
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "title": "empty state reference",
+        "props": {
+          "kind": "nothing-found",
+          "size": "1",
+          "heading-level": "3"
+        },
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
     },
     {
       "name": "no-data",
@@ -74,6 +89,108 @@
       "expect": {
         "name": "Нет проектов"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-empty-state against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-empty-state id=\"e1\" kind=\"nothing-found\" heading-level=\"2\"></sf-empty-state>",
+          "  <sf-empty-state id=\"e2\" kind=\"error\"></sf-empty-state>",
+          "  <sf-empty-state id=\"e3\" kind=\"no-data\" heading=\"Нет проектов\"></sf-empty-state>",
+          "  <sf-empty-state id=\"e4\" kind=\"error\" live=\"alert\"></sf-empty-state>",
+          "  <sf-empty-state id=\"e-old\" title=\"Старое имя\"></sf-empty-state>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-status-and-heading",
+          "title": "nothing-found is a polite status with a real heading at heading-level",
+          "covers": "accessibility (role when), settings.heading-level",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#e1 .sf-empty-state'); const h = r.querySelector('h2.sf-empty-state-title'); return r.getAttribute('role') === 'status' && h && h.textContent.trim() === 'Ничего не найдено'; })()",
+              "expect": {
+                "values": {
+                  "#e1.headingLevel": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2-no-role",
+          "title": "no-data says nothing; live alert makes an alert",
+          "covers": "accessibility (otherwise none, live alert)",
+          "steps": [
+            {
+              "check": "!document.querySelector('#e3 .sf-empty-state').hasAttribute('role') && document.querySelector('#e4 .sf-empty-state').getAttribute('role') === 'alert' && document.querySelector('#e3 .sf-empty-state-title').textContent.trim() === 'Нет проектов'"
+            }
+          ]
+        },
+        {
+          "id": "p3-retry",
+          "title": "an error offers «Повторить»; pressing it sends action {id: retry}",
+          "covers": "events.action (own verb)",
+          "steps": [
+            {
+              "user": "click:#e2 .sf-empty-state-actions button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-empty-state-action",
+                    "count": 1,
+                    "detail": {
+                      "id": "retry"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-actions-list",
+          "title": "actions is a list setting: each entry draws a button",
+          "covers": "settings.actions",
+          "steps": [
+            {
+              "script": "(document.getElementById('e3').actions = [{id: 'create', text: 'Создать проект'}], true)",
+              "wait": 400,
+              "check": "Boolean(document.querySelector('#e3 .sf-empty-state-actions')?.textContent.includes('Создать проект'))"
+            },
+            {
+              "user": "click:#e3 .sf-empty-state-actions button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-empty-state-action",
+                    "count": 1,
+                    "detail": {
+                      "id": "create"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-alias",
+          "title": "title answers as heading, noted with its dates",
+          "covers": "aliases.json",
+          "steps": [
+            {
+              "check": "document.getElementById('e-old').getAttribute('heading') === 'Старое имя' && document.querySelector('#e-old .sf-empty-state-title').textContent.trim() === 'Старое имя'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

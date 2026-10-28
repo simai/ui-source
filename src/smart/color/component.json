@@ -2,7 +2,7 @@
   "$comment": "The source of sf-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.color",
   "tag": "sf-color",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -16,7 +16,8 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "The size ladder step, so a colour beside a text field lines up with it."
     },
     "appearance": {
       "type": "enum",
@@ -25,15 +26,18 @@
         "outlined",
         "plain"
       ],
-      "default": "bordered"
+      "default": "bordered",
+      "summary": "How the swatch is bounded."
     },
     "swatches": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The colours a product already has, comma separated, each #hex or #hex|Name; a name may hold spaces. A piece without a name may list several colours by spaces. A person picks the brand colour rather than matching a hex by eye."
     },
     "clearable": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Whether a chosen colour can be returned to the inherited one."
     },
     "disabled": {
       "type": "boolean",
@@ -41,25 +45,30 @@
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The form name. A hidden input carries the value under it, empty while the inherited colour applies."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The accessible name of the control."
     },
     "choose-label": {
       "type": "string",
-      "default-from": "runtime.choose"
+      "default-from": "runtime.choose",
+      "summary": "The words on the swatch. Unset, the component answers in the page's language (\"Choose a colour\" in English)."
     },
     "clear-label": {
       "type": "string",
-      "default-from": "runtime.clear"
+      "default-from": "runtime.clear",
+      "summary": "The words on the control that returns to the inherited colour. Unset, it follows the page's language."
     }
   },
   "values": {
     "value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The colour, as #rgb, #rrggbb or #rrggbbaa. Empty means nothing is chosen and the inherited colour applies."
     },
     "effective-value": {
       "type": "string",
@@ -71,13 +80,15 @@
       "carries": {
         "value": "string",
         "name": "string"
-      }
+      },
+      "summary": "A colour was committed: once when the platform picker closes or a swatch or clear is pressed, not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. The picker's own change does not leave the host."
     },
     "input": {
       "carries": {
         "value": "string",
         "name": "string"
-      }
+      },
+      "summary": "The colour moved, on every step of a drag across the platform picker and before each change. Carries the value and the form name."
     }
   },
   "actions": {
@@ -85,7 +96,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Return to the inherited colour; the same as setValue(\"\"). Returns whether it changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     }
   },
   "form": {
@@ -106,6 +121,14 @@
       "Space": "select"
     }
   },
+  "relations": [
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-icon-button"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -150,6 +173,30 @@
       "state": "inherited"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-field:reset",
+        "to": "sf-field-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, §20.2",
+        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
+      },
+      {
+        "from": "shown",
+        "to": "effective-value",
+        "kind": "value",
+        "shim": "none",
+        "section": "§4.1, §4.3",
+        "note": "the getter shown returned the painted colour; shown is now the base value (a boolean) on every element, so the old meaning cannot be served beside it: read effectiveValue"
+      }
+    ]
+  },
   "x-summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "x-source": {
     "package": "framework",
@@ -162,14 +209,58 @@
     "choose-label",
     "clear-label"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-renamed": [
+    "the getter shown -> the value effective-value: shown is the base value of every element (§4.1), a boolean; the colour it returned is effective-value (§4.3), a dated documentary row in aliases.json"
+  ],
+  "x-decisions": [
+    "trait-words: the field-inherit@1 words (inherited, reset, described) live in this component's lang runtime until a trait folder holds them (Annex A item 13); the shared INHERITED_TEXT stays the class components' fallback",
+    "key-effects: Enter and Space on a swatch select its colour; on the platform picker input they open it (the browser's own)",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json written from the docs (the folder had no Studio fixture)",
+    "css-variables: five public variables read by js/templates/default.css with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
+    "version: 1.2.0 -- the value effective-value is added and the getter shown leaves for the base value behind a dated row; a minor (§4.10)",
+    "shown: renamed effective-value; the shim cannot serve the old name, because shown is the base value (§4.1) on every element, so the row is documentary (shim none)",
+    "actions.clear answers an outcome (§4.4): applied, or refused with reason unchanged when there was nothing to clear; setValue stays a method of the class outside the interface (a person-like write that sends input and change)",
+    "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals",
+    "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-rule": {
+    "$comment": [
+      "The colour control loads on demand like any other Smart element. Its relation is",
+      "the icon button it uses to return to an inherited colour; the native picker it",
+      "opens is the platform's and brings nothing."
+    ]
+  },
+  "x-registry": {
+    "reuse_mode": "both",
+    "tags": [
+      "input",
+      "color",
+      "property"
+    ],
+    "public-parts": [
+      "swatch",
+      "chip",
+      "text",
+      "swatches",
+      "preset"
+    ],
+    "state": {
+      "machines": {
+        "surface": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "disabled"
+      ]
+    },
+    "artifacts": {
+      "fixtures": [],
+      "scenarios": []
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -179,6 +270,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -192,7 +291,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",
@@ -214,21 +317,76 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "focus": "The platform colour input, each swatch and the clear button take focus in order and keep a visible focus ring. Swatches say whether they are the chosen colour by aria-pressed. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    },
+    "alias-events": {
+      "sf-field:reset": {
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The field's own value before the reset."
+            },
+            "inheritedValue": {
+              "type": "string",
+              "description": "The inherited value it returns to."
+            },
+            "name": {
+              "type": "string",
+              "description": "The form name, empty when the field has none."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "setValue": {
+        "summary": "Set and commit the colour as a person would: normalised, reflected to value, input and then change dispatched when it differs from the committed one. Returns whether the value changed.",
+        "arguments": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "resetToInherited": {
+        "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field:reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
+        "arguments": [],
+        "returns": {
+          "type": "boolean",
+          "description": "Whether the field was reset."
+        }
+      }
+    },
+    "inputs": {
+      "template": {
+        "description": "Which template draws it."
+      }
+    },
+    "trait-inputs": {
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "The colour that applies while nothing is chosen. Shown as inherited rather than drawn as the value: a control that drew it as the value would make «not set» and «set to the same colour» look identical, and only one of them follows the theme when the theme changes."
+      },
+      "inherited-text": {
+        "type": "string",
+        "default": "",
+        "description": "What is read in place of a value while nothing is chosen. Unset, it follows the page's language."
+      },
+      "reset-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of the button that returns to the inherited colour; `clear-label` still names it. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      }
     }
-  },
-  "x-renamed": [
-    "the getter shown -> the value effective-value: shown is the base value of every element (§4.1), a boolean; the colour it returned is effective-value (§4.3), a dated documentary row in aliases.json"
-  ],
-  "x-decisions": [
-    "trait-words: the field-inherit@1 words (inherited, reset, described) live in this component's lang runtime until a trait folder holds them (Annex A item 13); the shared INHERITED_TEXT stays the class components' fallback",
-    "key-effects: Enter and Space on a swatch select its colour; on the platform picker input they open it (the browser's own)",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
-    "examples: examples.json written from the docs (the folder had no Studio fixture)",
-    "css-variables: five public variables read by js/templates/default.css with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
-    "version: 1.2.0 -- the value effective-value is added and the getter shown leaves for the base value behind a dated row; a minor (§4.10)",
-    "shown: renamed effective-value; the shim cannot serve the old name, because shown is the base value (§4.1) on every element, so the row is documentary (shim none)",
-    "actions.clear answers an outcome (§4.4): applied, or refused with reason unchanged when there was nothing to clear; setValue stays a method of the class outside the interface (a person-like write that sends input and change)",
-    "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals",
-    "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

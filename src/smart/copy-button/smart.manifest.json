@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.copy-button",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -25,14 +25,27 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon-button",
-      "smart.icon"
+      "smart.icon",
+      "smart.icon-button"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "value": {
         "type": "string",
         "default": "",
@@ -55,23 +68,23 @@
       },
       "size": {
         "type": "string",
+        "default": "1/2",
         "enum": [
           "1/3",
           "1/2",
           "1",
           "2"
-        ],
-        "default": "1/2"
+        ]
       },
       "appearance": {
         "type": "string",
+        "default": "link",
         "enum": [
           "link",
           "ghost",
           "outline",
           "tonal"
-        ],
-        "default": "link"
+        ]
       },
       "icon": {
         "type": "string",
@@ -91,21 +104,15 @@
         "default": ""
       },
       "duration": {
-        "type": "string",
-        "default": "2000",
-        "description": "Milliseconds the result stays."
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
-      },
-      "template": {
-        "type": "string",
-        "default": "default"
+        "type": "integer",
+        "default": 2000,
+        "description": "Milliseconds the result stays shown",
+        "minimum": 0
       }
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {},
   "methods": {
     "copy": {
@@ -118,6 +125,48 @@
     }
   },
   "events": {
+    "sf-copy-button-copied": {
+      "summary": "copied (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "text",
+          "method"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "native",
+              "legacy"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-copy-button-copy-failed": {
+      "summary": "copy-failed (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "enum": [
+              "empty_source",
+              "missing_target",
+              "ambiguous_source",
+              "denied"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-copy": {
       "summary": "The value was copied.",
       "payload": {
@@ -284,7 +333,7 @@
       },
       {
         "path": "src/smart/copy-button/rule.js",
-        "sha256": "db0a8b24387169ab2c222755d2d375e2cebe5e8d96d88227715d2d871a9c1ac9"
+        "sha256": "19dd28b1b70a351e32f6eea91cec1dcf3c221348b9b326c8e04f291f0877da08"
       },
       {
         "path": "src/smart/copy-button/docs.md",

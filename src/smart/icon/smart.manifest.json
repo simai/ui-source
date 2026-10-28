@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "title": "Icons",
   "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
   "kind": "smart",
@@ -26,29 +26,40 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.icons",
-      "component.badges"
+      "component.badges",
+      "component.icons"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
-      "icon": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
         "type": "string",
         "default": ""
       },
-      "loaded": {
-        "type": "boolean",
-        "default": false
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "icon": {
+        "type": "string",
+        "default": ""
       },
       "filled": {
         "type": "boolean",
         "default": false
       },
       "weight": {
-        "type": "number",
-        "default": 400
+        "type": "integer",
+        "default": 400,
+        "minimum": 100,
+        "maximum": 700
       },
       "size": {
         "type": "string",
@@ -74,12 +85,11 @@
           "",
           "outlined",
           "rounded",
-          "sharp",
-          "shape"
+          "sharp"
         ]
       },
       "grade": {
-        "type": "number",
+        "type": "integer",
         "default": 0,
         "minimum": -50,
         "maximum": 200
@@ -107,12 +117,18 @@
       "badge-cap": {
         "type": "integer",
         "default": 99,
-        "description": "The largest count drawn as a number; a larger one reads «<cap>+»."
+        "description": "The largest count drawn as a number; a larger one reads «<cap>+».",
+        "minimum": 1
       },
       "badge-label": {
         "type": "string",
         "default": "",
         "description": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
+      },
+      "loaded": {
+        "type": "boolean",
+        "default": false,
+        "description": "The exact subset that draws this glyph is in place; synchronized from the Loader, never an authoring switch"
       }
     },
     "additionalProperties": false
@@ -151,7 +167,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "img when label is present; hidden when decorative",
+    "role": "img",
     "accessible_name": "recommended",
     "keyboard": [],
     "focus": "The icon is not interactive and never enters the tab order. Name the containing control instead."
@@ -207,7 +223,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "type=shape"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -226,7 +244,7 @@
       },
       {
         "path": "src/smart/icon/rule.js",
-        "sha256": "bac77e5fbe162454b027f0988b5dedba65fdf8626501cd3ae5e5f1984dc0f7ac"
+        "sha256": "5460607d66fb7f0a10cd1740739dd180a24ab539fcad6d0dd13ff2742a428e4c"
       },
       {
         "path": "src/smart/icon/docs.md",

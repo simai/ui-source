@@ -19,11 +19,11 @@
       "from": "error",
       "to": "invalid",
       "kind": "setting",
-      "section": "§17.2",
-      "note": "error is a dated alias of invalid; the shim maps the attribute and the property",
       "component": "sf-checkbox",
       "since": "2026-10-27",
-      "remove_after": "2026-12-01"
+      "remove_after": "2026-12-01",
+      "section": "§17.2",
+      "note": "error is a dated alias of invalid; the shim maps the attribute and the property"
     }
   ]
 }

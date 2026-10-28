@@ -2,25 +2,29 @@
   "$comment": "The source of sf-copy-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/copy-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.copy-button",
   "tag": "sf-copy-button",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "kind": "leaf",
   "family": "button",
   "settings": {
     "value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The text to copy."
     },
     "target": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "#id of an input (its value) or an element (its text; a numbered code block without its numbers). value and target together are an error."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A visible label; empty draws an icon-only button."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The accessible name, saying what is copied («Скопировать команду»); «Копировать» / Copy by default."
     },
     "size": {
       "type": "enum",
@@ -44,7 +48,8 @@
     },
     "icon": {
       "type": "icon",
-      "default": "content_copy"
+      "default": "content_copy",
+      "summary": "The resting glyph: link, key, ..."
     },
     "success-icon": {
       "type": "icon",
@@ -103,7 +108,12 @@
         "applied",
         "refused",
         "cancelled"
-      ]
+      ],
+      "summary": "Copies as a press would; a press while a copy is in flight is ignored.",
+      "x-returns": {
+        "type": "object",
+        "description": "A promise of {text, method}, or null on failure."
+      }
     }
   },
   "keyboard": {
@@ -111,6 +121,17 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -155,6 +176,33 @@
       "state": "error"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-copy-button for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-copy",
+        "to": "sf-copy-button-copied",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "summary": "The value was copied."
+      },
+      {
+        "from": "sf-copy-error",
+        "to": "sf-copy-button-copy-failed",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "summary": "The value was not copied; on denied the text was selected for Ctrl+C."
+      }
+    ]
+  },
   "x-summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "x-source": {
     "package": "framework",
@@ -168,60 +216,6 @@
     "success-text",
     "error-text"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
-    "ownership": {
-      "source": "simai/ui-source",
-      "data": "host",
-      "effects": "host",
-      "forbidden_client_responsibilities": [
-        "backend access decisions",
-        "saving the width on a server"
-      ]
-    },
-    "presentation": {
-      "themes": [
-        "light",
-        "dark"
-      ],
-      "locales": [
-        "ru",
-        "en"
-      ],
-      "responsive": [
-        "desktop",
-        "mobile",
-        "ltr",
-        "rtl",
-        "reduced-motion"
-      ]
-    },
-    "ai_guidance": {
-      "use_when": "Use sf-copy-button to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
-      "do_not": [
-        "Do not copy generated ui-smart code",
-        "Do not leave several icon-only copy buttons named only «Копировать»"
-      ],
-      "required_reads": [
-        "inputs",
-        "events",
-        "accessibility",
-        "provenance"
-      ],
-      "minimal_example": "<sf-copy-button value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
-      "owner_commands": [
-        "npm run contract:verify",
-        "npm test"
-      ]
-    }
-  },
   "x-renamed": [
     "events.sf-copy → copied: a fact takes the past form (vocabulary §5.1); sf-copy-button-copied, the old sf-copy its dated alias",
     "events.sf-copy-error → copy-failed: the fact of a refused copy; sf-copy-button-copy-failed, the old sf-copy-error its dated alias",
@@ -240,5 +234,155 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.1.3: the control sits in a line of text by its middle (--sf-copy-button-vertical-align, default middle, now on the wrapper .sf-copy-button: the host is display: contents, so the variable never reached a box). Aligned by its baseline it took the icon glyph's, and an sf-icon is font-size 0 until the icon runtime marks it loaded: the button rode 1 px lower and the line under it grew by 1 px until then, which first-paint gate 24 saw only when the full run loaded the page late enough."
-  ]
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "copy",
+      "clipboard",
+      "button"
+    ],
+    "state": {
+      "machines": {
+        "copy": [
+          "idle",
+          "pending",
+          "success",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "success",
+        "error"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "saving the width on a server"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile",
+        "ltr",
+        "rtl",
+        "reduced-motion"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-copy-button to copy an identifier, a key, a command or a code block, naming each button by what it copies.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not leave several icon-only copy buttons named only «Копировать»"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "accessibility",
+        "provenance"
+      ],
+      "minimal_example": "<sf-copy-button value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "Enter",
+        "Space"
+      ],
+      "focus": "An ordinary button named by label (what is copied); the result is announced in a polite status; a refused clipboard selects the text and says to press Ctrl+C (⌘C on macOS)."
+    },
+    "alias-events": {
+      "sf-copy": {
+        "summary": "The value was copied.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "text",
+            "method"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "method": {
+              "enum": [
+                "native",
+                "legacy"
+              ]
+            }
+          }
+        }
+      },
+      "sf-copy-error": {
+        "summary": "The value was not copied; on denied the text was selected for Ctrl+C.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "code"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "empty_source",
+                "missing_target",
+                "ambiguous_source",
+                "denied"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }

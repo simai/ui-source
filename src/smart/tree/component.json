@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tree's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tree (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tree",
   "tag": "sf-tree",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "kind": "leaf",
   "family": "tree",
   "settings": {
@@ -184,6 +184,23 @@
       "Space": "select"
     }
   },
+  "relations": [
+    {
+      "name": "tree"
+    },
+    {
+      "name": "tree-item"
+    },
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-tree-item"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -248,6 +265,97 @@
       "state": "selected"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-tree for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "role",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "the tree is always role tree; no shim"
+      },
+      {
+        "from": "single",
+        "to": "one",
+        "kind": "value",
+        "setting": "selection",
+        "section": "§18.2"
+      },
+      {
+        "from": "multiple",
+        "to": "many",
+        "kind": "value",
+        "setting": "selection",
+        "section": "§18.2"
+      },
+      {
+        "from": "sf-tree-selection-change",
+        "to": "sf-tree-select",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5",
+        "note": "the old detail {item, selected, value}, item the row's element",
+        "summary": "Selection requested or changed for a tree item."
+      },
+      {
+        "from": "sf-tree-item-click",
+        "to": "sf-tree-open",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5",
+        "note": "sent by the sf-tree-item elements the tree drew; detail {item, value, originalEvent}"
+      },
+      {
+        "from": "sf-tree-item-toggle",
+        "to": "sf-tree-toggle",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5",
+        "note": "sent by the sf-tree-item elements the tree drew; detail {item, open, value}"
+      },
+      {
+        "from": "sf-tree-records-drop",
+        "to": "sf-tree-move",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5",
+        "note": "detail {value, ids, source}",
+        "summary": "Records dragged from a list were dropped on a node: {value, ids, source}. The tree moves nothing."
+      },
+      {
+        "from": "sf-tree-files-drop",
+        "to": "sf-tree-attach",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5",
+        "note": "detail {value, files}",
+        "summary": "Files from the computer were dropped on a node: {value, files}. The tree uploads nothing."
+      }
+    ],
+    "since-version": "2.0.0"
+  },
   "x-summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "x-source": {
     "package": "framework",
@@ -265,59 +373,6 @@
     "events.sf-tree-files-drop {value, files} → attach {files, parent} (vocabulary §5 attach); a dated split alias",
     "the entries: sf-tree-item elements → rows of class markup (§18.4); the row markup (.sf-tree-item[role=treeitem][data-value], .sf-tree-item-container, .sf-tree-item-name) is the one sf-tree-item drew"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
-    "ownership": {
-      "source": "simai/ui-source",
-      "data": "fixture",
-      "effects": "component",
-      "forbidden_client_responsibilities": [
-        "backend access decisions",
-        "host route invention"
-      ]
-    },
-    "presentation": {
-      "themes": [
-        "light",
-        "dark"
-      ],
-      "locales": [
-        "ru",
-        "en"
-      ],
-      "responsive": [
-        "desktop",
-        "mobile"
-      ]
-    },
-    "ai_guidance": {
-      "use_when": "Use sf-tree for file-like, taxonomy or navigation hierarchies that need composite keyboard navigation.",
-      "do_not": [
-        "Do not copy generated ui-smart code",
-        "Do not use Tree for a short independent disclosure list",
-        "Do not move host data, persistence or access decisions into the component"
-      ],
-      "required_reads": [
-        "inputs",
-        "methods",
-        "events",
-        "ownership",
-        "provenance"
-      ],
-      "minimal_example": "<sf-tree aria-label=\"Папки\" selection=\"one\"><sf-tree-item label=\"Документы\" value=\"docs\" open><sf-tree-item label=\"Договор.pdf\" kind=\"file\" value=\"contract\"></sf-tree-item></sf-tree-item></sf-tree>",
-      "owner_commands": [
-        "npm run contract:verify",
-        "npm test"
-      ]
-    }
-  },
   "x-decisions": [
     "§18.4 and simai/ui-source#43 (2 000 nodes: 33 s to draw, 16.6 s per change): the tree draws its entries itself, flat, as rows of class markup (sf-tree-item's js/templates/row.js) keyed by id with Lit's repeat; a change of one entry rewrites that row's changed parts in place. The rows hold no Smart element (the icons are the icon font's <i>, not sf-icon), about 20 DOM nodes a row. Over 300 visible entries (quality profile gate 17, window_from_entries) only the rows in view of the nearest scroller, plus a margin, are drawn between two spacers, and window {first, last} is reported; the keyboard and focus-entry draw an entry before they focus it. Measured before and after with stand 20's method (x-measured).",
     "the entries are no longer sf-tree-item elements inside the tree: sf-tree-item children are read once as data and removed, as before, and the rows keep the markup the item drew (.sf-tree-item[role=treeitem][data-value] > .sf-tree-item-container > .sf-tree-item-name), so styling and drop targets still find them. A page that queried sf-tree-item elements inside a tree finds rows instead (ui-pro sf-property-view's tests count them: a handoff).",
@@ -371,7 +426,7 @@
         "change_ms": 11.8
       },
       "flat_1000_x4": {
-        "first_ms": 16.0,
+        "first_ms": 16,
         "change_ms": 14.5
       },
       "flat_10000_x4": {
@@ -387,6 +442,187 @@
       "one_entry_changed_ms": "≤ 17.8 ≤ 50",
       "dom_nodes_per_entry": "15–19 ≤ 30",
       "entries_10000_vs_1000_ratio": "1.65 ≤ 2"
+    }
+  },
+  "x-rule": {
+    "$comment": [
+      "The tree draws its entries as rows of class markup (simai/ui-source#43): the",
+      "tree and tree-item sheets, the icon font's icons and the icon button's sheet",
+      "for the chevron. sf-tree-item children are read as data, not drawn; the",
+      "item's bundle still comes with the tree, so the markup's sf-tree-item is a",
+      "defined element (a page may wait for it) before the tree reads it."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "keyboard-navigation",
+      "selection",
+      "theme",
+      "responsive"
+    ],
+    "state": {
+      "machines": {
+        "disclosure": [
+          "closed",
+          "open"
+        ],
+        "focus": [
+          "active"
+        ],
+        "selection": [
+          "selected"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "active",
+        "selected",
+        "open",
+        "closed"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "fixture",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "backend access decisions",
+        "host route invention"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "menu",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tree for file-like, taxonomy or navigation hierarchies that need composite keyboard navigation.",
+      "do_not": [
+        "Do not copy generated ui-smart code",
+        "Do not use Tree for a short independent disclosure list",
+        "Do not move host data, persistence or access decisions into the component"
+      ],
+      "required_reads": [
+        "inputs",
+        "methods",
+        "events",
+        "ownership",
+        "provenance"
+      ],
+      "minimal_example": "<sf-tree></sf-tree>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "Home",
+        "End",
+        "Enter",
+        "Space",
+        "typeahead"
+      ],
+      "focus": "One visible tree item is in the page tab order; arrows move roving focus independently of selection."
+    },
+    "alias-events": {
+      "sf-tree-selection-change": {
+        "summary": "Selection requested or changed for a tree item.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "type": "object",
+              "description": "The emitting element."
+            },
+            "tagName": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string"
+            },
+            "item": {
+              "type": "object",
+              "description": "The sf-tree-item."
+            },
+            "selected": {
+              "type": "boolean"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "component",
+            "tagName",
+            "template",
+            "item",
+            "selected",
+            "value"
+          ]
+        }
+      },
+      "sf-tree-records-drop": {
+        "summary": "Records dragged from a list were dropped on a node: {value, ids, source}. The tree moves nothing.",
+        "payload": {
+          "type": "object"
+        }
+      },
+      "sf-tree-files-drop": {
+        "summary": "Files from the computer were dropped on a node: {value, files}. The tree uploads nothing.",
+        "payload": {
+          "type": "object"
+        }
+      }
+    },
+    "methods": {
+      "onToggle": {
+        "summary": "Adds a listener for sf-tree-item-toggle from any item in the tree; the handler is called with (item, detail, event).",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
   }
 }

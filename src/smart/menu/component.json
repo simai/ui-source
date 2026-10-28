@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu",
   "tag": "sf-menu",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -41,7 +41,34 @@
           "optional": true
         }
       },
-      "x-markup": "the attribute takes the same list as JSON; without it a nested <ul><li><a> written inside is the menu; children has the same shape"
+      "x-markup": "the attribute takes the same list as JSON; without it a nested <ul><li><a> written inside is the menu; children has the same shape",
+      "summary": "The items, [{id, label, href?, icon?, badge?, current?, disabled?, open?, children?}]: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it.",
+      "examples": [
+        [
+          {
+            "id": "about",
+            "label": "О компании",
+            "href": "/about/"
+          },
+          {
+            "id": "catalog",
+            "label": "Каталог",
+            "children": [
+              {
+                "id": "solutions",
+                "label": "Решения",
+                "href": "/catalog/solutions/"
+              }
+            ]
+          },
+          {
+            "id": "contacts",
+            "label": "Контакты",
+            "href": "/contacts/",
+            "badge": "3"
+          }
+        ]
+      ]
     },
     "orientation": {
       "type": "enum",
@@ -49,7 +76,8 @@
         "vertical",
         "horizontal"
       ],
-      "default": "vertical"
+      "default": "vertical",
+      "summary": "vertical: a column whose branches open in place; horizontal: the first level in a row, each branch a panel below it (deeper ones to the side), placed by the Framework's geometry."
     },
     "appearance": {
       "type": "enum",
@@ -58,11 +86,13 @@
         "documentation-tree",
         "compact"
       ],
-      "default": "default"
+      "default": "default",
+      "summary": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open. Both are columns."
     },
     "current-from-location": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
     },
     "collapse": {
       "type": "enum",
@@ -71,15 +101,18 @@
         "always",
         "none"
       ],
-      "default": "auto"
+      "default": "auto",
+      "summary": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The navigation's name (aria-label of its <nav>); the element's aria-label, or the one of a <nav> written inside it, when not set."
     },
     "toggle-label": {
       "type": "string",
-      "default-from": "runtime.toggle-label"
+      "default-from": "runtime.toggle-label",
+      "summary": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
     }
   },
   "values": {
@@ -127,7 +160,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open the branch with this id. In a row the panels not above it close. sf-menu:toggle fires for each branch that changed, source method. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     },
     "close": {
       "with": {
@@ -136,7 +173,11 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close the branch with this id; in a row the panels inside it close too. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     },
     "toggle": {
       "with": {
@@ -145,13 +186,21 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open the branch if it is closed, close it if it is open. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     },
     "close-all": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
+      "x-returns": {
+        "type": "boolean"
+      }
     }
   },
   "keyboard": {
@@ -164,6 +213,20 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "menu"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "badges"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -247,6 +310,33 @@
       "state": "open"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-menu for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-menu:navigate",
+        "to": "sf-menu-navigate",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": true,
+        "section": "§8, §16 item 6, vocabulary §5.1",
+        "note": "{id, href, item} is data only; one cancel for both names",
+        "summary": "A link of the menu is followed, before the browser goes. Cancellable: preventDefault() stops the navigation so a host that routes itself (a SPA) changes the page. A press with a modifier key, the middle button or a link to another window is the browser's and sends none."
+      },
+      {
+        "from": "sf-menu:toggle",
+        "to": "sf-menu-toggle",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "section": "§8, §16 item 6",
+        "note": "{id, open, source, item} is data only",
+        "summary": "A branch opened or closed, by the person (source user) or a method (source method): the branch asked for first, then the ones that closed with it, innermost first. The panel of a collapsed menu sends it with id null."
+      }
+    ]
+  },
   "x-summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "x-source": {
     "package": "framework",
@@ -262,14 +352,141 @@
     "events.sf-menu:navigate → navigate: vocabulary §5 navigate, the DOM name sf-menu-navigate; the colon name a dated same-detail alias",
     "events.sf-menu:toggle → toggle: the DOM name sf-menu-toggle (§8, §16 item 6); the colon name a dated same-detail alias"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-menu:navigate and sf-menu:toggle hold dated aliases (§4.10).",
+    "events: sf-menu:navigate → sf-menu-navigate (vocabulary §5 navigate {id, href}) and sf-menu:toggle → sf-menu-toggle, by the alias table; their details hold data only (item is the menu's own entry, never an element), so both rows are same-detail, and navigate's cancel is shared: a page that refuses either name keeps the browser where it is.",
+    "toggle reports a person (source user) and a call (source method), as before: it is a branch's fact, not `change` (§8). The panel of the menu drawn as a button reports id null and item null.",
+    "actions: open, close and toggle {id} and close-all answer an outcome (applied; refused unknown, compact, disabled, already) instead of true/false (§4.4).",
+    "keyboard (simai/ui-source#44 item 2): Escape is declared where it acts -- on a panel (keyboard.panel), and in accessibility.keys with `when`, any of a row's layout (orientation horizontal, appearance default) or the menu drawn as a button (collapse always; collapse auto draws one only from a row). A column's groups are no surface, so Escape stays the page's there, as the browser probe has asserted since the menu shipped.",
+    "key-effects: links and branch buttons are native: Tab reaches them, Enter follows a link or toggles a branch, Space toggles a branch (select); no arrow keys -- the WAI-ARIA disclosure navigation pattern, not an application menu.",
+    "a11y-name: aria-label on the host, then label, then the aria-label of a <nav> or <ul> written inside.",
+    "instance ids (§7.1.1, simai/ui-source#41): the list and panel ids came from a module counter (sf-smart-menu-<n>); they are the host's path id and a local name now, <path>--list and <path>--menu-<n>, n the item's place in this element's own map; the class menu's submenu ids are its path id and --submenu.",
+    "item-shape: items name their fields with `of` (id, label, href, icon, badge, current, disabled, open, children); label is text, never markup.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus a row, the documentation tree and the menu drawn as a button; probe.json drives Tab, Enter, Space and Escape in a row and in a column (gate 16).",
+    "css-variables: the nine public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "layer: none declared. A row's open panel and the button's panel hold the shared open-surface mark (core/js/open-surface-mark), so a drawer or modal behind stands back on Escape; they are placed by SF.Position in place, not moved to the end of body (side-effects: none).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+  ],
+  "x-rule": {
+    "$comment": [
+      "sf-menu loads on demand like any other Smart element. It draws the class",
+      "menu's markup, so the class menu is what it draws with: its sheet (and its",
+      "runtime, which leaves the element's markup alone), the icon font for the",
+      "glyphs and the icon-button box of a branch, and the class counter, which",
+      "the badges runtime caps and names."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive",
+      "navigation"
+    ],
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "menu",
+      "navigation",
+      "site-navigation",
+      "disclosure",
+      "nav"
+    ],
+    "item_contract": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The item's name in open(id), close(id), toggle(id), current and the events; its place (item-1, item-1-2…) without it. One id names one item in the whole tree: a repeated one is left out with its children."
+        },
+        "label": {
+          "type": "string",
+          "description": "The row's words. Text, never markup."
+        },
+        "href": {
+          "type": "string",
+          "description": "The page the item leads to. An item with neither an address nor children is words in the row's place."
+        },
+        "icon": {
+          "type": "string",
+          "description": "An icon before the label, a name from the icon font."
+        },
+        "badge": {
+          "type": "string",
+          "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
+        },
+        "current": {
+          "type": "boolean",
+          "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Unavailable: a link without an address, a branch the person cannot open or close."
+        },
+        "open": {
+          "type": "boolean",
+          "description": "A column's branch is open at first; a row's panels open only when asked."
+        },
+        "children": {
+          "type": "array",
+          "description": "Nested items, the same shape: an item with them is a branch. The class menu draws four levels; a deeper one is drawn as the fourth.",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "label"
       ],
-      "network_policy": "deny"
+      "additionalProperties": false
+    },
+    "contracts": {
+      "markup": {
+        "const": "component.menu"
+      },
+      "open_state_owner": {
+        "const": "component"
+      },
+      "navigation_owner": {
+        "const": "host_on_cancel"
+      },
+      "label_markup": {
+        "const": "text_only"
+      }
+    },
+    "state": {
+      "machines": {
+        "branch": [
+          "open",
+          "closed",
+          "disabled"
+        ],
+        "layout": [
+          "column",
+          "row",
+          "collapsed"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "closed",
+        "active",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -280,6 +497,14 @@
         "parsing item text as markup",
         "routing the page"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -295,7 +520,11 @@
         "mobile",
         "ltr",
         "rtl"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-menu for site, section or cabinet navigation that comes from data or from a nested list of links: a header row, a side panel, a documentation tree.",
@@ -320,22 +549,126 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "focus": "A <nav> named by label, of native links and, for each branch, a native button with aria-expanded and aria-controls; a branch that is also a page has its link and its button side by side in the row. Tab walks the links and the buttons in order; Enter and Space open and close a branch; Escape closes the innermost open panel only -- a row's deepest open panel, the one the focus is in first, else the panel of the collapsed menu's button -- and gives the focus back to its button, holding the shared open-surface mark so a drawer or a modal behind stands back. Focus leaving a row closes its panels. The current page's link has aria-current=\"page\". No role=menu."
+    },
+    "alias-events": {
+      "sf-menu:navigate": {
+        "summary": "A link of the menu is followed, before the browser goes. Cancellable: preventDefault() stops the navigation so a host that routes itself (a SPA) changes the page. A press with a modifier key, the middle button or a link to another window is the browser's and sends none.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "href": {
+              "type": "string"
+            },
+            "item": {
+              "type": "object",
+              "description": "The item as the element draws it."
+            }
+          }
+        }
+      },
+      "sf-menu:toggle": {
+        "summary": "A branch opened or closed, by the person (source user) or a method (source method): the branch asked for first, then the ones that closed with it, innermost first. The panel of a collapsed menu sends it with id null.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "open": {
+              "type": "boolean"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "user",
+                "method"
+              ]
+            },
+            "item": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "isOpen": {
+        "summary": "Whether the branch with this id is open.",
+        "arguments": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      }
+    },
+    "inputs": {
+      "items": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The item's name in open(id), close(id), toggle(id), current and the events; its place (item-1, item-1-2…) without it. One id names one item in the whole tree: a repeated one is left out with its children."
+            },
+            "label": {
+              "type": "string",
+              "description": "The row's words. Text, never markup."
+            },
+            "href": {
+              "type": "string",
+              "description": "The page the item leads to. An item with neither an address nor children is words in the row's place."
+            },
+            "icon": {
+              "type": "string",
+              "description": "An icon before the label, a name from the icon font."
+            },
+            "badge": {
+              "type": "string",
+              "description": "A whole number is the class counter (capped at 99+, hidden at 0, its phrase ends the link's name); other text is a short label after the words."
+            },
+            "current": {
+              "type": "boolean",
+              "description": "The item is the current page, unless the element's current names another or current-from-location finds one."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Unavailable: a link without an address, a branch the person cannot open or close."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "A column's branch is open at first; a row's panels open only when asked."
+            },
+            "children": {
+              "type": "array",
+              "description": "Nested items, the same shape: an item with them is a branch. The class menu draws four levels; a deeper one is drawn as the fourth.",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.0.0 → 1.1.0, a minor while sf-menu:navigate and sf-menu:toggle hold dated aliases (§4.10).",
-    "events: sf-menu:navigate → sf-menu-navigate (vocabulary §5 navigate {id, href}) and sf-menu:toggle → sf-menu-toggle, by the alias table; their details hold data only (item is the menu's own entry, never an element), so both rows are same-detail, and navigate's cancel is shared: a page that refuses either name keeps the browser where it is.",
-    "toggle reports a person (source user) and a call (source method), as before: it is a branch's fact, not `change` (§8). The panel of the menu drawn as a button reports id null and item null.",
-    "actions: open, close and toggle {id} and close-all answer an outcome (applied; refused unknown, compact, disabled, already) instead of true/false (§4.4).",
-    "keyboard (simai/ui-source#44 item 2): Escape is declared where it acts -- on a panel (keyboard.panel), and in accessibility.keys with `when`, any of a row's layout (orientation horizontal, appearance default) or the menu drawn as a button (collapse always; collapse auto draws one only from a row). A column's groups are no surface, so Escape stays the page's there, as the browser probe has asserted since the menu shipped.",
-    "key-effects: links and branch buttons are native: Tab reaches them, Enter follows a link or toggles a branch, Space toggles a branch (select); no arrow keys -- the WAI-ARIA disclosure navigation pattern, not an application menu.",
-    "a11y-name: aria-label on the host, then label, then the aria-label of a <nav> or <ul> written inside.",
-    "instance ids (§7.1.1, simai/ui-source#41): the list and panel ids came from a module counter (sf-smart-menu-<n>); they are the host's path id and a local name now, <path>--list and <path>--menu-<n>, n the item's place in this element's own map; the class menu's submenu ids are its path id and --submenu.",
-    "item-shape: items name their fields with `of` (id, label, href, icon, badge, current, disabled, open, children); label is text, never markup.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus a row, the documentation tree and the menu drawn as a button; probe.json drives Tab, Enter, Space and Escape in a row and in a column (gate 16).",
-    "css-variables: the nine public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
-    "layer: none declared. A row's open panel and the button's panel hold the shared open-surface mark (core/js/open-surface-mark), so a drawer or modal behind stands back on Escape; they are placed by SF.Position in place, not moved to the end of body (side-effects: none).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
-  ]
+  }
 }

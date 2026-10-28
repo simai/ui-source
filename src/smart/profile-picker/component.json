@@ -2,13 +2,14 @@
   "$comment": "The source of sf-profile-picker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/profile-picker (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.profile-picker",
   "tag": "sf-profile-picker",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "kind": "leaf",
   "family": "picker",
   "settings": {
     "label": {
       "type": "string",
-      "default-from": "runtime.label"
+      "default-from": "runtime.label",
+      "summary": "What a profile is called here («Профиль», «Вид»); the page language's «Profile» when empty."
     },
     "size": {
       "type": "enum",
@@ -20,11 +21,13 @@
     },
     "resettable": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Offers «Сбросить к стандартному» at the foot."
     },
     "message": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Why the host refused the last act, shown in the panel."
     },
     "disabled": {
       "type": "boolean",
@@ -49,7 +52,8 @@
   "values": {
     "current": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The id of the profile in use."
     }
   },
   "events": {
@@ -131,6 +135,14 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -191,6 +203,58 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-profile-picker for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-profile-select",
+        "to": "sf-profile-picker-select",
+        "kind": "event",
+        "mode": "detail-adds",
+        "section": "vocabulary §7: the DOM name takes the tag",
+        "note": "the old name follows with the same detail, which holds the old fields",
+        "summary": "The person chose a profile."
+      },
+      {
+        "from": "sf-profile-create",
+        "to": "sf-profile-picker-create",
+        "kind": "event",
+        "mode": "detail-adds",
+        "section": "vocabulary §7: the DOM name takes the tag",
+        "note": "the old name follows with the same detail, which holds the old fields",
+        "summary": "The person asked for a new profile, a copy of the current one."
+      },
+      {
+        "from": "sf-profile-rename",
+        "to": "sf-profile-picker-rename",
+        "kind": "event",
+        "mode": "detail-adds",
+        "section": "vocabulary §7: the DOM name takes the tag",
+        "note": "the old name follows with the same detail, which holds the old fields",
+        "summary": "The person renamed a profile."
+      },
+      {
+        "from": "sf-profile-delete",
+        "to": "sf-profile-picker-delete",
+        "kind": "event",
+        "mode": "detail-adds",
+        "section": "vocabulary §7: the DOM name takes the tag",
+        "note": "the old name follows with the same detail, which holds the old fields",
+        "summary": "The person confirmed removing a profile."
+      },
+      {
+        "from": "sf-profile-reset",
+        "to": "sf-profile-picker-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "vocabulary §7: the DOM name takes the tag",
+        "note": "the old name follows with the same detail",
+        "summary": "The person asked for the current profile back as the standard one."
+      }
+    ]
+  },
   "x-summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "x-source": {
     "package": "framework",
@@ -210,14 +274,72 @@
     "events: the detail adds the vocabulary's fields (select and delete ids, rename title, create kind) beside the old ones; the old names get the same larger detail (detail-adds)",
     "settings.profiles, rights: the list and the object the host set as properties, declared"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0: the five events take the tag in their DOM names behind dated aliases, profiles and rights are declared, open, close and toggle answer outcomes; a minor while the aliases hold (§4.10).",
+    "events: sf-profile-<verb> becomes sf-profile-picker-<verb> (vocabulary §7: the component's tag). The details keep {id}, {label, shared, from}, {id, label} and add the vocabulary's shapes: select {ids}, delete {ids}, rename {title}, create {kind: personal | shared}; the old names get the same detail (detail-adds). The picker asks; the host answers by setting profiles, current or message.",
+    "key-effects: the menu role gives Arrow, Home, End, Enter, Space and Escape; Delete and F2 on a row the person may change are mapped in keyboard.row to the picker's own acts delete and rename (§4.6), which no ARIA effect names.",
+    "skeleton: the profiles are the host's data and arrive after the first paint, so skeleton.html draws the folded trigger with a bar of the text size for the name (§3, §5.4); presentation.skeleton names it.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the rights and the reset; probe.json drives choosing, creating, renaming, deleting, resetting and the old names.",
+    "css-variables: five public variables read by its own sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: open finishes only if the picker is still open and in the page once it has drawn; closed or taken out meanwhile it starts nothing (no outside-press listener, placement or layer) and answers refused, cancelled when its scope has ended (§7.7, gate 36).",
+    "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "profiles",
+      "views",
+      "picker"
+    ],
+    "contracts": {
+      "profiles": {
+        "type": "array",
+        "description": "Set as a property: [{id, label, shared, builtin, editable}]. editable false is chosen but not changed; builtin is never renamed or removed."
+      },
+      "rights": {
+        "type": "object",
+        "description": "Set as a property: {create: {personal, shared}} -- what this person may make."
+      }
+    },
+    "state": {
+      "machines": {
+        "panel": [
+          "closed",
+          "open",
+          "creating",
+          "renaming",
+          "confirming"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -227,6 +349,14 @@
         "backend access decisions",
         "saving the width on a server"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -243,7 +373,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-profile-picker wherever a person chooses between profiles or views of something and may make, rename or remove them: the admin menu's profiles, a record's views.",
@@ -264,18 +398,103 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+        "Enter",
+        "Space",
+        "F2",
+        "Delete",
+        "Escape"
+      ],
+      "focus": "The trigger is a button with aria-haspopup=menu; the panel's rows are menuitemradio, the current one checked. Arrows, Home and End move between rows, Enter chooses, F2 renames, Delete asks to remove, Escape closes the form and then the panel, returning focus to the trigger."
+    },
+    "alias-events": {
+      "sf-profile-select": {
+        "summary": "The person chose a profile.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-profile-create": {
+        "summary": "The person asked for a new profile, a copy of the current one.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "label",
+            "shared"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "shared": {
+              "type": "boolean"
+            },
+            "from": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-profile-rename": {
+        "summary": "The person renamed a profile.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "id",
+            "label"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-profile-delete": {
+        "summary": "The person confirmed removing a profile.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-profile-reset": {
+        "summary": "The person asked for the current profile back as the standard one.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.0.0 → 1.1.0: the five events take the tag in their DOM names behind dated aliases, profiles and rights are declared, open, close and toggle answer outcomes; a minor while the aliases hold (§4.10).",
-    "events: sf-profile-<verb> becomes sf-profile-picker-<verb> (vocabulary §7: the component's tag). The details keep {id}, {label, shared, from}, {id, label} and add the vocabulary's shapes: select {ids}, delete {ids}, rename {title}, create {kind: personal | shared}; the old names get the same detail (detail-adds). The picker asks; the host answers by setting profiles, current or message.",
-    "key-effects: the menu role gives Arrow, Home, End, Enter, Space and Escape; Delete and F2 on a row the person may change are mapped in keyboard.row to the picker's own acts delete and rename (§4.6), which no ARIA effect names.",
-    "skeleton: the profiles are the host's data and arrive after the first paint, so skeleton.html draws the folded trigger with a bar of the text size for the name (§3, §5.4); presentation.skeleton names it.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the rights and the reset; probe.json drives choosing, creating, renaming, deleting, resetting and the old names.",
-    "css-variables: five public variables read by its own sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: open finishes only if the picker is still open and in the page once it has drawn; closed or taken out meanwhile it starts nothing (no outside-press listener, placement or layer) and answers refused, cancelled when its scope has ended (§7.7, gate 36).",
-    "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

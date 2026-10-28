@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.range-slider",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
   "kind": "smart",
@@ -21,7 +21,9 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.range-slider"
+    ],
     "public_parts": []
   },
   "inputs": {
@@ -29,21 +31,26 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "min": {
-        "type": "string",
-        "default": "0"
-      },
-      "max": {
-        "type": "string",
-        "default": "100"
-      },
-      "start": {
+      "root-class": {
         "type": "string",
         "default": ""
       },
-      "value": {
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "min": {
+        "type": "number",
+        "default": 0
+      },
+      "max": {
+        "type": "number",
+        "default": 100
+      },
+      "start": {
         "type": "string",
         "default": ""
       },
@@ -52,8 +59,7 @@
         "default": false
       },
       "step": {
-        "type": "string",
-        "default": ""
+        "type": "number"
       },
       "margin": {
         "type": "string",
@@ -70,14 +76,14 @@
       "label": {
         "type": "string",
         "default": "none",
+        "description": "How each handle shows its value: not at all, as text beside it, or as a tooltip.",
         "enum": [
           "none",
           "text",
           "tooltip"
-        ],
-        "description": "How each handle shows its value: not at all, as text beside it, or as a tooltip."
+        ]
       },
-      "prefix": {
+      "prefix-text": {
         "type": "string",
         "default": ""
       },
@@ -113,13 +119,18 @@
         "type": "boolean",
         "default": false
       },
-      "root-class": {
+      "value": {
         "type": "string",
         "default": ""
       },
-      "prefix-text": {
+      "aria-label": {
         "type": "string",
         "default": ""
+      },
+      "prefix": {
+        "type": "string",
+        "default": "",
+        "description": "Dated alias of prefix-text until 2026-12-01."
       }
     },
     "additionalProperties": false
@@ -392,11 +403,13 @@
       "summary": "A value was committed by the user (drag end, click, key); bubbles from the slider root with values, value, handleCount and handle. A value set from code is not a change. The name to bind.",
       "payload": {
         "type": "object",
+        "required": [
+          "values",
+          "value",
+          "handleCount",
+          "handle"
+        ],
         "properties": {
-          "component": {
-            "type": "object",
-            "description": "The inner slider root, not the sf-range-slider host."
-          },
           "values": {
             "type": "array",
             "items": {
@@ -404,14 +417,11 @@
             }
           },
           "value": {
-            "type": [
-              "number",
-              "array"
-            ],
+            "type": "object",
+            "description": "A number with one handle, an array of two with two.",
             "items": {
               "type": "number"
-            },
-            "description": "A number with one handle, an array of two with two."
+            }
           },
           "handleCount": {
             "type": "number"
@@ -421,13 +431,7 @@
             "description": "Index of the handle that moved."
           }
         },
-        "required": [
-          "component",
-          "values",
-          "value",
-          "handleCount",
-          "handle"
-        ]
+        "additionalProperties": true
       },
       "canonical": true
     },

@@ -10,6 +10,34 @@
       },
       "expect": {
         "group": "sections"
+      },
+      "studio": {
+        "title": "sortable reference",
+        "children": [
+          {
+            "element": "div",
+            "props": {
+              "data-sf-sortable-item": "s1"
+            },
+            "text": "Секция 1",
+            "children": []
+          },
+          {
+            "element": "div",
+            "props": {
+              "data-sf-sortable-item": "s2"
+            },
+            "text": "Секция 2",
+            "children": []
+          }
+        ],
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -51,6 +79,132 @@
       "expect": {
         "group": "blocks"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-sortable against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-sortable id=\"l\" group=\"sections\" label=\"Секции\">",
+          "    <div data-sf-sortable-item=\"s1\">Секция 1</div>",
+          "    <div data-sf-sortable-item=\"s2\">Секция 2</div>",
+          "    <div data-sf-sortable-item=\"s3\">Секция 3</div>",
+          "  </sf-sortable>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-settings-and-words",
+          "title": "the settings are properties; the items are Tab stops described by the list's instructions in its language",
+          "covers": "settings.group, settings.label, settings.mode, lang runtime.instructions, keyboard Tab",
+          "steps": [
+            {
+              "check": "(() => { const l = document.querySelector('#l'); const item = l.querySelector('[data-sf-sortable-item=s1]'); const help = document.getElementById(item.getAttribute('aria-describedby')); return l.group === 'sections' && l.label === 'Секции' && l.mode === 'move' && item.tabIndex === 0 && help && help.textContent.startsWith('Пробел или Enter'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-keyboard-move",
+          "title": "Space picks an item up, ArrowDown moves it, Space drops it: sf-sortable-move {item, from, to, index, mode}, then the dated sf-sortable-intent",
+          "covers": "events.move, events.state, aliases.json sf-sortable-intent, keyboard Space, ArrowDown",
+          "steps": [
+            {
+              "script": "(document.querySelector('[data-sf-sortable-item=s1]').focus(), true)"
+            },
+            {
+              "user": "keyboard:Space",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-sortable-state",
+                    "count": 1,
+                    "detail": {
+                      "state": "picked",
+                      "item": "s1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "user": "keyboard:ArrowDown"
+            },
+            {
+              "user": "keyboard:Space",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-sortable-move",
+                    "count": 1,
+                    "detail": {
+                      "item": "s1",
+                      "from": "l",
+                      "to": "l",
+                      "index": 1,
+                      "mode": "move"
+                    }
+                  },
+                  {
+                    "name": "sf-sortable-intent",
+                    "count": 1,
+                    "detail": {
+                      "item": "s1",
+                      "index": 1
+                    }
+                  },
+                  {
+                    "name": "sf-sortable-state",
+                    "count": 1,
+                    "detail": {
+                      "state": "dropped"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-escape",
+          "title": "Escape puts a picked item back: state cancelled, nothing moves",
+          "covers": "keyboard Escape (revert)",
+          "steps": [
+            {
+              "script": "(document.querySelector('[data-sf-sortable-item=s2]').focus(), true)"
+            },
+            {
+              "user": "keyboard:Space"
+            },
+            {
+              "user": "keyboard:ArrowUp"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-sortable-state",
+                    "count": 1,
+                    "detail": {
+                      "state": "cancelled",
+                      "item": "s2"
+                    }
+                  },
+                  {
+                    "name": "sf-sortable-move",
+                    "count": 0
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

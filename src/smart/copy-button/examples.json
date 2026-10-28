@@ -9,6 +9,16 @@
       },
       "expect": {
         "value": "npm i @simai/ui"
+      },
+      "studio": {
+        "title": "copy button reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -62,6 +72,190 @@
         "size": "1",
         "duration": 5000
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-copy-button against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <code id=\"token\">sk_test_51H</code>",
+          "  <sf-copy-button id=\"c\" value=\"npm i @simai/ui\" label=\"Скопировать команду\"></sf-copy-button>",
+          "  <sf-copy-button id=\"c-text\" value=\"A-1042\" text=\"Копировать\"></sf-copy-button>",
+          "  <sf-copy-button id=\"c-target\" target=\"#token\"></sf-copy-button>",
+          "  <sf-copy-button id=\"c-missing\" target=\"#nowhere\"></sf-copy-button>",
+          "  <sf-copy-button id=\"c-both\" value=\"x\" target=\"#token\"></sf-copy-button>",
+          "  <sf-copy-button id=\"c-dur\" value=\"y\" duration=\"-5\" size=\"9\"></sf-copy-button>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-icon-button",
+          "title": "without text it is an icon button named by its label",
+          "covers": "settings.label, accessibility.name label",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#c sf-icon-button button'); return b && b.getAttribute('aria-label') === 'Скопировать команду'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-text-button",
+          "title": "with text it is a button with that text; unnamed, it says «Копировать»",
+          "covers": "settings.text, lang runtime.copy",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#c-text sf-button button'); return b && b.querySelector('.sf-button-text-container').textContent.trim() === 'Копировать' && document.querySelector('#c-target sf-icon-button button').getAttribute('aria-label') === 'Копировать'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-copy-action",
+          "title": "copy() copies the value, answers applied and sends sf-copy-button-copied, then the dated sf-copy",
+          "covers": "actions.copy, events.copied, aliases.json sf-copy",
+          "steps": [
+            {
+              "action": {
+                "name": "copy"
+              },
+              "target": "#c",
+              "expect": {
+                "returns": {
+                  "outcome": "applied",
+                  "text": "npm i @simai/ui"
+                },
+                "events": [
+                  {
+                    "name": "sf-copy-button-copied",
+                    "count": 1,
+                    "detail": {
+                      "text": "npm i @simai/ui"
+                    }
+                  },
+                  {
+                    "name": "sf-copy",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#c .sf-copy-button').classList.contains('sf-copy-button--success') && document.querySelector('#c .sf-copy-button-status').textContent.trim() === 'Скопировано'"
+            }
+          ]
+        },
+        {
+          "id": "p4-target",
+          "title": "a target's text is copied",
+          "covers": "settings.target",
+          "steps": [
+            {
+              "action": {
+                "name": "copy"
+              },
+              "target": "#c-target",
+              "expect": {
+                "returns": {
+                  "outcome": "applied",
+                  "text": "sk_test_51H"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-missing-refused",
+          "title": "a missing target answers refused and sends copy-failed with its code, then the dated sf-copy-error",
+          "covers": "events.copy-failed, aliases.json sf-copy-error",
+          "steps": [
+            {
+              "action": {
+                "name": "copy"
+              },
+              "target": "#c-missing",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "missing_target"
+                },
+                "events": [
+                  {
+                    "name": "sf-copy-button-copy-failed",
+                    "count": 1,
+                    "detail": {
+                      "code": "missing_target"
+                    }
+                  },
+                  {
+                    "name": "sf-copy-error",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#c-missing .sf-copy-button-status').textContent.trim() === 'Не удалось скопировать'"
+            }
+          ]
+        },
+        {
+          "id": "p6-ambiguous",
+          "title": "value and target together are refused",
+          "covers": "code ambiguous_source",
+          "steps": [
+            {
+              "action": {
+                "name": "copy"
+              },
+              "target": "#c-both",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "ambiguous_source"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-press",
+          "title": "a press of the control copies",
+          "covers": "the template's press calls the action",
+          "steps": [
+            {
+              "user": "click:#c-text sf-button button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-copy-button-copied",
+                    "count": 1
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p8-bounds",
+          "title": "a negative duration is two seconds; a size off the list is 1/2",
+          "covers": "settings.duration min 0, settings.size enum",
+          "steps": [
+            {
+              "check": "document.querySelector('#c-dur sf-icon-button').getAttribute('size') === '1/2'",
+              "expect": {
+                "values": {
+                  "#c-dur.duration": 2000,
+                  "#c-dur.size": "1/2"
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

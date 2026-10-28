@@ -2,7 +2,7 @@
   "$comment": "The source of sf-empty-state's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/empty-state (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.empty-state",
   "tag": "sf-empty-state",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "state",
   "settings": {
@@ -14,7 +14,8 @@
         "no-access",
         "error"
       ],
-      "default": "no-data"
+      "default": "no-data",
+      "summary": "The reason, which picks the default icon, title and text, and for error a «Повторить» action."
     },
     "size": {
       "type": "enum",
@@ -24,7 +25,8 @@
         "1",
         "2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "1/3 is always the inline form; 1/2 inside a table or panel, 2 for a whole page: the icon, title role, text and gaps follow."
     },
     "icon": {
       "type": "icon",
@@ -43,7 +45,8 @@
       "default": 3,
       "integer": true,
       "min": 2,
-      "max": 6
+      "max": 6,
+      "summary": "The title's outline level; its look follows the size."
     },
     "layout": {
       "type": "enum",
@@ -51,7 +54,8 @@
         "block",
         "inline"
       ],
-      "default": "block"
+      "default": "block",
+      "summary": "inline: one line for a list inside a menu, a dropdown or a search -- a small icon, the words and at most one link action, no heading."
     },
     "live": {
       "type": "enum",
@@ -60,7 +64,8 @@
         "alert",
         "off"
       ],
-      "default": "auto"
+      "default": "auto",
+      "summary": "auto: nothing-found and error are a polite status, the others say nothing; alert: an error the person caused; off: the host announces it."
     },
     "actions": {
       "type": "list",
@@ -78,7 +83,8 @@
       "carries": {
         "id": "string"
       },
-      "own-verb": true
+      "own-verb": true,
+      "summary": "The person pressed one of the actions (retry for an error without actions of its own)."
     }
   },
   "actions": {},
@@ -92,6 +98,17 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "featured-icon"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -147,6 +164,28 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-empty-state for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26"
+      },
+      {
+        "from": "sf-empty-state-action",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§8",
+        "note": "the DOM name and the detail {id} stay; the manifest declares the verb action",
+        "summary": "The person pressed one of the actions (retry for an error without actions of its own)."
+      }
+    ]
+  },
   "x-summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
   "x-source": {
     "package": "framework",
@@ -161,14 +200,68 @@
     "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated",
     "events.sf-empty-state-action → action (the DOM name without sf-<tag>-)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "own-verb-words: action is a verb of the empty state alone (the person pressed one of its buttons; detail.id names which, retry for the default of an error); its word is lang events.action.label. The vocabulary's retry repeats one write with its key, which this is not.",
+    "version: 1.0.0 → 1.1.0: title is a dated alias of heading, heading-level is a number, actions is declared; a minor while the alias holds (§4.10).",
+    "key-effects: the role is status (a live region) and gives no keys; Enter and Space press the action buttons, which are buttons of their own (sf-button), so the empty state maps only Tab: reach.",
+    "a11y-role: status written with when {live: auto, kind: nothing-found | error}; live alert gives role alert, live off and the other kinds no role (otherwise none). The name is the heading, else the kind's words of the language file.",
+    "number-type: heading-level is an integer 2..6 (§16 item 29; §7.4.1 a heading takes its level from heading-level).",
+    "actions: the list setting the element already had as a property, declared with its entries {id, text, appearance}; the slot actions holds plain page buttons.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json plus each kind, the inline form and the actions; probe.json drives the retry button, the live roles, the heading level and the alias.",
+    "skeleton: none; the empty state is what shows when data came and was empty; it has no port and no late data of its own (§5.4).",
+    "css-variables: six public variables read by its own sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "empty-state",
+      "feedback",
+      "placeholder"
+    ],
+    "contracts": {
+      "actions": {
+        "type": "array",
+        "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead."
+      }
+    },
+    "state": {
+      "machines": {
+        "kind": [
+          "no-data",
+          "nothing-found",
+          "no-access",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "error"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -178,6 +271,14 @@
         "backend access decisions",
         "saving the width on a server"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -194,7 +295,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",
@@ -215,20 +320,15 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab",
+        "Enter",
+        "Space"
+      ],
+      "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found and error are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon is decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
     }
-  },
-  "x-decisions": [
-    "own-verb-words: action is a verb of the empty state alone (the person pressed one of its buttons; detail.id names which, retry for the default of an error); its word is lang events.action.label. The vocabulary's retry repeats one write with its key, which this is not.",
-    "version: 1.0.0 → 1.1.0: title is a dated alias of heading, heading-level is a number, actions is declared; a minor while the alias holds (§4.10).",
-    "key-effects: the role is status (a live region) and gives no keys; Enter and Space press the action buttons, which are buttons of their own (sf-button), so the empty state maps only Tab: reach.",
-    "a11y-role: status written with when {live: auto, kind: nothing-found | error}; live alert gives role alert, live off and the other kinds no role (otherwise none). The name is the heading, else the kind's words of the language file.",
-    "number-type: heading-level is an integer 2..6 (§16 item 29; §7.4.1 a heading takes its level from heading-level).",
-    "actions: the list setting the element already had as a property, declared with its entries {id, text, appearance}; the slot actions holds plain page buttons.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json plus each kind, the inline form and the actions; probe.json drives the retry button, the live roles, the heading level and the alias.",
-    "skeleton: none; the empty state is what shows when data came and was empty; it has no port and no late data of its own (§5.4).",
-    "css-variables: six public variables read by its own sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-icon's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.icon",
   "tag": "sf-icon",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "icon",
   "settings": {
@@ -68,21 +68,25 @@
     },
     "badge-count": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A count on the icon (simai/ui-source#12): a whole number above 0 shows, 0 or empty hides the badge. Above badge-cap it reads «<cap>+»; the exact number joins the icon's accessible name («Почта, 3 непрочитанных») and the badge's tooltip. On an anchor of size 1/3 or 1/2 a count is drawn as a dot."
     },
     "badge-dot": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "A dot on the icon, a count with no number: something new. Shown when badge-count is not set; with a count, the count is drawn as a dot. Its text equivalent («есть новое» / «new» by default, badge-label to change it) joins the accessible name."
     },
     "badge-cap": {
       "type": "number",
       "integer": true,
       "min": 1,
-      "default": 99
+      "default": 99,
+      "summary": "The largest count drawn as a number; a larger one reads «<cap>+»."
     },
     "badge-label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
     }
   },
   "values": {
@@ -94,6 +98,15 @@
   },
   "events": {},
   "actions": {},
+  "relations": [
+    {
+      "name": "icons"
+    },
+    {
+      "name": "badges",
+      "lazy": true
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -134,6 +147,21 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-icon for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "shape",
+        "to": "sharp",
+        "kind": "value",
+        "setting": "type",
+        "section": "§16 item 20",
+        "note": "the family's old name; the attribute is written with sharp"
+      }
+    ]
+  },
   "x-summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
   "x-source": {
     "package": "framework",
@@ -148,15 +176,41 @@
   "x-renamed": [
     "lang runtime also holds the words of ANCHORED_BADGE_TEXT (ui-source/src/component/badges/js/_anchored-state.js): a shared script this component draws with (§11: no word lives only inside a bundle)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-decisions": [
+    "a11y-role: img while label is set, none otherwise: an unlabelled glyph is decorative and aria-hidden (the control around it owns the name). One role, as accessibility.$comment says; the name comes from label alone.",
+    "loaded moves from settings to values: it is what the Loader reports (the exact subset is in place), not an authoring switch; it keeps its default, so a page that wrote loaded still writes the attribute (§4, §4.3).",
+    "type keeps its name: here it is the font family (outlined, rounded, sharp), not the appearance axis of contracts/public-api-axes.json. Its old value shape is a dated value alias of sharp (aliases.json), no longer a value of the enum.",
+    "number settings: weight (100–700, step 100), grade (-50–200), optical-size (20–48) and badge-cap declare the bounds the code clamps to (§4.2, §16 item 29). badge-count stays a string: it takes the text a page gives and is capped by badge-cap.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (home, size 1) plus a labelled icon, filled and rounded, a weight, a count badge and a dot badge.",
+    "css-variables: five public variables (ink, glyph size, the weight and fill axes, line height), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json. The ink is the base layer's: a component that sets its icons' ink (--sf-icon--color) still wins inside it.",
+    "words: the badge phrase (count, dot) is lang runtime, read by the shared anchored-badge helper (x-renamed).",
+    "folder: icons takes the tag's name, icon (§3, §21, §16 item 16); the loader bundle is cl-icon, cl-icons is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/icons/js/icons.js a forwarding script until 2026-12-01 (change journal path-smart-icons-to-icon). The registry id follows the folder: smart.icon (smart.icons is its dated alias in the same record).",
+    "version 1.1.0: loaded moves to values and shape becomes a dated alias; no member is removed (§4.10).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
+  ],
+  "x-rule": {
+    "$comment-after": [
+      "The bundle's former name cl-icons (the folder was `icons` until standard",
+      "1.3.8 §3, §21 gave it the tag's name) is not a rule here: a rule of type",
+      "smart is a Smart component to the registry, and this one has no element. The",
+      "Loader forwards it to cl-icon from src/core/contracts/",
+      "smart-rule-forwards.v1.json until 2026-12-01."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "accessible-name",
+      "icon-families",
+      "variable-axes",
+      "dynamic-subset",
+      "theme",
+      "responsive"
+    ],
+    "tags": [
+      "icons"
+    ],
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -165,6 +219,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -180,7 +242,11 @@
         "mobile",
         "inherited current color",
         "pre-upgrade reserved size"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-icon for a Material Symbol that must participate in the Framework Loader and token scale. Omit label when adjacent text or a named control already conveys the meaning; provide a concise label only for an informative standalone symbol.",
@@ -203,19 +269,10 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [],
+      "focus": "The icon is not interactive and never enters the tab order. Name the containing control instead."
     }
-  },
-  "x-decisions": [
-    "a11y-role: img while label is set, none otherwise: an unlabelled glyph is decorative and aria-hidden (the control around it owns the name). One role, as accessibility.$comment says; the name comes from label alone.",
-    "loaded moves from settings to values: it is what the Loader reports (the exact subset is in place), not an authoring switch; it keeps its default, so a page that wrote loaded still writes the attribute (§4, §4.3).",
-    "type keeps its name: here it is the font family (outlined, rounded, sharp), not the appearance axis of contracts/public-api-axes.json. Its old value shape is a dated value alias of sharp (aliases.json), no longer a value of the enum.",
-    "number settings: weight (100–700, step 100), grade (-50–200), optical-size (20–48) and badge-cap declare the bounds the code clamps to (§4.2, §16 item 29). badge-count stays a string: it takes the text a page gives and is capped by badge-cap.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
-    "examples: examples.json from studio.fixture.json (home, size 1) plus a labelled icon, filled and rounded, a weight, a count badge and a dot badge.",
-    "css-variables: five public variables (ink, glyph size, the weight and fill axes, line height), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json. The ink is the base layer's: a component that sets its icons' ink (--sf-icon--color) still wins inside it.",
-    "words: the badge phrase (count, dot) is lang runtime, read by the shared anchored-badge helper (x-renamed).",
-    "folder: icons takes the tag's name, icon (§3, §21, §16 item 16); the loader bundle is cl-icon, cl-icons is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/icons/js/icons.js a forwarding script until 2026-12-01 (change journal path-smart-icons-to-icon). The registry id follows the folder: smart.icon (smart.icons is its dated alias in the same record).",
-    "version 1.1.0: loaded moves to values and shape becomes a dated alias; no member is removed (§4.10).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run."
-  ]
+  }
 }

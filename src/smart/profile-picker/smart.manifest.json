@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Profile picker",
   "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -32,23 +32,30 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "label": {
         "type": "string",
-        "default": "",
         "description": "What a profile is called here («Профиль», «Вид»); the page language's «Profile» when empty."
       },
       "size": {
         "type": "string",
+        "default": "1/2",
         "enum": [
           "1/2",
           "1"
-        ],
-        "default": "1/2"
-      },
-      "current": {
-        "type": "string",
-        "default": "",
-        "description": "The id of the profile in use."
+        ]
       },
       "resettable": {
         "type": "boolean",
@@ -64,13 +71,10 @@
         "type": "boolean",
         "default": false
       },
-      "root-class": {
+      "current": {
         "type": "string",
-        "default": ""
-      },
-      "template": {
-        "type": "string",
-        "default": "default"
+        "default": "",
+        "description": "The id of the profile in use."
       },
       "profiles": {
         "type": "array"
@@ -78,6 +82,7 @@
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {
     "profiles": {
       "type": "array",
@@ -88,8 +93,136 @@
       "description": "Set as a property: {create: {personal, shared}} -- what this person may make."
     }
   },
-  "methods": {},
+  "methods": {
+    "open": {
+      "summary": "The action open.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "close": {
+      "summary": "The action close.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "toggle": {
+      "summary": "The action toggle.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
   "events": {
+    "sf-profile-picker-select": {
+      "summary": "select (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-profile-picker-create": {
+      "summary": "create (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "label",
+          "shared",
+          "from",
+          "kind"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "shared": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "personal",
+              "shared"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-profile-picker-rename": {
+      "summary": "rename (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-profile-picker-delete": {
+      "summary": "delete (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "ids": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-profile-picker-reset": {
+      "summary": "reset (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-profile-select": {
       "summary": "The person chose a profile.",
       "payload": {
@@ -305,7 +438,7 @@
       },
       {
         "path": "src/smart/profile-picker/rule.js",
-        "sha256": "8a4e6753573f887092805e4546e49fb2e2e75c5dc48e02cbe09baea797531646"
+        "sha256": "1a0e0d695df15469a4f21444ec1fc20efc7fc1fa7ece452bea071845144e42a4"
       },
       {
         "path": "src/smart/profile-picker/docs.md",

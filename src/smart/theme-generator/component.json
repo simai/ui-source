@@ -2,7 +2,7 @@
   "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.theme-generator",
   "tag": "sf-theme-generator",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "theme",
   "settings": {
@@ -95,7 +95,11 @@
       "x-outcomes": [
         "applied"
       ],
-      "summary": "Back to SIMAI Framework's own colour; a committed choice"
+      "summary": "Back to SIMAI Framework's own colour; a committed choice",
+      "x-returns": {
+        "type": "object",
+        "description": "Nothing."
+      }
     }
   },
   "keyboard": {
@@ -104,6 +108,23 @@
       "Enter": "commit"
     }
   },
+  "relations": [
+    {
+      "name": "cl-color"
+    },
+    {
+      "name": "cl-input"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -149,6 +170,63 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-theme-generator for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-theme-generator-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": {
+          "from": "sf-theme-generator-change",
+          "to": "change"
+        },
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "note": "the vocabulary's change; the alias table's sf-theme-generator-change (2026-10-18) is itself dated now",
+        "summary": "The choice moved: a drag across the picker, a swatch, a number typed in a field."
+      },
+      {
+        "from": "sf-theme-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": {
+          "from": "sf-theme-change",
+          "to": "change"
+        },
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "note": "the first name (journal event-theme-generator-names); the Loader's light/dark event bears the same name",
+        "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-change."
+      },
+      {
+        "from": "sf-theme-generator-apply",
+        "to": "sf-theme-generator-committed",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "note": "the commit is a fact; apply is the vocabulary's action on entries",
+        "summary": "The choice was committed: the picker's change, a swatch, Enter or leaving a field, Reset."
+      },
+      {
+        "from": "sf-theme-apply",
+        "to": "sf-theme-generator-committed",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5.1",
+        "note": "the first name (journal event-theme-generator-names)",
+        "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-apply."
+      }
+    ]
+  },
   "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "x-source": {
     "package": "framework",
@@ -165,14 +243,69 @@
     "settings hue, chroma: strings → numbers, nullable (§16 item 29)",
     "methods toCSS(), toJSON(): reads of the value theme, kept as methods; reset() is the action reset"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "assembly: a leaf, with reasons. It draws sf-color, two sf-input fields and an sf-button, but they are the controls of its own one value -- the colour, and the hue and chroma that tune it -- with no data or rule between them beyond the calculation the element makes; written as an assembly it would gain keys, roles and bindings for nothing it does. The parts are migrated (the fields family) and it uses them through their public interface.",
+    "alias-conflict: the alias table's sf-theme-change → sf-theme-generator-change (shipped 2026-10-18, journal event-theme-generator-names) and this conversion's change -- the vocabulary decides (1.1.5 §5.1, sf-theme-change → change on the theme generator): the event is the browser's change, with the theme in the detail, and both sf-theme-generator-change and sf-theme-change follow it with the same detail until 2026-12-01. As before, it is sent at every change of the choice, not only at the commit.",
+    "the commit is committed (a fact, the past form, its word in the language files): sf-theme-generator-committed. The vocabulary's apply is an action on entries {action, scope}, so the old name would have read as that verb with another payload; sf-theme-generator-apply and sf-theme-apply follow with the same detail until 2026-12-01. The setting apply (whether the theme is put on the page) keeps its name: a setting, not an event.",
+    "hue and chroma are numbers (integer, nullable, 0–360 and 0–150): unset, the colour's reading; out of range they read at the edge, as before.",
+    "reset is the action (answers applied); toCSS(selector) and toJSON() stay methods: they read the value theme and change nothing, which is no action (§4.4).",
+    "a11y-name: the generator is a group named by its aria-label, else the language file's runtime.title («Генератор темы», \"Theme generator\"); its root carries role group.",
+    "key-effects: Tab reaches its controls; Enter in a number field commits (commit), without submitting a form around it.",
+    "words (§11): the language files' runtime words, read with sfWord; THEME_TEXT is gone (hueHint and chromaHint are hue-hint and chroma-hint).",
+    "version 1.1.0: events renamed behind dated aliases, hue and chroma typed (§4.10).",
+    "examples: examples.json from studio.fixture.json (a green theme) plus SIMAI Framework's colour, a tuned hue and chroma, product swatches and apply to a part of the page.",
+    "css-variables: five public variables of its sheet: the gap, the text's ink, the labels' ink, the swatches' radius and border. Listed in src/core/contracts/public-variables.v1.json.",
+    "source-drift: the shipped manifest differs from 5100227 in the alias rows and its provenance; the interface converted is the shipped one.",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-rule": {
+    "$comment": [
+      "The generator draws a colour control, two number fields and a reset button;",
+      "a tag it renders is a tag it fetches, with the icons they show."
+    ]
+  },
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "theme",
+      "color",
+      "palette",
+      "generator"
+    ],
+    "state": {
+      "machines": {
+        "advanced": [
+          "folded",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -182,6 +315,14 @@
         "backend access decisions",
         "storing the chosen theme"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -198,7 +339,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-theme-generator where a person chooses a site's or a product's main colour and the rest of its palette should follow.",
@@ -219,22 +364,160 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "Tab",
+        "Enter",
+        "Space"
+      ],
+      "focus": "The colour control, Reset, the «Advanced» disclosure and its two number fields are in the focus order; Enter in a field commits the theme. The preview is a named region of labelled swatches, each giving its palette, tone and hex."
+    },
+    "alias-events": {
+      "sf-theme-generator-change": {
+        "summary": "The choice moved: a drag across the picker, a swatch, a number typed in a field.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The chosen colour, '' while the Framework's own one applies."
+            },
+            "hue": {
+              "type": "number"
+            },
+            "chroma": {
+              "type": "number"
+            },
+            "theme": {
+              "type": "object",
+              "description": "The theme object, as toJSON()."
+            },
+            "variables": {
+              "type": "object",
+              "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+            },
+            "css": {
+              "type": "string",
+              "description": "The theme as a rule under `selector`."
+            }
+          }
+        }
+      },
+      "sf-theme-generator-apply": {
+        "summary": "The choice was committed: the picker's change, a swatch, Enter or leaving a field, Reset.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The chosen colour, '' while the Framework's own one applies."
+            },
+            "hue": {
+              "type": "number"
+            },
+            "chroma": {
+              "type": "number"
+            },
+            "theme": {
+              "type": "object",
+              "description": "The theme object, as toJSON()."
+            },
+            "variables": {
+              "type": "object",
+              "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+            },
+            "css": {
+              "type": "string",
+              "description": "The theme as a rule under `selector`."
+            }
+          }
+        }
+      },
+      "sf-theme-change": {
+        "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-change.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The chosen colour, '' while the Framework's own one applies."
+            },
+            "hue": {
+              "type": "number"
+            },
+            "chroma": {
+              "type": "number"
+            },
+            "theme": {
+              "type": "object",
+              "description": "The theme object, as toJSON()."
+            },
+            "variables": {
+              "type": "object",
+              "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+            },
+            "css": {
+              "type": "string",
+              "description": "The theme as a rule under `selector`."
+            }
+          }
+        }
+      },
+      "sf-theme-apply": {
+        "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-apply.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The chosen colour, '' while the Framework's own one applies."
+            },
+            "hue": {
+              "type": "number"
+            },
+            "chroma": {
+              "type": "number"
+            },
+            "theme": {
+              "type": "object",
+              "description": "The theme object, as toJSON()."
+            },
+            "variables": {
+              "type": "object",
+              "description": "The 226 custom properties -- 128 tones and 98 translucent steps -- {name: value}."
+            },
+            "css": {
+              "type": "string",
+              "description": "The theme as a rule under `selector`."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "toCSS": {
+        "summary": "The theme as one stylesheet rule of its 128 primitives and 98 translucent steps, under the given selector or the `selector` attribute.",
+        "arguments": [
+          {
+            "name": "selector",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "string",
+          "description": "CSS text."
+        }
+      },
+      "toJSON": {
+        "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and each palette's hue, chroma and tones.",
+        "arguments": [],
+        "returns": {
+          "type": "object",
+          "description": "A copy of the theme."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "assembly: a leaf, with reasons. It draws sf-color, two sf-input fields and an sf-button, but they are the controls of its own one value -- the colour, and the hue and chroma that tune it -- with no data or rule between them beyond the calculation the element makes; written as an assembly it would gain keys, roles and bindings for nothing it does. The parts are migrated (the fields family) and it uses them through their public interface.",
-    "alias-conflict: the alias table's sf-theme-change → sf-theme-generator-change (shipped 2026-10-18, journal event-theme-generator-names) and this conversion's change -- the vocabulary decides (1.1.5 §5.1, sf-theme-change → change on the theme generator): the event is the browser's change, with the theme in the detail, and both sf-theme-generator-change and sf-theme-change follow it with the same detail until 2026-12-01. As before, it is sent at every change of the choice, not only at the commit.",
-    "the commit is committed (a fact, the past form, its word in the language files): sf-theme-generator-committed. The vocabulary's apply is an action on entries {action, scope}, so the old name would have read as that verb with another payload; sf-theme-generator-apply and sf-theme-apply follow with the same detail until 2026-12-01. The setting apply (whether the theme is put on the page) keeps its name: a setting, not an event.",
-    "hue and chroma are numbers (integer, nullable, 0–360 and 0–150): unset, the colour's reading; out of range they read at the edge, as before.",
-    "reset is the action (answers applied); toCSS(selector) and toJSON() stay methods: they read the value theme and change nothing, which is no action (§4.4).",
-    "a11y-name: the generator is a group named by its aria-label, else the language file's runtime.title («Генератор темы», \"Theme generator\"); its root carries role group.",
-    "key-effects: Tab reaches its controls; Enter in a number field commits (commit), without submitting a form around it.",
-    "words (§11): the language files' runtime words, read with sfWord; THEME_TEXT is gone (hueHint and chromaHint are hue-hint and chroma-hint).",
-    "version 1.1.0: events renamed behind dated aliases, hue and chroma typed (§4.10).",
-    "examples: examples.json from studio.fixture.json (a green theme) plus SIMAI Framework's colour, a tuned hue and chroma, product swatches and apply to a part of the page.",
-    "css-variables: five public variables of its sheet: the gap, the text's ink, the labels' ink, the swatches' radius and border. Listed in src/core/contracts/public-variables.v1.json.",
-    "source-drift: the shipped manifest differs from 5100227 in the alias rows and its provenance; the interface converted is the shipped one.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.resizer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Resizer",
   "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
   "kind": "smart",
@@ -29,6 +29,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "min": {
         "type": "string",
         "default": "12rem",
@@ -58,9 +71,10 @@
         ]
       },
       "step": {
-        "type": "string",
-        "default": "16",
-        "description": "Pixels an arrow key moves; Shift moves four steps."
+        "type": "number",
+        "default": 16,
+        "description": "Pixels an arrow key moves; Shift moves four steps.",
+        "minimum": 1
       },
       "storage-key": {
         "type": "string",
@@ -69,7 +83,6 @@
       },
       "label": {
         "type": "string",
-        "default": "",
         "description": "The accessible name; defaults to the page language's «Resize»."
       },
       "disabled": {
@@ -77,13 +90,17 @@
         "default": false
       },
       "value": {
-        "type": "string",
-        "default": "",
+        "type": "number",
         "description": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {
     "attach": {
       "type": "object",
@@ -92,6 +109,29 @@
   },
   "methods": {},
   "events": {
+    "sf-resizer-resize": {
+      "summary": "resize (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "width",
+          "phase"
+        ],
+        "properties": {
+          "width": {
+            "type": "number"
+          },
+          "phase": {
+            "enum": [
+              "move",
+              "end",
+              "reset"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-resize": {
       "summary": "The width changed: while dragging (move), after a drag or a key (end), or back to the stylesheet's width (reset).",
       "payload": {
@@ -255,7 +295,7 @@
       },
       {
         "path": "src/smart/resizer/rule.js",
-        "sha256": "dba7fc18309d260feb0cb0dc343ddde289ad68af8c99c750716d7c12175b69aa"
+        "sha256": "1d0ab1c03c7022957a151f37b9f28fa6378c66eb6c8ae158efd750c8085af625"
       },
       {
         "path": "src/smart/resizer/docs.md",

@@ -1,3 +1,4 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 // The tree draws its entries as rows of class markup (simai/ui-source#43): the
 // tree and tree-item sheets, the icon font's icons and the icon button's sheet
 // for the chevron. sf-tree-item children are read as data, not drawn; the

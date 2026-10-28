@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.help-mark",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Help mark",
   "summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
   "kind": "smart",
@@ -24,63 +24,69 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.icon-button",
-      "smart.icon"
+      "smart.icon",
+      "smart.icon-button"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "text": {
         "type": "string",
         "default": "",
         "description": "The explanation; slot `content` takes links or lists instead."
       },
-      "title": {
+      "heading": {
         "type": "string",
         "default": ""
       },
       "label": {
         "type": "string",
-        "default": "",
         "description": "The button's accessible name; «Подробнее» / More information by default, best naming the subject («Подробнее: код решения»)."
       },
       "size": {
         "type": "string",
+        "default": "1/2",
         "enum": [
           "1/3",
           "1/2",
           "1"
-        ],
-        "default": "1/2"
+        ]
       },
       "placement": {
         "type": "string",
+        "default": "auto",
         "enum": [
           "auto",
           "top",
           "bottom",
           "start",
           "end"
-        ],
-        "default": "auto"
+        ]
       },
-      "root-class": {
+      "title": {
         "type": "string",
-        "default": ""
-      },
-      "template": {
-        "type": "string",
-        "default": "default"
-      },
-      "heading": {
-        "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Dated alias of heading until 2026-12-01."
       }
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {},
   "methods": {
     "open": {
@@ -101,6 +107,24 @@
     }
   },
   "events": {
+    "sf-help-mark-opened": {
+      "summary": "opened (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-help-mark-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
     "sf-help-mark-open": {
       "summary": "The explanation opened.",
       "payload": {
@@ -240,7 +264,7 @@
       },
       {
         "path": "src/smart/help-mark/rule.js",
-        "sha256": "dae3fc58cd0e3b176c48292ca70f138be7f5e987c66d94428c2efa0ca56dfbea"
+        "sha256": "1564070c74cb548514d568ab59c4fd10a6ef892cb5548904d59ceaf9542a2654"
       },
       {
         "path": "src/smart/help-mark/docs.md",

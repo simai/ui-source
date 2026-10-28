@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.empty-state",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Empty state",
   "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
   "kind": "smart",
@@ -33,33 +33,46 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "kind": {
         "type": "string",
+        "default": "no-data",
+        "description": "The reason, which picks the default icon, title and text, and for error a «Повторить» action.",
         "enum": [
           "no-data",
           "nothing-found",
           "no-access",
           "error"
-        ],
-        "default": "no-data",
-        "description": "The reason, which picks the default icon, title and text, and for error a «Повторить» action."
+        ]
       },
       "size": {
         "type": "string",
+        "default": "1",
+        "description": "1/3 is always the inline form; 1/2 inside a table or panel, 2 for a whole page: the icon, title role, text and gaps follow.",
         "enum": [
           "1/3",
           "1/2",
           "1",
           "2"
-        ],
-        "default": "1",
-        "description": "1/3 is always the inline form; 1/2 inside a table or panel, 2 for a whole page: the icon, title role, text and gaps follow."
+        ]
       },
       "icon": {
         "type": "string",
         "default": ""
       },
-      "title": {
+      "heading": {
         "type": "string",
         "default": ""
       },
@@ -68,47 +81,35 @@
         "default": ""
       },
       "heading-level": {
-        "type": "string",
-        "enum": [
-          "2",
-          "3",
-          "4",
-          "5",
-          "6"
-        ],
-        "default": "3",
-        "description": "The title's outline level; its look follows the size."
+        "type": "integer",
+        "default": 3,
+        "description": "The title's outline level; its look follows the size.",
+        "minimum": 2,
+        "maximum": 6
       },
       "layout": {
         "type": "string",
+        "default": "block",
+        "description": "inline: one line for a list inside a menu, a dropdown or a search -- a small icon, the words and at most one link action, no heading.",
         "enum": [
           "block",
           "inline"
-        ],
-        "default": "block",
-        "description": "inline: one line for a list inside a menu, a dropdown or a search -- a small icon, the words and at most one link action, no heading."
+        ]
       },
       "live": {
         "type": "string",
+        "default": "auto",
+        "description": "auto: nothing-found and error are a polite status, the others say nothing; alert: an error the person caused; off: the host announces it.",
         "enum": [
           "auto",
           "alert",
           "off"
-        ],
-        "default": "auto",
-        "description": "auto: nothing-found and error are a polite status, the others say nothing; alert: an error the person caused; off: the host announces it."
+        ]
       },
-      "root-class": {
+      "title": {
         "type": "string",
-        "default": ""
-      },
-      "template": {
-        "type": "string",
-        "default": "default"
-      },
-      "heading": {
-        "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Dated alias of heading until 2026-12-01."
       },
       "actions": {
         "type": "array"
@@ -116,6 +117,7 @@
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {
     "actions": {
       "type": "array",
@@ -135,7 +137,8 @@
           "id": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     }
   },
@@ -264,7 +267,7 @@
       },
       {
         "path": "src/smart/empty-state/rule.js",
-        "sha256": "292af1c4656e3d3596e7a82c20093f93450f43a0567387a2768a6935daeaa079"
+        "sha256": "5e8ae1ecb89ce8192d82dc822e0072b76b3b296fca823d52d572b1cdfc17cd80"
       },
       {
         "path": "src/smart/empty-state/docs.md",

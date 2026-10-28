@@ -2,13 +2,14 @@
   "$comment": "The source of sf-help-mark's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/help-mark (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.help-mark",
   "tag": "sf-help-mark",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "hint",
   "settings": {
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The explanation; slot `content` takes links or lists instead."
     },
     "heading": {
       "type": "string",
@@ -16,7 +17,8 @@
     },
     "label": {
       "type": "string",
-      "default-from": "runtime.label"
+      "default-from": "runtime.label",
+      "summary": "The button's accessible name; «Подробнее» / More information by default, best naming the subject («Подробнее: код решения»)."
     },
     "size": {
       "type": "enum",
@@ -54,12 +56,22 @@
       "x-outcomes": [
         "applied",
         "cancelled"
-      ]
+      ],
+      "summary": "Opens the explanation.",
+      "x-returns": {
+        "type": "object",
+        "description": "A promise."
+      }
     },
     "close": {
       "x-outcomes": [
         "applied"
-      ]
+      ],
+      "summary": "Closes it.",
+      "x-returns": {
+        "type": "object",
+        "description": "Nothing."
+      }
     }
   },
   "slots": {
@@ -75,6 +87,14 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -136,6 +156,38 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-help-mark for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26",
+        "note": "title is a property of every element (§3.1); the shim maps the attribute, the browser keeps its title property"
+      },
+      {
+        "from": "sf-help-mark-open",
+        "to": "sf-help-mark-opened",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, vocabulary §4",
+        "note": "sent after the explanation opened: a fact, so the past form",
+        "summary": "The explanation opened."
+      },
+      {
+        "from": "sf-help-mark-close",
+        "to": "sf-help-mark-closed",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, vocabulary §4",
+        "note": "sent after the explanation closed: a fact, so the past form",
+        "summary": "The explanation closed."
+      }
+    ]
+  },
   "x-summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
   "x-source": {
     "package": "framework",
@@ -151,14 +203,60 @@
     "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated",
     "events.sf-help-mark-open → opened, sf-help-mark-close → closed: they are sent after the explanation opened or closed, so they are facts and take the past form (§8, vocabulary §4); the old DOM names are dated aliases"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "events (§8, vocabulary §4): sf-help-mark-open and -close were sent after the fact, so they are facts: opened and closed (sf-help-mark-opened, -closed), with the old DOM names as dated same-detail aliases until 2026-12-01. Neither is a cancelable request: the mark is a toggletip, not a layer that asks before it closes.",
+    "actions: open (waits for the explanation to be drawn) and close answer applied, also when it is already open or closed; an open whose element is removed while it draws answers cancelled. Their code is runOpen/runClose; toggle() stays a helper the template's press calls, not an action.",
+    "title -> heading: title is a property of every element (§3.1), so the setting is heading and title its dated setting alias (aliases.json). The browser's own title property is left alone; the attribute still maps.",
+    "label defaults to the language file's runtime.label («Подробнее», \"More information\"), read with sfWord; HELP_TEXT is gone.",
+    "key-effects: Enter and Space toggle:open (they press the native button), Escape close while it is the top open surface, Tab reach; probe.json drives Enter and Escape (gate 16).",
+    "host-states: data-open while the explanation is open (§5.3).",
+    "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; the content slot is the page's node, placed.",
+    "examples: examples.json from studio.fixture.json (a code's explanation) plus a heading, a content slot with a link, size 1/3 and placement top.",
+    "css-variables: eight public variables of the explanation (surface, text, border, radius, max width, padding inline and block, gap), read by its sheet with the role token as fallback and listed in src/core/contracts/public-variables.v1.json.",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "help",
+      "toggletip",
+      "popover"
+    ],
+    "state": {
+      "machines": {
+        "panel": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -168,6 +266,14 @@
         "backend access decisions",
         "saving the width on a server"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -184,7 +290,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-help-mark beside a label whose meaning needs a sentence of explanation.",
@@ -204,20 +314,25 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "focus": "A button with aria-expanded and aria-controls; a press opens the explanation and it is announced in a polite status. Escape, a second press or a click outside close it and focus stays on the button. An explanation holding a link or control follows the button in the focus order and closes when focus leaves both."
+    },
+    "alias-events": {
+      "sf-help-mark-open": {
+        "summary": "The explanation opened.",
+        "payload": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "sf-help-mark-close": {
+        "summary": "The explanation closed.",
+        "payload": {
+          "type": "object",
+          "properties": {}
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "events (§8, vocabulary §4): sf-help-mark-open and -close were sent after the fact, so they are facts: opened and closed (sf-help-mark-opened, -closed), with the old DOM names as dated same-detail aliases until 2026-12-01. Neither is a cancelable request: the mark is a toggletip, not a layer that asks before it closes.",
-    "actions: open (waits for the explanation to be drawn) and close answer applied, also when it is already open or closed; an open whose element is removed while it draws answers cancelled. Their code is runOpen/runClose; toggle() stays a helper the template's press calls, not an action.",
-    "title -> heading: title is a property of every element (§3.1), so the setting is heading and title its dated setting alias (aliases.json). The browser's own title property is left alone; the attribute still maps.",
-    "label defaults to the language file's runtime.label («Подробнее», \"More information\"), read with sfWord; HELP_TEXT is gone.",
-    "key-effects: Enter and Space toggle:open (they press the native button), Escape close while it is the top open surface, Tab reach; probe.json drives Enter and Escape (gate 16).",
-    "host-states: data-open while the explanation is open (§5.3).",
-    "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; the content slot is the page's node, placed.",
-    "examples: examples.json from studio.fixture.json (a code's explanation) plus a heading, a content slot with a link, size 1/3 and placement top.",
-    "css-variables: eight public variables of the explanation (surface, text, border, radius, max width, padding inline and block, gap), read by its sheet with the role token as fallback and listed in src/core/contracts/public-variables.v1.json.",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

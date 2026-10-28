@@ -19,7 +19,7 @@
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
-    "default": [
+    "reference": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/switch/css/switch.min.css",

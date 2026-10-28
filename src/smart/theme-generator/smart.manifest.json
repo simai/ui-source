@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Theme generator",
-  "summary": "A theme from one colour: a person chooses the main colour (or the generator's hue and chroma) and it makes the Framework's eight tonal palettes, the 128 primitives every semantic token reads and the 98 translucent steps core derives from them, with a preview, events carrying the CSS, and an optional live application to the page.",
+  "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -26,74 +26,94 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.color",
-      "smart.input",
       "smart.button",
+      "smart.color",
+      "smart.icon",
       "smart.icon-button",
-      "smart.icon"
+      "smart.input"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
-      "value": {
+      "template": {
         "type": "string",
-        "default": "",
-        "description": "The main colour, #rrggbb. Empty means the Framework's own colour (#005bbe) and draws the Framework's own theme."
-      },
-      "hue": {
-        "type": "string",
-        "default": "",
-        "description": "The generator's hue, 0-360, overriding the colour's reading; set by the fine-tuning fields. Empty reads it from the colour."
-      },
-      "chroma": {
-        "type": "string",
-        "default": "",
-        "description": "The generator's chroma, 0-150, overriding the colour's reading; set by the fine-tuning fields. Empty reads it from the colour."
-      },
-      "size": {
-        "type": "string",
-        "enum": [
-          "1/2",
-          "1",
-          "2"
-        ],
-        "default": "1"
-      },
-      "swatches": {
-        "type": "string",
-        "default": "",
-        "description": "The product's own colours offered beside the picker, as sf-color takes them: '#hex|Name, #hex'."
-      },
-      "apply": {
-        "type": "boolean",
-        "default": false,
-        "description": "Apply the theme to `target` as inline custom properties, live on every change, undoing the previous application first and on removal. Without it the page is not changed."
-      },
-      "target": {
-        "type": "string",
-        "default": "",
-        "description": "A CSS selector for the element the theme is applied to; empty is the document element. A target other than the root carries a theme class (theme-light or theme-dark): the semantic tokens are declared there, so without one only the primitives change on it."
-      },
-      "selector": {
-        "type": "string",
-        "default": ":root",
-        "description": "The selector of the rule in the events' css and in toCSS()."
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
       "root-class": {
         "type": "string",
         "default": ""
       },
-      "template": {
+      "root-style": {
         "type": "string",
-        "default": "default"
+        "default": ""
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "The main colour, #rrggbb; empty while SIMAI Framework's own colour applies"
+      },
+      "hue": {
+        "type": "integer",
+        "description": "The generator's own hue; unset, the colour's",
+        "minimum": 0,
+        "maximum": 360
+      },
+      "chroma": {
+        "type": "integer",
+        "description": "The generator's own chroma; unset, the colour's",
+        "minimum": 0,
+        "maximum": 150
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "swatches": {
+        "type": "string",
+        "default": "",
+        "description": "The product's colours beside the picker, as sf-color takes them: #hex|Name, #hex"
+      },
+      "apply": {
+        "type": "boolean",
+        "default": false,
+        "description": "Put the theme on target as inline variables at every change; without it the page is not changed"
+      },
+      "target": {
+        "type": "string",
+        "default": "",
+        "description": "A CSS selector of the element apply themes; empty, the document's root"
+      },
+      "selector": {
+        "type": "string",
+        "default": ":root",
+        "description": "The rule's selector in the events and in toCSS()"
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       }
     },
     "additionalProperties": false
   },
+  "item_contract": {},
   "contracts": {},
   "methods": {
+    "reset": {
+      "summary": "Back to SIMAI Framework's own colour; a committed choice",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "Nothing."
+      }
+    },
     "toCSS": {
       "summary": "The theme as one stylesheet rule of its 128 primitives and 98 translucent steps, under the given selector or the `selector` attribute.",
       "arguments": [
@@ -115,17 +135,79 @@
         "type": "object",
         "description": "A copy of the theme."
       }
-    },
-    "reset": {
-      "summary": "Back to the Framework's own colour; fires sf-theme-generator-change and sf-theme-generator-apply (and their first names until 2026-12-01).",
-      "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "Nothing."
-      }
     }
   },
   "events": {
+    "change": {
+      "summary": "The choice changed -- a drag in the picker, a swatch, a number typed (vocabulary 1.1.5 §5.1: sf-theme-change → change on the theme generator); the browser's name, with the theme in the detail",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "hue",
+          "chroma",
+          "theme",
+          "variables",
+          "css"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "hue": {
+            "type": "number"
+          },
+          "chroma": {
+            "type": "number"
+          },
+          "theme": {
+            "type": "object"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "css": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-theme-generator-committed": {
+      "summary": "The choice was committed -- the picker's change, a swatch, Enter or leaving a field, Reset: the theme the host keeps",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "hue",
+          "chroma",
+          "theme",
+          "variables",
+          "css"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "hue": {
+            "type": "number"
+          },
+          "chroma": {
+            "type": "number"
+          },
+          "theme": {
+            "type": "object"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "css": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-theme-generator-change": {
       "summary": "The choice moved: a drag across the picker, a swatch, a number typed in a field.",
       "payload": {
@@ -369,7 +451,7 @@
       },
       {
         "path": "src/smart/theme-generator/rule.js",
-        "sha256": "911ee2daf002f5e3719e7efefbe1641a1f8d6aeb80424ed7ee45f9c49847f9e9"
+        "sha256": "f1be897360ac6a45aa00f56101d9edf3d75d03094dafcafb0c6de85f010e3e28"
       },
       {
         "path": "src/smart/theme-generator/docs.md",

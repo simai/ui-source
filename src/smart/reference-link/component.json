@@ -2,7 +2,7 @@
   "$comment": "The source of sf-reference-link's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/reference-link (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.reference-link",
   "tag": "sf-reference-link",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "kind": "leaf",
   "family": "link",
   "settings": {
@@ -12,15 +12,18 @@
         "card",
         "plain"
       ],
-      "default": "card"
+      "default": "card",
+      "summary": "card is the reference as its own box: frame, fill and padding. plain is the link alone, taking the width of its text, for a reference inside something that is already a box -- a record’s field, a table cell -- where a second frame reads as a control the value is not."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Render an unavailable, non-focusable reference without navigation."
     },
     "href": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Real navigation destination. Required for an enabled reference."
     },
     "icon": {
       "type": "icon",
@@ -30,7 +33,8 @@
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Destination-oriented visible link label."
     },
     "line": {
       "type": "enum",
@@ -40,7 +44,8 @@
         "1",
         "2"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Takes the text line of this form size as a link without the card, for a table cell, so the row keeps its control height."
     },
     "size": {
       "type": "enum",
@@ -50,15 +55,18 @@
         "1",
         "2"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Form size: the reference becomes a control of that size, for a row of fields or a table cell. Empty keeps the card spacing."
     },
     "target": {
       "type": "string",
-      "default": "_self"
+      "default": "_self",
+      "summary": "Native browsing-context target. Disclose new-context navigation in the name."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Compact route, source or reference shown beside the label."
     }
   },
   "values": {},
@@ -69,6 +77,17 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "reference-link"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -122,6 +141,21 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-reference-link for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      }
+    ]
+  },
   "x-summary": "Navigation surface that pairs a real destination with a compact reference.",
   "x-source": {
     "package": "framework",
@@ -136,14 +170,50 @@
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "a11y-role: link, the native <a> the template draws while href is set and the reference is not disabled (Enter follows it, Tab reaches it); without href, or disabled, the label is plain text and nothing takes focus. The name is the host's aria-label, else the label or its slot (§4.8).",
+    "icon is optional (§4.2) and keeps its getter: absent is the arrow, an empty attribute is no icon at all, which a string default cannot say.",
+    "size and line keep their getters: they map a form size onto the field-size ladder (fieldSize) before the class list reads it.",
+    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (Документация, #) plus a label and text, plain, no icon, a size, a line and disabled.",
+    "css-variables: seven public variables (fill and border at rest, radius, link colour, padding inline and block, gap), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json.",
+    "version 1.0.0: the interface is unchanged; nothing is renamed, so aliases.json holds only the host attribute aria-label.",
+    "version 1.0.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.0.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-registry": {
+    "contracts": {
+      "navigation": {
+        "enabled": "native anchor with a real href",
+        "disabled": "non-interactive content with no href",
+        "boundary": "the complete reference surface is the pointer and keyboard-focus boundary"
+      },
+      "canonical_elements": {
+        "type": "string",
+        "enum": [
+          "sf-reference-link__main",
+          "sf-reference-link__link",
+          "sf-reference-link__icon",
+          "sf-reference-link__meta"
+        ]
+      },
+      "interaction_states": {
+        "type": "string",
+        "enum": [
+          "hover",
+          "active",
+          "focus-visible"
+        ]
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "active",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -153,6 +223,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -166,7 +244,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-reference-link when a real destination benefits from a visible route, source or other compact reference.",
@@ -190,18 +272,27 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "methods": {
+      "onClick": {
+        "summary": "Adds a click listener on the host.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "a11y-role: link, the native <a> the template draws while href is set and the reference is not disabled (Enter follows it, Tab reaches it); without href, or disabled, the label is plain text and nothing takes focus. The name is the host's aria-label, else the label or its slot (§4.8).",
-    "icon is optional (§4.2) and keeps its getter: absent is the arrow, an empty attribute is no icon at all, which a string default cannot say.",
-    "size and line keep their getters: they map a form size onto the field-size ladder (fieldSize) before the class list reads it.",
-    "aria-label is a host attribute, never a setting (§3.1); the template reads it from the host.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
-    "examples: examples.json from studio.fixture.json (Документация, #) plus a label and text, plain, no icon, a size, a line and disabled.",
-    "css-variables: seven public variables (fill and border at rest, radius, link colour, padding inline and block, gap), read by the class sheet with the internal token as fallback (§6) and listed in src/core/contracts/public-variables.v1.json.",
-    "version 1.0.0: the interface is unchanged; nothing is renamed, so aliases.json holds only the host attribute aria-label.",
-    "version 1.0.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.0.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

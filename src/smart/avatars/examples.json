@@ -13,6 +13,16 @@
       },
       "expect": {
         "label-text": "Команда проекта"
+      },
+      "studio": {
+        "props": {
+          "template": "label",
+          "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3Ctext x=\"48\" y=\"58\" text-anchor=\"middle\" font-size=\"30\" fill=\"white\"%3EAZ%3C/text%3E%3C/svg%3E",
+          "avatar-size": "2",
+          "label-text": "Команда проекта",
+          "label-second-text": "5 участников"
+        },
+        "scenario": {}
       }
     },
     {
@@ -75,6 +85,99 @@
       "expect": {
         "active": true
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-avatars against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-avatars id=\"lbl\" template=\"label\" label-text=\"Команда проекта\" label-second-text=\"5 участников\" avatar-size=\"2\"></sf-avatars>",
+          "  <sf-avatars id=\"grp\" template=\"group\" round-size=\"1\" avatars-more=\"5\" avatars='[{\"text\": \"АЗ\"}, {\"text\": \"БИ\"}]'></sf-avatars>",
+          "  <sf-avatars id=\"usr\" template=\"user\" name=\"Анна Захарова\" source=\"simai.ru\"></sf-avatars>",
+          "  <sf-avatars id=\"old\" template=\"user\" data='{\"name\": \"Из data\", \"source\": \"old.example\"}'></sf-avatars>",
+          "  <sf-avatars id=\"dot\" active round-size=\"big\"></sf-avatars>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-label",
+          "title": "the label combination prints both lines beside the avatar",
+          "covers": "templates.label, settings.label-text, label-second-text",
+          "steps": [
+            {
+              "check": "(() => { const g = document.querySelector('#lbl .sf-avatar-label-group'); return g && g.classList.contains('sf-avatar-label-group--size-2') && g.querySelector('.sf-avatar-label-group-title').textContent.trim() === 'Команда проекта' && g.textContent.includes('5 участников'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-group",
+          "title": "the group stacks the avatars and the remainder",
+          "covers": "templates.group, settings.avatars (list), settings.avatars-more",
+          "steps": [
+            {
+              "check": "(() => { const avatars = document.querySelectorAll('#grp .sf-avatar-group-avatars > .sf-avatar'); return avatars.length === 3 && avatars[2].textContent.trim() === '+5' && avatars[0].textContent.trim() === 'АЗ'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-avatars-property",
+          "title": "the list written as a property redraws the group",
+          "covers": "settings.avatars property",
+          "steps": [
+            {
+              "script": "(() => { const el = document.querySelector('#grp'); el.removeAttribute('avatars'); el.avatars = [{text: 'ВП'}]; return true; })()"
+            },
+            {
+              "check": "document.querySelectorAll('#grp .sf-avatar-group-avatars > .sf-avatar').length === 2 && document.querySelector('#grp .sf-avatar-group-avatars > .sf-avatar').textContent.trim() === 'ВП'"
+            }
+          ]
+        },
+        {
+          "id": "p4-user",
+          "title": "the user combination prints the name and the source",
+          "covers": "templates.user, settings.name, settings.source",
+          "steps": [
+            {
+              "check": "document.querySelector('#usr .sf-avatar-label-group-title').textContent.trim() === 'Анна Захарова' && document.querySelector('#usr').textContent.includes('simai.ru')"
+            }
+          ]
+        },
+        {
+          "id": "p5-data-dated",
+          "title": "the old data attribute still fills the fields, noted with its dates",
+          "covers": "aliases.json data -> fields",
+          "steps": [
+            {
+              "check": "document.querySelector('#old .sf-avatar-label-group-title')?.textContent.trim() === 'Из data' && document.querySelector('#old').hasAttribute('fields') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-avatars' && note.from === 'data' && note.remove_after === '2026-12-01')",
+              "expect": {
+                "values": {
+                  "#old.name": "Из data"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p6-decorative",
+          "title": "nothing takes focus; the pictures are hidden from assistive technology",
+          "covers": "accessibility.role none",
+          "steps": [
+            {
+              "check": "!document.querySelector('main sf-avatars button, main sf-avatars [tabindex]') && document.querySelector('#dot .sf-avatar').classList.contains('sf-avatar--size-2')",
+              "expect": {
+                "values": {
+                  "#dot.active": true
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

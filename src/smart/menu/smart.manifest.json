@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -29,8 +29,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.menu",
-      "component.badges"
+      "component.badges",
+      "component.icon-buttons",
+      "component.icons",
+      "component.menu"
     ],
     "public_parts": []
   },
@@ -39,12 +41,99 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "orientation": {
+        "type": "string",
+        "default": "vertical",
+        "description": "vertical: a column whose branches open in place; horizontal: the first level in a row, each branch a panel below it (deeper ones to the side), placed by the Framework's geometry.",
+        "enum": [
+          "vertical",
+          "horizontal"
+        ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "default",
+        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open. Both are columns.",
+        "enum": [
+          "default",
+          "documentation-tree",
+          "compact"
+        ]
+      },
+      "current-from-location": {
+        "type": "boolean",
+        "default": false,
+        "description": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
+      },
+      "collapse": {
+        "type": "string",
+        "default": "auto",
+        "description": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never.",
+        "enum": [
+          "auto",
+          "always",
+          "none"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The navigation's name (aria-label of its <nav>); the element's aria-label, or the one of a <nav> written inside it, when not set."
+      },
+      "toggle-label": {
+        "type": "string",
+        "description": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
+      },
+      "current": {
+        "type": "string",
+        "default": "",
+        "description": "the id of the current page's item; with current-from-location the location decides"
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
       },
       "items": {
         "type": "array",
         "default": [],
         "description": "The items, [{id, label, href?, icon?, badge?, current?, disabled?, open?, children?}]: an array in the property, the same array as JSON in the attribute. Without items the element reads the nested <ul><li><a> written inside it.",
+        "examples": [
+          [
+            {
+              "id": "about",
+              "label": "О компании",
+              "href": "/about/"
+            },
+            {
+              "id": "catalog",
+              "label": "Каталог",
+              "children": [
+                {
+                  "id": "solutions",
+                  "label": "Решения",
+                  "href": "/catalog/solutions/"
+                }
+              ]
+            },
+            {
+              "id": "contacts",
+              "label": "Контакты",
+              "href": "/contacts/",
+              "badge": "3"
+            }
+          ]
+        ],
         "items": {
           "type": "object",
           "properties": {
@@ -92,86 +181,7 @@
             "label"
           ],
           "additionalProperties": false
-        },
-        "examples": [
-          [
-            {
-              "id": "about",
-              "label": "О компании",
-              "href": "/about/"
-            },
-            {
-              "id": "catalog",
-              "label": "Каталог",
-              "children": [
-                {
-                  "id": "solutions",
-                  "label": "Решения",
-                  "href": "/catalog/solutions/"
-                }
-              ]
-            },
-            {
-              "id": "contacts",
-              "label": "Контакты",
-              "href": "/contacts/",
-              "badge": "3"
-            }
-          ]
-        ]
-      },
-      "orientation": {
-        "type": "string",
-        "default": "vertical",
-        "enum": [
-          "vertical",
-          "horizontal"
-        ],
-        "description": "vertical: a column whose branches open in place; horizontal: the first level in a row, each branch a panel below it (deeper ones to the side), placed by the Framework's geometry."
-      },
-      "appearance": {
-        "type": "string",
-        "default": "default",
-        "enum": [
-          "default",
-          "documentation-tree",
-          "compact"
-        ],
-        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open. Both are columns."
-      },
-      "current": {
-        "type": "string",
-        "default": "",
-        "description": "The id of the item that is the current page: its link gets aria-current=\"page\"."
-      },
-      "current-from-location": {
-        "type": "boolean",
-        "default": false,
-        "description": "Without current, the item whose link leads to location.pathname is the current page (a trailing slash and index.html do not matter); history navigation is followed."
-      },
-      "collapse": {
-        "type": "string",
-        "default": "auto",
-        "enum": [
-          "auto",
-          "always",
-          "none"
-        ],
-        "description": "auto: a row that does not fit its width becomes a button opening the same links as a column, and a row again when the width is back; always: the button whatever the orientation; none: never."
-      },
-      "label": {
-        "type": "string",
-        "default": "",
-        "description": "The navigation's name (aria-label of its <nav>); the element's aria-label, or the one of a <nav> written inside it, when not set."
-      },
-      "toggle-label": {
-        "type": "string",
-        "default": "",
-        "description": "The words of the button a collapsed menu becomes; «Меню» / «Menu» in the page language when not set."
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
+        }
       }
     },
     "additionalProperties": false
@@ -244,8 +254,7 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
       "returns": {
@@ -257,8 +266,7 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
       "returns": {
@@ -270,10 +278,16 @@
       "arguments": [
         {
           "name": "id",
-          "type": "string",
-          "required": true
+          "schema": {}
         }
       ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "closeAll": {
+      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
+      "arguments": [],
       "returns": {
         "type": "boolean"
       }
@@ -290,16 +304,61 @@
       "returns": {
         "type": "boolean"
       }
-    },
-    "closeAll": {
-      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
-      "arguments": [],
-      "returns": {
-        "type": "boolean"
-      }
     }
   },
   "events": {
+    "sf-menu-navigate": {
+      "summary": "navigate (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "href",
+          "item"
+        ],
+        "properties": {
+          "id": {},
+          "href": {
+            "type": "string"
+          },
+          "item": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-menu-toggle": {
+      "summary": "toggle (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "open",
+          "source",
+          "item"
+        ],
+        "properties": {
+          "id": {},
+          "open": {
+            "type": "boolean"
+          },
+          "source": {
+            "enum": [
+              "user",
+              "method"
+            ]
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-menu:navigate": {
       "summary": "A link of the menu is followed, before the browser goes. Cancellable: preventDefault() stops the navigation so a host that routes itself (a SPA) changes the page. A press with a modifier key, the middle button or a link to another window is the browser's and sends none.",
       "payload": {
@@ -486,7 +545,7 @@
       },
       {
         "path": "src/smart/menu/rule.js",
-        "sha256": "b1b29104b6259d4cf6e9363004fe55a12b969a3cd947e71a678c2cf357441f7d"
+        "sha256": "abef8e484d70bfa6b889acdb406e72e9545165c611b7eed277a3f313dca066e2"
       },
       {
         "path": "src/smart/menu/docs.md",

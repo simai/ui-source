@@ -2,7 +2,7 @@
   "$comment": "The source of sf-breadcrumbs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/breadcrumbs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.breadcrumbs",
   "tag": "sf-breadcrumbs",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -96,7 +96,8 @@
     },
     "expand-label": {
       "type": "string",
-      "default-from": "runtime.expand-label"
+      "default-from": "runtime.expand-label",
+      "summary": "Empty: the text of the page's language (\"Show hidden breadcrumbs\" in English)."
     },
     "expand-on-ellipsis": {
       "type": "boolean",
@@ -127,6 +128,17 @@
       "Enter": "select"
     }
   },
+  "relations": [
+    {
+      "name": "breadcrumbs"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -175,6 +187,31 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-breadcrumbs for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), host-attribute (no shim).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1, §4.8",
+        "note": "stays a host attribute, read for the accessible name; no shim"
+      },
+      {
+        "from": "sf-breadcrumb-click",
+        "to": "sf-breadcrumbs-press",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§3.1 (click), §8",
+        "note": "the old detail adds component, tagName, template and originalEvent, which §8 takes out of the new one: the element's detail adapter makes it",
+        "summary": "An item was clicked. Bubbles, is composed and is cancelable: preventDefault() on an ellipsis item keeps it collapsed. Disabled and current items have the native navigation prevented before dispatch."
+      }
+    ]
+  },
   "x-summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
   "x-source": {
     "package": "framework",
@@ -194,15 +231,23 @@
     "events.sf-breadcrumb-click → press: the DOM name is sf-breadcrumbs-press (§8 <tag>-<verb>); the old name is a dated split alias whose detail keeps component, tagName, template and originalEvent",
     "settings.max-items: a number with integer and min (§4.2)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
-    },
+  "x-decisions": [
+    "version: 1.0.0 → 1.1.0, a minor while sf-breadcrumb-click holds a dated alias (§4.10).",
+    "events: a press on a crumb is `press` (click is a prototype name, §3.1), sent as sf-breadcrumbs-press, cancelable: a page that refuses it keeps the ellipsis closed, as it did with the old name.",
+    "detail-adapter: §8 takes the element and the browser's event out of detail, so sf-breadcrumbs-press carries {item, index, items}; sf-breadcrumb-click follows once with its old detail (component, tagName, template, originalEvent) through a split row and sfAliasAdapters, sharing one cancel.",
+    "key-effects: crumbs are native links and the ellipsis a native button: Tab reaches them, Enter follows a link or opens the hidden crumbs (select). No roving focus.",
+    "a11y-name: aria-label on the host, else the language file's runtime word «Хлебные крошки» / «Breadcrumb» (aria-label stays a host attribute, §3.1, alias row host-attribute).",
+    "item-shape: items name their fields with `of` (label, href, icon, current, disabled, ellipsis, target, rel, value, aria-label, item-class, container-class, hidden-items); the attribute keeps its JSON and \"label::flags|\" forms, and sf-breadcrumbs-item children stay the markup form.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus a long trail with the ellipsis, an icon home and children in the markup; probe.json drives Tab and Enter (gate 16).",
+    "css-variables: six public variables read by the class sheets (component/breadcrumbs) over the role tokens (§6): the gap, a crumb's colour, a link's colour at rest and on hover, the current crumb's colour and the separator's. They are not in src/core/contracts/public-variables.v1.json yet: that file is shared with the field family's branches.",
+    "side-effects: none.",
+    "docs: docs/docs.md, where the folder keeps it (as sf-tooltip).",
+    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.1.2: the scope (§7.7) opens with every placing, also while the trail waits for its items; a trail placed again before its items came kept the scope its removal ended (gate 36).",
+    "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
+  ],
+  "x-registry": {
     "ownership": {
       "source": "simai/ui-source",
       "data": "fixture",
@@ -211,6 +256,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -224,7 +277,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "line",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-breadcrumbs to show the current page location in a hierarchy and provide native links to ancestor pages.",
@@ -247,22 +304,121 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab",
+        "Enter on links",
+        "Enter or Space on the ellipsis button"
+      ],
+      "focus": "Native links and the ellipsis button use keyboard-only focus-visible; the current page does not enter the tab order."
+    },
+    "alias-events": {
+      "sf-breadcrumb-click": {
+        "summary": "An item was clicked. Bubbles, is composed and is cancelable: preventDefault() on an ellipsis item keeps it collapsed. Disabled and current items have the native navigation prevented before dispatch.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting element."
+            },
+            "tagName": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string",
+              "description": "The active template name."
+            },
+            "item": {
+              "type": "object",
+              "description": "The clicked display item."
+            },
+            "index": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "description": "The display items at the time of the click."
+            },
+            "originalEvent": {
+              "description": "The native click event."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "getCapturedItems": {
+        "summary": "Reads the captured sf-breadcrumbs-item children into plain item objects (label, href, icon, current, active, disabled, ellipsis, target, rel, itemClass, containerClass, ariaLabel, value, hiddenItems).",
+        "arguments": [],
+        "returns": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "getDisplayItems": {
+        "summary": "Returns the items as they are shown: when there are more than max-items (at least 3) and the ellipsis is not expanded, the middle is replaced by one ellipsis item holding the hidden ones; every item is reindexed and only the last may be current.",
+        "arguments": [
+          {
+            "name": "items",
+            "type": "array",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "setState": {
+        "summary": "Writes each key as a host attribute (camelCase to kebab-case): arrays as JSON, true as an empty attribute, false/null/undefined remove it. Returns the element.",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onItemClick": {
+        "summary": "Adds a listener for sf-breadcrumb-click; the handler receives (item, detail, event). Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
+    },
+    "inputs": {
+      "aria-label": {
+        "description": "Empty: the text of the page's language (\"Breadcrumb\" in English)."
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.0.0 → 1.1.0, a minor while sf-breadcrumb-click holds a dated alias (§4.10).",
-    "events: a press on a crumb is `press` (click is a prototype name, §3.1), sent as sf-breadcrumbs-press, cancelable: a page that refuses it keeps the ellipsis closed, as it did with the old name.",
-    "detail-adapter: §8 takes the element and the browser's event out of detail, so sf-breadcrumbs-press carries {item, index, items}; sf-breadcrumb-click follows once with its old detail (component, tagName, template, originalEvent) through a split row and sfAliasAdapters, sharing one cancel.",
-    "key-effects: crumbs are native links and the ellipsis a native button: Tab reaches them, Enter follows a link or opens the hidden crumbs (select). No roving focus.",
-    "a11y-name: aria-label on the host, else the language file's runtime word «Хлебные крошки» / «Breadcrumb» (aria-label stays a host attribute, §3.1, alias row host-attribute).",
-    "item-shape: items name their fields with `of` (label, href, icon, current, disabled, ellipsis, target, rel, value, aria-label, item-class, container-class, hidden-items); the attribute keeps its JSON and \"label::flags|\" forms, and sf-breadcrumbs-item children stay the markup form.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus a long trail with the ellipsis, an icon home and children in the markup; probe.json drives Tab and Enter (gate 16).",
-    "css-variables: six public variables read by the class sheets (component/breadcrumbs) over the role tokens (§6): the gap, a crumb's colour, a link's colour at rest and on hover, the current crumb's colour and the separator's. They are not in src/core/contracts/public-variables.v1.json yet: that file is shared with the field family's branches.",
-    "side-effects: none.",
-    "docs: docs/docs.md, where the folder keeps it (as sf-tooltip).",
-    "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the scope (§7.7) opens with every placing, also while the trail waits for its items; a trail placed again before its items came kept the scope its removal ended (gate 36).",
-    "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate)."
-  ]
+  }
 }

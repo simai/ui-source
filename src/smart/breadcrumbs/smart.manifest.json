@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Breadcrumbs",
   "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
   "kind": "smart",
@@ -33,11 +33,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "items": {
+      "root-class": {
         "type": "string",
-        "default": []
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "separator-icon": {
         "type": "string",
@@ -48,10 +53,6 @@
         "default": "home"
       },
       "home-label": {
-        "type": "string",
-        "default": ""
-      },
-      "root-class": {
         "type": "string",
         "default": ""
       },
@@ -75,14 +76,8 @@
         "type": "string",
         "default": ""
       },
-      "aria-label": {
-        "type": "string",
-        "default": "",
-        "description": "Empty: the text of the page's language (\"Breadcrumb\" in English)."
-      },
       "expand-label": {
         "type": "string",
-        "default": "",
         "description": "Empty: the text of the page's language (\"Show hidden breadcrumbs\" in English)."
       },
       "expand-on-ellipsis": {
@@ -90,8 +85,18 @@
         "default": true
       },
       "max-items": {
-        "type": "number",
-        "default": 4
+        "type": "integer",
+        "default": 4,
+        "minimum": 0
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Empty: the text of the page's language (\"Breadcrumb\" in English)."
+      },
+      "items": {
+        "type": "array",
+        "default": []
       }
     },
     "additionalProperties": false
@@ -163,6 +168,29 @@
     }
   },
   "events": {
+    "sf-breadcrumbs-press": {
+      "summary": "press (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "item",
+          "index",
+          "items"
+        ],
+        "properties": {
+          "item": {
+            "type": "object"
+          },
+          "index": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-breadcrumb-click": {
       "summary": "An item was clicked. Bubbles, is composed and is cancelable: preventDefault() on an ellipsis item keeps it collapsed. Disabled and current items have the native navigation prevented before dispatch.",
       "payload": {
