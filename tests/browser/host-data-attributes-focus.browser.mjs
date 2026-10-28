@@ -329,6 +329,39 @@ try {
     check('a queued focus does not steal focus back', early.kept === 'other', early);
     await page.close();
   }
+
+  // 5. An emptied text attribute empties the button, and a label written as a
+  //    text child and then emptied through the attribute does too (simai.main,
+  //    a toolbar that clears its labels on a narrow screen, 2026-10-28).
+  {
+    const page = await open('<div id="bar"><sf-button id="admin" text="Администрирование" icon-start="settings"></sf-button></div>');
+
+    const cleared = await page.evaluate(async () => {
+      const settle = () => new Promise((done) => setTimeout(done, 300));
+      const label = (host) => host.querySelector('button')?.textContent.trim() ?? null;
+      const admin = document.querySelector('#admin');
+      await settle();
+      const before = label(admin);
+      admin.setAttribute('text', '');
+      await settle();
+      const afterAttribute = {label: label(admin), text: admin.text};
+
+      const child = document.createElement('sf-button');
+      child.textContent = 'Добавить';
+      document.querySelector('#bar').append(child);
+      await settle();
+      const childBefore = label(child);
+      child.setAttribute('text', '');
+      await settle();
+      return {before, afterAttribute, childBefore, childAfter: {label: label(child), text: child.text}};
+    });
+    evidence.cleared = cleared;
+
+    check('a button drew its text attribute', cleared.before === 'Администрирование', cleared);
+    check('an emptied text attribute empties the button', cleared.afterAttribute.label === '' && cleared.afterAttribute.text === '', cleared);
+    check('a text-child label emptied through the attribute is gone', cleared.childBefore === 'Добавить' && cleared.childAfter.label === '' && cleared.childAfter.text === '', cleared);
+    await page.close();
+  }
 } finally {
   await browser.close();
 }
