@@ -3838,10 +3838,17 @@ SFLoaderPlugin.prototype.ready = function (className, callback) {
       ),
   );
 
+  // A component registers a class, and an API module an object (the theme
+  // palette registers SF.ThemePalette): either is what ready() hands over.
+  // Only a class was taken, so ready('theme-palette') never answered. The
+  // callback runs once, whichever spelling's event comes.
+  let answered = false;
   const tryResolve = () => {
+    if (answered) return true;
     for (const name of variants) {
       const cls = this.ComponentRegistry[name];
-      if (typeof cls === 'function') {
+      if (typeof cls === 'function' || (cls && typeof cls === 'object')) {
+        answered = true;
         callback(cls);
         return true;
       }
