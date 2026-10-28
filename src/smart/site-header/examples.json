@@ -33,6 +33,10 @@
       },
       "expect": {
         "size": "1/2"
+      },
+      "first-paint": {
+        "max-bytes": 10240,
+        "why": "a full site bar: brand, five navigation links, the theme switch and the colour swatch are all on the page before any code, so the bar holds its height and the links work without script"
       }
     },
     {
@@ -46,6 +50,10 @@
       "expect": {
         "collapse": "xl",
         "sticky": true
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a documentation site bar: brand, navigation, search, language, repository link and the theme switch print as the page reads them, so nothing moves when the code arrives"
       }
     },
     {
