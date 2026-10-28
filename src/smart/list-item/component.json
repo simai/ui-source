@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-item's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/list-item (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.list-item",
   "tag": "sf-list-item",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -20,7 +20,8 @@
         "avatar",
         "color"
       ],
-      "default": "text"
+      "default": "text",
+      "summary": "What the list item carries: plain text, an icon, a checkbox, an avatar or a colour."
     },
     "size": {
       "type": "enum",
@@ -155,6 +156,23 @@
       }
     }
   },
+  "relations": [
+    {
+      "name": "dropdown"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "checkbox"
+    },
+    {
+      "name": "avatars"
+    },
+    {
+      "name": "tags"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -235,6 +253,40 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-list-item for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "type",
+        "to": "kind",
+        "kind": "setting",
+        "section": "§16 item 20, contracts/public-api-axes.json",
+        "note": "the legacy axis name; the shim maps the attribute and the property",
+        "summary": "Legacy name for kind, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "sf-list-item-activate",
+        "to": "sf-list-item-open",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5 §5 open",
+        "note": "the old detail {value, item, trigger} is made by the element's adapter (sfAliasAdapters)",
+        "summary": "An interactive row was clicked or took Enter (not a control inside it, and not Enter on a row of an sf-sortable list, where Enter picks the row up)."
+      }
+    ]
+  },
   "x-summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "x-source": {
     "package": "framework",
@@ -253,14 +305,72 @@
     "events.sf-list-item-activate {value, item, trigger} → open {id, trigger}: a press on a row asks to open it (vocabulary 1.1.5 §5 open, as sf-tree:activate → open); sf-list-item-open, the old name a dated split alias with its old detail",
     "the value property: an object snapshot of every attribute → the value setting's string (§4); writing an object still writes the attributes"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "events (vocabulary 1.1.5 §5): a press or Enter on an interactive row asks to open that row, so the event is open {id, trigger} with id = value -- the same verb the vocabulary gives sf-tree:activate and thread-list-select -- sent as sf-list-item-open. The old sf-list-item-activate follows until 2026-12-01 as a split alias whose adapter gives its old detail {value, item, trigger}.",
+    "type → kind: type was the legacy name of the kind axis; it leaves the settings and is a dated setting alias (attribute and property, aliases.json), as sf-button's type → appearance.",
+    "value: the value setting is the row's id, a string (§4). The value property answered an object snapshot of every attribute and took one to write them; reading it now answers the id, writing an object still writes its attributes (a compatibility path the template studio used), so nothing that wrote rows breaks. Nothing in SIMAI Framework read the snapshot.",
+    "checked and selected are values with a default, so they are writable settings too (§4); selected is the row's own state, the list's selection (§18.2) is its parent's.",
+    "a11y-role: none. The list owns the role (aria-current marks a selected row); the option role is sf-dropdown's, drawn with the same template when it captures the row as an option.",
+    "key-effects: on an interactive (or sortable) row ArrowDown, ArrowUp, Home and End move the focus between the list's rows (focus:next/prev/first/last), Tab reaches the list's one stop, Enter opens the row (open). In sf-sortable Space and Enter pick the row up: that is the list's key, not the row's.",
+    "item-shape: the list item has no list setting; item_contract (parent, placement, machine value, visible label) describes its place in sf-dropdown, which reads value and text -- named by the settings themselves, nothing to declare with of.",
+    "own-verb-words: none left -- open is a vocabulary verb.",
+    "version 1.2.0: an event and a setting renamed behind dated aliases, the value property's object form retired (§4.10).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json (an icon row) plus a two-line interactive row, a checkbox row, an avatar row, a colour row and a disabled row.",
+    "css-variables: five public variables read by the class sheet it draws with (component/dropdown, _css__list-item.scss): the row's fill, its divider, the title's ink, the supporting line's ink and the handle's ink, each over the role token it replaced. Listed in src/core/contracts/public-variables.v1.json.",
+    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.2.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "option-descriptor",
+      "list-row",
+      "roving-focus",
+      "sortable-item"
+    ],
+    "readiness": {
+      "level": "accepted",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "owner-contract",
+        "browser-accessibility",
+        "documentation-example"
+      ]
+    },
+    "item_contract": {
+      "parent": "smart.dropdown",
+      "placement": "direct-child",
+      "machine_value": "value",
+      "visible_label": "text or the type-specific visible title"
+    },
+    "contracts": {
+      "standalone": {
+        "const": "Non-interactive visual preview without a synthetic role or Tab stop, unless interactive or sortable-item makes it a list row."
+      },
+      "owned_option": {
+        "const": "Dropdown owns listbox semantics, focus, selection, form state and events."
+      },
+      "decorations": {
+        "const": "Icons, avatar images, color swatches and checkbox marks do not add focus targets."
+      },
+      "list_row": {
+        "const": "An interactive or sortable row is one stop of its list (the nearest sf-sortable, listbox, list or [data-sf-list], else its parent): roving tabindex, ArrowUp/ArrowDown/Home/End between rows; a keyboard reorder in progress keeps the arrows. One-line height is the control height of the size; two-line adds one line of the step below."
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "selected",
+        "active",
+        "disabled"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -270,6 +380,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -283,10 +401,14 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "line",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
-      "use_when": "Use sf-list-item as a direct child of sf-dropdown to declare an option, or as a list row: supporting for a second line, interactive for a row a person acts on (sf-list-item-open {id}), sortable-item inside sf-sortable, pinned for a row that stays in place.",
+      "use_when": "Use sf-list-item as a direct child of sf-dropdown to declare an option, or as a list row: supporting for a second line, interactive for a row a person acts on, sortable-item inside sf-sortable, pinned for a row that stays in place.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component",
@@ -306,22 +428,42 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "ArrowDown",
+        "ArrowUp",
+        "Home",
+        "End",
+        "Enter",
+        "Space",
+        "Escape"
+      ],
+      "focus": "Owned by the parent Dropdown composite for options; a standalone preview is not focusable; an interactive or sortable row is a roving Tab stop of its list, with an inset focus ring."
+    },
+    "alias-events": {
+      "sf-list-item-activate": {
+        "summary": "An interactive row was clicked or took Enter (not a control inside it, and not Enter on a row of an sf-sortable list, where Enter picks the row up).",
+        "payload": {
+          "type": "object",
+          "required": [
+            "value",
+            "trigger"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            },
+            "trigger": {
+              "enum": [
+                "pointer",
+                "keyboard"
+              ]
+            }
+          }
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "events (vocabulary 1.1.5 §5): a press or Enter on an interactive row asks to open that row, so the event is open {id, trigger} with id = value -- the same verb the vocabulary gives sf-tree:activate and thread-list-select -- sent as sf-list-item-open. The old sf-list-item-activate follows until 2026-12-01 as a split alias whose adapter gives its old detail {value, item, trigger}.",
-    "type → kind: type was the legacy name of the kind axis; it leaves the settings and is a dated setting alias (attribute and property, aliases.json), as sf-button's type → appearance.",
-    "value: the value setting is the row's id, a string (§4). The value property answered an object snapshot of every attribute and took one to write them; reading it now answers the id, writing an object still writes its attributes (a compatibility path the template studio used), so nothing that wrote rows breaks. Nothing in SIMAI Framework read the snapshot.",
-    "checked and selected are values with a default, so they are writable settings too (§4); selected is the row's own state, the list's selection (§18.2) is its parent's.",
-    "a11y-role: none. The list owns the role (aria-current marks a selected row); the option role is sf-dropdown's, drawn with the same template when it captures the row as an option.",
-    "key-effects: on an interactive (or sortable) row ArrowDown, ArrowUp, Home and End move the focus between the list's rows (focus:next/prev/first/last), Tab reaches the list's one stop, Enter opens the row (open). In sf-sortable Space and Enter pick the row up: that is the list's key, not the row's.",
-    "item-shape: the list item has no list setting; item_contract (parent, placement, machine value, visible label) describes its place in sf-dropdown, which reads value and text -- named by the settings themselves, nothing to declare with of.",
-    "own-verb-words: none left -- open is a vocabulary verb.",
-    "version 1.2.0: an event and a setting renamed behind dated aliases, the value property's object form retired (§4.10).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json (an icon row) plus a two-line interactive row, a checkbox row, an avatar row, a colour row and a disabled row.",
-    "css-variables: five public variables read by the class sheet it draws with (component/dropdown, _css__list-item.scss): the row's fill, its divider, the title's ink, the supporting line's ink and the handle's ink, each over the role token it replaced. Listed in src/core/contracts/public-variables.v1.json.",
-    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.2.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

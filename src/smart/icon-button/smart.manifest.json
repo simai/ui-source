@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon-button",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -22,11 +22,11 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.badges",
       "component.icon-buttons",
-      "smart.icon",
-      "smart.close",
       "component.spinner",
-      "component.badges"
+      "smart.close",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -38,14 +38,23 @@
         "default": "default",
         "description": "Template variant name for SfBaseElement external templates."
       },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Extra classes applied to the inner icon button element."
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "kind": {
         "type": "string",
         "default": "icon",
+        "description": "What the icon button is: an ordinary icon action or a close control.",
         "enum": [
           "icon",
           "close"
-        ],
-        "description": "What the icon button is: an ordinary icon action or a close control."
+        ]
       },
       "size": {
         "type": "string",
@@ -123,17 +132,6 @@
           "spacious"
         ]
       },
-      "tightness": {
-        "type": "string",
-        "default": "",
-        "description": "Compatibility alias for spacing.",
-        "enum": [
-          "",
-          "low",
-          "high",
-          "highest"
-        ]
-      },
       "radius": {
         "type": "string",
         "default": "",
@@ -144,11 +142,6 @@
           "square",
           "rounded"
         ]
-      },
-      "root-class": {
-        "type": "string",
-        "default": "",
-        "description": "Extra classes applied to the inner icon button element."
       },
       "loading": {
         "type": "boolean",
@@ -170,11 +163,6 @@
           "reset"
         ]
       },
-      "aria-label": {
-        "type": "string",
-        "default": "",
-        "description": "Accessible label."
-      },
       "badge-count": {
         "type": "string",
         "default": "",
@@ -188,21 +176,18 @@
       "badge-cap": {
         "type": "integer",
         "default": 99,
-        "description": "The largest count drawn as a number; a larger one reads «<cap>+»."
+        "description": "The largest count drawn as a number; a larger one reads «<cap>+».",
+        "minimum": 1
       },
       "badge-label": {
         "type": "string",
         "default": "",
         "description": "The words the badge adds to the accessible name and its tooltip, in place of the page language's default: for a dot the whole text equivalent; for a count the phrase in plural forms separated by «|» (one|few|many in Russian, one|other in English) with {count} where the number goes."
       },
-      "variant": {
+      "aria-label": {
         "type": "string",
-        "default": "icon",
-        "description": "Legacy name for kind, still honoured. See contracts/public-api-axes.json.",
-        "enum": [
-          "icon",
-          "close"
-        ]
+        "default": "",
+        "description": "Accessible label."
       },
       "type": {
         "type": "string",
@@ -216,6 +201,29 @@
           "surface",
           "ghost"
         ]
+      },
+      "variant": {
+        "type": "string",
+        "default": "icon",
+        "description": "Legacy name for kind, still honoured. See contracts/public-api-axes.json.",
+        "enum": [
+          "icon",
+          "close"
+        ]
+      },
+      "tightness": {
+        "type": "string",
+        "default": "",
+        "description": "Compatibility alias for spacing.",
+        "enum": [
+          "low",
+          "high",
+          "highest"
+        ]
+      },
+      "button-attributes": {
+        "type": "object",
+        "description": "Attributes an external project template may put on its button; the built-in template does not read them"
       }
     },
     "additionalProperties": false
@@ -500,7 +508,11 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "spacing=low",
+      "spacing=high",
+      "spacing=highest"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []

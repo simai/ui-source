@@ -14,6 +14,41 @@
       },
       "expect": {
         "value": "team@simai.ru"
+      },
+      "studio": {
+        "title": "Inputs reference",
+        "props": {
+          "label": "Электронная почта",
+          "value": "team@simai.ru",
+          "required": true,
+          "hint": "На этот адрес придёт подтверждение.",
+          "input-type": "email",
+          "autocomplete": "email"
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "getInputElement",
+              "with": []
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            {
+              "type": "native-attribute",
+              "target": "input",
+              "name": "type",
+              "value": "email"
+            },
+            {
+              "type": "form-value",
+              "target": "input",
+              "value": "hello@example.com"
+            },
+            "no-console-error",
+            "no-network"
+          ]
+        }
       }
     },
     {
@@ -107,6 +142,374 @@
       },
       "expect": {
         "size": "2"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-input against component.json (standard simai.smart-component 1.3.8 §12, §17, §20, gate 20)",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "input",
+            "change"
+          ],
+          "box": "input"
+        },
+        "format": "stands/15-scenarios (A2 quantity); the runner is tests/browser/manifest-probes.browser.mjs",
+        "checks": [
+          {
+            "id": "typed-text-submits",
+            "covers": "values.value, form.submits, events.input/change (native)",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "user": [
+              "type:ab",
+              "tab"
+            ],
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "login": "ab"
+              },
+              "formNames": [
+                "login"
+              ],
+              "innerNames": [
+                null
+              ],
+              "listed": 1
+            }
+          },
+          {
+            "id": "typing-says-input-then-change",
+            "covers": "events.input, events.change (native, §17.3)",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "user": [
+              "type:ab",
+              "tab"
+            ],
+            "expect": {
+              "events": [
+                {
+                  "type": "input"
+                },
+                {
+                  "type": "input"
+                },
+                {
+                  "type": "change"
+                }
+              ],
+              "value": "ab"
+            }
+          },
+          {
+            "id": "tab-reaches-the-box",
+            "covers": "keyboard.host.Tab reach",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "user": "tab",
+            "expect": {
+              "focus": "sf-input input"
+            }
+          },
+          {
+            "id": "setting-value-is-silent",
+            "covers": "§8: a value set from outside sends nothing",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "property": {
+              "name": "value",
+              "value": "set"
+            },
+            "expect": {
+              "events": [],
+              "formData": {
+                "login": "set"
+              }
+            }
+          },
+          {
+            "id": "required-empty-blocks-submit",
+            "covers": "form.required, form.validity value-missing",
+            "field": "<sf-input name=\"email\" label=\"Почта\" required></sf-input>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "checkValidity": false,
+              "validity": {
+                "valueMissing": true,
+                "valid": false
+              }
+            }
+          },
+          {
+            "id": "email-type-mismatch",
+            "covers": "form.validity type-mismatch",
+            "field": "<sf-input name=\"email\" label=\"Почта\" input-type=\"email\" value=\"nope\"></sf-input>",
+            "form": "reset",
+            "expect": {
+              "checkValidity": false,
+              "validity": {
+                "typeMismatch": true
+              }
+            }
+          },
+          {
+            "id": "pattern-mismatch",
+            "covers": "form.validity pattern-mismatch",
+            "field": "<sf-input name=\"code\" label=\"Код\" pattern=\"[0-9]+\" value=\"abc\"></sf-input>",
+            "form": "reset",
+            "expect": {
+              "checkValidity": false,
+              "validity": {
+                "patternMismatch": true
+              }
+            }
+          },
+          {
+            "id": "disabled-leaves-the-form",
+            "covers": "form.disabled (§17.1 item 3)",
+            "field": "<sf-input name=\"login\" value=\"admin\" label=\"Логин\"></sf-input>",
+            "setting": {
+              "name": "disabled",
+              "value": true
+            },
+            "expect": {
+              "formData": {
+                "login": null
+              },
+              "disabled": {
+                "input": true
+              }
+            }
+          },
+          {
+            "id": "readonly-submits",
+            "covers": "form.readonly (§17.1 item 3)",
+            "field": "<sf-input name=\"code\" value=\"A-17\" label=\"Код\" readonly></sf-input>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "code": "A-17"
+              }
+            }
+          },
+          {
+            "id": "form-reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4), no events",
+            "field": "<sf-input name=\"login\" value=\"a\" label=\"Логин\"></sf-input>",
+            "given": [
+              {
+                "user": "type:b"
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "events": [],
+              "value": "a",
+              "formData": {
+                "login": "a"
+              }
+            }
+          },
+          {
+            "id": "inherited-submits-empty",
+            "covers": "trait field-inherit: shown, never the value; data-inherited",
+            "field": "<sf-input name=\"brand\" label=\"Цвет\" inherited-value=\"#336699\"></sf-input>",
+            "form": "submit",
+            "expect": {
+              "submitted": true,
+              "formData": {
+                "brand": ""
+              },
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                }
+              },
+              "box": {
+                "text": "",
+                "attributes": {
+                  "placeholder": "#336699"
+                }
+              }
+            }
+          },
+          {
+            "id": "inherited-does-not-meet-required",
+            "covers": "§20.2: an inherited value does not satisfy required",
+            "field": "<sf-input name=\"brand\" label=\"Цвет\" required inherited-value=\"#336699\"></sf-input>",
+            "form": "submit",
+            "expect": {
+              "submitted": false,
+              "validity": {
+                "valueMissing": true
+              }
+            }
+          },
+          {
+            "id": "reset-to-inherited-new-then-old-event",
+            "covers": "sf-field-reset then sf-field:reset once each, one detail, a dated journal note (§8, §16.20, §20.2)",
+            "field": "<sf-input name=\"brand\" label=\"Цвет\" value=\"#112233\" inherited-value=\"#336699\"></sf-input>",
+            "listen": [
+              "sf-field-reset",
+              "sf-field:reset",
+              "input",
+              "change"
+            ],
+            "action": {
+              "name": "reset-to-inherited"
+            },
+            "expect": {
+              "returns": true,
+              "events": [
+                {
+                  "type": "sf-field-reset",
+                  "tag": "sf-input",
+                  "value": "#112233",
+                  "inheritedValue": "#336699",
+                  "name": "brand"
+                },
+                {
+                  "type": "sf-field:reset",
+                  "tag": "sf-input",
+                  "value": "#112233",
+                  "inheritedValue": "#336699",
+                  "name": "brand"
+                },
+                {
+                  "type": "input"
+                },
+                {
+                  "type": "change"
+                }
+              ],
+              "journal": [
+                {
+                  "from": "sf-field:reset",
+                  "to": "sf-field-reset",
+                  "kind": "event",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "formData": {
+                "brand": ""
+              },
+              "host": {
+                "attributes": {
+                  "data-inherited": "true"
+                }
+              }
+            }
+          },
+          {
+            "id": "custom-validity-blocks-submit",
+            "covers": "form.validity custom-error (§17.2)",
+            "field": "<sf-input name=\"login\" value=\"admin\" label=\"Логин\"></sf-input>",
+            "action": {
+              "name": "set-custom-validity",
+              "with": "Занято"
+            },
+            "expect": {
+              "checkValidity": false,
+              "validity": {
+                "customError": true,
+                "valid": false
+              }
+            }
+          },
+          {
+            "id": "legacy-error-is-invalid",
+            "covers": "aliases.json error -> invalid (§17.2)",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "setting": {
+              "name": "error",
+              "value": true
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "invalid": ""
+                },
+                "props": {
+                  "invalid": true
+                }
+              },
+              "box": {
+                "attributes": {
+                  "aria-invalid": "true"
+                }
+              },
+              "journal": [
+                {
+                  "from": "error",
+                  "to": "invalid",
+                  "kind": "setting",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "legacy-type-is-appearance",
+            "covers": "aliases.json type -> appearance",
+            "field": "<sf-input name=\"login\" label=\"Логин\"></sf-input>",
+            "setting": {
+              "name": "type",
+              "value": "filled"
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "appearance": "filled"
+                },
+                "props": {
+                  "appearance": "filled"
+                }
+              },
+              "journal": [
+                {
+                  "from": "type",
+                  "to": "appearance",
+                  "kind": "setting",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "legacy-left-icon-is-icon-start",
+            "covers": "aliases.json left-icon -> icon-start",
+            "field": "<sf-input name=\"q\" label=\"Поиск\"></sf-input>",
+            "setting": {
+              "name": "left-icon",
+              "value": "search"
+            },
+            "expect": {
+              "host": {
+                "attributes": {
+                  "icon-start": "search"
+                }
+              },
+              "journal": [
+                {
+                  "from": "left-icon",
+                  "to": "icon-start",
+                  "kind": "setting",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ]

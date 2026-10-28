@@ -12,7 +12,15 @@
         "aria-hidden": true,
         "items": 3
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "props": {
+          "count": 3,
+          "height": "b4",
+          "variant": "text"
+        },
+        "scenario": {}
+      }
     },
     {
       "name": "circle",
@@ -48,6 +56,69 @@
       "expect": {
         "items": 1
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-skeleton against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-skeleton id=\"k1\" count=\"3\" height=\"b4\"></sf-skeleton>",
+          "  <sf-skeleton id=\"k2\" kind=\"circle\" width=\"b10\" height=\"b10\" items=\"data-part=avatar,onclick=x\"></sf-skeleton>",
+          "  <sf-skeleton id=\"k-old\" variant=\"rounded\"></sf-skeleton>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-hidden-geometry",
+          "title": "the bars are aria-hidden and have no role",
+          "covers": "accessibility (role none, name none)",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#k1 .sf-skeleton'); return r.getAttribute('aria-hidden') === 'true' && !r.hasAttribute('role') && r.querySelectorAll('[data-sf-skeleton-item]').length === 3; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-count-number",
+          "title": "count is a number, clamped to 1..20",
+          "covers": "settings.count",
+          "steps": [
+            {
+              "script": "(document.getElementById('k1').count = 40, document.getElementById('k1').count)",
+              "wait": 300,
+              "expect": {
+                "returns": 40
+              },
+              "check": "document.querySelectorAll('#k1 .sf-skeleton [data-sf-skeleton-item]').length === 20"
+            }
+          ]
+        },
+        {
+          "id": "p3-items-safe",
+          "title": "items reach the bars with aria-* and data-* only",
+          "covers": "settings.items",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#k2 [data-sf-skeleton-item]'); return b.dataset.part === 'avatar' && !b.hasAttribute('onclick') && b.classList.contains('sf-skeleton-circle'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-alias",
+          "title": "variant answers as kind, noted with its dates",
+          "covers": "aliases.json",
+          "steps": [
+            {
+              "check": "document.getElementById('k-old').getAttribute('kind') === 'rounded' && Boolean(document.querySelector('#k-old .sf-skeleton-rounded'))"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

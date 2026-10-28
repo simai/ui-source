@@ -2,7 +2,7 @@
   "$comment": "The source of sf-toast's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/toast (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.toast",
   "tag": "sf-toast",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "toast",
   "settings": {
@@ -15,11 +15,13 @@
         "warning",
         "error"
       ],
-      "default": "neutral"
+      "default": "neutral",
+      "summary": "What the message reports, in the shared status vocabulary. The words this component used before — default and primary — are still accepted and mean neutral and info."
     },
     "icon": {
       "type": "icon",
-      "default": ""
+      "default": "",
+      "summary": "Optional decorative icon name."
     },
     "heading": {
       "type": "string",
@@ -27,36 +29,47 @@
     },
     "supporting-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Concise supporting text at the normal body size."
     },
     "action-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Visible label of the one optional action."
     },
     "action": {
       "type": "string",
-      "default": "action"
+      "default": "action",
+      "summary": "Stable action value emitted in sf-toast-action."
     },
     "closable": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Render an explicitly named close action."
     },
     "close-label": {
       "type": "string",
-      "default-from": "runtime.close-label"
+      "default-from": "runtime.close-label",
+      "summary": "Localized accessible name of the close action. Empty: the text of the page's language (\"Close message\" in English)."
     },
     "duration": {
       "type": "number",
-      "default": 0
+      "default": 0,
+      "summary": "Explicit lifetime in milliseconds. Zero keeps the message until dismissed.",
+      "min": 0
     }
   },
   "values": {},
   "events": {
     "action": {
       "carries": {
-        "action": "string"
+        "action": {
+          "type": "string",
+          "summary": "data-action or data-toast-action of the pressed control; empty when neither is set."
+        }
       },
-      "own-verb": true
+      "own-verb": true,
+      "summary": "Emitted once when the optional enabled action is activated."
     },
     "close": {
       "carries": {
@@ -71,7 +84,8 @@
           ]
         }
       },
-      "cancelable": true
+      "cancelable": true,
+      "summary": "Emitted once before token-based dismissal removes the toast owner."
     },
     "closed": {
       "carries": {
@@ -94,7 +108,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Same as dismiss: emits sf-toast-close and removes the toast.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "show": {
       "with": {
@@ -128,6 +147,23 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "toast"
+    },
+    {
+      "name": "buttons"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "close"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -183,6 +219,53 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-toast for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (setting rows), host-attribute (no shim), manifest-only (the DOM name does not change).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26",
+        "summary": "Short result heading."
+      },
+      {
+        "from": "type",
+        "to": "status",
+        "kind": "setting",
+        "section": "the axis's old name (journal attribute-type-to-status)",
+        "summary": "Legacy name for status, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "role",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the toast (status or alert) and written on its root; no shim"
+      },
+      {
+        "from": "sf-toast-action",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§8",
+        "note": "the DOM name stays; detail keeps action and loses the elements toast and trigger",
+        "summary": "Emitted once when the optional enabled action is activated."
+      },
+      {
+        "from": "sf-toast-close",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§8, §19.3",
+        "note": "the DOM name stays and is cancelable now; detail is {reason}, without the elements toast and trigger",
+        "summary": "Emitted once before token-based dismissal removes the toast owner."
+      }
+    ]
+  },
   "x-summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "x-source": {
     "package": "framework",
@@ -208,14 +291,52 @@
     "settings.role: a host attribute, read by the base, never a setting (§3.1)",
     "events sf-toast-action, sf-toast-close: the DOM names stay; detail carries data only (action, reason), the elements toast and trigger leave it (§8); close is a cancelable request and closed the fact (§19.3)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "own-verb-words: action is a verb of the toast alone (the person pressed the toast's action button); its word is lang events.action.label.",
+    "version: 1.0.0 → 1.1.0: title and type are dated aliases, close becomes cancelable, closed and show are added.",
+    "a11y-role: the toast takes the host's role attribute when it is status or alert and writes it on its root; without it the notification region that holds the toast announces (SF.notify).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the statuses, an action and a timed toast; probe.json drives the close and action buttons and Tab.",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
+    "side-effects: none. sf-toast draws where it stands; the toast layer of the one stack is the notification region SF.notify places it in (core/js/notify.js, kind toast: it takes no keys and no presses).",
+    "events: the shared class toast (component/toast/js/_toast.js) sends sf-toast-close and sf-toast-action on its root with the elements in detail; sf-toast stops them at its host and sends its own from the host with data only. The class close is cancelable now, so a refused sf-toast-close keeps the toast. Reasons: close (its own close button), api (dismiss(), close(), the timer).",
+    "show: an assembly's rule says a message through the toast: text (the word of code and count, §11.2) becomes the heading and tone the status.",
+    "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "contracts": {
+      "semantic_types": {
+        "type": "string",
+        "enum": [
+          "default",
+          "primary",
+          "error",
+          "warning",
+          "success"
+        ]
+      },
+      "canonical_behavior_attributes": {
+        "type": "string",
+        "enum": [
+          "data-action",
+          "data-close",
+          "data-duration"
+        ]
+      },
+      "dismissal_state": {
+        "const": "closing"
+      },
+      "lifetime": {
+        "persistent": "duration=0; required for messages whose action or content must not be missed",
+        "timed": "positive duration; pauses while pointer or keyboard focus is inside the toast",
+        "dismiss": "token motion completes before the visual owner is removed"
+      },
+      "live_region_guidance": {
+        "assertive": "role=alert only for a newly inserted urgent error",
+        "polite": "role=status for a newly inserted non-urgent result",
+        "static": "omit a live-region role when the toast is present on initial page load"
+      }
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -225,6 +346,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -238,7 +367,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-toast for concise transient overlay feedback that does not block the current task.",
@@ -262,19 +395,75 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "focus": "Native actions use focus-visible; a timed toast pauses while focus is inside it."
+    },
+    "methods": {
+      "setState": {
+        "summary": "Writes each key as its kebab-case attribute: false, null, undefined or empty removes it, true sets it empty, anything else is stringified.",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAction": {
+        "summary": "Adds a listener for sf-toast-action; the handler is called with (action, detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onClose": {
+        "summary": "Adds a listener for sf-toast-close; the handler is called with (detail, event). Ignores a non-function handler.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": "object|boolean",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
+    },
+    "inputs": {
+      "role": {
+        "default": "",
+        "description": "Live-region role for dynamically inserted feedback only.",
+        "enum": [
+          "",
+          "status",
+          "alert"
+        ]
+      }
     }
-  },
-  "x-decisions": [
-    "own-verb-words: action is a verb of the toast alone (the person pressed the toast's action button); its word is lang events.action.label.",
-    "version: 1.0.0 → 1.1.0: title and type are dated aliases, close becomes cancelable, closed and show are added.",
-    "a11y-role: the toast takes the host's role attribute when it is status or alert and writes it on its root; without it the notification region that holds the toast announces (SF.notify).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the statuses, an action and a timed toast; probe.json drives the close and action buttons and Tab.",
-    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json).",
-    "side-effects: none. sf-toast draws where it stands; the toast layer of the one stack is the notification region SF.notify places it in (core/js/notify.js, kind toast: it takes no keys and no presses).",
-    "events: the shared class toast (component/toast/js/_toast.js) sends sf-toast-close and sf-toast-action on its root with the elements in detail; sf-toast stops them at its host and sends its own from the host with data only. The class close is cancelable now, so a refused sf-toast-close keeps the toast. Reasons: close (its own close button), api (dismiss(), close(), the timer).",
-    "show: an assembly's rule says a message through the toast: text (the word of code and count, §11.2) becomes the heading and tone the status.",
-    "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

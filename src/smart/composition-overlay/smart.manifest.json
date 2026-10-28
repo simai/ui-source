@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Composition overlay",
-  "summary": "Editor chrome over a rendered Composition Document: frames, labels, badges, action toolbar, insertion places, drag and keyboard moves and a keyboard tree, without changing the canvas HTML. A framed mode draws the same chrome over a same-origin iframe fed a flat node list, with plain-string inline editing.",
+  "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -32,28 +32,53 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "for": {
         "type": "string",
         "default": "",
-        "description": "id of the canvas element that holds SF.Composition.render output"
-      },
-      "accepts": {
-        "type": "string",
-        "default": "",
-        "description": "sf-sortable groups whose items may be dropped on insertion places"
-      },
-      "label": {
-        "type": "string",
-        "default": ""
+        "description": "The id of the canvas element the overlay draws over"
       },
       "frame": {
         "type": "string",
         "default": "",
-        "description": "id of a same-origin iframe canvas (framed mode, fed by setNodes); used instead of for"
+        "description": "The id of a same-origin iframe canvas (framed mode, fed by setNodes)"
+      },
+      "accepts": {
+        "type": "string",
+        "default": "",
+        "description": "sf-sortable groups whose items may be dropped on the canvas, separated by spaces"
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The structure tree's name; the language file's runtime.tree otherwise"
       },
       "actions": {
         "type": "array",
-        "default": []
+        "default": [],
+        "description": "The selected node's actions: up to 16 {id, label}; written through the same check as setActions"
+      },
+      "messages": {
+        "type": "object",
+        "default": {},
+        "description": "The host's own words over the language file's; written through setMessages"
+      },
+      "insertion-target": {
+        "type": "object",
+        "default": {},
+        "description": "The insertion place the host keeps marked {parent_id, slot, index}; written through setInsertionTarget"
       }
     },
     "additionalProperties": false
@@ -161,11 +186,13 @@
   },
   "methods": {
     "attach": {
-      "summary": "Binds the overlay to a canvas element.",
+      "summary": "Draws over a canvas element; the canvas is never modified",
       "arguments": [
         {
           "name": "canvas",
-          "type": "Element"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -177,11 +204,13 @@
       }
     },
     "attachFrame": {
-      "summary": "Binds the overlay to a same-origin iframe canvas (framed mode).",
+      "summary": "Draws over a same-origin iframe canvas fed by set-nodes",
       "arguments": [
         {
           "name": "iframe",
-          "type": "Element"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -193,15 +222,19 @@
       }
     },
     "setDocument": {
-      "summary": "Sets the Document and describe(node) → {label, badges}.",
+      "summary": "Reads a Composition Document's nodes",
       "arguments": [
         {
           "name": "document",
-          "type": "object"
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "options",
-          "type": "object"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -213,47 +246,19 @@
       }
     },
     "setNodes": {
-      "summary": "Sets the framed canvas's flat node list and an optional describe(node) → {label, badges}.",
+      "summary": "Reads a flat node list (framed mode)",
       "arguments": [
         {
           "name": "nodes",
-          "type": "array"
+          "schema": {
+            "type": "array"
+          }
         },
         {
           "name": "options",
-          "type": "object"
-        }
-      ],
-      "returns": {
-        "type": [
-          "object",
-          "boolean",
-          "null"
-        ]
-      }
-    },
-    "setActions": {
-      "summary": "Sets toolbar actions {id, label}.",
-      "arguments": [
-        {
-          "name": "actions",
-          "type": "array"
-        }
-      ],
-      "returns": {
-        "type": [
-          "object",
-          "boolean",
-          "null"
-        ]
-      }
-    },
-    "setMessages": {
-      "summary": "Overrides interface texts.",
-      "arguments": [
-        {
-          "name": "messages",
-          "type": "object"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -265,11 +270,50 @@
       }
     },
     "setDropFilter": {
-      "summary": "Hides drop places the host would refuse: (place, item) => boolean.",
+      "summary": "filter({parent_id, slot, index}, item) hides the places a drop may not take",
       "arguments": [
         {
           "name": "filter",
-          "type": "function"
+          "schema": {
+            "type": "object",
+            "description": "A function (place, item) => boolean; place is {parent_id, slot, index}"
+          }
+        }
+      ],
+      "returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      }
+    },
+    "setActions": {
+      "summary": "Writes the selected node's actions (the actions setting)",
+      "arguments": [
+        {
+          "name": "actions",
+          "schema": {
+            "type": "array"
+          }
+        }
+      ],
+      "returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      }
+    },
+    "setMessages": {
+      "summary": "Writes the host's own words (the messages setting)",
+      "arguments": [
+        {
+          "name": "messages",
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -281,14 +325,16 @@
       }
     },
     "setInsertionTarget": {
-      "summary": "Marks an insertion place or clears it with null.",
+      "summary": "Writes the marked insertion place (the insertion-target setting)",
       "arguments": [
         {
           "name": "target",
-          "type": [
-            "object",
-            "null"
-          ]
+          "schema": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
         }
       ],
       "returns": {
@@ -300,18 +346,17 @@
       }
     },
     "select": {
-      "summary": "Selects a node by id.",
+      "summary": "Selects a node; {focus, emit}",
       "arguments": [
         {
           "name": "id",
-          "type": [
-            "string",
-            "null"
-          ]
+          "schema": {}
         },
         {
           "name": "options",
-          "type": "object"
+          "schema": {
+            "type": "object"
+          }
         }
       ],
       "returns": {
@@ -323,11 +368,13 @@
       }
     },
     "edit": {
-      "summary": "Starts plain-string inline editing of an editable node in the frame; returns whether it started.",
+      "summary": "Starts a plain-string edit of an editable node",
       "arguments": [
         {
           "name": "id",
-          "type": "string"
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "returns": {
@@ -335,7 +382,7 @@
       }
     },
     "refresh": {
-      "summary": "Measures again on the next frame, after a change no observer reports (a transform on an ancestor).",
+      "summary": "Measures the canvas again",
       "arguments": [],
       "returns": {
         "type": [
@@ -347,8 +394,29 @@
     }
   },
   "events": {
+    "sf-composition-overlay-select": {
+      "summary": "A node was selected (or the selection cleared): vocabulary 1.1.5 §5 select; the detail keeps node_id for the composition host",
+      "payload": {
+        "type": "object",
+        "required": [
+          "ids",
+          "id",
+          "node_id"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "id": {},
+          "node_id": {
+            "description": "The selected node id, null when the selection cleared; kept for the composition host (the Document mode reads it)"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-composition-overlay-apply": {
-      "summary": "A toolbar action was chosen for the selected node: {action, scope: entry, ids} (vocabulary apply). The host performs it.",
+      "summary": "An action of the toolbar was chosen for the selected node: one entry's own action (vocabulary §5 apply, standard §18.3)",
       "payload": {
         "type": "object",
         "required": [
@@ -361,10 +429,7 @@
             "type": "string"
           },
           "scope": {
-            "type": "string",
-            "enum": [
-              "entry"
-            ]
+            "const": "entry"
           },
           "ids": {
             "type": "array",
@@ -372,76 +437,22 @@
               "type": "string"
             }
           }
-        }
-      }
-    },
-    "sf-composition-overlay-change": {
-      "summary": "A plain-string edit was committed: {id, value, previous}; cancelable, a cancelled change puts the text back.",
-      "payload": {
-        "type": "object",
-        "required": [
-          "id",
-          "value",
-          "previous"
-        ],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          },
-          "previous": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "sf-composition-overlay-select": {
-      "summary": "A node was selected.",
-      "payload": {
-        "type": "object",
-        "properties": {
-          "node_id": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      }
-    },
-    "sf-composition-overlay-action": {
-      "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
-      "payload": {
-        "type": "object",
-        "required": [
-          "action_id",
-          "node_id"
-        ],
-        "properties": {
-          "action_id": {
-            "type": "string"
-          },
-          "node_id": {
-            "type": "string"
-          }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-composition-overlay-insert": {
-      "summary": "Insertion was requested at a place, optionally with a library item. In framed mode the top-level list is parent_id \"\" and slot is \"default\".",
+      "summary": "An insertion point was chosen, or a library item dropped on the canvas: the place {parent, slot, index} and the item when one was dragged; the detail keeps parent_id for the composition host",
       "payload": {
         "type": "object",
         "required": [
-          "parent_id",
+          "parent",
           "slot",
-          "index"
+          "index",
+          "parent_id"
         ],
         "properties": {
-          "parent_id": {
-            "type": "string"
-          },
+          "parent": {},
           "slot": {
             "type": "string"
           },
@@ -459,32 +470,89 @@
               "move",
               "copy"
             ]
+          },
+          "parent_id": {
+            "description": "The parent node of the place; kept for the composition host (the Document mode reads it)"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-composition-overlay-move": {
-      "summary": "A canvas node was moved to a place.",
+      "summary": "A node was moved to a place by pointer or keyboard: one manual move (vocabulary §5 move, {id, parent, position}); the detail keeps node_id, parent_id and index for the composition host",
       "payload": {
         "type": "object",
         "required": [
+          "ids",
+          "id",
+          "parent",
+          "position",
+          "slot",
           "node_id",
           "parent_id",
-          "slot",
           "index"
         ],
         "properties": {
-          "node_id": {
-            "type": "string"
+          "ids": {
+            "type": "array"
           },
-          "parent_id": {
-            "type": "string"
+          "id": {},
+          "parent": {},
+          "position": {
+            "type": "number"
           },
           "slot": {
             "type": "string"
           },
+          "node_id": {
+            "description": "The moved node; kept for the composition host (the Document mode reads it)"
+          },
+          "parent_id": {
+            "description": "The new parent node; kept for the composition host (the Document mode reads it)"
+          },
           "index": {
-            "type": "integer"
+            "type": "integer",
+            "description": "The place among the parent slot children; kept for the composition host (the Document mode reads it)"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-composition-overlay-change": {
+      "summary": "A plain-string edit was committed; cancelled, the text shows what it showed before",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "previous"
+        ],
+        "properties": {
+          "id": {},
+          "value": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-composition-overlay-action": {
+      "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "node_id"
+        ],
+        "properties": {
+          "action_id": {
+            "type": "string"
+          },
+          "node_id": {
+            "type": "string"
           }
         }
       }
@@ -647,7 +715,7 @@
       },
       {
         "path": "src/smart/composition-overlay/rule.js",
-        "sha256": "387d0a7feb0da3e17bb446da1f41c603a6ff609eed44186c1739132e9f57d54a"
+        "sha256": "a671d1bb3018dca5d8a4c4014c311b6b73a67d8abd7f6fbc4bf6a90cc654049e"
       },
       {
         "path": "src/smart/composition-overlay/docs.md",

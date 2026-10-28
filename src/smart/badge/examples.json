@@ -10,6 +10,14 @@
       "expect": {
         "appearance": "main",
         "scheme": "primary"
+      },
+      "studio": {
+        "props": {
+          "text": "Новый",
+          "scheme": "primary",
+          "appearance": "main"
+        },
+        "scenario": {}
       }
     },
     {
@@ -98,6 +106,128 @@
       "expect": {
         "line": "1"
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-badge against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-badge id=\"bd\" text=\"Новый\" scheme=\"primary\"></sf-badge>",
+          "  <sf-badge id=\"bd-status\" text=\"Оплачен\" status=\"success\" appearance=\"tonal\"></sf-badge>",
+          "  <sf-badge id=\"bd-old\" text=\"Старые имена\" type=\"outline\" status=\"danger\" icon-left=\"check\"></sf-badge>",
+          "  <sf-badge id=\"bd-scheme\" text=\"Статус в схеме\" scheme=\"warning\"></sf-badge>",
+          "  <sf-badge id=\"bd-label\" text=\"99+\" aria-label=\"Больше 99 новых\"></sf-badge>",
+          "  <sf-badge id=\"bd-empty\" icon-start=\"\" icon=\"star\"></sf-badge>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-draws",
+          "title": "draws its text on the appearance, colour and size classes",
+          "covers": "settings.text, appearance, scheme, size",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd .sf-badge'); return b.textContent.trim() === 'Новый' && b.classList.contains('sf-badge--main') && b.classList.contains('sf-badge--primary') && b.classList.contains('sf-badge--size-1/3'); })()",
+              "expect": {
+                "values": {
+                  "#bd.appearance": "main",
+                  "#bd.scheme": "primary",
+                  "#bd.size": "1/3"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2-status-wins",
+          "title": "a status paints instead of the colour role",
+          "covers": "settings.status",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-status .sf-badge'); return b.classList.contains('sf-badge--success') && b.classList.contains('sf-badge--tonal'); })()",
+              "expect": {
+                "values": {
+                  "#bd-status.status": "success"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3-dated-aliases",
+          "title": "type, danger and icon-left still draw, each noted with its dates",
+          "covers": "aliases.json type, icon-left, danger",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-old .sf-badge'); return b.classList.contains('sf-badge--outline') && b.classList.contains('sf-badge--error') && b.querySelector('.sf-icon')?.textContent.trim() === 'check'; })()",
+              "expect": {
+                "values": {
+                  "#bd-old.appearance": "outline",
+                  "#bd-old.status": "error",
+                  "#bd-old.iconStart": "check"
+                }
+              }
+            },
+            {
+              "check": "['type', 'danger', 'icon-left'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-badge' && note.from === from && note.remove_after === '2026-12-01'))"
+            }
+          ]
+        },
+        {
+          "id": "p4-scheme-routes-status",
+          "title": "a status word written as scheme reaches status",
+          "covers": "x-decisions scheme routing",
+          "steps": [
+            {
+              "check": "document.querySelector('#bd-scheme .sf-badge').classList.contains('sf-badge--warning')",
+              "expect": {
+                "values": {
+                  "#bd-scheme.status": "warning",
+                  "#bd-scheme.scheme": "neutral"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p5-label",
+          "title": "aria-label is said through a hidden span, the visible text hidden",
+          "covers": "accessibility.name aria-label",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-label .sf-badge'); return b.querySelector('.sr-only')?.textContent === 'Больше 99 новых' && b.querySelector('.sf-badge-text-container').getAttribute('aria-hidden') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-empty-icon-start",
+          "title": "an empty icon-start suppresses the icon shortcut; nothing to say is aria-hidden",
+          "covers": "settings.icon-start optional",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-empty .sf-badge'); return !b.querySelector('.sf-icon') && b.getAttribute('aria-hidden') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-public-variable",
+          "title": "--sf-badge-background-color fills the badge",
+          "covers": "css-variables --sf-badge-background-color",
+          "steps": [
+            {
+              "script": "(() => { document.querySelector('#bd').style.setProperty('--sf-badge-background-color', 'rgb(1, 2, 3)'); return true; })()"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#bd .sf-badge')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

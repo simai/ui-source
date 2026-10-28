@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.button-group",
   "tag": "sf-button-group",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -34,15 +34,49 @@
           "optional": true
         }
       },
-      "x-shape": "ui-source src/smart/button-group/index.js normalizeItems: the attribute takes JSON or value::label::flags|…, the property a list; aria-label of an entry names an icon-only item"
+      "x-shape": "ui-source src/smart/button-group/index.js normalizeItems: the attribute takes JSON or value::label::flags|…, the property a list; aria-label of an entry names an icon-only item",
+      "summary": "Selectable items with stable value, label, icon, count, icon-only, disabled and loading fields.",
+      "examples": [
+        [
+          {
+            "value": "list",
+            "label": "List",
+            "icon": "list"
+          },
+          {
+            "value": "grid",
+            "label": "Grid",
+            "icon": "grid_view"
+          }
+        ],
+        [
+          {
+            "value": "all",
+            "label": "Все",
+            "count": 24
+          },
+          {
+            "value": "light",
+            "label": "Светлые",
+            "count": 17
+          },
+          {
+            "value": "dark",
+            "label": "Тёмные",
+            "count": 7
+          }
+        ]
+      ]
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Native form field name: the group submits its value with its form, a form reset restores the initial value, and a disabled group is left out."
     },
     "theme-switch": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "A ready theme switch: the group draws its own three icon-only items (system, light, dark) named in the page language, selects SF.Loader's theme preference and follows sf-theme-change, and a choice calls SF.Loader.setTheme. items is ignored."
     },
     "size": {
       "type": "enum",
@@ -53,7 +87,8 @@
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "Shared button size token."
     },
     "spacing": {
       "type": "enum",
@@ -63,7 +98,8 @@
         "comfortable",
         "spacious"
       ],
-      "default": "normal"
+      "default": "normal",
+      "summary": "Shared semantic internal spacing profile."
     },
     "tightness": {
       "type": "enum",
@@ -73,7 +109,8 @@
         "high",
         "highest"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Compatibility alias for spacing."
     },
     "scheme": {
       "type": "enum",
@@ -82,7 +119,8 @@
         "secondary",
         "on-surface"
       ],
-      "default": "primary"
+      "default": "primary",
+      "summary": "Color scheme for the selected button, and for the selected plate in the segmented appearance."
     },
     "appearance": {
       "type": "enum",
@@ -90,7 +128,8 @@
         "default",
         "segmented"
       ],
-      "default": "default"
+      "default": "default",
+      "summary": "How the group looks. default joins outlined buttons into one perimeter; segmented draws a sunken track with borderless segments and a plate under the selected one. The selection model, keyboard and events are the same."
     },
     "plate": {
       "type": "enum",
@@ -98,11 +137,13 @@
         "scheme",
         "raised"
       ],
-      "default": "scheme"
+      "default": "scheme",
+      "summary": "The selected segment's plate in the segmented appearance: the scheme's fill, or a raised neutral surface with its shadow."
     },
     "full-width": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "In the segmented appearance, the track fills its container and the segments share the width equally."
     },
     "radius": {
       "type": "enum",
@@ -112,7 +153,8 @@
         "square",
         "rounded"
       ],
-      "default": ""
+      "default": "",
+      "summary": "Corner radius, as on sf-button: empty is the UI radius. In the segmented appearance the plate, a button-sized segment, takes the radius a button of that value has, and the track is it plus the padding (rounded: both pills)."
     },
     "orientation": {
       "type": "enum",
@@ -120,26 +162,37 @@
         "horizontal",
         "vertical"
       ],
-      "default": "horizontal"
+      "default": "horizontal",
+      "summary": "Layout and keyboard navigation orientation."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Disables the whole group."
     }
   },
   "values": {
     "value": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Currently selected item value."
     }
   },
   "events": {
     "change": {
       "carries": {
         "previous": "string",
-        "value": "string",
-        "item": "object"
-      }
+        "value": {
+          "type": "string",
+          "summary": "Empty after clear()."
+        },
+        "item": {
+          "type": "object",
+          "nullable": true,
+          "summary": "The selected item; null after clear()."
+        }
+      },
+      "summary": "The selected value changed through select() or clear(); dispatched on the host, bubbles and is composed. The name to bind."
     }
   },
   "actions": {
@@ -150,13 +203,15 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Selects an enabled item by value."
     },
     "clear": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Clears the current selection."
     }
   },
   "form": {
@@ -181,6 +236,24 @@
       "End": "focus:last"
     }
   },
+  "relations": [
+    {
+      "name": "button-group"
+    },
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "spinner",
+      "lazy": true,
+      "$comment": [
+        "spinner: a loading item shows it, fetched after the page is ready."
+      ]
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js"
@@ -235,6 +308,30 @@
       "state": "rest"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases for the shim (core/js/aliases.js, standard simai.smart-component 1.3.8 §16.20). Event rows send the new name first, then the old one, with one detail; setting rows map the old attribute and property to the new; host-attribute rows (no \"to\") stay host attributes read by the browser or the base and are listed, refused by the shim on purpose; documentary rows (\"shim\": \"none\") record a rename the shim cannot serve.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "sf-button-group-change",
+        "to": "change",
+        "kind": "event",
+        "mode": "same-detail",
+        "cancelable": false,
+        "note": "sent by the shim after change, with the same detail; the detail no longer carries the element (§8)",
+        "summary": "Legacy name for change, still emitted with the same detail; bind change."
+      }
+    ]
+  },
   "x-summary": "A controlled single-selection group built from SF5 buttons.",
   "x-source": {
     "package": "framework",
@@ -246,14 +343,59 @@
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)",
     "events.change: 1 carried field(s) held the element, not data (§8)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "items",
-        "value"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "version: 1.1.0 -- sf-button-group-change follows change behind a dated alias, and the element leaves the change detail (§8); a minor while the alias holds (§4.10)",
+    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json",
+    "css-variables: the seven public variables the group already had (2026-10-19), now declared in the manifest",
+    "item-shape: items name id, value, label, icon, count, icon-only, loading and disabled; the attribute keeps its JSON and value::label::flags forms",
+    "actions: select {value} and clear answer an outcome (§4.4): applied, or refused with unknown, disabled, unchanged or theme (a Loader that cannot change the theme); chaining is gone. Both are a person's request in code and send change, as before",
+    "form: the host is the form control through ElementInternals (§17.1): the selected value, nothing while disabled; form.reset() returns the value the group was written with (a theme switch keeps the preference). The hidden input is drawn only without ElementInternals",
+    "accessibility.name: the host's aria-label, or the theme switch's own word «Тема»",
+    "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive"
+    ],
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "button",
+      "segmented-control",
+      "selection"
+    ],
+    "item_contract": {
+      "type": "object"
+    },
+    "state": {
+      "machines": {
+        "selection": [
+          "empty",
+          "selected",
+          "disabled"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "disabled",
+        "selected"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -264,6 +406,14 @@
         "preference persistence",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "items",
+        "value"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -277,7 +427,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-button-group for one compact mutually exclusive choice; appearance=\"segmented\" for a filter, period, view or theme switch drawn as a segmented control (not tabs: no panels).",
@@ -298,18 +452,111 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "Use roving tabindex and an inset focus-visible indicator that does not cover adjacent segments."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-button-group-change": {
+        "summary": "Legacy name for change, still emitted with the same detail; bind change.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "previous": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "item": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "previous",
+            "value",
+            "item"
+          ]
+        },
+        "alias_of": "change"
+      }
+    },
+    "methods": {
+      "focus": {
+        "summary": "Moves focus to the selected or first enabled item.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "inputs": {
+      "template": {
+        "description": "Template variant name."
+      },
+      "items": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "icon-only": {
+              "type": "boolean",
+              "description": "Segmented appearance: show only the icon; the label stays as the visually hidden accessible name. Needs an icon."
+            },
+            "aria-label": {
+              "type": "string"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "loading": {
+              "type": "boolean",
+              "description": "The item works: it shows the spinner at its icon's size, in place of its icon or over its label (which keeps its place and its name), says aria-busy and is disabled until the flag is cleared."
+            },
+            "count": {
+              "type": [
+                "string",
+                "number"
+              ],
+              "description": "Segmented appearance: a number after the label, in tabular numerals; it is part of the segment's accessible name."
+            }
+          },
+          "required": [
+            "value",
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "aria-label": {
+        "description": "Accessible name for the group."
+      },
+      "root-class": {
+        "description": "Extra classes applied to the group root."
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.1.0 -- sf-button-group-change follows change behind a dated alias, and the element leaves the change detail (§8); a minor while the alias holds (§4.10)",
-    "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json",
-    "css-variables: the seven public variables the group already had (2026-10-19), now declared in the manifest",
-    "item-shape: items name id, value, label, icon, count, icon-only, loading and disabled; the attribute keeps its JSON and value::label::flags forms",
-    "actions: select {value} and clear answer an outcome (§4.4): applied, or refused with unknown, disabled, unchanged or theme (a Loader that cannot change the theme); chaining is gone. Both are a person's request in code and send change, as before",
-    "form: the host is the form control through ElementInternals (§17.1): the selected value, nothing while disabled; form.reset() returns the value the group was written with (a theme switch keeps the preference). The hidden input is drawn only without ElementInternals",
-    "accessibility.name: the host's aria-label, or the theme switch's own word «Тема»",
-    "version 1.1.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

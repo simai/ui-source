@@ -205,6 +205,10 @@ test('framed mode is an opt-in beside the Composition Document mode', async () =
   assert.deepEqual(manifest.events['sf-composition-overlay-edit'].payload.required, ['node_id', 'value', 'previous']);
   assert.deepEqual(manifest.events['sf-composition-overlay-change'].payload.required, ['id', 'value', 'previous']);
   assert.deepEqual(Object.keys(manifest.contracts.nodes.items.properties).sort(), ['editable', 'element', 'id', 'kind', 'label', 'parent', 'rect']);
-  // The Document mode's events keep their payloads.
-  assert.deepEqual(manifest.events['sf-composition-overlay-insert'].payload.required, ['parent_id', 'slot', 'index']);
+  // The Document mode's events keep their payloads: the vocabulary's fields
+  // and, beside them, the ones the composition host reads (component.json
+  // carries both since the registry is generated, standard 1.4).
+  for (const field of ['parent_id', 'slot', 'index', 'parent']) assert.ok(manifest.events['sf-composition-overlay-insert'].payload.required.includes(field), `insert ${field}`);
+  for (const field of ['node_id', 'parent_id', 'index', 'ids', 'id', 'parent', 'position']) assert.ok(manifest.events['sf-composition-overlay-move'].payload.required.includes(field), `move ${field}`);
+  assert.ok(manifest.events['sf-composition-overlay-select'].payload.properties.node_id, 'select node_id');
 });

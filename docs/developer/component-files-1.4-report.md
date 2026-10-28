@@ -62,6 +62,40 @@ range-slider's `tooltip` example for the first time and found a shift (48 px
 printed, 54 adopted): listed in tests/fixtures/first-paint/gate-known.json and
 queued to the component.
 
+## Phase A, waves 3 to 6 (2026-10-28)
+
+The other twenty-nine Framework components are in the 1.4 form: every Smart
+component of this repository generates every file byte for byte, meta.mjs
+among them (twenty families had a hand-written one). The pins of pending
+manifests and meta.mjs in tests/component-files-generated are gone; ui-pro
+is not converted. What changed for consumers, per component:
+component-files-1.4-phase-a-changes.md.
+
+Rules settled while converting (generator and standard text):
+
+- An object setting or value with a default is a property input, as a list
+  is (context-menu search, image-field value; tabs and profile-picker gain
+  theirs, one patch version up).
+- A native event name that carries a detail (x-detail: dropdown, quantity)
+  describes it; the bridge takes the registry's words for its fields.
+- A dated attribute alias of a setting (kind attribute, neither a host
+  attribute nor retired) is an input until it ends; an inverted one (modal
+  unclose) defaults to false.
+- An alias setting offers its target's values only; the target's former
+  values are aliases (button type no longer offers ghost).
+- composition.declarative.props leaves out root-class and root-style: a
+  composition document never sets classes or styles.
+- What the code reads and component.json does not declare is carried in
+  x-registry: inputs (tag type, quantity value, the role of context-menu and
+  toast, which their code declares as props, context-menu tabs as a list) and
+  alias-events (dropdown sf-field:reset, sent by the trait without an alias
+  row). The carried field spelling question did not arise: composition-overlay
+  declares node_id, parent_id and index beside id, parent and position, as its
+  code sends both.
+- A comment inside rule.js but outside the relation list goes to the relation
+  it explains (badge, button-group, context-menu, modal) or before the rule
+  (dropdown, textarea css).
+
 ## How it is made
 
 ```
@@ -107,90 +141,75 @@ or one spelling of a field) it is quoted.
 
 <!-- generated:start (scripts/report-component-files.mjs) -->
 
-Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 824010b892c2. Components: 70 (59 simai/ui-source, 11 simai/ui-pro).
+Inputs (Git tree of src/smart): simai/ui-source 1c87d05aec32, simai/ui-pro c2c97a94ac2e. Components: 70 (59 simai/ui-source, 11 simai/ui-pro).
 
 ### Per generated file
 
 | File | identical (bytes) | semantically identical | differs | committed, not generated | generated, not committed |
 |:---|---:|---:|---:|---:|---:|
-| rule.js | 41 | 29 | 0 | 0 | 0 |
-| aliases.json | 58 | 12 | 0 | 0 | 0 |
-| meta.mjs | 0 | 0 | 20 | 0 | 0 |
-| studio.fixture.json | 64 | 2 | 0 | 0 | 0 |
-| studio.scenario.json | 61 | 2 | 0 | 0 | 0 |
-| probe.json | 66 | 3 | 0 | 0 | 0 |
-| smart.manifest.json | 30 | 0 | 40 | 0 | 0 |
+| rule.js | 59 | 11 | 0 | 0 | 0 |
+| aliases.json | 67 | 3 | 0 | 0 | 0 |
+| meta.mjs | 20 | 0 | 0 | 0 | 0 |
+| studio.fixture.json | 65 | 1 | 0 | 0 | 0 |
+| studio.scenario.json | 62 | 1 | 0 | 0 | 0 |
+| probe.json | 68 | 1 | 0 | 0 | 0 |
+| smart.manifest.json | 59 | 0 | 11 | 0 | 0 |
 
 ### smart.manifest.json differences by class
 
 | Class | Differences | Share |
 |:---|---:|---:|
-| a1-fact | 243 | 22 % |
-| a1-words | 63 | 6 % |
-| a2-rule | 627 | 57 % |
-| c | 166 | 15 % |
-| total | 1099 | |
+| a1-fact | 134 | 22 % |
+| a1-words | 6 | 1 % |
+| a2-rule | 366 | 60 % |
+| c | 99 | 16 % |
+| total | 605 | |
 
 ### smart.manifest.json differences by kind
 
 | Class | Kind | Differences | Components |
 |:---|:---|---:|:---|
-| a1-fact | accessibility.role | 6 | alert, badge, button, country-code, tag, toast |
 | a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
 | a1-fact | alias-setting-missing | 1 | chat-message |
-| a1-fact | compatibility.aliases | 4 | badge, button, icon-button, tag |
 | a1-fact | declarative.events | 1 | property-view |
-| a1-fact | declarative.props | 6 | button, admin-menu, chat-window, data-view, property-view, table |
-| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination … (13) |
-| a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
-| a1-fact | input-stale | 2 | file-preview, chat-window |
-| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea … (10) |
+| a1-fact | declarative.props | 5 | admin-menu, chat-window, data-view, property-view, table |
+| a1-fact | event-missing | 2 | table |
+| a1-fact | event-stale | 8 | data-view, property-view |
+| a1-fact | input.default | 26 | admin-menu, chat-message, chat-window, data-view |
 | a1-fact | input.enum-values-missing | 1 | table |
-| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
-| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
-| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm … (10) |
-| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
-| a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
-| a1-fact | payload-null | 2 | context-menu |
-| a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
-| a1-fact | uses-missing | 18 | button, button-group, context-menu, country-code, dropdown, file-upload, input, list-item … (18) |
-| a1-fact | version | 5 | badge, country-code, quantity, textarea, toggle |
-| a1-words | accessibility.role-words | 7 | dropdown, list-item, skeleton, spinner, tooltip, chat-window, table |
-| a1-words | event.summary | 6 | composition-overlay, tree-item |
-| a1-words | input.description | 32 | button, composition-overlay, file-upload, list-item, pagination, tag, tree-item, chat-composer … (10) |
-| a1-words | method.summary | 13 | composition-overlay, tree-item |
-| a1-words | summary | 5 | composition-overlay, list-item, modal, tree-item, chat-composer |
-| a2-rule | base-detail-field | 15 | alert, button-group, popover, tag, toast, tree-item |
-| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer … (40) |
+| a1-fact | input.maximum | 1 | chat-window |
+| a1-fact | input.minimum | 1 | chat-window |
+| a1-fact | input.type | 12 | change-confirm, chat-message, chat-window, message-log, thread-list |
+| a1-fact | method-missing | 3 | data-view, property-view, table |
+| a1-fact | payload-fields-missing | 6 | property-view, table |
+| a1-fact | setting-missing | 18 | admin-menu, data-view, message-log, table, thread-list |
+| a1-fact | title | 3 | data-view, property-view, table |
+| a1-fact | uses-missing | 3 | data-view, property-view, table |
+| a1-words | accessibility.role-words | 2 | chat-window, table |
+| a1-words | input.description | 3 | chat-composer, chat-interlocutor, thread-list |
+| a1-words | summary | 1 | chat-composer |
+| a2-rule | base-setting | 24 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, data-view, message-log … (11) |
 | a2-rule | declarative.assets | 2 | admin-menu, property-view |
 | a2-rule | empty-block | 7 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, thread-list |
-| a2-rule | host-attribute | 3 | context-menu, popover, toast |
-| a2-rule | input.default | 127 | alert, badge, country-code, drawer, dropdown, file-preview, file-upload, input … (22) |
-| a2-rule | input.description | 32 | alert, badge, context-menu, drawer, dropdown, file-preview, file-upload, image-field … (23) |
+| a2-rule | input.default | 88 | admin-menu, change-confirm, chat-composer, message-log, property-view, table, thread-list |
+| a2-rule | input.description | 7 | admin-menu, change-confirm, chat-composer, chat-interlocutor, message-log, table, thread-list |
 | a2-rule | input.enum-as-range | 1 | chat-window |
-| a2-rule | input.enum-form | 2 | button, icon-button |
-| a2-rule | input.enum-former | 1 | button |
-| a2-rule | input.items | 1 | tree-item |
-| a2-rule | method.arguments-form | 56 | button-group, composition-overlay, context-menu, file-upload, image-field, pagination, popover, quantity … (18) |
-| a2-rule | order | 7 | drawer, file-preview, icon-button, quantity, chat-composer, chat-message, chat-window |
-| a2-rule | payload-field.enum-form | 2 | composition-overlay |
-| a2-rule | payload-field.type-form | 47 | composition-overlay, file-upload, image-field, admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message … (13) |
-| a2-rule | payload-ref | 3 | dropdown |
-| a2-rule | payload.additionalProperties | 129 | alert, button-group, composition-overlay, context-menu, file-upload, image-field, popover, tag … (21) |
-| a2-rule | payload.description | 9 | context-menu, quantity, textarea, toggle, data-view, table |
-| a2-rule | payload.required | 97 | alert, button-group, composition-overlay, context-menu, file-upload, image-field, popover, tag … (19) |
-| a2-rule | payload.type | 7 | quantity, textarea, toggle, table |
+| a2-rule | method.arguments-form | 35 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-window, data-view, message-log, property-view … (10) |
+| a2-rule | order | 3 | chat-composer, chat-message, chat-window |
+| a2-rule | payload-field.type-form | 37 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, data-view, message-log, property-view … (10) |
+| a2-rule | payload.additionalProperties | 93 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, data-view, message-log … (11) |
+| a2-rule | payload.description | 2 | data-view, table |
+| a2-rule | payload.required | 63 | admin-menu, chat-composer, chat-message, chat-window, data-view, message-log, property-view, table … (9) |
+| a2-rule | payload.type | 2 | table |
 | a2-rule | template-open | 2 | chat-message, property-view |
 | c | declarative.events | 3 | admin-menu, data-view, table |
 | c | event-undeclared | 8 | data-view, property-view |
 | c | host-port | 3 | admin-menu, chat-window, property-view |
-| c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag … (10) |
-| c | method.arguments | 11 | context-menu, drawer, modal, pagination, popover, chat-window, thread-list |
-| c | payload-field | 87 | composition-overlay, file-upload, image-field, popover, quantity, toast, tree-item, admin-menu … (12) |
+| c | method.arguments | 4 | chat-window, thread-list |
+| c | payload-field | 50 | admin-menu, data-view, message-log, property-view, table |
 | c | payload-field.spelling | 24 | admin-menu, chat-composer, chat-window |
-| c | payload-field.values | 7 | file-upload, admin-menu, data-view, property-view, table |
-| c | uses-not-loaded | 2 | tree-item, data-view |
+| c | payload-field.values | 6 | admin-menu, data-view, property-view, table |
+| c | uses-not-loaded | 1 | data-view |
 
 ### (c) Conflicts, by component
 
@@ -226,15 +245,9 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 - `events.sf-admin-menu-settings-refresh.payload.properties.base_revision|baseRevision` — one field, two spellings: the registry base_revision, component.json (camelCased) baseRevision; the code names base_revision 7×, baseRevision 2×; registry base_revision, generated baseRevision (src/smart/admin-menu/smart.manifest.json:571, src/smart/admin-menu/component.json:213)
 - `events.sf-admin-menu-settings-save.payload.properties.base_revision|baseRevision` — one field, two spellings: the registry base_revision, component.json (camelCased) baseRevision; the code names base_revision 7×, baseRevision 2×; registry base_revision, generated baseRevision (src/smart/admin-menu/smart.manifest.json:619, src/smart/admin-menu/component.json:226)
 
-**simai/ui-pro chat-window** (29)
+**simai/ui-pro chat-window** (23)
 
 - `composition.declarative.host_port.version` — component.json port and the registry's host_port differ; registry "1.0.0", generated "1.0" (src/smart/chat-window/smart.manifest.json:114, src/smart/chat-window/component.json:478)
-- `inputs.properties.me` — the code reads me; component.json does not declare it; registry {"type":["object","null"],"default":null,"description":"port data me {id, name}: who reads"}, generated absent (src/smart/chat-window/smart.manifest.json:155)
-- `inputs.properties.conversation` — the code reads conversation; component.json does not declare it; registry {"type":["object","null"],"default":null,"description":"port data conversation: the open one {id, title, interlocutor, can_send, archived, revoked}, null when none is open"}, generated absent (src/smart/chat-window/smart.manifest.json:168)
-- `inputs.properties.history` — the code reads history; component.json does not declare it; registry {"type":["object","null"],"default":{"has_older":false},"description":"port data history {has_older}"}, generated absent (src/smart/chat-window/smart.manifest.json:181)
-- `inputs.properties.limits` — the code reads limits; component.json does not declare it; registry {"type":["object","null"],"default":{},"description":"port data limits {body_chars, files_per_message, file_bytes, file_types}"}, generated absent (src/smart/chat-window/smart.manifest.json:201)
-- `inputs.properties.notice` — the code reads notice; component.json does not declare it; registry {"type":["object","null"],"default":null,"description":"port data notice {kind: info|error, text, retry}: a line above the field, an error with «Повторить» when retry is a function"}, generated absent (src/smart/chat-window/smart.manifest.json:214)
-- `inputs.properties.my-files` — the code reads my-files; component.json does not declare it; registry {"type":["object","null"],"default":null,"description":"the window's data (x-my-files) {files [{id, name, size, type, created_at, saved_to_base, download_url}], used_bytes, quota_bytes}; download_u..., generated absent (src/smart/chat-window/smart.manifest.json:239)
 - `methods.settle.arguments` — arguments differ: registry ["request-id","result"], component.json ["requestId","result"]; registry [{"name":"request-id","required":true,"schema":{"type":"string"}},{"name":"result","required":true,"schema":{"type":"object"}}], generated [{"name":"requestId","schema":{"type":"string"}},{"name":"result","schema":{"type":"object"}}] (src/smart/chat-window/smart.manifest.json:287, src/smart/chat-window/component.json:397)
 - `events.sf-chat-window-open.payload.properties.request-id|requestId` — one field, two spellings: the registry request-id, component.json (camelCased) requestId; the code names request-id 10×, requestId 13×; registry request-id, generated requestId (src/smart/chat-window/smart.manifest.json:289, src/smart/chat-window/component.json:114)
 - `events.sf-chat-window-load-more.payload.properties.request-id|requestId` — one field, two spellings: the registry request-id, component.json (camelCased) requestId; the code names request-id 10×, requestId 13×; registry request-id, generated requestId (src/smart/chat-window/smart.manifest.json:289, src/smart/chat-window/component.json:127)
@@ -278,35 +291,20 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 - `events.sf-host-port-request` — the code still names sf-host-port-request; neither component.json nor aliases.json declares it; registry {"summary":"Asks the page for a host port, once per connection and only while this element has none. The shared convention for every component that takes `setHostPort`, so a consumer composing one ..., generated absent (src/smart/data-view/smart.manifest.json:1048)
 - `events.sf-table-cell-set` — the code still names sf-table-cell-set; neither component.json nor aliases.json declares it; registry {"summary":"A table event the view listens to: a checkable cell was pressed. The view raises record.set of simai.dataview-port 1.11.0 (capability inline-edit) with record_id, key, value and revisio..., generated absent (src/smart/data-view/smart.manifest.json:1123)
 
-**composition-overlay** (12)
-
-- `events.sf-composition-overlay-select.payload.properties.node_id` — node_id only in the registry; registry {"type":["string","null"]}, generated absent (src/smart/composition-overlay/smart.manifest.json:405, src/smart/composition-overlay/component.json:51)
-- `events.sf-composition-overlay-select.payload.properties.ids` — ids only in component.json; registry absent, generated {"type":"array"} (src/smart/composition-overlay/smart.manifest.json:400, src/smart/composition-overlay/component.json:53)
-- `events.sf-composition-overlay-select.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/composition-overlay/smart.manifest.json:400, src/smart/composition-overlay/component.json:54)
-- `events.sf-composition-overlay-insert.payload.properties.parent_id` — parent_id only in the registry; registry {"type":"string"}, generated absent (src/smart/composition-overlay/smart.manifest.json:437, src/smart/composition-overlay/component.json:74)
-- `events.sf-composition-overlay-insert.payload.properties.parent` — parent only in component.json; registry absent, generated {} (src/smart/composition-overlay/smart.manifest.json:432, src/smart/composition-overlay/component.json:76)
-- `events.sf-composition-overlay-move.payload.properties.node_id` — node_id only in the registry; registry {"type":"string"}, generated absent (src/smart/composition-overlay/smart.manifest.json:471, src/smart/composition-overlay/component.json:84)
-- `events.sf-composition-overlay-move.payload.properties.parent_id` — parent_id only in the registry; registry {"type":"string"}, generated absent (src/smart/composition-overlay/smart.manifest.json:472, src/smart/composition-overlay/component.json:84)
-- `events.sf-composition-overlay-move.payload.properties.index` — index only in the registry; registry {"type":"integer"}, generated absent (src/smart/composition-overlay/smart.manifest.json:474, src/smart/composition-overlay/component.json:84)
-- `events.sf-composition-overlay-move.payload.properties.ids` — ids only in component.json; registry absent, generated {"type":"array"} (src/smart/composition-overlay/smart.manifest.json:466, src/smart/composition-overlay/component.json:94)
-- `events.sf-composition-overlay-move.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/composition-overlay/smart.manifest.json:466, src/smart/composition-overlay/component.json:95)
-- `events.sf-composition-overlay-move.payload.properties.parent` — parent only in component.json; registry absent, generated {} (src/smart/composition-overlay/smart.manifest.json:466, src/smart/composition-overlay/component.json:96)
-- `events.sf-composition-overlay-move.payload.properties.position` — position only in component.json; registry absent, generated {"type":"number"} (src/smart/composition-overlay/smart.manifest.json:466, src/smart/composition-overlay/component.json:97)
-
 **simai/ui-pro table** (12)
 
-- `composition.declarative.events` — the registry lists sf-table-action-intent, which the code still names, and component.json does not declare; registry ["sf-table-search-change","sf-table-filter-change","sf-table-sort-change","sf-table-create-intent","sf-table-template-save","sf-table-template-select","sf-table-template-delete","sf-table-column-se..., generated ["sf-table-select","sf-table-apply","sf-table-save","sf-table-column-settings-reset","sf-table-create","sf-table-filter-change","sf-table-query","sf-table-refresh","sf-table-search-change","sf-tabl... (src/smart/table/smart.manifest.json:91)
-- `events.sf-table-column-settings-reset.payload.properties.target.const` — the values differ; registry "personal", generated absent (src/smart/table/smart.manifest.json:1197, src/smart/table/component.json:315)
-- `events.sf-table-column-settings-reset.payload.properties.tableSettingsKey` — tableSettingsKey only in the registry; registry {"type":["string","null"],"description":"The table's settings key, or null when it has none."}, generated absent (src/smart/table/smart.manifest.json:1198, src/smart/table/component.json:313)
-- `events.sf-table-filter-change.payload.properties.templateKey` — templateKey only in the registry; registry {"type":"string","description":"The selected template's key, or an empty string."}, generated absent (src/smart/table/smart.manifest.json:1240, src/smart/table/component.json:325)
-- `events.sf-table-filter-change.payload.properties.templateLabel` — templateLabel only in the registry; registry {"type":"string","description":"The selected template's label, or an empty string."}, generated absent (src/smart/table/smart.manifest.json:1241, src/smart/table/component.json:325)
-- `events.sf-table-save.payload.properties.columnSettings` — columnSettings only in the registry; registry {"type":"object"}, generated absent (src/smart/table/smart.manifest.json:1541, src/smart/table/component.json:301)
-- `events.sf-table-save.payload.properties.reason` — reason only in component.json; registry absent, generated {"type":"string"} (src/smart/table/smart.manifest.json:1530, src/smart/table/component.json:309)
-- `events.sf-table-query.payload.properties.context` — context only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1564, src/smart/table/component.json:336)
-- `events.sf-table-load-more.payload.properties.parent` — parent only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1605, src/smart/table/component.json:412)
-- `events.sf-table-load-more.payload.properties.cursor` — cursor only in component.json; registry absent, generated {"type":"string"} (src/smart/table/smart.manifest.json:1605, src/smart/table/component.json:413)
-- `events.sf-table-move.payload.properties.before` — before only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1618, src/smart/table/component.json:426)
-- `events.sf-table-move.payload.properties.order` — order only in component.json; registry absent, generated {"type":"array"} (src/smart/table/smart.manifest.json:1618, src/smart/table/component.json:427)
+- `composition.declarative.events` — the registry lists sf-table-action-intent, which the code still names, and component.json does not declare; registry ["sf-table-search-change","sf-table-filter-change","sf-table-sort-change","sf-table-create-intent","sf-table-template-save","sf-table-template-select","sf-table-template-delete","sf-table-column-se..., generated ["sf-table-select","sf-table-apply","sf-table-save","sf-table-column-settings-reset","sf-table-create","sf-table-filter-change","sf-table-query","sf-table-refresh","sf-table-search-change","sf-tabl... (src/smart/table/smart.manifest.json:92)
+- `events.sf-table-column-settings-reset.payload.properties.target.const` — the values differ; registry "personal", generated absent (src/smart/table/smart.manifest.json:1202, src/smart/table/component.json:318)
+- `events.sf-table-column-settings-reset.payload.properties.tableSettingsKey` — tableSettingsKey only in the registry; registry {"type":["string","null"],"description":"The table's settings key, or null when it has none."}, generated absent (src/smart/table/smart.manifest.json:1203, src/smart/table/component.json:316)
+- `events.sf-table-filter-change.payload.properties.templateKey` — templateKey only in the registry; registry {"type":"string","description":"The selected template's key, or an empty string."}, generated absent (src/smart/table/smart.manifest.json:1245, src/smart/table/component.json:328)
+- `events.sf-table-filter-change.payload.properties.templateLabel` — templateLabel only in the registry; registry {"type":"string","description":"The selected template's label, or an empty string."}, generated absent (src/smart/table/smart.manifest.json:1246, src/smart/table/component.json:328)
+- `events.sf-table-save.payload.properties.columnSettings` — columnSettings only in the registry; registry {"type":"object"}, generated absent (src/smart/table/smart.manifest.json:1546, src/smart/table/component.json:304)
+- `events.sf-table-save.payload.properties.reason` — reason only in component.json; registry absent, generated {"type":"string"} (src/smart/table/smart.manifest.json:1535, src/smart/table/component.json:312)
+- `events.sf-table-query.payload.properties.context` — context only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1569, src/smart/table/component.json:339)
+- `events.sf-table-load-more.payload.properties.parent` — parent only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1610, src/smart/table/component.json:415)
+- `events.sf-table-load-more.payload.properties.cursor` — cursor only in component.json; registry absent, generated {"type":"string"} (src/smart/table/smart.manifest.json:1610, src/smart/table/component.json:416)
+- `events.sf-table-move.payload.properties.before` — before only in component.json; registry absent, generated {"type":"object"} (src/smart/table/smart.manifest.json:1623, src/smart/table/component.json:429)
+- `events.sf-table-move.payload.properties.order` — order only in component.json; registry absent, generated {"type":"array"} (src/smart/table/smart.manifest.json:1623, src/smart/table/component.json:430)
 
 **simai/ui-pro property-view** (11)
 
@@ -322,69 +320,6 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 - `events.sf-property-view-delete.payload.properties.collection` — collection only in component.json; registry absent, generated {"type":"string"} (src/smart/property-view/smart.manifest.json:1111, src/smart/property-view/component.json:402)
 - `events.sf-property-view-delete.payload.properties.revision` — revision only in component.json; registry absent, generated {"type":"string"} (src/smart/property-view/smart.manifest.json:1111, src/smart/property-view/component.json:403)
 
-**quantity** (9)
-
-- `inputs.properties.value` — the code reads value; component.json does not declare it; registry {"type":"string","default":"","description":"The number the field holds, written with a point (`2567.5`); empty for none. The property reads a number or null and takes a number, numeric text or nul..., generated absent (src/smart/quantity/smart.manifest.json:44)
-- `events.change.payload.properties.value` — value only in the registry; registry {"type":["number","null"],"description":"The number the field now holds; null when it is empty."}, generated absent (src/smart/quantity/smart.manifest.json:303, src/smart/quantity/component.json:104)
-- `events.change.payload.properties.text` — text only in the registry; registry {"type":"string","description":"The number as the field writes it, in the page's language."}, generated absent (src/smart/quantity/smart.manifest.json:310, src/smart/quantity/component.json:104)
-- `events.change.payload.properties.name` — name only in the registry; registry {"type":"string"}, generated absent (src/smart/quantity/smart.manifest.json:314, src/smart/quantity/component.json:104)
-- `events.change.payload.properties.source` — source only in the registry; registry {"type":"string","enum":["typing","commit","button","keyboard","reset"],"description":"What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."}, generated absent (src/smart/quantity/smart.manifest.json:317, src/smart/quantity/component.json:104)
-- `events.input.payload.properties.value` — value only in the registry; registry {"type":["number","null"],"description":"The number the field now holds; null when it is empty."}, generated absent (src/smart/quantity/smart.manifest.json:337, src/smart/quantity/component.json:126)
-- `events.input.payload.properties.text` — text only in the registry; registry {"type":"string","description":"The number as the field writes it, in the page's language."}, generated absent (src/smart/quantity/smart.manifest.json:344, src/smart/quantity/component.json:126)
-- `events.input.payload.properties.name` — name only in the registry; registry {"type":"string"}, generated absent (src/smart/quantity/smart.manifest.json:348, src/smart/quantity/component.json:126)
-- `events.input.payload.properties.source` — source only in the registry; registry {"type":"string","enum":["typing","commit","button","keyboard","reset"],"description":"What made the change: typing in the box, a commit (Enter or leaving the box), a stepper, a key, or the reset back to the inherited value."}, generated absent (src/smart/quantity/smart.manifest.json:351, src/smart/quantity/component.json:126)
-
-**file-upload** (8)
-
-- `events.change.payload.properties.source.enum` — the values differ; registry absent, generated ["input","drop"] (src/smart/file-upload/smart.manifest.json:276, src/smart/file-upload/component.json:93)
-- `events.sf-file-upload-attached.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/file-upload/smart.manifest.json:311, src/smart/file-upload/component.json:117)
-- `events.sf-file-upload-completed.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/file-upload/smart.manifest.json:365, src/smart/file-upload/component.json:164)
-- `events.sf-file-upload-failed.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/file-upload/smart.manifest.json:407, src/smart/file-upload/component.json:172)
-- `events.sf-file-upload-failed.payload.properties.reason` — reason only in component.json; registry absent, generated {"type":"string"} (src/smart/file-upload/smart.manifest.json:407, src/smart/file-upload/component.json:176)
-- `events.sf-file-upload-failed.payload.properties.message` — message only in component.json; registry absent, generated {"type":"string"} (src/smart/file-upload/smart.manifest.json:407, src/smart/file-upload/component.json:177)
-- `events.sf-file-upload-detach.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/file-upload/smart.manifest.json:483, src/smart/file-upload/component.json:127)
-- `events.sf-file-upload-retry.payload.properties.id` — id only in component.json; registry absent, generated {} (src/smart/file-upload/smart.manifest.json:525, src/smart/file-upload/component.json:142)
-
-**popover** (5)
-
-- `methods.close.arguments` — arguments differ: registry [], component.json ["reason"]; registry [], generated [{"name":"reason","schema":{"enum":["close","escape","outside","cancelled","api"]}}] (src/smart/popover/smart.manifest.json:140, src/smart/popover/component.json:94)
-- `events.sf-popover-open.payload.properties.open` — open only in the registry; registry {"type":"boolean","const":true}, generated absent (src/smart/popover/smart.manifest.json:170, src/smart/popover/component.json:56)
-- `events.sf-popover-close.payload.properties.open` — open only in the registry; registry {"type":"boolean","const":false}, generated absent (src/smart/popover/smart.manifest.json:198, src/smart/popover/component.json:63)
-- `events.sf-popover-close.payload.properties.reason` — reason only in component.json; registry absent, generated {"enum":["close","escape","outside","cancelled","api"]} (src/smart/popover/smart.manifest.json:183, src/smart/popover/component.json:65)
-- `events.sf-popover-close.payload.properties.unsaved` — unsaved only in component.json; registry absent, generated {"type":"boolean"} (src/smart/popover/smart.manifest.json:183, src/smart/popover/component.json:75)
-
-**modal** (4)
-
-- `inputs.properties.unclose` — the code reads unclose; component.json does not declare it; registry {"type":"boolean","default":false}, generated absent (src/smart/modal/smart.manifest.json:61)
-- `inputs.properties.hide` — the code reads hide; component.json does not declare it; registry {"type":"boolean","default":false}, generated absent (src/smart/modal/smart.manifest.json:65)
-- `methods.open.arguments` — arguments differ: registry ["options"], component.json ["animate"]; registry [{"name":"options","type":["object","boolean"],"required":false}], generated [{"name":"animate","schema":{"type":"boolean"}}] (src/smart/modal/smart.manifest.json:258, src/smart/modal/component.json:282)
-- `methods.close.arguments` — arguments differ: registry ["options"], component.json ["reason"]; registry [{"name":"options","type":"object","required":false}], generated [{"name":"reason","schema":{"enum":["close","escape","outside","cancelled","api"]}}] (src/smart/modal/smart.manifest.json:275, src/smart/modal/component.json:282)
-
-**spinner** (4)
-
-- `inputs.properties.width` — the code reads width; component.json does not declare it; registry {"type":"string","default":"","description":"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz..., generated absent (src/smart/spinner/smart.manifest.json:46)
-- `inputs.properties.height` — the code reads height; component.json does not declare it; registry {"type":"string","default":"","description":"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz..., generated absent (src/smart/spinner/smart.manifest.json:51)
-- `inputs.properties.stroke-width` — the code reads stroke-width; component.json does not declare it; registry {"type":"string","default":"","description":"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz..., generated absent (src/smart/spinner/smart.manifest.json:83)
-- `inputs.properties.dot-radius` — the code reads dot-radius; component.json does not declare it; registry {"type":"string","default":"","description":"Deprecated since 2026-10-20, read until 2026-12-01 (journal attribute-spinner-pixel-geometry): the size ladder decides the spinner's geometry; write siz..., generated absent (src/smart/spinner/smart.manifest.json:88)
-
-**toast** (3)
-
-- `events.sf-toast-action.payload.properties.trigger` — trigger only in the registry; registry {"type":"object","description":"The pressed control."}, generated absent (src/smart/toast/smart.manifest.json:231, src/smart/toast/component.json:55)
-- `events.sf-toast-close.payload.properties.trigger` — trigger only in the registry; registry {"type":["object","null"],"description":"The close control that was pressed; null when closed from code or by the timer."}, generated absent (src/smart/toast/smart.manifest.json:252, src/smart/toast/component.json:61)
-- `events.sf-toast-close.payload.properties.reason` — reason only in component.json; registry absent, generated {"enum":["close","escape","outside","cancelled","api"]} (src/smart/toast/smart.manifest.json:243, src/smart/toast/component.json:63)
-
-**tree-item** (3)
-
-- `composition.uses` — the registry names a use rule.js does not load; registry ["component.tree"], generated ["component.icon-buttons","component.icons","component.tree-item"] (src/smart/tree-item/smart.manifest.json:26)
-- `events.sf-tree-item-toggle.payload.properties.item` — item only in the registry; registry {"type":"object","description":"The sf-tree-item."}, generated absent (src/smart/tree-item/smart.manifest.json:287, src/smart/tree-item/component.json:151)
-- `events.sf-tree-item-toggle.payload.properties.id` — id only in component.json; registry absent, generated {"type":"string"} (src/smart/tree-item/smart.manifest.json:272, src/smart/tree-item/component.json:153)
-
-**simai/ui-pro chat-message** (3)
-
-- `inputs.properties.message` — the code reads message; component.json does not declare it; registry {"type":["object","null"],"default":null,"description":"The message, a property or the JSON island; texts are drawn as text, html is sanitized."}, generated absent (src/smart/chat-message/smart.manifest.json:49)
-- `inputs.properties.display` — the code reads display; component.json does not declare it; registry {"type":"object","default":{},"description":"What the host knows that the server does not (the 0.3 view): wait, busy, feedback, retried, note, code, sources_open, brief, brief_draft; for person own..., generated absent (src/smart/chat-message/smart.manifest.json:57)
-- `inputs.properties.features` — the code reads features; component.json does not declare it; registry {"type":"object","default":{"feedback":true,"proposals":true,"memory":true,"brief":false},"description":"What the surface offers: rating, proposals, memory notices, the task brief."}, generated absent (src/smart/chat-message/smart.manifest.json:62)
-
 **simai/ui-pro message-log** (3)
 
 - `events.sf-message-log-chunk.payload.properties.revision` — revision only in component.json; registry absent, generated {"type":"string"} (src/smart/message-log/smart.manifest.json:592, src/smart/message-log/component.json:113)
@@ -397,37 +332,6 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 - `methods.appendThreads.arguments` — arguments differ: registry ["threads","options"], component.json ["threads","hasMore"]; registry [{"name":"threads","required":true,"schema":{"type":"array","items":{"type":"object","properties":{"id":{"type":["string","number"]},"title":{"type":"string"},"updated_at":{"type":"string","descrip..., generated [{"name":"threads","schema":{"type":"array","items":{"type":"object","properties":{"id":{"type":["string","number"]},"title":{"type":"string"},"updated_at":{"type":"string","description":"ISO 8601;... (src/smart/thread-list/smart.manifest.json:289, src/smart/thread-list/component.json:93)
 - `methods.openMenu.arguments` — arguments differ: registry ["id","anchor"], component.json ["id"]; registry [{"name":"id","required":true,"schema":{"type":"string"}},{"name":"anchor","required":true,"schema":{"type":"object"}}], generated [{"name":"id","schema":{}}] (src/smart/thread-list/smart.manifest.json:498, src/smart/thread-list/component.json:93)
 
-**context-menu** (2)
-
-- `inputs.properties.search` — the code reads search; component.json does not declare it; registry {"type":"object","default":null,"description":"{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-s..., generated absent (src/smart/context-menu/smart.manifest.json:131)
-- `methods.close.arguments` — arguments differ: registry ["options"], component.json ["reason"]; registry [{"name":"options","schema":{"type":"object","properties":{"restoreFocus":{"type":"boolean","default":true}}},"required":false}], generated [{"name":"reason","schema":{"enum":["close","escape","outside","cancelled","api"]}}] (src/smart/context-menu/smart.manifest.json:313, src/smart/context-menu/component.json:255)
-
-**drawer** (2)
-
-- `methods.open.arguments` — arguments differ: registry ["options"], component.json []; registry [{"name":"options","type":"object","required":false}], generated [] (src/smart/drawer/smart.manifest.json:229, src/smart/drawer/component.json:212)
-- `methods.close.arguments` — arguments differ: registry ["options"], component.json ["reason"]; registry [{"name":"options","type":"object","required":false}], generated [{"name":"reason","schema":{"enum":["close","escape","outside","cancelled","api"]}}] (src/smart/drawer/smart.manifest.json:243, src/smart/drawer/component.json:212)
-
-**image-field** (2)
-
-- `inputs.properties.value` — the code reads value; component.json does not declare it; registry {"type":"string","default":"","description":"The image, in the file shape {value, label, mime, size, href}: value the host's id, label the file name (the thumbnail's alt), mime its type, size bytes..., generated absent (src/smart/image-field/smart.manifest.json:43)
-- `events.sf-image-field-attach.payload.properties.files` — files only in component.json; registry absent, generated {"type":"array"} (src/smart/image-field/smart.manifest.json:298, src/smart/image-field/component.json:104)
-
-**country-code** (1)
-
-- `inputs.properties.form` — the code reads form; component.json does not declare it; registry {"type":"string","default":"","description":"Optional id of the native owning form when the field is outside it."}, generated absent (src/smart/country-code/smart.manifest.json:53)
-
-**file-preview** (1)
-
-- `inputs.properties.open` — the code reads open; component.json does not declare it; registry {"type":"boolean","default":false}, generated absent (src/smart/file-preview/smart.manifest.json:87)
-
-**pagination** (1)
-
-- `methods.showMore.arguments` — arguments differ: registry ["item"], component.json []; registry [{"name":"item","type":"object","required":false}], generated [] (src/smart/pagination/smart.manifest.json:344, src/smart/pagination/component.json:100)
-
-**tag** (1)
-
-- `inputs.properties.type` — the code reads type; component.json does not declare it; registry {"type":"string","default":"checkbox","description":"Legacy name that answered both questions from one list: a content word reaches kind, a status word reaches status. See contracts/public-api-axes..., generated absent (src/smart/tag/smart.manifest.json:35)
-
 **simai/ui-pro chat-composer** (1)
 
 - `events.sf-chat-composer-submit.payload.properties.attachment-ids|attachmentIds` — one field, two spellings: the registry attachment-ids, component.json (camelCased) attachmentIds; the code names attachment-ids 2×, attachmentIds 1×; registry attachment-ids, generated attachmentIds (src/smart/chat-composer/smart.manifest.json:283, src/smart/chat-composer/component.json:82)
@@ -437,7 +341,7 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 | Key | Components | Lines | Belongs in 1.4 |
 |:---|---:|---:|:---|
 | methods | 50 | 4518 | dated `method` aliases in component.json, or retired (§4.4: no reader methods) |
-| alias-events | 41 | 2549 | ? |
+| alias-events | 41 | 2569 | ? |
 | contracts | 41 | 1600 | the port contract (src/core/contracts/ports) or the change journal: it restates them |
 | ai_guidance | 70 | 1457 | one `registry` block (already copied in component.json x-kept) |
 | presentation | 70 | 1302 | one `registry` block (already copied in component.json x-kept) |
@@ -446,8 +350,8 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 | security | 70 | 574 | one `registry` block (already copied in component.json x-kept) |
 | compatibility | 20 | 554 | the change journal (contracts/changes): migrations, replacement, extra deprecations |
 | accessibility | 65 | 509 | component.json `accessibility` (focus, accessible_name, keyboard words: one field each) |
-| inputs | 37 | 461 | base/host words and constraints §4.2 has no field for (minLength, required): add them to §4.2 or drop |
-| composition-declarative | 6 | 431 | derived except standard/profiles/data/persistence/presentation: generate it |
+| inputs | 38 | 500 | base/host words and constraints §4.2 has no field for (minLength, required): add them to §4.2 or drop |
+| composition-declarative | 6 | 432 | derived except standard/profiles/data/persistence/presentation: generate it |
 | readiness | 32 | 343 | one small `registry` block, or derived from the gates a release ran |
 | capabilities | 42 | 285 | one small `registry` block in component.json, or dropped in manifest schema v3 |
 | persistence | 22 | 269 | the port contract (persistence is the host's) |
@@ -468,69 +372,61 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 
 | Consumer | Reads | Wrong facts | Components |
 |:---|:---|---:|---:|
-| ui-doc | summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io) | 431 | 40 |
-| ui-studio | title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs) | 482 | 40 |
-| ui-vscode | inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense) | 184 | 40 |
-| ui registry (ui-builder bind-generated-runtime-contracts.py) | title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json | 7 | 7 |
+| ui-doc | summary, inputs (type, default, enum, description), methods, events (ui-doc scripts/build-smart-reference.mjs → the public Smart reference on ui.simai.io) | 238 | 11 |
+| ui-studio | title, summary, version, inputs as the props schema (additionalProperties: false), methods, events, ai_guidance (packages/mcp catalog-service: public_abi for agents; scripts/lib/owner-sources.mjs) | 257 | 11 |
+| ui-vscode | inputs (name, type, default, description, enum, examples), summary, compatibility.deprecations/replacement, lifecycle (src/generate/buildFramework.ts: IntelliSense) | 84 | 11 |
+| ui registry (ui-builder bind-generated-runtime-contracts.py) | title and lifecycle, once, when an entry is added to ui contracts/owners/smart-component.manifest.json | 3 | 3 |
 
 **ui-doc**
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| c | payload-field | 87 | composition-overlay, file-upload, image-field, popover, quantity, toast, tree-item, admin-menu, data-view, message-log … (12) |
-| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
+| c | payload-field | 50 | admin-menu, data-view, message-log, property-view, table |
 | a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
-| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination, popover, tag … (13) |
-| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
+| a1-fact | input.default | 26 | admin-menu, chat-message, chat-window, data-view |
+| a2-rule | base-setting | 24 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, data-view, message-log, property-view, table … (11) |
 | c | payload-field.spelling | 24 | admin-menu, chat-composer, chat-window |
-| c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
-| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
-| a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
-| c | method.arguments | 11 | context-menu, drawer, modal, pagination, popover, chat-window, thread-list |
-| a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
-| a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
+| a1-fact | setting-missing | 18 | admin-menu, data-view, message-log, table, thread-list |
+| a1-fact | input.type | 12 | change-confirm, chat-message, chat-window, message-log, thread-list |
+| a1-fact | event-stale | 8 | data-view, property-view |
 | c | event-undeclared | 8 | data-view, property-view |
-| c | payload-field.values | 7 | file-upload, admin-menu, data-view, property-view, table |
-| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
-| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
-| a1-fact | payload-null | 2 | context-menu |
-| a1-fact | input-stale | 2 | file-preview, chat-window |
+| c | payload-field.values | 6 | admin-menu, data-view, property-view, table |
+| a1-fact | payload-fields-missing | 6 | property-view, table |
+| c | method.arguments | 4 | chat-window, thread-list |
+| a1-fact | method-missing | 3 | data-view, property-view, table |
+| a1-fact | event-missing | 2 | table |
 | a1-fact | alias-setting-missing | 1 | chat-message |
+| a1-fact | input.minimum | 1 | chat-window |
+| a1-fact | input.maximum | 1 | chat-window |
 | a1-fact | input.enum-values-missing | 1 | table |
 
 **ui-studio**
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| c | payload-field | 87 | composition-overlay, file-upload, image-field, popover, quantity, toast, tree-item, admin-menu, data-view, message-log … (12) |
-| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
+| c | payload-field | 50 | admin-menu, data-view, message-log, property-view, table |
 | a1-fact | alias-event-missing | 43 | change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, message-log, table, thread-list |
-| a1-fact | event-missing | 37 | button, context-menu, country-code, drawer, file-preview, list-item, modal, pagination, popover, tag … (13) |
-| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
+| a1-fact | input.default | 26 | admin-menu, chat-message, chat-window, data-view |
+| a2-rule | base-setting | 24 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, data-view, message-log, property-view, table … (11) |
 | c | payload-field.spelling | 24 | admin-menu, chat-composer, chat-window |
-| c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
-| a1-fact | uses-missing | 18 | button, button-group, context-menu, country-code, dropdown, file-upload, input, list-item, modal, pagination … (18) |
-| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
-| a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | method-missing | 12 | modal, progress-bar, progress-scale, toast, tree-item, data-view, property-view, table |
-| c | method.arguments | 11 | context-menu, drawer, modal, pagination, popover, chat-window, thread-list |
-| a1-fact | event-stale | 11 | dropdown, modal, data-view, property-view |
-| a1-fact | payload-fields-missing | 9 | alert, context-menu, property-view, table |
+| a1-fact | setting-missing | 18 | admin-menu, data-view, message-log, table, thread-list |
+| a1-fact | input.type | 12 | change-confirm, chat-message, chat-window, message-log, thread-list |
+| a1-fact | event-stale | 8 | data-view, property-view |
 | c | event-undeclared | 8 | data-view, property-view |
-| c | payload-field.values | 7 | file-upload, admin-menu, data-view, property-view, table |
-| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
-| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
-| a1-fact | accessibility.role | 6 | alert, badge, button, country-code, tag, toast |
-| a1-fact | declarative.props | 6 | button, admin-menu, chat-window, data-view, property-view, table |
-| a1-fact | version | 5 | badge, country-code, quantity, textarea, toggle |
-| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
+| c | payload-field.values | 6 | admin-menu, data-view, property-view, table |
+| a1-fact | payload-fields-missing | 6 | property-view, table |
+| a1-fact | declarative.props | 5 | admin-menu, chat-window, data-view, property-view, table |
+| c | method.arguments | 4 | chat-window, thread-list |
 | c | declarative.events | 3 | admin-menu, data-view, table |
 | c | host-port | 3 | admin-menu, chat-window, property-view |
-| a1-fact | payload-null | 2 | context-menu |
-| a1-fact | input-stale | 2 | file-preview, chat-window |
-| c | uses-not-loaded | 2 | tree-item, data-view |
+| a1-fact | title | 3 | data-view, property-view, table |
+| a1-fact | uses-missing | 3 | data-view, property-view, table |
+| a1-fact | method-missing | 3 | data-view, property-view, table |
+| a1-fact | event-missing | 2 | table |
 | a1-fact | alias-setting-missing | 1 | chat-message |
+| a1-fact | input.minimum | 1 | chat-window |
+| a1-fact | input.maximum | 1 | chat-window |
+| c | uses-not-loaded | 1 | data-view |
 | a1-fact | declarative.events | 1 | property-view |
 | a1-fact | input.enum-values-missing | 1 | table |
 
@@ -538,43 +434,40 @@ Inputs (Git tree of src/smart): simai/ui-source be37217c839d, simai/ui-pro 82401
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a2-rule | base-setting | 77 | alert, badge, button, button-group, composition-overlay, context-menu, country-code, drawer, dropdown, file-preview … (40) |
-| a1-fact | input.default | 36 | button, button-group, dropdown, progress-bar, progress-scale, quantity, spinner, textarea, admin-menu, data-view |
-| c | input-undeclared | 21 | context-menu, country-code, file-preview, image-field, modal, quantity, spinner, tag, chat-message, chat-window |
-| a1-fact | input.type | 16 | context-menu, dropdown, progress-bar, progress-scale, quantity, skeleton, spinner, change-confirm, message-log, thread-list |
-| a1-fact | setting-missing | 15 | admin-menu, data-view, message-log, table, thread-list |
-| a1-fact | input.minimum | 7 | icon-button, progress-bar, progress-scale, quantity, spinner, chat-window |
-| a1-fact | compatibility.aliases | 4 | badge, button, icon-button, tag |
-| a1-fact | input.maximum | 4 | progress-bar, progress-scale, quantity, chat-window |
-| a1-fact | input-stale | 2 | file-preview, chat-window |
+| a1-fact | input.default | 26 | admin-menu, chat-message, chat-window, data-view |
+| a2-rule | base-setting | 24 | admin-menu, change-confirm, chat-composer, chat-interlocutor, chat-message, chat-window, data-view, message-log, property-view, table … (11) |
+| a1-fact | setting-missing | 18 | admin-menu, data-view, message-log, table, thread-list |
+| a1-fact | input.type | 12 | change-confirm, chat-message, chat-window, message-log, thread-list |
 | a1-fact | alias-setting-missing | 1 | chat-message |
+| a1-fact | input.minimum | 1 | chat-window |
+| a1-fact | input.maximum | 1 | chat-window |
 | a1-fact | input.enum-values-missing | 1 | table |
 
 **ui registry (ui-builder bind-generated-runtime-contracts.py)**
 
 | Class | Kind | Facts | Components |
 |:---|:---|---:|:---|
-| a1-fact | title | 7 | input, list-item, textarea, tree-item, data-view, property-view, table |
+| a1-fact | title | 3 | data-view, property-view, table |
 
 ### The facts by name
 
 What the committed registry lacks or names wrongly, per component (`registry → component.json` where a value).
 
-**event-missing** (37)
+**event-missing** (2)
 
-button: sf-button-press; context-menu: sf-context-menu-opened, sf-context-menu-closed; country-code: input; drawer: sf-drawer-open, sf-drawer-opened, sf-drawer-close, sf-drawer-closed, sf-drawer-snapped; file-preview: sf-file-preview-download, sf-file-preview-detach; list-item: sf-list-item-open; modal: sf-modal-open, sf-modal-opened, sf-modal-close, sf-modal-closed, sf-modal-minimize, sf-modal-minimized, sf-modal-expand, sf-modal-expanded, sf-modal-content-upload, sf-modal-content-uploaded; pagination: sf-pagination-change, sf-pagination-size-change, sf-pagination-count, sf-pagination-load-more, sf-pagination-selection-clear, sf-pagination-action-change, sf-pagination-action-for-all-change, sf-pagination-apply; popover: sf-popover-opened, sf-popover-closed; tag: sf-tag-close; toast: sf-toast-closed; tree-item: sf-tree-item-open; pro table: sf-table-reference-open, sf-table-view-change
+pro table: sf-table-reference-open, sf-table-view-change
 
 **alias-event-missing** (43)
 
 pro change-confirm: sf-change-confirm-accept, sf-change-confirm-decline, sf-change-confirm-expire; pro chat-composer: sf-chat-send, sf-chat-stop, sf-chat-files, sf-chat-action; pro chat-interlocutor: sf-chat-interlocutor; pro chat-message: sf-chat-action; pro chat-window: chat-port:open, chat-port:older, chat-port:send, chat-port:retry, chat-port:edit, chat-port:delete, chat-port:read, chat-port:rate, chat-port:file-retry, chat-port:decide, chat-port:check, chat-port:stop, chat-port:create, chat-port:rename, chat-port:archive, chat-port:interlocutor, chat-window:view, chat-window:more, chat-window:search, chat-window:pin, chat-window:attach, chat-window:detach, chat-window:files, chat-window:file-remove; pro message-log: sf-message-log-load-earlier; pro table: sf-table:column-settings-change, onColumnSettingsChange, onSearchEnd, onTemplateSave, onFilterUpdate; pro thread-list: sf-thread-list-select, sf-thread-list-unarchive, sf-thread-list-action, sf-thread-list-view
 
-**method-missing** (12)
+**method-missing** (3)
 
-modal: minimize, expand, confirm; progress-bar: chunk; progress-scale: chunk; toast: show; tree-item: expand, collapse, toggleOpen; pro data-view: clearSelection; pro property-view: refresh; pro table: focusRow
+pro data-view: clearSelection; pro property-view: refresh; pro table: focusRow
 
-**setting-missing** (15)
+**setting-missing** (18)
 
-pro admin-menu: recent-results; pro data-view: bulk-actions; pro message-log: messages; pro table: active-filter-fields, bulk-actions, columns, create-items, filter-fields, rows, templates, toolbar-actions, sort, selection; pro thread-list: threads, actions
+pro admin-menu: recent-results; pro data-view: bulk-actions, first-answer; pro message-log: messages; pro table: active-filter-fields, bulk-actions, columns, create-items, filter-fields, rows, table-data, table-settings, templates, toolbar-actions, sort, selection; pro thread-list: threads, actions
 
 **alias-setting-missing** (1)
 
@@ -584,113 +477,92 @@ pro chat-message: view
 
 pro table: data-state ["ready"]
 
-**input-undeclared** (21)
-
-context-menu: search; country-code: form; file-preview: open; image-field: value; modal: unclose, hide; quantity: value; spinner: width, height, stroke-width, dot-radius; tag: type; pro chat-message: message, display, features; pro chat-window: me, conversation, history, limits, notice, my-files
-
 **event-undeclared** (8)
 
 pro data-view: sf-data-view-saved-view-intent, sf-table-column-settings-reset, sf-table-template-delete, sf-table-template-save, sf-table-template-select, sf-host-port-request, sf-table-cell-set; pro property-view: sf-host-port-request
 
-**title** (7)
+**title** (3)
 
-input: "Inputs" → "Text fields"; list-item: "List Item" → "List item"; textarea: "Textarea" → "Text area"; tree-item: "Tree Item" → "Tree item"; pro data-view: "Data view composite" → "Data view"; pro property-view: "Property view" → "Record"; pro table: "Data view" → "Table"
-
-**version** (5)
-
-badge: "1.0.1" → "1.1.1"; country-code: "1.0.0" → "1.1.1"; quantity: "1.0.0" → "1.1.1"; textarea: "1.4.0" → "1.5.1"; toggle: "1.0.0" → "1.1.1"
-
-**accessibility.role** (6)
-
-alert: null → "status"; badge: null → "none"; button: null → "button"; country-code: null → "textbox"; tag: null → "button"; toast: null → "status"
+pro data-view: "Data view composite" → "Data view"; pro property-view: "Property view" → "Record"; pro table: "Data view" → "Table"
 
 ### meta.mjs differences by class
 
 | Class | Differences |
 |:---|---:|
-| a2-rule | 296 |
-| c | 2 |
-| a1-fact | 6 |
-| a1-words | 4 |
-
-meta.mjs conflicts:
-
-- button-group `attributes.items` — the committed meta.mjs describes an attribute component.json does not declare
-- tag `attributes.type` — the committed meta.mjs describes an attribute component.json does not declare
 
 ### Per component
 
 | Component | rule | aliases | meta | fixture | scenario | probe | manifest a1-fact / a1-words / a2 / c | x-registry lines |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|
 | accordion | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 243 |
-| alert | = | = | ≠ | = | = | = | 2 / 0 / 10 / 0 | 150 |
+| alert | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 150 |
 | avatar | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 66 |
 | avatars | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 59 |
-| badge | ≈ | ≈ | ≠ | = | = | = | 3 / 0 / 7 / 0 | 63 |
+| badge | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 63 |
 | breadcrumbs | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 172 |
-| button | = | ≈ | ≠ | = | = | = | 6 / 1 / 3 / 0 | 229 |
-| button-group | ≈ | = | ≠ | = | = | = | 2 / 0 / 5 / 0 | 202 |
+| button | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 229 |
+| button-group | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 202 |
 | checkbox | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 261 |
 | close | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 60 |
 | code-input | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 194 |
 | color | = | = | – | – | – | = | 0 / 0 / 0 / 0 | 156 |
-| composition-overlay | = | = | – | = | = | = | 0 / 22 / 25 / 12 | 269 |
-| context-menu | ≈ | = | – | = | = | = | 8 / 0 / 17 / 2 | 185 |
+| composition-overlay | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 269 |
+| context-menu | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 194 |
 | copy-button | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 148 |
-| country-code | ≈ | = | – | ≈ | = | = | 4 / 0 / 4 / 1 | 93 |
+| country-code | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 93 |
 | datepicker | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 267 |
 | download-file | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 113 |
-| drawer | ≈ | = | – | = | = | = | 5 / 0 / 6 / 2 | 453 |
-| dropdown | ≈ | = | ≠ | = | = | = | 4 / 1 / 7 / 0 | 159 |
+| drawer | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 453 |
+| dropdown | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 179 |
 | empty-state | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 115 |
-| file-preview | ≈ | = | ≠ | = | ≈ | = | 3 / 0 / 7 / 1 | 188 |
-| file-upload | = | = | – | = | = | ≈ | 1 / 1 / 35 / 8 | 384 |
+| file-preview | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 188 |
+| file-upload | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 384 |
 | gallery | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 192 |
 | help-mark | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 116 |
 | icon | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 75 |
-| icon-button | = | ≈ | ≠ | = | = | = | 2 / 0 / 3 / 0 | 273 |
-| image-field | = | = | – | = | = | ≈ | 0 / 0 / 17 / 2 | 226 |
+| icon-button | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 273 |
+| image-field | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 226 |
 | inline-editor | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 202 |
-| input | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 7 / 0 | 316 |
-| list-item | = | = | ≠ | = | = | = | 3 / 8 / 3 / 0 | 143 |
+| input | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 316 |
+| list-item | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 143 |
 | menu | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 292 |
-| modal | ≈ | = | – | = | = | = | 16 / 1 / 4 / 4 | 719 |
+| modal | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 719 |
 | page-header | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 102 |
-| pagination | = | = | ≠ | = | = | = | 9 / 2 / 22 / 1 | 593 |
-| popover | ≈ | ≈ | – | – | – | = | 2 / 0 / 14 / 5 | 106 |
+| pagination | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 593 |
+| popover | = | = | – | – | – | = | 0 / 0 / 0 / 0 | 106 |
 | profile-picker | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 209 |
-| progress-bar | ≈ | = | ≠ | = | = | = | 5 / 0 / 4 / 0 | 126 |
-| progress-scale | ≈ | = | ≠ | = | = | = | 5 / 0 / 4 / 0 | 112 |
-| quantity | = | ≈ | – | = | = | = | 13 / 0 / 12 / 9 | 220 |
+| progress-bar | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 126 |
+| progress-scale | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 112 |
+| quantity | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 224 |
 | radio | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 216 |
 | range-slider | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 376 |
 | reference-link | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 111 |
 | resizer | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 156 |
-| skeleton | ≈ | = | ≠ | = | = | = | 1 / 1 / 2 / 0 | 87 |
+| skeleton | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 87 |
 | slider | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 106 |
 | sortable | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 225 |
-| spinner | ≈ | = | ≠ | = | = | = | 6 / 1 / 3 / 4 | 127 |
+| spinner | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 127 |
 | steps | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 175 |
 | switch | = | = | – | = | = | – | 0 / 0 / 0 / 0 | 263 |
 | tabs | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 186 |
-| tag | ≈ | ≈ | ≠ | = | = | = | 4 / 3 / 5 / 1 | 181 |
-| textarea | ≈ | ≈ | ≠ | = | = | = | 6 / 0 / 8 / 0 | 182 |
+| tag | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 196 |
+| textarea | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 182 |
 | theme-generator | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 253 |
-| toast | = | = | ≠ | = | = | = | 4 / 0 / 10 / 3 | 149 |
-| toggle | ≈ | ≈ | ≠ | = | = | = | 2 / 0 / 5 / 0 | 214 |
-| tooltip | ≈ | = | ≠ | = | = | = | 1 / 1 / 1 / 0 | 87 |
+| toast | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 160 |
+| toggle | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 214 |
+| tooltip | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 87 |
 | tree | = | = | – | = | = | = | 0 / 0 / 0 / 0 | 170 |
-| tree-item | = | = | ≠ | = | = | = | 5 / 15 / 11 / 3 | 199 |
+| tree-item | = | = | = | = | = | = | 0 / 0 / 0 / 0 | 199 |
 | pro admin-menu | ≈ | ≈ | – | = | = | = | 3 / 0 / 49 / 29 | 483 |
 | pro change-confirm | ≈ | ≈ | – | = | – | = | 5 / 0 / 11 / 0 | 228 |
 | pro chat-composer | ≈ | = | – | = | = | = | 4 / 2 / 14 / 1 | 257 |
 | pro chat-interlocutor | ≈ | = | – | = | = | = | 1 / 1 / 7 / 0 | 192 |
-| pro chat-message | ≈ | = | – | ≈ | = | = | 2 / 0 / 25 / 3 | 193 |
-| pro chat-window | ≈ | ≈ | – | = | ≈ | ≈ | 28 / 1 / 52 / 29 | 1187 |
-| pro data-view | ≈ | = | – | – | – | = | 32 / 0 / 20 / 17 | 421 |
+| pro chat-message | ≈ | = | – | ≈ | = | = | 4 / 0 / 25 / 0 | 193 |
+| pro chat-window | ≈ | ≈ | – | = | ≈ | ≈ | 38 / 1 / 52 / 23 | 1187 |
+| pro data-view | ≈ | = | – | – | – | = | 33 / 0 / 20 / 17 | 421 |
 | pro message-log | ≈ | = | – | = | – | = | 3 / 0 / 27 / 3 | 300 |
 | pro property-view | ≈ | = | – | – | – | = | 11 / 0 / 93 / 11 | 530 |
-| pro table | ≈ | = | – | = | = | = | 23 / 1 / 44 / 12 | 1258 |
+| pro table | ≈ | = | – | = | = | = | 25 / 1 / 44 / 12 | 1259 |
 | pro thread-list | ≈ | = | – | = | – | = | 7 / 1 / 24 / 3 | 301 |
 
 `=` byte-identical, `≈` semantically identical, `≠` differs, `!` committed but not generated, `–` neither.

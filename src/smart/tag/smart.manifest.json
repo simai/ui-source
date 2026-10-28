@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -26,8 +26,9 @@
     "uses": [
       "component.avatars",
       "component.dot",
-      "smart.icon-button",
-      "component.tags"
+      "component.icon-buttons",
+      "component.tags",
+      "smart.icon-button"
     ],
     "public_parts": []
   },
@@ -38,6 +39,15 @@
         "type": "string",
         "default": "default",
         "description": "Template name."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Framework utility classes for the visible root."
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "kind": {
         "type": "string",
@@ -66,46 +76,46 @@
       "appearance": {
         "type": "string",
         "default": "default",
+        "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour.",
         "enum": [
           "default",
           "surface",
           "ghost"
-        ],
-        "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour."
+        ]
       },
       "size": {
         "type": "string",
         "default": "1/2",
+        "description": "Framework size token: sets the label text and the default spacing.",
         "enum": [
           "1/3",
           "1/2",
           "1",
           "2",
           "3"
-        ],
-        "description": "Framework size token: sets the label text and the default spacing."
+        ]
       },
       "line": {
         "type": "string",
         "default": "",
+        "description": "Takes the text line of this form size as an inline tag one size down, for a table cell, so the row keeps its control height. Overrides size and inline.",
         "enum": [
           "",
           "1/2",
           "1",
           "2"
-        ],
-        "description": "Takes the text line of this form size as an inline tag one size down, for a table cell, so the row keeps its control height. Overrides size and inline."
+        ]
       },
       "spacing": {
         "type": "string",
         "default": "normal",
+        "description": "Block padding of a free-standing tag, with the names the buttons use.",
         "enum": [
           "compact",
           "normal",
           "comfortable",
           "spacious"
-        ],
-        "description": "Block padding of a free-standing tag, with the names the buttons use."
+        ]
       },
       "inline": {
         "type": "boolean",
@@ -120,7 +130,7 @@
       "count": {
         "type": "string",
         "default": "",
-        "description": "Optional count shown with the default tag."
+        "description": "The text of the count after the label: a number or a capped one such as 99+"
       },
       "icon": {
         "type": "string",
@@ -142,20 +152,10 @@
         "default": "",
         "description": "Avatar initials fallback."
       },
-      "root-class": {
-        "type": "string",
-        "default": "",
-        "description": "Framework utility classes for the visible root."
-      },
       "avatar-status": {
         "type": "string",
         "default": "",
         "description": "Reserved avatar status value for compatible templates."
-      },
-      "active": {
-        "type": "boolean",
-        "default": false,
-        "description": "Selected state of a checkbox tag."
       },
       "disabled": {
         "type": "boolean",
@@ -165,26 +165,30 @@
       "closable": {
         "type": "boolean",
         "default": false,
-        "description": "Show a separate remove action; icon, color and avatar tags enable it by default, a checkbox tag only when it is set."
+        "description": "Absent: removable for the icon, color and avatar kinds, not for checkbox and default; present, it says so for any kind"
       },
       "interactive": {
         "type": "boolean",
         "default": false,
         "description": "Render the label as a button next to the remove action, for tags that open something (for example a filter chip menu); ignored for checkbox tags."
       },
+      "close-label": {
+        "type": "string",
+        "description": "Accessible name of the remove action. Defaults to Remove, or Удалить on a Russian page."
+      },
+      "active": {
+        "type": "boolean",
+        "default": false,
+        "description": "A checkbox tag is chosen; the tag toggles it and reports it with change"
+      },
       "aria-label": {
         "type": "string",
         "default": "",
         "description": "Optional accessible name override for a selectable tag."
       },
-      "close-label": {
-        "type": "string",
-        "default": "",
-        "description": "Accessible name of the remove action. Defaults to Remove, or Удалить on a Russian page."
-      },
       "type": {
         "type": "string",
-        "default": "checkbox",
+        "default": "",
         "description": "Legacy name that answered both questions from one list: a content word reaches kind, a status word reaches status. See contracts/public-api-axes.json.",
         "enum": [
           "checkbox",
@@ -248,21 +252,26 @@
       "summary": "The active state of a checkbox tag changed.",
       "payload": {
         "type": "object",
+        "required": [
+          "active"
+        ],
         "properties": {
           "active": {
             "type": "boolean"
-          },
-          "component": {
-            "type": "object",
-            "description": "The sf-tag element."
           }
         },
-        "required": [
-          "active",
-          "component"
-        ]
+        "additionalProperties": true
       },
       "canonical": true
+    },
+    "sf-tag-close": {
+      "summary": "close (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
     },
     "close": {
       "summary": "Removal was requested from the separately named close action.",
@@ -312,7 +321,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "button",
     "accessible_name": "required",
     "keyboard": [
       "Tab",
@@ -373,7 +382,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "kind=quantity"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": [

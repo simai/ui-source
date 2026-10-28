@@ -44,10 +44,12 @@ test('tags: inline drops the block padding and sizes the remove button to the li
 });
 
 test('tags: the Smart tag exposes the sizes, spacing and inline', async () => {
-  const meta = await read('smart/tag/meta.mjs');
-  assert.match(meta, /values: \['1\/3', '1\/2', '1', '2', '3'\]/);
-  assert.match(meta, /spacing: \{\s*kind: 'enum',\s*values: \['compact', 'normal', 'comfortable', 'spacious'\]/);
-  assert.match(meta, /inline: \{\s*kind: 'boolean'/);
+  // meta.mjs is generated from component.json (standard 1.4): read it as data.
+  const {attributes} = (await import('../src/smart/tag/meta.mjs')).default;
+  assert.deepEqual(attributes.size.values, ['1/3', '1/2', '1', '2', '3']);
+  assert.equal(attributes.spacing.kind, 'enum');
+  assert.deepEqual(attributes.spacing.values, ['compact', 'normal', 'comfortable', 'spacious']);
+  assert.equal(attributes.inline.kind, 'boolean');
   const template = await read('smart/tag/js/templates/default.js');
   assert.match(template, /context\.spacing && context\.spacing !== 'normal' \? `spacing-\$\{context\.spacing\}` : ''/);
   assert.match(template, /context\.inline \? 'sf-tag--inline' : ''/);

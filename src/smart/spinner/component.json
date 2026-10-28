@@ -2,7 +2,7 @@
   "$comment": "The source of sf-spinner's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/spinner (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.spinner",
   "tag": "sf-spinner",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "kind": "leaf",
   "family": "spinner",
   "settings": {
@@ -15,11 +15,13 @@
         "2",
         "3"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "The size ladder: at each step the spinner is the icon of an sf-button of the same size (diameter and stroke), so it can stand in for that icon."
     },
     "label": {
       "type": "string",
-      "default-from": "runtime.label"
+      "default-from": "runtime.label",
+      "summary": "Empty: the text of the page's language (\"Loading…\" in English)."
     },
     "kind": {
       "type": "enum",
@@ -30,7 +32,8 @@
         "comet",
         "dots"
       ],
-      "default": ""
+      "default": "",
+      "summary": "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc."
     },
     "dots": {
       "type": "number",
@@ -68,9 +71,19 @@
       "x-outcomes": [
         "applied"
       ],
-      "x-summary": "Draws the spinner again from its settings (after the page changed data-sf-spinner around it)"
+      "x-summary": "Draws the spinner again from its settings (after the page changed data-sf-spinner around it)",
+      "summary": "Re-renders the bound spinner root from its current configuration; does nothing before it is bound.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
+  "relations": [
+    {
+      "name": "spinner"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -120,6 +133,61 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-spinner for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), detail-adds (the new detail holds the old fields), attribute-and-property, host-attribute (no shim), manifest-only (the DOM name does not change), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "variant",
+        "to": "kind",
+        "kind": "setting",
+        "section": "the axis's old name (contracts/public-api-axes.json)",
+        "summary": "Legacy name for kind, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "width",
+        "to": null,
+        "kind": "attribute",
+        "mode": "retired",
+        "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+        "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+      },
+      {
+        "from": "height",
+        "to": null,
+        "kind": "attribute",
+        "mode": "retired",
+        "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+        "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+      },
+      {
+        "from": "stroke-width",
+        "to": null,
+        "kind": "attribute",
+        "mode": "retired",
+        "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+        "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+      },
+      {
+        "from": "dot-radius",
+        "to": null,
+        "kind": "attribute",
+        "mode": "retired",
+        "section": "§16 item 20 (compatibility.deprecations, since 1.1.0)",
+        "note": "the pixel geometry: replaced by size; still drawn by the shared spinner and noted there until the date"
+      },
+      {
+        "from": "getSpinnerRoot",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4",
+        "note": "a reader retires; the method stays until the date and notes each call"
+      }
+    ],
+    "since-version": "1.1.0"
+  },
   "x-summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
   "x-source": {
     "package": "framework",
@@ -138,14 +206,37 @@
     "settings.width, height, stroke-width, dot-radius: the pixel geometry deprecated since 1.1.0 (journal attribute-spinner-pixel-geometry) leaves the interface; still drawn and noted until 2026-12-01",
     "methods.getSpinnerRoot: a reader retires (§4.4), kept and noted until the date"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "version: 1.1.0 → 1.2.0: variant is a dated alias, the pixel geometry and getSpinnerRoot retire behind dated rows, dots and filled are numbers; a minor while the rows hold (§4.10).",
+    "a11y-role: one role, status, written with when {announce: true}: the root is a polite atomic live region only while announce is on and the label is not empty; otherwise it is aria-hidden and has no role. The name is the label (an empty label is a spinner with no words, as the table's).",
+    "existing-aliases: compatibility.deprecations (width, height, stroke-width, dot-radius → size) fold into aliases.json as retired attribute rows with the dates; the shared class spinner still reads and notes them until the sweep, and the element observes them.",
+    "number-type: dots and filled are integers (§16 item 29); the shared drawing clamps them.",
+    "refresh-spinner: kept, the element's own redraw (it is not the vocabulary's refresh, which re-reads data); it answers applied.",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
+    "examples: examples.json from studio.fixture.json plus the looks, an announced spinner and one with no words; probe.json drives the role, the name and the aliases.",
+    "skeleton: none; the spinner is itself what stands in while something loads, with no port and no late data (§5.4).",
+    "css-variables: six public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
+    "version 1.2.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "theme",
+      "responsive",
+      "loading-status",
+      "reduced-motion"
+    ],
+    "state": {
+      "machines": {
+        "waiting": [
+          "active",
+          "complete"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "active"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -157,6 +248,14 @@
         "setting or clearing aria-busy on the containing region",
         "inventing completion, error or timeout messages"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -170,7 +269,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-spinner for a bounded waiting state whose progress cannot be expressed as a meaningful percentage.",
@@ -195,18 +298,53 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "focus": "Spinner is not interactive and never enters the focus order."
+    },
+    "compatibility": {
+      "deprecations": [
+        {
+          "path": "width",
+          "since": "1.1.0",
+          "replacement": "size"
+        },
+        {
+          "path": "height",
+          "since": "1.1.0",
+          "replacement": "size"
+        },
+        {
+          "path": "stroke-width",
+          "since": "1.1.0",
+          "replacement": "size"
+        },
+        {
+          "path": "dot-radius",
+          "since": "1.1.0",
+          "replacement": "size"
+        }
+      ]
+    },
+    "methods": {
+      "getSpinnerRoot": {
+        "summary": "Returns the inner spinner root (.sf-loader-container), or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "inputs": {
+      "dots": {
+        "pattern": "^(?:[3-9]|[12][0-9]|3[0-2])$"
+      },
+      "filled": {
+        "pattern": "^(?:[1-9]|[12][0-9]|3[0-2])$"
+      }
     }
-  },
-  "x-decisions": [
-    "version: 1.1.0 → 1.2.0: variant is a dated alias, the pixel geometry and getSpinnerRoot retire behind dated rows, dots and filled are numbers; a minor while the rows hold (§4.10).",
-    "a11y-role: one role, status, written with when {announce: true}: the root is a polite atomic live region only while announce is on and the label is not empty; otherwise it is aria-hidden and has no role. The name is the label (an empty label is a spinner with no words, as the table's).",
-    "existing-aliases: compatibility.deprecations (width, height, stroke-width, dot-radius → size) fold into aliases.json as retired attribute rows with the dates; the shared class spinner still reads and notes them until the sweep, and the element observes them.",
-    "number-type: dots and filled are integers (§16 item 29); the shared drawing clamps them.",
-    "refresh-spinner: kept, the element's own redraw (it is not the vocabulary's refresh, which re-reads data); it answers applied.",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
-    "examples: examples.json from studio.fixture.json plus the looks, an announced spinner and one with no words; probe.json drives the role, the name and the aliases.",
-    "skeleton: none; the spinner is itself what stands in while something loads, with no port and no late data (§5.4).",
-    "css-variables: six public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
-    "version 1.2.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

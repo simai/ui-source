@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -22,37 +22,50 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.toast",
       "component.buttons",
-      "smart.icon-button",
-      "smart.icon"
+      "component.close",
+      "component.toast",
+      "smart.icon",
+      "smart.icon-button"
     ],
     "public_parts": []
   },
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "status": {
         "type": "string",
         "default": "neutral",
+        "description": "What the message reports, in the shared status vocabulary. The words this component used before — default and primary — are still accepted and mean neutral and info.",
         "enum": [
           "neutral",
           "info",
           "success",
           "warning",
           "error"
-        ],
-        "description": "What the message reports, in the shared status vocabulary. The words this component used before — default and primary — are still accepted and mean neutral and info."
+        ]
       },
       "icon": {
         "type": "string",
         "default": "",
         "description": "Optional decorative icon name."
       },
-      "title": {
+      "heading": {
         "type": "string",
-        "default": "",
-        "description": "Short result heading."
+        "default": ""
       },
       "supporting-text": {
         "type": "string",
@@ -76,28 +89,18 @@
       },
       "close-label": {
         "type": "string",
-        "default": "",
         "description": "Localized accessible name of the close action. Empty: the text of the page's language (\"Close message\" in English)."
       },
       "duration": {
         "type": "number",
         "default": 0,
-        "minimum": 0,
-        "description": "Explicit lifetime in milliseconds. Zero keeps the message until dismissed."
+        "description": "Explicit lifetime in milliseconds. Zero keeps the message until dismissed.",
+        "minimum": 0
       },
-      "role": {
+      "title": {
         "type": "string",
         "default": "",
-        "description": "Live-region role for dynamically inserted feedback only.",
-        "enum": [
-          "",
-          "status",
-          "alert"
-        ]
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
+        "description": "Short result heading."
       },
       "type": {
         "type": "string",
@@ -111,9 +114,15 @@
           "error"
         ]
       },
-      "heading": {
+      "role": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Live-region role for dynamically inserted feedback only.",
+        "enum": [
+          "",
+          "status",
+          "alert"
+        ]
       }
     },
     "additionalProperties": false
@@ -159,6 +168,43 @@
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
+      }
+    },
+    "show": {
+      "summary": "The action show.",
+      "arguments": [
+        {
+          "name": "text",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "code",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "count",
+          "schema": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "tone",
+          "schema": {
+            "enum": [
+              "info",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
       }
     },
     "setState": {
@@ -219,48 +265,58 @@
       "summary": "Emitted once when the optional enabled action is activated.",
       "payload": {
         "type": "object",
+        "required": [
+          "action"
+        ],
         "properties": {
           "action": {
             "type": "string",
             "description": "data-action or data-toast-action of the pressed control; empty when neither is set."
-          },
-          "toast": {
-            "type": "object",
-            "description": "The toast root element."
-          },
-          "trigger": {
-            "type": "object",
-            "description": "The pressed control."
           }
         },
-        "required": [
-          "action",
-          "toast",
-          "trigger"
-        ]
+        "additionalProperties": true
       }
     },
     "sf-toast-close": {
       "summary": "Emitted once before token-based dismissal removes the toast owner.",
       "payload": {
         "type": "object",
+        "required": [
+          "reason"
+        ],
         "properties": {
-          "toast": {
-            "type": "object",
-            "description": "The toast root element."
-          },
-          "trigger": {
-            "type": [
-              "object",
-              "null"
-            ],
-            "description": "The close control that was pressed; null when closed from code or by the timer."
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
           }
         },
+        "additionalProperties": true
+      }
+    },
+    "sf-toast-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
         "required": [
-          "toast",
-          "trigger"
-        ]
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
       }
     }
   },
@@ -294,7 +350,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "status",
     "accessible_name": "internal",
     "keyboard": [
       "Tab"

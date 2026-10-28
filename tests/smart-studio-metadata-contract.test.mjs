@@ -15,9 +15,11 @@ test('button Studio contract preserves closed choices and open icon examples', a
   ]);
   const properties = manifest.inputs.properties;
 
-  // The list stays closed, and it now carries the two appearances built on the
-  // neutral alpha ramp. Studio offers exactly the types the button CSS styles.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface', 'ghost']);
+  // The list stays closed, and it carries the surface appearance built on the
+  // neutral alpha ramp; ghost reads as link (a dated value alias, listed in
+  // compatibility.aliases). Studio offers exactly the types the button CSS styles.
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface']);
+  assert.ok(manifest.compatibility.aliases.includes('appearance=ghost'));
   assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);

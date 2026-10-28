@@ -46,8 +46,9 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
     assert.ok(declared.settings[name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)], name);
   }
   // smart.icon is listed because the template renders sf-icon, which the rule
-  // has to fetch: see loader-relation-completeness.contract.test.mjs.
-  assert.deepEqual(manifest.composition.uses, ['component.inputs', 'smart.icon']);
+  // has to fetch: see loader-relation-completeness.contract.test.mjs. The list is
+  // generated from the Loader relations (standard 1.4): the reset button's sheet too.
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.inputs', 'smart.icon']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'hidden']);
   assert.deepEqual(manifest.inputs.properties['input-type'].enum, ['text', 'email', 'password', 'search', 'tel', 'url']);

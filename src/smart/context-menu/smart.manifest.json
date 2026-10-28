@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.context-menu",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "title": "Context Menu",
   "summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -23,7 +23,9 @@
   "composition": {
     "uses": [
       "component.context-menu",
-      "smart.button"
+      "smart.button",
+      "smart.icon-button",
+      "smart.tabs"
     ],
     "public_parts": []
   },
@@ -35,11 +37,21 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "position": {
         "type": "string",
         "default": "",
+        "description": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing.",
         "enum": [
           "",
           "inline-start",
@@ -80,8 +92,7 @@
           "inline-start-end",
           "inline-end-start",
           "inline-end-end"
-        ],
-        "description": "Deprecated: a menu has no tail since 1.3.0 (owner, 2026-10-12); the value is kept for its class and draws nothing."
+        ]
       },
       "tooltip": {
         "type": "boolean",
@@ -92,55 +103,23 @@
         "type": "string",
         "default": ""
       },
-      "aria-label": {
-        "type": "string",
-        "default": ""
-      },
-      "items": {
-        "type": "array",
-        "default": [],
-        "items": {
-          "type": "object"
-        }
-      },
-      "role": {
-        "type": "string",
-        "default": "menu"
-      },
       "content-class": {
         "type": "string",
         "default": ""
-      },
-      "root-class": {
-        "type": "string",
-        "default": ""
-      },
-      "entries": {
-        "type": "array",
-        "default": [],
-        "items": {
-          "type": "object"
-        },
-        "description": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
       },
       "popup": {
         "type": "boolean",
         "default": false,
         "description": "Not drawn until opened through openFor(). A menu without it is drawn in place, as before."
       },
-      "search": {
-        "type": "object",
-        "default": null,
-        "description": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
-      },
       "size": {
         "type": "string",
+        "default": "1/2",
+        "description": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size.",
         "enum": [
           "1/2",
           "1"
-        ],
-        "default": "1/2",
-        "description": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size."
+        ]
       },
       "width": {
         "type": "string",
@@ -164,6 +143,33 @@
         "type": "boolean",
         "default": false,
         "description": "A close button at the end of the panel's head."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
+      },
+      "role": {
+        "type": "string",
+        "default": "menu"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "items": {
+          "type": "object"
+        }
+      },
+      "entries": {
+        "type": "array",
+        "default": [],
+        "description": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot.",
+        "items": {
+          "type": "object"
+        }
+      },
+      "search": {
+        "type": "object",
+        "description": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
       }
     },
     "additionalProperties": false
@@ -232,28 +238,14 @@
   },
   "contracts": {},
   "methods": {
-    "focus": {
-      "summary": "Focus the current available item. A host that renders the menu itself waits for rendering and owns opening and dismissal.",
-      "arguments": [
-        {
-          "name": "options",
-          "schema": {
-            "type": "object"
-          },
-          "required": false
-        }
-      ],
-      "returns": {
-        "type": "null"
-      }
-    },
     "openFor": {
       "summary": "Open beside an element: top layer, anchored by SF.Position with flip and shift, focus on the first item (or 'last', or 'none'). The menu then owns its lifecycle: Escape, Tab, a press outside and a choice close it and return the focus -- to where it was, or to the anchor's own control when it was nowhere.",
       "arguments": [
         {
           "name": "anchor",
-          "type": "Element",
-          "required": true
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "options",
@@ -278,8 +270,7 @@
                 "default": "first"
               }
             }
-          },
-          "required": false
+          }
         }
       ],
       "returns": {
@@ -292,15 +283,15 @@
       "arguments": [
         {
           "name": "anchor",
-          "type": "Element",
-          "required": true
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "options",
           "schema": {
             "type": "object"
-          },
-          "required": false
+          }
         }
       ],
       "returns": {
@@ -312,17 +303,16 @@
       "summary": "Close this menu and any submenu.",
       "arguments": [
         {
-          "name": "options",
+          "name": "reason",
           "schema": {
-            "type": "object",
-            "properties": {
-              "restoreFocus": {
-                "type": "boolean",
-                "default": true
-              }
-            }
-          },
-          "required": false
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
         }
       ],
       "returns": {
@@ -350,6 +340,21 @@
       "returns": {
         "type": "boolean"
       }
+    },
+    "focus": {
+      "summary": "Focus the current available item. A host that renders the menu itself waits for rendering and owns opening and dismissal.",
+      "arguments": [
+        {
+          "name": "options",
+          "schema": {
+            "type": "object"
+          },
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "null"
+      }
     }
   },
   "events": {
@@ -357,6 +362,12 @@
       "summary": "An entry was chosen, at any depth. Cancel it to keep the menu open.",
       "payload": {
         "type": "object",
+        "required": [
+          "id",
+          "entry",
+          "checked",
+          "group"
+        ],
         "properties": {
           "id": {
             "type": [
@@ -381,38 +392,97 @@
             ],
             "description": "The choice row's id when an option of it was chosen."
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-context-menu-open": {
       "summary": "Opened through openFor(). Bubbles and is composed; carries no detail.",
       "payload": {
-        "type": "null",
-        "description": "detail is null."
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-context-menu-opened": {
+      "summary": "opened (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
       }
     },
     "sf-context-menu-close": {
       "summary": "A menu opened through openFor() was closed. Bubbles and is composed; carries no detail.",
       "payload": {
-        "type": "null",
-        "description": "detail is null."
+        "type": "object",
+        "required": [
+          "reason",
+          "unsaved"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          },
+          "unsaved": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-context-menu-closed": {
+      "summary": "closed (vocabulary).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
       }
     },
     "sf-context-menu-search": {
       "summary": "The query of a search the host answers (search.remote).",
       "payload": {
         "type": "object",
+        "required": [
+          "query"
+        ],
         "properties": {
           "query": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-context-menu-tab": {
       "summary": "A tab of the panel was chosen; the host shows its rows.",
       "payload": {
         "type": "object",
+        "required": [
+          "id",
+          "index"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -420,7 +490,8 @@
           "index": {
             "type": "number"
           }
-        }
+        },
+        "additionalProperties": true
       }
     }
   },

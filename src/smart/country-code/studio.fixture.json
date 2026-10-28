@@ -6,8 +6,8 @@
   "summary": "Deterministic reference fixture for sf-country-code.",
   "locale": "ru",
   "props": {
-    "value": "+7 999 123-45-67",
-    "label": "Телефон"
+    "label": "Телефон",
+    "value": "+7 999 123-45-67"
   },
   "children": [],
   "state": "default"

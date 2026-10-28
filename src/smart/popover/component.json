@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -16,19 +16,23 @@
         "inline-start",
         "inline-end"
       ],
-      "default": "bottom-end"
+      "default": "bottom-end",
+      "summary": "Which corner of the trigger the surface hangs from."
     },
     "label": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The accessible name of the surface. A surface with a role and no name is announced as an unnamed one."
     },
     "width": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A width of its own. Left to its content a surface takes the width of its longest line, which a list of names makes wide and ragged."
     },
     "dismissible": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Esc and a press outside close it. A consumer that owns those keys turns this off and calls close() when it decides."
     },
     "surface-role": {
       "type": "enum",
@@ -38,7 +42,8 @@
         "listbox",
         "group"
       ],
-      "default": "dialog"
+      "default": "dialog",
+      "summary": "What the surface is to a reader: dialog, menu, listbox or group. Written on sf-popover; the surface gets the role and the trigger aria-haspopup."
     },
     "unsaved": {
       "type": "boolean",
@@ -49,13 +54,15 @@
     "open": {
       "type": "boolean",
       "default": false,
-      "reflect": true
+      "reflect": true,
+      "summary": "Whether the surface is shown. Reflected, so a consumer can read it and set it."
     }
   },
   "events": {
     "open": {
       "carries": {},
-      "cancelable": true
+      "cancelable": true,
+      "summary": "The surface opened."
     },
     "opened": {
       "carries": {}
@@ -74,7 +81,8 @@
         },
         "unsaved": "boolean"
       },
-      "cancelable": true
+      "cancelable": true,
+      "summary": "The surface closed."
     },
     "closed": {
       "carries": {
@@ -102,14 +110,24 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open or close it; a boolean forces one or the other.",
+      "x-returns": {
+        "type": "boolean",
+        "description": "Whether it is open afterwards."
+      }
     },
     "show": {
       "emits": "open",
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Open it.",
+      "x-returns": {
+        "type": "boolean",
+        "description": "Whether it is open afterwards."
+      }
     },
     "close": {
       "with": {
@@ -128,13 +146,22 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Close it.",
+      "x-returns": {
+        "type": "boolean",
+        "description": "Whether it is open afterwards."
+      }
     },
     "return-focus": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Put the focus back on the trigger.",
+      "x-returns": {
+        "type": "null"
+      }
     }
   },
   "slots": {
@@ -156,6 +183,7 @@
       "Tab": "reach"
     }
   },
+  "relations": [],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -210,6 +238,39 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-popover for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (attribute rows), manifest-only (the DOM name does not change; its meaning does, so no shim).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "role",
+        "to": "surface-role",
+        "kind": "attribute",
+        "section": "§3.1",
+        "note": "read by the popover, not the shim: role leaves the host once read (the shim would mirror that removal onto surface-role); each read is noted with these dates",
+        "mode": "host-attribute"
+      },
+      {
+        "from": "sf-popover-open",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§19.3, vocabulary §4",
+        "note": "the same DOM name is the cancelable request now (sent before opening); the fact is sf-popover-opened",
+        "summary": "The surface opened."
+      },
+      {
+        "from": "sf-popover-close",
+        "to": null,
+        "kind": "event",
+        "mode": "manifest-only",
+        "section": "§19.3, vocabulary §4",
+        "note": "the same DOM name is the cancelable request now (sent before closing, {reason, unsaved}); the fact is sf-popover-closed",
+        "summary": "The surface closed."
+      }
+    ]
+  },
   "x-summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "x-source": {
     "package": "framework",
@@ -224,14 +285,61 @@
     "settings.role → surface-role: a host attribute, never a setting (§3.1); the attribute is a dated alias and leaves the host",
     "events sf-popover-open, sf-popover-close: were facts sent after the state changed; by §19.3 and vocabulary §4 they are the cancelable requests now, and the facts are sf-popover-opened and sf-popover-closed"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "events: a layer asks before it closes (§19.3): sf-popover-close {reason, unsaved} is the cancelable request and sf-popover-closed {reason} the fact; sf-popover-open and sf-popover-opened likewise. The old names were facts with the same DOM names, so no alias can carry them: a listener of sf-popover-close now hears it just before the surface closes, without the element in detail (§8). No Framework code listened to them.",
+    "key-effects: the trigger is the page's own control; Enter and Space press it and toggle the surface (toggle:open); Escape closes while dismissible; Tab leaves it (the surface does not trap focus).",
+    "version: 1.0.0 → 1.1.0: the attribute role is a dated alias of surface-role; added unsaved and the facts.",
+    "template: the template draws nothing; trigger and content stay the page's nodes where they were written (§4.5 place, never copy), and the stylesheet places them by data-open and data-placement.",
+    "examples: examples.json (a settings surface, a menu, a wide list); probe.json drives Enter, Escape and an outside press (gate 16).",
+    "css-variables: six public variables of the surface (background, colour, radius, shadow, max width, max height) read by default.css with the old internal --sf-popover--max-* and the elevation tokens as fallbacks (§6).",
+    "side-effects: none. The surface is drawn in place, absolutely positioned against the host, not at the end of body; it registers as a surface layer of the one stack (core open-surface-mark), so Escape and an outside press reach it only while it is the top layer.",
+    "dismissing: reasons escape (Escape), outside (a press outside), close (the trigger pressed again), api (a script); dismissible=false removes escape and outside.",
+    "docs: the folder has no docs.md yet (the page lives in ui-doc); a leftover for the docs fold of §16 item 30.",
+    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-rule": {
+    "$comment": [
+      "The popover loads on demand like any other Smart element. It renders no",
+      "markup and draws into no other component: what it owns is where the consumer's",
+      "own nodes are, said in attributes its stylesheet reads."
+    ]
+  },
+  "x-registry": {
+    "reuse_mode": "both",
+    "tags": [
+      "popover",
+      "anchored",
+      "surface",
+      "overlay"
+    ],
+    "contracts": {
+      "slots": {
+        "type": "object",
+        "description": "The named slots the consumer fills.",
+        "properties": {
+          "trigger": {
+            "description": "The control that opens it, left where the consumer put it."
+          },
+          "content": {
+            "description": "What the surface holds. This component claims nothing about its shape."
+          }
+        }
+      }
+    },
+    "state": {
+      "machines": {
+        "surface": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default"
+      ]
+    },
+    "artifacts": {
+      "fixtures": [],
+      "scenarios": []
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -241,6 +349,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -254,7 +370,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-popover for a surface anchored to a control the consumer supplies -- a field's settings, a filter, a list of things to add -- that opens on its trigger and closes on Escape or outside.",
@@ -276,18 +396,20 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "Tab",
+        "Enter",
+        "Space",
+        "Escape"
+      ],
+      "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match and aria-expanded. Opening moves focus into the surface; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
+    },
+    "inputs": {
+      "template": {
+        "description": "Template variant name."
+      }
     }
-  },
-  "x-decisions": [
-    "events: a layer asks before it closes (§19.3): sf-popover-close {reason, unsaved} is the cancelable request and sf-popover-closed {reason} the fact; sf-popover-open and sf-popover-opened likewise. The old names were facts with the same DOM names, so no alias can carry them: a listener of sf-popover-close now hears it just before the surface closes, without the element in detail (§8). No Framework code listened to them.",
-    "key-effects: the trigger is the page's own control; Enter and Space press it and toggle the surface (toggle:open); Escape closes while dismissible; Tab leaves it (the surface does not trap focus).",
-    "version: 1.0.0 → 1.1.0: the attribute role is a dated alias of surface-role; added unsaved and the facts.",
-    "template: the template draws nothing; trigger and content stay the page's nodes where they were written (§4.5 place, never copy), and the stylesheet places them by data-open and data-placement.",
-    "examples: examples.json (a settings surface, a menu, a wide list); probe.json drives Enter, Escape and an outside press (gate 16).",
-    "css-variables: six public variables of the surface (background, colour, radius, shadow, max width, max height) read by default.css with the old internal --sf-popover--max-* and the elevation tokens as fallbacks (§6).",
-    "side-effects: none. The surface is drawn in place, absolutely positioned against the host, not at the end of body; it registers as a surface layer of the one stack (core open-surface-mark), so Escape and an outside press reach it only while it is the top layer.",
-    "dismissing: reasons escape (Escape), outside (a press outside), close (the trigger pressed again), api (a script); dismissible=false removes escape and outside.",
-    "docs: the folder has no docs.md yet (the page lives in ui-doc); a leftover for the docs fold of §16 item 30.",
-    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

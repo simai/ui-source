@@ -88,7 +88,8 @@ test('no first-party source asks a component for a value it does not declare', (
 // here rather than fixed in a round about the property view (owner, 2026-10-09).
 const KNOWN_ATTRIBUTES = [];
 const KNOWN = [
-  'src/smart/tabs/js/templates/default.js: <sf-button appearance="primary"> — default, ghost, link, outline, surface, tonal',
+  // sf-button's ghost is a dated value alias of link (compatibility.aliases), not an appearance.
+  'src/smart/tabs/js/templates/default.js: <sf-button appearance="primary"> — default, link, outline, surface, tonal',
   'src/smart/tabs/js/templates/default.js: <sf-icon-button appearance="primary"> — default, ghost, link, outline, surface, tonal',
 ];
 

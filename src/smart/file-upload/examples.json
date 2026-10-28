@@ -1,7 +1,528 @@
-[
-  {"name": "reference", "title": "Несколько документов", "settings": {"link-text": "Выберите файлы", "text": "или перетащите их сюда", "formats": "PDF, PNG или JPG", "supporting-text": "Можно загрузить несколько документов", "multiple": true}, "expect": {"values": {}}},
-  {"name": "accept", "title": "Только изображения", "settings": {"accept": "image/*"}, "expect": {"text": "IMAGE"}},
-  {"name": "progress", "title": "Загрузка идёт", "settings": {"items": [{"id": "a", "name": "report.pdf", "fileSize": "1.2MB", "progress": 40, "state": "process"}]}, "expect": {"events": []}},
-  {"name": "error", "title": "Ошибка с повтором", "settings": {"items": [{"id": "b", "name": "photo.png", "fileSize": "3MB", "state": "error", "errorMessage": "Сеть недоступна"}]}, "expect": {"events": []}},
-  {"name": "disabled", "title": "Недоступна", "settings": {"disabled": true}, "expect": {"values": {}}}
-]
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Несколько документов",
+      "settings": {
+        "link-text": "Выберите файлы",
+        "text": "или перетащите их сюда",
+        "formats": "PDF, PNG или JPG",
+        "supporting-text": "Можно загрузить несколько документов",
+        "multiple": true
+      },
+      "expect": {
+        "values": {}
+      },
+      "studio": {
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "clear",
+              "with": []
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "accept",
+      "title": "Только изображения",
+      "settings": {
+        "accept": "image/*"
+      },
+      "expect": {
+        "text": "IMAGE"
+      }
+    },
+    {
+      "name": "progress",
+      "title": "Загрузка идёт",
+      "settings": {
+        "items": [
+          {
+            "id": "a",
+            "name": "report.pdf",
+            "fileSize": "1.2MB",
+            "progress": 40,
+            "state": "process"
+          }
+        ]
+      },
+      "expect": {
+        "events": []
+      }
+    },
+    {
+      "name": "error",
+      "title": "Ошибка с повтором",
+      "settings": {
+        "items": [
+          {
+            "id": "b",
+            "name": "photo.png",
+            "fileSize": "3MB",
+            "state": "error",
+            "errorMessage": "Сеть недоступна"
+          }
+        ]
+      },
+      "expect": {
+        "events": []
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "disabled": true
+      },
+      "expect": {
+        "values": {}
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-file-upload against component.json (standard simai.smart-component 1.3.8 §4.4, §5.3, §8, §10.8 streams, §16.20; vocabulary 1.1.5 §5.1, §5.2, §9.1)",
+        "component": "sf-file-upload",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "change",
+            "sf-file-upload-attach",
+            "sf-file-upload:select",
+            "sf-file-upload-attached",
+            "sf-file-upload:file-add",
+            "sf-file-upload-detach",
+            "sf-file-upload:remove",
+            "sf-file-upload-rejected",
+            "sf-file-upload:reject",
+            "sf-file-upload-retry",
+            "sf-file-upload:retry",
+            "sf-file-upload-begun",
+            "sf-file-upload-chunk",
+            "sf-file-upload-completed",
+            "sf-file-upload:file-complete",
+            "sf-file-upload-failed",
+            "sf-file-upload:file-error",
+            "sf-file-upload-cancelled",
+            "sf-file-upload-finished",
+            "sf-file-upload:complete"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "a-chosen-file-is-attached-and-its-stream-begins",
+            "covers": "events attached, attach, begun, change; the old :file-add and :select after them with one detail, dated",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "user": "files:input[type=file]=report.pdf|application/pdf",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-attached",
+                  "index": 0,
+                  "source": "input",
+                  "item": {
+                    "name": "report.pdf",
+                    "state": "process"
+                  }
+                },
+                {
+                  "type": "sf-file-upload:file-add",
+                  "index": 0,
+                  "source": "input"
+                },
+                {
+                  "type": "sf-file-upload-attach",
+                  "files": [
+                    {
+                      "name": "report.pdf"
+                    }
+                  ],
+                  "source": "input",
+                  "multiple": false
+                },
+                {
+                  "type": "sf-file-upload:select",
+                  "files": [
+                    {
+                      "name": "report.pdf"
+                    }
+                  ],
+                  "source": "input"
+                },
+                {
+                  "type": "sf-file-upload-begun",
+                  "item": {
+                    "name": "report.pdf"
+                  }
+                },
+                {
+                  "type": "change",
+                  "files": [
+                    {
+                      "name": "report.pdf"
+                    }
+                  ],
+                  "source": "input"
+                }
+              ],
+              "deprecations": [
+                {
+                  "component": "sf-file-upload",
+                  "kind": "event",
+                  "from": "sf-file-upload:file-add",
+                  "to": "sf-file-upload-attached",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                },
+                {
+                  "component": "sf-file-upload",
+                  "kind": "event",
+                  "from": "sf-file-upload:select",
+                  "to": "sf-file-upload-attach",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "evaluate": {
+                "el.items.length": 1,
+                "el.items[0].id === window.__log.find((e) => e.type === 'sf-file-upload-begun').id": true
+              }
+            }
+          },
+          {
+            "id": "the-stream-grows-and-completes",
+            "covers": "§10.8: chunk {id, done, total} as the host moves the progress, then completed once (the old :file-complete after it) and finished",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "files:input[type=file]=report.pdf|application/pdf"
+              }
+            ],
+            "script": "const [item] = el.items; el.items = [{...item, progress: 50}]; el.items = [{...item, state: 'done', progress: 100}];",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-chunk",
+                  "done": 50,
+                  "total": 100
+                },
+                {
+                  "type": "sf-file-upload-completed",
+                  "index": 0,
+                  "item": {
+                    "state": "done"
+                  }
+                },
+                {
+                  "type": "sf-file-upload:file-complete",
+                  "index": 0
+                },
+                {
+                  "type": "sf-file-upload-finished",
+                  "items": [
+                    {
+                      "state": "done"
+                    }
+                  ]
+                },
+                {
+                  "type": "sf-file-upload:complete"
+                }
+              ],
+              "deprecations": [
+                {
+                  "from": "sf-file-upload:file-complete",
+                  "to": "sf-file-upload-completed"
+                },
+                {
+                  "from": "sf-file-upload:complete",
+                  "to": "sf-file-upload-finished"
+                }
+              ],
+              "evaluate": {
+                "window.__log[0].id === window.__log[1].id": true
+              }
+            }
+          },
+          {
+            "id": "the-stream-fails",
+            "covers": "§10.8: failed {id, reason, message} ends the stream; the old :file-error after it",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "files:input[type=file]=photo.png|image/png"
+              }
+            ],
+            "script": "const [item] = el.items; el.items = [{...item, state: 'error', errorMessage: 'Сеть недоступна'}];",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-failed",
+                  "reason": "error",
+                  "message": "Сеть недоступна",
+                  "index": 0
+                },
+                {
+                  "type": "sf-file-upload:file-error",
+                  "reason": "error",
+                  "message": "Сеть недоступна"
+                }
+              ]
+            }
+          },
+          {
+            "id": "retry-begins-a-new-stream",
+            "covers": "events.retry (the old :retry after it), then begun",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "files:input[type=file]=photo.png|image/png"
+              },
+              {
+                "script": "const [item] = el.items; el.items = [{...item, state: 'error', errorMessage: 'Сеть недоступна'}];"
+              }
+            ],
+            "user": "click:[data-action=retry]",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-retry",
+                  "index": 0
+                },
+                {
+                  "type": "sf-file-upload:retry",
+                  "index": 0
+                },
+                {
+                  "type": "sf-file-upload-begun"
+                }
+              ],
+              "evaluate": {
+                "el.items[0].state": "process"
+              }
+            }
+          },
+          {
+            "id": "removing-a-file-in-process-cancels-its-stream",
+            "covers": "events.detach (the old :remove after it), then cancelled (§10.8)",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "files:input[type=file]=report.pdf|application/pdf"
+              }
+            ],
+            "user": "click:[data-action=remove]",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-detach",
+                  "index": 0,
+                  "item": {
+                    "name": "report.pdf"
+                  }
+                },
+                {
+                  "type": "sf-file-upload:remove",
+                  "index": 0
+                },
+                {
+                  "type": "sf-file-upload-cancelled",
+                  "item": {
+                    "name": "report.pdf"
+                  }
+                }
+              ],
+              "evaluate": {
+                "el.items.length": 0
+              }
+            }
+          },
+          {
+            "id": "a-drop-outside-accept-is-rejected",
+            "covers": "events.rejected (the old :reject after it); the accepted file is attached with source drop",
+            "field": "<sf-file-upload aria-label=\"Изображения\" accept=\"image/*\" multiple></sf-file-upload>",
+            "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'a.png', {type: 'image/png'})); transfer.items.add(new File(['x'], 'b.pdf', {type: 'application/pdf'})); el.querySelector('.sf-file-upload').dispatchEvent(new DragEvent('drop', {bubbles: true, cancelable: true, dataTransfer: transfer}));",
+            "expect": {
+              "events": [
+                {
+                  "type": "sf-file-upload-rejected",
+                  "files": [
+                    {
+                      "name": "b.pdf"
+                    }
+                  ],
+                  "accept": "image/*",
+                  "source": "drop"
+                },
+                {
+                  "type": "sf-file-upload:reject",
+                  "files": [
+                    {
+                      "name": "b.pdf"
+                    }
+                  ]
+                },
+                {
+                  "type": "sf-file-upload-attached",
+                  "source": "drop",
+                  "item": {
+                    "name": "a.png"
+                  }
+                },
+                {
+                  "type": "sf-file-upload:file-add",
+                  "source": "drop"
+                },
+                {
+                  "type": "sf-file-upload-attach",
+                  "source": "drop",
+                  "multiple": true
+                },
+                {
+                  "type": "sf-file-upload:select",
+                  "source": "drop"
+                },
+                {
+                  "type": "sf-file-upload-begun",
+                  "item": {
+                    "name": "a.png"
+                  }
+                },
+                {
+                  "type": "change",
+                  "files": [
+                    {
+                      "name": "a.png"
+                    }
+                  ],
+                  "source": "drop"
+                }
+              ]
+            }
+          },
+          {
+            "id": "a-file-held-over-is-a-host-state",
+            "covers": "host-states data-dragged-over (§5.3), off again on drop",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "script": "const transfer = new DataTransfer(); transfer.items.add(new File(['x'], 'a.png', {type: 'image/png'})); el.querySelector('.sf-file-upload').dispatchEvent(new DragEvent('dragover', {bubbles: true, cancelable: true, dataTransfer: transfer})); return el.getAttribute('data-dragged-over');",
+            "expect": {
+              "returns": "true"
+            }
+          },
+          {
+            "id": "remove-item-answers-an-outcome",
+            "covers": "actions.remove-item {index} (§4.4): applied, and the stream it held is cancelled",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "files:input[type=file]=report.pdf|application/pdf"
+              }
+            ],
+            "action": {
+              "name": "remove-item",
+              "with": {
+                "index": 0
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "events": [
+                {
+                  "type": "sf-file-upload-cancelled"
+                }
+              ],
+              "evaluate": {
+                "el.items.length": 0
+              }
+            }
+          },
+          {
+            "id": "remove-item-without-an-entry-is-refused",
+            "covers": "actions.remove-item refused {reason: no-item}",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "action": {
+              "name": "remove-item",
+              "with": {
+                "index": 3
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "no-item"
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "clear-with-nothing-is-refused",
+            "covers": "actions.clear refused {reason: unchanged}",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "action": {
+              "name": "clear"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "unchanged"
+              }
+            }
+          },
+          {
+            "id": "enter-opens-the-dialog",
+            "covers": "keyboard.host Enter open",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "focus:.sf-file-upload"
+              }
+            ],
+            "user": "keyboard:Enter",
+            "expect": {
+              "fileChooser": true
+            }
+          },
+          {
+            "id": "space-opens-the-dialog",
+            "covers": "keyboard.host Space open",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "given": [
+              {
+                "user": "focus:.sf-file-upload"
+              }
+            ],
+            "user": "keyboard:Space",
+            "expect": {
+              "fileChooser": true
+            }
+          },
+          {
+            "id": "words-from-the-language-files",
+            "covers": "settings link-text and text default to the language file's words (§11)",
+            "field": "<sf-file-upload aria-label=\"Документы\"></sf-file-upload>",
+            "script": "return [el.linkText, el.text];",
+            "expect": {
+              "returns": [
+                "Выберите файл",
+                "или перетащите его сюда"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

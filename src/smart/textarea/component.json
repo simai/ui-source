@@ -2,7 +2,7 @@
   "$comment": "The source of sf-textarea's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/textarea (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.textarea",
   "tag": "sf-textarea",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -25,7 +25,8 @@
         "filled",
         "flush"
       ],
-      "default": "bordered"
+      "default": "bordered",
+      "summary": "How the field looks: a bordered box, a filled one, or flush -- no box of its own, inside a composite control that draws the box and the focus."
     },
     "label": {
       "type": "string",
@@ -92,15 +93,18 @@
     },
     "auto-grow": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows. CSS field-sizing where supported, a script fallback elsewhere; rows is then ignored."
     },
     "min-rows": {
       "type": "number",
-      "default": 1
+      "default": 1,
+      "summary": "With auto-grow: the fewest rows the field shows. One row is the height of an input of the same size."
     },
     "max-rows": {
       "type": "number",
-      "optional": true
+      "optional": true,
+      "summary": "With auto-grow: the most rows before the field scrolls inside. Unset means no cap; a value below min-rows is min-rows."
     },
     "disabled": {
       "type": "boolean",
@@ -139,10 +143,12 @@
   },
   "events": {
     "change": {
-      "carries": "native"
+      "carries": "native",
+      "summary": "The value was committed; the native event bubbles from the inner textarea, which is its target."
     },
     "input": {
-      "carries": "native"
+      "carries": "native",
+      "summary": "The value changed while typing; the native event bubbles from the inner textarea, which is its target."
     }
   },
   "actions": {},
@@ -167,6 +173,17 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "textarea"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "icon-buttons"
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -220,6 +237,43 @@
       "state": "invalid"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-textarea for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "spellcheck",
+        "to": "spell-check",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26"
+      },
+      {
+        "from": "error",
+        "to": "invalid",
+        "kind": "setting",
+        "section": "§17.2",
+        "note": "error is a dated alias of invalid; the shim maps the attribute and the property"
+      },
+      {
+        "from": "type",
+        "to": "appearance",
+        "kind": "setting",
+        "section": "§16 item 20, contracts/public-api-axes.json",
+        "note": "the legacy axis name",
+        "summary": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+      },
+      {
+        "from": "sf-field:reset",
+        "to": "sf-field-reset",
+        "kind": "event",
+        "mode": "same-detail",
+        "section": "§8, §20.2",
+        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
+      }
+    ]
+  },
   "x-summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "x-source": {
     "package": "framework",
@@ -235,14 +289,76 @@
   "x-renamed": [
     "settings.spellcheck → spell-check: \"spellcheck\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
+    "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
+    "version 1.5.0: spellcheck -> spell-check (§3.1, a property of HTMLElement), type -> appearance and error -> invalid (§17.2) are renamed members behind dated aliases, a minor (§4.10); the major comes when the aliases expire. The setting rows carry no mode: the shim maps a setting's attribute and property by kind (core/js/alias-table.js refuses a mode on a non-event row).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
+    "examples: examples.json from studio.fixture.json (the required comment reference) plus filled, flush, auto-grow, invalid, disabled, read-only, inherited and size 2.",
+    "css-variables: the six public variables of public-variables.v1.json plus --sf-textarea-invalid-border-color for the invalid state (§6).",
+    "form.validity: what the native textarea reports and the host mirrors -- value-missing, too-short, too-long -- and custom-error (§17.2).",
+    "form: the host is the form control through ElementInternals; the textarea carries no name (§17.1 item 6); read-only still submits.",
+    "accessibility.name: the label only, as converted; the textarea takes no aria-label from the host today (left as it is).",
+    "version 1.5.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.5.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-rule": {
+    "$comment": [
+      "css: its own sheet and the icon button carry the reset back to an inherited",
+      "value (simai/ui-source#28)."
+    ],
+    "css": true
+  },
+  "x-registry": {
+    "reuse_mode": "both",
+    "public-parts": [
+      "native-textarea",
+      "label",
+      "hint"
+    ],
+    "contracts": {
+      "state_owner": {
+        "const": "native_textarea"
+      },
+      "value_owner": {
+        "const": "native_textarea"
+      },
+      "form_owner": {
+        "const": "native_form"
+      },
+      "reset": {
+        "const": "native_form_reset"
+      },
+      "resize_default": {
+        "const": "vertical"
+      },
+      "auto_grow": {
+        "const": "field_sizing_content_with_script_fallback"
+      },
+      "mask_owner": {
+        "const": "optional_sf_mask_adapter"
+      },
+      "field_states": {
+        "type": "string",
+        "enum": [
+          "empty",
+          "filled",
+          "hover",
+          "focus-visible",
+          "readonly",
+          "disabled",
+          "invalid"
+        ]
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "active",
+        "disabled",
+        "error"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -252,6 +368,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -265,7 +389,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-textarea for comments, descriptions and other free text that may contain multiple lines and must participate in a native form.",
@@ -288,19 +416,81 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab",
+        "native multiline text editing"
+      ],
+      "focus": "Keep visible focus on the active control. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    },
+    "event-fields": {
+      "change": {
+        "canonical": true
+      }
+    },
+    "alias-events": {
+      "sf-field:reset": {
+        "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "The field's own value before the reset."
+            },
+            "inheritedValue": {
+              "type": "string",
+              "description": "The inherited value it returns to."
+            },
+            "name": {
+              "type": "string",
+              "description": "The form name, empty when the field has none."
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "setState": {
+        "summary": "Applies disabled, error or invalid, errorMessage and value to the inner textarea and resyncs its field semantics; setting value dispatches input. Returns false when the textarea is not rendered.",
+        "arguments": [
+          {
+            "name": "nextState",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "resetToInherited": {
+        "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field:reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
+        "arguments": [],
+        "returns": {
+          "type": "boolean",
+          "description": "Whether the field was reset."
+        }
+      }
+    },
+    "trait-inputs": {
+      "inherited-value": {
+        "type": "string",
+        "default": "",
+        "description": "What the field falls back to while it holds no value of its own. Shown as inherited, in the placeholder's ink with an «inherited» marker under the field, never as the value: the form value stays empty. Once the field holds a value of its own, a reset button returns it here."
+      },
+      "inherited-text": {
+        "type": "string",
+        "default": "",
+        "description": "The words of the marker shown while the inherited value applies. Unset, it follows the page's language («inherited», «наследуется»)."
+      },
+      "reset-label": {
+        "type": "string",
+        "default": "",
+        "description": "The accessible name of the button that returns the field to the inherited value. Unset, it follows the page's language («Reset to inherited», «Сбросить к наследуемому»)."
+      }
     }
-  },
-  "x-decisions": [
-    "trait-words: the field-inherit@1 words stay in lang x-trait-words beside the component words, as the sf-switch pilot keeps them; the running words are helpers/inherited-value.js INHERITED_TEXT until the trait has its own folder (Annex A item 13 is open).",
-    "trait field-inherit@1: host state data-inherited (§5.3, §20.2) and the trait event sf-field-reset with sf-field:reset as its dated same-detail alias (aliases.json), as the sf-switch pilot; an inherited value never satisfies required (§20.2).",
-    "version 1.5.0: spellcheck -> spell-check (§3.1, a property of HTMLElement), type -> appearance and error -> invalid (§17.2) are renamed members behind dated aliases, a minor (§4.10); the major comes when the aliases expire. The setting rows carry no mode: the shim maps a setting's attribute and property by kind (core/js/alias-table.js refuses a mode on a non-event row).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one (a copy nothing draws would drift).",
-    "examples: examples.json from studio.fixture.json (the required comment reference) plus filled, flush, auto-grow, invalid, disabled, read-only, inherited and size 2.",
-    "css-variables: the six public variables of public-variables.v1.json plus --sf-textarea-invalid-border-color for the invalid state (§6).",
-    "form.validity: what the native textarea reports and the host mirrors -- value-missing, too-short, too-long -- and custom-error (§17.2).",
-    "form: the host is the form control through ElementInternals; the textarea carries no name (§17.1 item 6); read-only still submits.",
-    "accessibility.name: the label only, as converted; the textarea takes no aria-label from the host today (left as it is).",
-    "version 1.5.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.5.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

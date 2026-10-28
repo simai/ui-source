@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Alert",
   "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
   "kind": "smart",
@@ -34,39 +34,47 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "status": {
         "type": "string",
         "default": "neutral",
+        "description": "What the alert reports, in the shared status vocabulary. The words this component used before — clear and danger — are still accepted and mean neutral and error.",
         "enum": [
           "neutral",
           "info",
           "success",
           "warning",
           "error"
-        ],
-        "description": "What the alert reports, in the shared status vocabulary. The words this component used before — clear and danger — are still accepted and mean neutral and error."
+        ]
       },
       "appearance": {
         "type": "string",
         "default": "default",
+        "description": "How the alert looks: a filled surface, an outline, or flat.",
         "enum": [
           "default",
           "outlined",
           "flat"
-        ],
-        "description": "How the alert looks: a filled surface, an outline, or flat."
+        ]
       },
       "icon": {
         "type": "string",
         "default": "",
         "description": "Optional icon override. Use none to hide the semantic icon."
       },
-      "title": {
+      "heading": {
         "type": "string",
-        "default": "",
-        "description": "Short message heading."
+        "default": ""
       },
       "supporting-text": {
         "type": "string",
@@ -100,12 +108,16 @@
       },
       "close-label": {
         "type": "string",
-        "default": "",
         "description": "Localized accessible name of the close action. Empty: the text of the page's language (\"Close alert\" in English)."
       },
-      "root-class": {
+      "aria-label": {
         "type": "string",
         "default": ""
+      },
+      "title": {
+        "type": "string",
+        "default": "",
+        "description": "Short message heading."
       },
       "type": {
         "type": "string",
@@ -128,10 +140,6 @@
           "outlined",
           "flat"
         ]
-      },
-      "heading": {
-        "type": "string",
-        "default": ""
       }
     },
     "additionalProperties": false
@@ -239,26 +247,34 @@
       "summary": "An action button ([data-action] or [data-alert-action]) inside the alert was activated. Bubbles and is composed; not cancelable. The alert stays.",
       "payload": {
         "type": "object",
+        "required": [
+          "action"
+        ],
         "properties": {
           "action": {
             "type": "string",
             "description": "The trigger's data-action or data-alert-action value; empty when neither is set."
-          },
-          "alert": {
-            "description": "The emitting sf-alert."
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-alert-close": {
       "summary": "The alert is being dismissed by its close button or dismiss()/close(). Bubbles and is composed; not cancelable; the element is removed after it.",
       "payload": {
         "type": "object",
+        "required": [
+          "reason"
+        ],
         "properties": {
-          "alert": {
-            "description": "The emitting sf-alert."
+          "reason": {
+            "enum": [
+              "close",
+              "api"
+            ]
           }
-        }
+        },
+        "additionalProperties": true
       }
     }
   },
@@ -292,7 +308,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": null,
+    "role": "status",
     "accessible_name": "internal",
     "keyboard": [
       "Tab"

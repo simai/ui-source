@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.image-field",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Image field",
   "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
   "kind": "smart",
@@ -38,12 +38,16 @@
     "properties": {
       "template": {
         "type": "string",
-        "default": "default"
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
       },
-      "value": {
+      "root-class": {
         "type": "string",
-        "default": "",
-        "description": "The image, in the file shape {value, label, mime, size, href}: value the host's id, label the file name (the thumbnail's alt), mime its type, size bytes or text the host formatted, href the address it is shown from. The attribute takes that shape as JSON, or a bare address; the property takes the object, or null for none. Set from code it fires nothing."
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
       },
       "name": {
         "type": "string",
@@ -62,8 +66,8 @@
       },
       "accept": {
         "type": "string",
-        "description": "What the file dialog offers and a drop accepts: `.ext`, `type/*` or `type/sub`, comma separated.",
-        "default": "image/*"
+        "default": "image/*",
+        "description": "What the file dialog offers and a drop accepts: `.ext`, `type/*` or `type/sub`, comma separated."
       },
       "size": {
         "type": "string",
@@ -100,11 +104,6 @@
         "default": false,
         "description": "Shown without buttons; a drop is refused."
       },
-      "error": {
-        "type": "boolean",
-        "default": false,
-        "description": "The error state; the same as invalid."
-      },
       "invalid": {
         "type": "boolean",
         "default": false,
@@ -120,9 +119,15 @@
         "default": "",
         "description": "The group's accessible name when no label is drawn inside the field: a form that prints the label beside it (the Framework's field renderers) names the field without a second, visible label."
       },
-      "root-class": {
-        "type": "string",
-        "default": ""
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state; the same as invalid."
+      },
+      "value": {
+        "type": "object",
+        "default": null,
+        "description": "The image in the file shape {value, label, mime, size, href, file?}, or null; the attribute takes an address or the shape as JSON"
       }
     },
     "additionalProperties": false
@@ -154,41 +159,9 @@
     }
   },
   "methods": {
-    "setValue": {
-      "summary": "Set the image from code, in the file shape or as an address; null empties the field. Fires nothing, as a value set from code is not a change. Returns the element.",
-      "arguments": [
-        {
-          "name": "value",
-          "type": [
-            "object",
-            "string",
-            "null"
-          ],
-          "required": true
-        }
-      ],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
     "clear": {
       "summary": "Empty the field from code; the same as setValue(null). Returns the element.",
       "arguments": [],
-      "returns": {
-        "type": "object",
-        "description": "The element, for chaining."
-      }
-    },
-    "setError": {
-      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
-      "arguments": [
-        {
-          "name": "message",
-          "type": "string",
-          "required": false
-        }
-      ],
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -213,17 +186,52 @@
       "arguments": [
         {
           "name": "file",
-          "type": "object",
-          "required": true
+          "schema": {
+            "type": "object"
+          }
         },
         {
           "name": "source",
-          "type": "string",
-          "required": false
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "returns": {
         "type": "boolean"
+      }
+    },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid. Returns the element.",
+      "arguments": [
+        {
+          "name": "message",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setValue": {
+      "summary": "Set the image from code, in the file shape or as an address; null empties the field. Fires nothing, as a value set from code is not a change. Returns the element.",
+      "arguments": [
+        {
+          "name": "value",
+          "type": [
+            "object",
+            "string",
+            "null"
+          ],
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
       }
     }
   },
@@ -232,6 +240,12 @@
       "summary": "The image was chosen, dropped or removed: once per change the person made, a CustomEvent on the host carrying the value, the File and the form name. The platform input's own change does not leave the host.",
       "payload": {
         "type": "object",
+        "required": [
+          "value",
+          "file",
+          "source",
+          "name"
+        ],
         "properties": {
           "value": {
             "type": [
@@ -248,7 +262,6 @@
             "description": "The File chosen, or null after a removal."
           },
           "source": {
-            "type": "string",
             "enum": [
               "input",
               "drop",
@@ -258,7 +271,8 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       },
       "canonical": true
     },
@@ -266,6 +280,12 @@
       "summary": "Sent with every change, before it, with the same detail, as a native file input sends input and change together.",
       "payload": {
         "type": "object",
+        "required": [
+          "value",
+          "file",
+          "source",
+          "name"
+        ],
         "properties": {
           "value": {
             "type": [
@@ -282,7 +302,6 @@
             "description": "The File chosen, or null after a removal."
           },
           "source": {
-            "type": "string",
             "enum": [
               "input",
               "drop",
@@ -292,19 +311,29 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "sf-image-field-attach": {
       "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:select follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
+        "required": [
+          "files",
+          "file",
+          "source",
+          "value",
+          "name"
+        ],
         "properties": {
+          "files": {
+            "type": "array"
+          },
           "file": {
             "type": "object"
           },
           "source": {
-            "type": "string",
             "enum": [
               "input",
               "drop"
@@ -316,7 +345,50 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-image-field-detach": {
+      "summary": "The person removed the image; detail carries the value it held. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:remove follows it with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-image-field-rejected": {
+      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "files",
+          "accept",
+          "source"
+        ],
+        "properties": {
+          "files": {
+            "type": "array"
+          },
+          "accept": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
       }
     },
     "sf-image-field:select": {
@@ -343,20 +415,6 @@
         }
       }
     },
-    "sf-image-field-detach": {
-      "summary": "The person removed the image; detail carries the value it held. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:remove follows it with the same detail until 2026-12-01 (aliases.json).",
-      "payload": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "object"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "sf-image-field:remove": {
       "summary": "The person removed the image; detail carries the value it held. Legacy name: sent after sf-image-field-detach with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
@@ -366,23 +424,6 @@
             "type": "object"
           },
           "name": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "sf-image-field-rejected": {
-      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
-      "payload": {
-        "type": "object",
-        "properties": {
-          "files": {
-            "type": "array"
-          },
-          "accept": {
-            "type": "string"
-          },
-          "source": {
             "type": "string"
           }
         }
@@ -541,7 +582,7 @@
       },
       {
         "path": "src/smart/image-field/rule.js",
-        "sha256": "4c6a2dfc286df8845ffc376b4ad68e7da14a558494a704c50c2be8127c7e3a85"
+        "sha256": "d9b93b6ff58153820cb02273d76647c174386f393aba6e2f0c979e0cc6ea954c"
       },
       {
         "path": "src/smart/image-field/docs.md",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-composition-overlay's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/composition-overlay (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.composition-overlay",
   "tag": "sf-composition-overlay",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "kind": "leaf",
   "family": "editor",
   "settings": {
@@ -54,6 +54,11 @@
         "id": {
           "type": "id",
           "nullable": true
+        },
+        "node_id": {
+          "type": "id",
+          "nullable": true,
+          "summary": "The selected node id, null when the selection cleared; kept for the composition host (the Document mode reads it)"
         }
       },
       "summary": "A node was selected (or the selection cleared): vocabulary 1.1.5 §5 select; the detail keeps node_id for the composition host"
@@ -67,7 +72,14 @@
             "entry"
           ]
         },
-        "ids": "list"
+        "ids": {
+          "type": "list",
+          "schema": {
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "summary": "An action of the toolbar was chosen for the selected node: one entry's own action (vocabulary §5 apply, standard §18.3)"
     },
@@ -75,15 +87,29 @@
       "carries": {
         "parent": "id",
         "slot": "string",
-        "index": "number",
-        "item": "string",
-        "from": "string",
+        "index": {
+          "type": "number",
+          "integer": true
+        },
+        "item": {
+          "type": "string",
+          "optional": true
+        },
+        "from": {
+          "type": "string",
+          "optional": true
+        },
         "mode": {
           "type": "enum",
           "values": [
             "move",
             "copy"
-          ]
+          ],
+          "optional": true
+        },
+        "parent_id": {
+          "type": "id",
+          "summary": "The parent node of the place; kept for the composition host (the Document mode reads it)"
         }
       },
       "own-verb": true,
@@ -95,7 +121,20 @@
         "id": "id",
         "parent": "id",
         "position": "number",
-        "slot": "string"
+        "slot": "string",
+        "node_id": {
+          "type": "id",
+          "summary": "The moved node; kept for the composition host (the Document mode reads it)"
+        },
+        "parent_id": {
+          "type": "id",
+          "summary": "The new parent node; kept for the composition host (the Document mode reads it)"
+        },
+        "index": {
+          "type": "number",
+          "integer": true,
+          "summary": "The place among the parent slot children; kept for the composition host (the Document mode reads it)"
+        }
       },
       "summary": "A node was moved to a place by pointer or keyboard: one manual move (vocabulary §5 move, {id, parent, position}); the detail keeps node_id, parent_id and index for the composition host"
     },
@@ -115,14 +154,26 @@
       "with": {
         "canvas": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Draws over a canvas element; the canvas is never modified"
     },
     "attach-frame": {
       "with": {
         "iframe": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Draws over a same-origin iframe canvas fed by set-nodes"
     },
     "set-document": {
@@ -130,7 +181,13 @@
         "document": "object",
         "options": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Reads a Composition Document's nodes"
     },
     "set-nodes": {
@@ -149,54 +206,107 @@
         },
         "options": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Reads a flat node list (framed mode)"
     },
     "set-drop-filter": {
       "with": {
-        "filter": "object"
+        "filter": {
+          "type": "object",
+          "summary": "A function (place, item) => boolean; place is {parent_id, slot, index}"
+        }
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "filter({parent_id, slot, index}, item) hides the places a drop may not take"
     },
     "set-actions": {
       "with": {
         "actions": "list"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Writes the selected node's actions (the actions setting)"
     },
     "set-messages": {
       "with": {
         "messages": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Writes the host's own words (the messages setting)"
     },
     "set-insertion-target": {
       "with": {
-        "target": "object"
+        "target": {
+          "type": "object",
+          "nullable": true
+        }
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Writes the marked insertion place (the insertion-target setting)"
     },
     "select": {
       "with": {
-        "id": "object",
+        "id": {
+          "type": "id",
+          "nullable": true
+        },
         "options": "object"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Selects a node; {focus, emit}"
     },
     "edit": {
       "with": {
         "id": "string"
       },
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": "boolean"
+      },
       "summary": "Starts a plain-string edit of an editable node"
     },
     "refresh": {
-      "x-returns": "the element, for chaining (the composition host's port)",
+      "x-returns": {
+        "type": [
+          "object",
+          "boolean",
+          "null"
+        ]
+      },
       "summary": "Measures the canvas again"
     }
   },
@@ -214,6 +324,11 @@
       "Tab": "reach"
     }
   },
+  "relations": [
+    {
+      "name": "cl-sortable"
+    }
+  ],
   "templates": {
     "default": {
       "file": "../../core/js/composition/overlay.mjs",
@@ -267,6 +382,59 @@
       "state": "selected"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-composition-overlay for the shim (stands/18-aliases-ci/alias.mjs, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split / detail-adds (a detail adapter, refused by the shim), attribute-and-property, method, property, manifest-only (the DOM name does not change), host-attribute (no shim), retired.",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "sf-composition-overlay-action",
+        "to": "sf-composition-overlay-apply",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5",
+        "note": "the old detail {action_id, node_id} is made by the element's adapter",
+        "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen."
+      },
+      {
+        "from": "sf-composition-overlay-edit",
+        "to": "sf-composition-overlay-change",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "manifest": true,
+        "section": "§8, vocabulary 1.1.5",
+        "note": "the old detail {node_id, value, previous} is made by the element's adapter; the cancel is shared",
+        "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back."
+      },
+      {
+        "from": "sf-composition-overlay-select",
+        "to": "select",
+        "kind": "event",
+        "mode": "manifest-only",
+        "note": "the DOM name is unchanged; the detail adds ids and id beside node_id",
+        "summary": "A node was selected."
+      },
+      {
+        "from": "sf-composition-overlay-move",
+        "to": "move",
+        "kind": "event",
+        "mode": "manifest-only",
+        "note": "the DOM name is unchanged; the detail adds ids, id, parent and position beside node_id, parent_id and index",
+        "summary": "A canvas node was moved to a place."
+      },
+      {
+        "from": "sf-composition-overlay-insert",
+        "to": "insert",
+        "kind": "event",
+        "mode": "manifest-only",
+        "note": "the manifest declares the verb; the DOM name is unchanged; the detail adds parent beside parent_id",
+        "summary": "Insertion was requested at a place, optionally with a library item. In framed mode the top-level list is parent_id \"\" and slot is \"default\"."
+      }
+    ]
+  },
   "x-summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "x-source": {
     "package": "framework",
@@ -284,14 +452,172 @@
     "methods setActions, setMessages, setInsertionTarget: also the settings actions, messages and insertion-target (properties)",
     "lang runtime holds the words of the overlay module (MESSAGES of core/js/composition/overlay.mjs)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "host",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "events (vocabulary 1.1.5): select {ids, id}, apply {action, scope: entry, ids} for the toolbar's action, insert (the component's own verb: a place chosen or a library item dropped -- a move or a copy, not §5 create), move {ids, id, parent, position} -- one manual move -- and change {id, value, previous}, cancelable, for a plain-string edit (x-native false: sf-composition-overlay-change).",
+    "the composition host's contract stays (larena composition-editor-next listens to -select, -action, -move and -insert): select, move and insert keep their DOM names and keep node_id, parent_id and index in the detail beside the vocabulary's fields; action and edit are followed by sf-composition-overlay-action {action_id, node_id} and -edit {node_id, value, previous} until 2026-12-01 through the overlay's aliases.json and the element's adapters, the cancel of the edit shared. An overlay defined without its manifest sends both itself. OVERLAY_EVENTS holds the new names, OVERLAY_EVENTS_LEGACY the former.",
+    "own-verb-words: insert -- its word is events.insert.label of the language files («Вставить», \"Insert\"); action became apply, edit became change.",
+    "setter: actions, messages and insertion-target are writable settings, properties written through the same checks as setActions, setMessages and setInsertionTarget, which stay the host's port.",
+    "the methods attach, attach-frame, set-document, set-nodes, set-drop-filter, set-actions, set-messages, set-insertion-target, select, edit and refresh are the composition host's port (simai.composition editor): they keep answering the element, for chaining, not an outcome (x-returns); the port stays as the composition editor uses it.",
+    "item-shape: actions name their fields with of ({id, label}, checkOverlayActions); set-nodes takes a list of nodes {id, kind, label, parent, editable, rect | element} (checkOverlayNodes).",
+    "element: the overlay stays the plain element the composition module defines; defineCompositionOverlay(registry, {base}) extends the class core/js/composition/manifest-host.mjs makes from this component.json (the settings' properties, the aliases.json shim, sfWord).",
+    "words (§11): the language files hold the overlay module's words; the module keeps its copy and reads them through the page's language; messages overrides them per instance.",
+    "version 1.2.0: events renamed behind dated aliases and detail fields added (§4.10).",
+    "examples: examples.json from studio.fixture.json (an overlay for a canvas) plus a framed canvas, a library that drops on the canvas and actions.",
+    "css-variables: five public variables of its sheet: the frames' and insertion points' colour (read into the overlay's own --sf-composition-overlay-color), the layer's z-index, the toolbar's fill, radius and gap. Not in src/core/contracts/public-variables.v1.json: the parts they colour exist only over a canvas with a selection, which its probe does not draw.",
+    "source-drift: the shipped manifest differs from 5100227 in the framed mode (frame, attach-frame, set-nodes, simai/ui-source#22) and the plain-string edit (sf-composition-overlay-edit); they are carried here by hand.",
+    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
+    "version 1.2.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "interaction",
+      "keyboard",
+      "responsive",
+      "theme"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "readiness": {
+      "level": "runnable",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke",
+        "keyboard",
+        "responsive",
+        "a11y"
+      ]
+    },
+    "tags": [
+      "composition",
+      "editor",
+      "overlay"
+    ],
+    "contracts": {
+      "canvas": {
+        "type": "object",
+        "description": "The canvas holds host-rendered Composition HTML with data-sf-composition-id; the overlay never writes into it, so published HTML and digests are identical with the editor open or closed. Place the overlay before the canvas so its tree comes first in Tab order."
+      },
+      "actions": {
+        "type": "array",
+        "maxItems": 16,
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "label"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "browser_api": {
+        "type": "object",
+        "description": "Once loaded, SF.CompositionOverlay exposes OVERLAY_EVENTS, overlayNodes(document), checkOverlayActions(actions) and checkOverlayNodes(nodes)."
+      },
+      "frame_canvas": {
+        "type": "object",
+        "description": "Framed mode: the canvas is a same-origin iframe (sandbox allow-same-origin is enough; the frame needs no script). The overlay reads the frame's document, listens to its pointer, key, scroll and resize events and maps frame coordinates to the host through the iframe's position, border, padding, transform or zoom and the frame's scroll. It writes nothing into the frame except a temporary contenteditable on the element being edited. A frame that reloads (srcdoc) is listened to again on load; the host then calls setNodes with the new document's elements."
+      },
+      "nodes": {
+        "type": "array",
+        "description": "Framed mode's flat node list, in selection order. element is a node inside the frame document; rect is in frame-document coordinates (viewport box plus the frame's scroll). parent names another node of the list (siblings share a parent; the top level has none). editable allows plain-string inline editing of the element.",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "kind"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rect": {
+              "type": "object",
+              "required": [
+                "x",
+                "y",
+                "width",
+                "height"
+              ],
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "element": {
+              "type": "object",
+              "description": "Element of the frame document"
+            },
+            "label": {
+              "type": "string"
+            },
+            "parent": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "editable": {
+              "type": "boolean",
+              "description": "Requires element"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "state": {
+      "machines": {
+        "move": [
+          "idle",
+          "picking",
+          "dropped",
+          "cancelled"
+        ],
+        "edit": [
+          "idle",
+          "editing",
+          "committed",
+          "cancelled"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "selected",
+        "active"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -302,6 +628,14 @@
         "host route invention",
         "saving or reordering host data"
       ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -318,7 +652,11 @@
         "ltr",
         "rtl",
         "reduced-motion"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-composition-overlay on an editor page over SF.Composition.render output. Treat every event as intent: the host changes the Document, saves it with an expected revision, validates and re-renders. For a canvas isolated in a same-origin iframe (a mail letter), use attachFrame (or frame=\"id\") and setNodes with a flat node list; edits arrive as sf-composition-overlay-edit.",
@@ -343,22 +681,62 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "keyboard": [
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "Home",
+        "End",
+        "Enter",
+        "Space",
+        "Escape"
+      ],
+      "focus": "The tree has one treeitem per node; arrows move in document order and between parent and child, Enter opens the toolbar, Escape returns or clears. Space starts a keyboard move, arrows choose a place, Enter drops, Escape cancels. Selection and moves are announced. In framed mode the tree follows the node list order, pointer and keys inside the frame select too, Enter on an editable node starts plain-text editing in the frame (Enter commits, Escape cancels, focus returns to the tree), and Escape gives way to an inner open surface."
+    },
+    "alias-events": {
+      "sf-composition-overlay-action": {
+        "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "action_id",
+            "node_id"
+          ],
+          "properties": {
+            "action_id": {
+              "type": "string"
+            },
+            "node_id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sf-composition-overlay-edit": {
+        "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back.",
+        "payload": {
+          "type": "object",
+          "required": [
+            "node_id",
+            "value",
+            "previous"
+          ],
+          "properties": {
+            "node_id": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "previous": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "events (vocabulary 1.1.5): select {ids, id}, apply {action, scope: entry, ids} for the toolbar's action, insert (the component's own verb: a place chosen or a library item dropped -- a move or a copy, not §5 create), move {ids, id, parent, position} -- one manual move -- and change {id, value, previous}, cancelable, for a plain-string edit (x-native false: sf-composition-overlay-change).",
-    "the composition host's contract stays (larena composition-editor-next listens to -select, -action, -move and -insert): select, move and insert keep their DOM names and keep node_id, parent_id and index in the detail beside the vocabulary's fields; action and edit are followed by sf-composition-overlay-action {action_id, node_id} and -edit {node_id, value, previous} until 2026-12-01 through the overlay's aliases.json and the element's adapters, the cancel of the edit shared. An overlay defined without its manifest sends both itself. OVERLAY_EVENTS holds the new names, OVERLAY_EVENTS_LEGACY the former.",
-    "own-verb-words: insert -- its word is events.insert.label of the language files («Вставить», \"Insert\"); action became apply, edit became change.",
-    "setter: actions, messages and insertion-target are writable settings, properties written through the same checks as setActions, setMessages and setInsertionTarget, which stay the host's port.",
-    "the methods attach, attach-frame, set-document, set-nodes, set-drop-filter, set-actions, set-messages, set-insertion-target, select, edit and refresh are the composition host's port (simai.composition editor): they keep answering the element, for chaining, not an outcome (x-returns); the port stays as the composition editor uses it.",
-    "item-shape: actions name their fields with of ({id, label}, checkOverlayActions); set-nodes takes a list of nodes {id, kind, label, parent, editable, rect | element} (checkOverlayNodes).",
-    "element: the overlay stays the plain element the composition module defines; defineCompositionOverlay(registry, {base}) extends the class core/js/composition/manifest-host.mjs makes from this component.json (the settings' properties, the aliases.json shim, sfWord).",
-    "words (§11): the language files hold the overlay module's words; the module keeps its copy and reads them through the page's language; messages overrides them per instance.",
-    "version 1.2.0: events renamed behind dated aliases and detail fields added (§4.10).",
-    "examples: examples.json from studio.fixture.json (an overlay for a canvas) plus a framed canvas, a library that drops on the canvas and actions.",
-    "css-variables: five public variables of its sheet: the frames' and insertion points' colour (read into the overlay's own --sf-composition-overlay-color), the layer's z-index, the toolbar's fill, radius and gap. Not in src/core/contracts/public-variables.v1.json: the parts they colour exist only over a canvas with a selection, which its probe does not draw.",
-    "source-drift: the shipped manifest differs from 5100227 in the framed mode (frame, attach-frame, set-nodes, simai/ui-source#22) and the plain-string edit (sf-composition-overlay-edit); they are carried here by hand.",
-    "version 1.2.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.2.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

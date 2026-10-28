@@ -2,7 +2,7 @@
   "$comment": "The source of sf-drawer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/drawer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.drawer",
   "tag": "sf-drawer",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "kind": "leaf",
   "family": "drawer",
   "settings": {
@@ -24,7 +24,8 @@
         "half",
         "full"
       ],
-      "default": "auto"
+      "default": "auto",
+      "summary": "A bottom sheet's resting height: its content's, half the room under the app bar, or all of it."
     },
     "overlay": {
       "type": "boolean",
@@ -66,7 +67,8 @@
     },
     "controlled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen."
     },
     "close-placement": {
       "type": "enum",
@@ -86,7 +88,8 @@
     },
     "close-label": {
       "type": "string",
-      "default-from": "runtime.close-label"
+      "default-from": "runtime.close-label",
+      "summary": "Empty: the text of the page's language (\"Close drawer\" in English)."
     },
     "width": {
       "type": "string",
@@ -94,19 +97,23 @@
     },
     "stack-offset": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "How much of each drawer below shows past the one above it at the same edge, as a length (for example var(--sf-space-4)). A drawer stands depth × offset in from its edge, where depth counts the open, undocked drawers below it at that edge. Empty: drawers lie flush."
     },
     "dock-breakpoint": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "From what width of the dock host (or the window, without a host) a docked drawer is a column of the page; narrower, it floats over the page and is modal (unless modal=false). A length in rem, em or px. Empty: the --sf-drawer-dock-breakpoint variable where the drawer stands, else 48rem."
     },
     "block-start": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Where this panel starts from the top (an app bar's height); the --sf-drawer-block-start variable sets it for every panel."
     },
     "gutter": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The inline gutter the head and the body share, as a length (for example var(--sf-space-3)), so the title and the content start on one axis. Empty: the drawer's own, space-1. A theme may set --sf-drawer-gutter instead."
     },
     "z-index": {
       "type": "string",
@@ -122,7 +129,8 @@
     },
     "panel-style": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Declarations set on the panel itself, for the custom properties it reads -- its background, radius, shadow. A consumer painting its content a different colour than the panel leaves the head and the gutters in the other one."
     },
     "header-class": {
       "type": "string",
@@ -215,7 +223,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches drawer:before-open (cancelable) and later drawer:after-open unless options.emit is false. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "close": {
       "with": {
@@ -234,13 +247,23 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "toggle": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Calls close() when open, open() otherwise. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "slots": {
@@ -265,6 +288,14 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "close"
+    }
+  ],
   "templates": {
     "default": {
       "file": "index.js",
@@ -324,6 +355,111 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-drawer for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail, split (the old detail from the element's adapter), page-trigger (a page attribute the drawer reads, no shim), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "section": "§3.1, §16 item 26"
+      },
+      {
+        "from": "drawer:before-open",
+        "to": "sf-drawer-open",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §5.1, §9",
+        "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Cancelable intent before opening. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "drawer:after-open",
+        "to": "sf-drawer-opened",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §5.1, §9",
+        "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "The Drawer was opened. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "drawer:before-close",
+        "to": "sf-drawer-close",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §5.1, §9",
+        "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Cancelable intent before closing. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "drawer:after-close",
+        "to": "sf-drawer-closed",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §5.1, §9",
+        "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "The Drawer was closed. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "drawer:snap",
+        "to": "sf-drawer-snapped",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §5.1, §9",
+        "note": "the old detail adds component, drawer and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "A bottom sheet came to rest at another height (handle, swipe or setSnap())."
+      },
+      {
+        "from": "drawer:ready",
+        "to": null,
+        "kind": "event",
+        "mode": "retired",
+        "section": "vocabulary §5.1, §16.13",
+        "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it",
+        "summary": "The portal surface is ready. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "drawer:update",
+        "to": null,
+        "kind": "event",
+        "mode": "retired",
+        "section": "vocabulary §5.1, §16.13",
+        "note": "a lifecycle copy; still sent until the date, noted when a listener reads it",
+        "summary": "The portal surface was updated. Bubbles and is composed; detail.drawer is the emitting drawer."
+      },
+      {
+        "from": "data-sf-drawer-open",
+        "to": "data-sf-action",
+        "kind": "attribute",
+        "mode": "page-trigger",
+        "section": "§8, §16.10",
+        "note": "a page trigger: data-sf-drawer-open=\"<id>\" is data-sf-action=\"<id>.open\"; read by the drawer, no shim (the shim maps an element's own attributes)"
+      },
+      {
+        "from": "data-sf-drawer-close",
+        "to": "data-sf-action",
+        "kind": "attribute",
+        "mode": "page-trigger",
+        "section": "§8, §16.10",
+        "note": "data-sf-action=\"<id>.close\""
+      },
+      {
+        "from": "data-sf-drawer-toggle",
+        "to": "data-sf-action",
+        "kind": "attribute",
+        "mode": "page-trigger",
+        "section": "§8, §16.10",
+        "note": "data-sf-action=\"<id>.toggle\""
+      }
+    ]
+  },
   "x-summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "x-source": {
     "package": "framework",
@@ -341,14 +477,70 @@
     "events drawer:snap → sf-drawer-snapped {snap} (vocabulary §5.1)",
     "events drawer:ready, drawer:update retire (vocabulary §5.1, §16.13)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "alias-conflict: vocabulary §5.1 decides drawer:snap → sf-drawer-snapped, a fact of the component (the alias table's sf-drawer-snap is the bare verb of a request the drawer never waits on); the converter's sf-drawer-snap never shipped and gets no row.",
+    "detail-adapter: §8 takes page elements out of detail, so the new names carry {drawerId, …} only; each old drawer:* name keeps its old detail (component, drawer, root added) through a split row and the element's detail adapter (sfAliasAdapters). Larena and bx-simai.main listen to drawer:after-open and drawer:after-close (vocabulary §9.2).",
+    "version: 1.6.0 → 1.7.0, a minor while the renamed members hold dated aliases (§4.10); added unsaved, dismissible and the snapped detail field.",
+    "existing-aliases: compatibility.deprecations folds into aliases.json as documentation rows: the page triggers data-sf-drawer-open/-close/-toggle stay as aliases of data-sf-action (§16.10) and of data-drawer with aria-controls; the modal-like default without docked keeps its own deprecation in the change journal (no alias kind: it is a recommendation, not a name).",
+    "template: templates.default names the Lit template in index.js (template()), the migration form §5.2 allows; no template.html until the build compiles one.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the docked column, the bottom sheet and the outside close button; probe.json drives Tab, Shift+Tab and Escape (gate 16).",
+    "css-variables: the seven variables docs.md and the sheet already promise (background, colour, overlay, gutter, block start, dock breakpoint, z-index); the portal carries their computed values from the host (§19.1). --sf-drawer-radius and --sf-drawer-width stay internal: the sheet sets them per size.",
+    "side-effects: the panel draws at the end of body or of its [data-sf-overlay-container] (portal) and, when modal and not docked, locks the page through the layer stack's one lease (locks-page).",
+    "layer: kind panel (§19.1); a modal drawer traps focus, a docked or modeless one does not (updateLayer re-declares it when modal or docked changes).",
+    "modal on a narrow screen (1.8.0, q-a49e2045c1, asked by ui-chat): the existing boolean modal (default true) now reaches a docked drawer that floats -- the dock host or the window narrower than its dock-breakpoint -- so it traps focus, shows its scrim, locks the page, closes on Escape and gives focus back like any modal drawer (§19.2); a docked column stays modeless, and modal=\"false\" keeps a drawer modeless everywhere. No new setting: an enum modal (auto|always|never) would break modal=\"false\" and the boolean property, and \"always\" means nothing for a column; the breakpoint is the one the drawer already docks by. A drawer that starts or stops floating while open declares it to the stack again (syncModal).",
+    "slots: the drawer places the page's own nodes (the content into its body, slot=\"edge\" beside the panel) and never copies them (§4.5); the converter's slot \"default\" is the content slot.",
+    "dismissing: the close request carries {reason, unsaved} (§19.3); dismissible=false removes escape and outside like close-on-esc and close-on-overlay, never an explicit action.",
+    "instance ids (§7.1.1, simai/ui-source#41): a drawer without id or drawer-id takes its path id (sf-drawer-<n> in document order) instead of a random one.",
+    "version 1.8.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "readiness": {
+      "level": "accepted",
+      "required_checks": [
+        "manifest",
+        "fixture",
+        "runtime-upgrade",
+        "scenario-smoke"
+      ]
+    },
+    "contracts": {
+      "dock_host": {
+        "type": "object",
+        "description": "A host element marked data-sf-drawer-dock-host receives padding-inline-start/end equal to the summed widths of open docked drawers per logical side, published as --sf-drawer-dock-inline-start/end on the document root. A host narrower than the drawer's threshold (dock-breakpoint, else --sf-drawer-dock-breakpoint, else 48rem) keeps zero padding for it. A toggle switch outside the drawer (data-drawer=\"toggle\" naming it in aria-controls, or data-sf-drawer-toggle) hides and shows a docked column and carries aria-expanded. A docked drawer with the room is a column of the page (data-sf-drawer-column=\"true\" on its root): surface-0, no shadow; without the room it floats over the page with the raised surface and shadow. --sf-drawer-background overrides both.",
+        "properties": {
+          "attribute": {
+            "const": "data-sf-drawer-dock-host"
+          },
+          "variables": {
+            "const": [
+              "--sf-drawer-dock-inline-start",
+              "--sf-drawer-dock-inline-end",
+              "--sf-drawer-dock-block-start",
+              "--sf-drawer-dock-breakpoint"
+            ]
+          }
+        }
+      },
+      "slots": {
+        "type": "object",
+        "description": "The named slots the consumer fills.",
+        "properties": {
+          "default": {
+            "description": "The drawer's content, moved into the scrolling body."
+          },
+          "edge": {
+            "description": "Stands beside the panel, on its outer edge, where the panel's own clipping cannot reach it."
+          }
+        }
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open",
+        "closed"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -358,6 +550,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -376,7 +576,11 @@
         "reduced-motion",
         "semantic-surface-radius",
         "logical-placement"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once; below its dock-breakpoint it floats over the page as a modal panel) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",
@@ -399,22 +603,349 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "Modal Drawer moves focus inside, traps Tab on the top instance and restores an available opener. Modeless Drawer does not trap focus or lock the page. Docked Drawer is a named role=region column: no focus trap, no scroll lock; Escape closes the top instance."
+    },
+    "compatibility": {
+      "deprecations": [
+        {
+          "path": "trigger.data-sf-drawer-*",
+          "since": "1.0.0",
+          "replacement": "data-drawer with aria-controls"
+        },
+        {
+          "path": "modal (default mode without docked or modal=false)",
+          "since": "1.2.0",
+          "replacement": "sf-modal position=\"inline-start|inline-end\""
+        }
+      ],
+      "migrations": [
+        {
+          "from": "1.0.0",
+          "to": "1.1.0",
+          "changes": [
+            "Add docked: a modeless role=region column that reserves page space through data-sf-drawer-dock-host.",
+            "Existing modal and modeless behavior is unchanged when docked is absent.",
+            "Escape already handled by an editor or drag (defaultPrevented) does not close the drawer."
+          ]
+        },
+        {
+          "from": "1.1.0",
+          "to": "1.2.0",
+          "changes": [
+            "Drawer is scoped to docked and modeless workspace panels.",
+            "The modal mode stays the default for compatibility but is deprecated; use sf-modal with position=\"inline-start|inline-end\" for modal side panels.",
+            "No runtime behavior changes."
+          ]
+        },
+        {
+          "from": "1.2.0",
+          "to": "1.3.0",
+          "changes": [
+            "drawer:* events bubble and are composed, so hosts can listen on the document; detail.drawer names the emitting drawer.",
+            "onBeforeOpen, onAfterOpen, onBeforeClose and onAfterClose still receive only that drawer's own events.",
+            "Ancestor listeners added with addEventListener now also see events of nested drawers; check event.detail.drawer."
+          ]
+        },
+        {
+          "from": "1.7.0",
+          "to": "1.8.0",
+          "changes": [
+            "A docked drawer without the room (dock host or window narrower than its dock-breakpoint) floats over the page as a modal panel: scrim, focus kept inside, page lock, Escape, focus returned to its opener. A docked column is unchanged.",
+            "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before.",
+            "A modal drawer's Tab cycle runs through the panel and then its edge (close, copy-link, open-full of sf-property-view); a focus on the edge counts as inside."
+          ]
+        }
+      ]
+    },
+    "alias-events": {
+      "drawer:ready": {
+        "summary": "The portal surface is ready. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            }
+          }
+        }
+      },
+      "drawer:update": {
+        "summary": "The portal surface was updated. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            }
+          }
+        }
+      },
+      "drawer:before-open": {
+        "summary": "Cancelable intent before opening. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            }
+          }
+        }
+      },
+      "drawer:after-open": {
+        "summary": "The Drawer was opened. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            }
+          }
+        }
+      },
+      "drawer:before-close": {
+        "summary": "Cancelable intent before closing. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "close",
+                "escape",
+                "outside",
+                "cancelled",
+                "api"
+              ],
+              "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+            },
+            "unsaved": {
+              "type": "boolean",
+              "description": "Whether something is unsaved; false until the component has an unsaved setting."
+            }
+          }
+        }
+      },
+      "drawer:after-close": {
+        "summary": "The Drawer was closed. Bubbles and is composed; detail.drawer is the emitting drawer.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawer": {
+              "description": "The emitting sf-drawer."
+            },
+            "drawerId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "close",
+                "escape",
+                "outside",
+                "cancelled",
+                "api"
+              ],
+              "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+            }
+          }
+        }
+      },
+      "drawer:snap": {
+        "summary": "A bottom sheet came to rest at another height (handle, swipe or setSnap()).",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "drawer": {
+              "type": "object"
+            },
+            "drawerId": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "setState": {
+        "summary": "An open key calls open() or close(); the remaining keys go to the base setState as host attributes. Returns the element.",
+        "arguments": [
+          {
+            "name": "state",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "getState": {
+        "summary": "Returns the current template context plus the open state.",
+        "arguments": [],
+        "returns": {
+          "type": "object"
+        }
+      },
+      "onBeforeOpen": {
+        "summary": "Adds a listener for drawer:before-open on the host that runs only for this Drawer's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterOpen": {
+        "summary": "Adds a listener for drawer:after-open on the host that runs only for this Drawer's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBeforeClose": {
+        "summary": "Adds a listener for drawer:before-close on the host that runs only for this Drawer's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterClose": {
+        "summary": "Adds a listener for drawer:after-close on the host that runs only for this Drawer's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setSnap": {
+        "summary": "Sets a bottom sheet's resting height (auto, half or full) and dispatches drawer:snap when it changes. Returns the element.",
+        "arguments": [
+          {
+            "name": "snap",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "alias-conflict: vocabulary §5.1 decides drawer:snap → sf-drawer-snapped, a fact of the component (the alias table's sf-drawer-snap is the bare verb of a request the drawer never waits on); the converter's sf-drawer-snap never shipped and gets no row.",
-    "detail-adapter: §8 takes page elements out of detail, so the new names carry {drawerId, …} only; each old drawer:* name keeps its old detail (component, drawer, root added) through a split row and the element's detail adapter (sfAliasAdapters). Larena and bx-simai.main listen to drawer:after-open and drawer:after-close (vocabulary §9.2).",
-    "version: 1.6.0 → 1.7.0, a minor while the renamed members hold dated aliases (§4.10); added unsaved, dismissible and the snapped detail field.",
-    "existing-aliases: compatibility.deprecations folds into aliases.json as documentation rows: the page triggers data-sf-drawer-open/-close/-toggle stay as aliases of data-sf-action (§16.10) and of data-drawer with aria-controls; the modal-like default without docked keeps its own deprecation in the change journal (no alias kind: it is a recommendation, not a name).",
-    "template: templates.default names the Lit template in index.js (template()), the migration form §5.2 allows; no template.html until the build compiles one.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json plus the docked column, the bottom sheet and the outside close button; probe.json drives Tab, Shift+Tab and Escape (gate 16).",
-    "css-variables: the seven variables docs.md and the sheet already promise (background, colour, overlay, gutter, block start, dock breakpoint, z-index); the portal carries their computed values from the host (§19.1). --sf-drawer-radius and --sf-drawer-width stay internal: the sheet sets them per size.",
-    "side-effects: the panel draws at the end of body or of its [data-sf-overlay-container] (portal) and, when modal and not docked, locks the page through the layer stack's one lease (locks-page).",
-    "layer: kind panel (§19.1); a modal drawer traps focus, a docked or modeless one does not (updateLayer re-declares it when modal or docked changes).",
-    "modal on a narrow screen (1.8.0, q-a49e2045c1, asked by ui-chat): the existing boolean modal (default true) now reaches a docked drawer that floats -- the dock host or the window narrower than its dock-breakpoint -- so it traps focus, shows its scrim, locks the page, closes on Escape and gives focus back like any modal drawer (§19.2); a docked column stays modeless, and modal=\"false\" keeps a drawer modeless everywhere. No new setting: an enum modal (auto|always|never) would break modal=\"false\" and the boolean property, and \"always\" means nothing for a column; the breakpoint is the one the drawer already docks by. A drawer that starts or stops floating while open declares it to the stack again (syncModal).",
-    "slots: the drawer places the page's own nodes (the content into its body, slot=\"edge\" beside the panel) and never copies them (§4.5); the converter's slot \"default\" is the content slot.",
-    "dismissing: the close request carries {reason, unsaved} (§19.3); dismissible=false removes escape and outside like close-on-esc and close-on-overlay, never an explicit action.",
-    "instance ids (§7.1.1, simai/ui-source#41): a drawer without id or drawer-id takes its path id (sf-drawer-<n> in document order) instead of a random one.",
-    "version 1.8.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

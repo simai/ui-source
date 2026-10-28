@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.3.3",
-  "title": "Inputs",
+  "version": "1.3.4",
+  "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
   "reuse_mode": "both",
@@ -22,6 +22,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icon-buttons",
       "component.inputs",
       "smart.icon"
     ],
@@ -37,6 +38,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -49,12 +63,12 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
+        "description": "How the field looks: a bordered box, a filled one, or hidden.",
         "enum": [
           "bordered",
           "filled",
           "hidden"
-        ],
-        "description": "How the field looks: a bordered box, a filled one, or hidden."
+        ]
       },
       "label": {
         "type": "string",
@@ -115,10 +129,6 @@
         "type": "string",
         "default": ""
       },
-      "value": {
-        "type": "string",
-        "default": ""
-      },
       "default-value": {
         "type": "string",
         "default": ""
@@ -129,25 +139,13 @@
       },
       "icon-start": {
         "type": "string",
-        "default": null
-      },
-      "text-end": {
-        "type": "string",
-        "default": null
-      },
-      "left-icon": {
-        "type": "string",
         "default": ""
       },
-      "right-text": {
+      "text-end": {
         "type": "string",
         "default": ""
       },
       "hint-icon": {
-        "type": "string",
-        "default": ""
-      },
-      "root-class": {
         "type": "string",
         "default": ""
       },
@@ -156,10 +154,6 @@
         "default": false
       },
       "readonly": {
-        "type": "boolean",
-        "default": false
-      },
-      "error": {
         "type": "boolean",
         "default": false
       },
@@ -191,6 +185,20 @@
         "type": "string",
         "default": ""
       },
+      "value": {
+        "type": "string",
+        "default": ""
+      },
+      "aria-label": {
+        "type": "string",
+        "default": "",
+        "description": "Accessible name for a field rendered without a visible label; it lands on the native input."
+      },
+      "error": {
+        "type": "boolean",
+        "default": false,
+        "description": "Dated alias of invalid until 2026-12-01."
+      },
       "type": {
         "type": "string",
         "default": "bordered",
@@ -201,10 +209,15 @@
           "hidden"
         ]
       },
-      "aria-label": {
+      "left-icon": {
         "type": "string",
         "default": "",
-        "description": "Accessible name for a field rendered without a visible label; it lands on the native input."
+        "description": "Dated alias of icon-start until 2026-12-01."
+      },
+      "right-text": {
+        "type": "string",
+        "default": "",
+        "description": "Dated alias of text-end until 2026-12-01."
       },
       "inherited-value": {
         "type": "string",
@@ -549,7 +562,7 @@
       },
       {
         "path": "src/smart/input/rule.js",
-        "sha256": "8cb0d632b4be5fd0c7f96f5a55dac54d5d137c927e733baaeab8a4e7295db03c"
+        "sha256": "ac24231893a73921fac07e1a796604eac468d44dfb73d51dc4602e4310deba50"
       },
       {
         "path": "src/smart/input/js/templates/default.js",

@@ -1,10 +1,11 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 SF.RuleLoader['cl-tag'] = {
-    tags: ['sf-tag'],
-    type: 'smart',
-    mode: 'smart',
-    js: true,
-    css: true,
-    relation: [
+  tags: ['sf-tag'],
+  type: 'smart',
+  mode: 'smart',
+  js: true,
+  css: true,
+  relation: [
     { name: 'icon-buttons' },
     { name: 'tags' },
     { name: 'avatars' },

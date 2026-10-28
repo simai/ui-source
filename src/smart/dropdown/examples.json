@@ -22,7 +22,46 @@
         "value": "kazan",
         "name": "Город"
       },
-      "from": "studio.fixture.json"
+      "from": "studio.fixture.json",
+      "studio": {
+        "props": {
+          "label": "Статус",
+          "placeholder": "Выберите статус"
+        },
+        "children": [
+          {
+            "element": "sf-list-item",
+            "props": {
+              "value": "open",
+              "text": "Открыт"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "element": "sf-list-item",
+            "props": {
+              "value": "done",
+              "text": "Готов"
+            },
+            "text": "",
+            "children": []
+          }
+        ],
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "toggleDropdown",
+              "with": []
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
     },
     {
       "name": "opened",
@@ -128,6 +167,219 @@
       "expect": {
         "value": ""
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-dropdown against component.json (standard simai.smart-component 1.3.8 §12, §19, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <form id=\"f\"><div id=\"area\"><sf-dropdown id=\"dd\" name=\"city\" label=\"Город\" search=\"false\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item><sf-list-item value=\"spb\" text=\"Петербург\"></sf-list-item></sf-dropdown></div><button id=\"after\" type=\"button\">Дальше</button></form>",
+          "  <sf-dropdown id=\"dd-old\" label=\"Старое имя\" type=\"filled\"><sf-list-item value=\"a\" text=\"Альфа\"></sf-list-item></sf-dropdown>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-arrow-opens-enter-selects",
+          "title": "ArrowDown on the trigger opens the list; ArrowDown and Enter choose; change once, the old name once, noted with its dates",
+          "covers": "keyboard.host ArrowDown focus:next, Enter select, events.change, aliases sf-dropdown:change",
+          "steps": [
+            {
+              "script": "(document.querySelector('#dd .sf-dropdown-field > button').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "wait": 300,
+              "check": "document.getElementById('dd').querySelector('.sf-dropdown-field > button').getAttribute('aria-expanded') === 'true'"
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "wait": 100
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "change",
+                    "count": 1,
+                    "detail": {
+                      "value": "moscow",
+                      "values": [
+                        "moscow"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "sf-dropdown:change",
+                    "count": 1,
+                    "detail": {
+                      "value": "moscow",
+                      "root": "<sf-dropdown>"
+                    }
+                  }
+                ],
+                "values": {
+                  "#dd.value": "moscow"
+                },
+                "journal": [
+                  {
+                    "from": "sf-dropdown:change",
+                    "to": "change",
+                    "kind": "event",
+                    "since": "2026-10-27",
+                    "remove_after": "2026-12-01"
+                  }
+                ]
+              }
+            },
+            {
+              "check": "new FormData(document.getElementById('f')).get('city') === 'moscow'"
+            }
+          ]
+        },
+        {
+          "id": "p2-home-end",
+          "title": "Home and End move to the first and last option",
+          "covers": "keyboard.host Home focus:first, End focus:last",
+          "steps": [
+            {
+              "script": "(document.querySelector('#dd .sf-dropdown-field > button').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "wait": 300
+            },
+            {
+              "user": "keyboard:End",
+              "wait": 80,
+              "check": "document.activeElement?.dataset?.value === 'spb'"
+            },
+            {
+              "user": "keyboard:Home",
+              "wait": 80,
+              "check": "document.activeElement?.dataset?.value === 'kazan'"
+            },
+            {
+              "user": "keyboard:ArrowUp",
+              "wait": 80,
+              "check": "document.activeElement?.dataset?.value === 'kazan' || document.activeElement?.dataset?.value === 'spb'"
+            }
+          ]
+        },
+        {
+          "id": "p3-escape-closes",
+          "title": "Escape closes the open list and leaves the focus on the trigger",
+          "covers": "keyboard.host Escape close, layer surface",
+          "steps": [
+            {
+              "script": "(document.querySelector('#dd .sf-dropdown-field > button').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:Space",
+              "wait": 300,
+              "check": "document.documentElement.dataset.sfPopoverOpen === '1'"
+            },
+            {
+              "user": "keyboard:Escape",
+              "wait": 200,
+              "check": "document.querySelector('#dd .sf-dropdown-field > button').getAttribute('aria-expanded') === 'false' && !document.documentElement.dataset.sfPopoverOpen && document.activeElement === document.querySelector('#dd .sf-dropdown-field > button')"
+            }
+          ]
+        },
+        {
+          "id": "p4-tab-leaves",
+          "title": "Tab from the open list leaves it closed",
+          "covers": "keyboard.host Tab reach",
+          "steps": [
+            {
+              "script": "(document.querySelector('#dd .sf-dropdown-field > button').focus(), true)",
+              "wait": 60
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "wait": 300
+            },
+            {
+              "user": "keyboard:Tab",
+              "wait": 200,
+              "check": "document.querySelector('#dd .sf-dropdown-field > button').getAttribute('aria-expanded') === 'false'"
+            }
+          ]
+        },
+        {
+          "id": "p5-setting-is-silent",
+          "title": "a value set from outside sends no change (§8)",
+          "covers": "values.value, §8",
+          "steps": [
+            {
+              "action": {
+                "name": "open-dropdown"
+              },
+              "target": "#dd",
+              "wait": 100
+            },
+            {
+              "script": "(document.getElementById('dd').value = 'spb', true)",
+              "expect": {
+                "events": [
+                  {
+                    "name": "change",
+                    "count": 0
+                  }
+                ],
+                "values": {
+                  "#dd.value": "spb"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p6-old-type-dated",
+          "title": "type still works and is noted with its dates",
+          "covers": "aliases.json type row",
+          "steps": [
+            {
+              "expect": {
+                "values": {
+                  "#dd-old.appearance": "filled"
+                }
+              },
+              "check": "document.querySelector('#dd-old .sf-dropdown').classList.contains('sf-dropdown--filled') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-dropdown' && note.from === 'type' && note.remove_after === '2026-12-01')"
+            }
+          ]
+        },
+        {
+          "id": "p7-name",
+          "title": "the trigger is named by the label",
+          "covers": "accessibility.name",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#dd .sf-dropdown-field > button'); const ids = (b.getAttribute('aria-labelledby') || '').split(' ').filter(Boolean); return ids.map((id) => document.getElementById(id)?.textContent.trim()).join(' ').includes('Город') || b.getAttribute('aria-label') === 'Город'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-public-variables",
+          "title": "a public variable on an ancestor reaches the field",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "script": "(document.getElementById('area').style.setProperty('--sf-dropdown-background-color', 'rgb(1, 2, 3)'), true)",
+              "wait": 50,
+              "check": "getComputedStyle(document.querySelector('#dd .sf-dropdown-field')).getPropertyValue('--sf-dropdown-field--background-color').trim() === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

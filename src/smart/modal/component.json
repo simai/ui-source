@@ -2,7 +2,7 @@
   "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.modal",
   "tag": "sf-modal",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "kind": "leaf",
   "family": "modal",
   "settings": {
@@ -164,7 +164,8 @@
     },
     "footer-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the footer. Its actions stand at the end with --sf-modal-footer-gap (space-1/2) between them; those defaults sit under the utilities, so a utility here still wins."
     },
     "unsaved": {
       "type": "boolean",
@@ -292,7 +293,12 @@
         "applied",
         "refused"
       ],
-      "x-answer": "asked by an assembly (ask, §19.4) it answers when the window closes, with value {accepted, reason, value}"
+      "x-answer": "asked by an assembly (ask, §19.4) it answers when the window closes, with value {accepted, reason, value}",
+      "summary": "Opens the window, or brings it to the front when already open. Dispatches modal:before-open (cancelable), then modal:after-open once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "close": {
       "with": {
@@ -311,7 +317,12 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Closes the window after modal:before-close (cancelable), runs the close transition, restores focus and dispatches modal:after-close. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "minimize": {
       "emits": "minimize",
@@ -331,13 +342,23 @@
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Calls close() when open, open() otherwise. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "reload-content": {
       "x-outcomes": [
         "applied",
         "refused"
-      ]
+      ],
+      "summary": "Resets the remote content and loads src again, even when the window is closed and preload is off. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     },
     "confirm": {
       "with": {
@@ -379,6 +400,21 @@
       "Escape": "close"
     }
   },
+  "relations": [
+    {
+      "name": "modal"
+    },
+    {
+      "name": "icon-buttons"
+    },
+    {
+      "name": "spinner",
+      "lazy": true,
+      "$comment": [
+        "spinner: the remote content's loading state shows it, fetched after the page is ready."
+      ]
+    }
+  ],
   "templates": {
     "default": {
       "file": "js/templates/default.js",
@@ -442,6 +478,197 @@
       "state": "default"
     }
   },
+  "aliases": {
+    "$comment": "Dated aliases of sf-modal for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element's adapter), attribute-and-property, host-attribute (no shim), inverted (read by the component), retired (no new name; kept and noted by the component until the date).",
+    "since": "2026-10-27",
+    "remove-after": "2026-12-01",
+    "rows": [
+      {
+        "from": "title",
+        "to": "heading",
+        "kind": "setting",
+        "mode": "same-detail",
+        "section": "§3.1, §16 item 26",
+        "summary": "Empty: the text of the page's language (\"Dialog\" in English)."
+      },
+      {
+        "from": "blur",
+        "to": "backdrop-blur",
+        "kind": "setting",
+        "section": "§3.1, §4.1, §16 item 26",
+        "note": "blur is a method of HTMLElement and the base action; the attribute is mapped, the property stays the browser's"
+      },
+      {
+        "from": "hide",
+        "to": "minimizable",
+        "kind": "attribute",
+        "section": "§3.1",
+        "note": "the attribute only: the property name hide is the old method, an action alias of minimize"
+      },
+      {
+        "from": "unclose",
+        "to": "dismissible",
+        "kind": "attribute",
+        "mode": "inverted",
+        "section": "§19.3",
+        "note": "inverted: unclose present means dismissible false; the shim maps values one to one, so it refuses this row (mode-on-non-event) and sf-modal reads the attribute itself, noting it with these dates"
+      },
+      {
+        "from": "aria-label",
+        "to": null,
+        "kind": "attribute",
+        "mode": "host-attribute",
+        "section": "§3.1",
+        "note": "stays a host attribute, read by the base (§3.1, §4.8); no shim"
+      },
+      {
+        "from": "modal:before-open",
+        "to": "sf-modal-open",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired before the window opens; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed."
+      },
+      {
+        "from": "modal:after-open",
+        "to": "sf-modal-opened",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired after the window opens. Bubbles and is composed."
+      },
+      {
+        "from": "modal:before-close",
+        "to": "sf-modal-close",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired before the window closes; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed."
+      },
+      {
+        "from": "modal:after-close",
+        "to": "sf-modal-closed",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired after the window closes. Bubbles and is composed."
+      },
+      {
+        "from": "modal:before-hide",
+        "to": "sf-modal-minimize",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired before the window is minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed."
+      },
+      {
+        "from": "modal:after-hide",
+        "to": "sf-modal-minimized",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired after the window is minimized. Bubbles and is composed."
+      },
+      {
+        "from": "modal:before-show",
+        "to": "sf-modal-expand",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": true,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired before the window is shown again after being minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed."
+      },
+      {
+        "from": "modal:after-show",
+        "to": "sf-modal-expanded",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Fired after the window is shown again after being minimized. Bubbles and is composed."
+      },
+      {
+        "from": "modal:before-content-upload",
+        "to": "sf-modal-content-upload",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "An Ajax content request (mode=ajax) is starting. Bubbles and is composed."
+      },
+      {
+        "from": "modal:after-content-upload",
+        "to": "sf-modal-content-uploaded",
+        "kind": "event",
+        "mode": "split",
+        "cancelable": false,
+        "section": "§8, vocabulary §5, §9",
+        "note": "the old detail adds component, modal and root (page elements, which §8 takes out of the new detail): the element's detail adapter makes it",
+        "summary": "Remote content finished loading, with success or error in detail.remote; an aborted request does not emit it. Also fired when an iframe loads. Bubbles and is composed."
+      },
+      {
+        "from": "hide",
+        "to": "minimize",
+        "kind": "action",
+        "section": "vocabulary §5 minimize"
+      },
+      {
+        "from": "show",
+        "to": "expand",
+        "kind": "action",
+        "section": "vocabulary §5 expand"
+      },
+      {
+        "from": "getModalRoot",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4, §16.13",
+        "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "getSlotHtml",
+        "to": null,
+        "kind": "action",
+        "mode": "retired",
+        "section": "§4.4, §4.5, §16.13",
+        "note": "a reader retires; slots are placed, never copied; the method stays until the date and notes each call"
+      },
+      {
+        "from": "modal:ready",
+        "to": null,
+        "kind": "event",
+        "mode": "retired",
+        "section": "§4.1, §16.13",
+        "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it",
+        "summary": "The window rendered for the first time. Bubbles and is composed; detail.modal is the emitting sf-modal."
+      },
+      {
+        "from": "modal:update",
+        "to": null,
+        "kind": "event",
+        "mode": "retired",
+        "section": "§4.1, §16.13",
+        "note": "a lifecycle copy; sf-after-render is the base's; still sent until the date, noted when a listener reads it",
+        "summary": "The window rendered again after its first render. Bubbles and is composed; detail.modal is the emitting sf-modal."
+      }
+    ]
+  },
   "x-summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "x-source": {
     "package": "framework",
@@ -489,14 +716,31 @@
     "events modal:before-content-upload/after-content-upload → sf-modal-content-upload/-uploaded (own verbs)",
     "events modal:ready, modal:update retire (§4.1, §16.13); readers getModalRoot, getSlotHtml retire (§4.4, §16.13)"
   ],
-  "x-kept": {
-    "security": {
-      "permissions_owner": "none",
-      "untrusted_inputs": [
-        "props",
-        "children"
-      ],
-      "network_policy": "deny"
+  "x-decisions": [
+    "own-verb-words: minimize is a verb of vocabulary §5 (modal `hide`), so minimize/minimized are not own verbs; content-upload and content-uploaded stay own verbs with their words in lang events.<verb>.label (§8, vocabulary §5.1).",
+    "alias-conflict: vocabulary 1.1.5 decides. modal:after-hide → sf-modal-minimized and modal:after-show → sf-modal-expanded (the facts of minimize and expand, vocabulary §4; `change` reports a person's value change only, §8), modal:before-show → sf-modal-expand (the table's sf-modal-minimize is the reverse act), the content events → sf-modal-content-upload(ed) (loading is not a value change). The converter's sf-modal-hidden/-shown/-hide/-show never shipped and get no rows.",
+    "detail-adapter: §8 takes page elements out of detail, so the new names carry {modalId, phase, …} only; each old modal:* name keeps its old detail (component, modal, root added) through a split row and the element's detail adapter (sfAliasAdapters), sent after the new name with one shared cancel.",
+    "version: 1.3.0 → 1.4.0, a minor while the renamed members hold dated aliases (§4.10); the major comes with the sweep after 2026-12-01.",
+    "existing-aliases: compatibility.migrations lists no alias; its note (events bubble, detail.modal names the emitter) is kept by the old names' adapters. The undated page triggers data-sf-modal-open/close/show/hide stay as aliases of data-sf-action (§16.10).",
+    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one.",
+    "examples: examples.json from studio.fixture.json and studio.scenario.json (the default window, an unclosable one, a minimizable one, a side panel); probe.json drives Tab, Shift+Tab and Escape (gate 16).",
+    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json); the portal carries their computed values from the host (§19.1).",
+    "side-effects: the window draws at the end of body or of its [data-sf-overlay-container] (portal), locks the page (locks-page, one lease of the layer stack) and fetches src in mode ajax (network).",
+    "layer: kind modal, locks-page, traps-focus (§19.1, §19.2); Escape, an outside press and Tab reach it only while it is the top layer.",
+    "dismissing: the close request carries {reason, unsaved} (§19.3): close (its own button), escape, outside (the overlay), cancelled (a page control, data-sf-modal-close), api (a script); unsaved is the setting unsaved; dismissible=false (alias unclose) removes escape and outside, never an explicit action.",
+    "asking a person (§19.4): open asked by an assembly (a call with a signal) answers when the window closes with value {accepted, reason, value}; accepted is true only through the action confirm (data-sf-action=\"<id>.confirm\"). A page's own call answers at once.",
+    "instance ids (§7.1.1, simai/ui-source#41): a window without modal-id or id takes its path id (sf-modal-<n> in document order, not a module counter); the title id is <path>--title.",
+    "accessibility.name: aria-label on the host wins, else the heading (aria-labelledby the title, or aria-label when the header is a slot).",
+    "version 1.4.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+  ],
+  "x-registry": {
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open",
+        "closed"
+      ]
     },
     "ownership": {
       "source": "simai/ui-source",
@@ -506,6 +750,14 @@
         "backend access decisions",
         "host route invention"
       ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
     },
     "presentation": {
       "themes": [
@@ -519,7 +771,11 @@
       "responsive": [
         "desktop",
         "mobile"
-      ]
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
     },
     "ai_guidance": {
       "use_when": "Use sf-modal for one bounded task that temporarily owns the top interaction layer. It shares stack, focus return and scroll-lock ownership with ordinary Modal. Prefer center or logical inline-start/inline-end/top/bottom positions; left/right are compatibility aliases. The dialog and iframe are large surfaces on --sf-radius--surface, while compact header actions retain --sf-radius--ui. Inline display stays in document flow and does not capture focus. Minimized instances remain open but leave the visible interaction stack.",
@@ -542,23 +798,660 @@
         "npm run contract:verify",
         "npm test"
       ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "focus": "Opening focuses the panel of the top window; Tab and Shift+Tab are trapped inside it and Escape closes it when close-on-esc allows. Closing returns focus to the opener. The default title names the dialog through aria-labelledby; supply aria-label for a custom or headerless header. display=inline keeps normal document navigation. With display=inline the window is a region in the page rather than a dialog."
+    },
+    "compatibility": {
+      "migrations": [
+        {
+          "from": "1.0.0",
+          "to": "1.1.0",
+          "changes": [
+            "modal:* events bubble and are composed, like the base modal component and sf-drawer; detail.modal names the emitting modal.",
+            "onBeforeOpen, onAfterOpen and the other on* helpers, and handlers passed to SF.create, still receive only that modal's own events.",
+            "Ancestor listeners added with addEventListener now also see events of nested modals; check event.detail.modal."
+          ]
+        }
+      ]
+    },
+    "alias-events": {
+      "modal:after-close": {
+        "summary": "Fired after the window closes. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-close"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "close",
+                "escape",
+                "outside",
+                "cancelled",
+                "api"
+              ],
+              "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+            }
+          }
+        }
+      },
+      "modal:after-hide": {
+        "summary": "Fired after the window is minimized. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-hide"
+            }
+          }
+        }
+      },
+      "modal:after-open": {
+        "summary": "Fired after the window opens. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-open"
+            }
+          }
+        }
+      },
+      "modal:after-show": {
+        "summary": "Fired after the window is shown again after being minimized. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "after-show"
+            }
+          }
+        }
+      },
+      "modal:before-close": {
+        "summary": "Fired before the window closes; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-close"
+            },
+            "reason": {
+              "type": "string",
+              "enum": [
+                "close",
+                "escape",
+                "outside",
+                "cancelled",
+                "api"
+              ],
+              "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
+            },
+            "unsaved": {
+              "type": "boolean",
+              "description": "Whether something is unsaved; false until the component has an unsaved setting."
+            }
+          }
+        }
+      },
+      "modal:before-hide": {
+        "summary": "Fired before the window is minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-hide"
+            }
+          }
+        }
+      },
+      "modal:before-open": {
+        "summary": "Fired before the window opens; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-open"
+            }
+          }
+        }
+      },
+      "modal:before-show": {
+        "summary": "Fired before the window is shown again after being minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            },
+            "phase": {
+              "type": "string",
+              "const": "before-show"
+            }
+          }
+        }
+      },
+      "modal:ready": {
+        "summary": "The window rendered for the first time. Bubbles and is composed; detail.modal is the emitting sf-modal.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            }
+          }
+        }
+      },
+      "modal:update": {
+        "summary": "The window rendered again after its first render. Bubbles and is composed; detail.modal is the emitting sf-modal.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "root": {
+              "description": "The rendered .sf-modal element."
+            }
+          }
+        }
+      },
+      "modal:before-content-upload": {
+        "summary": "An Ajax content request (mode=ajax) is starting. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "src": {
+              "type": "string"
+            },
+            "remote": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "idle",
+                    "loading",
+                    "success",
+                    "error"
+                  ]
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "modal:after-content-upload": {
+        "summary": "Remote content finished loading, with success or error in detail.remote; an aborted request does not emit it. Also fired when an iframe loads. Bubbles and is composed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "description": "The emitting sf-modal."
+            },
+            "modal": {
+              "description": "The emitting sf-modal."
+            },
+            "modalId": {
+              "type": "string"
+            },
+            "src": {
+              "type": "string"
+            },
+            "remote": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "idle",
+                    "loading",
+                    "success",
+                    "error"
+                  ]
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "methods": {
+      "getSlotHtml": {
+        "summary": "Returns the HTML of the captured content for a named slot, for reading. The window does not draw from it: it places the page's own nodes (standard 1.3.8 §4.5).",
+        "arguments": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "string"
+        }
+      },
+      "hide": {
+        "summary": "Minimizes an open overlay window after modal:before-hide (cancelable) and dispatches modal:after-hide. Does nothing inline. Returns the element.",
+        "arguments": [],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "show": {
+        "summary": "Restores a minimized window after modal:before-show (cancelable) and dispatches modal:after-show. Returns the element.",
+        "arguments": [],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "setSrc": {
+        "summary": "Sets the src attribute, aborts and resets the current remote content and loads the new source when it may load now. Returns the element.",
+        "arguments": [
+          {
+            "name": "src",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "getModalRoot": {
+        "summary": "Returns the rendered .sf-modal element, or null before render.",
+        "arguments": [],
+        "returns": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "onKeyDown": {
+        "summary": "The document keydown handler the modal binds itself: Escape closes the top open window when close-on-esc allows it, Tab is trapped inside it. Not meant to be called by a host.",
+        "arguments": [
+          {
+            "name": "event",
+            "type": "KeyboardEvent",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "null",
+          "description": "Returns nothing."
+        }
+      },
+      "resetRemoteContent": {
+        "summary": "Clears the loaded remote HTML, error and loading state and aborts a running request.",
+        "arguments": [],
+        "returns": {
+          "type": "null",
+          "description": "Returns nothing."
+        }
+      },
+      "clearPortal": {
+        "summary": "Unrenders and removes the portal root the window was projected into, if any.",
+        "arguments": [],
+        "returns": {
+          "type": "null",
+          "description": "Returns nothing."
+        }
+      },
+      "onBeforeOpen": {
+        "summary": "Adds a listener for modal:before-open on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterOpen": {
+        "summary": "Adds a listener for modal:after-open on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBeforeClose": {
+        "summary": "Adds a listener for modal:before-close on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterClose": {
+        "summary": "Adds a listener for modal:after-close on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBeforeHide": {
+        "summary": "Adds a listener for modal:before-hide on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterHide": {
+        "summary": "Adds a listener for modal:after-hide on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onBeforeShow": {
+        "summary": "Adds a listener for modal:before-show on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onAfterShow": {
+        "summary": "Adds a listener for modal:after-show on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onModalReady": {
+        "summary": "Calls the handler at once with a modal:ready event when the modal has already rendered, otherwise adds a listener for its own modal:ready. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      },
+      "onModalUpdate": {
+        "summary": "Adds a listener for modal:update on the host that runs only for this modal's own events. Returns the element.",
+        "arguments": [
+          {
+            "name": "handler",
+            "type": "function",
+            "required": true
+          },
+          {
+            "name": "options",
+            "type": [
+              "object",
+              "boolean"
+            ],
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "description": "The element, for chaining."
+        }
+      }
     }
-  },
-  "x-decisions": [
-    "own-verb-words: minimize is a verb of vocabulary §5 (modal `hide`), so minimize/minimized are not own verbs; content-upload and content-uploaded stay own verbs with their words in lang events.<verb>.label (§8, vocabulary §5.1).",
-    "alias-conflict: vocabulary 1.1.5 decides. modal:after-hide → sf-modal-minimized and modal:after-show → sf-modal-expanded (the facts of minimize and expand, vocabulary §4; `change` reports a person's value change only, §8), modal:before-show → sf-modal-expand (the table's sf-modal-minimize is the reverse act), the content events → sf-modal-content-upload(ed) (loading is not a value change). The converter's sf-modal-hidden/-shown/-hide/-show never shipped and get no rows.",
-    "detail-adapter: §8 takes page elements out of detail, so the new names carry {modalId, phase, …} only; each old modal:* name keeps its old detail (component, modal, root added) through a split row and the element's detail adapter (sfAliasAdapters), sent after the new name with one shared cancel.",
-    "version: 1.3.0 → 1.4.0, a minor while the renamed members hold dated aliases (§4.10); the major comes with the sweep after 2026-12-01.",
-    "existing-aliases: compatibility.migrations lists no alias; its note (events bubble, detail.modal names the emitter) is kept by the old names' adapters. The undated page triggers data-sf-modal-open/close/show/hide stay as aliases of data-sf-action (§16.10).",
-    "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows; no template.html until the build compiles one.",
-    "examples: examples.json from studio.fixture.json and studio.scenario.json (the default window, an unclosable one, a minimizable one, a side panel); probe.json drives Tab, Shift+Tab and Escape (gate 16).",
-    "css-variables: the eight public variables the sheet already reads (src/core/contracts/public-variables.v1.json); the portal carries their computed values from the host (§19.1).",
-    "side-effects: the window draws at the end of body or of its [data-sf-overlay-container] (portal), locks the page (locks-page, one lease of the layer stack) and fetches src in mode ajax (network).",
-    "layer: kind modal, locks-page, traps-focus (§19.1, §19.2); Escape, an outside press and Tab reach it only while it is the top layer.",
-    "dismissing: the close request carries {reason, unsaved} (§19.3): close (its own button), escape, outside (the overlay), cancelled (a page control, data-sf-modal-close), api (a script); unsaved is the setting unsaved; dismissible=false (alias unclose) removes escape and outside, never an explicit action.",
-    "asking a person (§19.4): open asked by an assembly (a call with a signal) answers when the window closes with value {accepted, reason, value}; accepted is true only through the action confirm (data-sf-action=\"<id>.confirm\"). A page's own call answers at once.",
-    "instance ids (§7.1.1, simai/ui-source#41): a window without modal-id or id takes its path id (sf-modal-<n> in document order, not a module counter); the title id is <path>--title.",
-    "accessibility.name: aria-label on the host wins, else the heading (aria-labelledby the title, or aria-label when the header is a slot).",
-    "version 1.4.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
-  ]
+  }
 }

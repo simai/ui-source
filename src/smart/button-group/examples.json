@@ -1,8 +1,537 @@
-[
-  {"name": "reference", "title": "Режим отображения", "settings": {"aria-label": "Режим отображения", "items": [{"value": "list", "label": "Список", "icon": "list"}, {"value": "grid", "label": "Сетка", "icon": "grid_view"}, {"value": "map", "label": "Карта", "icon": "map"}], "value": "list"}, "expect": {"values": {"value": "list"}}},
-  {"name": "segmented", "title": "Сегменты", "settings": {"aria-label": "Период", "appearance": "segmented", "items": [{"value": "day", "label": "День"}, {"value": "week", "label": "Неделя", "count": "3"}, {"value": "month", "label": "Месяц"}], "value": "week"}, "expect": {"values": {"value": "week"}}},
-  {"name": "form", "title": "В форме", "settings": {"aria-label": "Доставка", "name": "delivery", "items": [{"value": "courier", "label": "Курьер"}, {"value": "pickup", "label": "Самовывоз"}], "value": "pickup"}, "expect": {"values": {"value": "pickup"}, "form": {"delivery": "pickup"}}},
-  {"name": "vertical", "title": "Вертикально", "settings": {"aria-label": "Раздел", "orientation": "vertical", "items": [{"value": "a", "label": "Общее"}, {"value": "b", "label": "Доступ"}], "value": "a"}, "expect": {"values": {"value": "a"}}},
-  {"name": "theme-switch", "title": "Переключатель темы", "settings": {"theme-switch": true, "appearance": "segmented"}, "expect": {"name": "Тема"}},
-  {"name": "disabled", "title": "Недоступна", "settings": {"aria-label": "Режим", "items": [{"value": "a", "label": "А"}, {"value": "b", "label": "Б"}], "value": "a", "disabled": true}, "expect": {"values": {"value": "a"}}}
-]
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Режим отображения",
+      "settings": {
+        "aria-label": "Режим отображения",
+        "items": [
+          {
+            "value": "list",
+            "label": "Список",
+            "icon": "list"
+          },
+          {
+            "value": "grid",
+            "label": "Сетка",
+            "icon": "grid_view"
+          },
+          {
+            "value": "map",
+            "label": "Карта",
+            "icon": "map"
+          }
+        ],
+        "value": "list"
+      },
+      "expect": {
+        "values": {
+          "value": "list"
+        }
+      },
+      "studio": {
+        "summary": "A three-option segmented control where every option can be selected.",
+        "props": {
+          "aria-label": "Режим отображения",
+          "items": [
+            {
+              "value": "list",
+              "label": "Список",
+              "icon": "list"
+            },
+            {
+              "value": "grid",
+              "label": "Сетка",
+              "icon": "grid_view"
+            },
+            {
+              "value": "map",
+              "label": "Карта",
+              "icon": "map"
+            }
+          ],
+          "value": "list",
+          "size": "1",
+          "tightness": "",
+          "scheme": "primary",
+          "orientation": "horizontal"
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "select",
+              "with": [
+                "grid"
+              ]
+            },
+            {
+              "raw": {
+                "type": "keypress",
+                "value": "ArrowRight"
+              }
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            {
+              "type": "event",
+              "name": "sf-button-group-change"
+            },
+            {
+              "type": "attribute",
+              "name": "value",
+              "value": "map"
+            },
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "segmented",
+      "title": "Сегменты",
+      "settings": {
+        "aria-label": "Период",
+        "appearance": "segmented",
+        "items": [
+          {
+            "value": "day",
+            "label": "День"
+          },
+          {
+            "value": "week",
+            "label": "Неделя",
+            "count": "3"
+          },
+          {
+            "value": "month",
+            "label": "Месяц"
+          }
+        ],
+        "value": "week"
+      },
+      "expect": {
+        "values": {
+          "value": "week"
+        }
+      }
+    },
+    {
+      "name": "form",
+      "title": "В форме",
+      "settings": {
+        "aria-label": "Доставка",
+        "name": "delivery",
+        "items": [
+          {
+            "value": "courier",
+            "label": "Курьер"
+          },
+          {
+            "value": "pickup",
+            "label": "Самовывоз"
+          }
+        ],
+        "value": "pickup"
+      },
+      "expect": {
+        "values": {
+          "value": "pickup"
+        },
+        "form": {
+          "delivery": "pickup"
+        }
+      }
+    },
+    {
+      "name": "vertical",
+      "title": "Вертикально",
+      "settings": {
+        "aria-label": "Раздел",
+        "orientation": "vertical",
+        "items": [
+          {
+            "value": "a",
+            "label": "Общее"
+          },
+          {
+            "value": "b",
+            "label": "Доступ"
+          }
+        ],
+        "value": "a"
+      },
+      "expect": {
+        "values": {
+          "value": "a"
+        }
+      }
+    },
+    {
+      "name": "theme-switch",
+      "title": "Переключатель темы",
+      "settings": {
+        "theme-switch": true,
+        "appearance": "segmented"
+      },
+      "expect": {
+        "name": "Тема"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Недоступна",
+      "settings": {
+        "aria-label": "Режим",
+        "items": [
+          {
+            "value": "a",
+            "label": "А"
+          },
+          {
+            "value": "b",
+            "label": "Б"
+          }
+        ],
+        "value": "a",
+        "disabled": true
+      },
+      "expect": {
+        "values": {
+          "value": "a"
+        }
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "x-probe": {
+        "probe": "sf-button-group against component.json (standard simai.smart-component 1.3.8 §4.4, §4.8 keys, §8, §16.20, §17.1)",
+        "component": "sf-button-group",
+        "page": {
+          "lang": "ru",
+          "markup": "<form id=\"f\">{{field}}<button type=\"submit\">OK</button></form>",
+          "listen": [
+            "change",
+            "sf-button-group-change"
+          ]
+        },
+        "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
+        "checks": [
+          {
+            "id": "press-selects-and-the-old-name-follows",
+            "covers": "events.change {previous, value, item} once, then sf-button-group-change with one detail and a dated journal entry; form.submits",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "user": "click:[data-sf-button-group-value='grid']",
+            "expect": {
+              "value": "grid",
+              "events": [
+                {
+                  "type": "change",
+                  "previous": "list",
+                  "value": "grid",
+                  "item": {
+                    "value": "grid",
+                    "label": "Сетка"
+                  }
+                },
+                {
+                  "type": "sf-button-group-change",
+                  "previous": "list",
+                  "value": "grid"
+                }
+              ],
+              "deprecations": [
+                {
+                  "component": "sf-button-group",
+                  "kind": "event",
+                  "from": "sf-button-group-change",
+                  "to": "change",
+                  "since": "2026-10-27",
+                  "remove_after": "2026-12-01"
+                }
+              ],
+              "formData": {
+                "mode": "grid"
+              },
+              "evaluate": {
+                "el.querySelector('input[type=hidden]')": null,
+                "[...form.elements].includes(el)": true
+              }
+            }
+          },
+          {
+            "id": "arrow-right-selects-the-next",
+            "covers": "keyboard.host ArrowRight focus:next (a radio group moves the selection with the focus)",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "given": [
+              {
+                "user": "focus:button[tabindex='0']"
+              }
+            ],
+            "user": "keyboard:ArrowRight",
+            "expect": {
+              "value": "grid",
+              "evaluate": {
+                "document.activeElement.getAttribute('aria-checked')": "true"
+              }
+            }
+          },
+          {
+            "id": "arrow-left-wraps",
+            "covers": "keyboard.host ArrowLeft focus:prev",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "given": [
+              {
+                "user": "focus:button[tabindex='0']"
+              }
+            ],
+            "user": "keyboard:ArrowLeft",
+            "expect": {
+              "value": "map"
+            }
+          },
+          {
+            "id": "arrow-down-and-up",
+            "covers": "keyboard.host ArrowDown focus:next, ArrowUp focus:prev",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "given": [
+              {
+                "user": "focus:button[tabindex='0']"
+              }
+            ],
+            "user": [
+              "keyboard:ArrowDown",
+              "keyboard:ArrowDown",
+              "keyboard:ArrowUp"
+            ],
+            "expect": {
+              "value": "grid"
+            }
+          },
+          {
+            "id": "end-and-home",
+            "covers": "keyboard.host End focus:last, Home focus:first",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "given": [
+              {
+                "user": [
+                  "focus:button[tabindex='0']",
+                  "keyboard:End"
+                ]
+              }
+            ],
+            "user": "keyboard:Home",
+            "expect": {
+              "value": "list",
+              "events": [
+                {
+                  "type": "change",
+                  "previous": "map",
+                  "value": "list"
+                },
+                {
+                  "type": "sf-button-group-change"
+                }
+              ]
+            }
+          },
+          {
+            "id": "select-answers-an-outcome",
+            "covers": "actions.select {value} applied (§4.4)",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "action": {
+              "name": "select",
+              "with": {
+                "value": "map"
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "value": "map",
+              "events": [
+                {
+                  "type": "change",
+                  "value": "map"
+                },
+                {
+                  "type": "sf-button-group-change",
+                  "value": "map"
+                }
+              ]
+            }
+          },
+          {
+            "id": "select-the-same-is-refused",
+            "covers": "actions.select refused {reason: unchanged}",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "action": {
+              "name": "select",
+              "with": {
+                "value": "list"
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "unchanged"
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "select-an-unknown-is-refused",
+            "covers": "actions.select refused {reason: unknown}",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "action": {
+              "name": "select",
+              "with": {
+                "value": "nope"
+              }
+            },
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "unknown"
+              },
+              "value": "list"
+            }
+          },
+          {
+            "id": "clear-answers-an-outcome",
+            "covers": "actions.clear applied",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "action": {
+              "name": "clear"
+            },
+            "expect": {
+              "returns": {
+                "outcome": "applied"
+              },
+              "value": "",
+              "formData": {
+                "mode": ""
+              },
+              "events": [
+                {
+                  "type": "change",
+                  "previous": "list",
+                  "value": "",
+                  "item": null
+                },
+                {
+                  "type": "sf-button-group-change"
+                }
+              ]
+            }
+          },
+          {
+            "id": "nothing-while-disabled",
+            "covers": "form.disabled (§17.1 item 3); select refused {reason: disabled}",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" disabled items=\"list::Список|grid::Сетка\"></sf-button-group>",
+            "script": "const outcome = el.select('grid'); form.requestSubmit(); return outcome;",
+            "expect": {
+              "returns": {
+                "outcome": "refused",
+                "reason": "disabled"
+              },
+              "formData": {
+                "mode": null
+              }
+            }
+          },
+          {
+            "id": "form-reset-returns-the-default",
+            "covers": "form.reset (§17.1 item 4): no events",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "given": [
+              {
+                "user": "click:[data-sf-button-group-value='map']"
+              }
+            ],
+            "form": "reset",
+            "expect": {
+              "value": "list",
+              "events": [],
+              "formData": {
+                "mode": "list"
+              }
+            }
+          },
+          {
+            "id": "value-from-code-is-silent",
+            "covers": "§8: a value set from outside is not reported back",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "property": {
+              "name": "value",
+              "value": "grid"
+            },
+            "expect": {
+              "value": "grid",
+              "events": [],
+              "formData": {
+                "mode": "grid"
+              }
+            }
+          },
+          {
+            "id": "custom-error-blocks-submit",
+            "covers": "validity custom-error (§17.2)",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\" value=\"list\" items=\"list::Список|grid::Сетка|map::Карта\"></sf-button-group>",
+            "script": "el.setCustomValidity('Выберите другой'); form.requestSubmit();",
+            "expect": {
+              "submitted": false,
+              "validity": {
+                "host": {
+                  "customError": true,
+                  "valid": false
+                }
+              }
+            }
+          },
+          {
+            "id": "the-theme-switch-names-itself",
+            "covers": "accessibility.name: the theme switch's own word in the page language",
+            "field": "<sf-button-group theme-switch appearance=\"segmented\"></sf-button-group>",
+            "script": "return [el.querySelector(\"[role=radiogroup]\").getAttribute(\"aria-label\"), [\"Как в системе\", \"Светлая\", \"Тёмная\"].every((word) => el.textContent.includes(word))];",
+            "expect": {
+              "returns": [
+                "Тема",
+                true
+              ]
+            }
+          },
+          {
+            "id": "items-set-as-a-property-are-drawn",
+            "covers": "settings.items (a list): a list set as a property is drawn, as before the manifest",
+            "field": "<sf-button-group aria-label=\"Режим\" name=\"mode\"></sf-button-group>",
+            "property": {
+              "name": "items",
+              "value": [
+                {
+                  "value": "a",
+                  "label": "Первый"
+                },
+                {
+                  "value": "b",
+                  "label": "Второй"
+                }
+              ]
+            },
+            "wait": 300,
+            "expect": {
+              "evaluate": {
+                "el.querySelectorAll(\"[data-sf-button-group-value]\").length": 2,
+                "el.items.length": 2
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

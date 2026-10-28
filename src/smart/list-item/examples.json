@@ -12,6 +12,15 @@
       "expect": {
         "value": "open",
         "kind": "icon"
+      },
+      "studio": {
+        "title": "List Item reference",
+        "props": {
+          "value": "open",
+          "text": "Пункт списка",
+          "icon": "star"
+        },
+        "scenario": {}
       }
     },
     {
@@ -78,6 +87,149 @@
       "expect": {
         "disabled": true
       }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-list-item against component.json (standard simai.smart-component 1.3.8 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main>",
+          "  <sf-list-item id=\"plain\" value=\"open\" kind=\"icon\" icon=\"star\" text=\"Пункт списка\"></sf-list-item>",
+          "  <sf-list-item id=\"legacy\" value=\"done\" type=\"checkbox\" text=\"Готово\" checked></sf-list-item>",
+          "  <div role=\"list\" aria-label=\"Блоки\">",
+          "    <sf-list-item id=\"a\" value=\"hero\" interactive text=\"Заголовок\" supporting=\"Здравствуйте\"></sf-list-item>",
+          "    <sf-list-item id=\"b\" value=\"text\" interactive text=\"Текст\"></sf-list-item>",
+          "    <sf-list-item id=\"c\" value=\"off\" interactive disabled text=\"В архиве\"></sf-list-item>",
+          "  </div>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-draws",
+          "title": "a row draws its text and its icon; value is the row's id",
+          "covers": "settings.value, settings.kind, settings.text, settings.icon",
+          "steps": [
+            {
+              "check": "document.querySelector('#plain .sf-list-item.sf-list-item--icon .sf-list-item-container').textContent.trim() === 'Пункт списка' && document.querySelector('#plain .sf-icon').textContent.trim() === 'star' && document.querySelector('#plain').value === 'open'"
+            }
+          ]
+        },
+        {
+          "id": "p2-type-alias",
+          "title": "type is kind's dated alias: a checkbox row from type draws its box ticked",
+          "covers": "aliases.json type, values.checked",
+          "steps": [
+            {
+              "check": "document.querySelector('#legacy').kind === 'checkbox' && document.querySelector('#legacy .sf-list-item--checkbox input[type=checkbox]').checked === true"
+            }
+          ]
+        },
+        {
+          "id": "p3-open-pointer",
+          "title": "a press on an interactive row sends sf-list-item-open {id, trigger}, then the dated sf-list-item-activate with its old detail",
+          "covers": "events.open, aliases.json sf-list-item-activate (split)",
+          "steps": [
+            {
+              "user": "click:#a .sf-list-item-container",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-item-open",
+                    "count": 1,
+                    "detail": {
+                      "id": "hero",
+                      "trigger": "pointer"
+                    }
+                  },
+                  {
+                    "name": "sf-list-item-activate",
+                    "count": 1,
+                    "detail": {
+                      "value": "hero",
+                      "item": "<sf-list-item>",
+                      "trigger": "pointer"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p4-keyboard",
+          "title": "the list is one Tab stop; ArrowDown moves to the next row and Enter opens it",
+          "covers": "keyboard ArrowDown focus:next, Enter open, Tab reach",
+          "steps": [
+            {
+              "check": "document.querySelector('#a .sf-list-item').tabIndex === 0 && document.querySelector('#b .sf-list-item').tabIndex === -1"
+            },
+            {
+              "script": "(document.querySelector('#a .sf-list-item').focus(), true)"
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "check": "document.activeElement === document.querySelector('#b .sf-list-item')"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-item-open",
+                    "count": 1,
+                    "detail": {
+                      "id": "text",
+                      "trigger": "keyboard"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "user": "keyboard:ArrowDown",
+              "check": "document.activeElement === document.querySelector('#b .sf-list-item')"
+            }
+          ]
+        },
+        {
+          "id": "p5-disabled",
+          "title": "a disabled row says so and opens nothing",
+          "covers": "settings.disabled",
+          "steps": [
+            {
+              "user": "click:#c .sf-list-item-container",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-list-item-open",
+                    "count": 0
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#c .sf-list-item').getAttribute('aria-disabled') === 'true'"
+            }
+          ]
+        },
+        {
+          "id": "p6-value-object",
+          "title": "writing an object to value still writes its attributes; reading answers the id",
+          "covers": "settings.value (the retired snapshot form)",
+          "steps": [
+            {
+              "script": "(document.querySelector('#plain').value = {value: 'closed', text: 'Закрыт'}, true)"
+            },
+            {
+              "check": "document.querySelector('#plain').value === 'closed' && document.querySelector('#plain').getAttribute('text') === 'Закрыт' && document.querySelector('#plain .sf-list-item-container').textContent.trim() === 'Закрыт'"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

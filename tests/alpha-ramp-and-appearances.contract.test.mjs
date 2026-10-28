@@ -225,26 +225,25 @@ test('a status tag keeps its colour: the appearance is only for the neutral type
 });
 
 test('the appearances are part of the public API, and documented', () => {
-  // The manifests are generated from meta.mjs, so the enum has one source. If the
-  // two ever drift, Studio and the runtime would disagree about what exists.
-  const enumOf = (meta, name) => {
-    const declared = read(meta).match(new RegExp(`const ${name} = \\[([^\\]]+)\\]`, 'u'))?.[1] ?? '';
-    return [...declared.matchAll(/'([^']+)'/gu)].map(([, value]) => value);
+  // The manifests are generated from component.json (standard 1.4), so the enum
+  // has one source. If the two ever drift, Studio and the runtime would disagree
+  // about what exists. sf-button's ghost reads as link: a dated value alias
+  // (compatibility.aliases appearance=ghost), not an appearance of its own;
+  // sf-icon-button keeps ghost.
+  const expected = {
+    button: ['default', 'tonal', 'outline', 'link', 'surface'],
+    'icon-button': ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'],
   };
-
-  for (const [component, constant] of [['button', 'BUTTON_APPEARANCE_VALUES'], ['icon-button', 'ICON_BUTTON_APPEARANCE_VALUES']]) {
+  for (const [component, values] of Object.entries(expected)) {
     const manifest = JSON.parse(read(`src/smart/${component}/smart.manifest.json`));
     // The axis is `appearance`; `type` still mirrors it, which the axes rule checks.
-    assert.deepEqual(
-      manifest.inputs.properties.appearance.enum,
-      ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'],
-      `${component}: the list stays closed and carries the two appearances`,
-    );
-    assert.deepEqual(enumOf(`src/smart/${component}/meta.mjs`, constant), manifest.inputs.properties.appearance.enum);
+    assert.deepEqual(manifest.inputs.properties.appearance.enum, values, `${component}: the list stays closed and carries the two appearances`);
+    assert.deepEqual(JSON.parse(read(`src/smart/${component}/component.json`)).settings.appearance.values, manifest.inputs.properties.appearance.enum);
     const docs = read(`src/smart/${component}/docs/docs.md`);
     assert.match(docs, /surface\|ghost/u, `${component}: the type list names them`);
     assert.match(docs, /alpha ramp/u, `${component}: and says what they are built on`);
   }
+  assert.ok(JSON.parse(read('src/smart/button/smart.manifest.json')).compatibility.aliases.includes('appearance=ghost'));
 
   // On a tag the appearance is its own axis, because `type` there says what the
   // tag carries or reports, not how it looks.

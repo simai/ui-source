@@ -50,7 +50,9 @@ test('List Item source contract includes machine value and all visible labels up
   assert.equal(manifest.inputs.properties.value.type, 'string');
   assert.equal(manifest.item_contract.parent, 'smart.dropdown');
   assert.match(manifest.contracts.standalone.const, /Non-interactive/);
-  assert.match(manifest.accessibility.role, /option when rendered by Dropdown/);
+  // The role is component.json's (none); its words say where the option role lives.
+  assert.equal(manifest.accessibility.role, 'none');
+  assert.match(component.accessibility.$comment, /the option role belongs to sf-dropdown/);
 });
 
 test('List Item presentation uses semantic tokens and owner-scoped states', async () => {

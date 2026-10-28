@@ -1,13 +1,17 @@
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 SF.RuleLoader['cl-badge'] = {
   tags: ['sf-badge'],
   type: 'smart',
   mode: 'smart',
   js: true,
-  // The badge names itself through a visually hidden label; the utility comes
-  // with the component rather than from a scan, which a badge inside another
-  // component's markup can miss -- and then the label reads beside the text
-  // (Larena, «Элементы: 7 7», 2026-10-12).
-  relation: [{ name: 'badges' }, { name: 'sr-only/default' }],
+  relation: [
+    { name: 'badges' },
+    // The badge names itself through a visually hidden label; the utility comes
+    // with the component rather than from a scan, which a badge inside another
+    // component's markup can miss -- and then the label reads beside the text
+    // (Larena, «Элементы: 7 7», 2026-10-12).
+    { name: 'sr-only/default' },
+  ],
 };
 
 // The bundle's former name cl-badges (the folder was `badges` until standard

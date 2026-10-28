@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -122,6 +122,9 @@
         "type": "array",
         "default": [],
         "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings)."
+      },
+      "settings": {
+        "type": "object"
       }
     },
     "additionalProperties": false

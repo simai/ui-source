@@ -11,9 +11,9 @@
       "component": "sf-popover",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
+      "mode": "host-attribute",
       "section": "§3.1",
-      "note": "read by the popover, not the shim: role leaves the host once read (the shim would mirror that removal onto surface-role); each read is noted with these dates",
-      "mode": "host-attribute"
+      "note": "read by the popover, not the shim: role leaves the host once read (the shim would mirror that removal onto surface-role); each read is noted with these dates"
     },
     {
       "from": "sf-popover-open",

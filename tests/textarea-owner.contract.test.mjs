@@ -50,7 +50,8 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
     assert.match(template, new RegExp(name.replace('-', ''), 'i'));
     assert.ok(declared.settings[name], name);
   }
-  assert.deepEqual(manifest.composition.uses, ['component.textarea']);
+  // Generated from the Loader relations (standard 1.4): the reset button's sheets too.
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.textarea']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.appearance.enum, ['bordered', 'filled', 'flush']);
@@ -95,7 +96,8 @@ test('Textarea flush surface draws no box and no focus of its own', async () => 
   assert.match(index, /elementFromManifest\(manifest,/);
   assert.deepEqual(declared.settings.appearance.values, ['bordered', 'filled', 'flush']);
   assert.ok(aliasRows.some((row) => row.from === 'type' && row.to === 'appearance' && row.kind === 'setting'));
-  assert.match(meta, /\["bordered", "filled", "flush"\]/);
+  // meta.mjs is generated from component.json (standard 1.4): one object literal.
+  assert.deepEqual(JSON.parse(meta.slice(meta.indexOf('= {') + 2, meta.indexOf('\n};') + 2)).attributes.appearance.values, ['bordered', 'filled', 'flush']);
   const flush = css.slice(css.indexOf('\n.sf-textarea.sf-textarea--flush textarea {', css.indexOf('/* Flush:')));
   const own = flush.slice(0, flush.indexOf('}'));
   for (const declaration of ['background-color: transparent', 'border: 0', 'border-radius: 0', 'box-shadow: none', 'margin: 0', 'outline: none', 'resize: none']) {

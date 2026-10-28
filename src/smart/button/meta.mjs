@@ -1,159 +1,252 @@
-const BOOLEAN_VALUES = ['true', 'false'];
-
-const BUTTON_SIZE_VALUES = ['1/3', '1/2', '1', '2', '3'];
-const BUTTON_APPEARANCE_VALUES = ['default', 'tonal', 'outline', 'link', 'surface', 'ghost'];
-const BUTTON_SCHEME_VALUES = ['primary', 'secondary', 'on-surface'];
-const BUTTON_ICON_POSITION_VALUES = ['start', 'end'];
-const BUTTON_SPACING_VALUES = ['compact', 'normal', 'comfortable', 'spacious'];
-const BUTTON_TIGHTNESS_VALUES = ['low', 'high', 'highest'];
-const BUTTON_RADIUS_VALUES = ['default', 'square', 'rounded'];
-const BUTTON_NATIVE_TYPE_VALUES = ['button', 'submit', 'reset'];
-const BUTTON_ICON_EXAMPLES = ['home', 'settings', 'search', 'edit', 'check', 'close'];
-
+// Generated from component.json by scripts/generate-component-files.mjs; do not edit.
 const sfButtonMeta = {
-  tag: 'sf-button',
-  source: 'src/smart/button/meta.mjs',
-  attributes: {
-    template: {
-      kind: 'custom',
-      valueType: 'string',
-      default: 'default',
-      description: 'Template variant name for SfBaseElement external templates.',
+  "tag": "sf-button",
+  "source": "src/smart/button/component.json",
+  "attributes": {
+    "template": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "default",
+      "description": "Template variant name for SfBaseElement external templates."
     },
-    size: {
-      kind: 'enum',
-      values: BUTTON_SIZE_VALUES,
-      default: '1',
-      description: 'Button size token.',
+    "root-class": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Extra classes applied to the inner button element."
     },
-    appearance: {
-      kind: 'enum',
-      values: BUTTON_APPEARANCE_VALUES,
-      default: 'default',
-      description: 'How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01).',
+    "root-style": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": ""
     },
-    type: {
-      kind: 'enum',
-      values: BUTTON_APPEARANCE_VALUES,
-      default: 'default',
-      description: 'Legacy name for appearance, still honoured. See contracts/public-api-axes.json.',
+    "size": {
+      "kind": "enum",
+      "values": [
+        "1/3",
+        "1/2",
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1",
+      "description": "Button size token."
     },
-    scheme: {
-      kind: 'enum',
-      values: BUTTON_SCHEME_VALUES,
-      default: 'primary',
-      description: 'Which colour family the control takes. What the control is about is the status axis; a status set there wins over this.',
+    "appearance": {
+      "kind": "enum",
+      "values": [
+        "default",
+        "tonal",
+        "outline",
+        "link",
+        "surface"
+      ],
+      "default": "default",
+      "description": "How the button looks. Surface reads the neutral alpha ramp: a faint fill and a border. ghost is the link appearance under its old name (compat until 2026-12-01)."
     },
-    text: {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Visible button text when no text slot is provided.',
+    "scheme": {
+      "kind": "enum",
+      "values": [
+        "primary",
+        "secondary",
+        "on-surface"
+      ],
+      "default": "primary",
+      "description": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this."
     },
-    icon: {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Single icon name shortcut.',
-      examples: BUTTON_ICON_EXAMPLES,
+    "status": {
+      "kind": "enum",
+      "values": [
+        "",
+        "error"
+      ],
+      "default": "",
+      "description": "What the control is about, in the shared status vocabulary. The only one a control paints today is `error`, the destructive one: a control that deletes, discards or cannot be undone."
     },
-    'icon-start': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Logical start icon name.',
-      examples: BUTTON_ICON_EXAMPLES,
+    "text-position": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "center"
     },
-    'icon-end': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Logical end icon name.',
-      examples: BUTTON_ICON_EXAMPLES,
+    "text": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Visible button text when no text slot is provided."
     },
-    'icon-left': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Compatibility alias for icon-start.',
-      examples: BUTTON_ICON_EXAMPLES,
+    "segment": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": ""
     },
-    'icon-right': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Compatibility alias for icon-end.',
-      examples: BUTTON_ICON_EXAMPLES,
+    "icon": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Single icon name shortcut.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
-    'icon-position': {
-      kind: 'enum',
-      values: BUTTON_ICON_POSITION_VALUES,
-      default: 'start',
-      description: 'Placement for the single icon shortcut.',
+    "icon-start": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Logical start icon name.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
-    spacing: {
-      kind: 'enum',
-      values: BUTTON_SPACING_VALUES,
-      default: 'normal',
-      description: 'Semantic internal spacing profile.',
+    "icon-end": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Logical end icon name.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
     },
-    tightness: {
-      kind: 'enum',
-      values: BUTTON_TIGHTNESS_VALUES,
-      default: '',
-      description: 'Compatibility alias for spacing.',
+    "icon-position": {
+      "kind": "enum",
+      "values": [
+        "start",
+        "end"
+      ],
+      "default": "start",
+      "description": "Placement for the single icon shortcut."
     },
-    radius: {
-      kind: 'enum',
-      values: BUTTON_RADIUS_VALUES,
-      default: '',
-      description: 'Border radius modifier.',
+    "spacing": {
+      "kind": "enum",
+      "values": [
+        "compact",
+        "normal",
+        "comfortable",
+        "spacious"
+      ],
+      "default": "normal",
+      "description": "Semantic internal spacing profile."
     },
-    'root-class': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Extra classes applied to the inner button element.',
+    "radius": {
+      "kind": "enum",
+      "values": [
+        "",
+        "default",
+        "square",
+        "rounded"
+      ],
+      "default": "",
+      "description": "Border radius modifier."
     },
-    loading: {
-      kind: 'boolean',
-      values: BOOLEAN_VALUES,
-      default: 'false',
-      description: "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button.",
+    "loading": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Loading state: the spinner at the icon's size in place of the start icon (else the end icon); without an icon it lies over the label, which keeps its place, so the width does not change. The spinner takes the page's look (data-sf-spinner). Sets aria-busy and disables the native button."
     },
-    disabled: {
-      kind: 'boolean',
-      values: BOOLEAN_VALUES,
-      default: 'false',
-      description: 'Disabled state flag.',
+    "disabled": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Disabled state flag."
     },
-    'native-type': {
-      kind: 'enum',
-      values: BUTTON_NATIVE_TYPE_VALUES,
-      default: 'button',
-      description: 'Native button type attribute.',
+    "native-type": {
+      "kind": "enum",
+      "values": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "default": "button",
+      "description": "Native button type attribute."
     },
-    'aria-label': {
-      kind: 'custom',
-      valueType: 'string',
-      default: '',
-      description: 'Accessible label for icon-only or custom buttons.',
+    "expanded": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Whether the panel this button opens is open: aria-expanded on the native button; absent says nothing"
     },
-  },
+    "aria-label": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Accessible label for icon-only or custom buttons."
+    },
+    "type": {
+      "kind": "enum",
+      "values": [
+        "default",
+        "tonal",
+        "outline",
+        "link",
+        "surface"
+      ],
+      "default": "default",
+      "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
+    },
+    "icon-left": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Compatibility alias for icon-start.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
+    },
+    "icon-right": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Compatibility alias for icon-end.",
+      "examples": [
+        "home",
+        "settings",
+        "search",
+        "edit",
+        "check",
+        "close"
+      ]
+    },
+    "tightness": {
+      "kind": "enum",
+      "values": [
+        "low",
+        "high",
+        "highest"
+      ],
+      "default": "",
+      "description": "Compatibility alias for spacing."
+    }
+  }
 };
 
-export {
-  BOOLEAN_VALUES,
-  BUTTON_SIZE_VALUES,
-  BUTTON_APPEARANCE_VALUES,
-  BUTTON_SCHEME_VALUES,
-  BUTTON_ICON_POSITION_VALUES,
-  BUTTON_SPACING_VALUES,
-  BUTTON_TIGHTNESS_VALUES,
-  BUTTON_RADIUS_VALUES,
-  BUTTON_NATIVE_TYPE_VALUES,
-  BUTTON_ICON_EXAMPLES,
-  sfButtonMeta,
-};
-
+export {sfButtonMeta};
 export default sfButtonMeta;

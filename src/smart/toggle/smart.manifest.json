@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toggle",
-  "version": "1.0.0",
+  "version": "1.1.3",
   "title": "Toggle",
   "summary": "Deprecated: superseded by sf-switch, which draws the same control and carries both of Toggle's looks. A compact on/off control (a native checkbox with role=\"switch\") kept only for markup already written; it is removed after 2026-11-01 (journal record component-toggle-to-switch).",
   "kind": "smart",
@@ -22,6 +22,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.icons",
       "component.toggle"
     ],
     "public_parts": [
@@ -34,6 +35,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -46,12 +60,12 @@
       "kind": {
         "type": "string",
         "default": "simple",
+        "description": "What the toggle carries: nothing, an icon, or a short label.",
         "enum": [
           "simple",
           "icon",
           "short"
-        ],
-        "description": "What the toggle carries: nothing, an icon, or a short label."
+        ]
       },
       "label": {
         "type": "string",
@@ -60,10 +74,6 @@
       "icon": {
         "type": "string",
         "default": ""
-      },
-      "checked": {
-        "type": "boolean",
-        "default": false
       },
       "disabled": {
         "type": "boolean",
@@ -77,6 +87,10 @@
         "type": "string",
         "default": "on",
         "description": "What a checked toggle submits; without it, \"on\", as a native checkbox (standard 1.3.8 §17.1 item 2)."
+      },
+      "checked": {
+        "type": "boolean",
+        "default": false
       },
       "type": {
         "type": "string",
@@ -226,7 +240,8 @@
     "change": {
       "summary": "The pressed state changed; the native event bubbles from the inner checkbox, which is its target. The name to bind.",
       "payload": {
-        "type": "object"
+        "type": "null",
+        "description": "A native Event: there is no detail."
       },
       "canonical": true
     }

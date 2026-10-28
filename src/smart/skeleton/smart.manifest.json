@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.skeleton",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "title": "Skeleton",
   "summary": "Decorative loading placeholder that reserves source-backed content geometry with semantic tokens and reduced-motion support.",
   "kind": "smart",
@@ -32,6 +32,19 @@
   "inputs": {
     "type": "object",
     "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -60,7 +73,7 @@
         "default": ""
       },
       "count": {
-        "type": "number",
+        "type": "integer",
         "default": 1,
         "minimum": 1,
         "maximum": 20
@@ -77,28 +90,24 @@
       "kind": {
         "type": "string",
         "default": "text",
+        "description": "What shape the placeholder takes: a line of text, a circle, a square or a rounded block.",
         "enum": [
           "text",
           "circle",
           "square",
           "rounded"
-        ],
-        "description": "What shape the placeholder takes: a line of text, a circle, a square or a rounded block."
+        ]
       },
       "type": {
         "type": "string",
         "default": "",
+        "description": "type=\"icon\" marks a placeholder that stands in for an icon; it combines with any kind. Not a legacy name for kind (see contracts/public-api-axes.json), so it has no removal date.",
         "enum": [
           "",
           "icon"
-        ],
-        "description": "type=\"icon\" marks a placeholder that stands in for an icon; it combines with any kind. Not a legacy name for kind (see contracts/public-api-axes.json), so it has no removal date."
+        ]
       },
       "items": {
-        "type": "string",
-        "default": ""
-      },
-      "root-class": {
         "type": "string",
         "default": ""
       },
@@ -165,7 +174,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "none; generated placeholder geometry is aria-hidden",
+    "role": "none",
     "accessible_name": "recommended",
     "keyboard": [],
     "focus": "Skeleton is not interactive and never enters the tab order. The host content region owns aria-busy and any spoken loading status."
@@ -240,7 +249,7 @@
       },
       {
         "path": "src/smart/skeleton/rule.js",
-        "sha256": "713955c2a770ec01d06047be0760722949b29215c7dccc940fc494b7182e504e"
+        "sha256": "1d881cc4fcfc70d576a08fcbc7526c5cb952f694bb2cd816a1e469780bad18db"
       },
       {
         "path": "src/smart/skeleton/docs/docs.md",
