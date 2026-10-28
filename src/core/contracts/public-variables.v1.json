@@ -3034,7 +3034,7 @@
           "name": "--sf-site-header-block-size",
           "role": "min-block-size",
           "summary": "The bar's height.",
-          "default": "calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1) + var(--sf-a1))",
+          "default": "calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1) + var(--sf-px))",
           "since": "2026-10-28"
         },
         {

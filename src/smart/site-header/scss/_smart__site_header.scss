@@ -12,12 +12,12 @@
   --sf-site-header--control-height: var(--sf-ui-1--control-height);
   --sf-site-header--text-space: var(--sf-ui-1--text-space-x);
   --sf-site-header--block-size: var(--sf-site-header-block-size,
-    calc(var(--sf-site-header--control-height) + 2 * var(--sf-space-1) + var(--sf-a1)));
+    calc(var(--sf-site-header--control-height) + 2 * var(--sf-space-1) + var(--sf-px)));
   position: relative;
   display: block;
   box-sizing: border-box;
   min-block-size: var(--sf-site-header--block-size);
-  border-block-end: var(--sf-a1) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+  border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background, var(--sf-surface-0));
   color: var(--sf-site-header-color, var(--sf-on-surface));
 }
@@ -39,7 +39,7 @@
   align-items: center;
   gap: var(--sf-site-header-gap, var(--sf-space-2));
   box-sizing: border-box;
-  min-block-size: calc(var(--sf-site-header--block-size) - var(--sf-a1));
+  min-block-size: calc(var(--sf-site-header--block-size) - var(--sf-px));
   padding-block: var(--sf-space-1);
 }
 
@@ -135,7 +135,7 @@
     background: var(--sf-elevation-4--surface);
     box-shadow: var(--sf-elevation-4--shadow);
     color: var(--sf-on-surface);
-    outline: none;
+    --sf-on-surface-variant: var(--sf-on-elevation-4--variant);
   }
 
   /* The panel's head is as tall as the bar, its close button on the axis of
@@ -150,7 +150,7 @@
     min-block-size: var(--sf-site-header--block-size);
     padding-block: var(--sf-space-1);
     padding-inline: var(--sf-space-2) var(--sf-space-1);
-    border-block-end: var(--sf-a1) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+    border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   }
 
   .sf-site-header-panel-heading {
@@ -172,7 +172,7 @@
 
   &.sf-site-header--open .sf-site-header-actions,
   &.sf-site-header--open .sf-site-header-sheet {
-    border-block-start: var(--sf-a1) solid var(--sf-outline-variant);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
   }
 
   /* A plain list of links in the nav stands as a column in the panel; an
