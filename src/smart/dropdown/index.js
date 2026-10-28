@@ -175,6 +175,9 @@ class SfDropdown extends DropdownElement {
   connectedCallback() {
     // A printed JSON island first (standard 1.3.8 §5.4): what is read below may be in it.
     this.sfReadIsland();
+    // Options printed as an attribute (JSON) are data, as the property is: the
+    // selected option's text was empty when only the property was read.
+    if (!this._optionsFromData && this.hasAttribute('options')) this.options = this.getAttribute('options');
     this.captureOptions();
     if (!Object.prototype.hasOwnProperty.call(this, '_resetValues')) {
       this._resetValues = [...this.selectedValues];
@@ -185,6 +188,7 @@ class SfDropdown extends DropdownElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue) {
       if (name === 'value') this._selectedValues = splitValues(newValue);
+      if (name === 'options' && this.isConnected) this.options = newValue;
       if (name === 'disabled' && this.disabled) {
         this._open = false;
         this._searchValue = '';

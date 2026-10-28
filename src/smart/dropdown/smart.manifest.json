@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -381,7 +381,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "dd5d5e8abd7b27decdde3c666f9098962d5296f4e55b5e0b7a736f407515cfce"
+        "sha256": "3b2c98b27e8c97015a1e0cf1d6db0185ebc8fd81522a163dd5719fd0f7bb2f2c"
       },
       {
         "path": "src/smart/dropdown/rule.js",
