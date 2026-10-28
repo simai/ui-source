@@ -5,8 +5,8 @@
     "error-title": "Could not load",
     "no-access-text": "Ask an administrator for access",
     "no-access-title": "No access",
-    "no-data-text": "Items will appear here",
-    "no-data-title": "Nothing here yet",
+    "no-data-text": "They will appear here once added",
+    "no-data-title": "No records yet",
     "nothing-found-text": "Try another query or other filters",
     "nothing-found-title": "Nothing found",
     "retry": "Try again"

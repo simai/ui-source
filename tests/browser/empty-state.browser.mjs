@@ -91,7 +91,7 @@ try {
   await page.waitForTimeout(150);
   const acts = await page.evaluate(() => window.acts);
   const s = states;
-  if (s.none.tag !== 'H3' || s.none.title !== 'Пока ничего нет' || !s.none.text || s.none.role !== null || s.none.icon !== 'inbox') note({case: 'no-data', got: s.none});
+  if (s.none.tag !== 'H3' || s.none.title !== 'Записей пока нет' || !s.none.text || s.none.role !== null || s.none.icon !== 'inbox') note({case: 'no-data', got: s.none});
   if (s.found.tag !== 'H4' || s.found.title !== 'Ничего не найдено' || s.found.role !== 'status') note({case: 'nothing-found', got: s.found});
   if (s.denied.tag !== 'H2' || s.denied.title !== 'Нет доступа' || s.denied.role !== null || s.denied.icon !== 'lock') note({case: 'no-access', got: s.denied});
   if (s.failed.role !== 'status' || s.failed.buttons.join() !== 'Повторить:1') note({case: 'error', got: s.failed});

@@ -31,12 +31,12 @@
     },
     {
       "name": "no-data",
-      "title": "Пока ничего нет",
+      "title": "Записей пока нет",
       "settings": {
         "kind": "no-data"
       },
       "expect": {
-        "name": "Пока ничего нет",
+        "name": "Записей пока нет",
         "role": null
       }
     },
