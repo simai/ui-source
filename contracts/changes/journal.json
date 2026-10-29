@@ -2948,6 +2948,219 @@
       },
       "manual": "A row whose mode is split also changed the detail: the old name keeps the pre-1.3.8 fields (component, tagName, template and the camelCase names), the new one carries the vocabulary's. A handler moved to the new name reads the new fields.",
       "source": "src/smart/<folder>/aliases.json, kind event"
+    },
+    {
+      "id": "event-chat-vocabulary-names",
+      "recorded_on": "2026-10-29",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "The SIMAI Pro chat components (simai/ui-pro sf-chat-window, sf-chat-composer, sf-chat-message, sf-chat-interlocutor) carry the vocabulary's verbs under their own DOM names. Thirty-nine names of simai/ui-chat 0.3 follow with their detail until they are swept.",
+      "deprecated_on": "2026-10-28",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "window.addEventListener('chat-port:send', …)",
+        "after": "window.addEventListener('sf-chat-window-submit', …)"
+      },
+      "manual": "A row whose mode is split keeps the 0.3 detail on the old name ({request_id, ...payload}; sf-chat-send {text, attachmentIds}); the new name carries {requestId, intent, kind, payload} (sf-chat-composer-submit {text, attachmentIds}). The 1.0 spellings request-id and attachment-ids stay in the new detail until the same date.",
+      "source": "simai/ui-pro components/src/smart/<folder>/aliases.json, kind event",
+      "items": [
+        {
+          "component": "sf-chat-composer",
+          "from": "sf-chat-send",
+          "to": "sf-chat-composer-submit"
+        },
+        {
+          "component": "sf-chat-composer",
+          "from": "sf-chat-stop",
+          "to": "sf-chat-composer-stop"
+        },
+        {
+          "component": "sf-chat-composer",
+          "from": "sf-chat-files",
+          "to": "sf-chat-composer-attach"
+        },
+        {
+          "component": "sf-chat-composer",
+          "from": "sf-chat-action",
+          "to": "sf-chat-composer-detach"
+        },
+        {
+          "component": "sf-chat-interlocutor",
+          "from": "sf-chat-interlocutor",
+          "to": "sf-chat-interlocutor-select"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-retry"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-check"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-rate"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-cancel"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-drafted"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-toggle"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-copied"
+        },
+        {
+          "component": "sf-chat-message",
+          "from": "sf-chat-action",
+          "to": "sf-chat-message-submit"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:open",
+          "to": "sf-chat-window-open"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:older",
+          "to": "sf-chat-window-load-more"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:send",
+          "to": "sf-chat-window-submit"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:retry",
+          "to": "sf-chat-window-retry"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:edit",
+          "to": "sf-chat-window-save"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:delete",
+          "to": "sf-chat-window-delete"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:read",
+          "to": "sf-chat-window-read"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:rate",
+          "to": "sf-chat-window-rate"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:file-retry",
+          "to": "sf-chat-window-retry"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:decide",
+          "to": "sf-chat-window-answer"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:check",
+          "to": "sf-chat-window-check"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:stop",
+          "to": "sf-chat-window-stop"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:create",
+          "to": "sf-chat-window-create"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:rename",
+          "to": "sf-chat-window-rename"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:archive",
+          "to": "sf-chat-window-archive"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:archive",
+          "to": "sf-chat-window-restore"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-port:interlocutor",
+          "to": "sf-chat-window-select"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:view",
+          "to": "sf-chat-window-open"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:more",
+          "to": "sf-chat-window-load-more"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:search",
+          "to": "sf-chat-window-query"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:pin",
+          "to": "sf-chat-window-pin"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:attach",
+          "to": "sf-chat-window-attach"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:detach",
+          "to": "sf-chat-window-detach"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:files",
+          "to": "sf-chat-window-open"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "chat-window:file-remove",
+          "to": "sf-chat-window-delete"
+        },
+        {
+          "component": "sf-chat-window",
+          "from": "sf-chat-window-answer",
+          "to": "sf-chat-window-settled"
+        }
+      ]
     }
   ]
 }
