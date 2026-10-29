@@ -86,6 +86,13 @@
     "display/default",
     "position/default"
   ],
+  "cl-contents": [
+    "display/default",
+    "isolate/default",
+    "position/default",
+    "resize/default",
+    "width/default"
+  ],
   "cl-context-menu": [
     "display/default",
     "flex-direction/default",

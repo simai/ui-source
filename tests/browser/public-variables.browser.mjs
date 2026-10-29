@@ -165,6 +165,10 @@ const DRAW = {
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
     html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+  // A column (its line, the current bar, the indent, the gap) and a bar (its
+  // fill), each from links written inside; the first link is current.
+  contents: {css: ['buttons', 'icons', 'smart/smart/contents/css/contents.css'], js: 'contents',
+    html: '<sf-contents layout="column" sticky="false"><a href="#a">A</a><a href="#b" data-level="3">B</a></sf-contents><sf-contents layout="bar" sticky="false"><a href="#a">A</a><a href="#b">B</a></sf-contents>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

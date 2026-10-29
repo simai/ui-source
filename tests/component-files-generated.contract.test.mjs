@@ -43,6 +43,8 @@ const PHASE_A = [
   'progress-ring',
   // Made in the 1.4 form from the start (2026-10-28).
   'site-header',
+  // The page's table of contents (2026-10-30).
+  'contents',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

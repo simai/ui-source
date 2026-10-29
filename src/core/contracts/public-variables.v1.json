@@ -3121,6 +3121,69 @@
           "since": "2026-10-28"
         }
       ]
+    },
+    {
+      "component": "contents",
+      "selector": "sf-contents, .sf-contents",
+      "variables": [
+        {
+          "name": "--sf-contents-color",
+          "role": "color",
+          "summary": "The links' ink.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-current-color",
+          "role": "indicator-color",
+          "summary": "The current link, its bar, stroke or underline, and the reading progress.",
+          "default": "var(--sf-primary)",
+          "state": "current",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-line-color",
+          "role": "background",
+          "summary": "The column's line, the bar's edge and the progress track.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-background",
+          "role": "background",
+          "summary": "The bar's fill and the compact view's open list.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-indent",
+          "role": "indent",
+          "summary": "The step of a deeper level.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-gap",
+          "role": "gap",
+          "summary": "The space between the links.",
+          "default": "0",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-inset-block-start",
+          "role": "inset-block-start",
+          "summary": "Where the sticky column, rail or bar stops.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-z-index",
+          "role": "z-index",
+          "summary": "The bar and the open list above the page, under every layer.",
+          "default": "var(--sf-z-index-5)",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }
