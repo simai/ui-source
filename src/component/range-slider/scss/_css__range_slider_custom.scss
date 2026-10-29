@@ -125,6 +125,14 @@
   gap: var(--sf-space-1\/4);
 }
 
+// A tooltip label reserves the tooltip's own box, not the bare text height:
+// text height, padding and border from the variables the tooltip itself reads.
+// Printed, the row had no height to give the bubble and the slider grew by 10px
+// once the code measured it (gate 24, range-slider/tooltip: 44 px then 54).
+.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip {
+  min-block-size: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-tooltip-padding-block, var(--sf-ui-1\/3--space-y-tightness-default)) + 2 * var(--sf-tooltip-border-width, var(--sf-px)));
+}
+
 .sf-range-slider .sf-range-slider-labels--top {
   margin-block-end: var(--sf-space-1\/4);
 }

@@ -1,6 +1,4 @@
 {
   "$comment": "Gate 24 measurements (tests/browser/first-paint-gate.browser.mjs) that fail for a reason outside the first paint, each with that reason. Reported by every run, not counted; an entry that passes again is reported under knownNowPassing and is taken out.",
-  "known": {
-    "range-slider/tooltip": "Found when phase A of standard 1.4 (2026-10-28) gave examples.json its object form and the gate measured this example for the first time (it drew the defaults before): the printed slider is 48 px (44 at 390) and the adopted one 54, the value bubble above the handle taking its room only once the code draws it. A first-paint defect of sf-range-slider, queued to its thread; the snapshot is what the build prints."
-  }
+  "known": {}
 }
