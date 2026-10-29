@@ -2551,7 +2551,7 @@
       "recorded_on": "2026-10-29",
       "stage": "compat",
       "kind": "event",
-      "summary": "A Smart element's events carry the vocabulary's verb under the element's own DOM name (standard simai.smart-component 1.3.8 §8, §16 item 20). Seventy-seven older names follow with the same detail until they are swept.",
+      "summary": "A Smart element's events carry the vocabulary's verb under the element's own DOM name (standard simai.smart-component 1.3.8 §8, §16 item 20). Eighty-three older names follow with the same detail until they are swept.",
       "items": [
         {
           "component": "sf-accordion",
@@ -2567,6 +2567,11 @@
           "component": "sf-code-input",
           "from": "sf-code-input:complete",
           "to": "sf-code-input-completed"
+        },
+        {
+          "component": "sf-color",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
         },
         {
           "component": "sf-composition-overlay",
@@ -2595,8 +2600,8 @@
         },
         {
           "component": "sf-drawer",
-          "from": "drawer:before-open",
-          "to": "sf-drawer-open"
+          "from": "drawer:after-close",
+          "to": "sf-drawer-closed"
         },
         {
           "component": "sf-drawer",
@@ -2610,13 +2615,18 @@
         },
         {
           "component": "sf-drawer",
-          "from": "drawer:after-close",
-          "to": "sf-drawer-closed"
+          "from": "drawer:before-open",
+          "to": "sf-drawer-open"
         },
         {
           "component": "sf-drawer",
           "from": "drawer:snap",
           "to": "sf-drawer-snapped"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
         },
         {
           "component": "sf-file-preview",
@@ -2685,18 +2695,18 @@
         },
         {
           "component": "sf-help-mark",
-          "from": "sf-help-mark-open",
-          "to": "sf-help-mark-opened"
-        },
-        {
-          "component": "sf-help-mark",
           "from": "sf-help-mark-close",
           "to": "sf-help-mark-closed"
         },
         {
+          "component": "sf-help-mark",
+          "from": "sf-help-mark-open",
+          "to": "sf-help-mark-opened"
+        },
+        {
           "component": "sf-image-field",
-          "from": "sf-image-field:select",
-          "to": "sf-image-field-attach"
+          "from": "sf-image-field:reject",
+          "to": "sf-image-field-rejected"
         },
         {
           "component": "sf-image-field",
@@ -2705,13 +2715,13 @@
         },
         {
           "component": "sf-image-field",
-          "from": "sf-image-field:reject",
-          "to": "sf-image-field-rejected"
+          "from": "sf-image-field:select",
+          "to": "sf-image-field-attach"
         },
         {
           "component": "sf-inline-editor",
-          "from": "sf-inline-edit-input",
-          "to": "sf-inline-editor-input"
+          "from": "sf-inline-edit-cancel",
+          "to": "sf-inline-editor-cancel"
         },
         {
           "component": "sf-inline-editor",
@@ -2720,8 +2730,13 @@
         },
         {
           "component": "sf-inline-editor",
-          "from": "sf-inline-edit-cancel",
-          "to": "sf-inline-editor-cancel"
+          "from": "sf-inline-edit-input",
+          "to": "sf-inline-editor-input"
+        },
+        {
+          "component": "sf-input",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
         },
         {
           "component": "sf-list-item",
@@ -2745,6 +2760,11 @@
         },
         {
           "component": "sf-modal",
+          "from": "modal:after-content-upload",
+          "to": "sf-modal-content-uploaded"
+        },
+        {
+          "component": "sf-modal",
           "from": "modal:after-hide",
           "to": "sf-modal-minimized"
         },
@@ -2765,6 +2785,11 @@
         },
         {
           "component": "sf-modal",
+          "from": "modal:before-content-upload",
+          "to": "sf-modal-content-upload"
+        },
+        {
+          "component": "sf-modal",
           "from": "modal:before-hide",
           "to": "sf-modal-minimize"
         },
@@ -2777,16 +2802,6 @@
           "component": "sf-modal",
           "from": "modal:before-show",
           "to": "sf-modal-expand"
-        },
-        {
-          "component": "sf-modal",
-          "from": "modal:before-content-upload",
-          "to": "sf-modal-content-upload"
-        },
-        {
-          "component": "sf-modal",
-          "from": "modal:after-content-upload",
-          "to": "sf-modal-content-uploaded"
         },
         {
           "component": "sf-page-header",
@@ -2835,18 +2850,8 @@
         },
         {
           "component": "sf-profile-picker",
-          "from": "sf-profile-select",
-          "to": "sf-profile-picker-select"
-        },
-        {
-          "component": "sf-profile-picker",
           "from": "sf-profile-create",
           "to": "sf-profile-picker-create"
-        },
-        {
-          "component": "sf-profile-picker",
-          "from": "sf-profile-rename",
-          "to": "sf-profile-picker-rename"
         },
         {
           "component": "sf-profile-picker",
@@ -2855,8 +2860,23 @@
         },
         {
           "component": "sf-profile-picker",
+          "from": "sf-profile-rename",
+          "to": "sf-profile-picker-rename"
+        },
+        {
+          "component": "sf-profile-picker",
           "from": "sf-profile-reset",
           "to": "sf-profile-picker-reset"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-select",
+          "to": "sf-profile-picker-select"
+        },
+        {
+          "component": "sf-quantity",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
         },
         {
           "component": "sf-resizer",
@@ -2879,6 +2899,11 @@
           "to": "sf-steps-change"
         },
         {
+          "component": "sf-switch",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
+        },
+        {
           "component": "sf-tabs",
           "from": "sf-tab-change",
           "to": "sf-tabs-change"
@@ -2889,13 +2914,13 @@
           "to": "sf-tag-close"
         },
         {
-          "component": "sf-theme-generator",
-          "from": "sf-theme-generator-change",
-          "to": "change"
+          "component": "sf-textarea",
+          "from": "sf-field:reset",
+          "to": "sf-field-reset"
         },
         {
           "component": "sf-theme-generator",
-          "from": "sf-theme-generator-apply",
+          "from": "sf-theme-apply",
           "to": "sf-theme-generator-committed"
         },
         {
@@ -2905,18 +2930,13 @@
         },
         {
           "component": "sf-theme-generator",
-          "from": "sf-theme-apply",
+          "from": "sf-theme-generator-apply",
           "to": "sf-theme-generator-committed"
         },
         {
-          "component": "sf-tree",
-          "from": "sf-tree-selection-change",
-          "to": "sf-tree-select"
-        },
-        {
-          "component": "sf-tree",
-          "from": "sf-tree-records-drop",
-          "to": "sf-tree-move"
+          "component": "sf-theme-generator",
+          "from": "sf-theme-generator-change",
+          "to": "change"
         },
         {
           "component": "sf-tree",
@@ -2932,6 +2952,16 @@
           "component": "sf-tree",
           "from": "sf-tree-item-toggle",
           "to": "sf-tree-toggle"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-records-drop",
+          "to": "sf-tree-move"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-selection-change",
+          "to": "sf-tree-select"
         },
         {
           "component": "sf-tree-item",

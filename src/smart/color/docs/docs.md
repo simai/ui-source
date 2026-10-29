@@ -21,7 +21,7 @@ paints it and a «наследуется» marker stands after it; the form valu
 empty, because «not set» follows the theme and «set to the same colour» does
 not. Once a colour is chosen, the marker gives way to a reset button
 (`reset-label`, or its first name `clear-label`). Pressing it fires the
-cancellable `sf-field:reset` with `{value, inheritedValue, name}`; not
+cancellable `sf-field-reset` with `{value, inheritedValue, name}`; not
 prevented, the colour empties with `input` and `change`, the inherited colour
 shows again and focus returns to the picker. `element.resetToInherited()` does
 the same from code.

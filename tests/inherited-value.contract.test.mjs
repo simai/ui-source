@@ -21,7 +21,9 @@ const CONTROLS = {
 };
 
 test('the shared state names one cancellable event and draws one slot', () => {
-  assert.match(helper, /export const INHERITED_RESET_EVENT = 'sf-field:reset';/u);
+  // The field sends the trait's current name; the dated sf-field:reset
+  // follows it from the shim (aliases.json rows, §16 item 20).
+  assert.match(helper, /export const INHERITED_RESET_EVENT = 'sf-field-reset';/u);
   assert.match(helper, /new CustomEvent\(INHERITED_RESET_EVENT, \{[\s\S]*?bubbles: true,[\s\S]*?composed: true,[\s\S]*?cancelable: true/u);
   // The trait event names the element (standard 1.3.8 §20, field-inherit@1).
   assert.match(helper, /detail: \{\s*tag: this\.localName,\s*value: this\.inheritedOwnValue\(\),\s*inheritedValue: this\.inheritedValue,\s*name:/u);
@@ -73,15 +75,23 @@ for (const [folder, {tag, relation}] of Object.entries(CONTROLS)) {
 
     const properties = manifest.inputs.properties;
     for (const name of ['inherited-value', 'inherited-text', 'reset-label']) assert.ok(properties[name], `${tag} manifest declares ${name}`);
+    // The trait's event is declared as the shared event field-reset (§8,
+    // §20.2): one current name for the family, with the tag in the detail. The
+    // retired sf-field:reset keeps its own entry until the alias ends, and
+    // names the current event as the one it stands for.
+    assert.equal(manifest.events['sf-field-reset']?.payload?.type, 'object');
+    assert.deepEqual(Object.keys(manifest.events['sf-field-reset'].payload.properties), ['tag', 'value', 'inheritedValue', 'name']);
+    assert.equal(manifest.events['sf-field-reset'].canonical, true);
+    assert.match(manifest.events['sf-field-reset'].summary, /cancellable/u);
     assert.equal(manifest.events['sf-field:reset']?.payload?.type, 'object');
     assert.deepEqual(Object.keys(manifest.events['sf-field:reset'].payload.properties), ['value', 'inheritedValue', 'name']);
-    assert.match(manifest.events['sf-field:reset'].summary, /cancellable/u);
+    assert.equal(manifest.events['sf-field:reset'].alias_of, 'sf-field-reset');
     assert.ok(manifest.methods.resetToInherited, `${tag} manifest declares resetToInherited`);
     const sources = manifest.provenance.source_artifacts.map(({path}) => path);
     assert.ok(sources.includes('src/smart/helpers/inherited-value.js') && sources.includes('src/smart/helpers/inherited-value.css'),
       `${tag} names the shared state among its sources, so a change to it is a drift its manifest sees`);
 
-    assert.match(read(`src/smart/${folder}/docs/docs.md`), /## Inherited value[\s\S]*sf-field:reset/u);
+    assert.match(read(`src/smart/${folder}/docs/docs.md`), /## Inherited value[\s\S]*sf-field-reset/u);
   });
 }
 

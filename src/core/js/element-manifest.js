@@ -99,6 +99,10 @@ const NATIVE_EVENTS = new Set(['change', 'input']);
 export function eventName(manifest, verb) {
   const declared = manifest?.events?.[verb];
   if (declared?.carries === 'native') return verb;
+  // An event a trait brings carries no tag in its name: one name for the
+  // whole family, so a form hears every field at once (`"shared": "<trait>"`,
+  // §8, §20.2). The verb names it in full: `field-reset` -> `sf-field-reset`.
+  if (declared?.shared) return `sf-${verb}`;
   if (NATIVE_EVENTS.has(verb) && declared?.['x-native'] !== false) return verb;
   return `${manifest.tag}-${verb}`;
 }

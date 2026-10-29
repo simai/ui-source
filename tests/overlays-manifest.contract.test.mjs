@@ -126,8 +126,10 @@ test('sf-popover: requests before, facts after; role on the host is a dated alia
 test('sf-dropdown: change carries data only; sf-dropdown:change keeps root through its adapter; no module counter ids', () => {
   const manifest = json('src/smart/dropdown/component.json');
   assert.deepEqual(manifest.events.change['x-detail'], {value: 'string', label: 'string', values: 'list', item: 'object', multiple: 'boolean'});
-  assert.deepEqual(Object.keys(manifest.events), ['change']);
+  // Its own event and the trait's shared one (field-inherit@1, §20.2).
+  assert.deepEqual(Object.keys(manifest.events), ['change', 'field-reset']);
   assert.equal(manifest.events.change.carries, 'native');
+  assert.equal(manifest.events['field-reset'].shared, 'field-inherit@1');
   // The generated registry describes that detail (standard 1.4).
   assert.deepEqual(Object.keys(json('src/smart/dropdown/smart.manifest.json').events.change.payload.properties), ['value', 'label', 'values', 'item', 'multiple']);
   assert.ok(!('form' in manifest) && manifest['x-form'], 'the hidden input submits until the FormField mixin (§16 item 11)');

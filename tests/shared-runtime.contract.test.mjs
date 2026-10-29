@@ -162,7 +162,7 @@ test('no runtime code reads a key a Smart bundle drops from its component.json',
 
 test('a component.json never names a member with a key a Smart bundle drops', () => {
   assert.deepEqual(contract.component_manifest_drop, [...COMPONENT_MANIFEST_DROP]);
-  for (const kept of ['type', 'values', 'default', 'default-from', 'optional', 'carries', 'x-native', 'cancelable', 'dom', 'aliases', 'with', 'emits', 'of', 'timeout', 'retry', 'waits', 'concurrency', 'late', 'skeleton', 'value', 'submits', 'disabled']) {
+  for (const kept of ['type', 'values', 'default', 'default-from', 'optional', 'carries', 'x-native', 'shared', 'cancelable', 'dom', 'aliases', 'with', 'emits', 'of', 'timeout', 'retry', 'waits', 'concurrency', 'late', 'skeleton', 'value', 'submits', 'disabled']) {
     assert.ok(!COMPONENT_MANIFEST_DROP.includes(kept), `${kept} is read by the runtime`);
   }
   // A map of typed members (carries, with, of, x-detail: every entry a type
