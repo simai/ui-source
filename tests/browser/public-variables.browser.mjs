@@ -165,6 +165,19 @@ const DRAW = {
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
     html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+  // The window open with a query, so a title carries its mark: the field and
+  // the card take the background, the card the radius, the scrim its colour.
+  search: {css: ['icon-buttons', 'icons', 'kbd', 'smart/smart/search/css/search.css'], js: 'search',
+    html: '<sf-search id="search"><button type="button">Поиск</button></sf-search>',
+    open: `(async () => {
+      const search = document.getElementById('search');
+      search.provider = () => ({items: [{id: 'a', title: 'Таблица', path: 'Утилиты', href: '#a'}]});
+      search.open();
+      const input = document.querySelector('.sf-search-input');
+      input.value = 'Таб';
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+      await new Promise((settle) => setTimeout(settle, 400));
+    })()`},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

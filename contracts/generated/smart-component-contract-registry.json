@@ -1753,6 +1753,50 @@
         "theme",
         "responsive",
         "navigation",
+        "i18n",
+        "search"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icons",
+          "component.kbd",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-search",
+      "id": "smart.search",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/search/smart.manifest.json",
+      "manifest_sha256": "40edbb51a077e2a9f807ca8930e32ed0e150ec63b9b1db01b72e4c46b8959fec",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+      "tags": [
+        "search",
+        "site-search",
+        "command-palette",
+        "dialog"
+      ],
+      "title": "Site search"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "responsive",
+        "navigation",
         "i18n"
       ],
       "composition": {

@@ -339,6 +339,10 @@
     "resize/default",
     "text-max-width/default"
   ],
+  "cl-search": [
+    "display/default",
+    "sr-only/default"
+  ],
   "cl-site-header": [
     "container/default",
     "display/default",

@@ -3121,6 +3121,68 @@
           "since": "2026-10-28"
         }
       ]
+    },
+    {
+      "component": "search",
+      "selector": "sf-search, .sf-search-portal",
+      "variables": [
+        {
+          "name": "--sf-search-inline-size",
+          "role": "inline-size",
+          "summary": "The window's width on a wide screen; a phone shows a full-screen sheet.",
+          "default": "var(--sf-g8)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-inset-block-start",
+          "role": "inset-block-start",
+          "summary": "The distance from the top of the browser window to the field.",
+          "default": "var(--sf-d6)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-background",
+          "role": "background",
+          "summary": "The surface of the field and of the results card.",
+          "default": "var(--sf-elevation-3--surface)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-scrim-color",
+          "role": "background",
+          "summary": "The scrim between the window and the page.",
+          "default": "var(--sf-surface-transparent-overlay)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-mark-color",
+          "role": "background",
+          "summary": "The fill of the matched text in a result's title.",
+          "default": "var(--sf-primary-container)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-radius",
+          "role": "radius",
+          "summary": "The results card's corners; the rows follow them.",
+          "default": "var(--sf-radius-2)",
+          "state": "open",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-search-list-max-block-size",
+          "role": "max-block-size",
+          "summary": "The results card's greatest height; by default the browser window bounds it.",
+          "default": "none",
+          "state": "open",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }
