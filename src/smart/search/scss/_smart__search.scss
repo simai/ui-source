@@ -101,6 +101,7 @@
 }
 
 .sf-search-glyph {
+  display: inline-flex;
   --sf-icon--font-size: var(--sf-search--field-glyph);
   --sf-icon--width: var(--sf-search--field-glyph);
   --sf-icon--height: var(--sf-search--field-glyph);
@@ -207,7 +208,7 @@
 
 .sf-search-row--single {
   min-block-size: var(--sf-ui-1--control-height);
-  padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
+  padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-search--square)) / 2);
 }
 
 .sf-search-row--selected {
@@ -412,6 +413,15 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sf-space-1\/4);
+}
+
+/* The window's buttons draw the Framework's ring under the keyboard (the
+   field's own ring is its caret, above). */
+.sf-search-pill:focus-visible,
+.sf-search-caption-action:focus-visible,
+.sf-search-remove:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
 }
 
 /* A phone: a full-screen sheet, the field on top with a back arrow at its

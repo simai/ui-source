@@ -5,7 +5,7 @@
   "page": {
     "lang": "ru",
     "body": [
-      "<sf-search id=\"s\" data-probe recent-key=\"sf-search-conformance\"><button id=\"t\" type=\"button\">Поиск</button></sf-search>",
+      "<sf-search id=\"s\" data-probe recent-key=\"conformance\"><button id=\"t\" type=\"button\">Поиск</button></sf-search>",
       "<sf-search id=\"named\" data-probe for=\"ext\" shortcut=\"\"></sf-search><button id=\"ext\" type=\"button\">Найти</button>",
       "<main><p>Страница</p><input id=\"text\" aria-label=\"Поле страницы\"></main>",
       "<script>document.querySelectorAll('sf-search[data-probe]').forEach((el) => { el.provider = (query) => { const q = query.toLowerCase(); const items = [{id:'buttons',group:'pages',title:'Кнопки',path:'Компоненты › Действия',href:'#buttons',icon:'smart_button'},{id:'table',group:'pages',title:'Таблица в рамке',path:'Утилиты › Таблицы',href:'#table',icon:'table'},{id:'sf-button',group:'components',title:'sf-button',path:'Смарт-компонент',text:'кнопка',href:'#sf-button',icon:'widgets'},{id:'theme',group:'actions',title:'Сменить тему',path:'Команда',action:'theme',icon:'contrast',shortcut:'⇧⌘L'}]; const found = q ? items.filter((i) => (i.title + ' ' + (i.text || '')).toLowerCase().includes(q)) : items.filter((i) => i.action); return {groups:[{id:'pages',label:'Страницы'},{id:'components',label:'Компоненты'},{id:'actions',label:'Действия'}], items: found, popular:['таблица','кнопка']}; }; });</script>"

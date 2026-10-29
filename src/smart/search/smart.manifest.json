@@ -65,7 +65,7 @@
       "shortcut": {
         "type": "string",
         "default": "mod+k /",
-        "description": "The keys that open the window, separated by spaces: mod is Command on a Mac and Control elsewhere; a single printable key (/) acts only outside a text field; empty: none"
+        "description": "The keys that open the window, separated by spaces: mod is Command or Control (Command on a Mac, Control elsewhere; either works); a single printable key (/) acts only outside a text field; empty: none"
       },
       "label": {
         "type": "string",
@@ -87,8 +87,8 @@
       },
       "recent-key": {
         "type": "string",
-        "default": "sf-search-recent",
-        "description": "The localStorage key the recent queries are kept under; give each search of a site its own"
+        "default": "site",
+        "description": "The name the recent queries are kept under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only"
       },
       "popular": {
         "type": "boolean",
@@ -347,13 +347,42 @@
       "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
       "version": 2
     },
-    "runtime_pair": null,
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
     "aliases": [],
     "deprecations": [],
     "replacement": null,
     "migrations": []
   },
-  "provenance": null,
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "ecdffb00e8df002909cd5f2e115f76023df2bbc5",
+    "source_artifacts": [
+      {
+        "path": "src/smart/search/index.js",
+        "sha256": "758c78308045fcfde262f23a0ce7a97ec7d64146606831a911863c031e117d92"
+      },
+      {
+        "path": "src/smart/search/js/templates/default.js",
+        "sha256": "30bcfe80611d694b414db09b0e9a56a869f7e80c998514ad8efa2a0166ac7a61"
+      },
+      {
+        "path": "src/smart/search/scss/_smart__search.scss",
+        "sha256": "473bd53041b5bbd0483b72a573fa0b2d89a45eea50c204bd7631efc76b478eb2"
+      },
+      {
+        "path": "src/smart/search/rule.js",
+        "sha256": "f69dbe82ae129a4a90e62240990cb6b7ddf30d75017d15cde0b00ac5af3afaf6"
+      },
+      {
+        "path": "src/smart/search/docs.md",
+        "sha256": "15885dd642f586d1c45a49e45dec9b8c7859a845f95f9f77767f46811d96b8c5"
+      }
+    ],
+    "generated_runtime": []
+  },
   "ai_guidance": {
     "use_when": "Use sf-search for the site search of a SIMAI site or documentation: a window opened from a button in the header or by Command/Control+K, over a static index or the site's own search.",
     "do_not": [

@@ -22,6 +22,7 @@
 // answer outcomes, the words are the language files'.
 import {render, nothing} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
+import BundledPreferences from '../../core/js/preferences.js';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {carryLayerOrigin, closeLayer, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
 import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
@@ -40,7 +41,11 @@ let sequence = 0;
 const applied = () => ({outcome: 'applied'});
 const refused = (reason) => ({outcome: 'refused', reason});
 
-const isMac = () => /Mac|iPhone|iPad|iPod/u.test(globalThis.navigator?.platform || globalThis.navigator?.userAgent || '');
+// The recent queries are a view preference of the person (SF.Preferences,
+// owner 2026-10-14): kept in the browser under sf-pref:sf-search/<recent-key>
+// and by a host that keeps preferences for its user. The registry is the
+// shared one when core has published it (every bundle has its own copy).
+const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
 
 // `shortcut`: keys separated by spaces, each `mod+k`, `shift+/`, `/`.
 export function parseShortcuts(text) {
@@ -53,24 +58,34 @@ export function parseShortcuts(text) {
 
 const plainKey = (shortcut) => !shortcut.mod && !shortcut.ctrl && !shortcut.meta && !shortcut.alt;
 
-export function matchesShortcut(event, shortcut, mac = isMac()) {
+// mod is Command or Control, whichever the person presses: Command on a Mac,
+// Control elsewhere, and either works on both (the answer, and the page's
+// printed first paint, are the same on every platform).
+export function matchesShortcut(event, shortcut) {
   if (String(event.key ?? '').toLowerCase() !== shortcut.key) return false;
-  const ctrl = shortcut.ctrl || (shortcut.mod && !mac);
-  const meta = shortcut.meta || (shortcut.mod && mac);
-  if (Boolean(event.ctrlKey) !== ctrl || Boolean(event.metaKey) !== meta || Boolean(event.altKey) !== shortcut.alt) return false;
+  const ctrl = Boolean(event.ctrlKey);
+  const meta = Boolean(event.metaKey);
+  if (shortcut.mod) {
+    if (ctrl === meta && !(shortcut.ctrl && shortcut.meta)) return false;
+    if ((shortcut.ctrl && !ctrl) || (shortcut.meta && !meta)) return false;
+  } else if (ctrl !== shortcut.ctrl || meta !== shortcut.meta) return false;
+  if (Boolean(event.altKey) !== shortcut.alt) return false;
   // A single printable key is typed with whatever Shift its layout needs.
   return plainKey(shortcut) ? true : Boolean(event.shiftKey) === shortcut.shift;
 }
 
-// aria-keyshortcuts names the keys as the platform presses them.
-function ariaShortcuts(list, mac = isMac()) {
-  return list.map((one) => [
-    one.ctrl || (one.mod && !mac) ? 'Control' : '',
-    one.meta || (one.mod && mac) ? 'Meta' : '',
+// aria-keyshortcuts names every way to press them: mod as Control and as Meta.
+function ariaShortcuts(list) {
+  const name = (one, ctrl, meta) => [
+    ctrl ? 'Control' : '',
+    meta ? 'Meta' : '',
     one.alt ? 'Alt' : '',
     one.shift ? 'Shift' : '',
     one.key.length === 1 ? one.key.toUpperCase() : one.key,
-  ].filter(Boolean).join('+')).join(' ');
+  ].filter(Boolean).join('+');
+  return list.flatMap((one) => (one.mod
+    ? [name(one, true, one.meta), name(one, one.ctrl, true)]
+    : [name(one, one.ctrl, one.meta)])).join(' ');
 }
 
 const editable = (node) => node instanceof Element
@@ -506,21 +521,28 @@ class SfSearch extends SearchElement {
 
   // ---------------------------------------------------------- recent queries
 
+  get recentPreference() {
+    const key = String(this.recentKey || '').trim();
+    return key ? `sf-search/${key}` : '';
+  }
+
   readRecent() {
-    if (!this.recent) return [];
+    if (!this.recent || !this.recentPreference) return this.recent ? this.recentList : [];
     try {
-      const list = JSON.parse(globalThis.localStorage?.getItem(this.recentKey) || '[]');
-      return Array.isArray(list) ? list.filter((entry) => typeof entry === 'string' && entry).slice(0, RECENT_LIMIT) : [];
+      const kept = preferences()?.read(this.recentPreference);
+      const list = Array.isArray(kept?.queries) ? kept.queries : [];
+      return list.filter((entry) => typeof entry === 'string' && entry).slice(0, RECENT_LIMIT);
     } catch {
-      return [];
+      return this.recentList;
     }
   }
 
   writeRecent(list) {
     this.recentList = list;
+    if (!this.recentPreference) return;
     try {
-      if (list.length) globalThis.localStorage?.setItem(this.recentKey, JSON.stringify(list));
-      else globalThis.localStorage?.removeItem(this.recentKey);
+      if (list.length) preferences()?.write(this.recentPreference, {v: 1, queries: list});
+      else preferences()?.remove(this.recentPreference);
     } catch {
       // Storage refused (a private window, a sandbox): the list lives as long as the page.
     }
@@ -575,8 +597,11 @@ class SfSearch extends SearchElement {
     clearTimeout(this._timer);
     const query = this.query.trim();
     if (!query) {
+      // An empty field starts afresh: the next query waits for its own answer
+      // rather than showing the last one's under new marks.
       this._controller?.abort();
       this._controller = null;
+      this.answer = null;
       this.status = 'ready';
       return;
     }

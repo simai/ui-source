@@ -24,7 +24,7 @@
     "shortcut": {
       "type": "string",
       "default": "mod+k /",
-      "summary": "The keys that open the window, separated by spaces: mod is Command on a Mac and Control elsewhere; a single printable key (/) acts only outside a text field; empty: none"
+      "summary": "The keys that open the window, separated by spaces: mod is Command or Control (Command on a Mac, Control elsewhere; either works); a single printable key (/) acts only outside a text field; empty: none"
     },
     "label": {
       "type": "string",
@@ -48,8 +48,8 @@
     },
     "recent-key": {
       "type": "string",
-      "default": "sf-search-recent",
-      "summary": "The localStorage key the recent queries are kept under; give each search of a site its own"
+      "default": "site",
+      "summary": "The name the recent queries are kept under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only"
     },
     "popular": {
       "type": "boolean",

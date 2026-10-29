@@ -30,7 +30,7 @@ The component gives every trigger `aria-haspopup="dialog"`, `aria-expanded`,
 `aria-controls` while open and `aria-keyshortcuts`.
 
 `shortcut` lists the keys that open the window, separated by spaces: `mod` is
-Command on a Mac and Control elsewhere; a single printable key (`/`) acts only
+Command or Control (Command on a Mac, Control elsewhere; either works); a single printable key (`/`) acts only
 outside a text field. The default is `mod+k /`; an empty value turns the keys
 off. With several searches on one page, give each its own keys.
 
@@ -102,9 +102,12 @@ group captions. Each block is a setting, on by default:
 | `keys` | The footer: ↑↓ to select, ↵ to open, esc to clear or close |
 
 A query is recorded as recent when one of its results is opened. The recent
-queries are kept in `localStorage` under `recent-key` (`sf-search-recent`);
-give each search of a site its own key. A browser that refuses storage keeps
-them for the page's life.
+queries are a view preference of the person, kept through `SF.Preferences`
+under `sf-search/<recent-key>` (`recent-key` is `site` by default): in the
+browser as `localStorage` `sf-pref:sf-search/site`, and by a host that keeps
+preferences for its user. Give each search of a site its own key. An empty
+`recent-key`, or a browser that refuses storage, keeps them for the page's
+life.
 
 ## Choosing a result
 

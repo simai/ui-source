@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {keyed} from 'lit/directives/keyed.js';
 
 // The host: the page's trigger, in place. The host itself is display:
 // contents, so the trigger stands in the page as the page wrote it, before the
@@ -89,13 +90,13 @@ export function renderSearchWindow(context) {
     <div class=${`sf-search-field${filled ? ' sf-search-field--filled' : ''}`}>
       <sf-icon-button class="sf-search-back" icon="arrow_back" size="1/2" appearance="link" scheme="on-surface"
         aria-label=${words.back} @click=${() => component.close({reason: 'close'})}></sf-icon-button>
-      ${glyph('search', 'sf-search-glyph')}
+      <span class="sf-search-glyph">${glyph('search')}</span>
       <input class="sf-search-input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="true"
         aria-controls=${listIds || nothing} aria-activedescendant=${view.activeId || nothing} aria-label=${label}
         placeholder=${placeholder} autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"
         @input=${(event) => component.onInput(event)} @keydown=${(event) => component.onFieldKeydown(event)}>
-      <sf-icon-button class="sf-search-clear" icon="close" size="1/2" appearance="link" scheme="on-surface"
-        aria-label=${filled ? words.clear : words.close} @click=${() => component.onClearPress()}></sf-icon-button>
+      ${keyed(filled, html`<sf-icon-button class="sf-search-clear" icon="close" size="1/2" appearance="link" scheme="on-surface"
+        aria-label=${filled ? words.clear : words.close} @click=${() => component.onClearPress()}></sf-icon-button>`)}
     </div>
     <div class="sf-search-card" aria-busy=${status === 'loading' ? 'true' : 'false'} @mousedown=${(event) => component.keepFocus(event)}>
       ${show.scopes && scopes.length > 1 ? html`<div class="sf-search-scopes" role="group" aria-label=${words.scopes}>
