@@ -100,6 +100,7 @@ try {
       },
       headLast: read(headLast, 'border-right-width'),
       ownHead: read(document.querySelector('[data-head="own"]'), 'background-color'),
+      words: read(head, 'word-break', 'overflow-wrap'),
       body: {
         ...read(body, 'padding-top', 'padding-left', 'border-right-width', 'border-bottom-width', 'vertical-align', '--sf-on-surface-variant'),
         pageInk: getComputedStyle(document.documentElement).getPropertyValue('--sf-on-surface-variant').trim(),
@@ -132,6 +133,7 @@ try {
   check('the head takes the container fill and the bold weight', measured.head['background-color'] !== measured.body['background-color'] && measured.head['font-weight'] === measured.head.boldWeight.replace(/[^0-9]/gu, ''), measured.head);
   check('the head carries the container dimmed role, the body the page one', measured.head['--sf-on-surface-variant'] === measured.head.containerInk && measured.body['--sf-on-surface-variant'] === measured.body.pageInk, {head: measured.head['--sf-on-surface-variant'], body: measured.body['--sf-on-surface-variant']});
 
+  check('a cell keeps its words whole: the frame scrolls instead', measured.words['word-break'] === 'normal' && measured.words['overflow-wrap'] === 'normal', measured.words);
   check('a head fill set on the frame reaches the head cells', measured.ownHead['background-color'] === 'rgb(1, 2, 3)', measured.ownHead);
   check('the head block padding is a ladder step', near(px(measured.head['padding-top']), px(measured.steps.one)), {head: measured.head['padding-top'], step: measured.steps.one});
   check('the body block padding is the half step', near(px(measured.body['padding-top']), px(measured.steps.half)), {body: measured.body['padding-top'], step: measured.steps.half});

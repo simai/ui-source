@@ -31,6 +31,10 @@ test('the frame is the scroll area and the only outer edge', () => {
   // square; the table inside keeps its borders separate.
   assert.match(source, /border-collapse:\s*separate/u);
   assert.match(source, /border-spacing:\s*0/u);
+  // The frame scrolls, so the table keeps its words whole, against the base
+  // typography's break-word on table.
+  assert.match(source, />\s*\.table\s*\{[\s\S]*?word-break:\s*normal/u);
+  assert.match(source, />\s*\.table\s*\{[\s\S]*?overflow-wrap:\s*normal/u);
   // The table gives up its own margin, border and radius to the frame.
   assert.match(source, />\s*\.table\s*\{[\s\S]*?margin:\s*0/u);
   assert.match(source, />\s*\.table\s*\{[\s\S]*?border:\s*0/u);

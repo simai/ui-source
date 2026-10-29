@@ -41,6 +41,11 @@
             border-radius: 0;
             border-collapse: separate;
             border-spacing: 0;
+            // The frame scrolls, so a word keeps whole and the column widens
+            // instead: the base typography lets a table break inside a word,
+            // which in a narrow column cuts a header in two.
+            word-break: normal;
+            overflow-wrap: normal;
 
             > :not(caption) > * > * {
                 min-inline-size: var(--sf-table-frame-cell-min-inline-size);
