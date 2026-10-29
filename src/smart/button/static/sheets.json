@@ -8,6 +8,7 @@
   "sheets": [
     "component/buttons/css/buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
     "component/spinner/css/spinner.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
@@ -17,7 +18,8 @@
     "utility/font-weight/default/css/default.min.css",
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
-    "utility/text-align/default/css/default.min.css"
+    "utility/text-align/default/css/default.min.css",
+    "utility/width/default/css/default.min.css"
   ],
   "examples": {
     "disabled": [
@@ -120,6 +122,34 @@
     "reference": [
       "component/buttons/css/buttons.min.css",
       "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
+    "search-trigger": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/border-radius/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/width/default/css/default.min.css"
+    ],
+    "shortcut": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",

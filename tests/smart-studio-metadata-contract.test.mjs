@@ -20,7 +20,8 @@ test('button Studio contract preserves closed choices and open icon examples', a
   // compatibility.aliases). Studio offers exactly the types the button CSS styles.
   assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface']);
   assert.ok(manifest.compatibility.aliases.includes('appearance=ghost'));
-  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface']);
+  // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
+  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);
   assert.equal(properties['root-class'].type, 'string');

@@ -260,6 +260,8 @@
             "loading",
             "disabled",
             "native-type",
+            "shortcut",
+            "shortcut-listen",
             "expanded",
             "aria-label"
           ],
@@ -274,6 +276,7 @@
         "public_parts": [],
         "uses": [
           "component.buttons",
+          "component.kbd",
           "component.spinner",
           "smart.icon"
         ]
@@ -287,7 +290,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "26a65797b50c61aa0d66751e52595d44b9edfbbc999bd338bac878e930ec93f2",
+      "manifest_sha256": "87847ce15e6180a305bfd3fb9e3e25772a5a79d443e2da62becc87e1ef37d14b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

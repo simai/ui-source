@@ -3,6 +3,14 @@ import { elementFromManifest } from "../../core/js/element-manifest";
 import { renderButtonTemplate } from "./js/templates/default";
 import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
+import {
+  ariaKeyShortcuts,
+  isCommandShortcut,
+  isEditableTarget,
+  matchesShortcut,
+  parseShortcut,
+  shortcutCaps,
+} from "./js/shortcut";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -32,6 +40,8 @@ const COMPONENT_ATTRIBUTES = new Set([
   "disabled",
   "native-type",
   "expanded",
+  "shortcut",
+  "shortcut-listen",
   "aria-label",
   "class",
   "style",
@@ -67,6 +77,7 @@ class SfButton extends ButtonElement {
     super();
     this._attributeObserver = null;
     this._textFromChildren = "";
+    this._shortcutListener = null;
   }
 
   get templateName() {
@@ -167,6 +178,10 @@ class SfButton extends ButtonElement {
       radius: this.radius,
       ariaLabel: this.getAttribute("aria-label") || "",
       expanded: this.expanded,
+      // The shortcut's key caps and its aria-keyshortcuts, in this platform's
+      // words (js/shortcut.js).
+      shortcutCaps: shortcutCaps(parseShortcut(this.shortcut)),
+      ariaKeyShortcuts: ariaKeyShortcuts(parseShortcut(this.shortcut)),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       component: this,
     });
@@ -186,7 +201,43 @@ class SfButton extends ButtonElement {
       this._pressListener = (event) => this.handlePress(event);
       this.addEventListener("click", this._pressListener);
     }
+    this.syncShortcutListener();
     super.onConnected?.();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+    if ((name === "shortcut" || name === "shortcut-listen") && oldValue !== newValue && this.isConnected) {
+      this.syncShortcutListener();
+    }
+  }
+
+  // shortcut-listen: one keydown listener on the document while the button is
+  // connected and listens. The combination presses the native button -- a
+  // click, so the press event follows as for a person's click -- unless a
+  // listener before it took the key, the button is disabled or loading, or
+  // the combination has no modifier and focus is in a field.
+  syncShortcutListener() {
+    const wanted = Boolean(this.shortcutListen) && Boolean(parseShortcut(this.shortcut));
+    if (wanted && !this._shortcutListener) {
+      this._shortcutListener = (event) => this.handleShortcut(event);
+      globalThis.document?.addEventListener("keydown", this._shortcutListener);
+    } else if (!wanted && this._shortcutListener) {
+      globalThis.document?.removeEventListener("keydown", this._shortcutListener);
+      this._shortcutListener = null;
+    }
+  }
+
+  handleShortcut(event) {
+    if (event.defaultPrevented || event.repeat || event.isComposing) return;
+    const parsed = parseShortcut(this.shortcut);
+    if (!matchesShortcut(event, parsed)) return;
+    const target = event.composedPath?.()[0] ?? event.target;
+    if (!isCommandShortcut(parsed) && isEditableTarget(target)) return;
+    const button = this.querySelector(".sf-button");
+    if (!button || button.disabled || !button.getClientRects().length) return;
+    event.preventDefault();
+    button.click();
   }
 
   // §8: a person's press of the native button, sent once as sf-button-press.
@@ -248,6 +299,8 @@ class SfButton extends ButtonElement {
       loading: this.loading,
       disabled: this.disabled,
       nativeType: this.nativeType,
+      shortcut: this.shortcut,
+      shortcutListen: this.shortcutListen,
       ariaLabel: this.getAttribute("aria-label") || "",
     };
   }
@@ -310,6 +363,10 @@ class SfButton extends ButtonElement {
     if (this._pressListener) {
       this.removeEventListener("click", this._pressListener);
       this._pressListener = null;
+    }
+    if (this._shortcutListener) {
+      globalThis.document?.removeEventListener("keydown", this._shortcutListener);
+      this._shortcutListener = null;
     }
     this.disconnectForwardedHostAttributes();
     this._attributeObserver = null;
