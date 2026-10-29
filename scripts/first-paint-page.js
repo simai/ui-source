@@ -282,6 +282,7 @@
   function holder(el, mode, island = undefined) {
     let inner = islandMarkup(island === undefined && isCustom(el) ? islandOf(el) : island);
     const custom = isCustom(el);
+    const given = new Set((originals.get(el) ?? []).map((entry) => entry.node));
     for (const node of el.childNodes) {
       if (node.nodeType === 8) continue;
       if (node.nodeType === 3) {
@@ -299,7 +300,14 @@
       }
       if (node.nodeType !== 1) continue;
       if (node.matches('script[data-sf-settings]')) continue;
-      if (isPage(node)) inner += holder(node, mode);
+      // The page's own child still standing where the page put it is page
+      // content even when its mark is gone: a Smart control the page gave
+      // (sf-button, sf-icon-button) moves its data-* onto the control it
+      // draws, the mark with them, and was printed as static markup the
+      // element then threw away on takeover (sf-search's trigger, 2026-10-30).
+      // The node itself is the proof, so a forwarded mark on a drawn control
+      // still does not make it the page's.
+      if (isPage(node) || given.has(node)) inner += holder(node, mode);
       else if (custom) inner += picture(node, true, mode);
       else inner += picture(node, false, mode);
     }
