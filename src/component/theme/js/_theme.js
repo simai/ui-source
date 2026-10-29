@@ -17,11 +17,17 @@
     if (icon && (text === '' || THEME_GLYPHS.has(text)) && text !== glyph) icon.textContent = glyph;
   };
 
+  // The theme a choice button asks for. An sf-icon-button or sf-button host
+  // hands its data-* attributes to the button it draws, so once it has started
+  // the request lives one level down; read on the host alone, a "dark" choice
+  // turned into a toggle -- its glyph flipped and a click toggled the theme.
+  const requestOf = (button) => button.dataset.theme ?? button.querySelector(':scope > [data-theme]')?.dataset.theme;
+
   const syncControls = () => {
     const isDark = document.documentElement.classList.contains('theme-dark');
     const preference = window.SF?.Loader?.themePreference;
     document.querySelectorAll('.sf-theme-button').forEach((button) => {
-      const requested = button.dataset.theme;
+      const requested = requestOf(button);
       const pressed = requested ? requested === preference : isDark;
       if (!requested) syncGlyph(button, isDark);
       button.setAttribute('aria-pressed', String(pressed));
@@ -29,14 +35,14 @@
       // aria-pressed alone left the chosen mode looking unchosen (docs trial
       // 4, 2026-10-15). On an sf-button host the button is the one inside.
       button.classList.toggle('active', pressed);
-      button.querySelector?.(':scope > .sf-button')?.classList.toggle('active', pressed);
+      button.querySelector?.(':scope > .sf-button, :scope > .sf-icon-button')?.classList.toggle('active', pressed);
     });
   };
 
   const handleClick = (event) => {
     const button = event.target.closest?.('.sf-theme-button');
     if (!button || !button.isConnected) return;
-    const requested = button.dataset.theme;
+    const requested = requestOf(button);
     if (requested !== undefined) {
       if (['system', 'light', 'dark'].includes(requested)) {
         window.SF?.Loader?.setTheme?.(requested);
