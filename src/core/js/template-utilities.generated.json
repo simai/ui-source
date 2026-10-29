@@ -273,6 +273,10 @@
     "min-width/default",
     "text-overflow/default"
   ],
+  "cl-pager": [
+    "position/default",
+    "sr-only/default"
+  ],
   "cl-pagination": [
     "align-items/default",
     "display/default",

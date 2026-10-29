@@ -1342,6 +1342,52 @@
         "interaction",
         "keyboard",
         "theme",
+        "navigation",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.icon",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-pager",
+      "id": "smart.pager",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/pager/smart.manifest.json",
+      "manifest_sha256": "faac2cb760e18217f905b85d6e69ff94fc67c8decc4e808ff255ffd0f6bb3883",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
+      "tags": [
+        "pager",
+        "navigation",
+        "previous",
+        "next",
+        "wizard",
+        "steps",
+        "course",
+        "counter"
+      ],
+      "title": "Pager"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
         "responsive"
       ],
       "composition": {

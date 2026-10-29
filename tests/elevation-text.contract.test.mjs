@@ -156,8 +156,9 @@ test('whatever paints itself with a raised surface carries the matching text rol
 // The same rule for a container fill: what lays --sf-surface-container under
 // its content redefines the dimmed text role for that content (2026-10-19,
 // dark theme 4.0:1). Tracks of indicators carry no text and keep the role of
-// the page their labels stand on.
-const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/'];
+// the page their labels stand on. sf-pager's container fill is its steps
+// track and its lesson dots, beside the place line, never under it.
+const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/', 'pager/'];
 
 test('whatever lays a container fill under text carries the container text role', () => {
   const offenders = [];

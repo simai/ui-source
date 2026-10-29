@@ -165,6 +165,10 @@ const DRAW = {
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
     html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+  // The pager as cards (fill, edge, corners, link and note colours, the gap)
+  // and as steps on the second of three (the track and its fill).
+  pager: {css: ['buttons', 'icons', 'smart/smart/pager/css/pager.css'], js: 'pager',
+    html: '<sf-pager prev-href="#a" prev-title="A" next-href="#b" next-title="B"></sf-pager><sf-pager appearance="steps" current="1"><script type="application/json" data-sf-settings>{"items":[{"title":"A"},{"title":"B"},{"title":"C"}]}</script></sf-pager>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

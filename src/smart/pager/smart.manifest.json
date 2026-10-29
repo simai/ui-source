@@ -1,0 +1,387 @@
+{
+  "schema_version": 2,
+  "id": "smart.pager",
+  "version": "1.0.0",
+  "title": "Pager",
+  "summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "pager",
+    "navigation",
+    "previous",
+    "next",
+    "wizard",
+    "steps",
+    "course",
+    "counter"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "navigation",
+    "i18n"
+  ],
+  "custom_element": "sf-pager",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.icon",
+      "smart.icon-button"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "appearance": {
+        "type": "string",
+        "default": "cards",
+        "description": "How the neighbours are shown: cards, two cards «Back / title» and «Next / title» (documentation); row, one line of the two titles (a blog, a product); steps, a wizard's Back, «Step 2 of 5» with a segmented track and a primary Next that says Done on the last step; course, lesson dots and a card for the next lesson; counter, «3 of 12» between two icon buttons (record browsing)",
+        "enum": [
+          "cards",
+          "row",
+          "steps",
+          "course",
+          "counter"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung: the buttons take it, and the text lines, the pictures and the card insets follow it",
+        "enum": [
+          "1/2",
+          "1"
+        ]
+      },
+      "prev-href": {
+        "type": "string",
+        "default": "",
+        "description": "The previous page's address (cards, row). With a title, the side is a plain link a server prints, which works without the script"
+      },
+      "prev-title": {
+        "type": "string",
+        "default": "",
+        "description": "The previous page's title (cards, row). Without prev-href and prev-title the side is taken from items, else it stays empty and keeps its place"
+      },
+      "next-href": {
+        "type": "string",
+        "default": "",
+        "description": "The next page's address (cards, row)"
+      },
+      "next-title": {
+        "type": "string",
+        "default": "",
+        "description": "The next page's title (cards, row)"
+      },
+      "label": {
+        "type": "string",
+        "description": "The navigation landmark's name; «Соседние страницы» / «Adjacent pages» in the page language when not set"
+      },
+      "prev-label": {
+        "type": "string",
+        "description": "The word of the previous side and of the Back button; «Назад» / «Back» when not set"
+      },
+      "next-label": {
+        "type": "string",
+        "description": "The word of the next side and of the Next button; «Далее» / «Next» when not set"
+      },
+      "done-label": {
+        "type": "string",
+        "description": "The word of the last step's and the last lesson's button; «Готово» / «Done» when not set"
+      },
+      "keys": {
+        "type": "boolean",
+        "default": false,
+        "description": "ArrowLeft and ArrowRight on the page move to the previous and the next item (mirrored on a right-to-left page), unless focus is in a field or a key was taken by another component. For the counter view"
+      },
+      "current": {
+        "type": "integer",
+        "default": 0,
+        "description": "The place of the current item in items, from 0",
+        "minimum": 0
+      },
+      "complete": {
+        "type": "boolean",
+        "default": false,
+        "description": "The walk is finished: the last step was done or the course passed (steps, course)"
+      },
+      "items": {
+        "type": "array",
+        "default": [],
+        "description": "The pages, steps, lessons or records in order, each {id, title, href?, meta?}; current is a place in it. A property, or the JSON island a server prints. meta is a lesson's note such as «6 минут»"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "prev": {
+      "summary": "Moves to the previous item. It asks sf-pager-navigate first and is refused when a page cancels it; it sends no change, as a value set from outside is not reported (§8). Refused on the first item",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "next": {
+      "summary": "Moves to the next item; on the last step or lesson it finishes the walk (direction finish, complete true). It asks sf-pager-navigate first and sends no change (§8). Refused when there is nothing further or a page cancels the request",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "goTo": {
+      "summary": "Moves to the item at index (clamped to items) after the same request, without a change event; refused for the current item or when a page cancels",
+      "arguments": [
+        {
+          "name": "index",
+          "schema": {
+            "type": "number"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-pager-navigate": {
+      "summary": "A person asked for another page, step or record: a request a page cancels to keep the current one (a step not valid yet) or to go there itself. index is the target's place in items (the current one for finish), null on a side given by prev-href/next-href; after a link's request the browser follows the link",
+      "payload": {
+        "type": "object",
+        "required": [
+          "direction",
+          "index",
+          "id",
+          "href"
+        ],
+        "properties": {
+          "direction": {
+            "enum": [
+              "prev",
+              "next",
+              "finish",
+              "restart",
+              "go-to"
+            ]
+          },
+          "index": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "href": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-pager-change": {
+      "summary": "The fact after a move in items that a person made (a press, a key, a side from items): the previous and the current place, whether the walk is finished, and the current item. The actions and a value set from outside send none (§8)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "previous",
+          "current",
+          "complete",
+          "item"
+        ],
+        "properties": {
+          "previous": {
+            "type": "number"
+          },
+          "current": {
+            "type": "number"
+          },
+          "complete": {
+            "type": "boolean"
+          },
+          "item": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {},
+    "visual_states": [
+      "default",
+      "disabled",
+      "success"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "deciding whether a step is valid",
+      "loading the next record",
+      "keeping a course's progress"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "navigation",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Tab reaches the previous and the next link or control in order",
+      "Enter or Space presses a control; Enter follows a link",
+      "With keys set, ArrowLeft and ArrowRight move to the previous and the next record"
+    ],
+    "focus": "A control that becomes disabled after a move (Back on the first step, an end of the counter) hands focus to the other control, so focus never falls to the page."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "92717af7a21fb30833ed05ace3a68e34da6668de",
+    "source_artifacts": [
+      {
+        "path": "src/smart/pager/index.js",
+        "sha256": "254d3866bafa94eda2cf06735f51aa640f2000fec5514c67021195cde0a089c9"
+      },
+      {
+        "path": "src/smart/pager/js/templates/default.js",
+        "sha256": "9258220ffd6fc5f5657b23122e1d24c7e382faee544d6bcc87dc49aca7f5d43d"
+      },
+      {
+        "path": "src/smart/pager/scss/_smart__pager.scss",
+        "sha256": "da55065720702a63dbf8950b1105e8df28050cd5b804f188d319e3e00ab059f9"
+      },
+      {
+        "path": "src/smart/pager/rule.js",
+        "sha256": "e116bc91c648881baa22ee57b89a241ab78980dbdf29e188968fe03c1257cb92"
+      },
+      {
+        "path": "src/smart/pager/docs.md",
+        "sha256": "963f446a10b1f02cdec5082d0fda00a3c5ef0c3cdd8234f924f48feca7f94a12"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-pager under a documentation page (cards), a post or a product (row), in a wizard (steps), a course (course) or a record card (counter) to go to the neighbouring page or step.",
+    "do_not": [
+      "Do not use sf-pager to page a list; sf-pagination does that",
+      "Do not draw previous and next links of your own on a SIMAI page",
+      "Do not decide a step's validity in the pager; cancel sf-pager-navigate while the step is not valid"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-pager view=\"cards\" prev-href=\"/docs/install/\" prev-title=\"Подключение\" next-href=\"/docs/fields/\" next-title=\"Поля ввода\"></sf-pager>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}
