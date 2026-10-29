@@ -11,9 +11,16 @@
 // starting after the icon and the keys at the end; the label and the icon in
 // the quieter ink; the key box the same before and after the kbd sheet (a
 // lazy relation) arrives.
+//
+// Across platforms: the search-trigger snapshot (printed on a Mac, ⌘ K) on a
+// page without any script, and the same button drawn live on a page that
+// says it is Windows (Ctrl K): the button, the keys' group and every key
+// stand in the same boxes, 0 px apart -- the modifier's cap keeps the box of
+// its wider word.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
-import {extname, join, resolve} from 'node:path';
+import {dirname, extname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
@@ -31,14 +38,29 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <div class="stage"><sf-button id="plain" text="Без клавиш"></sf-button></div>
 <input id="field" type="text" aria-label="Поле">
 </body></html>`;
+// The snapshot of the search-trigger example and the sheets it was printed with.
+const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const snapshot = readFileSync(join(repo, 'src/smart/button/static/default/search-trigger.html'), 'utf8');
+const snapshotSheets = JSON.parse(readFileSync(join(repo, 'src/smart/button/static/sheets.json'), 'utf8')).examples['search-trigger'];
+const STAGE = '<style>.stage{display:flex;inline-size:320px;padding:16px}</style>';
+const printedPage = () => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
+${snapshotSheets.map((sheet) => `<link rel="stylesheet" href="/distr/${sheet}">`).join('\n')}
+${STAGE}</head><body><div class="stage">${snapshot}</div></body></html>`;
+const livePage = () => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
+<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>${STAGE}</head><body><div class="stage">
+<sf-button text="Поиск" appearance="tonal" scheme="on-surface-variant" radius="rounded" icon-start="search" text-position="start" shortcut="mod+k" root-class="w-full"></sf-button>
+</div></body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
 const requested = [];
 const server = createServer((request, response) => {
   const path = decodeURIComponent(new URL(request.url, 'http://probe').pathname);
   requested.push(path);
-  if (path === '/page') {
+  const pages = {'/page': page, '/printed': printedPage, '/live': livePage};
+  if (pages[path]) {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
-    return response.end(page());
+    return response.end(pages[path]());
   }
   const match = path.match(/^\/distr\/([^/]+)\/(.+)$/u);
   const file = match && parts[match[1]] ? join(parts[match[1]], match[2]) : '';
@@ -50,6 +72,7 @@ const server = createServer((request, response) => {
   return response.end(readFileSync(file));
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
+const url = (path) => `http://127.0.0.1:${server.address().port}${path}`;
 
 const failures = [];
 const seen = {};
@@ -222,6 +245,52 @@ try {
   if (small.keyHeights.some((height) => Math.abs(height - small.keyLadder) > 0.5)) failures.push(`375: the keys are ${small.keyHeights}px tall, expected ${small.keyLadder}px`);
   if (small.centres.some((offset) => Math.abs(offset) > 0.5)) failures.push(`375: icon and keys are off the centre line: ${small.centres}`);
   await phone.close();
+
+  // Across platforms: the printed Mac snapshot against the live Windows button.
+  const geometryOf = (tab) => tab.evaluate(() => {
+    const button = document.querySelector('button.sf-button');
+    const origin = button.getBoundingClientRect();
+    const box = (node) => {
+      const r = node.getBoundingClientRect();
+      return [r.left - origin.left, r.top - origin.top, r.width, r.height].map((n) => Math.round(n * 100) / 100);
+    };
+    const group = button.querySelector('.sf-button-shortcut');
+    return {
+      button: [origin.left, origin.top, origin.width, origin.height].map((n) => Math.round(n * 100) / 100),
+      group: box(group),
+      keys: Array.from(group.querySelectorAll(':scope > kbd')).map(box),
+      caps: Array.from(group.querySelectorAll(':scope > kbd')).map((key) => key.textContent.trim()),
+      label: box(button.querySelector('.sf-button-text-container')),
+    };
+  });
+  for (const width of [1280, 375]) {
+    const printedTab = await browser.newPage({viewport: {width, height: 400}});
+    await printedTab.goto(url('/printed'));
+    await printedTab.evaluate(() => document.fonts.ready);
+    await printedTab.waitForTimeout(200);
+    const printed = await geometryOf(printedTab);
+    await printedTab.close();
+    const windows = await browser.newPage({viewport: {width, height: 400}});
+    await windows.addInitScript(() => {
+      Object.defineProperty(Navigator.prototype, 'platform', {get: () => 'Win32', configurable: true});
+      Object.defineProperty(Navigator.prototype, 'userAgentData', {get: () => ({platform: 'Windows', brands: [], mobile: false}), configurable: true});
+    });
+    await windows.goto(url('/live'));
+    await windows.waitForFunction(() => document.querySelector('sf-button .sf-button-shortcut kbd') && document.querySelector('sf-button .sf-icon')
+      && Array.from(document.styleSheets).some((sheet) => /\/kbd\//u.test(sheet.href || '')), null, {timeout: 20000})
+      .catch(() => failures.push(`${width}: the live Windows button never drew its keys with the kbd sheet`));
+    await windows.evaluate(() => document.fonts.ready);
+    await windows.waitForTimeout(200);
+    const live = await geometryOf(windows);
+    await windows.close();
+    seen[`platforms${width}`] = {printed, live};
+    if (JSON.stringify(printed.caps) !== JSON.stringify(['⌘', 'K']) || JSON.stringify(live.caps) !== JSON.stringify(['Ctrl', 'K'])) {
+      failures.push(`${width}: the printed caps are ${printed.caps} and the live Windows caps ${live.caps}, expected ⌘ K and Ctrl K`);
+    }
+    for (const part of ['button', 'group', 'keys', 'label']) {
+      if (JSON.stringify(printed[part]) !== JSON.stringify(live[part])) failures.push(`${width}: ${part} moved between the printed Mac snapshot and the live Windows button: ${JSON.stringify(printed[part])} -> ${JSON.stringify(live[part])}`);
+    }
+  }
 } finally {
   await browser.close();
   server.close();

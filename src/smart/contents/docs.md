@@ -31,6 +31,31 @@ ways, for documentation, help, long articles and long settings forms.
 `lg` (60rem, the default), `xl` (72rem). The switch is a media rule in the
 component's sheet, so the first paint is right before the script arrives.
 
+## A sticky column needs room to stick in
+
+A sticky element sticks inside its parent: it can travel only as far as the
+parent's own box reaches. The column (and the rail and the bar) stays in view
+only when the element that holds it is as tall as the content beside it — a
+grid cell that stretches, which is the grid's default. With
+`align-items: start` (or `align-self: start`) on the cell, the cell is only as
+tall as the contents list, and the list scrolls away with the page.
+
+```html
+<style>
+  .page { display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: 1.5rem; }
+  /* no align-items: start here: the aside stretches to the article's height */
+</style>
+<div class="page">
+  <article id="article">…</article>
+  <aside><sf-contents target="#article"></sf-contents></aside>
+</div>
+```
+
+In a flex row the same holds: leave the aside at `align-self: stretch`. The
+column stops `--sf-contents-inset-block-start` below the top of the window
+(`--sf-space-1` by default); a page with a sticky header sets it to the
+header's height.
+
 ## Where the sections come from
 
 1. `items` — `[{id, text, level?}]`, when a server knows the sections (Docara

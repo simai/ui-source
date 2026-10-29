@@ -8,6 +8,12 @@ const MODIFIERS = ['mod', 'ctrl', 'alt', 'shift', 'meta'];
 // What a person reads on a key cap, per platform.
 const MAC_CAPS = {mod: '⌘', meta: '⌘', ctrl: '⌃', alt: '⌥', shift: '⇧'};
 const OTHER_CAPS = {mod: 'Ctrl', meta: 'Win', ctrl: 'Ctrl', alt: 'Alt', shift: 'Shift'};
+// A modifier's cap reads differently per platform (⌘ or Ctrl), but a server
+// prints one of them and the visitor's browser draws the other: the cap keeps
+// the box of its wider word on every platform, in characters of the keys'
+// monospace face, so the first paint does not move (sheet:
+// .sf-button-shortcut-key--chars-N).
+const MODIFIER_CHARS = Object.fromEntries(Object.keys(OTHER_CAPS).map((name) => [name, Math.max(MAC_CAPS[name].length, OTHER_CAPS[name].length)]));
 const KEY_CAPS = {
   enter: '↵', return: '↵', escape: 'Esc', esc: 'Esc', tab: 'Tab', space: 'Space', backspace: '⌫', delete: 'Del',
   up: '↑', down: '↓', left: '←', right: '→', arrowup: '↑', arrowdown: '↓', arrowleft: '←', arrowright: '→',
@@ -43,16 +49,22 @@ export function parseShortcut(value) {
   return {modifiers, key};
 }
 
-/** What the keys read, one string per key cap, in the platform's words. */
+/**
+ * What the keys read, one cap per key in the platform's words: {text, chars},
+ * chars the width a modifier's cap keeps on every platform (null for the key).
+ */
 export function shortcutCaps(parsed, apple = isApplePlatform()) {
   if (!parsed) return [];
   const caps = apple ? MAC_CAPS : OTHER_CAPS;
   const order = apple ? ['ctrl', 'alt', 'shift', 'mod', 'meta'] : ['mod', 'ctrl', 'meta', 'alt', 'shift'];
-  const modifiers = order.filter((name) => parsed.modifiers.has(name)).map((name) => caps[name]);
-  // On a Mac mod and meta are one key.
-  const unique = [...new Set(modifiers)];
+  const modifiers = [];
+  for (const name of order.filter((one) => parsed.modifiers.has(one))) {
+    // On a Mac mod and meta are one key.
+    if (modifiers.some((cap) => cap.text === caps[name])) continue;
+    modifiers.push({text: caps[name], chars: MODIFIER_CHARS[name]});
+  }
   const key = KEY_CAPS[parsed.key] ?? (parsed.key.length === 1 ? parsed.key.toUpperCase() : parsed.key.charAt(0).toUpperCase() + parsed.key.slice(1));
-  return [...unique, key];
+  return [...modifiers, {text: key, chars: null}];
 }
 
 /** The value of aria-keyshortcuts (WAI-ARIA 1.2): Meta+K, Control+K, /. */

@@ -296,6 +296,26 @@
     white-space: nowrap;
   }
 
+  /* A modifier's cap keeps the box of its wider word on every platform -- ⌘
+     and Ctrl, ⌥ and Alt, ⇧ and Shift -- counted in characters of the keys'
+     monospace face, the glyph centred: a page printed on one platform and
+     drawn on another keeps its geometry (sf-button js/shortcut.js). */
+  .sf-button .sf-button-shortcut > kbd:is(.sf-button-shortcut-key--chars-3, .sf-button-shortcut-key--chars-4, .sf-button-shortcut-key--chars-5) {
+    inline-size: calc(var(--sf-button-shortcut--key-chars) * 1ch + 2 * var(--sf-space-1\/4) + 2 * var(--sf-kbd--border-width, var(--sf-px)));
+  }
+
+  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-3 {
+    --sf-button-shortcut--key-chars: 3;
+  }
+
+  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-4 {
+    --sf-button-shortcut--key-chars: 4;
+  }
+
+  .sf-button .sf-button-shortcut > kbd.sf-button-shortcut-key--chars-5 {
+    --sf-button-shortcut--key-chars: 5;
+  }
+
   .sf-button:is(:disabled, .disabled) .sf-button-shortcut > kbd {
     --sf-kbd--color: var(--sf-on-disable);
   }
