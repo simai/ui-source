@@ -23,7 +23,7 @@ import {createFieldContract} from '../../../../component/field-contract';
 const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
 
 function toolButton(context, tool) {
-  const {component, buttonSize, disabled, readonly, state, roving} = context;
+  const {component, buttonSize, fieldDisabled: disabled, readonly, state, roving} = context;
   const pressed = tool.pressed === undefined ? nothing : String(Boolean(state[tool.pressed]));
   // Unavailable (undo with nothing to undo, a heading in a list): said and
   // greyed, still reached by the arrows; the whole toolbar is disabled with
@@ -56,7 +56,7 @@ export function renderRichTextTemplate(context) {
     hint,
     errorMessage,
     invalid,
-    disabled,
+    fieldDisabled: disabled,
     readonly,
     placeholder,
     tools,

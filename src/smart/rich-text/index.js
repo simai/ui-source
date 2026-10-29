@@ -232,7 +232,10 @@ class SfRichText extends FormField(RichTextElement) {
       ...props,
       size: this.size,
       appearance: this.appearance,
-      disabled: this.effectiveDisabled,
+      // The form's disabled fieldset counts too, so the drawn state is not the
+      // `disabled` getter's: it travels under its own name.
+      fieldDisabled: this.effectiveDisabled,
+      value: this.value,
       readonly: Boolean(this.readonly),
       required: Boolean(this.required),
       invalid: Boolean(this.invalid),
