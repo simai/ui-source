@@ -3254,6 +3254,68 @@
           "since": "2026-10-30"
         }
       ]
+    },
+    {
+      "component": "pager",
+      "selector": "sf-pager, .sf-pager",
+      "variables": [
+        {
+          "name": "--sf-pager-gap",
+          "role": "gap",
+          "summary": "The space between the parts: the two cards, the two links, Back, the place and Next, the dots and the lesson card.",
+          "default": "var(--sf-ui-1--text-space-x)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-card-background",
+          "role": "background",
+          "summary": "The fill of the cards and of the lesson card.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-card-border-color",
+          "role": "border-color",
+          "summary": "The edge of the cards and of the lesson card at rest.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-card-radius",
+          "role": "radius",
+          "summary": "The corners of the cards and of the lesson card.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-link-color",
+          "role": "color",
+          "summary": "The titles of the cards and of the row.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-meta-color",
+          "role": "color",
+          "summary": "The direction words, the notes and the place lines.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-track-color",
+          "role": "background",
+          "summary": "The steps' track and the dots ahead.",
+          "default": "var(--sf-surface-container)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-pager-fill-color",
+          "role": "background",
+          "summary": "The done segments of the track and the done dots.",
+          "default": "var(--sf-primary)",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }

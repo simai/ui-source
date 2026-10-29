@@ -1,0 +1,17 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.pager",
+  "title": "pager reference",
+  "summary": "Deterministic reference fixture for sf-pager.",
+  "locale": "ru",
+  "props": {
+    "appearance": "cards",
+    "prev-href": "/docs/install/",
+    "prev-title": "Подключение",
+    "next-href": "/docs/fields/",
+    "next-title": "Поля ввода"
+  },
+  "children": [],
+  "state": "default"
+}

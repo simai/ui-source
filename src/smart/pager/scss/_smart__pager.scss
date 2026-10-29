@@ -1,0 +1,347 @@
+@layer sf.components {
+/* sf-pager (standard simai.smart-component 1.3.13 §6). One ladder
+   (docs/foundation-composition-geometry.md): at a rung S the title is the
+   text line L = --sf-text-height-S, a note the line a step down, a picture
+   the line it stands on, the controls --sf-ui-S--control-height. A text whose
+   length is data takes one line with an ellipsis, so every box is known from
+   the settings before any data or code (§5.4). The public variables are read
+   with the role token as their fallback and never set here. */
+.sf-pager {
+  --sf-pager--line: var(--sf-text-height-1);
+  --sf-pager--text: var(--sf-text-size-1);
+  --sf-pager--note-line: var(--sf-text-height-1\/2);
+  --sf-pager--note-text: var(--sf-text-size-1\/2);
+  --sf-pager--space-x: var(--sf-ui-1--space-x);
+  --sf-pager--text-space: var(--sf-ui-1--text-space-x);
+  --sf-pager--inset-y: var(--sf-ui-1--space-y);
+  --sf-pager--gap: var(--sf-pager-gap, var(--sf-pager--text-space));
+  --sf-pager--card-background: var(--sf-pager-card-background, var(--sf-surface-0));
+  --sf-pager--card-border-color: var(--sf-pager-card-border-color, var(--sf-outline-variant));
+  --sf-pager--card-radius: var(--sf-pager-card-radius, var(--sf-radius--ui));
+  --sf-pager--link-color: var(--sf-pager-link-color, var(--sf-primary));
+  --sf-pager--meta-color: var(--sf-pager-meta-color, var(--sf-on-surface-variant));
+  --sf-pager--track-color: var(--sf-pager-track-color, var(--sf-surface-container));
+  --sf-pager--fill-color: var(--sf-pager-fill-color, var(--sf-primary));
+  display: block;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  color: var(--sf-on-surface);
+  font-size: var(--sf-pager--text);
+  line-height: var(--sf-pager--line);
+}
+
+.sf-pager--size-half {
+  --sf-pager--line: var(--sf-text-height-1\/2);
+  --sf-pager--text: var(--sf-text-size-1\/2);
+  --sf-pager--note-line: var(--sf-text-height-1\/3);
+  --sf-pager--note-text: var(--sf-text-size-1\/3);
+  --sf-pager--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-pager--text-space: var(--sf-ui-1\/2--text-space-x);
+  --sf-pager--inset-y: var(--sf-ui-1\/2--space-y);
+}
+
+.sf-pager *,
+.sf-pager *::before,
+.sf-pager *::after {
+  box-sizing: border-box;
+}
+
+/* A picture is the line it stands on: the icon's own size tokens, never its
+   public --sf-icon-glyph-size, which stays the page's. */
+.sf-pager .sf-pager-icon {
+  --sf-pager--icon-size: var(--sf-pager--line);
+  --sf-icon--font-size: var(--sf-pager--icon-size);
+  --sf-icon--width: var(--sf-pager--icon-size);
+  --sf-icon--height: var(--sf-pager--icon-size);
+  flex: none;
+}
+
+.sf-pager:dir(rtl) .sf-pager-icon:not(.sf-pager-lesson-mark),
+.sf-pager:dir(rtl) .sf-pager-back .sf-icon,
+.sf-pager:dir(rtl) .sf-pager-forward .sf-icon,
+.sf-pager:dir(rtl) .sf-pager-lesson-action .sf-icon {
+  transform: scaleX(-1);
+}
+
+.sf-pager-title {
+  display: block;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-pager-meta,
+.sf-pager-place {
+  color: var(--sf-pager--meta-color);
+  font-size: var(--sf-pager--note-text);
+  line-height: var(--sf-pager--note-line);
+}
+
+/* The sides of cards and row: a link, or a button from items. */
+.sf-pager-side {
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--sf-pager--link-color);
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sf-pager-side:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+/* ── cards: two columns; the next card holds the second, so a missing side
+   keeps its place. ── */
+.sf-pager--cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sf-pager--gap);
+}
+
+.sf-pager--cards .sf-pager-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+  padding-block: var(--sf-pager--inset-y);
+  padding-inline: var(--sf-pager--space-x);
+  border: var(--sf-px) solid var(--sf-pager--card-border-color);
+  border-radius: var(--sf-pager--card-radius);
+  background: var(--sf-pager--card-background);
+}
+
+.sf-pager--cards .sf-pager-side:hover {
+  border-color: var(--sf-outline-primary);
+}
+
+.sf-pager--cards .sf-pager-side--prev {
+  grid-column: 1;
+}
+
+.sf-pager--cards .sf-pager-side--next {
+  grid-column: 2;
+  align-items: flex-end;
+  text-align: end;
+}
+
+.sf-pager--cards .sf-pager-direction {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-pager--text-space);
+  color: var(--sf-pager--meta-color);
+  font-size: var(--sf-pager--note-text);
+  line-height: var(--sf-pager--note-line);
+}
+
+.sf-pager--cards .sf-pager-direction .sf-pager-icon {
+  --sf-pager--icon-size: var(--sf-pager--note-line);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-pager--cards .sf-pager-title {
+  max-inline-size: 100%;
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* ── row: one line, the two titles at the two ends. ── */
+.sf-pager--row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-pager--gap);
+  min-block-size: var(--sf-pager--line);
+}
+
+.sf-pager--row .sf-pager-side {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-pager--text-space);
+  max-inline-size: calc(50% - var(--sf-pager--gap) / 2);
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.sf-pager--row .sf-pager-side:hover .sf-pager-title {
+  text-decoration: underline;
+}
+
+.sf-pager--row .sf-pager-side--next {
+  margin-inline-start: auto;
+}
+
+.sf-pager--row .sf-pager-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+/* ── steps: Back · place and track · Next, on one centre line. ── */
+.sf-pager--steps {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-pager--gap);
+}
+
+.sf-pager-middle {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-a4);
+  min-inline-size: 0;
+}
+
+.sf-pager--steps .sf-pager-place {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-pager-track {
+  display: flex;
+  gap: var(--sf-a4);
+  inline-size: 100%;
+}
+
+.sf-pager-segment {
+  flex: 1 1 0;
+  block-size: var(--sf-a4);
+  border-radius: var(--sf-a2);
+  background: var(--sf-pager--track-color);
+}
+
+.sf-pager-segment--done {
+  background: var(--sf-pager--fill-color);
+}
+
+/* ── course: the dots and the place, then the next lesson's card. ── */
+.sf-pager--course {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-pager--gap);
+}
+
+.sf-pager-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-pager--text-space);
+  min-block-size: var(--sf-pager--note-line);
+}
+
+.sf-pager-dots {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-a4);
+}
+
+.sf-pager-dot {
+  inline-size: var(--sf-a8);
+  block-size: var(--sf-a8);
+  border-radius: 50%;
+  background: var(--sf-pager--track-color);
+}
+
+.sf-pager-dot--done {
+  background: var(--sf-pager--fill-color);
+}
+
+.sf-pager-dot--current {
+  border: var(--sf-a2) solid var(--sf-pager--fill-color);
+  background: var(--sf-pager--card-background);
+}
+
+.sf-pager-lesson {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-pager--text-space);
+  padding-block: var(--sf-pager--inset-y);
+  padding-inline: var(--sf-pager--space-x);
+  border: var(--sf-px) solid var(--sf-pager--card-border-color);
+  border-radius: var(--sf-pager--card-radius);
+  background: var(--sf-pager--card-background);
+}
+
+.sf-pager-lesson-number {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-pager--line);
+  block-size: var(--sf-pager--line);
+  border-radius: 50%;
+  background: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+  font-size: var(--sf-pager--note-text);
+  font-weight: var(--sf-font-weight-medium);
+  line-height: 1;
+}
+
+.sf-pager-lesson-text {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-pager-lesson .sf-pager-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-pager-lesson .sf-pager-title {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-pager-lesson-action {
+  flex: none;
+}
+
+/* ── counter: ‹ 3 of 12 › ── */
+.sf-pager--counter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-pager--gap);
+}
+
+.sf-pager--counter .sf-pager-place {
+  min-inline-size: 7ch;
+  color: var(--sf-on-surface);
+  font-size: var(--sf-pager--text);
+  line-height: var(--sf-pager--line);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-pager--cards .sf-pager-side {
+    transition: border-color var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-pager-segment,
+  .sf-pager-dot {
+    transition: background-color var(--sf-duration-fast) var(--sf-animation);
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-pager-side:focus-visible {
+    outline: var(--sf-focus-outline-width) solid currentColor;
+  }
+
+  .sf-pager-segment--done,
+  .sf-pager-dot--done {
+    background: Highlight;
+  }
+
+  .sf-pager-segment,
+  .sf-pager-dot {
+    border: var(--sf-px) solid CanvasText;
+  }
+}
+}

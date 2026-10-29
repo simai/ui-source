@@ -1,0 +1,391 @@
+{
+  "$comment": "The source of sf-pager's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is tab 2 of ui-control's prototypes/docara-four.html, with the owner's decisions of 2026-10-30.",
+  "id": "smart.pager",
+  "tag": "sf-pager",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "navigation",
+  "settings": {
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "cards",
+        "row",
+        "steps",
+        "course",
+        "counter"
+      ],
+      "default": "cards",
+      "summary": "How the neighbours are shown: cards, two cards «Back / title» and «Next / title» (documentation); row, one line of the two titles (a blog, a product); steps, a wizard's Back, «Step 2 of 5» with a segmented track and a primary Next that says Done on the last step; course, lesson dots and a card for the next lesson; counter, «3 of 12» between two icon buttons (record browsing)"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1",
+      "summary": "The ladder rung: the buttons take it, and the text lines, the pictures and the card insets follow it"
+    },
+    "prev-href": {
+      "type": "string",
+      "default": "",
+      "summary": "The previous page's address (cards, row). With a title, the side is a plain link a server prints, which works without the script"
+    },
+    "prev-title": {
+      "type": "string",
+      "default": "",
+      "summary": "The previous page's title (cards, row). Without prev-href and prev-title the side is taken from items, else it stays empty and keeps its place"
+    },
+    "next-href": {
+      "type": "string",
+      "default": "",
+      "summary": "The next page's address (cards, row)"
+    },
+    "next-title": {
+      "type": "string",
+      "default": "",
+      "summary": "The next page's title (cards, row)"
+    },
+    "items": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "href": {
+              "type": "string"
+            },
+            "meta": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The pages, steps, lessons or records in order, each {id, title, href?, meta?}; current is a place in it. A property, or the JSON island a server prints. meta is a lesson's note such as «6 минут»"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The navigation landmark's name; «Соседние страницы» / «Adjacent pages» in the page language when not set"
+    },
+    "prev-label": {
+      "type": "string",
+      "default-from": "runtime.prev",
+      "summary": "The word of the previous side and of the Back button; «Назад» / «Back» when not set"
+    },
+    "next-label": {
+      "type": "string",
+      "default-from": "runtime.next",
+      "summary": "The word of the next side and of the Next button; «Далее» / «Next» when not set"
+    },
+    "done-label": {
+      "type": "string",
+      "default-from": "runtime.done",
+      "summary": "The word of the last step's and the last lesson's button; «Готово» / «Done» when not set"
+    },
+    "keys": {
+      "type": "boolean",
+      "default": false,
+      "summary": "ArrowLeft and ArrowRight on the page move to the previous and the next item (mirrored on a right-to-left page), unless focus is in a field or a key was taken by another component. For the counter view"
+    }
+  },
+  "values": {
+    "current": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0,
+      "summary": "The place of the current item in items, from 0"
+    },
+    "complete": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The walk is finished: the last step was done or the course passed (steps, course)"
+    }
+  },
+  "events": {
+    "navigate": {
+      "carries": {
+        "direction": {
+          "type": "enum",
+          "values": [
+            "prev",
+            "next",
+            "finish",
+            "restart",
+            "go-to"
+          ]
+        },
+        "index": {
+          "type": "number",
+          "nullable": true
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "href": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "cancelable": true,
+      "summary": "A person asked for another page, step or record: a request a page cancels to keep the current one (a step not valid yet) or to go there itself. index is the target's place in items (the current one for finish), null on a side given by prev-href/next-href; after a link's request the browser follows the link"
+    },
+    "change": {
+      "x-native": false,
+      "carries": {
+        "previous": "number",
+        "current": "number",
+        "complete": "boolean",
+        "item": {
+          "type": "object",
+          "nullable": true
+        }
+      },
+      "summary": "The fact after a move in items that a person made (a press, a key, a side from items): the previous and the current place, whether the walk is finished, and the current item. The actions and a value set from outside send none (§8)"
+    }
+  },
+  "actions": {
+    "prev": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Moves to the previous item. It asks sf-pager-navigate first and is refused when a page cancels it; it sends no change, as a value set from outside is not reported (§8). Refused on the first item",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "next": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Moves to the next item; on the last step or lesson it finishes the walk (direction finish, complete true). It asks sf-pager-navigate first and sends no change (§8). Refused when there is nothing further or a page cancels the request",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "go-to": {
+      "with": {
+        "index": "number"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Moves to the item at index (clamped to items) after the same request, without a change event; refused for the current item or when a page cancels",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The element draws a <nav> named by label. cards and row are links (rel prev and next) whose name says the direction and the title; steps and course show their place as text in a polite live region, the track and the dots are aria-hidden; counter's icon buttons are named by the previous and next record words.",
+    "role": "navigation",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "ArrowLeft": "prev",
+      "ArrowRight": "next"
+    }
+  },
+  "host-states": {
+    "data-complete": "boolean"
+  },
+  "css-variables": {
+    "--sf-pager-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-pager-card-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pager-card-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pager-card-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-pager-link-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pager-meta-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pager-track-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-pager-fill-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
+  "x-source": {
+    "package": "framework",
+    "folder": "pager",
+    "brief": "simai/ui-control prototypes/docara-four.html tab 2, owner decisions 2026-10-30 (views cards, row, steps, course, counter; the edge arrows view dropped, carousel controls are a separate topic)"
+  },
+  "x-words": [
+    "label",
+    "prev-label",
+    "next-label",
+    "done-label"
+  ],
+  "x-decisions": [
+    "name: sf-pager (owner, 2026-10-30), apart from sf-pagination, which pages a list by number. One component with five views; the page picks the view, the input is one: two sides given by attributes, or items and current.",
+    "setting appearance: the owner's word is view, but view is a reserved name (§3.1); the look and the arrangement are the setting appearance (§21.2, the example sf-admin-menu appearance=\"compact\").",
+    "views: cards, row, steps, course, counter (owner, 2026-10-30). The prototype's edge arrows view is dropped; carousel controls are a separate topic.",
+    "first paint: cards and row are plain links from string settings (prev-href, prev-title, next-href, next-title), so the build snapshot is the markup a server prints and it works without the script. A missing side keeps its place: cards stand in a two-column grid, the next link in the second column; in a row the next link holds the inline end.",
+    "events: navigate (vocabulary §5 navigate {id, href}, with direction and index) is the cancelable request sent before every move a person makes, links included; change (x-native false, as on sf-steps and sf-tabs) is the fact after a move in items. A link's navigate is not followed by change: the browser leaves the page. A finished walk is direction finish, restart its way back; both are moves of the same request, not verbs of their own.",
+    "values: current, a place from 0 as on sf-steps, and complete. Setting either from outside draws without an event (§8).",
+    "words (§11): label, prev-label, next-label and done-label are settings with runtime defaults; the place lines «Шаг 2 из 5», «Урок 3 из 5», «3 из 12» and the course's words are the language files' own.",
+    "parts: the steps, course and counter controls are sf-button and sf-icon-button of the pager's size; the cards and the row are the pager's own links, because a link with an address is no button. Back, Сначала and the counter's buttons are outline on-surface, Next and Начать the default primary. Colours are theme roles only: links primary, notes on-surface-variant, cards on surface-0 with the region edge outline-variant and outline-primary on hover, the track surface-container (sf-progress-bar's), the fill primary.",
+    "keys: the counter's ArrowLeft and ArrowRight are on the page only with keys set; they never act while focus is in a field or when another component took the key (defaultPrevented).",
+    "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "navigation",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "pager",
+      "navigation",
+      "previous",
+      "next",
+      "wizard",
+      "steps",
+      "course",
+      "counter"
+    ],
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "disabled",
+        "success"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "deciding whether a step is valid",
+        "loading the next record",
+        "keeping a course's progress"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-pager under a documentation page (cards), a post or a product (row), in a wizard (steps), a course (course) or a record card (counter) to go to the neighbouring page or step.",
+      "do_not": [
+        "Do not use sf-pager to page a list; sf-pagination does that",
+        "Do not draw previous and next links of your own on a SIMAI page",
+        "Do not decide a step's validity in the pager; cancel sf-pager-navigate while the step is not valid"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-pager view=\"cards\" prev-href=\"/docs/install/\" prev-title=\"Подключение\" next-href=\"/docs/fields/\" next-title=\"Поля ввода\"></sf-pager>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches the previous and the next link or control in order",
+        "Enter or Space presses a control; Enter follows a link",
+        "With keys set, ArrowLeft and ArrowRight move to the previous and the next record"
+      ],
+      "focus": "A control that becomes disabled after a move (Back on the first step, an end of the counter) hands focus to the other control, so focus never falls to the page."
+    }
+  }
+}

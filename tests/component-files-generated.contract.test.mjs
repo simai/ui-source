@@ -46,6 +46,7 @@ const PHASE_A = [
   // Made in the 1.4 form from the start (2026-10-30).
   'search',
   'settings-menu',
+  'pager',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

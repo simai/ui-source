@@ -183,6 +183,10 @@ const DRAW = {
   'settings-menu': {css: ['switch', 'icons', 'smart/smart/settings-menu/css/settings-menu.css'], js: 'settings-menu',
     html: '<sf-settings-menu inline><script type="application/json" data-sf-settings>{"items": [{"key": "sound", "type": "boolean", "label": "Звук", "icon": "volume_up", "value": false, "tile": true}, {"key": "lang", "type": "choice", "label": "Язык", "value": "ru", "options": [{"value": "ru", "label": "Русский"}, {"value": "en", "label": "English"}, {"value": "kk", "label": "Қазақша"}]}]}</script></sf-settings-menu>'
       + '<sf-settings-menu inline template="rows"><script type="application/json" data-sf-settings>{"items": [{"key": "follow", "type": "choice", "label": "Ответы", "value": "queue", "options": [{"value": "queue", "label": "Очередь"}, {"value": "steer", "label": "Сразу"}]}, {"key": "density", "type": "choice", "label": "Плотность", "value": "normal", "options": [{"value": "compact", "label": "Плотно"}, {"value": "normal", "label": "Обычно"}, {"value": "loose", "label": "Свободно"}]}]}</script></sf-settings-menu>'},
+  // The pager as cards (fill, edge, corners, link and note colours, the gap)
+  // and as steps on the second of three (the track and its fill).
+  pager: {css: ['buttons', 'icons', 'smart/smart/pager/css/pager.css'], js: 'pager',
+    html: '<sf-pager prev-href="#a" prev-title="A" next-href="#b" next-title="B"></sf-pager><sf-pager appearance="steps" current="1"><script type="application/json" data-sf-settings>{"items":[{"title":"A"},{"title":"B"},{"title":"C"}]}</script></sf-pager>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
