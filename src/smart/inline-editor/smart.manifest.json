@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.inline-editor",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code and links -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -117,7 +117,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-inline-editor-change": {
       "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element",
@@ -139,7 +140,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-inline-editor-cancel": {
       "summary": "The edit was put back (Escape): the element shows its HTML from before; sent on the edited element",
@@ -157,7 +159,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-inline-edit-input": {
       "summary": "Dated alias of sf-inline-editor-input until 2026-12-01: Live normalized content after a change. Dispatched on the edited element; bubbles to document.",
@@ -178,7 +181,8 @@
             "type": "array"
           }
         }
-      }
+      },
+      "alias_of": "sf-inline-editor-input"
     },
     "sf-inline-edit-commit": {
       "summary": "Dated alias of sf-inline-editor-change until 2026-12-01: Editing finished with Enter or focus leaving; the host saves. Dispatched on the edited element; bubbles to document.",
@@ -199,7 +203,8 @@
             "type": "array"
           }
         }
-      }
+      },
+      "alias_of": "sf-inline-editor-change"
     },
     "sf-inline-edit-cancel": {
       "summary": "Dated alias of sf-inline-editor-cancel until 2026-12-01: Editing was cancelled with Escape; the original HTML is restored. Dispatched on the edited element; bubbles to document.",
@@ -213,7 +218,8 @@
             ]
           }
         }
-      }
+      },
+      "alias_of": "sf-inline-editor-cancel"
     }
   },
   "state": {

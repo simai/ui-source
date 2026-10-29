@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Theme generator",
   "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
@@ -171,7 +171,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-theme-generator-committed": {
       "summary": "The choice was committed -- the picker's change, a swatch, Enter or leaving a field, Reset: the theme the host keeps",
@@ -206,7 +207,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-theme-generator-change": {
       "summary": "The choice moved: a drag across the picker, a swatch, a number typed in a field.",
@@ -236,7 +238,8 @@
             "description": "The theme as a rule under `selector`."
           }
         }
-      }
+      },
+      "alias_of": "change"
     },
     "sf-theme-generator-apply": {
       "summary": "The choice was committed: the picker's change, a swatch, Enter or leaving a field, Reset.",
@@ -266,7 +269,8 @@
             "description": "The theme as a rule under `selector`."
           }
         }
-      }
+      },
+      "alias_of": "sf-theme-generator-committed"
     },
     "sf-theme-change": {
       "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-change.",
@@ -296,7 +300,8 @@
             "description": "The theme as a rule under `selector`."
           }
         }
-      }
+      },
+      "alias_of": "change"
     },
     "sf-theme-apply": {
       "summary": "Its first name, still emitted with the same detail until 2026-12-01 (journal event-theme-generator-names); the Loader's light/dark event bears it too. Bind sf-theme-generator-apply.",
@@ -326,7 +331,8 @@
             "description": "The theme as a rule under `selector`."
           }
         }
-      }
+      },
+      "alias_of": "sf-theme-generator-committed"
     }
   },
   "state": {

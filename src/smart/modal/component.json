@@ -2,7 +2,7 @@
   "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.modal",
   "tag": "sf-modal",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "kind": "leaf",
   "family": "modal",
   "settings": {
@@ -294,7 +294,7 @@
         "refused"
       ],
       "x-answer": "asked by an assembly (ask, §19.4) it answers when the window closes, with value {accepted, reason, value}",
-      "summary": "Opens the window, or brings it to the front when already open. Dispatches modal:before-open (cancelable), then modal:after-open once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
+      "summary": "Opens the window, or brings it to the front when already open. Dispatches sf-modal-open (cancelable), then sf-modal-opened once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
       "x-returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -318,7 +318,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Closes the window after modal:before-close (cancelable), runs the close transition, restores focus and dispatches modal:after-close. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
+      "summary": "Closes the window after sf-modal-close (cancelable), runs the close transition, restores focus and dispatches sf-modal-closed. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
       "x-returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -1163,7 +1163,7 @@
         }
       },
       "hide": {
-        "summary": "Minimizes an open overlay window after modal:before-hide (cancelable) and dispatches modal:after-hide. Does nothing inline. Returns the element.",
+        "summary": "Minimizes an open overlay window after sf-modal-minimize (cancelable) and dispatches sf-modal-minimized. Does nothing inline. Returns the element.",
         "arguments": [],
         "returns": {
           "type": "object",
@@ -1171,7 +1171,7 @@
         }
       },
       "show": {
-        "summary": "Restores a minimized window after modal:before-show (cancelable) and dispatches modal:after-show. Returns the element.",
+        "summary": "Restores a minimized window after sf-modal-expand (cancelable) and dispatches sf-modal-expanded. Returns the element.",
         "arguments": [],
         "returns": {
           "type": "object",
@@ -1233,7 +1233,7 @@
         }
       },
       "onBeforeOpen": {
-        "summary": "Adds a listener for modal:before-open on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-open on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1255,7 +1255,7 @@
         }
       },
       "onAfterOpen": {
-        "summary": "Adds a listener for modal:after-open on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-opened on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1277,7 +1277,7 @@
         }
       },
       "onBeforeClose": {
-        "summary": "Adds a listener for modal:before-close on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-close on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1299,7 +1299,7 @@
         }
       },
       "onAfterClose": {
-        "summary": "Adds a listener for modal:after-close on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-closed on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1321,7 +1321,7 @@
         }
       },
       "onBeforeHide": {
-        "summary": "Adds a listener for modal:before-hide on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-minimize on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1343,7 +1343,7 @@
         }
       },
       "onAfterHide": {
-        "summary": "Adds a listener for modal:after-hide on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-minimized on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1365,7 +1365,7 @@
         }
       },
       "onBeforeShow": {
-        "summary": "Adds a listener for modal:before-show on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-expand on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -1387,7 +1387,7 @@
         }
       },
       "onAfterShow": {
-        "summary": "Adds a listener for modal:after-show on the host that runs only for this modal's own events. Returns the element.",
+        "summary": "Adds a listener for sf-modal-expanded on the host that runs only for this modal's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",

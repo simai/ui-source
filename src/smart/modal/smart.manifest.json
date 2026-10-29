@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -250,7 +250,7 @@
   "contracts": {},
   "methods": {
     "open": {
-      "summary": "Opens the window, or brings it to the front when already open. Dispatches modal:before-open (cancelable), then modal:after-open once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
+      "summary": "Opens the window, or brings it to the front when already open. Dispatches sf-modal-open (cancelable), then sf-modal-opened once projected; loads remote content when src is set. options.animate (or a boolean) controls the opening transition. Returns the element.",
       "arguments": [
         {
           "name": "animate",
@@ -265,7 +265,7 @@
       }
     },
     "close": {
-      "summary": "Closes the window after modal:before-close (cancelable), runs the close transition, restores focus and dispatches modal:after-close. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
+      "summary": "Closes the window after sf-modal-close (cancelable), runs the close transition, restores focus and dispatches sf-modal-closed. options.reason says why (close, escape, outside, cancelled, api; api by default) and is carried by both events. Returns the element.",
       "arguments": [
         {
           "name": "reason",
@@ -343,7 +343,7 @@
       }
     },
     "hide": {
-      "summary": "Minimizes an open overlay window after modal:before-hide (cancelable) and dispatches modal:after-hide. Does nothing inline. Returns the element.",
+      "summary": "Minimizes an open overlay window after sf-modal-minimize (cancelable) and dispatches sf-modal-minimized. Does nothing inline. Returns the element.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -351,7 +351,7 @@
       }
     },
     "show": {
-      "summary": "Restores a minimized window after modal:before-show (cancelable) and dispatches modal:after-show. Returns the element.",
+      "summary": "Restores a minimized window after sf-modal-expand (cancelable) and dispatches sf-modal-expanded. Returns the element.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -413,7 +413,7 @@
       }
     },
     "onBeforeOpen": {
-      "summary": "Adds a listener for modal:before-open on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-open on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -435,7 +435,7 @@
       }
     },
     "onAfterOpen": {
-      "summary": "Adds a listener for modal:after-open on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-opened on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -457,7 +457,7 @@
       }
     },
     "onBeforeClose": {
-      "summary": "Adds a listener for modal:before-close on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-close on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -479,7 +479,7 @@
       }
     },
     "onAfterClose": {
-      "summary": "Adds a listener for modal:after-close on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-closed on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -501,7 +501,7 @@
       }
     },
     "onBeforeHide": {
-      "summary": "Adds a listener for modal:before-hide on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-minimize on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -523,7 +523,7 @@
       }
     },
     "onAfterHide": {
-      "summary": "Adds a listener for modal:after-hide on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-minimized on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -545,7 +545,7 @@
       }
     },
     "onBeforeShow": {
-      "summary": "Adds a listener for modal:before-show on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-expand on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -567,7 +567,7 @@
       }
     },
     "onAfterShow": {
-      "summary": "Adds a listener for modal:after-show on the host that runs only for this modal's own events. Returns the element.",
+      "summary": "Adds a listener for sf-modal-expanded on the host that runs only for this modal's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -651,7 +651,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-opened": {
       "summary": "opened (vocabulary).",
@@ -670,7 +671,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-close": {
       "summary": "close (vocabulary).",
@@ -703,7 +705,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-closed": {
       "summary": "closed (vocabulary).",
@@ -736,7 +739,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-minimize": {
       "summary": "minimize (vocabulary).",
@@ -755,7 +759,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-minimized": {
       "summary": "minimized (vocabulary).",
@@ -774,7 +779,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-expand": {
       "summary": "expand (vocabulary).",
@@ -793,7 +799,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-expanded": {
       "summary": "expanded (vocabulary).",
@@ -812,7 +819,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-content-upload": {
       "summary": "content-upload (vocabulary).",
@@ -835,7 +843,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-modal-content-uploaded": {
       "summary": "content-uploaded (vocabulary).",
@@ -858,7 +867,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "modal:after-close": {
       "summary": "Fired after the window closes. Bubbles and is composed.",
@@ -893,7 +903,8 @@
             "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-closed"
     },
     "modal:after-hide": {
       "summary": "Fired after the window is minimized. Bubbles and is composed.",
@@ -917,7 +928,8 @@
             "const": "after-hide"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-minimized"
     },
     "modal:after-open": {
       "summary": "Fired after the window opens. Bubbles and is composed.",
@@ -941,7 +953,8 @@
             "const": "after-open"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-opened"
     },
     "modal:after-show": {
       "summary": "Fired after the window is shown again after being minimized. Bubbles and is composed.",
@@ -965,7 +978,8 @@
             "const": "after-show"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-expanded"
     },
     "modal:before-close": {
       "summary": "Fired before the window closes; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
@@ -1004,7 +1018,8 @@
             "description": "Whether something is unsaved; false until the component has an unsaved setting."
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-close"
     },
     "modal:before-hide": {
       "summary": "Fired before the window is minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
@@ -1028,7 +1043,8 @@
             "const": "before-hide"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-minimize"
     },
     "modal:before-open": {
       "summary": "Fired before the window opens; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
@@ -1052,7 +1068,8 @@
             "const": "before-open"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-open"
     },
     "modal:before-show": {
       "summary": "Fired before the window is shown again after being minimized; cancelable -- preventDefault() keeps it as it is. Bubbles and is composed.",
@@ -1076,7 +1093,8 @@
             "const": "before-show"
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-expand"
     },
     "modal:ready": {
       "summary": "The window rendered for the first time. Bubbles and is composed; detail.modal is the emitting sf-modal.",
@@ -1152,7 +1170,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-content-upload"
     },
     "modal:after-content-upload": {
       "summary": "Remote content finished loading, with success or error in detail.remote; an aborted request does not emit it. Also fired when an iframe loads. Bubbles and is composed.",
@@ -1188,7 +1207,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-modal-content-uploaded"
     }
   },
   "state": {

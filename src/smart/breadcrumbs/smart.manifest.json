@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Breadcrumbs",
   "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
   "kind": "smart",
@@ -145,7 +145,7 @@
       }
     },
     "onItemClick": {
-      "summary": "Adds a listener for sf-breadcrumb-click; the handler receives (item, detail, event). Returns the element.",
+      "summary": "Adds a listener for sf-breadcrumbs-press; the handler receives (item, detail, event). Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -189,7 +189,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-breadcrumb-click": {
       "summary": "An item was clicked. Bubbles, is composed and is cancelable: preventDefault() on an ellipsis item keeps it collapsed. Disabled and current items have the native navigation prevented before dispatch.",
@@ -224,7 +225,8 @@
             "description": "The native click event."
           }
         }
-      }
+      },
+      "alias_of": "sf-breadcrumbs-press"
     }
   },
   "state": {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -133,7 +133,7 @@
       }
     },
     "onToggle": {
-      "summary": "Adds a listener for sf-tree-item-toggle from any item in the tree; the handler is called with (item, detail, event).",
+      "summary": "Adds a listener for sf-tree-toggle from any item in the tree; the handler is called with (item, detail, event).",
       "arguments": [
         {
           "name": "handler",
@@ -168,7 +168,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-select": {
       "summary": "The selection changed: ids is the whole selection, id the entry pressed and selected whether it is now selected (vocabulary §5 select)",
@@ -189,7 +190,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-toggle": {
       "summary": "A branch opened or closed (vocabulary §5 toggle)",
@@ -210,7 +212,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-move": {
       "summary": "Records dragged from a list were dropped on an entry: the request to move them into it (vocabulary §5 move); the tree moves nothing itself",
@@ -233,7 +236,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-attach": {
       "summary": "Files were dropped on an entry: the request to attach them there (vocabulary §5 attach); the tree uploads nothing itself",
@@ -250,7 +254,8 @@
           "parent": {}
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-window": {
       "summary": "With more than 300 visible entries, which of them are drawn (§18.4)",
@@ -305,31 +310,36 @@
           "selected",
           "value"
         ]
-      }
+      },
+      "alias_of": "sf-tree-select"
     },
     "sf-tree-records-drop": {
       "summary": "Records dragged from a list were dropped on a node: {value, ids, source}. The tree moves nothing.",
       "payload": {
         "type": "object"
-      }
+      },
+      "alias_of": "sf-tree-move"
     },
     "sf-tree-files-drop": {
       "summary": "Files from the computer were dropped on a node: {value, files}. The tree uploads nothing.",
       "payload": {
         "type": "object"
-      }
+      },
+      "alias_of": "sf-tree-attach"
     },
     "sf-tree-item-click": {
       "summary": "Dated alias of sf-tree-open until 2026-12-01 (split).",
       "payload": {
         "type": "object"
-      }
+      },
+      "alias_of": "sf-tree-open"
     },
     "sf-tree-item-toggle": {
       "summary": "Dated alias of sf-tree-toggle until 2026-12-01 (split).",
       "payload": {
         "type": "object"
-      }
+      },
+      "alias_of": "sf-tree-toggle"
     }
   },
   "state": {

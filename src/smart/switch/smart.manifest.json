@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -243,7 +243,7 @@
       }
     },
     "resetToInherited": {
-      "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field:reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
+      "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field-reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
       "arguments": [],
       "returns": {
         "type": "boolean",

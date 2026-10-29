@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -175,7 +175,7 @@
       }
     },
     "goTo": {
-      "summary": "Activates the tab at index (an index out of range means 0); does nothing for a disabled or the active tab. Sets active-index and emits sf-tab-change.",
+      "summary": "Activates the tab at index (an index out of range means 0); does nothing for a disabled or the active tab. Sets active-index and emits sf-tabs-change.",
       "arguments": [
         {
           "name": "index",
@@ -230,7 +230,7 @@
       }
     },
     "onTabChange": {
-      "summary": "Adds a listener for sf-tab-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
+      "summary": "Adds a listener for sf-tabs-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
       "arguments": [
         {
           "name": "handler",
@@ -291,7 +291,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tabs-settings-change": {
       "summary": "The person ordered or showed/hid a tab in the settings; applied at once. The host keeps it and gives it back with setSettings.",
@@ -375,7 +376,8 @@
           "item",
           "items"
         ]
-      }
+      },
+      "alias_of": "sf-tabs-change"
     }
   },
   "state": {

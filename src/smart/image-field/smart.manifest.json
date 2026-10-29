@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.image-field",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Image field",
   "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
   "kind": "smart",
@@ -175,14 +175,14 @@
       }
     },
     "removeImage": {
-      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field:remove fire, focus goes to «Выбрать…». Returns whether there was an image to remove.",
+      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field-detach fire, focus goes to «Выбрать…». Returns whether there was an image to remove.",
       "arguments": [],
       "returns": {
         "type": "boolean"
       }
     },
     "takeFile": {
-      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field:select fire. A file the accept list does not name is rejected instead. Returns whether it was taken.",
+      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field-attach fire. A file the accept list does not name is rejected instead. Returns whether it was taken.",
       "arguments": [
         {
           "name": "file",
@@ -347,7 +347,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-image-field-detach": {
       "summary": "The person removed the image; detail carries the value it held. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:remove follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -366,7 +367,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-image-field-rejected": {
       "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -389,7 +391,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-image-field:select": {
       "summary": "A file was chosen or dropped: the File to upload. The host uploads it and sets the stored value. Legacy name: sent after sf-image-field-attach with the same detail until 2026-12-01 (aliases.json).",
@@ -413,7 +416,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-image-field-attach"
     },
     "sf-image-field:remove": {
       "summary": "The person removed the image; detail carries the value it held. Legacy name: sent after sf-image-field-detach with the same detail until 2026-12-01 (aliases.json).",
@@ -427,7 +431,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-image-field-detach"
     },
     "sf-image-field:reject": {
       "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Legacy name: sent after sf-image-field-rejected with the same detail until 2026-12-01 (aliases.json).",
@@ -444,7 +449,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-image-field-rejected"
     }
   },
   "state": {

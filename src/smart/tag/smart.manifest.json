@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -271,7 +271,8 @@
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "close": {
       "summary": "Removal was requested from the separately named close action.",
@@ -286,7 +287,8 @@
         "required": [
           "component"
         ]
-      }
+      },
+      "alias_of": "sf-tag-close"
     }
   },
   "state": {

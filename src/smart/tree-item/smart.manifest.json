@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Tree item",
   "summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
   "kind": "smart",
@@ -282,7 +282,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-tree-item-toggle": {
       "summary": "The branch opened or closed (vocabulary §5 toggle); the DOM name sf-tree-item-toggle is unchanged",
@@ -345,7 +346,8 @@
           "value",
           "originalEvent"
         ]
-      }
+      },
+      "alias_of": "sf-tree-item-open"
     }
   },
   "state": {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "title": "Pagination",
   "summary": "Source-driven navigation for a collection split into numbered pages.",
   "kind": "smart",
@@ -286,7 +286,7 @@
   },
   "methods": {
     "goToPage": {
-      "summary": "Moves to a page: the number is parsed as an integer and clamped to 1..pageCount when the count is known (only to at least 1 when it is not). Emits sf-page-change when the page actually changes; does nothing when the total is a known zero.",
+      "summary": "Moves to a page: the number is parsed as an integer and clamped to 1..pageCount when the count is known (only to at least 1 when it is not). Emits sf-pagination-change when the page actually changes; does nothing when the total is a known zero.",
       "arguments": [
         {
           "name": "page",
@@ -301,7 +301,7 @@
       }
     },
     "showMore": {
-      "summary": "Emits sf-show-more with the current paging and the given item; performs no request and changes no state.",
+      "summary": "Emits sf-pagination-load-more with the current paging and the given item; performs no request and changes no state.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -339,7 +339,7 @@
       }
     },
     "setPageSize": {
-      "summary": "Sets a positive page size, keeps the current page within the new page count and emits sf-page-size-change. A non-positive, non-numeric or unchanged size is ignored.",
+      "summary": "Sets a positive page size, keeps the current page within the new page count and emits sf-pagination-size-change. A non-positive, non-numeric or unchanged size is ignored.",
       "arguments": [
         {
           "name": "size",
@@ -353,7 +353,7 @@
       }
     },
     "setAction": {
-      "summary": "Selects a batch action by value (an empty value clears the choice) and emits sf-action-change when it differs from the current one.",
+      "summary": "Selects a batch action by value (an empty value clears the choice) and emits sf-pagination-action-change when it differs from the current one.",
       "arguments": [
         {
           "name": "action",
@@ -367,7 +367,7 @@
       }
     },
     "setActionForAll": {
-      "summary": "Sets whether the batch action applies to every record under the filter and emits sf-action-for-all-change. Turning it on also requests the count (sf-count-request with reason action-for-all) when the count is not yet known.",
+      "summary": "Sets whether the batch action applies to every record under the filter and emits sf-pagination-action-for-all-change. Turning it on also requests the count (sf-pagination-count with reason action-for-all) when the count is not yet known.",
       "arguments": [
         {
           "name": "value",
@@ -395,7 +395,7 @@
       }
     },
     "onPageChange": {
-      "summary": "Adds a listener for sf-page-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
+      "summary": "Adds a listener for sf-pagination-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
       "arguments": [
         {
           "name": "handler",
@@ -414,7 +414,7 @@
       }
     },
     "onShowMore": {
-      "summary": "Adds a listener for sf-show-more; the handler is called with (detail, event). Ignores a non-function handler.",
+      "summary": "Adds a listener for sf-pagination-load-more; the handler is called with (detail, event). Ignores a non-function handler.",
       "arguments": [
         {
           "name": "handler",
@@ -466,7 +466,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-size-change": {
       "summary": "size-change (vocabulary).",
@@ -500,7 +501,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-count": {
       "summary": "count (vocabulary).",
@@ -527,7 +529,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-load-more": {
       "summary": "load-more (vocabulary).",
@@ -565,7 +568,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-selection-clear": {
       "summary": "selection-clear (vocabulary).",
@@ -584,7 +588,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-action-change": {
       "summary": "action-change (vocabulary).",
@@ -603,7 +608,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-action-for-all-change": {
       "summary": "action-for-all-change (vocabulary).",
@@ -622,7 +628,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-pagination-apply": {
       "summary": "apply (vocabulary).",
@@ -663,7 +670,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-action-apply": {
       "summary": "Runtime event sf-action-apply.",
@@ -713,7 +721,8 @@
           "pageSize",
           "pageCount"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-apply"
     },
     "sf-action-change": {
       "summary": "Runtime event sf-action-change.",
@@ -744,7 +753,8 @@
           "previous",
           "action"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-action-change"
     },
     "sf-action-for-all-change": {
       "summary": "Runtime event sf-action-for-all-change.",
@@ -775,7 +785,8 @@
           "previous",
           "actionForAll"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-action-for-all-change"
     },
     "sf-count-request": {
       "summary": "Runtime event sf-count-request.",
@@ -815,7 +826,8 @@
           "current",
           "pageSize"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-count"
     },
     "sf-page-change": {
       "summary": "Runtime event sf-page-change.",
@@ -861,7 +873,8 @@
           "pageCount",
           "pageSize"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-change"
     },
     "sf-page-size-change": {
       "summary": "Runtime event sf-page-size-change.",
@@ -904,7 +917,8 @@
           "total",
           "pageCount"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-size-change"
     },
     "sf-selection-clear": {
       "summary": "Runtime event sf-selection-clear.",
@@ -935,7 +949,8 @@
           "selectedCount",
           "total"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-selection-clear"
     },
     "sf-show-more": {
       "summary": "Runtime event sf-show-more.",
@@ -989,7 +1004,8 @@
           "hasNext",
           "item"
         ]
-      }
+      },
+      "alias_of": "sf-pagination-load-more"
     }
   },
   "state": {

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-upload's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-upload (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/file-upload/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.file-upload",
   "tag": "sf-file-upload",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -779,7 +779,7 @@
         }
       },
       "onFileAdd": {
-        "summary": "Listen for sf-file-upload:file-add; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-attached; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -798,7 +798,7 @@
         }
       },
       "onFileError": {
-        "summary": "Listen for sf-file-upload:file-error; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-failed; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -817,7 +817,7 @@
         }
       },
       "onFileComplete": {
-        "summary": "Listen for sf-file-upload:file-complete; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-completed; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -836,7 +836,7 @@
         }
       },
       "onFileRemove": {
-        "summary": "Listen for sf-file-upload:remove; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-detach; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -855,7 +855,7 @@
         }
       },
       "onFileRetry": {
-        "summary": "Listen for sf-file-upload:retry; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-retry; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -874,7 +874,7 @@
         }
       },
       "onComplete": {
-        "summary": "Listen for sf-file-upload:complete; handler receives the event. Returns the element.",
+        "summary": "Listen for sf-file-upload-finished; handler receives the event. Returns the element.",
         "arguments": [
           {
             "name": "handler",

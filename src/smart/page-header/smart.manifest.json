@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.page-header",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Page header",
   "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "kind": "smart",
@@ -91,7 +91,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-page-header-star": {
       "summary": "The person pressed the star. Cancelable: a host that waits for its own answer cancels it and sets star itself.",
@@ -105,7 +106,8 @@
             "type": "boolean"
           }
         }
-      }
+      },
+      "alias_of": "sf-page-header-toggle"
     }
   },
   "state": {

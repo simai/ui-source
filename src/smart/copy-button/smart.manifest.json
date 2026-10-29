@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.copy-button",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -145,7 +145,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-copy-button-copy-failed": {
       "summary": "copy-failed (vocabulary).",
@@ -165,7 +166,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-copy": {
       "summary": "The value was copied.",
@@ -186,7 +188,8 @@
             ]
           }
         }
-      }
+      },
+      "alias_of": "sf-copy-button-copied"
     },
     "sf-copy-error": {
       "summary": "The value was not copied; on denied the text was selected for Ctrl+C.",
@@ -205,7 +208,8 @@
             ]
           }
         }
-      }
+      },
+      "alias_of": "sf-copy-button-copy-failed"
     }
   },
   "state": {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.download-file",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -149,7 +149,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-download-file:click": {
       "summary": "Emitted once for an enabled native destination or application-owned action, from the rendered .sf-download-file root; bubbles to the host, is not composed and not cancelable.",
@@ -167,7 +168,8 @@
             "type": "boolean"
           }
         }
-      }
+      },
+      "alias_of": "sf-download-file-download"
     }
   },
   "state": {

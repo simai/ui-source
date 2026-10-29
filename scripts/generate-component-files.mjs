@@ -393,12 +393,37 @@ export function eventsOf(component) {
     out[domEvent(component, verb)] = {summary: spec?.summary ?? `${verb} (vocabulary).`, payload};
   }
   for (const [name, fields] of Object.entries(component['x-registry']?.['event-fields'] ?? {})) if (out[name]) Object.assign(out[name], fields);
+  // The events of the vocabulary, before the dated names are added: what
+  // follows may not call one of these an alias of something else.
+  const vocabulary = new Set(Object.keys(out));
   // A former event name as the registry described it (its detail, alias_of):
   // phase A keeps it until the alias ends.
   for (const [name, event] of Object.entries(component['x-registry']?.['alias-events'] ?? {})) out[name] = event;
   for (const row of aliasRows(component)) {
     if (row.kind !== 'event' || out[row.from]) continue;
     out[row.from] = {summary: row.summary ?? `Dated alias of ${row.to} until ${row.remove_after} (${row.mode ?? 'same-detail'}).`, payload: {type: 'object'}};
+  }
+  // Which event a dated name is the alias of, and which event is the name to
+  // bind. Neither block above writes either -- the registry's entries predate
+  // the fields, and an invented entry had only a summary -- so a retired name
+  // read as an event of its own: sf-pagination printed sixteen events where it
+  // has eight and eight retired names, each pair looking equally current
+  // (ui-doc ef9e3e6f). The target is named by its own key in this map, because
+  // that is what the manifest schema asks for (an alias_of points at a
+  // canonical event of the same manifest) and what lets the documentation find
+  // its detail (ui-doc build-smart-reference.mjs). A row whose target is
+  // another element's event -- sf-field:reset -> sf-field-reset, which the
+  // field base sends and no field declares -- gets no alias_of: there is
+  // nothing in this manifest to point at. Its summary already describes the
+  // event; the name it should be keyed under is a standard question of its own.
+  for (const row of aliasRows(component)) {
+    if (row.kind !== 'event' || !row.to || vocabulary.has(row.from)) continue;
+    const event = out[row.from];
+    if (!event || event.alias_of) continue;
+    const name = out[row.to] ? row.to : (out[domEvent(component, row.to)] ? domEvent(component, row.to) : null);
+    if (!name) continue;
+    event.alias_of = name;
+    out[name].canonical = true;
   }
   return out;
 }

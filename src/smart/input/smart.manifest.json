@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -412,7 +412,7 @@
       }
     },
     "resetToInherited": {
-      "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field:reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
+      "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field-reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
       "arguments": [],
       "returns": {
         "type": "boolean",

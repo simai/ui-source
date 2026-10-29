@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "title": "Steps",
   "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed and error steps and moves to an enabled step when it is pressed.",
   "kind": "smart",
@@ -90,7 +90,7 @@
   "contracts": {},
   "methods": {
     "goToStep": {
-      "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-step-change.",
+      "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-steps-change.",
       "arguments": [
         {
           "name": "index",
@@ -119,7 +119,7 @@
       }
     },
     "onStepChange": {
-      "summary": "Adds a listener for sf-step-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
+      "summary": "Adds a listener for sf-steps-change; the handler is called with (current, detail, event). Ignores a non-function handler.",
       "arguments": [
         {
           "name": "handler",
@@ -164,7 +164,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-step-change": {
       "summary": "Runtime event sf-step-change.",
@@ -222,7 +223,8 @@
           "item",
           "items"
         ]
-      }
+      },
+      "alias_of": "sf-steps-change"
     }
   },
   "state": {

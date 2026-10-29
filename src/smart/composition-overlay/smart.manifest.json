@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -439,7 +439,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-composition-overlay-insert": {
       "summary": "An insertion point was chosen, or a library item dropped on the canvas: the place {parent, slot, index} and the item when one was dragged; the detail keeps parent_id for the composition host",
@@ -537,7 +538,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-composition-overlay-action": {
       "summary": "Dated alias of sf-composition-overlay-apply until 2026-12-01: A toolbar action was chosen.",
@@ -555,7 +557,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-composition-overlay-apply"
     },
     "sf-composition-overlay-edit": {
       "summary": "Dated alias of sf-composition-overlay-change until 2026-12-01: A plain-string inline edit was committed with a changed value (framed mode). Cancelable: preventDefault puts the previous text back.",
@@ -577,7 +580,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-composition-overlay-change"
     }
   },
   "state": {

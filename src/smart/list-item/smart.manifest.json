@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "title": "List item",
   "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
@@ -192,7 +192,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-list-item-activate": {
       "summary": "An interactive row was clicked or took Enter (not a control inside it, and not Enter on a row of an sf-sortable list, where Enter picks the row up).",
@@ -213,7 +214,8 @@
             ]
           }
         }
-      }
+      },
+      "alias_of": "sf-list-item-open"
     }
   },
   "state": {

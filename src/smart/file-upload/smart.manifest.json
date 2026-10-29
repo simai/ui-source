@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-upload",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "File Upload",
   "summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
   "kind": "smart",
@@ -164,7 +164,7 @@
       }
     },
     "onFileAdd": {
-      "summary": "Listen for sf-file-upload:file-add; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-attached; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -183,7 +183,7 @@
       }
     },
     "onFileError": {
-      "summary": "Listen for sf-file-upload:file-error; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-failed; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -202,7 +202,7 @@
       }
     },
     "onFileComplete": {
-      "summary": "Listen for sf-file-upload:file-complete; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-completed; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -221,7 +221,7 @@
       }
     },
     "onFileRemove": {
-      "summary": "Listen for sf-file-upload:remove; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-detach; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -240,7 +240,7 @@
       }
     },
     "onFileRetry": {
-      "summary": "Listen for sf-file-upload:retry; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-retry; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -259,7 +259,7 @@
       }
     },
     "onComplete": {
-      "summary": "Listen for sf-file-upload:complete; handler receives the event. Returns the element.",
+      "summary": "Listen for sf-file-upload-finished; handler receives the event. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -329,7 +329,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-attached": {
       "summary": "A file entered the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-add follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -366,7 +367,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-detach": {
       "summary": "A file was removed from the list. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:remove follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -395,7 +397,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-rejected": {
       "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:reject follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -418,7 +421,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-retry": {
       "summary": "A failed file was retried. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:retry follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -447,7 +451,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-begun": {
       "summary": "An entry entered process -- chosen, dropped or retried: its upload stream began (standard simai.smart-component 1.3.8 §10.8, vocabulary 1.1.5 §5.2).",
@@ -518,7 +523,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-failed": {
       "summary": "A file failed. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-file-upload:file-error follows it with the same detail until 2026-12-01 (aliases.json).",
@@ -555,7 +561,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload-cancelled": {
       "summary": "An entry left while in process -- removed by the person or by the host: its stream ended without completing (§10.8).",
@@ -590,7 +597,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-file-upload:complete": {
       "summary": "Every file finished. Legacy name: sent after sf-file-upload-finished with the same detail until 2026-12-01 (aliases.json).",
@@ -604,7 +612,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-finished"
     },
     "sf-file-upload:file-add": {
       "summary": "A file entered the list. Legacy name: sent after sf-file-upload-attached with the same detail until 2026-12-01 (aliases.json).",
@@ -631,7 +640,8 @@
             "type": "boolean"
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-attached"
     },
     "sf-file-upload:file-complete": {
       "summary": "A file finished uploading. Legacy name: sent after sf-file-upload-completed with the same detail until 2026-12-01 (aliases.json).",
@@ -652,7 +662,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-completed"
     },
     "sf-file-upload:file-error": {
       "summary": "A file failed. Legacy name: sent after sf-file-upload-failed with the same detail until 2026-12-01 (aliases.json).",
@@ -673,7 +684,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-failed"
     },
     "sf-file-upload:reject": {
       "summary": "Dropped files the accept list does not name were left out, as the platform dialog would not have offered them. Legacy name: sent after sf-file-upload-rejected with the same detail until 2026-12-01 (aliases.json).",
@@ -690,7 +702,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-rejected"
     },
     "sf-file-upload:remove": {
       "summary": "A file was removed from the list. Legacy name: sent after sf-file-upload-detach with the same detail until 2026-12-01 (aliases.json).",
@@ -711,7 +724,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-detach"
     },
     "sf-file-upload:retry": {
       "summary": "A failed file was retried. Legacy name: sent after sf-file-upload-retry with the same detail until 2026-12-01 (aliases.json).",
@@ -732,7 +746,8 @@
             }
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-retry"
     },
     "sf-file-upload:select": {
       "summary": "Files were selected for upload. Legacy name: sent after sf-file-upload-attach with the same detail until 2026-12-01 (aliases.json).",
@@ -756,7 +771,8 @@
             "type": "boolean"
           }
         }
-      }
+      },
+      "alias_of": "sf-file-upload-attach"
     }
   },
   "state": {

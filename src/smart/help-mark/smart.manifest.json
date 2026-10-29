@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.help-mark",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "title": "Help mark",
   "summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
   "kind": "smart",
@@ -114,7 +114,8 @@
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-help-mark-closed": {
       "summary": "closed (vocabulary).",
@@ -123,21 +124,24 @@
         "required": [],
         "properties": {},
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-help-mark-open": {
       "summary": "The explanation opened.",
       "payload": {
         "type": "object",
         "properties": {}
-      }
+      },
+      "alias_of": "sf-help-mark-opened"
     },
     "sf-help-mark-close": {
       "summary": "The explanation closed.",
       "payload": {
         "type": "object",
         "properties": {}
-      }
+      },
+      "alias_of": "sf-help-mark-closed"
     }
   },
   "state": {

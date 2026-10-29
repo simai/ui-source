@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "title": "Profile picker",
   "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -137,7 +137,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-profile-picker-create": {
       "summary": "create (vocabulary).",
@@ -167,7 +168,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-profile-picker-rename": {
       "summary": "rename (vocabulary).",
@@ -190,7 +192,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-profile-picker-delete": {
       "summary": "delete (vocabulary).",
@@ -209,7 +212,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-profile-picker-reset": {
       "summary": "reset (vocabulary).",
@@ -224,7 +228,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-profile-select": {
       "summary": "The person chose a profile.",
@@ -238,7 +243,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-profile-picker-select"
     },
     "sf-profile-create": {
       "summary": "The person asked for a new profile, a copy of the current one.",
@@ -259,7 +265,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-profile-picker-create"
     },
     "sf-profile-rename": {
       "summary": "The person renamed a profile.",
@@ -277,7 +284,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-profile-picker-rename"
     },
     "sf-profile-delete": {
       "summary": "The person confirmed removing a profile.",
@@ -291,7 +299,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-profile-picker-delete"
     },
     "sf-profile-reset": {
       "summary": "The person asked for the current profile back as the standard one.",
@@ -305,7 +314,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-profile-picker-reset"
     }
   },
   "state": {

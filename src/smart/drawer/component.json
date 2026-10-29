@@ -2,7 +2,7 @@
   "$comment": "The source of sf-drawer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/drawer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.drawer",
   "tag": "sf-drawer",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "kind": "leaf",
   "family": "drawer",
   "settings": {
@@ -224,7 +224,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches drawer:before-open (cancelable) and later drawer:after-open unless options.emit is false. Returns the element.",
+      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches sf-drawer-open (cancelable) and later sf-drawer-opened unless options.emit is false. Returns the element.",
       "x-returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -248,7 +248,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
+      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches sf-drawer-close (cancelable) and sf-drawer-closed unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
       "x-returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -845,7 +845,7 @@
         }
       },
       "onBeforeOpen": {
-        "summary": "Adds a listener for drawer:before-open on the host that runs only for this Drawer's own events. Returns the element.",
+        "summary": "Adds a listener for sf-drawer-open on the host that runs only for this Drawer's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -867,7 +867,7 @@
         }
       },
       "onAfterOpen": {
-        "summary": "Adds a listener for drawer:after-open on the host that runs only for this Drawer's own events. Returns the element.",
+        "summary": "Adds a listener for sf-drawer-opened on the host that runs only for this Drawer's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -889,7 +889,7 @@
         }
       },
       "onBeforeClose": {
-        "summary": "Adds a listener for drawer:before-close on the host that runs only for this Drawer's own events. Returns the element.",
+        "summary": "Adds a listener for sf-drawer-close on the host that runs only for this Drawer's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -911,7 +911,7 @@
         }
       },
       "onAfterClose": {
-        "summary": "Adds a listener for drawer:after-close on the host that runs only for this Drawer's own events. Returns the element.",
+        "summary": "Adds a listener for sf-drawer-closed on the host that runs only for this Drawer's own events. Returns the element.",
         "arguments": [
           {
             "name": "handler",
@@ -933,7 +933,7 @@
         }
       },
       "setSnap": {
-        "summary": "Sets a bottom sheet's resting height (auto, half or full) and dispatches drawer:snap when it changes. Returns the element.",
+        "summary": "Sets a bottom sheet's resting height (auto, half or full) and dispatches sf-drawer-snapped when it changes. Returns the element.",
         "arguments": [
           {
             "name": "snap",

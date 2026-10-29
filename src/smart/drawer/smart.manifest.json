@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -234,7 +234,7 @@
   },
   "methods": {
     "open": {
-      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches drawer:before-open (cancelable) and later drawer:after-open unless options.emit is false. Returns the element.",
+      "summary": "Opens the Drawer, or brings it to the front when already open. Dispatches sf-drawer-open (cancelable) and later sf-drawer-opened unless options.emit is false. Returns the element.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -242,7 +242,7 @@
       }
     },
     "close": {
-      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches drawer:before-close (cancelable) and drawer:after-close unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
+      "summary": "Closes the Drawer and returns focus (to the opener when it is the top layer; a drawer closing under another layer moves no focus). Dispatches sf-drawer-close (cancelable) and sf-drawer-closed unless options.emit is false; options.reason says why (close, escape, outside, cancelled, api; api by default). Returns the element.",
       "arguments": [
         {
           "name": "reason",
@@ -292,7 +292,7 @@
       }
     },
     "onBeforeOpen": {
-      "summary": "Adds a listener for drawer:before-open on the host that runs only for this Drawer's own events. Returns the element.",
+      "summary": "Adds a listener for sf-drawer-open on the host that runs only for this Drawer's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -314,7 +314,7 @@
       }
     },
     "onAfterOpen": {
-      "summary": "Adds a listener for drawer:after-open on the host that runs only for this Drawer's own events. Returns the element.",
+      "summary": "Adds a listener for sf-drawer-opened on the host that runs only for this Drawer's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -336,7 +336,7 @@
       }
     },
     "onBeforeClose": {
-      "summary": "Adds a listener for drawer:before-close on the host that runs only for this Drawer's own events. Returns the element.",
+      "summary": "Adds a listener for sf-drawer-close on the host that runs only for this Drawer's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -358,7 +358,7 @@
       }
     },
     "onAfterClose": {
-      "summary": "Adds a listener for drawer:after-close on the host that runs only for this Drawer's own events. Returns the element.",
+      "summary": "Adds a listener for sf-drawer-closed on the host that runs only for this Drawer's own events. Returns the element.",
       "arguments": [
         {
           "name": "handler",
@@ -380,7 +380,7 @@
       }
     },
     "setSnap": {
-      "summary": "Sets a bottom sheet's resting height (auto, half or full) and dispatches drawer:snap when it changes. Returns the element.",
+      "summary": "Sets a bottom sheet's resting height (auto, half or full) and dispatches sf-drawer-snapped when it changes. Returns the element.",
       "arguments": [
         {
           "name": "snap",
@@ -408,7 +408,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-drawer-opened": {
       "summary": "opened (vocabulary).",
@@ -423,7 +424,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-drawer-close": {
       "summary": "close (vocabulary).",
@@ -452,7 +454,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-drawer-closed": {
       "summary": "closed (vocabulary).",
@@ -477,7 +480,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "sf-drawer-snapped": {
       "summary": "snapped (vocabulary).",
@@ -500,7 +504,8 @@
           }
         },
         "additionalProperties": true
-      }
+      },
+      "canonical": true
     },
     "drawer:ready": {
       "summary": "The portal surface is ready. Bubbles and is composed; detail.drawer is the emitting drawer.",
@@ -560,7 +565,8 @@
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
           }
         }
-      }
+      },
+      "alias_of": "sf-drawer-open"
     },
     "drawer:after-open": {
       "summary": "The Drawer was opened. Bubbles and is composed; detail.drawer is the emitting drawer.",
@@ -580,7 +586,8 @@
             "description": "The rendered drawer root ([data-sf-drawer-root]) in its portal."
           }
         }
-      }
+      },
+      "alias_of": "sf-drawer-opened"
     },
     "drawer:before-close": {
       "summary": "Cancelable intent before closing. Bubbles and is composed; detail.drawer is the emitting drawer.",
@@ -615,7 +622,8 @@
             "description": "Whether something is unsaved; false until the component has an unsaved setting."
           }
         }
-      }
+      },
+      "alias_of": "sf-drawer-close"
     },
     "drawer:after-close": {
       "summary": "The Drawer was closed. Bubbles and is composed; detail.drawer is the emitting drawer.",
@@ -646,7 +654,8 @@
             "description": "Why it closes (standard 1.3.8 §19.3): its own close control, Escape, a press outside, a page control that closes it, or a script."
           }
         }
-      }
+      },
+      "alias_of": "sf-drawer-closed"
     },
     "drawer:snap": {
       "summary": "A bottom sheet came to rest at another height (handle, swipe or setSnap()).",
@@ -660,7 +669,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "alias_of": "sf-drawer-snapped"
     }
   },
   "state": {
