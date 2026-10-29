@@ -96,7 +96,8 @@ class SfPager extends PagerElement {
     return normalizeItems(this.items);
   }
 
-  get place() {
+  // The current place clamped to items; the template reads it as `at`.
+  get at() {
     return clampIndex(this.current, this.list.length);
   }
 
@@ -107,7 +108,7 @@ class SfPager extends PagerElement {
     if (href || title) return {href: text(href), title: text(title) || text(href), index: null, id: null};
     const list = this.list;
     if (!list.length) return null;
-    const index = this.place + (which === 'prev' ? -1 : 1);
+    const index = this.at + (which === 'prev' ? -1 : 1);
     const item = list[index];
     return item ? {href: item.href, title: item.title, index, id: item.id} : null;
   }
@@ -136,7 +137,7 @@ class SfPager extends PagerElement {
   move(direction, wanted, {person = false} = {}) {
     const list = this.list;
     if (!list.length) return refused('empty');
-    const from = this.place;
+    const from = this.at;
     const finishing = this.appearance === 'steps' || this.appearance === 'course';
     let index;
     let complete = false;
@@ -168,7 +169,7 @@ class SfPager extends PagerElement {
   }
 
   apply(index, complete, person) {
-    const previous = this.place;
+    const previous = this.at;
     const focused = this.focusedControl();
     this.current = index;
     this.complete = complete;
@@ -263,10 +264,10 @@ class SfPager extends PagerElement {
       doneLabel: this.doneLabel,
       prev: appearance === 'cards' || appearance === 'row' ? this.sideOf('prev') : null,
       next: appearance === 'cards' || appearance === 'row' ? this.sideOf('next') : null,
-      items: list,
-      current,
+      list,
+      at: current,
       complete: Boolean(this.complete),
-      place,
+      placeText: place,
       words: {
         nextLesson: word('next-lesson'),
         lastLesson: word('last-lesson'),
