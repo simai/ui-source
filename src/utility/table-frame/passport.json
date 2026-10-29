@@ -12,7 +12,7 @@
     "src/utility/table-frame/default/scss/_sf_css__table_frame.scss",
     "src/utility/table-frame/default/scss/index.scss"
   ],
-  "content_sha256": "ffa8001a22047221c72f497c0a36c6c8a136b9ebfaac3b7cce6e8919d6d111b2",
+  "content_sha256": "075e8b74a11c90f7cd8c857eb7a106da865124a9f3ac2a75ea9fb4aa41142328",
   "dependencies": [
     {
       "id": "tokens.border",
