@@ -2,7 +2,7 @@
   "$comment": "The source of sf-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.color",
   "tag": "sf-color",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "field",
   "traits": [
@@ -98,6 +98,29 @@
         "name": "string"
       },
       "summary": "The colour moved, on every step of a drag across the platform picker and before each change. Carries the value and the form name."
+    },
+    "field-reset": {
+      "shared": "field-inherit@1",
+      "cancelable": true,
+      "summary": "The person pressed the reset back to the inherited value. The event of the trait field-inherit@1: one name for every field of the family, so a form hears them all at once and tells them apart by detail.tag. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+      "carries": {
+        "tag": {
+          "type": "string",
+          "summary": "The element that was reset, as a tag name."
+        },
+        "value": {
+          "type": "string",
+          "summary": "The field's own value before the reset."
+        },
+        "inherited-value": {
+          "type": "string",
+          "summary": "The inherited value it returns to."
+        },
+        "name": {
+          "type": "string",
+          "summary": "The form name, empty when the field has none."
+        }
+      }
     }
   },
   "actions": {
@@ -193,7 +216,7 @@
         "kind": "event",
         "mode": "same-detail",
         "section": "§8, §20.2",
-        "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first",
+        "note": "the event of the trait field-inherit@1, declared in component.json as the shared event field-reset; the field sends sf-field-reset and the shim follows it with this dated name, same detail, one cancel",
         "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back."
       },
       {
@@ -233,7 +256,8 @@
     "form: the host is the form control through ElementInternals (§17.1); it submits the chosen hex, empty while the inherited colour applies (§20.2); the hidden input is drawn only without ElementInternals",
     "version 1.2.1: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.2.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.3.0: variant theme (owner decision by delegation, 2026-10-28: a theme colour button is a variant of sf-color, not a separate component). An icon-only primary sf-icon-button (icon palette) opens the native colour input by showPicker (a click on it where showPicker is missing); the input stays in the tree, transparent and out of the focus order, so the picker anchors at the button. input moves the value and applies the theme to <html> after 120 ms of quiet; change commits, applies at once and sends change once. A moved colour that is never committed (Escape, cancel) goes back to the committed one when the browser restores the input, or at the next press or key on the page. Empty value = the theme the page had: the control restores the variables applyTheme changed. SF.ThemePalette comes through the Loader (ensurePlugin theme-palette, the theme-palette:ready event), not inside this bundle: the HCT solver and tonal palettes are about 70 KB of source, more than the colour control itself, and every field-variant colour would carry them. No storage: the page keeps the value; a value written from code applies the theme silently."
+    "version 1.3.0: variant theme (owner decision by delegation, 2026-10-28: a theme colour button is a variant of sf-color, not a separate component). An icon-only primary sf-icon-button (icon palette) opens the native colour input by showPicker (a click on it where showPicker is missing); the input stays in the tree, transparent and out of the focus order, so the picker anchors at the button. input moves the value and applies the theme to <html> after 120 ms of quiet; change commits, applies at once and sends change once. A moved colour that is never committed (Escape, cancel) goes back to the committed one when the browser restores the input, or at the next press or key on the page. Empty value = the theme the page had: the control restores the variables applyTheme changed. SF.ThemePalette comes through the Loader (ensurePlugin theme-palette, the theme-palette:ready event), not inside this bundle: the HCT solver and tonal palettes are about 70 KB of source, more than the colour control itself, and every field-variant colour would carry them. No storage: the page keeps the value; a value written from code applies the theme silently.",
+    "version 1.4.0: the trait event is declared in component.json as the shared event field-reset (standard 1.3.13 §8: an event a trait brings is named sf-<verb>, with no tag): the element sends sf-field-reset itself and the manifest describes it, with tag in the detail. Before, the registry described only the retired sf-field:reset and no current name, and the new name came from the alias shim alone. The dated sf-field:reset follows with the same detail and one cancel until 2026-12-01."
   ],
   "x-rule": {
     "$comment": [

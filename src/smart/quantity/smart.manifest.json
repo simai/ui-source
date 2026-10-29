@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.quantity",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -378,6 +378,38 @@
         "additionalProperties": true
       }
     },
+    "sf-field-reset": {
+      "summary": "The person pressed the reset back to the inherited value. The event of the trait field-inherit@1: one name for every field of the family, so a form hears them all at once and tells them apart by detail.tag. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "tag",
+          "value",
+          "inheritedValue",
+          "name"
+        ],
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The element that was reset, as a tag name."
+          },
+          "value": {
+            "type": "string",
+            "description": "The field's own value before the reset."
+          },
+          "inheritedValue": {
+            "type": "string",
+            "description": "The inherited value it returns to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The form name, empty when the field has none."
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
     "sf-field:reset": {
       "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. Not prevented, the field empties, says so with input and change (source reset), shows the inherited value again and takes focus back.",
       "payload": {
@@ -396,7 +428,8 @@
             "description": "The form name, empty when the field has none."
           }
         }
-      }
+      },
+      "alias_of": "sf-field-reset"
     }
   },
   "state": {
@@ -538,7 +571,7 @@
       },
       {
         "path": "src/smart/quantity/docs.md",
-        "sha256": "cad512f82f0e671ea108e121b895d6b294b9dd8c7201a1b454dbe081f3943064"
+        "sha256": "42205948250175b9b3e0c4f35c7a2c6d1286dd02285b84c812ad2077295a68fd"
       }
     ],
     "generated_runtime": []

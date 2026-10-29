@@ -149,7 +149,7 @@ test('quantity: input and change on the host with one detail shape; the box\'s o
   assert.match(source, /this\.stepBy\(direction, 'button', \{change: false\}\)/u);
   assert.match(source, /stopHold\(\) \{[\s\S]*?this\.commitChange\('button'\);/u);
   // The manifest says the events the source sends, change canonical, in the axes table.
-  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field:reset']);
+  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field-reset', 'sf-field:reset']);
   assert.equal(manifest.events.change.canonical, true);
   assert.deepEqual(manifest.events.change.payload, manifest.events.input.payload);
   assert.deepEqual(Object.keys(manifest.events.change.payload.properties), ['value', 'text', 'name', 'source']);

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.color",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "title": "Color",
   "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -206,6 +206,38 @@
         "additionalProperties": true
       }
     },
+    "sf-field-reset": {
+      "summary": "The person pressed the reset back to the inherited value. The event of the trait field-inherit@1: one name for every field of the family, so a form hears them all at once and tells them apart by detail.tag. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "tag",
+          "value",
+          "inheritedValue",
+          "name"
+        ],
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The element that was reset, as a tag name."
+          },
+          "value": {
+            "type": "string",
+            "description": "The field's own value before the reset."
+          },
+          "inheritedValue": {
+            "type": "string",
+            "description": "The inherited value it returns to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The form name, empty when the field has none."
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
     "sf-field:reset": {
       "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. When it is not prevented the field empties, says so with its ordinary change, shows the inherited value again and takes focus back.",
       "payload": {
@@ -224,7 +256,8 @@
             "description": "The form name, empty when the field has none."
           }
         }
-      }
+      },
+      "alias_of": "sf-field-reset"
     }
   },
   "state": {
@@ -345,7 +378,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "604f3d40d27a1430afc06182b7167d2188251191d06e9ccf2f22c3bede321826"
+        "sha256": "767ea28b693f62589ff7c213b256623140cac4767e8a06428b8712554505152d"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",

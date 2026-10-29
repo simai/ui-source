@@ -354,11 +354,18 @@ export function inputsOf(component, lang = {}) {
 
 // The DOM name of an event (core/js/element-manifest.js eventName, §8): the
 // verb itself for "carries": "native" and for change/input (unless
-// "x-native": false), otherwise <tag>-<verb>.
+// "x-native": false), `sf-<verb>` for an event a trait brings ("shared":
+// "<trait>"), otherwise <tag>-<verb>.
 const NATIVE_EVENTS = new Set(['change', 'input']);
 export function domEvent(component, verb) {
   const declared = component.events?.[verb];
   if (declared?.carries === 'native') return verb;
+  // An event a trait brings is one event for the whole family -- a form hears
+  // it once for every field -- so its name holds no tag: the verb names the
+  // trait's event in full (`field-reset` -> `sf-field-reset`, §8, §20.2). It
+  // had no form in component.json at all, so six fields described the event
+  // under its retired name and declared no current one (standard 1.3.13).
+  if (declared?.shared) return `sf-${verb}`;
   if (NATIVE_EVENTS.has(verb) && declared?.['x-native'] !== false) return verb;
   return `${component.tag}-${verb}`;
 }
@@ -411,11 +418,10 @@ export function eventsOf(component) {
   // (ui-doc ef9e3e6f). The target is named by its own key in this map, because
   // that is what the manifest schema asks for (an alias_of points at a
   // canonical event of the same manifest) and what lets the documentation find
-  // its detail (ui-doc build-smart-reference.mjs). A row whose target is
-  // another element's event -- sf-field:reset -> sf-field-reset, which the
-  // field base sends and no field declares -- gets no alias_of: there is
-  // nothing in this manifest to point at. Its summary already describes the
-  // event; the name it should be keyed under is a standard question of its own.
+  // its detail (ui-doc build-smart-reference.mjs). A trait's event is declared
+  // like any other -- "shared": "<trait>", so sf-field:reset -> sf-field-reset
+  // finds its target -- which is what the six fields lacked: they described the
+  // event under its retired name and declared no current one (1.3.13).
   for (const row of aliasRows(component)) {
     if (row.kind !== 'event' || !row.to || vocabulary.has(row.from)) continue;
     const event = out[row.from];

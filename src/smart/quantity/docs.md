@@ -102,7 +102,7 @@
 `source` — `typing`, `commit`, `button`, `keyboard` или `reset`. Собственные
 события внутреннего поля наружу не выходят.
 
-`sf-field:reset` — нажата кнопка сброса к наследуемому значению; событие
+`sf-field-reset` — нажата кнопка сброса к наследуемому значению; событие
 можно отменить (`preventDefault`).
 
 Методы: `setValue(value)`, `clear()`, `stepUp(n)`, `stepDown(n)`,

@@ -25,7 +25,10 @@ import './inherited-value.css';
 // own value is, how to empty it and what takes focus: sf-input, sf-textarea,
 // sf-dropdown, sf-color and sf-switch.
 
-export const INHERITED_RESET_EVENT = 'sf-field:reset';
+// The trait's event, one name for the whole family (§8, §20.2). The field
+// sends this name; the dated `sf-field:reset` follows it, with the same detail
+// and one cancel, from the alias shim (aliases.json, §16 item 20).
+export const INHERITED_RESET_EVENT = 'sf-field-reset';
 
 // The marker and the reset, in the page's language. A product names its own
 // words with `inherited-text` and `reset-label`, or registers a language.
@@ -112,7 +115,7 @@ export const InheritedValueField = (Base) => class extends Base {
   }
 
   /**
-   * Back to the inherited value. Fires `sf-field:reset` first, cancellable:
+   * Back to the inherited value. Fires `sf-field-reset` first, cancellable:
    * a host that must confirm or refuse calls preventDefault and nothing
    * changes. Returns whether the field was reset. The detail names the
    * element (`tag`), as a trait event does (standard 1.3.8 §20, trait

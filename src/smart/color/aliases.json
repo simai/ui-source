@@ -13,7 +13,7 @@
       "remove_after": "2026-12-01",
       "mode": "same-detail",
       "section": "§8, §20.2",
-      "note": "the event of the trait field-inherit@1; the trait code still sends the old name, the shim sends sf-field-reset first"
+      "note": "the event of the trait field-inherit@1, declared in component.json as the shared event field-reset; the field sends sf-field-reset and the shim follows it with this dated name, same detail, one cancel"
     },
     {
       "from": "shown",

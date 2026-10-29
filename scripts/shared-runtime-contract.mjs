@@ -42,7 +42,7 @@ export const COMPONENT_MANIFEST_KEYS = Object.freeze([
 // name itself (settings.description, a setting, stays) -- is dropped with
 // all it holds. The runtime reads none of them: under the kept keys it reads
 // type, values, default, default-from, optional, carries and the names it
-// holds, x-native, cancelable, dom, aliases, with and its names, emits,
+// holds, x-native, shared, cancelable, dom, aliases, with and its names, emits,
 // timeout, retry, waits, concurrency, of and its names, form.value/submits/
 // disabled, host-states, presentation.skeleton.late and the names of
 // css-variables (element-manifest.js, host-port.js, the

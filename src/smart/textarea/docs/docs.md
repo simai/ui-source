@@ -100,11 +100,11 @@ in the same place.
 The reset is a native button named by `reset-label` («Сбросить к наследуемому»,
 "Reset to inherited"); the marker's words are `inherited-text` («наследуется»,
 "inherited"). Both follow the page's language when unset. Pressing the reset
-fires `sf-field:reset` on the host -- bubbling, composed and **cancellable** --
+fires `sf-field-reset` on the host -- bubbling, composed and **cancellable** --
 before anything changes:
 
 ```js
-field.addEventListener('sf-field:reset', (event) => {
+field.addEventListener('sf-field-reset', (event) => {
   const {value, inheritedValue, name} = event.detail; // value: the own value being dropped
   if (!confirm(`Return ${name} to ${inheritedValue}?`)) event.preventDefault();
 });
