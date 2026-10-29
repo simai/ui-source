@@ -92,6 +92,22 @@
       }
     },
     {
+      "name": "hint",
+      "title": "С подсказкой",
+      "settings": {
+        "label": "Дата публикации",
+        "value": "2026-09-03",
+        "locale": "ru",
+        "hint": "Дата публикации, её можно изменить позже.",
+        "hint-icon": "help"
+      },
+      "expect": {
+        "values": {
+          "value": "2026-09-03"
+        }
+      }
+    },
+    {
       "name": "bounds",
       "title": "С границами",
       "settings": {
@@ -703,6 +719,36 @@
               "formData": {
                 "p": "2026-10-01/2026-10-05"
               }
+            }
+          },
+          {
+            "id": "the-hint-and-its-marker-reach-the-field",
+            "covers": "settings.hint, settings.hint-icon forwarded to the inner sf-input (field parity, 1.2.0): the text under the field, read to the native input as its description, and the marker at the field's end; an error-message takes the hint's place while the field is invalid and the hint comes back when it is removed",
+            "field": "<sf-datepicker name=\"d\" label=\"Дата\" value=\"2026-09-03\" hint=\"Дата публикации, её можно изменить позже.\" hint-icon=\"help\"></sf-datepicker>",
+            "script": "const frame = () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))); const read = () => { const box = el.querySelector('input'); const message = el.querySelector('.sf-input-hint-text-wrap'); const described = String(box?.getAttribute('aria-describedby') || '').split(/\\s+/); return {text: message?.textContent ?? null, kind: message?.dataset.fieldMessage ?? null, described: Boolean(message && described.includes(message.id)), icon: el.querySelector('.sf-input-hint sf-icon')?.getAttribute('icon') ?? null}; }; const hint = read(); el.setAttribute('error-message', 'Выберите дату.'); el.setAttribute('invalid', ''); await frame(); const error = read(); el.removeAttribute('invalid'); await frame(); return [hint, error, read()];",
+            "wait": 300,
+            "expect": {
+              "returns": [
+                {
+                  "text": "Дата публикации, её можно изменить позже.",
+                  "kind": "hint",
+                  "described": true,
+                  "icon": "help"
+                },
+                {
+                  "text": "Выберите дату.",
+                  "kind": "error",
+                  "described": true,
+                  "icon": "help"
+                },
+                {
+                  "text": "Дата публикации, её можно изменить позже.",
+                  "kind": "hint",
+                  "described": true,
+                  "icon": "help"
+                }
+              ],
+              "events": []
             }
           }
         ]

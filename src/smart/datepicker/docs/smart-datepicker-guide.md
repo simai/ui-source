@@ -63,6 +63,20 @@ calendar closes; a `month`/`year` a host sets is kept while there is no value.
 on the native input -- and `error-message` is the text under it. Removing
 `invalid` restores the valid field: no border, no `aria-invalid`, no message.
 
+## A hint under the field
+
+`hint` is the helper text under the field, and `hint-icon` the marker at its
+end. They are the settings of `sf-input` and they behave as they do there: the
+hint is read to the native input as its description (`aria-describedby`), and
+while the field is invalid `error-message` takes its place -- removing `invalid`
+brings the hint back. The marker stays either way.
+
+Trailing text (`text-end` on `sf-input`) is not a setting here. The calendar
+trigger owns the field's end: the whole field opens the panel, so text there
+would read as part of the date while being a click target that opens a
+calendar. A date that needs a unit or a suffix beside it is a case for
+`sf-input`.
+
 ## A field whose label is drawn outside it
 
 `label` draws the label above the control. A host that prints the label itself --

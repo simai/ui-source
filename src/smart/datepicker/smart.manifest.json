@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.datepicker",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "title": "Datepicker",
   "summary": "Accessible date and date-range picker with popup and inline presentation, calendar navigation and host-owned values.",
   "kind": "composite",
@@ -196,6 +196,11 @@
         "default": "",
         "description": "The message under an invalid field; ignored while the field is valid."
       },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "The helper text under the field, read to the control as its description, as on sf-input. An error-message takes its place while the field is invalid and it comes back when invalid is removed."
+      },
       "icon-start": {
         "type": "string",
         "default": "calendar_today",
@@ -205,6 +210,11 @@
         "type": "string",
         "default": "calendar_today",
         "description": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
+      },
+      "hint-icon": {
+        "type": "string",
+        "default": "",
+        "description": "The marker at the end of the field, as on sf-input; it stays while the field is invalid."
       },
       "input-root-class": {
         "type": "string",
@@ -638,11 +648,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/datepicker/index.js",
-        "sha256": "e64e631e06fab260f961a7f5e18d117d5852a5a6a7616f1158ecae9541744b50"
+        "sha256": "828bc4dcff106823fb563ed624475f85eb937ca332e0336ea67a9bf65323da8a"
       },
       {
         "path": "src/smart/datepicker/js/templates/default.js",
-        "sha256": "275b1ceda8dcda0610d25a766df1dea93705d4d8b4a107f0ccd291da08f372db"
+        "sha256": "4fcecc04708cea0deddbcf5070584589ae9ea647e2e0d8b1ccedbb9fa2c8e34e"
       },
       {
         "path": "src/smart/datepicker/rule.js",
@@ -650,7 +660,7 @@
       },
       {
         "path": "src/smart/datepicker/docs/smart-datepicker-guide.md",
-        "sha256": "6186dd8f081883431b8ce6292ee936dee08afaf7ce7a22ec914f9254fda0eeec"
+        "sha256": "445c18f8e2a82b62e92fa5f0d7bb852ab12607d2cfa323c1ffc3a233bc2a779d"
       }
     ],
     "generated_runtime": [

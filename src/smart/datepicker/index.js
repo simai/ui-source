@@ -1731,8 +1731,15 @@ class SfDatepicker extends FormField(DatepickerElement) {
             required: this.required,
             invalid: this.invalid,
             errorMessage: this.errorMessage,
+            // The field's own words and marker, as on sf-input: the helper text
+            // under the control (which the field reads to it as its
+            // description) and the marker at the field's end. The settings
+            // themselves come from component.json, so `hint` and `hintIcon`
+            // are the manifest's own accessors.
+            hint: this.hint,
             leftIcon: this.leftIcon,
             iconStart: this.leftIcon,
+            hintIcon: this.hintIcon,
             inputRootClass: this.inputRootClass,
             mask: this.mask,
             maskPattern: this.maskPattern,

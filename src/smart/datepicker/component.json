@@ -2,7 +2,7 @@
   "$comment": "The source of sf-datepicker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.datepicker",
   "tag": "sf-datepicker",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -153,6 +153,11 @@
       "default": "",
       "summary": "The message under an invalid field; ignored while the field is valid."
     },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "The helper text under the field, read to the control as its description, as on sf-input. An error-message takes its place while the field is invalid and it comes back when invalid is removed."
+    },
     "icon-start": {
       "type": "icon",
       "default": "calendar_today",
@@ -162,6 +167,11 @@
       "type": "icon",
       "default": "calendar_today",
       "summary": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
+    },
+    "hint-icon": {
+      "type": "icon",
+      "default": "",
+      "summary": "The marker at the end of the field, as on sf-input; it stays while the field is invalid."
     },
     "input-root-class": {
       "type": "string",
@@ -468,7 +478,8 @@
   },
   "x-words": [
     "placeholder",
-    "label"
+    "label",
+    "hint"
   ],
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
@@ -490,7 +501,9 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The default example now prints the input with its panel relation (aria-haspopup, aria-expanded, aria-controls): the snapshot is taken after the element has drawn with its sheets.",
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.5: disabled reaches the whole panel -- every day, month and year, the month and year arrows and toggles, the quick ranges and «Свой период» are disabled and their handlers and the choose-preset and choose-custom-range actions refuse (outcome disabled), so a panel a host holds open, or the inline one, changes no value while the field is disabled; readonly keeps its meaning (no typing, the grid still chooses). The value property is a type union, written in x-registry.inputs.value: an ISO date string, or [start, end] -- what the getter returns in range mode, a real feature (range, start-value, end-value) and not a leftover. The object {start|startValue|date, end|endValue} older callers pass is still read as that pair for compatibility but stays out of the contract; any other shape (a number, a boolean, an object without those keys, a Date) is read as before -- text, or cleared -- with a console warning once per element."
+    "version 1.1.5: disabled reaches the whole panel -- every day, month and year, the month and year arrows and toggles, the quick ranges and «Свой период» are disabled and their handlers and the choose-preset and choose-custom-range actions refuse (outcome disabled), so a panel a host holds open, or the inline one, changes no value while the field is disabled; readonly keeps its meaning (no typing, the grid still chooses). The value property is a type union, written in x-registry.inputs.value: an ISO date string, or [start, end] -- what the getter returns in range mode, a real feature (range, start-value, end-value) and not a leftover. The object {start|startValue|date, end|endValue} older callers pass is still read as that pair for compatibility but stays out of the contract; any other shape (a number, a boolean, an object without those keys, a Date) is read as before -- text, or cleared -- with a console warning once per element.",
+    "version 1.2.0: hint and hint-icon are settings of sf-datepicker, forwarded to the inner sf-input as every other field setting is -- field parity with sf-input, asked for by the UI Kit thread (2026-10-29). hint is the helper text under the field and the control's description (aria-describedby on the native input); hint-icon is the marker at the field's end. Both are declared as sf-input declares them (string with an empty default; icon with an empty default), so a person sees one behaviour in both fields: an error-message takes the hint's place while the field is invalid and the hint comes back when invalid is removed, and hint-icon stays either way. hint is a word setting (§15.1) with an empty default, so it holds no word of its own and nothing moves to lang. Added settings behind no rename are a minor (§4.10).",
+    "text-end: not a setting of sf-datepicker, and not forwarded (dispatcher decision, 2026-10-29). The calendar trigger owns the field's end: the whole field opens the panel, so trailing text would read as part of the value while being a click target that opens a calendar. hint-icon is kept there because it is a marker a reader looks at, not text beside the date. A host that needs a unit or a suffix beside a date uses sf-input."
   ],
   "x-registry": {
     "kind": "composite",
