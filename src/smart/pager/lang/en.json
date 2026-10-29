@@ -1,0 +1,19 @@
+{
+  "title": "Pager",
+  "runtime": {
+    "label": "Adjacent pages",
+    "prev": "Back",
+    "next": "Next",
+    "done": "Done",
+    "step": "Step {n} of {count}",
+    "lesson": "Lesson {n} of {count}",
+    "position": "{n} of {count}",
+    "next-lesson": "Next lesson",
+    "last-lesson": "Last lesson",
+    "start": "Start",
+    "finished": "Course complete",
+    "restart": "Start over",
+    "prev-item": "Previous record",
+    "next-item": "Next record"
+  }
+}
