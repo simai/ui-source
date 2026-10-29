@@ -2545,6 +2545,409 @@
       },
       "owner": "ui-source",
       "source": "src/smart/pagination/index.js formerWords, src/core/js/element-manifest.js, src/core/js/page-language.js pageWord"
+    },
+    {
+      "id": "event-vocabulary-names",
+      "recorded_on": "2026-10-29",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "A Smart element's events carry the vocabulary's verb under the element's own DOM name (standard simai.smart-component 1.3.8 §8, §16 item 20). Seventy-seven older names follow with the same detail until they are swept.",
+      "items": [
+        {
+          "component": "sf-accordion",
+          "from": "sf-accordion:toggle",
+          "to": "sf-accordion-toggle"
+        },
+        {
+          "component": "sf-breadcrumbs",
+          "from": "sf-breadcrumb-click",
+          "to": "sf-breadcrumbs-press"
+        },
+        {
+          "component": "sf-code-input",
+          "from": "sf-code-input:complete",
+          "to": "sf-code-input-completed"
+        },
+        {
+          "component": "sf-composition-overlay",
+          "from": "sf-composition-overlay-action",
+          "to": "sf-composition-overlay-apply"
+        },
+        {
+          "component": "sf-composition-overlay",
+          "from": "sf-composition-overlay-edit",
+          "to": "sf-composition-overlay-change"
+        },
+        {
+          "component": "sf-copy-button",
+          "from": "sf-copy",
+          "to": "sf-copy-button-copied"
+        },
+        {
+          "component": "sf-copy-button",
+          "from": "sf-copy-error",
+          "to": "sf-copy-button-copy-failed"
+        },
+        {
+          "component": "sf-download-file",
+          "from": "sf-download-file:click",
+          "to": "sf-download-file-download"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "drawer:before-open",
+          "to": "sf-drawer-open"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "drawer:after-open",
+          "to": "sf-drawer-opened"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "drawer:before-close",
+          "to": "sf-drawer-close"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "drawer:after-close",
+          "to": "sf-drawer-closed"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "drawer:snap",
+          "to": "sf-drawer-snapped"
+        },
+        {
+          "component": "sf-file-preview",
+          "from": "sf-file-preview:download",
+          "to": "sf-file-preview-download"
+        },
+        {
+          "component": "sf-file-preview",
+          "from": "sf-file-preview:remove",
+          "to": "sf-file-preview-detach"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:complete",
+          "to": "sf-file-upload-finished"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:file-add",
+          "to": "sf-file-upload-attached"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:file-complete",
+          "to": "sf-file-upload-completed"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:file-error",
+          "to": "sf-file-upload-failed"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:reject",
+          "to": "sf-file-upload-rejected"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:remove",
+          "to": "sf-file-upload-detach"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:retry",
+          "to": "sf-file-upload-retry"
+        },
+        {
+          "component": "sf-file-upload",
+          "from": "sf-file-upload:select",
+          "to": "sf-file-upload-attach"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "sf-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "sf-close",
+          "to": "sf-gallery-closed"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "sf-open",
+          "to": "sf-gallery-opened"
+        },
+        {
+          "component": "sf-help-mark",
+          "from": "sf-help-mark-open",
+          "to": "sf-help-mark-opened"
+        },
+        {
+          "component": "sf-help-mark",
+          "from": "sf-help-mark-close",
+          "to": "sf-help-mark-closed"
+        },
+        {
+          "component": "sf-image-field",
+          "from": "sf-image-field:select",
+          "to": "sf-image-field-attach"
+        },
+        {
+          "component": "sf-image-field",
+          "from": "sf-image-field:remove",
+          "to": "sf-image-field-detach"
+        },
+        {
+          "component": "sf-image-field",
+          "from": "sf-image-field:reject",
+          "to": "sf-image-field-rejected"
+        },
+        {
+          "component": "sf-inline-editor",
+          "from": "sf-inline-edit-input",
+          "to": "sf-inline-editor-input"
+        },
+        {
+          "component": "sf-inline-editor",
+          "from": "sf-inline-edit-commit",
+          "to": "sf-inline-editor-change"
+        },
+        {
+          "component": "sf-inline-editor",
+          "from": "sf-inline-edit-cancel",
+          "to": "sf-inline-editor-cancel"
+        },
+        {
+          "component": "sf-list-item",
+          "from": "sf-list-item-activate",
+          "to": "sf-list-item-open"
+        },
+        {
+          "component": "sf-menu",
+          "from": "sf-menu:navigate",
+          "to": "sf-menu-navigate"
+        },
+        {
+          "component": "sf-menu",
+          "from": "sf-menu:toggle",
+          "to": "sf-menu-toggle"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:after-close",
+          "to": "sf-modal-closed"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:after-hide",
+          "to": "sf-modal-minimized"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:after-open",
+          "to": "sf-modal-opened"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:after-show",
+          "to": "sf-modal-expanded"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:before-close",
+          "to": "sf-modal-close"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:before-hide",
+          "to": "sf-modal-minimize"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:before-open",
+          "to": "sf-modal-open"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:before-show",
+          "to": "sf-modal-expand"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:before-content-upload",
+          "to": "sf-modal-content-upload"
+        },
+        {
+          "component": "sf-modal",
+          "from": "modal:after-content-upload",
+          "to": "sf-modal-content-uploaded"
+        },
+        {
+          "component": "sf-page-header",
+          "from": "sf-page-header-star",
+          "to": "sf-page-header-toggle"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-action-apply",
+          "to": "sf-pagination-apply"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-action-change",
+          "to": "sf-pagination-action-change"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-action-for-all-change",
+          "to": "sf-pagination-action-for-all-change"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-count-request",
+          "to": "sf-pagination-count"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-page-change",
+          "to": "sf-pagination-change"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-page-size-change",
+          "to": "sf-pagination-size-change"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-selection-clear",
+          "to": "sf-pagination-selection-clear"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-show-more",
+          "to": "sf-pagination-load-more"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-select",
+          "to": "sf-profile-picker-select"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-create",
+          "to": "sf-profile-picker-create"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-rename",
+          "to": "sf-profile-picker-rename"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-delete",
+          "to": "sf-profile-picker-delete"
+        },
+        {
+          "component": "sf-profile-picker",
+          "from": "sf-profile-reset",
+          "to": "sf-profile-picker-reset"
+        },
+        {
+          "component": "sf-resizer",
+          "from": "sf-resize",
+          "to": "sf-resizer-resize"
+        },
+        {
+          "component": "sf-slider",
+          "from": "sf-slide-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-sortable",
+          "from": "sf-sortable-intent",
+          "to": "sf-sortable-move"
+        },
+        {
+          "component": "sf-steps",
+          "from": "sf-step-change",
+          "to": "sf-steps-change"
+        },
+        {
+          "component": "sf-tabs",
+          "from": "sf-tab-change",
+          "to": "sf-tabs-change"
+        },
+        {
+          "component": "sf-tag",
+          "from": "close",
+          "to": "sf-tag-close"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-generator-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-generator-apply",
+          "to": "sf-theme-generator-committed"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-change",
+          "to": "change"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-apply",
+          "to": "sf-theme-generator-committed"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-selection-change",
+          "to": "sf-tree-select"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-records-drop",
+          "to": "sf-tree-move"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-files-drop",
+          "to": "sf-tree-attach"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-item-click",
+          "to": "sf-tree-open"
+        },
+        {
+          "component": "sf-tree",
+          "from": "sf-tree-item-toggle",
+          "to": "sf-tree-toggle"
+        },
+        {
+          "component": "sf-tree-item",
+          "from": "sf-tree-item-click",
+          "to": "sf-tree-item-open"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "el.addEventListener('sf-page-change', …)",
+        "after": "el.addEventListener('sf-pagination-change', …)"
+      },
+      "manual": "A row whose mode is split also changed the detail: the old name keeps the pre-1.3.8 fields (component, tagName, template and the camelCase names), the new one carries the vocabulary's. A handler moved to the new name reads the new fields.",
+      "source": "src/smart/<folder>/aliases.json, kind event"
     }
   ]
 }

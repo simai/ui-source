@@ -15,19 +15,31 @@ test('change event: one canonical name for every value control', async () => {
   for (const name of axes.controls) {
     const events = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`)).events;
     assert.equal(events.change?.canonical, true, `${name}: change is canonical`);
-    const aliases = Object.entries(events).filter(([, event]) => event.alias_of).map(([key]) => key);
-    for (const alias of aliases) assert.equal(events[alias].alias_of, 'change', `${name} ${alias}`);
-    assert.deepEqual(aliases.sort(), [...(listed.get(name) || [])].sort(), `${name}: aliases match the axes table`);
+    // The names that point at `change`, which is what this axis is about. A
+    // control's other events have dated names of their own (a file upload's
+    // eight, a code input's complete) and they point at their own event.
+    const aliases = Object.entries(events).filter(([, event]) => event.alias_of === 'change').map(([key]) => key);
+    assert.deepEqual(aliases.sort(), [...(listed.get(name) || [])].sort(), `${name}: the names pointing at change match the axes table`);
   }
   for (const name of listed.keys()) assert.ok(axes.controls.includes(name), name);
 
-  // No other component claims a canonical name or an alias it does not list.
+  // Outside the axis a canonical event is one a dated name points at -- the
+  // generator marks it there and nowhere else (scripts/generate-component-
+  // files.mjs eventsOf), so an invented `change` is still caught -- and every
+  // alias points at a canonical event of its own manifest.
   for (const entry of await readdir(new URL('../src/smart/', import.meta.url), {withFileTypes: true})) {
     if (!entry.isDirectory() || axes.controls.includes(entry.name)) continue;
     const manifest = await read(`src/smart/${entry.name}/smart.manifest.json`).catch(() => null);
     if (!manifest) continue;
-    for (const [key, event] of Object.entries(JSON.parse(manifest).events || {})) {
-      assert.ok(!event.alias_of && !event.canonical, `${entry.name} ${key}`);
+    const events = JSON.parse(manifest).events || {};
+    for (const [key, event] of Object.entries(events)) {
+      if (event.alias_of) {
+        assert.ok(!event.canonical, `${entry.name} ${key}: an alias is not canonical`);
+        assert.equal(events[event.alias_of]?.canonical, true, `${entry.name} ${key}: alias_of ${event.alias_of} is not canonical here`);
+      }
+      if (event.canonical) {
+        assert.ok(Object.values(events).some((other) => other.alias_of === key), `${entry.name} ${key}: canonical with no dated name pointing at it`);
+      }
     }
   }
 
