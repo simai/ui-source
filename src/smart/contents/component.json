@@ -1,0 +1,337 @@
+{
+  "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
+  "id": "smart.contents",
+  "tag": "sf-contents",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "navigation",
+  "settings": {
+    "layout": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "column",
+        "compact",
+        "rail",
+        "bar"
+      ],
+      "default": "auto",
+      "summary": "How the contents are laid out (the axis of sf-dropdown and sf-empty-state: view is a reserved name, §3.1). column: a side list with the current section's bar; compact: one button showing the current section and the reading progress, opening the list; rail: short strokes at the edge, the names on hover and focus; bar: a sticky row of anchor tabs, for long forms; auto: column at and above the collapse step, compact below it (a media rule, so the first paint is right without the script)"
+    },
+    "collapse": {
+      "type": "enum",
+      "values": [
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "default": "lg",
+      "summary": "With layout auto: the Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) below which the column turns compact"
+    },
+    "target": {
+      "type": "string",
+      "default": "",
+      "summary": "A CSS selector of the content whose headings make the contents, when no items are given; empty: the page's main, else its body. The headings found get an id when they have none"
+    },
+    "levels": {
+      "type": "string",
+      "default": "2-3",
+      "summary": "The heading levels collected from the target: one level (2) or a range (2-3). A deeper level is indented"
+    },
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "text": "string",
+        "level": {
+          "type": "number",
+          "optional": true
+        }
+      },
+      "x-markup": "the JSON island (data-sf-settings) or the property; without items, links written inside the element (<a href=\"#id\" data-level=\"3\">) are the items, and without those the headings of the target",
+      "summary": "The sections, [{id, text, level?}], when a server knows them: the element then collects nothing and spies on the elements with these ids. level is the heading level (2 when not given)",
+      "examples": [
+        [
+          {
+            "id": "intro",
+            "text": "Введение",
+            "level": 2
+          },
+          {
+            "id": "cdn",
+            "text": "Через CDN",
+            "level": 3
+          }
+        ]
+      ]
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1/2",
+      "summary": "The ladder rung of the text and of the compact view's controls"
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": true,
+      "summary": "The column, the rail and the bar stay in view while the page scrolls (position sticky, below --sf-contents-inset-block-start)"
+    },
+    "hash": {
+      "type": "boolean",
+      "default": true,
+      "summary": "The address shows the current section: a chosen section and the section scrolled to write #id with history.replaceState, so no history entry is added"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The heading of the list and the navigation's accessible name; «На этой странице» / «On this page» in the page language when not set"
+    }
+  },
+  "values": {
+    "current": {
+      "type": "id",
+      "summary": "The id of the current section: the last heading at or above the top of the scroll area (its scroll-padding-top), the last one at the end of the page; empty without sections"
+    }
+  },
+  "events": {
+    "change": {
+      "x-native": false,
+      "carries": {
+        "id": "id",
+        "previous": {
+          "type": "id",
+          "nullable": true
+        }
+      },
+      "summary": "The current section changed, by scrolling or by a section chosen: a fact, sent as sf-contents-change, not when the element first finds it"
+    }
+  },
+  "actions": {
+    "refresh": {
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Collects the headings of the target again (vocabulary refresh): for a page whose content changed after the contents drew",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the compact view's list when it is closed and closes it when it is open; refused while the layout is not compact",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "slots": {
+    "links": {
+      "default": true,
+      "$comment": "Links written inside the element, <a href=\"#id\">text</a> with data-level (or aria-level) for a deeper level, are read as the items when the items setting is empty; the element draws them as its list."
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-icon"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The element draws a <nav> named by the label: a navigation landmark holding a list of in-page links, the current one aria-current=\"location\". In the compact view the list is opened by an sf-button (aria-expanded, aria-controls) named «label: current section», so its visible text is in its name; Escape closes it and gives focus back. In the rail view the names are visually hidden until hover or focus and stay the links' accessible names. The progress line is aria-hidden.",
+    "role": "navigation",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "open",
+      "Space": "open",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-open": "boolean",
+    "data-compact": "boolean"
+  },
+  "css-variables": {
+    "--sf-contents-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-contents-current-color": {
+      "type": "color",
+      "state": "current"
+    },
+    "--sf-contents-line-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-contents-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-contents-indent": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-contents-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-contents-inset-block-start": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-contents-z-index": {
+      "type": "number",
+      "state": "default"
+    }
+  },
+  "x-summary": "The page's table of contents («Оглавление»): the sections of the page as in-page links, the current one marked while the page scrolls. Four views from one list -- a side column, a compact button with the reading progress, strokes at the edge, a sticky row of anchor tabs -- and auto, the column on a wide screen and the compact button on a narrow one. It collects the headings itself or takes the items a server printed, and works as plain links without the script.",
+  "x-source": {
+    "package": "framework",
+    "folder": "contents",
+    "brief": "simai/ui-control prototypes/docara-four.html tab 1 «Оглавление страницы» (owner-approved 2026-10-30; dispatcher decision: the name sf-contents, not sf-outline or sf-toc)"
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-decisions": [
+    "name: sf-contents (dispatcher, owner-delegated, 2026-10-30): the prototype said sf-outline, but outline is a CSS property and an accessibility term in the Framework (--sf-outline, the focus outline), and toc is an abbreviation. A leaf: it draws its own list of in-page links and owns no bus.",
+    "layouts: one list (<ol> of <li><a href=\"#id\">) drawn four ways by the sheet: column, compact, rail and bar, plus auto, in the setting layout (view is reserved by the element layer, §3.1). auto is column at and above the collapse step and compact below it, one media rule per step (sm/md/lg/xl as sf-site-header's collapse), so the first paint is right without the script and nothing is measured. The script follows the same media query only to know whether the compact list can open.",
+    "data: the items setting (a server, Docara, prints them with the JSON island and the snapshot markup), else links written inside the element (the default slot, read once and drawn as the list), else the headings of target in the levels range. The printed markup is plain links, so the contents work without the script: the browser jumps to the section.",
+    "spy: an IntersectionObserver over the sections' elements (rooted at their scroll container, its top margin the container's scroll-padding-top) and a passive, frame-throttled scroll listener, both asking one question: the last section whose top is at or above the top of the scroll area, else the first; at the end of the scroll area the last section that is in view. The scroll listener also gives the compact view's reading progress. A section chosen holds the answer until its scroll ends (scrollend, else a second).",
+    "choose: a link chosen scrolls its section into view, smoothly unless prefers-reduced-motion asks otherwise (scrollIntoView respects the page's scroll-margin and scroll-padding), writes #id with history.replaceState when hash is on, and moves focus to the section (tabindex -1 when it has none) without scrolling, as an in-page link does natively.",
+    "current: a read-only value; the current link carries aria-current=\"location\" (ARIA 1.2: the current location within a set). change is a fact of the component, x-native false: sf-contents-change {id, previous}. Not a committed value change (authoring rule: a person's committed change is the native change), and not sent for the first answer.",
+    "compact: the list opens under the button as a raised surface (elevation 2 with its text role) inside the element, not a portal and not a layer of the stack: it is a disclosure, like sf-help-mark. Escape (focus inside), a press outside and a section chosen close it; focus goes back to the button on Escape. The button is sf-button (outline, on-surface, icon-start toc, icon-end expand_more, expanded), its label the current section, its name «label: section».",
+    "rail: strokes on the length ladder (a2 tall; space-1 for level 2, space-1/2 deeper, space-3 for the current one), in --sf-outline (3:1, a non-text graphic) and the current colour; the names appear on hover of the rail and on focus within it as a raised chip (elevation 2), and stay the links' accessible names when hidden.",
+    "bar: a row of anchor tabs, sticky, on the page's surface with a region edge under it; the current tab's line is the current colour; the row scrolls sideways and keeps the current tab in view by scrolling itself, never the page.",
+    "geometry (docs/foundation-composition-geometry.md): rows are the size's text line plus a space-1/4 inset above and below in the column, the size's control height in the compact list (as a menu's rows), the compact button is sf-button of the same size; every length is a token.",
+    "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "words (§11): label defaults to the language files' runtime word."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive",
+      "navigation",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "contents",
+      "table-of-contents",
+      "navigation",
+      "scroll-spy"
+    ],
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "fetching the page's sections",
+        "routing to another page",
+        "styling a site's own contents list"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-contents for the table of contents of one long page: documentation, help, articles, long settings forms.",
+      "do_not": [
+        "Do not use it for navigation between pages; that is sf-menu",
+        "Do not build a contents list of your own with a scroll listener",
+        "Do not put a second <nav> around it; the element is the navigation landmark"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-contents target=\"article\" levels=\"2-3\"></sf-contents>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Tab reaches each section's link in order",
+        "Enter on a link scrolls to its section and moves focus there",
+        "Enter or Space on the compact button opens the list; Escape closes it and gives focus back to the button"
+      ],
+      "focus": "A chosen section takes focus without scrolling again (tabindex -1 when it has none), as an in-page link does natively."
+    }
+  }
+}

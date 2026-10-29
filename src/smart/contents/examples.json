@@ -1,0 +1,379 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Колонка сбоку",
+      "settings": {
+        "layout": "column",
+        "items": [
+          {
+            "id": "intro",
+            "text": "Введение",
+            "level": 2
+          },
+          {
+            "id": "install",
+            "text": "Подключение",
+            "level": 2
+          },
+          {
+            "id": "cdn",
+            "text": "Через CDN",
+            "level": 3
+          },
+          {
+            "id": "npm",
+            "text": "Через npm",
+            "level": 3
+          },
+          {
+            "id": "settings",
+            "text": "Настройки",
+            "level": 2
+          },
+          {
+            "id": "events",
+            "text": "События",
+            "level": 2
+          },
+          {
+            "id": "a11y",
+            "text": "Доступность",
+            "level": 2
+          }
+        ]
+      },
+      "expect": {
+        "layout": "column",
+        "collapse": "lg",
+        "levels": "2-3",
+        "sticky": true,
+        "hash": true,
+        "size": "1/2"
+      },
+      "studio": {
+        "title": "contents reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "compact",
+      "title": "Свёрнутая строка",
+      "settings": {
+        "layout": "compact",
+        "items": [
+          {
+            "id": "intro",
+            "text": "Введение",
+            "level": 2
+          },
+          {
+            "id": "install",
+            "text": "Подключение",
+            "level": 2
+          },
+          {
+            "id": "cdn",
+            "text": "Через CDN",
+            "level": 3
+          },
+          {
+            "id": "npm",
+            "text": "Через npm",
+            "level": 3
+          },
+          {
+            "id": "settings",
+            "text": "Настройки",
+            "level": 2
+          },
+          {
+            "id": "events",
+            "text": "События",
+            "level": 2
+          },
+          {
+            "id": "a11y",
+            "text": "Доступность",
+            "level": 2
+          }
+        ]
+      },
+      "expect": {
+        "layout": "compact"
+      }
+    },
+    {
+      "name": "rail",
+      "title": "Штрихи у края",
+      "settings": {
+        "layout": "rail",
+        "items": [
+          {
+            "id": "intro",
+            "text": "Введение",
+            "level": 2
+          },
+          {
+            "id": "install",
+            "text": "Подключение",
+            "level": 2
+          },
+          {
+            "id": "cdn",
+            "text": "Через CDN",
+            "level": 3
+          },
+          {
+            "id": "npm",
+            "text": "Через npm",
+            "level": 3
+          },
+          {
+            "id": "settings",
+            "text": "Настройки",
+            "level": 2
+          },
+          {
+            "id": "events",
+            "text": "События",
+            "level": 2
+          },
+          {
+            "id": "a11y",
+            "text": "Доступность",
+            "level": 2
+          }
+        ]
+      },
+      "expect": {
+        "layout": "rail"
+      }
+    },
+    {
+      "name": "bar",
+      "title": "Якоря-вкладки сверху",
+      "settings": {
+        "layout": "bar",
+        "items": [
+          {
+            "id": "general",
+            "text": "Основное",
+            "level": 2
+          },
+          {
+            "id": "access",
+            "text": "Доступ",
+            "level": 2
+          },
+          {
+            "id": "notifications",
+            "text": "Уведомления",
+            "level": 2
+          },
+          {
+            "id": "integrations",
+            "text": "Интеграции",
+            "level": 2
+          },
+          {
+            "id": "removal",
+            "text": "Удаление",
+            "level": 2
+          }
+        ],
+        "sticky": false
+      },
+      "expect": {
+        "layout": "bar",
+        "sticky": false
+      }
+    },
+    {
+      "name": "links",
+      "title": "Ссылки, написанные внутри",
+      "children": "<a href=\"#intro\">Введение</a><a href=\"#install\">Подключение</a><a href=\"#cdn\" data-level=\"3\">Через CDN</a><a href=\"#events\">События</a>",
+      "settings": {
+        "layout": "column"
+      },
+      "expect": {
+        "layout": "column"
+      }
+    },
+    {
+      "name": "size-1",
+      "title": "Размер 1",
+      "settings": {
+        "layout": "column",
+        "size": "1",
+        "items": [
+          {
+            "id": "intro",
+            "text": "Введение",
+            "level": 2
+          },
+          {
+            "id": "install",
+            "text": "Подключение",
+            "level": 2
+          },
+          {
+            "id": "cdn",
+            "text": "Через CDN",
+            "level": 3
+          },
+          {
+            "id": "npm",
+            "text": "Через npm",
+            "level": 3
+          }
+        ]
+      },
+      "expect": {
+        "size": "1"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-contents against component.json (standard simai.smart-component 1.3.11 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<style>.page{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:1.5rem;align-items:start}.page article h2,.page article h3{scroll-margin-top:0}</style>",
+          "<div class=\"page\">",
+          "  <article id=\"article\"><h2 id=\"intro\">Введение</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"install\">Подключение</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h3 id=\"cdn\">Через CDN</h3><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h3 id=\"npm\">Через npm</h3><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"settings\">Настройки</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"events\">События</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"a11y\">Доступность</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p></article>",
+          "  <aside><sf-contents id=\"toc\" layout=\"column\" target=\"#article\"></sf-contents></aside>",
+          "</div>",
+          "<sf-contents id=\"compact\" layout=\"compact\"><a href=\"#c-intro\">Введение</a><a href=\"#c-install\">Подключение</a></sf-contents>",
+          "<sf-contents id=\"given\" layout=\"rail\" hash=\"false\"><a href=\"#g-intro\">Введение</a><a href=\"#g-cdn\" data-level=\"3\">Через CDN</a></sf-contents>",
+          "<div lang=\"en\"><sf-contents id=\"en\" layout=\"column\" target=\"#nothing\"></sf-contents></div>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-collects",
+          "title": "collects the h2 and h3 of the target in order, h3 a level deeper, and gives each its link",
+          "covers": "settings.target, settings.levels, accessibility.role navigation",
+          "steps": [
+            {
+              "check": "(() => { const t = document.querySelector('#toc'); const nav = t.querySelector('nav.sf-contents'); const links = [...t.querySelectorAll('.sf-contents-link')]; return nav && nav.getAttribute('aria-label') === 'На этой странице' && links.map((a) => a.getAttribute('href')).join() === '#intro,#install,#cdn,#npm,#settings,#events,#a11y' && t.querySelector('a[href=\"#cdn\"]').closest('li').dataset.depth === '1'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-current",
+          "title": "the first section is current at the top: aria-current location on its link, current is its id",
+          "covers": "values.current, accessibility aria-current",
+          "steps": [
+            {
+              "check": "(() => { const t = document.querySelector('#toc'); const on = t.querySelectorAll('[aria-current=\"location\"]'); return on.length === 1 && on[0].getAttribute('href') === '#intro' && t.current === 'intro'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-choose",
+          "title": "a chosen link makes its section current and sends sf-contents-change once with {id, previous}",
+          "covers": "events.change, settings.hash",
+          "steps": [
+            {
+              "user": "click:#toc a[href=\"#events\"]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-contents-change",
+                    "count": 1,
+                    "detail": {
+                      "id": "events",
+                      "previous": "intro"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const t = document.querySelector('#toc'); return t.current === 'events' && t.querySelector('[aria-current=\"location\"]').getAttribute('href') === '#events' && location.hash === '#events' && document.activeElement === document.getElementById('events'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-compact",
+          "title": "the compact button names the current section and opens and closes the list; Escape gives focus back",
+          "covers": "actions.toggle, host-states data-open, keyboard Escape",
+          "steps": [
+            {
+              "user": "click:#compact .sf-contents-toggle button"
+            },
+            {
+              "check": "(() => { const c = document.querySelector('#compact'); const b = c.querySelector('.sf-contents-toggle button'); return c.getAttribute('data-open') === 'true' && b.getAttribute('aria-expanded') === 'true' && c.querySelector('.sf-contents-list').getClientRects().length > 0 && /: /.test(b.getAttribute('aria-label')); })()"
+            },
+            {
+              "user": "keyboard:Escape"
+            },
+            {
+              "check": "(() => { const c = document.querySelector('#compact'); const b = c.querySelector('.sf-contents-toggle button'); return !c.hasAttribute('data-open') && b.getAttribute('aria-expanded') === 'false' && document.activeElement === b && c.querySelector('.sf-contents-list').getClientRects().length === 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-toggle-refused",
+          "title": "toggle is refused while the layout is not compact",
+          "covers": "actions.toggle",
+          "steps": [
+            {
+              "action": {
+                "name": "toggle"
+              },
+              "target": "#toc",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p6-links",
+          "title": "links written inside are the items",
+          "covers": "slots.links",
+          "steps": [
+            {
+              "check": "(() => { const g = document.querySelector('#given'); const links = [...g.querySelectorAll('.sf-contents-link')]; return links.length === 2 && links[1].closest('li').dataset.depth === '1' && g.querySelectorAll(':scope > a').length === 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-language",
+          "title": "the label follows the page language",
+          "covers": "settings.label default-from runtime.label",
+          "steps": [
+            {
+              "check": "document.querySelector('#en nav').getAttribute('aria-label') === 'On this page'"
+            }
+          ]
+        },
+        {
+          "id": "p8-public-variables",
+          "title": "a public variable reaches the drawing",
+          "covers": "css-variables",
+          "steps": [
+            {
+              "script": "(document.querySelector('#toc').style.setProperty('--sf-contents-current-color', 'rgb(1, 2, 3)'), true)"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('#toc [aria-current=\"location\"]')).color === 'rgb(1, 2, 3)'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
