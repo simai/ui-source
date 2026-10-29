@@ -1,0 +1,47 @@
+{
+  "id": "count-on-request-answers-the-number",
+  "intent": "query.count",
+  "capability": "count-on-request",
+  "summary": "Asked separately, the host counts what the current query matches.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      },
+      {
+        "id": 2,
+        "revision": "r2",
+        "actions": [
+          "view"
+        ]
+      }
+    ],
+    "capabilities": [
+      "count-on-request",
+      "row-actions"
+    ],
+    "counts": false,
+    "has_next": false
+  },
+  "when": {
+    "intent": "query.count",
+    "payload": {
+      "query": {
+        "search": "",
+        "filters": {}
+      },
+      "reason": "total"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "total"
+    ],
+    "note": "The number arrives on its own, and the view resumes whatever asked for it: showing the total, jumping to the last page, or an action under the filter."
+  }
+}

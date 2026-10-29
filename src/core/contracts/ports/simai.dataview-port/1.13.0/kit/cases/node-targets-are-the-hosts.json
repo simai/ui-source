@@ -1,0 +1,43 @@
+{
+  "id": "node-targets-are-the-hosts",
+  "intent": "node.targets",
+  "capability": "tree-move",
+  "summary": "Before a drop, the host says where the node may go; a node is never offered under itself or its descendants.",
+  "given": {
+    "records": [
+      {
+        "id": "about",
+        "parent": "site",
+        "has_children": true,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "move"
+        ]
+      },
+      {
+        "id": "team",
+        "parent": "about",
+        "has_children": false,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "move"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "node.targets",
+    "payload": {
+      "id": "about"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "move_targets"
+    ],
+    "note": "move_targets.parents names each allowed parent with its label (and path), and does not include about or team; root and reorder say whether those are allowed."
+  }
+}
