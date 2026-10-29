@@ -3121,6 +3121,74 @@
           "since": "2026-10-28"
         }
       ]
+    },
+    {
+      "component": "rich-text",
+      "selector": ".sf-rich-text",
+      "variables": [
+        {
+          "name": "--sf-rich-text-background-color",
+          "role": "background",
+          "summary": "The frame's fill at rest; hover, focus, read-only, error and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-30",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-rich-text-border-color",
+          "role": "border-color",
+          "summary": "The frame's border at rest.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-30",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-rich-text-color",
+          "role": "color",
+          "summary": "The text; disabled keeps its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-rich-text-radius",
+          "role": "radius",
+          "summary": "The frame's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-rich-text-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space inside the frame before and after the text.",
+          "default": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "since": "2026-10-30",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-rich-text-padding-block",
+          "role": "padding-block",
+          "summary": "Space inside the frame above and below the text.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-30",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-rich-text-invalid-border-color",
+          "role": "border-color",
+          "summary": "The frame's border while it is invalid (bordered appearance).",
+          "default": "var(--sf-error)",
+          "state": "invalid",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,357 @@
+{
+  "schema_version": 2,
+  "id": "smart.rich-text",
+  "version": "1.0.0",
+  "title": "Rich text",
+  "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "rich-text",
+    "editor",
+    "wysiwyg",
+    "html",
+    "field",
+    "form"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "form",
+    "validation",
+    "theme",
+    "responsive",
+    "i18n"
+  ],
+  "custom_element": "sf-rich-text",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.icon-buttons",
+      "component.icons",
+      "smart.button",
+      "smart.input",
+      "smart.popover"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The field ladder, as sf-textarea's: the frame, the padding and the text of the same size; the toolbar's buttons a rung below.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "bordered",
+        "description": "How the field looks: a bordered box or a filled one, sf-textarea's two boxes.",
+        "enum": [
+          "bordered",
+          "filled"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The visible name of the field; it names the editing surface. Without it the host's aria-label does."
+      },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The form is not sent while the value is empty (value-missing)."
+      },
+      "placeholder": {
+        "type": "string",
+        "default": "",
+        "description": "Shown while the field holds no text; said as aria-placeholder."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "The line under the field; it describes the editing surface."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name the value is sent under."
+      },
+      "rows": {
+        "type": "number",
+        "default": 6,
+        "description": "The fewest lines the text area shows; it grows with the text."
+      },
+      "max-rows": {
+        "type": "number",
+        "description": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Not editable, not focusable and not sent with the form; a disabled fieldset does the same."
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Read and selected but not changed; the toolbar is disabled, the value is sent."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The page's verdict: the error look and aria-invalid, with error-message under the field."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "Shown in place of the hint while invalid."
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "HTML of the subset p, h2, h3, h4, strong, em, a[href], ul, ol, li, blockquote, br; href only https:, mailto:, tel: or a /path on the site. Cleaned when it is given and as it is edited; \"\" when there is no text."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "value_owner": {
+      "const": "component"
+    },
+    "form_owner": {
+      "const": "element_internals"
+    },
+    "reset": {
+      "const": "value_attribute"
+    },
+    "html_subset": {
+      "const": "p h2 h3 h4 strong em a[href] ul ol li blockquote br"
+    },
+    "href_schemes": {
+      "const": "https: mailto: tel: /path"
+    }
+  },
+  "methods": {
+    "runCommand": {
+      "summary": "Runs a toolbar command on the current selection: paragraph, heading-2, heading-3, heading-4, bold, italic, link (opens the link editor), bulleted-list, numbered-list, quote, undo, redo. The result is cleaned, recorded for undo and said with input. Returns whether it ran (false while disabled or read-only).",
+      "arguments": [
+        {
+          "name": "command",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "undo": {
+      "summary": "Steps back one cleaned state and says input; false when there is nothing to undo.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "redo": {
+      "summary": "Steps forward one cleaned state and says input; false when there is nothing to redo.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "input": {
+      "summary": "The text changed while it is edited: typing, a paste or a drop, a toolbar command, undo or redo; once per change, after the value is cleaned. The native event bubbles from the editing surface, which is its target.",
+      "payload": {
+        "type": "null",
+        "description": "A native Event: there is no detail."
+      }
+    },
+    "change": {
+      "summary": "The value was committed: the person left the field with a value other than the one it had; a native Event from the editing surface, as a textarea's on leaving it.",
+      "payload": {
+        "type": "null",
+        "description": "A native Event: there is no detail."
+      }
+    }
+  },
+  "state": {
+    "machines": {},
+    "visual_states": [
+      "default",
+      "active",
+      "disabled",
+      "error"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "server calls",
+      "storing the value",
+      "trusting the value without the server's own sanitizer"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "clipboard",
+      "drop"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "textbox",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab reaches the toolbar (one stop) and then the text; Tab in the text leaves the field",
+      "ArrowLeft, ArrowRight, Home and End move between the toolbar's buttons",
+      "Mod+B and Mod+I toggle bold and italic, Mod+K opens the link editor",
+      "Mod+Z undoes, Mod+Shift+Z and Mod+Y redo",
+      "Enter in the link editor applies, Escape closes it"
+    ],
+    "focus": "The frame draws the focus ring while the text has keyboard focus; a click into the text draws none. Toolbar commands keep the caret and the selection in the text; the link editor takes focus when it opens and gives the caret back to the text when it closes."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "2f9a405c6677dce34ccd79a0f615df77146e702f",
+    "source_artifacts": [
+      {
+        "path": "src/smart/rich-text/index.js",
+        "sha256": "a80f8d30f4d3e28ada6fde5eac46a8a043c24960ebc316e81df8927b35afc7e9"
+      },
+      {
+        "path": "src/smart/rich-text/js/templates/default.js",
+        "sha256": "171173d613f04d2459d1c710d0be4c8b3ddf380e165cf973bfdc4524e437384a"
+      },
+      {
+        "path": "src/smart/rich-text/js/rich-text-html.mjs",
+        "sha256": "6e5bd703c7547880a8ba3f4bd5bbf3cffb0b3c0ebfface9ab4b1bda38840d607"
+      },
+      {
+        "path": "src/smart/rich-text/scss/_smart__rich_text.scss",
+        "sha256": "29e9451471412e854ca47cc0c6e27352609faadd9ac50a5514cbca28a18d0c3f"
+      },
+      {
+        "path": "src/smart/rich-text/rule.js",
+        "sha256": "0e4c663d0491d9f13c60d693ce1cbefffd13e15878cbc82d5bcb7fe9615be7b2"
+      },
+      {
+        "path": "src/smart/rich-text/docs.md",
+        "sha256": "078b4ce43006b9252f1570aefa33e13fc56098263d24858d1dcba76df5e4e365"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-rich-text for formatted text a person writes in a form -- a page's text, a description, an announcement -- stored as the HTML subset of Larena's html@1 type.",
+    "do_not": [
+      "Do not trust the submitted value on the server: clean it there with the same subset",
+      "Do not use it for one line of text or for code; use sf-input, sf-textarea or sf-code-input",
+      "Do not put the value into a page with innerHTML without a sanitizer: render it through the server's cleaned copy or SF.sanitizeHtml",
+      "Do not add tags or attributes to the subset in a product; ask for a change of the html@1 type"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-rich-text label=\"Page text\" name=\"body\" value=\"<p>Hello</p>\"></sf-rich-text>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

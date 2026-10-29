@@ -1,0 +1,393 @@
+{
+  "$comment": "The source of sf-rich-text's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
+  "id": "smart.rich-text",
+  "tag": "sf-rich-text",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The field ladder, as sf-textarea's: the frame, the padding and the text of the same size; the toolbar's buttons a rung below."
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "bordered",
+        "filled"
+      ],
+      "default": "bordered",
+      "summary": "How the field looks: a bordered box or a filled one, sf-textarea's two boxes."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The visible name of the field; it names the editing surface. Without it the host's aria-label does."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The form is not sent while the value is empty (value-missing)."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "",
+      "summary": "Shown while the field holds no text; said as aria-placeholder."
+    },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "The line under the field; it describes the editing surface."
+    },
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The form name the value is sent under."
+    },
+    "rows": {
+      "type": "number",
+      "default": 6,
+      "summary": "The fewest lines the text area shows; it grows with the text."
+    },
+    "max-rows": {
+      "type": "number",
+      "optional": true,
+      "summary": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Not editable, not focusable and not sent with the form; a disabled fieldset does the same."
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Read and selected but not changed; the toolbar is disabled, the value is sent."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The page's verdict: the error look and aria-invalid, with error-message under the field."
+    },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "Shown in place of the hint while invalid."
+    }
+  },
+  "values": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "HTML of the subset p, h2, h3, h4, strong, em, a[href], ul, ol, li, blockquote, br; href only https:, mailto:, tel: or a /path on the site. Cleaned when it is given and as it is edited; \"\" when there is no text."
+    }
+  },
+  "events": {
+    "input": {
+      "carries": "native",
+      "summary": "The text changed while it is edited: typing, a paste or a drop, a toolbar command, undo or redo; once per change, after the value is cleaned. The native event bubbles from the editing surface, which is its target."
+    },
+    "change": {
+      "carries": "native",
+      "summary": "The value was committed: the person left the field with a value other than the one it had; a native Event from the editing surface, as a textarea's on leaving it."
+    }
+  },
+  "actions": {},
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "readonly": "readonly",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Mod+B": "toggle:strong",
+      "Mod+I": "toggle:em",
+      "Mod+K": "open",
+      "Mod+Z": "step:-1",
+      "Mod+Shift+Z": "step:+1",
+      "Mod+Y": "step:+1"
+    }
+  },
+  "relations": [
+    {
+      "name": "icon-buttons",
+      "$comment": [
+        "The toolbar is the class markup of icon buttons, so the field owns",
+        "their roving tabindex and pressed state."
+      ]
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-popover",
+      "$comment": [
+        "The link editor: an sf-popover anchored to the link button, holding an",
+        "sf-input and two sf-button."
+      ]
+    },
+    {
+      "name": "cl-input"
+    },
+    {
+      "name": "cl-button"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The editing surface is role textbox, aria-multiline true, named by the label (aria-labelledby) or the host's aria-label, with aria-required, aria-readonly, aria-disabled, aria-invalid, aria-placeholder and aria-describedby the hint or error. The toolbar before it is role toolbar, named by the language file's toolbar word and controlling the surface: one Tab stop, the arrows, Home and End move between its buttons (roving tabindex), each button says aria-pressed where it toggles and aria-keyshortcuts where it has one. Tab in the text leaves the field; it never inserts a tab.",
+    "role": "textbox",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Mod+B": "toggle:strong",
+      "Mod+I": "toggle:em",
+      "Mod+K": "open",
+      "Mod+Z": "step:-1",
+      "Mod+Shift+Z": "step:+1",
+      "Mod+Y": "step:+1"
+    }
+  },
+  "css-variables": {
+    "--sf-rich-text-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-rich-text-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-rich-text-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-rich-text-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-rich-text-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-rich-text-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-rich-text-invalid-border-color": {
+      "type": "color",
+      "state": "invalid"
+    }
+  },
+  "x-summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
+  "x-source": {
+    "package": "framework",
+    "folder": "rich-text",
+    "brief": "Larena's request for an editor of the html@1 property type (sanitized HTML subset); owner approval q-6df38bf0d7"
+  },
+  "x-words": [
+    "label",
+    "placeholder",
+    "hint"
+  ],
+  "x-decisions": [
+    "name: sf-rich-text (owner approval q-6df38bf0d7). A leaf of the field family: the value is a string, the host is the form control through ElementInternals as sf-textarea's, so a form submits the HTML under name and reset puts the value attribute back.",
+    "subset: js/rich-text-html.mjs is the one rule, used for the value given, a paste or drop and the surface after every edit. Two readers feed one cleaner -- the browser's parser in an inert <template> where there is a document, a small tolerant string reader where there is none (tests, a server) -- and the output is written from the cleaned model with every text escaped, so it holds nothing off the subset whatever a reader understood.",
+    "unwrap, never lose text: an element off the subset is replaced by its text; script, style and the other containers of code, a document's head, drawings and form controls' data (DROPPED) go with their content. An element off the subset that stands as a block (div, section, h1, a table cell, pre) still separates its text from its neighbours', so pasted documents keep their paragraphs.",
+    "marks from styles: b and i are strong and em; a word processor's span with a bold or italic style is too, and a b with font-weight normal is not (the wrapper a document editor puts around a whole paste). Only the style's weight and style are read; no attribute survives.",
+    "links: https:, mailto:, tel: and a /path on the site; http: is not in the list Larena asked for. The scheme is judged with control characters and white space removed. A link whose href fails becomes its text, on load, paste and in the link editor, which refuses it with the language file's link-invalid word.",
+    "normalised value: text outside a block is a p, a block inside a paragraph splits it, a block inside a list item becomes a line of it, a list holds only items, adjacent lists of one kind are one list; no empty block, no line break at a block's edge, nesting a > strong > em; an editor without text is \"\". The editing surface keeps an empty paragraph's <br> so the caret has a line, and is cleaned with the same rule in its own mode.",
+    "commands: blocks, lists and quotes are the component's own DOM operations; bold and italic use document.execCommand where the browser has it, with a DOM fallback, and the result is cleaned like any edit. Undo and redo are the component's own history of cleaned states with the caret, typing grouped by the second, so neither depends on the browser's undo stack, which a cleaned surface would break.",
+    "events: input and change are the native names (§8, §17.3), as sf-textarea's. input once per change after cleaning -- the browser's own input during a command is held back and the command says it once; change when focus leaves the field with a changed value, since a contenteditable has none of its own. Moving between the toolbar, the link editor and the text is not leaving.",
+    "toolbar: the class markup of icon buttons (as sf-dropdown and the inherited-value reset draw theirs), so the roving tabindex, aria-pressed and aria-disabled are the field's own attributes in one render; an sf-icon-button host copies its attributes onto its button on its own schedule. Block level is four toggle buttons (paragraph, heading 2, 3, 4) rather than a select: one keyboard model for the whole toolbar, and a select inside a toolbar would be a second form-associated field. Unavailable tools (undo with nothing to undo, a heading inside a list) are aria-disabled and stay reachable.",
+    "link editor: sf-popover anchored to the link button, holding an sf-input (text, no name, so it is never sent and never blocks the form) and sf-button Apply and Remove link; Enter applies, Escape closes. Its input and change stop at the panel: they are not the field's.",
+    "geometry: the frame is sf-textarea's -- the hairline, --sf-radius--ui, the padding calc of each size and the focus ring on the frame -- and the toolbar's buttons are one rung below the field (1/3, 1/2, 1 for sizes 1/2, 1, 2). rows sets the least height in the size's lines, max-rows the most before the text scrolls.",
+    "a11y: role textbox with aria-multiline on the editing surface, named by the label or the host's aria-label; toolbar role toolbar with aria-controls. Colours are role tokens only: on-surface on surface-0 and surface-container, on-secondary-container on secondary-container for a pressed tool, on-surface-variant for the hint, placeholder and quotes, error for the error line -- the pairs the theme makes AA in light and dark.",
+    "css-variables: seven public variables in sf-textarea's pattern (§6), listed in src/core/contracts/public-variables.v1.json."
+  ],
+  "x-registry": {
+    "reuse_mode": "whole",
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "form",
+      "validation",
+      "theme",
+      "responsive",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "rich-text",
+      "editor",
+      "wysiwyg",
+      "html",
+      "field",
+      "form"
+    ],
+    "contracts": {
+      "value_owner": {
+        "const": "component"
+      },
+      "form_owner": {
+        "const": "element_internals"
+      },
+      "reset": {
+        "const": "value_attribute"
+      },
+      "html_subset": {
+        "const": "p h2 h3 h4 strong em a[href] ul ol li blockquote br"
+      },
+      "href_schemes": {
+        "const": "https: mailto: tel: /path"
+      }
+    },
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "active",
+        "disabled",
+        "error"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "server calls",
+        "storing the value",
+        "trusting the value without the server's own sanitizer"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "clipboard",
+        "drop"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-rich-text for formatted text a person writes in a form -- a page's text, a description, an announcement -- stored as the HTML subset of Larena's html@1 type.",
+      "do_not": [
+        "Do not trust the submitted value on the server: clean it there with the same subset",
+        "Do not use it for one line of text or for code; use sf-input, sf-textarea or sf-code-input",
+        "Do not put the value into a page with innerHTML without a sanitizer: render it through the server's cleaned copy or SF.sanitizeHtml",
+        "Do not add tags or attributes to the subset in a product; ask for a change of the html@1 type"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-rich-text label=\"Page text\" name=\"body\" value=\"<p>Hello</p>\"></sf-rich-text>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab reaches the toolbar (one stop) and then the text; Tab in the text leaves the field",
+        "ArrowLeft, ArrowRight, Home and End move between the toolbar's buttons",
+        "Mod+B and Mod+I toggle bold and italic, Mod+K opens the link editor",
+        "Mod+Z undoes, Mod+Shift+Z and Mod+Y redo",
+        "Enter in the link editor applies, Escape closes it"
+      ],
+      "focus": "The frame draws the focus ring while the text has keyboard focus; a click into the text draws none. Toolbar commands keep the caret and the selection in the text; the link editor takes focus when it opens and gives the caret back to the text when it closes."
+    },
+    "methods": {
+      "runCommand": {
+        "summary": "Runs a toolbar command on the current selection: paragraph, heading-2, heading-3, heading-4, bold, italic, link (opens the link editor), bulleted-list, numbered-list, quote, undo, redo. The result is cleaned, recorded for undo and said with input. Returns whether it ran (false while disabled or read-only).",
+        "arguments": [
+          {
+            "name": "command",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "undo": {
+        "summary": "Steps back one cleaned state and says input; false when there is nothing to undo.",
+        "arguments": [],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "redo": {
+        "summary": "Steps forward one cleaned state and says input; false when there is nothing to redo.",
+        "arguments": [],
+        "returns": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
