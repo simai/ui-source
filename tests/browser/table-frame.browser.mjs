@@ -47,6 +47,12 @@ const page_html = `
     <thead><tr><th>Один</th><th>Два</th><th>Три</th><th>Четыре</th><th>Пять</th><th>Шесть</th></tr></thead>
     <tbody><tr><td>Значение один</td><td>Значение два</td><td>Значение три</td><td>Значение четыре</td><td>Значение пять</td><td>Значение шесть</td></tr></tbody>
   </table>
+</div>
+<div class="table-frame" data-probe="own" style="--sf-table-frame-head-background:rgb(1, 2, 3)">
+  <table class="table">
+    <thead><tr><th data-head="own">Имя</th></tr></thead>
+    <tbody><tr><td>Значение</td></tr></tbody>
+  </table>
 </div>`;
 
 const browser = await chromium.launch();
@@ -93,6 +99,7 @@ try {
         boldWeight: getComputedStyle(document.documentElement).getPropertyValue('--sf-font-weight-bold').trim(),
       },
       headLast: read(headLast, 'border-right-width'),
+      ownHead: read(document.querySelector('[data-head="own"]'), 'background-color'),
       body: {
         ...read(body, 'padding-top', 'padding-left', 'border-right-width', 'border-bottom-width', 'vertical-align', '--sf-on-surface-variant'),
         pageInk: getComputedStyle(document.documentElement).getPropertyValue('--sf-on-surface-variant').trim(),
@@ -125,6 +132,7 @@ try {
   check('the head takes the container fill and the bold weight', measured.head['background-color'] !== measured.body['background-color'] && measured.head['font-weight'] === measured.head.boldWeight.replace(/[^0-9]/gu, ''), measured.head);
   check('the head carries the container dimmed role, the body the page one', measured.head['--sf-on-surface-variant'] === measured.head.containerInk && measured.body['--sf-on-surface-variant'] === measured.body.pageInk, {head: measured.head['--sf-on-surface-variant'], body: measured.body['--sf-on-surface-variant']});
 
+  check('a head fill set on the frame reaches the head cells', measured.ownHead['background-color'] === 'rgb(1, 2, 3)', measured.ownHead);
   check('the head block padding is a ladder step', near(px(measured.head['padding-top']), px(measured.steps.one)), {head: measured.head['padding-top'], step: measured.steps.one});
   check('the body block padding is the half step', near(px(measured.body['padding-top']), px(measured.steps.half)), {body: measured.body['padding-top'], step: measured.steps.half});
   check('the inline padding is the same step in head and body', near(px(measured.head['padding-left']), px(measured.steps.one)) && near(px(measured.body['padding-left']), px(measured.steps.one)), {head: measured.head['padding-left'], body: measured.body['padding-left'], step: measured.steps.one});

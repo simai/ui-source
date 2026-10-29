@@ -21,6 +21,7 @@
         --sf-table-frame-border-color: var(--sf-outline-variant);
         --sf-table-frame-radius: var(--sf-radius--surface);
         --sf-table-frame-background: var(--sf-surface-0);
+        --sf-table-frame-head-background: var(--sf-surface-container);
         --sf-table-frame-head-color: var(--sf-on-surface);
         --sf-table-frame-head-padding-block: var(--sf-space-1);
         --sf-table-frame-cell-padding-block: var(--sf-space-1\/2);
@@ -65,9 +66,8 @@
             > thead > tr > * {
                 // The head is the one container fill in the frame, and dimmed
                 // text on a container fill reads the container role
-                // (2026-10-19): the default is declared here, beside the fill
-                // it belongs to, so the body cells keep the page's roles.
-                --sf-table-frame-head-background: var(--sf-surface-container);
+                // (2026-10-19): the role is set here, beside the fill it
+                // belongs to, so the body cells keep the page's roles.
                 --sf-on-surface-variant: var(--sf-on-surface-container--variant);
                 padding-block: var(--sf-table-frame-head-padding-block);
                 background-color: var(--sf-table-frame-head-background);
