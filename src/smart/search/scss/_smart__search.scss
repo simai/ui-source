@@ -1,0 +1,457 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
+@layer sf.components {
+/* Site search (standard simai.smart-component 1.3.13 §6): the window sf-search
+   draws into its portal while open -- a scrim, a large rounded field and a
+   results card under it, two raised surfaces. Every length is a token of the
+   one ladder (docs/foundation-composition-geometry.md):
+
+   - the field is the size 2 control height, its glyph 24 px;
+   - a result row is the size 2 control height (a size 1 title over a size 1/3
+     path), its icon a size 1/2 square (32 px) holding a 20 px glyph; a row of
+     one line is the size 1 control height;
+   - one axis: the field's glyph, the rows' squares and the captions are
+     centred on, or start at, the same inline position (the card's inset plus
+     the row's), and the field's text starts where the rows' titles start; the
+     field's X is centred over the rows' go arrows.
+
+   The public variables are read with the role token as their fallback and
+   never set here. */
+.sf-search-portal {
+  --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
+  --sf-search--surface: var(--sf-search-background, var(--sf-elevation-3--surface));
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  --sf-search--radius: var(--sf-search-radius, var(--sf-radius-2));
+  --sf-search--pad: var(--sf-space-1\/4);
+  --sf-search--row-pad: var(--sf-space-1\/2);
+  --sf-search--row-gap: var(--sf-space-1\/2);
+  --sf-search--square: var(--sf-ui-1\/2--control-height);
+  --sf-search--field-glyph: var(--sf-icon-size-3);
+  --sf-search--row-glyph: var(--sf-icon-size-2);
+  --sf-search--axis: calc(var(--sf-search--pad) + var(--sf-search--row-pad));
+  --sf-search--text-start: calc(var(--sf-search--axis) + var(--sf-search--square) + var(--sf-search--row-gap));
+  position: fixed;
+  inset: 0;
+  display: block;
+  color: var(--sf-on-surface);
+}
+
+/* In an overlay container (a documentation example) the window stays in the
+   container's box: the container is the containing block. */
+.sf-search-portal--contained {
+  position: absolute;
+}
+
+.sf-search-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--sf-search-scrim-color, var(--sf-surface-transparent-overlay));
+}
+
+.sf-search-window {
+  position: absolute;
+  inset-block-start: var(--sf-search--inset-block);
+  inset-inline: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/3);
+  box-sizing: border-box;
+  inline-size: min(var(--sf-search-inline-size, var(--sf-g8)), 100% - 2 * var(--sf-space-2));
+  max-block-size: calc(100% - 2 * var(--sf-search--inset-block));
+  margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-search-window {
+    animation: sf-search-enter var(--sf-duration-fast) var(--sf-ease-enter);
+  }
+
+  .sf-search-scrim {
+    animation: sf-search-fade var(--sf-duration-fast) var(--sf-ease-enter);
+  }
+}
+
+@keyframes sf-search-enter {
+  from {
+    opacity: 0;
+    translate: 0 calc(-1 * var(--sf-space-1\/3));
+  }
+}
+
+@keyframes sf-search-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The field: a pill on the size 2 control height. */
+.sf-search-field {
+  display: flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  block-size: var(--sf-ui-2--control-height);
+  padding-inline-start: calc(var(--sf-search--axis) + (var(--sf-search--square) - var(--sf-search--field-glyph)) / 2);
+  padding-inline-end: calc(var(--sf-search--axis) + var(--sf-search--row-glyph) / 2 - var(--sf-ui-1\/2--control-height) / 2);
+  border-radius: var(--sf-radius-rounded);
+  background: var(--sf-search--surface);
+  box-shadow: var(--sf-elevation-3--shadow);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+}
+
+.sf-search-glyph {
+  --sf-icon--font-size: var(--sf-search--field-glyph);
+  --sf-icon--width: var(--sf-search--field-glyph);
+  --sf-icon--height: var(--sf-search--field-glyph);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  flex: none;
+  margin-inline-end: calc(var(--sf-search--text-start) - var(--sf-search--axis) - (var(--sf-search--square) + var(--sf-search--field-glyph)) / 2);
+}
+
+/* The back arrow is the phone sheet's (below); the button's host is
+   display: contents, so its native button is what is shown and hidden. */
+.sf-search-back > button {
+  display: none;
+}
+
+.sf-search-input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+  font-size: var(--sf-text-size-2);
+  line-height: var(--sf-text-height-2);
+  /* The window's one field holds the focus whenever the window is open, and
+     its caret marks it; a ring around the pill would say nothing more. */
+  outline: none;
+}
+
+.sf-search-input::placeholder {
+  color: var(--sf-on-surface-variant);
+  opacity: 1;
+}
+
+.sf-search-clear > button {
+  flex: none;
+  margin-inline-start: var(--sf-space-1\/3);
+}
+
+/* The results card. */
+.sf-search-card {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-block-size: 0;
+  max-block-size: var(--sf-search-list-max-block-size, none);
+  padding: var(--sf-search--pad);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--sf-search--radius);
+  background: var(--sf-search--surface);
+  box-shadow: var(--sf-elevation-3--shadow);
+  --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+}
+
+.sf-search-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-search-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-space-1\/2);
+  padding-block: var(--sf-space-1\/3) var(--sf-space-1\/4);
+  padding-inline: var(--sf-search--row-pad);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-search-caption-action {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sf-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sf-search-caption-action:hover {
+  text-decoration: underline;
+}
+
+/* A row: the soft square, the title over the path, and a trailing go arrow,
+   shortcut or remove button. */
+.sf-search-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-search--row-gap);
+  box-sizing: border-box;
+  min-block-size: var(--sf-ui-2--control-height);
+  padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1) - var(--sf-text-height-1\/3)) / 2);
+  padding-inline: var(--sf-search--row-pad);
+  border-radius: calc(var(--sf-search--radius) - var(--sf-search--pad));
+  color: var(--sf-on-surface);
+  cursor: pointer;
+}
+
+.sf-search-row--single {
+  min-block-size: var(--sf-ui-1--control-height);
+  padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
+}
+
+.sf-search-row--selected {
+  background: var(--sf-surface-transparent-select);
+}
+
+.sf-search-row-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-search--square);
+  block-size: var(--sf-search--square);
+  border-radius: var(--sf-radius-1);
+  background: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-search--row-glyph);
+  --sf-icon--width: var(--sf-search--row-glyph);
+  --sf-icon--height: var(--sf-search--row-glyph);
+}
+
+.sf-search-row--selected .sf-search-row-icon {
+  background: var(--sf-primary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+.sf-search-row--recent .sf-search-row-icon,
+.sf-search-row--recent.sf-search-row--selected .sf-search-row-icon {
+  background: transparent;
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-search-row-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-search-row-title,
+.sf-search-row-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-search-row-title {
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-search-row-path {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-search-mark {
+  border-radius: var(--sf-a2);
+  background: var(--sf-search-mark-color, var(--sf-primary-container));
+  color: inherit;
+}
+
+.sf-search-go {
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-search--row-glyph);
+  --sf-icon--width: var(--sf-search--row-glyph);
+  --sf-icon--height: var(--sf-search--row-glyph);
+  flex: none;
+  visibility: hidden;
+}
+
+.sf-search-row--selected .sf-search-go {
+  visibility: visible;
+}
+
+.sf-search-shortcut {
+  flex: none;
+}
+
+.sf-search-remove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-ui-1\/3--control-height);
+  block-size: var(--sf-ui-1\/3--control-height);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-icon-size-1);
+  --sf-icon--width: var(--sf-icon-size-1);
+  --sf-icon--height: var(--sf-icon-size-1);
+}
+
+.sf-search-row:hover .sf-search-remove,
+.sf-search-row--selected .sf-search-remove {
+  opacity: 1;
+}
+
+.sf-search-remove:hover {
+  background: var(--sf-surface-transparent-active);
+}
+
+/* Pills: the scopes (pressed is the filter in force) and the popular
+   queries. A pill's text starts on the rows' axis. */
+.sf-search-scopes,
+.sf-search-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1\/4);
+  padding: var(--sf-space-1\/4) calc(var(--sf-search--row-pad) - var(--sf-space-1\/3));
+}
+
+.sf-search-scopes {
+  flex: none;
+  padding-block-end: var(--sf-space-1\/3);
+}
+
+.sf-search-pill {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-block-size: var(--sf-ui-1\/3--control-height);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sf-space-1\/3);
+  border: 0;
+  border-radius: var(--sf-radius-rounded);
+  background: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  color: var(--sf-on-surface-variant);
+  font: inherit;
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  cursor: pointer;
+}
+
+.sf-search-pill:hover {
+  background: var(--sf-surface-container-hover);
+}
+
+.sf-search-scope {
+  background: transparent;
+}
+
+.sf-search-scope:hover {
+  background: var(--sf-surface-transparent-hover);
+}
+
+.sf-search-scope[aria-pressed='true'] {
+  background: var(--sf-surface-container-active);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  color: var(--sf-on-surface);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-search-count {
+  margin-inline-start: var(--sf-space-1\/4);
+  font-size: var(--sf-text-size-1\/3);
+  font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-search-scope[aria-pressed='true'] .sf-search-count {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-search-message {
+  padding: var(--sf-space-2) var(--sf-search--row-pad);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+  text-align: center;
+}
+
+.sf-search-message + .sf-search-pills {
+  justify-content: center;
+  padding-block-end: var(--sf-space-1\/2);
+}
+
+/* The keys: arrows to select, Enter to open, Escape to clear or close. */
+.sf-search-keys {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1\/4) var(--sf-space-1);
+  margin-block-start: var(--sf-search--pad);
+  padding: var(--sf-space-1\/3) var(--sf-search--row-pad) var(--sf-space-1\/4);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-search-key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+/* A phone: a full-screen sheet, the field on top with a back arrow at its
+   start; the X only clears (the arrow closes). A media rule, so the first
+   frame the window draws is right. */
+@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  .sf-search-window {
+    inset: 0;
+    inline-size: auto;
+    max-block-size: none;
+    gap: 0;
+    background: var(--sf-search--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-3--variant);
+  }
+
+  .sf-search-field {
+    padding-inline-start: calc(var(--sf-search--axis) + var(--sf-search--square) / 2 - var(--sf-ui-1\/2--control-height) / 2);
+    border-radius: 0;
+    box-shadow: none;
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-search-back > button {
+    display: inline-flex;
+    margin-inline-end: calc(var(--sf-search--text-start) - var(--sf-search--axis) - (var(--sf-search--square) + var(--sf-ui-1\/2--control-height)) / 2);
+  }
+
+  .sf-search-glyph {
+    display: none;
+  }
+
+  .sf-search-field:not(.sf-search-field--filled) .sf-search-clear > button {
+    visibility: hidden;
+  }
+
+  .sf-search-card {
+    flex: 1 1 auto;
+    max-block-size: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.search",
+  "title": "site search reference",
+  "summary": "Deterministic reference fixture for sf-search.",
+  "locale": "ru",
+  "props": {
+    "placeholder": "Найти страницу, компонент или действие"
+  },
+  "children": [],
+  "state": "default"
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Site search",
+  "runtime": {
+    "label": "Site search",
+    "placeholder": "Search the site",
+    "clear-label": "Clear",
+    "close-label": "Close",
+    "back-label": "Back",
+    "scopes-label": "Search in",
+    "all-label": "All",
+    "results-label": "Results",
+    "recent-label": "Recent",
+    "recent-clear-label": "Clear",
+    "recent-remove-label": "Remove “{query}”",
+    "popular-label": "Popular",
+    "actions-label": "Quick actions",
+    "start-text": "Start typing to search",
+    "loading-text": "Searching…",
+    "error-text": "Search is unavailable now",
+    "empty-text": "Nothing found for “{query}”",
+    "count-text": {
+      "one": "{n} result",
+      "other": "{n} results"
+    },
+    "key-select-label": "select",
+    "key-open-label": "open",
+    "key-clear-label": "clear",
+    "key-close-label": "close"
+  }
+}

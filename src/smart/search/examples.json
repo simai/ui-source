@@ -1,0 +1,309 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Кнопка поиска в шапке",
+      "children": "<sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button>",
+      "settings": {
+        "placeholder": "Найти страницу, компонент или действие"
+      },
+      "expect": {
+        "placeholder": "Найти страницу, компонент или действие",
+        "shortcut": "mod+k /",
+        "scopes": true,
+        "recent": true
+      },
+      "studio": {
+        "title": "site search reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "index",
+      "title": "Поиск по статическому индексу",
+      "children": "<sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button>",
+      "settings": {
+        "index": "data:application/json,%7B%22groups%22%3A%5B%7B%22id%22%3A%22pages%22%2C%22label%22%3A%22%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B%22%7D%2C%7B%22id%22%3A%22components%22%2C%22label%22%3A%22%D0%9A%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B%22%7D%2C%7B%22id%22%3A%22actions%22%2C%22label%22%3A%22%D0%94%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B8%D1%8F%22%7D%5D%2C%22popular%22%3A%5B%22%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0%22%2C%22%D1%82%D0%B5%D0%BC%D0%B0%22%2C%22%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D0%B0%22%5D%2C%22items%22%3A%5B%7B%22group%22%3A%22pages%22%2C%22title%22%3A%22%D0%9A%D0%BD%D0%BE%D0%BF%D0%BA%D0%B8%22%2C%22path%22%3A%22%D0%9A%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B%20%E2%80%BA%20%D0%94%D0%B5%D0%B9%D1%81%D1%82%D0%B2%D0%B8%D1%8F%22%2C%22href%22%3A%22%23buttons%22%2C%22icon%22%3A%22smart_button%22%7D%2C%7B%22group%22%3A%22pages%22%2C%22title%22%3A%22%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0%20%D0%B2%20%D1%80%D0%B0%D0%BC%D0%BA%D0%B5%22%2C%22path%22%3A%22%D0%A3%D1%82%D0%B8%D0%BB%D0%B8%D1%82%D1%8B%20%E2%80%BA%20%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D1%8B%22%2C%22href%22%3A%22%23table%22%2C%22icon%22%3A%22table%22%7D%2C%7B%22group%22%3A%22pages%22%2C%22title%22%3A%22%D0%A2%D1%91%D0%BC%D0%BD%D0%B0%D1%8F%20%D1%82%D0%B5%D0%BC%D0%B0%22%2C%22path%22%3A%22%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D1%8B%20%E2%80%BA%20%D0%A2%D0%B5%D0%BC%D1%8B%22%2C%22href%22%3A%22%23dark%22%2C%22icon%22%3A%22dark_mode%22%7D%2C%7B%22group%22%3A%22components%22%2C%22title%22%3A%22sf-button%22%2C%22path%22%3A%22%D0%A1%D0%BC%D0%B0%D1%80%D1%82-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%22%2C%22text%22%3A%22%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D0%B0%22%2C%22href%22%3A%22%23sf-button%22%2C%22icon%22%3A%22widgets%22%7D%2C%7B%22group%22%3A%22actions%22%2C%22title%22%3A%22%D0%A1%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C%20%D1%82%D0%B5%D0%BC%D1%83%22%2C%22path%22%3A%22%D0%9A%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0%22%2C%22action%22%3A%22theme%22%2C%22icon%22%3A%22contrast%22%2C%22shortcut%22%3A%22%E2%87%A7%E2%8C%98L%22%7D%5D%7D",
+        "recent-key": "sf-search-example"
+      },
+      "expect": {
+        "recent-key": "sf-search-example"
+      }
+    },
+    {
+      "name": "icon",
+      "title": "Значок на телефоне, без подсказок клавиш",
+      "children": "<sf-icon-button icon=\"search\" appearance=\"link\" scheme=\"on-surface\" aria-label=\"Поиск\"></sf-icon-button>",
+      "settings": {
+        "keys": false,
+        "popular": false,
+        "shortcut": "/"
+      },
+      "expect": {
+        "keys": false,
+        "popular": false,
+        "shortcut": "/"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-search against component.json (standard simai.smart-component 1.3.13 §12, §19, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<sf-search id=\"s\" data-probe recent-key=\"sf-search-conformance\"><button id=\"t\" type=\"button\">Поиск</button></sf-search>",
+          "<sf-search id=\"named\" data-probe for=\"ext\" shortcut=\"\"></sf-search><button id=\"ext\" type=\"button\">Найти</button>",
+          "<main><p>Страница</p><input id=\"text\" aria-label=\"Поле страницы\"></main>",
+          "<script>document.querySelectorAll('sf-search[data-probe]').forEach((el) => { el.provider = (query) => { const q = query.toLowerCase(); const items = [{id:'buttons',group:'pages',title:'Кнопки',path:'Компоненты › Действия',href:'#buttons',icon:'smart_button'},{id:'table',group:'pages',title:'Таблица в рамке',path:'Утилиты › Таблицы',href:'#table',icon:'table'},{id:'sf-button',group:'components',title:'sf-button',path:'Смарт-компонент',text:'кнопка',href:'#sf-button',icon:'widgets'},{id:'theme',group:'actions',title:'Сменить тему',path:'Команда',action:'theme',icon:'contrast',shortcut:'⇧⌘L'}]; const found = q ? items.filter((i) => (i.title + ' ' + (i.text || '')).toLowerCase().includes(q)) : items.filter((i) => i.action); return {groups:[{id:'pages',label:'Страницы'},{id:'components',label:'Компоненты'},{id:'actions',label:'Действия'}], items: found, popular:['таблица','кнопка']}; }; });</script>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-trigger",
+          "title": "the page's trigger says it opens a dialog and which keys open it",
+          "covers": "slots.trigger (default), settings.shortcut, accessibility",
+          "steps": [
+            {
+              "check": "(() => { const t = document.querySelector('#t'); return t.getAttribute('aria-haspopup') === 'dialog' && t.getAttribute('aria-expanded') === 'false' && /K/.test(t.getAttribute('aria-keyshortcuts') || '') && document.querySelector('#ext').getAttribute('aria-haspopup') === 'dialog'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-open",
+          "title": "the trigger opens the window: a modal dialog, focus in its field, the page locked",
+          "covers": "actions.open, events.open, events.opened, layer.locks-page, host-states data-open",
+          "steps": [
+            {
+              "user": "click:#t",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-open",
+                    "count": 1
+                  },
+                  {
+                    "name": "sf-search-opened",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const w = document.querySelector('.sf-search-window'); return w && w.getAttribute('role') === 'dialog' && w.getAttribute('aria-modal') === 'true' && w.getAttribute('aria-label') === 'Поиск по сайту' && document.activeElement === document.querySelector('.sf-search-input') && document.querySelector('#s').getAttribute('data-open') === 'true' && document.documentElement.style.overflow === 'hidden' && document.querySelector('#t').getAttribute('aria-expanded') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-shortcut",
+          "title": "Command/Control+K opens the window from anywhere; / does not from a text field",
+          "covers": "settings.shortcut, keyboard Mod+K",
+          "steps": [
+            {
+              "script": "(document.querySelector('#text').focus(), true)"
+            },
+            {
+              "user": "keyboard:/"
+            },
+            {
+              "check": "!document.querySelector('.sf-search-window')"
+            },
+            {
+              "user": "keyboard:ControlOrMeta+k",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-opened",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.activeElement === document.querySelector('.sf-search-input')"
+            }
+          ]
+        },
+        {
+          "id": "p4-results",
+          "title": "typing asks the provider: grouped results, the match marked, the first row selected",
+          "covers": "settings.provider, settings.scopes, settings.path",
+          "steps": [
+            {
+              "user": "click:#t"
+            },
+            {
+              "script": "(async () => { const i = document.querySelector('.sf-search-input'); i.value = \"кноп\"; i.dispatchEvent(new Event('input', {bubbles: true})); await new Promise((r) => setTimeout(r, 400)); return true; })()"
+            },
+            {
+              "check": "(() => { const rows = document.querySelectorAll('.sf-search-row'); const mark = document.querySelector('.sf-search-row mark'); return rows.length === 2 && mark && mark.textContent === 'Кноп' && rows[0].getAttribute('aria-selected') === 'true' && document.querySelector('.sf-search-input').getAttribute('aria-activedescendant') === rows[0].id && document.querySelectorAll('.sf-search-scope').length === 3; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-clear-then-close",
+          "title": "the X clears a filled field and keeps the focus, then closes the empty window",
+          "covers": "events.close reason close, events.closed",
+          "steps": [
+            {
+              "user": "click:#t"
+            },
+            {
+              "script": "(async () => { const i = document.querySelector('.sf-search-input'); i.value = \"кноп\"; i.dispatchEvent(new Event('input', {bubbles: true})); await new Promise((r) => setTimeout(r, 400)); return true; })()"
+            },
+            {
+              "user": "click:.sf-search-clear button"
+            },
+            {
+              "check": "document.querySelector('.sf-search-input').value === '' && document.activeElement === document.querySelector('.sf-search-input')"
+            },
+            {
+              "user": "click:.sf-search-clear button",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "close"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "focus": "expect returned to #t"
+            }
+          ]
+        },
+        {
+          "id": "p6-escape",
+          "title": "Escape clears first, then closes and gives focus back",
+          "covers": "keyboard Escape, events.close reason escape",
+          "steps": [
+            {
+              "user": "click:#t"
+            },
+            {
+              "script": "(async () => { const i = document.querySelector('.sf-search-input'); i.value = \"таб\"; i.dispatchEvent(new Event('input', {bubbles: true})); await new Promise((r) => setTimeout(r, 400)); return true; })()"
+            },
+            {
+              "user": "keyboard:Escape"
+            },
+            {
+              "check": "document.querySelector('.sf-search-input')?.value === ''"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "focus": "expect returned to #t"
+            }
+          ]
+        },
+        {
+          "id": "p7-navigate",
+          "title": "Enter opens the selected result: the window closes and the page hears navigate",
+          "covers": "events.navigate cancelable",
+          "steps": [
+            {
+              "script": "(document.addEventListener('sf-search-navigate', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#t"
+            },
+            {
+              "script": "(async () => { const i = document.querySelector('.sf-search-input'); i.value = \"таб\"; i.dispatchEvent(new Event('input', {bubbles: true})); await new Promise((r) => setTimeout(r, 400)); return true; })()"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-navigate",
+                    "count": 1,
+                    "detail": {
+                      "id": "table",
+                      "href": "#table",
+                      "query": "таб"
+                    }
+                  },
+                  {
+                    "name": "sf-search-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "api"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p8-cancelled",
+          "title": "a page that cancels sf-search-open keeps the window closed and the action answers refused",
+          "covers": "events.open cancelable, actions.open outcome",
+          "steps": [
+            {
+              "script": "(document.addEventListener('sf-search-open', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "action": {
+                "name": "open"
+              },
+              "target": "#s",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            },
+            {
+              "check": "!document.querySelector('#s').hasAttribute('data-open') && !document.querySelector('.sf-search-window')"
+            }
+          ]
+        },
+        {
+          "id": "p9-for",
+          "title": "an element named by for opens its search",
+          "covers": "settings.for",
+          "steps": [
+            {
+              "user": "click:#ext",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-search-opened",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#named').getAttribute('data-open') === 'true'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

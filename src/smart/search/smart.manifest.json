@@ -1,0 +1,375 @@
+{
+  "schema_version": 2,
+  "id": "smart.search",
+  "version": "1.0.0",
+  "title": "Site search",
+  "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "search",
+    "site-search",
+    "command-palette",
+    "dialog"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "responsive",
+    "navigation",
+    "i18n",
+    "search"
+  ],
+  "custom_element": "sf-search",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.icons",
+      "component.kbd",
+      "smart.icon-button"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "index": {
+        "type": "string",
+        "default": "",
+        "description": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in provider reads it once and matches the query in it, case-insensitive. Not read when a provider is given"
+      },
+      "for": {
+        "type": "string",
+        "default": "",
+        "description": "The id of a page element, or several separated by spaces, that opens the window when pressed; the trigger slot is the other way"
+      },
+      "shortcut": {
+        "type": "string",
+        "default": "mod+k /",
+        "description": "The keys that open the window, separated by spaces: mod is Command on a Mac and Control elsewhere; a single printable key (/) acts only outside a text field; empty: none"
+      },
+      "label": {
+        "type": "string",
+        "description": "The window's accessible name; «Поиск по сайту» / «Site search» in the page language when not set"
+      },
+      "placeholder": {
+        "type": "string",
+        "description": "The field's placeholder; «Найти на сайте» / «Search the site» in the page language when not set"
+      },
+      "scopes": {
+        "type": "boolean",
+        "default": true,
+        "description": "Filter pills over the results once there is a query: all, then one per result group, each with its count"
+      },
+      "recent": {
+        "type": "boolean",
+        "default": true,
+        "description": "Recent queries on an empty field, each with a remove button, and a clear button; a query is recorded when one of its results is opened"
+      },
+      "recent-key": {
+        "type": "string",
+        "default": "sf-search-recent",
+        "description": "The localStorage key the recent queries are kept under; give each search of a site its own"
+      },
+      "popular": {
+        "type": "boolean",
+        "default": true,
+        "description": "Popular queries as pills on an empty field and under an empty result, from the data (popular)"
+      },
+      "actions": {
+        "type": "boolean",
+        "default": true,
+        "description": "Results that run a command instead of opening a page (an action, with an optional shortcut hint): a quick actions group on an empty field and their own group among the results"
+      },
+      "path": {
+        "type": "boolean",
+        "default": true,
+        "description": "The result's path as a second line under its title"
+      },
+      "keys": {
+        "type": "boolean",
+        "default": true,
+        "description": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close"
+      },
+      "provider": {
+        "type": "object",
+        "default": null,
+        "description": "The results port: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A property only"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "open": {
+      "summary": "Opens the window with an empty field; refused when a page cancels sf-search-open",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "summary": "Closes the window; refused when it is closed already or a page cancels sf-search-close",
+      "arguments": [
+        {
+          "name": "reason",
+          "schema": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "summary": "Opens the window when it is closed and closes it when it is open",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-search-open": {
+      "summary": "The window is about to open: a request a page may cancel",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-search-opened": {
+      "summary": "The window opened and its field has focus",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-search-close": {
+      "summary": "The window is about to close, and why: the field's close button or the back arrow (close), Escape on an empty field (escape), a press on the scrim (outside), or the action and a chosen result (api)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-search-closed": {
+      "summary": "The window closed, and why",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-search-navigate": {
+      "summary": "A result was chosen (Enter or a press): the window has closed and the query is recorded; a page that routes itself or runs the action cancels it, else the browser goes to href. An action result carries action and no href",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "href",
+          "action",
+          "query",
+          "group"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "data": [
+        "idle",
+        "loading",
+        "ready",
+        "empty",
+        "error"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open"
+    ]
+  },
+  "persistence": {
+    "mode": "hybrid",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "building the site's search index",
+      "deciding where a result leads",
+      "running a quick action's command"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children",
+      "index"
+    ],
+    "network_policy": "host-only"
+  },
+  "accessibility": {
+    "role": "dialog",
+    "accessible_name": "internal",
+    "keyboard": [
+      "Command/Control+K, or / outside a text field, opens the window",
+      "ArrowDown and ArrowUp move the selection through the results; Enter opens the selected one",
+      "Escape clears the field, and on an empty field closes the window and gives focus back"
+    ],
+    "focus": "The open window puts focus in its field, keeps Tab inside while it is the top layer and gives focus back to what had it (the trigger) when it closes."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": null,
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": null,
+  "ai_guidance": {
+    "use_when": "Use sf-search for the site search of a SIMAI site or documentation: a window opened from a button in the header or by Command/Control+K, over a static index or the site's own search.",
+    "do_not": [
+      "Do not draw a search window of your own on a SIMAI site",
+      "Do not put the results into the trigger slot; they come from the provider or the index",
+      "Do not handle Escape or the shortcut yourself; the component and the layer stack do"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-search index=\"/search-index.json\"><sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button></sf-search>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

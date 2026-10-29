@@ -1,0 +1,404 @@
+{
+  "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30.",
+  "id": "smart.search",
+  "tag": "sf-search",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "search",
+  "settings": {
+    "index": {
+      "type": "string",
+      "default": "",
+      "summary": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in provider reads it once and matches the query in it, case-insensitive. Not read when a provider is given"
+    },
+    "provider": {
+      "type": "object",
+      "default": null,
+      "summary": "The results port: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A property only"
+    },
+    "for": {
+      "type": "string",
+      "default": "",
+      "summary": "The id of a page element, or several separated by spaces, that opens the window when pressed; the trigger slot is the other way"
+    },
+    "shortcut": {
+      "type": "string",
+      "default": "mod+k /",
+      "summary": "The keys that open the window, separated by spaces: mod is Command on a Mac and Control elsewhere; a single printable key (/) acts only outside a text field; empty: none"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The window's accessible name; «Поиск по сайту» / «Site search» in the page language when not set"
+    },
+    "placeholder": {
+      "type": "string",
+      "default-from": "runtime.placeholder",
+      "summary": "The field's placeholder; «Найти на сайте» / «Search the site» in the page language when not set"
+    },
+    "scopes": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Filter pills over the results once there is a query: all, then one per result group, each with its count"
+    },
+    "recent": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Recent queries on an empty field, each with a remove button, and a clear button; a query is recorded when one of its results is opened"
+    },
+    "recent-key": {
+      "type": "string",
+      "default": "sf-search-recent",
+      "summary": "The localStorage key the recent queries are kept under; give each search of a site its own"
+    },
+    "popular": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Popular queries as pills on an empty field and under an empty result, from the data (popular)"
+    },
+    "actions": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Results that run a command instead of opening a page (an action, with an optional shortcut hint): a quick actions group on an empty field and their own group among the results"
+    },
+    "path": {
+      "type": "boolean",
+      "default": true,
+      "summary": "The result's path as a second line under its title"
+    },
+    "keys": {
+      "type": "boolean",
+      "default": true,
+      "summary": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close"
+    }
+  },
+  "values": {},
+  "events": {
+    "open": {
+      "carries": {},
+      "cancelable": true,
+      "summary": "The window is about to open: a request a page may cancel"
+    },
+    "opened": {
+      "carries": {},
+      "summary": "The window opened and its field has focus"
+    },
+    "close": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "cancelable": true,
+      "summary": "The window is about to close, and why: the field's close button or the back arrow (close), Escape on an empty field (escape), a press on the scrim (outside), or the action and a chosen result (api)"
+    },
+    "closed": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "summary": "The window closed, and why"
+    },
+    "navigate": {
+      "carries": {
+        "id": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        }
+      },
+      "cancelable": true,
+      "summary": "A result was chosen (Enter or a press): the window has closed and the query is recorded; a page that routes itself or runs the action cancels it, else the browser goes to href. An action result carries action and no href"
+    }
+  },
+  "actions": {
+    "open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the window with an empty field; refused when a page cancels sf-search-open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Closes the window; refused when it is closed already or a page cancels sf-search-close",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the window when it is closed and closes it when it is open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "slots": {
+    "trigger": {
+      "default": true
+    }
+  },
+  "layer": {
+    "kind": "modal",
+    "locks-page": true,
+    "traps-focus": true
+  },
+  "keyboard": {
+    "host": {
+      "Mod+K": "open",
+      "Enter": "open",
+      "Space": "open"
+    },
+    "panel": {
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Enter": "open",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "kbd"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws. Two functions: the host's (the trigger, in place) and the window's (drawn into the layer's portal while open)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The open window is a modal dialog named by label. Its field is a combobox (aria-expanded, aria-controls the result list, aria-activedescendant the selected row, aria-autocomplete list); the results are a listbox of options grouped under their captions, so the field keeps the focus while the arrows move the selection. A polite status says how many results there are. The trigger the page gives gets aria-haspopup dialog, aria-expanded, aria-controls and aria-keyshortcuts.",
+    "role": "dialog",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Mod+K": "open",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Enter": "open",
+      "Escape": "close",
+      "Tab": "reach"
+    }
+  },
+  "host-states": {
+    "data-open": "boolean"
+  },
+  "css-variables": {
+    "--sf-search-inline-size": {
+      "type": "length",
+      "state": "open"
+    },
+    "--sf-search-inset-block-start": {
+      "type": "length",
+      "state": "open"
+    },
+    "--sf-search-background": {
+      "type": "color",
+      "state": "open"
+    },
+    "--sf-search-scrim-color": {
+      "type": "color",
+      "state": "open"
+    },
+    "--sf-search-mark-color": {
+      "type": "color",
+      "state": "open"
+    },
+    "--sf-search-radius": {
+      "type": "length",
+      "state": "open"
+    },
+    "--sf-search-list-max-block-size": {
+      "type": "length",
+      "state": "open"
+    }
+  },
+  "x-summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+  "x-source": {
+    "package": "framework",
+    "folder": "search",
+    "brief": "ui-control prototypes/search-and-settings.html, tab «Поиск по сайту», variant 1 «Прожектор» (owner approved it as it is, 2026-10-30)"
+  },
+  "x-words": [
+    "label",
+    "placeholder"
+  ],
+  "x-decisions": [
+    "name: sf-search, family search (dispatcher, owner-delegated). A leaf with one slot, trigger: the page's own button (or any element named by for) opens the window, so the first paint is the page's markup and nothing moves when the code arrives.",
+    "layer: kind modal, locks-page, traps-focus (§19.1), registered in the shared layer stack of core/js/layer-stack.js the way sf-modal and sf-drawer register. The window is drawn into a portal at the end of the body (or of the nearest [data-sf-overlay-container], whose page is then not locked), carrying the host's lang, dir, theme and --sf-search-* values (carryLayerOrigin), so a sticky header's stacking context cannot hold it under the page.",
+    "port: a provider property, async function (query, {scope, signal}) -> {groups, items, popular}, rather than a host-port contract under src/core/contracts/ports: a search answers one read and needs none of a port's kit (capabilities, intents, revisions). Without a provider the built-in one reads the static index (Docara and ui.simai.io publish one). Requests are debounced, a stale one is aborted through signal, and the card says loading while the first answer is awaited.",
+    "close control: an X button inside the field, not an Esc label (owner, prototype round 2): with text it clears the field and keeps the focus, on an empty field it closes. Escape does the same, through the layer stack's onEscape, so only the top layer hears it.",
+    "navigate: choosing a result is the vocabulary's navigate {id, href} (§5), with action, query and group; a cancelable request, so a page routes it itself or runs the action. href is the vocabulary word; an index entry's url is read as href.",
+    "scopes: the result groups are the scopes; filtering is local, so the counts stay right whichever pill is pressed. scope is passed to the provider as a hint only.",
+    "narrow: below the sm breakpoint (32rem) the window is a full-screen sheet with the field on top and a back arrow at its start; a media rule, so it is right on the first frame the window draws.",
+    "geometry (docs/foundation-composition-geometry.md): the field is the size 2 control height with a 24 px glyph; a result row is the size 2 control height with a size 1/2 square (32 px) holding a 20 px glyph; a one-line row the size 1 control height; the field's glyph, the rows' squares and the captions share one axis, and the field's text starts where the rows' titles do.",
+    "css-variables: seven public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "responsive",
+      "navigation",
+      "i18n",
+      "search"
+    ],
+    "persistence": {
+      "mode": "hybrid",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "search",
+      "site-search",
+      "command-palette",
+      "dialog"
+    ],
+    "state": {
+      "machines": {
+        "data": [
+          "idle",
+          "loading",
+          "ready",
+          "empty",
+          "error"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "building the site's search index",
+        "deciding where a result leads",
+        "running a quick action's command"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children",
+        "index"
+      ],
+      "network_policy": "host-only"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-search for the site search of a SIMAI site or documentation: a window opened from a button in the header or by Command/Control+K, over a static index or the site's own search.",
+      "do_not": [
+        "Do not draw a search window of your own on a SIMAI site",
+        "Do not put the results into the trigger slot; they come from the provider or the index",
+        "Do not handle Escape or the shortcut yourself; the component and the layer stack do"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-search index=\"/search-index.json\"><sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button></sf-search>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Command/Control+K, or / outside a text field, opens the window",
+        "ArrowDown and ArrowUp move the selection through the results; Enter opens the selected one",
+        "Escape clears the field, and on an empty field closes the window and gives focus back"
+      ],
+      "focus": "The open window puts focus in its field, keeps Tab inside while it is the top layer and gives focus back to what had it (the trigger) when it closes."
+    }
+  }
+}

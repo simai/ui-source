@@ -1,0 +1,32 @@
+{
+  "title": "Поиск по сайту",
+  "runtime": {
+    "label": "Поиск по сайту",
+    "placeholder": "Найти на сайте",
+    "clear-label": "Очистить",
+    "close-label": "Закрыть",
+    "back-label": "Назад",
+    "scopes-label": "Где искать",
+    "all-label": "Все",
+    "results-label": "Результаты",
+    "recent-label": "Недавние",
+    "recent-clear-label": "Очистить",
+    "recent-remove-label": "Убрать «{query}»",
+    "popular-label": "Часто ищут",
+    "actions-label": "Быстрые действия",
+    "start-text": "Начните вводить запрос",
+    "loading-text": "Ищем…",
+    "error-text": "Поиск сейчас недоступен",
+    "empty-text": "Ничего не нашлось по «{query}»",
+    "count-text": {
+      "one": "{n} результат",
+      "few": "{n} результата",
+      "many": "{n} результатов",
+      "other": "{n} результата"
+    },
+    "key-select-label": "выбрать",
+    "key-open-label": "открыть",
+    "key-clear-label": "очистить",
+    "key-close-label": "закрыть"
+  }
+}
