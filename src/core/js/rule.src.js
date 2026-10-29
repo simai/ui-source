@@ -646,6 +646,7 @@ import '../../utility/svg-size/xxl/rule.js';
 import '../../utility/table/default/rule.js';
 import '../../utility/table-active/default/rule.js';
 import '../../utility/table-border/default/rule.js';
+import '../../utility/table-frame/default/rule.js';
 import '../../utility/table-hover/default/rule.js';
 import '../../utility/table-layout/default/rule.js';
 import '../../utility/table-stripe/default/rule.js';

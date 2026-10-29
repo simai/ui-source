@@ -188,6 +188,7 @@ import '../utility/svg-size/default/index.scss';
 import '../utility/table/default/index.scss';
 import '../utility/table-active/default/index.scss';
 import '../utility/table-border/default/index.scss';
+import '../utility/table-frame/default/index.scss';
 import '../utility/table-hover/default/index.scss';
 import '../utility/table-layout/default/index.scss';
 import '../utility/table-stripe/default/index.scss';

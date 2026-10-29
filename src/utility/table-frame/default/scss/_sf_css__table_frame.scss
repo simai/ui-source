@@ -1,0 +1,80 @@
+@use '../../../table/default/scss/sf_var__table' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// TABLE FRAME
+
+// A table that stands in a frame of its own: a bordered, rounded surface that
+// scrolls sideways when the columns do not fit, gridlines between the cells
+// and a filled head. The frame is the scroll area, so the rounded corners clip
+// the table; the borders are separate, because a collapsed outer border is
+// drawn over the frame's own and the corners come out square.
+//
+// Every consumer that wanted this -- a documentation site, a portal page --
+// restyled .table by hand for it, each with its own numbers. The class carries
+// the numbers once, from the ladder, and a page that needs other ones sets the
+// public variables instead of writing rules.
+
+    .table-frame {
+        /* The public variables of .table-frame. */
+        --sf-table-frame-border-color: var(--sf-outline-variant);
+        --sf-table-frame-radius: var(--sf-radius--surface);
+        --sf-table-frame-background: var(--sf-surface-0);
+        --sf-table-frame-head-color: var(--sf-on-surface);
+        --sf-table-frame-head-padding-block: var(--sf-space-1);
+        --sf-table-frame-cell-padding-block: var(--sf-space-1\/2);
+        --sf-table-frame-cell-padding-inline: var(--sf-space-1);
+        --sf-table-frame-cell-min-inline-size: var(--sf-e0);
+
+        inline-size: 100%;
+        overflow: auto;
+        border: var(--sf-px) solid var(--sf-table-frame-border-color);
+        border-radius: var(--sf-table-frame-radius);
+        background-color: var(--sf-table-frame-background);
+
+        > .table {
+            inline-size: 100%;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+
+            > :not(caption) > * > * {
+                min-inline-size: var(--sf-table-frame-cell-min-inline-size);
+                padding-block: var(--sf-table-frame-cell-padding-block);
+                padding-inline: var(--sf-table-frame-cell-padding-inline);
+                border-width: var(--sf-0);
+                border-inline-end: var(--sf-px) solid var(--sf-table-frame-border-color);
+                border-block-end: var(--sf-px) solid var(--sf-table-frame-border-color);
+                text-align: start;
+                vertical-align: top;
+            }
+
+            // The frame draws the outer edge, so the last column and the last
+            // row leave theirs off; a table with a foot ends on the foot.
+            > :not(caption) > * > *:last-child {
+                border-inline-end-width: var(--sf-0);
+            }
+
+            > :last-child > tr:last-child > * {
+                border-block-end-width: var(--sf-0);
+            }
+
+            > thead > tr > * {
+                // The head is the one container fill in the frame, and dimmed
+                // text on a container fill reads the container role
+                // (2026-10-19): the default is declared here, beside the fill
+                // it belongs to, so the body cells keep the page's roles.
+                --sf-table-frame-head-background: var(--sf-surface-container);
+                --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+                padding-block: var(--sf-table-frame-head-padding-block);
+                background-color: var(--sf-table-frame-head-background);
+                color: var(--sf-table-frame-head-color);
+                font-weight: var(--sf-font-weight-bold);
+                vertical-align: bottom;
+            }
+        }
+    }
+}
