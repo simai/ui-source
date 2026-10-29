@@ -310,11 +310,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/rich-text/index.js",
-        "sha256": "a80f8d30f4d3e28ada6fde5eac46a8a043c24960ebc316e81df8927b35afc7e9"
+        "sha256": "7e98a111380dc921400ae7ab62b678c2681f5603f10732dfab6ddd519703d35c"
       },
       {
         "path": "src/smart/rich-text/js/templates/default.js",
-        "sha256": "171173d613f04d2459d1c710d0be4c8b3ddf380e165cf973bfdc4524e437384a"
+        "sha256": "7e2796621280c9a6c9dfe14a279bb314cda55cdff8137cc8be15b36d7d1e5c2d"
       },
       {
         "path": "src/smart/rich-text/js/rich-text-html.mjs",
