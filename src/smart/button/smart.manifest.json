@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, spacing and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -23,6 +23,7 @@
   "composition": {
     "uses": [
       "component.buttons",
+      "component.kbd",
       "component.spinner",
       "smart.icon"
     ],
@@ -52,6 +53,8 @@
         "loading",
         "disabled",
         "native-type",
+        "shortcut",
+        "shortcut-listen",
         "expanded",
         "aria-label"
       ],
@@ -116,11 +119,12 @@
       "scheme": {
         "type": "string",
         "default": "primary",
-        "description": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this.",
+        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). What the control is about is the status axis; a status set there wins over this.",
         "enum": [
           "primary",
           "secondary",
-          "on-surface"
+          "on-surface",
+          "on-surface-variant"
         ]
       },
       "status": {
@@ -234,6 +238,16 @@
           "submit",
           "reset"
         ]
+      },
+      "shortcut": {
+        "type": "string",
+        "default": "",
+        "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the native button. Empty: no keys"
+      },
+      "shortcut-listen": {
+        "type": "boolean",
+        "default": false,
+        "description": "The button listens to its shortcut on the page and is pressed by it, as by a click. A combination without mod, ctrl, alt or meta is not heard while focus is in an editable field"
       },
       "expanded": {
         "type": "boolean",
@@ -541,7 +555,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "0e3aced545bd99640b704c317463811c76f7bf9c7bf8af7264a99dcbdc5f108f"
+        "sha256": "f7aef104118a8724eb87990f595b900e001d7f4b7ea2523855c90e4f1cd43db7"
       }
     ],
     "generated_runtime": [

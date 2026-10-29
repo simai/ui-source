@@ -1,0 +1,391 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
+@layer sf.components {
+/* The page's table of contents (standard simai.smart-component 1.3.11 §6):
+   one list of in-page links drawn as a column, a compact button, a rail of
+   strokes or a row of tabs. Every length is a token of the one ladder
+   (docs/foundation-composition-geometry.md); every colour a theme role. The
+   public variables are read with the role or token as their fallback and are
+   never set here. */
+.sf-contents {
+  --sf-contents--text-size: var(--sf-text-size-1\/2);
+  --sf-contents--text-height: var(--sf-text-height-1\/2);
+  --sf-contents--control-height: var(--sf-ui-1\/2--control-height);
+  --sf-contents--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-contents--color: var(--sf-contents-color, var(--sf-on-surface-variant));
+  --sf-contents--current: var(--sf-contents-current-color, var(--sf-primary));
+  --sf-contents--line: var(--sf-contents-line-color, var(--sf-outline-variant));
+  --sf-contents--indent: var(--sf-contents-indent, var(--sf-space-1\/2));
+  --sf-contents--top: var(--sf-contents-inset-block-start, var(--sf-space-1));
+  display: block;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  color: var(--sf-contents--color);
+  font-size: var(--sf-contents--text-size);
+  line-height: var(--sf-contents--text-height);
+}
+
+.sf-contents--size-1 {
+  --sf-contents--text-size: var(--sf-text-size-1);
+  --sf-contents--text-height: var(--sf-text-height-1);
+  --sf-contents--control-height: var(--sf-ui-1--control-height);
+  --sf-contents--space-x: var(--sf-ui-1--space-x);
+}
+
+.sf-contents-list {
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+  list-style: none;
+}
+
+.sf-contents-item {
+  margin: var(--sf-0);
+  padding: var(--sf-0);
+}
+
+.sf-contents-link {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--sf-radius--ui);
+  transition: color var(--sf-duration-fast) var(--sf-animation), background-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-contents-link:hover {
+  color: var(--sf-on-surface);
+}
+
+.sf-contents-link[aria-current="location"] {
+  color: var(--sf-contents--current);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* The ring inside the link: a column or a panel that scrolls would clip one
+   drawn outside. */
+.sf-contents-link:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(-1 * var(--sf-focus--width));
+}
+
+.sf-contents-mark {
+  display: none;
+}
+
+/* A deeper level, in the column and the compact list: its name steps in by
+   the indent, once for the next level and twice for any below it; the row,
+   its bar and its hover keep the full width. Written once for every layout
+   (the rail's names and the bar's tabs do not step in), so the sheet holds
+   one copy rather than one per layout and breakpoint. */
+.sf-contents:not(.sf-contents--layout-rail):not(.sf-contents--layout-bar) .sf-contents-item[data-depth="1"] .sf-contents-text {
+  margin-inline-start: var(--sf-contents--indent);
+}
+
+.sf-contents:not(.sf-contents--layout-rail):not(.sf-contents--layout-bar) .sf-contents-item:not([data-depth="0"]):not([data-depth="1"]) .sf-contents-text {
+  margin-inline-start: calc(2 * var(--sf-contents--indent));
+}
+
+.sf-contents-head,
+.sf-contents-label {
+  display: none;
+}
+
+/* Column: a heading, then the list on a line at its inline start; the current
+   section's bar lies on the line. */
+@mixin column {
+  &.sf-contents--sticky {
+    position: sticky;
+    inset-block-start: var(--sf-contents--top);
+    max-block-size: calc(100dvh - var(--sf-contents--top) - var(--sf-space-1));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sf-contents-label {
+    display: block;
+    padding-block-end: var(--sf-space-1\/4);
+    padding-inline: var(--sf-space-1\/2);
+    color: var(--sf-on-surface);
+    font-weight: var(--sf-font-weight-bold);
+  }
+
+  .sf-contents-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-contents-gap, var(--sf-0));
+  }
+
+  .sf-contents-list::after {
+    content: '';
+    position: absolute;
+    inset-block: var(--sf-0);
+    inset-inline-start: var(--sf-0);
+    inline-size: var(--sf-px);
+    background-color: var(--sf-contents--line);
+  }
+
+  .sf-contents-link {
+    padding-block: var(--sf-space-1\/4);
+    padding-inline: var(--sf-space-1\/2);
+    border-radius: var(--sf-0);
+  }
+
+  /* A block, so a long name that wraps keeps its level's indent on every line. */
+  .sf-contents-text {
+    display: block;
+  }
+
+  .sf-contents-mark {
+    position: absolute;
+    z-index: 1;
+    inset-block: var(--sf-0);
+    inset-inline-start: var(--sf-0);
+    display: block;
+    inline-size: var(--sf-a2);
+    background-color: transparent;
+  }
+
+  .sf-contents-link[aria-current="location"] .sf-contents-mark {
+    background-color: var(--sf-contents--current);
+  }
+}
+
+/* Compact: the button with the current section and the reading progress
+   under it; the list opens under them as a raised panel. */
+@mixin compact {
+  position: relative;
+
+  .sf-contents-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+  }
+
+  .sf-contents-toggle .sf-button-text-container {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sf-contents-progress {
+    display: block;
+    block-size: var(--sf-a2);
+    overflow: hidden;
+    border-radius: var(--sf-px);
+    background-color: var(--sf-contents--line);
+  }
+
+  .sf-contents-progress-value {
+    display: block;
+    block-size: 100%;
+    inline-size: calc(var(--sf-contents--progress, 0) * 100%);
+    background-color: var(--sf-contents--current);
+  }
+
+  .sf-contents-list {
+    display: none;
+  }
+
+  &.sf-contents--open .sf-contents-list {
+    position: absolute;
+    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    inset-block-start: calc(100% + var(--sf-space-1\/4));
+    inset-inline: var(--sf-0);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    max-block-size: min(60dvh, var(--sf-g1));
+    padding: var(--sf-space-1\/4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-contents-background, var(--sf-elevation-2--surface));
+    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    box-shadow: var(--sf-elevation-2--shadow);
+  }
+
+  /* A row of the open list is a menu's row: the control height of the size,
+     its inset, the panel's inset given back. */
+  .sf-contents-link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--sf-contents--control-height);
+    padding-inline: calc(var(--sf-contents--space-x) - var(--sf-space-1\/4));
+    color: var(--sf-on-surface);
+  }
+
+  .sf-contents-item:not([data-depth="0"]) .sf-contents-link {
+    color: var(--sf-contents--color);
+  }
+
+  .sf-contents-link:hover {
+    background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-contents-link[aria-current="location"] {
+    background-color: var(--sf-secondary-container);
+    color: var(--sf-on-secondary-container);
+  }
+}
+
+/* Rail: a stroke per section at the inline end, longer for the current one;
+   the names show on hover of the rail and on focus within it, as raised chips
+   beside the strokes. Hidden, a name stays its link's accessible name. */
+@mixin rail {
+  &.sf-contents--sticky {
+    position: sticky;
+    inset-block-start: var(--sf-contents--top);
+  }
+
+  .sf-contents-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sf-contents-gap, var(--sf-space-1\/2));
+  }
+
+  .sf-contents-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-block-size: var(--sf-text-height-1\/3);
+    min-inline-size: var(--sf-space-3);
+    border-radius: var(--sf-0);
+  }
+
+  .sf-contents-mark {
+    display: block;
+    flex: none;
+    inline-size: var(--sf-space-1);
+    block-size: var(--sf-a2);
+    border-radius: var(--sf-px);
+    background-color: var(--sf-outline);
+    transition: inline-size var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-contents-item:not([data-depth="0"]) .sf-contents-mark {
+    inline-size: var(--sf-space-1\/2);
+  }
+
+  .sf-contents-link[aria-current="location"] .sf-contents-mark {
+    inline-size: var(--sf-space-3);
+    background-color: var(--sf-contents--current);
+  }
+
+  .sf-contents-text {
+    position: absolute;
+    inset-inline-end: calc(100% + var(--sf-space-1\/4));
+    padding-inline: var(--sf-space-1\/4);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-elevation-2--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    box-shadow: var(--sf-elevation-2--shadow);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-contents-list:is(:hover, :focus-within) .sf-contents-text {
+    opacity: 1;
+  }
+}
+
+/* Bar: a sticky row of anchor tabs on the page's surface with a region edge
+   under it; the current tab's line lies on the edge. The row scrolls sideways. */
+@mixin bar {
+  &.sf-contents--sticky {
+    position: sticky;
+    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    inset-block-start: var(--sf-contents--top);
+  }
+
+  .sf-contents-list {
+    display: flex;
+    gap: var(--sf-contents-gap, var(--sf-space-1\/4));
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-block-end: var(--sf-px) solid var(--sf-contents--line);
+    background-color: var(--sf-contents-background, var(--sf-surface-0));
+  }
+
+  .sf-contents-item {
+    flex: none;
+  }
+
+  .sf-contents-link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--sf-contents--control-height);
+    padding-inline: var(--sf-contents--space-x);
+    border-radius: var(--sf-0);
+    font-weight: var(--sf-font-weight-medium);
+    white-space: nowrap;
+  }
+
+  .sf-contents-mark {
+    position: absolute;
+    inset-inline: var(--sf-0);
+    inset-block-end: calc(-1 * var(--sf-px));
+    display: block;
+    block-size: var(--sf-a2);
+    background-color: transparent;
+  }
+
+  .sf-contents-link[aria-current="location"] .sf-contents-mark {
+    background-color: var(--sf-contents--current);
+  }
+}
+
+.sf-contents--layout-column {
+  @include column;
+}
+
+.sf-contents--layout-compact {
+  @include compact;
+}
+
+.sf-contents--layout-rail {
+  @include rail;
+}
+
+.sf-contents--layout-bar {
+  @include bar;
+}
+
+/* auto: the column at and above the step, compact below it -- a media rule per
+   step, so the printed markup is right before the script arrives. */
+@each $step in (sm, md, lg, xl) {
+  @media (min-width: map.get(bp.$breakpoint-array, $step)) {
+    .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
+      @include column;
+    }
+  }
+
+  @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
+    .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
+      @include compact;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-contents-link,
+  .sf-contents-mark,
+  .sf-contents-text {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .sf-contents-link[aria-current="location"] .sf-contents-mark,
+  .sf-contents-progress-value {
+    background-color: Highlight;
+  }
+}
+}

@@ -187,6 +187,10 @@ const DRAW = {
   // and as steps on the second of three (the track and its fill).
   pager: {css: ['buttons', 'icons', 'smart/smart/pager/css/pager.css'], js: 'pager',
     html: '<sf-pager prev-href="#a" prev-title="A" next-href="#b" next-title="B"></sf-pager><sf-pager appearance="steps" current="1"><script type="application/json" data-sf-settings>{"items":[{"title":"A"},{"title":"B"},{"title":"C"}]}</script></sf-pager>'},
+  // A column (its line, the current bar, the indent, the gap) and a bar (its
+  // fill), each from links written inside; the first link is current.
+  contents: {css: ['buttons', 'icons', 'smart/smart/contents/css/contents.css'], js: 'contents',
+    html: '<sf-contents layout="column" sticky="false"><a href="#a">A</a><a href="#b" data-level="3">B</a></sf-contents><sf-contents layout="bar" sticky="false"><a href="#a">A</a><a href="#b">B</a></sf-contents>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

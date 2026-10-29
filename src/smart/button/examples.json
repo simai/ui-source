@@ -153,6 +153,37 @@
       }
     },
     {
+      "name": "shortcut",
+      "title": "Сочетание клавиш",
+      "settings": {
+        "text": "Сохранить",
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "shortcut": "mod+s"
+      },
+      "expect": {
+        "shortcut": "mod+s"
+      }
+    },
+    {
+      "name": "search-trigger",
+      "title": "Вызов поиска",
+      "settings": {
+        "text": "Поиск",
+        "appearance": "tonal",
+        "scheme": "on-surface-variant",
+        "radius": "rounded",
+        "icon-start": "search",
+        "text-position": "start",
+        "shortcut": "mod+k",
+        "root-class": "w-full"
+      },
+      "expect": {
+        "scheme": "on-surface-variant",
+        "shortcut": "mod+k"
+      }
+    },
+    {
       "name": "sizes",
       "title": "Размер 3, просторная",
       "settings": {

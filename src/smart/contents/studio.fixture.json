@@ -1,0 +1,50 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.contents",
+  "title": "contents reference",
+  "summary": "Deterministic reference fixture for sf-contents.",
+  "locale": "ru",
+  "props": {
+    "layout": "column",
+    "items": [
+      {
+        "id": "intro",
+        "text": "Введение",
+        "level": 2
+      },
+      {
+        "id": "install",
+        "text": "Подключение",
+        "level": 2
+      },
+      {
+        "id": "cdn",
+        "text": "Через CDN",
+        "level": 3
+      },
+      {
+        "id": "npm",
+        "text": "Через npm",
+        "level": 3
+      },
+      {
+        "id": "settings",
+        "text": "Настройки",
+        "level": 2
+      },
+      {
+        "id": "events",
+        "text": "События",
+        "level": 2
+      },
+      {
+        "id": "a11y",
+        "text": "Доступность",
+        "level": 2
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}

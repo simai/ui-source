@@ -47,6 +47,8 @@ const PHASE_A = [
   'search',
   'settings-menu',
   'pager',
+  // The page's table of contents (2026-10-30).
+  'contents',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

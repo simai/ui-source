@@ -751,6 +751,7 @@ import '../../smart/popover/rule.js';
 import '../../smart/close/rule.js';
 import '../../smart/code-input/rule.js';
 import '../../smart/composition-overlay/rule.js';
+import '../../smart/contents/rule.js';
 import '../../smart/context-menu/rule.js';
 import '../../smart/copy-button/rule.js';
 import '../../smart/country-code/rule.js';

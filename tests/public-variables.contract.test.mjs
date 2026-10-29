@@ -60,6 +60,8 @@ const FOLDERS = {
   'settings-menu': 'smart/settings-menu',
   // Neighbouring pages and steps (2026-10-30): a sheet of its own.
   pager: 'smart/pager',
+  // The page's table of contents (2026-10-30): a sheet of its own.
+  contents: 'smart/contents',
   // sf-list-item draws with the class sheet of the dropdown's rows.
   'list-item': 'dropdown',
   // sf-tree draws its rows with the tree and tree-item class sheets.

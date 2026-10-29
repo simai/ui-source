@@ -46,7 +46,10 @@ export function renderButtonTemplate(context) {
         component?.hasSlotContent?.('text')
             ? component.getSlotContent('text')
             : text;
-    const fullText = !leftIconContent && !rightIconContent;
+    // The shortcut's keys sit at the end; the label then takes the free room,
+    // so a stretched button reads label ... keys and text-position places it.
+    const shortcutCaps = context.shortcutCaps || [];
+    const fullText = (!leftIconContent && !rightIconContent) || shortcutCaps.length > 0;
     // Loading shows the spinner at the icon's size (simai/ui-source#10): in
     // place of the start icon, else of the end icon; a button without an icon
     // lays it over its label, which keeps its place (and the button its width)
@@ -69,6 +72,9 @@ export function renderButtonTemplate(context) {
         // for something destructive -- and a scheme says which colour family it
         // takes; they cannot both paint it.
         `sf-button--${status || scheme}`,
+        // on-surface-variant is the on-surface family one step quieter: both
+        // classes, so every on-surface rule holds and one rule quietens it.
+        !status && scheme === 'on-surface-variant' ? 'sf-button--on-surface' : '',
         'flex',
         'items-cross-center',
         segment ? `segment-${segment}` : '',
@@ -89,6 +95,7 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
+                aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
         >
             ${overlayContent}
             ${startContent}
@@ -96,7 +103,7 @@ export function renderButtonTemplate(context) {
                     class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${endContent}
+            ${endContent}${shortcutCaps.length ? html`<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">${shortcutCaps.map((cap) => html`<kbd class=${cap.chars ? `sf-button-shortcut-key--chars-${cap.chars}` : nothing}>${cap.text}</kbd>`)}</kbd>` : ''}
         </button>
     `;
 }

@@ -20,7 +20,8 @@ test('button Studio contract preserves closed choices and open icon examples', a
   // compatibility.aliases). Studio offers exactly the types the button CSS styles.
   assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'link', 'surface']);
   assert.ok(manifest.compatibility.aliases.includes('appearance=ghost'));
-  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface']);
+  // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
+  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);
   assert.equal(properties['root-class'].type, 'string');
@@ -77,6 +78,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // sf-profile-picker; 49 with sf-empty-state;
   // 50 with sf-copy-button; 51 with sf-help-mark;
   // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu; 57 with sf-code-input;
-  // 58 with sf-progress-ring; 59 with sf-site-header; 60 with sf-search; 61 with sf-settings-menu; 62 with sf-pager.
-  assert.equal(fixtureCount, 62);
+  // 58 with sf-progress-ring; 59 with sf-site-header; 60 with sf-search; 61 with sf-settings-menu; 62 with sf-pager; 63 with sf-contents.
+  assert.equal(fixtureCount, 63);
 });

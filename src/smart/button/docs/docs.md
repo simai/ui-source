@@ -32,8 +32,11 @@ Main attributes:
   neutral alpha ramp rather than a colour of its own: a faint fill and a border
   one step stronger, right in a light and in a dark theme without being
   redeclared. `ghost` is the link appearance under its old name, a dated alias.
-- `scheme="primary|secondary|on-surface"` — which colour family the control
-  takes.
+- `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
+  family the control takes. `on-surface-variant` is the on-surface family one
+  step quieter: the fill and the edge of `on-surface`, the label and the icons
+  in `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
+  inverse ink). Hover, press and disabled are on-surface's.
 - `status="error"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone: it paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
@@ -52,6 +55,8 @@ Main attributes:
 - `native-type`
 - `expanded` — present, it writes `aria-expanded` on the native button
   (`expanded="false"` says closed); absent, nothing is said
+- `shortcut` — a key combination drawn at the end of the button, see below
+- `shortcut-listen` — the button is pressed by its shortcut, see below
 - `aria-label` — a host attribute, passed to the native button
 
 The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
@@ -60,6 +65,46 @@ The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 the values `ghost` (link), `danger` and `critical` (error), `left` and `right`
 (icon-position start and end). The shim writes the new attribute and notes each
 use in `SF.deprecations`.
+
+## Shortcut
+
+`shortcut` draws a key combination at the end of the button as keys, muted:
+words joined by `+`, the modifiers first and the key last.
+
+| Written | On a Mac | Elsewhere |
+|:---|:---|:---|
+| `mod+k` | ⌘ K | Ctrl K |
+| `shift+mod+p` | ⇧ ⌘ P | Ctrl Shift P |
+| `alt+n` | ⌥ N | Alt N |
+| `/` | / | / |
+| `escape` | Esc | Esc |
+
+`mod` is the platform's command modifier: Cmd on Apple platforms, Ctrl
+elsewhere; `ctrl`, `alt`, `shift` and `meta` are those keys. The named keys are
+`enter`, `escape`, `tab`, `space`, `backspace`, `delete`, `up`, `down`,
+`left`, `right`, `home`, `end`, `pageup` and `pagedown`; `plus` is the `+` key.
+
+The keys are the `kbd` component's (one `<kbd class="sf-kbd--group">` holding
+a `<kbd>` per key) and are hidden from assistive technology: the native button
+says the combination in `aria-keyshortcuts` (`Meta+K` on a Mac, `Control+K`
+elsewhere). With a shortcut the label takes the free room, so a stretched
+button reads label … keys and `text-position` places the label.
+
+`shortcut-listen` makes the button listen: the combination pressed anywhere on
+the page presses the button, exactly as a click does (so `sf-button-press`
+follows). It is not heard when another listener already took the key, while the
+button is disabled, loading or not shown, and — for a combination without
+`mod`, `ctrl`, `alt` or `meta`, like `/` — while focus is in an editable field.
+The combination is matched by the physical key too, so `mod+k` works on a
+Russian layout.
+
+A search trigger that reads like a field:
+
+```html
+<sf-button text="Поиск" icon-start="search" shortcut="mod+k" shortcut-listen
+  appearance="tonal" scheme="on-surface-variant" radius="rounded"
+  text-position="start" root-class="w-full"></sf-button>
+```
 
 ## Events
 

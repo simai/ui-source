@@ -49,10 +49,11 @@ const sfButtonMeta = {
       "values": [
         "primary",
         "secondary",
-        "on-surface"
+        "on-surface",
+        "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
@@ -179,6 +180,21 @@ const sfButtonMeta = {
       ],
       "default": "button",
       "description": "Native button type attribute."
+    },
+    "shortcut": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A key combination drawn at the end of the button as keys, muted: words joined by +, e.g. mod+k (Cmd K on a Mac, Ctrl K elsewhere), shift+/, / or escape. mod is Cmd on Apple platforms and Ctrl elsewhere. Also written as aria-keyshortcuts on the native button. Empty: no keys"
+    },
+    "shortcut-listen": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The button listens to its shortcut on the page and is pressed by it, as by a click. A combination without mod, ctrl, alt or meta is not heard while focus is in an editable field"
     },
     "expanded": {
       "kind": "boolean",
