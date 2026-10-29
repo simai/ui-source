@@ -783,6 +783,7 @@ import '../../smart/range-slider/rule.js';
 import '../../smart/reference-link/rule.js';
 import '../../smart/resizer/rule.js';
 import '../../smart/search/rule.js';
+import '../../smart/settings-menu/rule.js';
 import '../../smart/site-header/rule.js';
 import '../../smart/skeleton/rule.js';
 import '../../smart/slider/rule.js';

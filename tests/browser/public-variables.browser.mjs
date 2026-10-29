@@ -178,6 +178,11 @@ const DRAW = {
       input.dispatchEvent(new Event('input', {bubbles: true}));
       await new Promise((settle) => setTimeout(settle, 400));
     })()`},
+  // Compact settings at rest, inline: a tile and a choice row (drill), and
+  // a chosen pill and a compact select (rows).
+  'settings-menu': {css: ['switch', 'icons', 'smart/smart/settings-menu/css/settings-menu.css'], js: 'settings-menu',
+    html: '<sf-settings-menu inline><script type="application/json" data-sf-settings>{"items": [{"key": "sound", "type": "boolean", "label": "Звук", "icon": "volume_up", "value": false, "tile": true}, {"key": "lang", "type": "choice", "label": "Язык", "value": "ru", "options": [{"value": "ru", "label": "Русский"}, {"value": "en", "label": "English"}, {"value": "kk", "label": "Қазақша"}]}]}</script></sf-settings-menu>'
+      + '<sf-settings-menu inline template="rows"><script type="application/json" data-sf-settings>{"items": [{"key": "follow", "type": "choice", "label": "Ответы", "value": "queue", "options": [{"value": "queue", "label": "Очередь"}, {"value": "steer", "label": "Сразу"}]}, {"key": "density", "type": "choice", "label": "Плотность", "value": "normal", "options": [{"value": "compact", "label": "Плотно"}, {"value": "normal", "label": "Обычно"}, {"value": "loose", "label": "Свободно"}]}]}</script></sf-settings-menu>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.

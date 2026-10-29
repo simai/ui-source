@@ -343,6 +343,9 @@
     "display/default",
     "sr-only/default"
   ],
+  "cl-settings-menu": [
+    "display/default"
+  ],
   "cl-site-header": [
     "container/default",
     "display/default",
