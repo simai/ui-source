@@ -1751,6 +1751,48 @@
         "interaction",
         "keyboard",
         "theme",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.switch",
+          "smart.context-menu",
+          "smart.icon",
+          "smart.icon-button"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-settings-menu",
+      "id": "smart.settings-menu",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/settings-menu/smart.manifest.json",
+      "manifest_sha256": "f918f9f432a33d13b777891ec7117487d5086bf9f2e983f8c796b8db9d40afb2",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "Compact settings: a list of settings given as data, drawn as a menu that opens from a trigger or stands inline -- rows with the value under the name that open their choices in place (drill, the default), or rows with the control at the end (rows), with an optional block of tiles on top. A special case of the context menu, for a reader's settings, a table's view options, a chat's settings.",
+      "tags": [
+        "settings",
+        "menu",
+        "preferences",
+        "view-options"
+      ],
+      "title": "Settings menu"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "theme",
         "responsive",
         "navigation",
         "i18n"

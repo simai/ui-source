@@ -403,13 +403,50 @@
       "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
       "version": 2
     },
-    "runtime_pair": null,
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
     "aliases": [],
     "deprecations": [],
     "replacement": null,
     "migrations": []
   },
-  "provenance": null,
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "ae0d335b2e00c801cfa9164c565fd5c4db8b388c",
+    "source_artifacts": [
+      {
+        "path": "src/smart/settings-menu/index.js",
+        "sha256": "f1adcb56dde95785ffcdf2173239938675ddce2cd53fd9a5f7a196886ea034f8"
+      },
+      {
+        "path": "src/smart/settings-menu/js/templates/default.js",
+        "sha256": "fba24d5499003e6369e3a4bf7f4d8691d1f1cfabbfc5e9fcedd8588f425c3731"
+      },
+      {
+        "path": "src/smart/settings-menu/js/templates/rows.js",
+        "sha256": "a5f3a08deee39a672f861e34ef2907bfa5a26e936d8bf3c13894e126600ff461"
+      },
+      {
+        "path": "src/smart/settings-menu/js/templates/parts.js",
+        "sha256": "40f167cec6cd1435a1b79aa5a43d97fe992c2f96fd448c032e123a833f9eb742"
+      },
+      {
+        "path": "src/smart/settings-menu/scss/_smart__settings_menu.scss",
+        "sha256": "aac28fc8d9de5670683bc2711f027e283b917042cad4a873d560adf1b2aa8c30"
+      },
+      {
+        "path": "src/smart/settings-menu/rule.js",
+        "sha256": "5ad13bce2e630d5f296f58c17491a94737eadc5487c9513e53e180f3c48f16a4"
+      },
+      {
+        "path": "src/smart/settings-menu/docs.md",
+        "sha256": "c3ef2a09ab81b472f7af7d37b2994afc8d1ff3297d30129397b174fbf04cb503"
+      }
+    ],
+    "generated_runtime": []
+  },
   "ai_guidance": {
     "use_when": "Use sf-settings-menu for a small set of settings a person changes on the spot: a reader's theme and text size, a table's view options, a chat's settings -- in a popup from a gear button or inline in a panel.",
     "do_not": [
