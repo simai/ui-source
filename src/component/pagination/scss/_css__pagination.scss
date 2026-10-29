@@ -2,7 +2,6 @@
 @use "../../../core/scss/vars/sf_var__breakpoint" as bp;
 
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 /* The page row's box, published so a page can hold the room of a list and
    its pages before they draw (sf-table publishes its rows the same way):
    the control height of the step, the row's padding above and below it, and
@@ -14,6 +13,7 @@
   --sf-pagination-block-size-1: calc(2 * var(--sf-space-1) + var(--sf-ui-1--control-height) + var(--sf-px));
 }
 
+/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-pagination {
   /* The public variables of sf-pagination (component.json css-variables,
      standard 1.3.8 §6) over the role tokens. */
