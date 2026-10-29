@@ -49,16 +49,16 @@ test('every number comes from the ladder, through a public variable', () => {
     'border-color',
     'radius',
     'background',
-    'head-background',
     'head-color',
     'head-padding-block',
     'cell-padding-block',
     'cell-padding-inline',
     'cell-min-inline-size',
   ]);
-  // The head's fill is declared on the frame with the others, so a page sets
-  // it where it sets the rest; only the container text role stands on the head.
-  assert.doesNotMatch(source, /thead[\s\S]*--sf-table-frame-head-background:/u);
+  // The head's fill defaults where it is laid, beside the container text role,
+  // and as a fallback, so a value set on the frame still reaches the head.
+  assert.doesNotMatch(source, /--sf-table-frame-head-background:/u);
+  assert.match(source, /background-color:\s*var\(--sf-table-frame-head-background, var\(--sf-surface-container\)\)/u);
   // Nine public variables, each defaulting to a token of the kit: no number is
   // typed into the rule.
   for (const [name, value] of declared) {
