@@ -54,6 +54,8 @@ const FOLDERS = {
   'page-header': 'smart/page-header',
   // The top bar of a SIMAI site (2026-10-28): a sheet of its own.
   'site-header': 'smart/site-header',
+  // Compact settings (2026-10-30): a sheet of its own.
+  'settings-menu': 'smart/settings-menu',
   // sf-list-item draws with the class sheet of the dropdown's rows.
   'list-item': 'dropdown',
   // sf-tree draws its rows with the tree and tree-item class sheets.

@@ -1,0 +1,911 @@
+{
+  "examples": [
+    {
+      "name": "reader",
+      "title": "Настройки чтения: переход внутрь, кнопка открывает",
+      "children": "<sf-icon-button slot=\"trigger\" icon=\"tune\" aria-label=\"Настройки\"></sf-icon-button>",
+      "settings": {
+        "resettable": true,
+        "items": [
+          {
+            "key": "theme",
+            "type": "choice",
+            "label": "Тема",
+            "icon": "contrast",
+            "value": "system",
+            "default": "system",
+            "options": [
+              {
+                "value": "system",
+                "label": "Как в системе",
+                "icon": "computer"
+              },
+              {
+                "value": "light",
+                "label": "Светлая",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Тёмная",
+                "icon": "dark_mode"
+              }
+            ]
+          },
+          {
+            "key": "density",
+            "type": "choice",
+            "label": "Плотность",
+            "icon": "density_medium",
+            "value": "normal",
+            "default": "normal",
+            "options": [
+              {
+                "value": "compact",
+                "label": "Плотно"
+              },
+              {
+                "value": "normal",
+                "label": "Обычно"
+              },
+              {
+                "value": "loose",
+                "label": "Свободно"
+              }
+            ]
+          },
+          {
+            "key": "lang",
+            "type": "choice",
+            "label": "Язык",
+            "icon": "translate",
+            "value": "ru",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              },
+              {
+                "value": "kk",
+                "label": "Қазақша"
+              }
+            ]
+          },
+          {
+            "key": "tz",
+            "type": "choice",
+            "label": "Часовой пояс",
+            "icon": "schedule",
+            "value": "msk",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва (UTC+3)"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург (UTC+5)"
+              },
+              {
+                "value": "vla",
+                "label": "Владивосток (UTC+10)"
+              }
+            ]
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "key": "notify",
+            "type": "boolean",
+            "label": "Уведомления",
+            "icon": "notifications",
+            "value": true,
+            "default": true
+          },
+          {
+            "key": "sound",
+            "type": "boolean",
+            "label": "Звук",
+            "icon": "volume_up",
+            "value": false,
+            "default": false
+          }
+        ]
+      },
+      "expect": {
+        "size": "1/2",
+        "inline": false,
+        "resettable": true
+      },
+      "studio": {
+        "title": "settings menu reader",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "inline",
+      "title": "Всегда открыто в панели",
+      "settings": {
+        "inline": true,
+        "items": [
+          {
+            "key": "theme",
+            "type": "choice",
+            "label": "Тема",
+            "icon": "contrast",
+            "value": "system",
+            "default": "system",
+            "options": [
+              {
+                "value": "system",
+                "label": "Как в системе",
+                "icon": "computer"
+              },
+              {
+                "value": "light",
+                "label": "Светлая",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Тёмная",
+                "icon": "dark_mode"
+              }
+            ]
+          },
+          {
+            "key": "density",
+            "type": "choice",
+            "label": "Плотность",
+            "icon": "density_medium",
+            "value": "normal",
+            "default": "normal",
+            "options": [
+              {
+                "value": "compact",
+                "label": "Плотно"
+              },
+              {
+                "value": "normal",
+                "label": "Обычно"
+              },
+              {
+                "value": "loose",
+                "label": "Свободно"
+              }
+            ]
+          },
+          {
+            "key": "lang",
+            "type": "choice",
+            "label": "Язык",
+            "icon": "translate",
+            "value": "ru",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              },
+              {
+                "value": "kk",
+                "label": "Қазақша"
+              }
+            ]
+          },
+          {
+            "key": "tz",
+            "type": "choice",
+            "label": "Часовой пояс",
+            "icon": "schedule",
+            "value": "msk",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва (UTC+3)"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург (UTC+5)"
+              },
+              {
+                "value": "vla",
+                "label": "Владивосток (UTC+10)"
+              }
+            ]
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "key": "notify",
+            "type": "boolean",
+            "label": "Уведомления",
+            "icon": "notifications",
+            "value": true,
+            "default": true
+          },
+          {
+            "key": "sound",
+            "type": "boolean",
+            "label": "Звук",
+            "icon": "volume_up",
+            "value": false,
+            "default": false
+          }
+        ]
+      },
+      "expect": {
+        "inline": true
+      }
+    },
+    {
+      "name": "rows",
+      "title": "Строки: управление справа",
+      "settings": {
+        "template": "rows",
+        "inline": true,
+        "label": "Настройки чата",
+        "items": [
+          {
+            "key": "theme",
+            "type": "choice",
+            "label": "Тема",
+            "value": "system",
+            "default": "system",
+            "options": [
+              {
+                "value": "system",
+                "label": "Как в системе",
+                "icon": "computer"
+              },
+              {
+                "value": "light",
+                "label": "Светлая",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Тёмная",
+                "icon": "dark_mode"
+              }
+            ]
+          },
+          {
+            "key": "density",
+            "type": "choice",
+            "label": "Плотность",
+            "value": "normal",
+            "default": "normal",
+            "options": [
+              {
+                "value": "compact",
+                "label": "Плотно"
+              },
+              {
+                "value": "normal",
+                "label": "Обычно"
+              },
+              {
+                "value": "loose",
+                "label": "Свободно"
+              }
+            ]
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "key": "notify",
+            "type": "boolean",
+            "label": "Уведомления",
+            "value": true,
+            "default": true
+          },
+          {
+            "key": "sound",
+            "type": "boolean",
+            "label": "Звук",
+            "value": false,
+            "default": false
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "key": "lang",
+            "type": "choice",
+            "label": "Язык",
+            "value": "ru",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              },
+              {
+                "value": "kk",
+                "label": "Қазақша"
+              }
+            ]
+          },
+          {
+            "key": "tz",
+            "type": "choice",
+            "label": "Часовой пояс",
+            "value": "msk",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва (UTC+3)"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург (UTC+5)"
+              },
+              {
+                "value": "vla",
+                "label": "Владивосток (UTC+10)"
+              }
+            ]
+          },
+          {
+            "key": "enter",
+            "type": "choice",
+            "label": "Отправка",
+            "caption": "Когда Enter отправляет сообщение",
+            "value": "enter",
+            "options": [
+              {
+                "value": "enter",
+                "label": "Enter"
+              },
+              {
+                "value": "cmd",
+                "label": "⌘ Enter"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "inline": true,
+        "label": "Настройки чата"
+      }
+    },
+    {
+      "name": "tiles",
+      "title": "Плитки сверху",
+      "settings": {
+        "inline": true,
+        "label": "Быстрые настройки",
+        "items": [
+          {
+            "key": "theme",
+            "type": "choice",
+            "label": "Тема",
+            "icon": "contrast",
+            "value": "system",
+            "default": "system",
+            "options": [
+              {
+                "value": "system",
+                "label": "Как в системе",
+                "icon": "computer"
+              },
+              {
+                "value": "light",
+                "label": "Светлая",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Тёмная",
+                "icon": "dark_mode"
+              }
+            ],
+            "tile": true
+          },
+          {
+            "key": "density",
+            "type": "choice",
+            "label": "Плотность",
+            "icon": "density_medium",
+            "value": "normal",
+            "default": "normal",
+            "options": [
+              {
+                "value": "compact",
+                "label": "Плотно"
+              },
+              {
+                "value": "normal",
+                "label": "Обычно"
+              },
+              {
+                "value": "loose",
+                "label": "Свободно"
+              }
+            ],
+            "tile": true
+          },
+          {
+            "key": "sound",
+            "type": "boolean",
+            "label": "Звук",
+            "icon": "volume_up",
+            "value": false,
+            "default": false,
+            "tile": true
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "key": "size",
+            "type": "range",
+            "label": "Размер текста",
+            "min": 85,
+            "max": 125,
+            "step": 5,
+            "value": 100,
+            "default": 100,
+            "unit": "%"
+          },
+          {
+            "key": "notify",
+            "type": "boolean",
+            "label": "Уведомления",
+            "value": true,
+            "default": true
+          },
+          {
+            "key": "lang",
+            "type": "choice",
+            "label": "Язык",
+            "icon": "translate",
+            "value": "ru",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              },
+              {
+                "value": "kk",
+                "label": "Қазақша"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "inline": true
+      }
+    },
+    {
+      "name": "long",
+      "title": "Длинные названия и значения: ширина не растёт",
+      "settings": {
+        "inline": true,
+        "items": [
+          {
+            "key": "theme",
+            "type": "choice",
+            "label": "Тема",
+            "icon": "contrast",
+            "value": "system",
+            "default": "system",
+            "options": [
+              {
+                "value": "system",
+                "label": "Как в системе",
+                "icon": "computer"
+              },
+              {
+                "value": "light",
+                "label": "Светлая",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Тёмная",
+                "icon": "dark_mode"
+              }
+            ]
+          },
+          {
+            "key": "notify",
+            "type": "boolean",
+            "label": "Показывать уведомления о новых сообщениях в обсуждениях, на которые вы подписаны",
+            "icon": "notifications",
+            "value": true
+          },
+          {
+            "key": "lang",
+            "type": "choice",
+            "label": "Язык интерфейса",
+            "icon": "translate",
+            "value": "kk",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English (United Kingdom)"
+              },
+              {
+                "value": "kk",
+                "label": "Қазақ тілі (Қазақстан Республикасы)"
+              }
+            ]
+          },
+          {
+            "key": "tz",
+            "type": "choice",
+            "label": "Часовой пояс для дат в отчётах и журналах изменений",
+            "icon": "schedule",
+            "value": "vla",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва, Санкт-Петербург (UTC+3)"
+              },
+              {
+                "value": "vla",
+                "label": "Владивосток, Хабаровск (UTC+10)"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "inline": true
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-settings-menu against component.json (standard simai.smart-component 1.3.13 §12, §19, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<sf-settings-menu id=\"pop\"><button slot=\"trigger\" id=\"pop-trigger\" type=\"button\">Настройки</button><script type=\"application/json\" data-sf-settings>{\"items\":[{\"key\":\"theme\",\"type\":\"choice\",\"label\":\"Тема\",\"icon\":\"contrast\",\"value\":\"system\",\"default\":\"system\",\"options\":[{\"value\":\"system\",\"label\":\"Как в системе\",\"icon\":\"computer\"},{\"value\":\"light\",\"label\":\"Светлая\",\"icon\":\"light_mode\"},{\"value\":\"dark\",\"label\":\"Тёмная\",\"icon\":\"dark_mode\"}]},{\"key\":\"density\",\"type\":\"choice\",\"label\":\"Плотность\",\"icon\":\"density_medium\",\"value\":\"normal\",\"default\":\"normal\",\"options\":[{\"value\":\"compact\",\"label\":\"Плотно\"},{\"value\":\"normal\",\"label\":\"Обычно\"},{\"value\":\"loose\",\"label\":\"Свободно\"}]},{\"type\":\"divider\"},{\"key\":\"notify\",\"type\":\"boolean\",\"label\":\"Уведомления\",\"icon\":\"notifications\",\"value\":true,\"default\":true},{\"key\":\"export\",\"type\":\"action\",\"label\":\"Экспорт\",\"icon\":\"download\"}]}</script></sf-settings-menu>",
+          "<sf-settings-menu id=\"inl\" inline resettable><script type=\"application/json\" data-sf-settings>{\"items\":[{\"key\":\"theme\",\"type\":\"choice\",\"label\":\"Тема\",\"icon\":\"contrast\",\"value\":\"system\",\"default\":\"system\",\"options\":[{\"value\":\"system\",\"label\":\"Как в системе\",\"icon\":\"computer\"},{\"value\":\"light\",\"label\":\"Светлая\",\"icon\":\"light_mode\"},{\"value\":\"dark\",\"label\":\"Тёмная\",\"icon\":\"dark_mode\"}]},{\"key\":\"notify\",\"type\":\"boolean\",\"label\":\"Уведомления\",\"icon\":\"notifications\",\"value\":true,\"default\":true}]}</script></sf-settings-menu>",
+          "<p id=\"outside\">Страница</p>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-closed",
+          "title": "closed, the popup panel is not shown and the trigger says it opens a dialog",
+          "covers": "slots.trigger, accessibility (aria-haspopup, aria-expanded, aria-controls)",
+          "steps": [
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); const t = document.querySelector('#pop-trigger'); const p = m.querySelector('.sf-settings-menu'); return p && p.getClientRects().length === 0 && t.getAttribute('aria-haspopup') === 'dialog' && t.getAttribute('aria-expanded') === 'false' && t.getAttribute('aria-controls') === p.id; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-open",
+          "title": "the trigger opens the panel as a named dialog in the top layer, focus on the first row",
+          "covers": "actions.open, events.open, events.opened, host-states data-open, layer.kind surface",
+          "steps": [
+            {
+              "user": "click:#pop-trigger",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-open",
+                    "count": 1
+                  },
+                  {
+                    "name": "sf-settings-menu-opened",
+                    "count": 1
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); const p = m.querySelector('.sf-settings-menu'); return p.matches(':popover-open') && p.getAttribute('role') === 'dialog' && p.getAttribute('aria-labelledby') && m.getAttribute('data-open') === 'true' && document.querySelector('#pop-trigger').getAttribute('aria-expanded') === 'true' && document.activeElement === p.querySelector('.sf-settings-menu-row--drill') && document.documentElement.dataset.sfPopoverOpen === '1'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-drill",
+          "title": "a choice row opens its list in place: back head, listbox, the chosen option focused and selected",
+          "covers": "settings.items choice, host-states data-level, keyboard ArrowRight",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "keyboard:ArrowRight"
+            },
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); const l = m.querySelector('[role=listbox]'); const a = document.activeElement; return m.getAttribute('data-level') === 'theme' && l && a.getAttribute('role') === 'option' && a.getAttribute('aria-selected') === 'true' && a.dataset.sfValue === 'system' && m.querySelector('.sf-settings-menu-back'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-pick",
+          "title": "choosing an option asks, changes, goes back and focuses the row",
+          "covers": "events.change, events.changed, values",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "keyboard:ArrowRight"
+            },
+            {
+              "user": "keyboard:ArrowDown"
+            },
+            {
+              "user": "keyboard:Enter",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-change",
+                    "count": 1,
+                    "detail": {
+                      "key": "theme",
+                      "value": "light",
+                      "previous": "system"
+                    }
+                  },
+                  {
+                    "name": "sf-settings-menu-changed",
+                    "count": 1,
+                    "detail": {
+                      "key": "theme",
+                      "value": "light",
+                      "previous": "system"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); return m.values.theme === 'light' && !m.hasAttribute('data-level') && document.activeElement.dataset.sfKey === 'theme' && document.activeElement.querySelector('.sf-settings-menu-row-value').textContent === 'Светлая'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p5-back",
+          "title": "ArrowLeft and Escape go back from a list before they close",
+          "covers": "keyboard ArrowLeft, keyboard Escape",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "keyboard:ArrowRight"
+            },
+            {
+              "user": "keyboard:ArrowLeft"
+            },
+            {
+              "check": "!document.querySelector('#pop').hasAttribute('data-level') && document.querySelector('#pop').hasAttribute('data-open')"
+            },
+            {
+              "user": "keyboard:ArrowRight"
+            },
+            {
+              "user": "keyboard:Escape"
+            },
+            {
+              "check": "!document.querySelector('#pop').hasAttribute('data-level') && document.querySelector('#pop').hasAttribute('data-open')"
+            }
+          ]
+        },
+        {
+          "id": "p6-escape",
+          "title": "Escape on the top level closes the panel and gives focus back to the trigger",
+          "covers": "events.close reason escape, events.closed, §19.2",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "keyboard:Escape",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-close",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  },
+                  {
+                    "name": "sf-settings-menu-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "escape"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const t = document.querySelector('#pop-trigger'); return t.getAttribute('aria-expanded') === 'false' && (document.activeElement === t || t.contains(document.activeElement)) && !document.querySelector('#pop').hasAttribute('data-open') && !document.documentElement.dataset.sfPopoverOpen; })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-switch",
+          "title": "a switch toggles in its row without leaving the level",
+          "covers": "settings.items boolean",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "click:#pop .sf-settings-menu-row--switch input",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-changed",
+                    "count": 1,
+                    "detail": {
+                      "key": "notify",
+                      "value": false,
+                      "previous": true
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); const i = m.querySelector('.sf-settings-menu-row--switch input'); return m.values.notify === false && i.checked === false && i.getAttribute('role') === 'switch' && m.hasAttribute('data-open'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-cancel",
+          "title": "a page that cancels the change keeps the value and the switch",
+          "covers": "events.change cancelable",
+          "steps": [
+            {
+              "script": "(document.addEventListener('sf-settings-menu-change', (event) => event.preventDefault(), {once: true}), true)"
+            },
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "click:#pop .sf-settings-menu-row--switch input"
+            },
+            {
+              "check": "(() => { const m = document.querySelector('#pop'); return m.values.notify === true && m.querySelector('.sf-settings-menu-row--switch input').checked === true; })()"
+            }
+          ]
+        },
+        {
+          "id": "p9-outside",
+          "title": "a press outside (pointerdown on the page) closes the panel as outside",
+          "covers": "events.close reason outside",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "script": "(document.querySelector('#outside').dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, composed: true})), true)",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "outside"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p10-action",
+          "title": "an action row asks the page to apply it and closes the popup",
+          "covers": "events.apply",
+          "steps": [
+            {
+              "user": "click:#pop-trigger"
+            },
+            {
+              "user": "click:#pop .sf-settings-menu-row--action",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-settings-menu-apply",
+                    "count": 1,
+                    "detail": {
+                      "action": "export",
+                      "scope": "entry"
+                    }
+                  },
+                  {
+                    "name": "sf-settings-menu-closed",
+                    "count": 1,
+                    "detail": {
+                      "reason": "api"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p11-inline",
+          "title": "inline, the panel is a group always shown and open() is refused",
+          "covers": "settings.inline, actions.open refused",
+          "steps": [
+            {
+              "action": {
+                "name": "open"
+              },
+              "target": "#inl",
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            },
+            {
+              "check": "(() => { const p = document.querySelector('#inl .sf-settings-menu'); return p.getAttribute('role') === 'group' && p.getClientRects().length > 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "p12-reset",
+          "title": "reset puts the items with a default back and sends changed for each",
+          "covers": "actions.reset, events.reset",
+          "steps": [
+            {
+              "script": "(document.querySelector('#inl').items = document.querySelector('#inl').items.map((item) => item.key === 'notify' ? {...item, value: false} : item), true)"
+            },
+            {
+              "action": {
+                "name": "reset"
+              },
+              "target": "#inl",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                }
+              }
+            },
+            {
+              "check": "document.querySelector('#inl').values.notify === true"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

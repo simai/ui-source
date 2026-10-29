@@ -1,0 +1,537 @@
+{
+  "$comment": "The source of sf-settings-menu's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is the «Компактные настройки» tab of ui-control prototypes/search-and-settings.html (owner decisions 2026-10-30).",
+  "id": "smart.settings-menu",
+  "tag": "sf-settings-menu",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "menu",
+  "settings": {
+    "items": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "key": "string",
+        "type": {
+          "type": "enum",
+          "values": [
+            "boolean",
+            "choice",
+            "range",
+            "action",
+            "section",
+            "divider"
+          ]
+        },
+        "label": "string",
+        "caption": {
+          "type": "string",
+          "optional": true,
+          "summary": "A line under the name, as an sf-context-menu entry's caption"
+        },
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "options": {
+          "type": "list",
+          "optional": true,
+          "of": {
+            "value": "string",
+            "label": "string",
+            "icon": {
+              "type": "icon",
+              "optional": true
+            }
+          }
+        },
+        "value": {
+          "type": "string",
+          "optional": true,
+          "summary": "The current value: a boolean for boolean, an option's value for choice, a number for range"
+        },
+        "default": {
+          "type": "string",
+          "optional": true,
+          "summary": "The value reset gives back; an item without one keeps its value on reset"
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "tile": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "A boolean or a choice drawn as a tile in the block on top instead of as a row"
+        },
+        "control": {
+          "type": "enum",
+          "optional": true,
+          "values": [
+            "drill",
+            "pills",
+            "select"
+          ],
+          "summary": "How a choice is drawn when the page says so; by default the template decides from the options"
+        },
+        "min": {
+          "type": "number",
+          "optional": true
+        },
+        "max": {
+          "type": "number",
+          "optional": true
+        },
+        "step": {
+          "type": "number",
+          "optional": true
+        },
+        "unit": {
+          "type": "string",
+          "optional": true,
+          "summary": "What a range's value is written with, as «%»"
+        }
+      },
+      "summary": "The settings, as data: a property, or the JSON island <script type=\"application/json\" data-sf-settings>{\"items\": […]}</script> in the host. The component keeps and reports the values; what a value means is the page's"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label",
+      "summary": "The panel's heading and accessible name; «Настройки» / «Settings» in the page language when not set"
+    },
+    "heading": {
+      "type": "boolean",
+      "default": true,
+      "summary": "The heading row on top of the panel; heading=\"false\" leaves it out (a panel that names the settings itself)"
+    },
+    "inline": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Always open in the page's flow, for a settings panel or a sidebar; without it the panel opens from the trigger slot or the for target"
+    },
+    "for": {
+      "type": "string",
+      "default": "",
+      "summary": "The id of a control elsewhere in the page that opens the panel, when the trigger is not in the trigger slot"
+    },
+    "placement": {
+      "type": "enum",
+      "values": [
+        "bottom-end",
+        "bottom-start",
+        "top-end",
+        "top-start",
+        "inline-end",
+        "inline-start"
+      ],
+      "default": "bottom-end",
+      "summary": "Where the popup panel hangs from its trigger; it flips and shifts to stay in the window"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1"
+      ],
+      "default": "1/2",
+      "summary": "The ladder rung of the rows, as sf-context-menu's: a row is the control height of the size (32 px at 1/2, the default, 40 px at 1), taller by the value's line under a name"
+    },
+    "resettable": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A reset row at the end: every item that declares a default goes back to it"
+    },
+    "reset-label": {
+      "type": "string",
+      "default-from": "runtime.reset-label",
+      "summary": "The reset row's text; «Сбросить» / «Reset» in the page language when not set"
+    },
+    "back-label": {
+      "type": "string",
+      "default-from": "runtime.back-label",
+      "summary": "The back button's name in a choice list; «Назад» / «Back» in the page language when not set"
+    }
+  },
+  "values": {
+    "values": {
+      "type": "object",
+      "summary": "Every item's current value by its key, {key: value}: what a page reads to save the settings"
+    }
+  },
+  "events": {
+    "change": {
+      "carries": {
+        "key": "string",
+        "value": "string",
+        "previous": "string"
+      },
+      "cancelable": true,
+      "x-native": false,
+      "summary": "A person asks to change a setting: a request a page may cancel, and the value stays"
+    },
+    "changed": {
+      "carries": {
+        "key": "string",
+        "value": "string",
+        "previous": "string"
+      },
+      "summary": "A setting changed; the page applies what the value means"
+    },
+    "apply": {
+      "carries": {
+        "action": "string",
+        "scope": {
+          "type": "enum",
+          "values": [
+            "entry"
+          ]
+        },
+        "ids": "list"
+      },
+      "cancelable": true,
+      "summary": "An action row was chosen (vocabulary §5 apply, scope entry, ids the row's key); the page does the action. A popup closes unless a listener cancels it"
+    },
+    "reset": {
+      "carries": {
+        "keys": "list"
+      },
+      "cancelable": true,
+      "summary": "A person asks to put the settings back to their defaults; keys are the items that would change. Cancelled, nothing changes; otherwise each one sends changed"
+    },
+    "open": {
+      "carries": {},
+      "cancelable": true,
+      "summary": "The popup panel is about to open: a request a page may cancel"
+    },
+    "opened": {
+      "carries": {},
+      "summary": "The popup panel opened"
+    },
+    "close": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        },
+        "unsaved": "boolean"
+      },
+      "cancelable": true,
+      "summary": "The popup panel is about to close, and why (§19.3): the trigger pressed again (close), Escape, a press outside, or the action and Tab (api)"
+    },
+    "closed": {
+      "carries": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "summary": "The popup panel closed, and why"
+    }
+  },
+  "actions": {
+    "open": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the popup panel; refused when the menu is inline, has no trigger, or a page cancels sf-settings-menu-open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "close": {
+      "with": {
+        "reason": {
+          "type": "enum",
+          "values": [
+            "close",
+            "escape",
+            "outside",
+            "cancelled",
+            "api"
+          ]
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Closes the popup panel; refused when it is closed already or a page cancels sf-settings-menu-close",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "toggle": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Opens the popup panel when it is closed and closes it when it is open",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "reset": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Puts every item that declares a default back to it; refused when a page cancels sf-settings-menu-reset",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "slots": {
+    "trigger": {
+      "$comment": "The control that opens the popup panel: an sf-icon-button or a <button> with its own attributes (a node whose only attribute is slot is unwrapped by the base). Left where the menu stands; the panel is positioned against it."
+    }
+  },
+  "layer": {
+    "kind": "surface",
+    "locks-page": false,
+    "traps-focus": false
+  },
+  "keyboard": {
+    "panel": {
+      "ArrowDown": "next-row",
+      "ArrowUp": "previous-row",
+      "Home": "first-row",
+      "End": "last-row",
+      "ArrowRight": "next-in-row or drill-in",
+      "ArrowLeft": "previous-in-row or back or close",
+      "Enter": "activate or drill-in",
+      "Space": "activate",
+      "Escape": "back or close",
+      "Tab": "leave"
+    }
+  },
+  "relations": [
+    {
+      "name": "switch"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "cl-icon-button"
+    },
+    {
+      "name": "cl-context-menu",
+      "lazy": true
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "drill: each row is a leading icon, the name and the current value under it, a chevron at the end; pressing it opens the choice list in place. The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    },
+    "rows": {
+      "file": "js/templates/rows.js",
+      "$comment": "rows: the name (and a caption) at the start, the control at the end -- a switch, quiet pills or a compact select that opens a small menu. The Lit template in JavaScript (§5.2 migration form)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The panel is a dialog named by its heading when it pops up from a trigger (aria-haspopup dialog, aria-controls and aria-expanded on the trigger's control) and a group when it is inline. Every setting is a native control with its own role: a boolean is the Framework switch (a checkbox with role switch), quiet pills are toggle buttons (aria-pressed) in a group named by the row, a compact select is a button with aria-haspopup menu, a choice list is a listbox of options with aria-selected, a range is a native slider. One stop of the panel is in the tab order (roving tabindex).",
+    "role": "dialog",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "ArrowDown": "next-row",
+      "ArrowUp": "previous-row",
+      "ArrowRight": "drill-in",
+      "ArrowLeft": "back",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "back or close"
+    }
+  },
+  "host-states": {
+    "data-open": "boolean",
+    "data-level": "string"
+  },
+  "css-variables": {
+    "--sf-settings-menu-inline-size": {
+      "type": "length",
+      "state": "default",
+      "x-summary": "The panel's fixed width, 280 px by default; it never grows with its text."
+    },
+    "--sf-settings-menu-background": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The panel's fill, the third elevation step."
+    },
+    "--sf-settings-menu-color": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The panel's text."
+    },
+    "--sf-settings-menu-border-color": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "The panel's hairline edge and its dividers."
+    },
+    "--sf-settings-menu-radius": {
+      "type": "length",
+      "state": "default",
+      "x-summary": "The panel's corners."
+    },
+    "--sf-settings-menu-hover-background": {
+      "type": "color",
+      "state": "hover",
+      "x-summary": "A row under the pointer."
+    },
+    "--sf-settings-menu-selected-background": {
+      "type": "color",
+      "state": "selected",
+      "x-summary": "The chosen pill and an option of a choice list under the pointer."
+    },
+    "--sf-settings-menu-tile-background": {
+      "type": "color",
+      "state": "default",
+      "x-summary": "A tile and a compact select at rest."
+    },
+    "--sf-settings-menu-accent-color": {
+      "type": "color",
+      "state": "checked",
+      "x-summary": "The check mark of the chosen option and a range's fill."
+    }
+  },
+  "x-summary": "Compact settings: a list of settings given as data, drawn as a menu that opens from a trigger or stands inline -- rows with the value under the name that open their choices in place (drill, the default), or rows with the control at the end (rows), with an optional block of tiles on top. A special case of the context menu, for a reader's settings, a table's view options, a chat's settings.",
+  "x-source": {
+    "package": "framework",
+    "folder": "settings-menu",
+    "brief": "simai/ui-control prototypes/search-and-settings.html, tab «Компактные настройки» (owner decisions 2026-10-30; dispatcher's name decision sf-settings-menu)"
+  },
+  "x-words": [
+    "label",
+    "reset-label",
+    "back-label"
+  ],
+  "x-decisions": [
+    "name: sf-settings-menu (dispatcher, owner-delegated, 2026-10-30). A leaf: the settings are data and the component owns no bus and no rules; it keeps and reports the values, the page decides what they mean.",
+    "templates, not a setting: drill and rows are two arrangements of the same parts with one interface, which standard §6 makes templates (template=\"rows\"); the owner's word «view» is reserved by §3.1. drill is the default template (owner, 2026-10-30).",
+    "items: one list setting of {key, type, label, caption?, icon?, options?, value, default?, disabled?, tile?, control?, min?, max?, step?, unit?}, a property or the §5.4 JSON island. type is boolean, choice, range, action, section or divider. A choice in rows draws as quiet pills when it has up to three options that all carry an icon, or two short words (eight characters at most), else as a compact select; in drill it opens its list in place. control names the form explicitly.",
+    "tiles: an item with tile: true stands in a block of tiles on top (Apple's Control Center), three to a row (two for four). A boolean tile toggles; a choice tile cycles through up to three options and opens the list in place when it has more.",
+    "events: change is a cancelable request {key, value, previous} sent as sf-settings-menu-change (x-native false: the menu is not a form field, and a field's change bubbling out of a panel must not be taken for it); changed is the fact. An action row sends apply {action, scope: entry, ids: [key]} (vocabulary §5, §18.3). Reset is the cancelable request reset {keys}, then changed per key. open and close are cancelable requests and opened and closed the facts, close with §19.3's reason.",
+    "layer: the popup panel is the platform popover in the top layer, positioned by core/js/position.js against the trigger as sf-context-menu does, and registered in the shared layer stack as a surface through core/js/open-surface-mark.js (holdOpenSurfaceMark, then updateLayer with its root and Escape), so Escape and an outside press belong to the top layer only and a drawer or modal under it stands back. It does not lock the page and does not trap focus: Tab leaves and closes it.",
+    "parts: the switch is the Framework's switch class markup (component switch); the back button is sf-icon-button; the compact select's small menu is an sf-context-menu of radio entries opened against the select; icons are sf-icon glyphs. Nothing draws a control of its own.",
+    "geometry (docs/foundation-composition-geometry.md): the panel has the context menu's surface -- elevation 3 with its dimmed text role (--sf-on-surface-variant is --sf-on-elevation-3--variant), a hairline, --sf-radius--surface, an inset of --sf-space-1/4 -- and a fixed width; a row is the control height of its size and its content starts on the field axis; the leading icon, the switch, the chevron and the check mark are centred on the row; a long name wraps, a long value ends in an ellipsis with the full text in title.",
+    "css-variables: nine public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one.",
+    "words (§11): label, reset-label and back-label default to the language files' runtime words."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "settings",
+      "menu",
+      "preferences",
+      "view-options"
+    ],
+    "state": {
+      "machines": {},
+      "visual_states": [
+        "default",
+        "open",
+        "selected"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "saving the settings",
+        "applying what a value means (a theme, a density, a text size)",
+        "drawing a settings row of its own"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-settings-menu for a small set of settings a person changes on the spot: a reader's theme and text size, a table's view options, a chat's settings -- in a popup from a gear button or inline in a panel.",
+      "do_not": [
+        "Do not draw a settings popover of your own from buttons and switches",
+        "Do not set the panel's width per page; it is fixed and --sf-settings-menu-inline-size changes it for an area",
+        "Do not expect the component to apply a theme or save the values: listen for sf-settings-menu-changed and do it in the page"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-settings-menu><sf-icon-button slot=\"trigger\" icon=\"tune\" aria-label=\"Настройки\"></sf-icon-button><script type=\"application/json\" data-sf-settings>{\"items\":[{\"key\":\"theme\",\"type\":\"choice\",\"label\":\"Тема\",\"icon\":\"contrast\",\"value\":\"system\",\"options\":[{\"value\":\"system\",\"label\":\"Как в системе\",\"icon\":\"computer\"},{\"value\":\"light\",\"label\":\"Светлая\",\"icon\":\"light_mode\"},{\"value\":\"dark\",\"label\":\"Тёмная\",\"icon\":\"dark_mode\"}]},{\"key\":\"sound\",\"type\":\"boolean\",\"label\":\"Звук\",\"icon\":\"volume_up\",\"value\":true}]}</script></sf-settings-menu>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "internal",
+      "keyboard": [
+        "Arrow Up and Down move between the rows; Home and End go to the first and the last",
+        "Arrow Right or Enter on a choice row opens its list in place; Arrow Left or Escape goes back",
+        "Enter or Space activates: a switch toggles, a pill or an option is chosen",
+        "Escape on the top level closes the popup and gives focus back to the trigger; Tab leaves and closes it"
+      ],
+      "focus": "Opening the popup focuses its first row; a choice list focuses its chosen option; going back focuses the row it came from; closing gives focus back to the trigger."
+    }
+  }
+}

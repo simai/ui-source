@@ -339,6 +339,9 @@
     "resize/default",
     "text-max-width/default"
   ],
+  "cl-settings-menu": [
+    "display/default"
+  ],
   "cl-site-header": [
     "container/default",
     "display/default",

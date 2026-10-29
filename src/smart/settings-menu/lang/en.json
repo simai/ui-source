@@ -1,0 +1,10 @@
+{
+  "title": "Settings menu",
+  "runtime": {
+    "label": "Settings",
+    "reset-label": "Reset",
+    "back-label": "Back",
+    "on": "On",
+    "off": "Off"
+  }
+}

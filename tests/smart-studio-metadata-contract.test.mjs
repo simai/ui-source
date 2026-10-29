@@ -77,6 +77,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // sf-profile-picker; 49 with sf-empty-state;
   // 50 with sf-copy-button; 51 with sf-help-mark;
   // 52 with sf-theme-generator; 53 with sf-image-field; 54 with sf-accordion; 55 with sf-quantity; 56 with sf-menu; 57 with sf-code-input;
-  // 58 with sf-progress-ring; 59 with sf-site-header.
-  assert.equal(fixtureCount, 59);
+  // 58 with sf-progress-ring; 59 with sf-site-header; 60 with sf-settings-menu.
+  assert.equal(fixtureCount, 60);
 });

@@ -165,6 +165,11 @@ const DRAW = {
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
     html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+  // Compact settings at rest, inline: a tile and a choice row (drill), and
+  // a chosen pill and a compact select (rows).
+  'settings-menu': {css: ['switch', 'icons', 'smart/smart/settings-menu/css/settings-menu.css'], js: 'settings-menu',
+    html: '<sf-settings-menu inline><script type="application/json" data-sf-settings>{"items": [{"key": "sound", "type": "boolean", "label": "Звук", "icon": "volume_up", "value": false, "tile": true}, {"key": "lang", "type": "choice", "label": "Язык", "value": "ru", "options": [{"value": "ru", "label": "Русский"}, {"value": "en", "label": "English"}, {"value": "kk", "label": "Қазақша"}]}]}</script></sf-settings-menu>'
+      + '<sf-settings-menu inline template="rows"><script type="application/json" data-sf-settings>{"items": [{"key": "follow", "type": "choice", "label": "Ответы", "value": "queue", "options": [{"value": "queue", "label": "Очередь"}, {"value": "steer", "label": "Сразу"}]}, {"key": "density", "type": "choice", "label": "Плотность", "value": "normal", "options": [{"value": "compact", "label": "Плотно"}, {"value": "normal", "label": "Обычно"}, {"value": "loose", "label": "Свободно"}]}]}</script></sf-settings-menu>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
