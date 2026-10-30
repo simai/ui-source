@@ -155,27 +155,33 @@ try {
   check('nextCursor shows Show more', s.more === true, s);
   check('the results are said politely', s.status === '1 result', s);
 
-  // A line of the host under the rows, gone with the next search.
+  // A line of the host under the rows, gone with the next search; on a field of
+  // its own, so the calls counted above stay as they are.
   const noticed = await page.evaluate(async () => {
-    const field = document.getElementById('p');
-    const before = field.provider;
-    field.provider = async () => ({items: [{value: 'n1', label: 'Anna'}], notice: 'First 20 shown'});
+    const field = document.createElement('sf-lookup');
+    field.setAttribute('label', 'Notice');
+    document.body.append(field);
+    await customElements.whenDefined('sf-lookup');
+    await field.updateComplete;
+    const settle = () => new Promise((done) => setTimeout(done, 250));
+    let notice = 'First 20 shown';
+    field.provider = async () => ({items: [{value: 'n1', label: 'Anna'}], ...(notice ? {notice} : {})});
     field.search('an');
-    await new Promise((done) => setTimeout(done, 200));
+    await settle();
     const shown = field.querySelector('.sf-lookup-status')?.textContent ?? '';
-    field.provider = before;
-    return {shown};
+    notice = '';
+    field.search('ann');
+    await settle();
+    const after = field.querySelector('.sf-lookup-status')?.textContent ?? '';
+    field.remove();
+    return {shown, after};
   });
   check('a notice in the answer shows under the rows', noticed.shown.includes('First 20 shown'), noticed);
-  await page.evaluate(() => { window.__calls.length = 0; document.getElementById('p').search('anna'); });
-  await page.waitForTimeout(200);
-  await page.evaluate(() => window.__answer(0, {items: [{value: 'u1', label: 'Anna Petrova', caption: 'Design'}], nextCursor: 'c2'}));
-  await page.waitForTimeout(100);
-  check('the next answer without a notice drops the line', !(await page.evaluate(() => document.querySelector('#p .sf-lookup-status')?.textContent ?? '')).includes('First 20 shown'));
+  check('the next answer without a notice drops the line', !noticed.after.includes('First 20 shown'), noticed);
   // Show more: the provider asked with the cursor; no nextCursor, no Show more.
   await page.click('#p .sf-lookup-more button, #p .sf-lookup-more');
   await page.waitForTimeout(100);
-  const more = await page.evaluate(() => ({query: window.__calls[1]?.query, cursor: window.__calls[1]?.cursor}));
+  const more = await page.evaluate(() => ({query: window.__calls[2]?.query, cursor: window.__calls[2]?.cursor}));
   check('Show more asks with the cursor', more.query === 'anna' && more.cursor === 'c2', more);
   await page.evaluate(() => window.__answer(2, {items: [{value: 'u1', label: 'Anna Petrova'}, {value: 'u9', label: 'Anna Sidorova'}]}));
   await page.waitForTimeout(150);
