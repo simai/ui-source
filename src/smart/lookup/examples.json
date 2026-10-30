@@ -110,24 +110,6 @@
               "label": "Gleb Orlov",
               "caption": "Sales"
             }
-          ],
-          "value": [
-            {
-              "value": "u1",
-              "label": "Anna Petrova",
-              "caption": "Design",
-              "avatar": {
-                "initials": "AP"
-              }
-            },
-            {
-              "value": "u2",
-              "label": "Boris Ivanov",
-              "caption": "Development",
-              "avatar": {
-                "initials": "BI"
-              }
-            }
           ]
         },
         "scenario": {

@@ -229,11 +229,11 @@
   border: 0;
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-lookup-list-background-color, var(--sf-elevation-2--surface));
+  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
   box-shadow: var(--sf-elevation-2--shadow);
   color: var(--sf-on-surface);
   overflow: auto;
   overscroll-behavior: contain;
-  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
 }
 
 .sf-lookup.sf-lookup--open .sf-lookup-panel {
