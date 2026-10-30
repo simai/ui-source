@@ -143,7 +143,10 @@ test('sf-dropdown: change carries data only; sf-dropdown:change keeps root throu
 
 test('sf-context-menu, sf-toast, sf-tooltip: their manifests and events', () => {
   const menu = json('src/smart/context-menu/component.json');
-  assert.deepEqual(Object.keys(menu.events), ['select', 'open', 'opened', 'close', 'closed', 'search', 'tab']);
+  // The settings rows the compact settings folded in (owner's decision,
+  // 2026-10-29): change is the cancelable request, changed the fact, reset
+  // the whole panel going back to its defaults.
+  assert.deepEqual(Object.keys(menu.events), ['select', 'change', 'changed', 'reset', 'open', 'opened', 'close', 'closed', 'search', 'tab']);
   assert.ok(menu.settings.entries.of.submenu, 'entries name their fields (§4.2)');
   const menuSource = read('src/smart/context-menu/index.js');
   assert.doesNotMatch(menuSource, /get role\(\)/);

@@ -74,6 +74,7 @@ test('the disabled content role paints a fill only where the fill is the content
     }
   }
   assert.deepEqual(found.sort(), [
+    'src/component/context-menu/scss/_css__context_menu.scss: background-color: var(--sf-on-disable);',
     'src/component/dropdown/scss/_css__list-item.scss: --sf-checkbox-box--border-color: var(--sf-on-disable);',
     'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
     'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
