@@ -17,6 +17,17 @@ const BADGE_COLOUR_ROLES = ['neutral', 'primary', 'secondary', 'tertiary', 'on-s
 const BADGE_STATUSES = ['', 'info', 'success', 'warning', 'error'];
 const BADGE_STATUS_LEGACY = {error: 'danger'};
 
+// What each run state draws. A spinner has no icon name; the words are in
+// lang/ (runtime activity-*). The role is the colour class, the same classes a
+// status or a colour role paints with, so every appearance holds for it.
+const BADGE_ACTIVITIES = {
+  running: {role: 'neutral', spinner: true, word: 'activity-running'},
+  waiting: {role: 'warning', icon: 'pending_actions', word: 'activity-waiting'},
+  done: {role: 'success', icon: 'check_circle', word: 'activity-done'},
+  stopped: {role: 'neutral', icon: 'stop_circle', word: 'activity-stopped'},
+  failed: {role: 'error', icon: 'error', word: 'activity-failed'},
+};
+
 const normalizeName = (value) => String(value ?? '').trim().toLowerCase();
 
 function resolveBadgeScheme(element, raw, fallback) {
@@ -102,10 +113,32 @@ class SfBadge extends BadgeElement {
     return this.getProp('status');
   }
 
+  // What the run state draws, null without one.
+  get activityMark() {
+    return BADGE_ACTIVITIES[this.activity] ?? null;
+  }
+
   // One colour name reaches the class list, because the styles are written that
-  // way: the status when one is set, the colour role otherwise.
+  // way: the run state's role when one is set, then the status, then the colour
+  // role. status and scheme stay as the host set them.
   get paintedScheme() {
-    return this.status || this.scheme;
+    return this.activityMark?.role || this.status || this.scheme;
+  }
+
+  // The text the badge draws: the host's, else the run state's word.
+  get drawnText() {
+    const mark = this.activityMark;
+    return this.text || (mark ? this.sfWord(mark.word) : '');
+  }
+
+  // The icon shortcut the badge draws: the host's, else the run state's.
+  get drawnIcon() {
+    return this.icon || this.activityMark?.icon || '';
+  }
+
+  // The spinner stands in the icon's place only while the host gave no icon.
+  get activitySpinner() {
+    return Boolean(this.activityMark?.spinner && !this.icon);
   }
 
   // Null when the attribute is not there, '' when it is there and empty: an
@@ -138,6 +171,10 @@ class SfBadge extends BadgeElement {
       iconEnd: this.iconEnd,
       ...variant,
       appearance: this.appearance,
+      paintedScheme: this.paintedScheme,
+      drawnText: this.drawnText,
+      drawnIcon: this.drawnIcon,
+      activitySpinner: this.activitySpinner,
       ariaLabel: this.getAttribute('aria-label') || '',
       component: this,
     });
@@ -156,6 +193,8 @@ class SfBadge extends BadgeElement {
       type: this.appearance,
       scheme: this.scheme,
       status: this.status,
+      activity: this.activity,
+      compact: this.compact,
       text: this.text,
       icon: this.icon,
       iconLeft: this.iconStart ?? '',

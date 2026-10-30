@@ -73,6 +73,28 @@ const sfBadgeMeta = {
       "default": "",
       "description": "What the badge reports, in the shared status vocabulary. The word this component used before, danger, is still accepted and means error."
     },
+    "activity": {
+      "kind": "enum",
+      "values": [
+        "",
+        "running",
+        "waiting",
+        "done",
+        "stopped",
+        "failed"
+      ],
+      "default": "",
+      "description": "Where a run stands: running draws a spinner in the icon's place, waiting, done, stopped and failed an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it."
+    },
+    "compact": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
+    },
     "text": {
       "kind": "custom",
       "valueType": "string",

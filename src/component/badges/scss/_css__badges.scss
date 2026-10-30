@@ -33,6 +33,7 @@
   vertical-align: middle;
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-on-surface-variant));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface-inverse));
+  --sf-badge-spinner--size: var(--sf-text-size-1\/3);
   --sf-badge--font-size: var(--sf-text-size-1\/3);
   --sf-badge--line-height: var(--sf-text-height-1\/3);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
@@ -85,6 +86,29 @@
 .sf-badge.sf-badge--main.sf-badge--neutral {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-on-surface-variant));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface-inverse));
+}
+
+/* The spinner's slot (activity running): exactly the box of the badge's icon at
+   every size, so a spinner in place of an icon changes nothing around it. The
+   badge sheet draws the slot on its own, so the box is right before the spinner
+   sheet has arrived; the arc then draws still from the drawing's own attributes.
+   The track is the ink at the sheet's faint opacity, as it is before the sheet:
+   the Framework's surface-coloured track would vanish on a tonal badge. */
+.sf-badge .sf-badge-spinner {
+  --sf-loader-svg-width: var(--sf-badge-spinner--size);
+  --sf-loader-svg-height: var(--sf-badge-spinner--size);
+  --sf-loader-track-color: var(--sf-spinner-track-color, currentColor);
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--sf-badge-spinner--size);
+  block-size: var(--sf-badge-spinner--size);
+  color: var(--sf-loader--color, currentColor);
+}
+
+.sf-badge .sf-badge-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .sf-badge.sf-badge--tonal .sf-icon, .sf-badge.sf-badge--main .sf-icon, .sf-badge.sf-badge--outline .sf-icon {
@@ -222,6 +246,7 @@
 }
 
 .sf-badge--size-1 {
+  --sf-badge-spinner--size: var(--sf-text-size-1);
   --sf-badge--font-size: var(--sf-text-size-1);
   --sf-badge--line-height: var(--sf-text-height-1);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1--space-y-tightness-low));
@@ -241,6 +266,7 @@
 }
 
 .sf-badge--size-1\/3 {
+  --sf-badge-spinner--size: var(--sf-text-size-1\/3);
   --sf-badge--font-size: var(--sf-text-size-1\/3);
   --sf-badge--line-height: var(--sf-text-height-1\/3);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
@@ -255,6 +281,7 @@
 }
 
 .sf-badge--size-1\/2 {
+  --sf-badge-spinner--size: var(--sf-text-size-1\/2);
   --sf-badge--font-size: var(--sf-text-size-1\/2);
   --sf-badge--line-height: var(--sf-text-height-1\/2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
@@ -304,5 +331,13 @@
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
   --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-ui-2--text-space-x));
   --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-ui-2--text-space-x));
+}
+
+/* Compact: the icon alone, the text a visually hidden copy that stays the name.
+   The box closes to a square: its inline padding takes the block padding, and
+   the size's minimum holds the rest. Written after the size and line rules. */
+.sf-badge.sf-badge--compact {
+  --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
+  --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
 }
 }

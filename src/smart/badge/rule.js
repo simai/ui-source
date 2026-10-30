@@ -11,6 +11,9 @@ SF.RuleLoader['cl-badge'] = {
     // component's markup can miss -- and then the label reads beside the text
     // (Larena, «Элементы: 7 7», 2026-10-12).
     { name: 'sr-only/default' },
+    // The spinner of activity running: its slot is drawn by the badge sheet, the
+    // motion by the spinner's, fetched after the page is ready.
+    { name: 'spinner', lazy: true },
   ],
 };
 
