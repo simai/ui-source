@@ -87,9 +87,11 @@
       "rule_name": "cl-chat-window",
       "folder": "chat-window",
       "requires": [
+        "component.avatars",
         "component.buttons",
         "component.icon-buttons",
         "component.inputs",
+        "smart.button",
         "smart.change-confirm",
         "smart.chat-composer",
         "smart.chat-interlocutor",
@@ -97,6 +99,8 @@
         "smart.context-menu",
         "smart.empty-state",
         "smart.icon",
+        "smart.input",
+        "smart.lookup",
         "smart.message-log",
         "smart.progress-bar",
         "smart.thread-list"

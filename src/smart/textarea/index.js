@@ -60,6 +60,11 @@ class SfTextarea extends FormField(TextareaElement) {
     return Number.isInteger(value) && value >= 0 ? value : null;
   }
 
+  // element.focus() on the host reaches the native textarea.
+  focusDelegate() {
+    return this.querySelector('textarea');
+  }
+
   get value() {
     const textarea = this.querySelector('.sf-textarea textarea');
     return textarea ? textarea.value : this.getAttribute('value') || '';

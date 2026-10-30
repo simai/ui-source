@@ -51,6 +51,11 @@ class SfInput extends FormField(InputElement) {
     return fieldSize(this.getAttribute('size') || '1', 'sf-input');
   }
 
+  // element.focus() on the host reaches the native input.
+  focusDelegate() {
+    return this.getInputElement();
+  }
+
   get value() {
     const input = this.getInputElement();
     return input ? input.value : this.getAttribute('value') || '';
