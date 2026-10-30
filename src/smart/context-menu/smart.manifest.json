@@ -403,8 +403,8 @@
         }
       ],
       "returns": {
-        "type": "boolean",
-        "description": "Whether an entry of that id was found."
+        "type": "object",
+        "description": "{outcome}: applied, or refused with not-found when no entry carries that id."
       }
     },
     "setAll": {
@@ -418,8 +418,8 @@
         }
       ],
       "returns": {
-        "type": "number",
-        "description": "How many entries were written."
+        "type": "object",
+        "description": "{outcome, count}: how many entries were written; refused with not-found when none was."
       }
     },
     "show": {
@@ -433,16 +433,16 @@
         }
       ],
       "returns": {
-        "type": "boolean",
-        "description": "Whether the panel went there."
+        "type": "object",
+        "description": "{outcome}: applied; refused with not-found; unavailable with no-levels in a flyout menu."
       }
     },
     "reset": {
       "summary": "Put the declared values back -- the values the entries carried when the host set them -- and raise reset. A listener that cancels reset keeps the current values.",
       "arguments": [],
       "returns": {
-        "type": "boolean",
-        "description": "Whether the values were put back."
+        "type": "object",
+        "description": "{outcome}: applied, or cancelled when a listener cancelled reset."
       }
     },
     "focus": {

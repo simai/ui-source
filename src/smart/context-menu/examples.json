@@ -707,7 +707,7 @@
           "covers": "x-registry kinds.range, keyboard",
           "steps": [
             {
-              "user": "focus:#settings .sf-context-menu-range-input"
+              "script": "(document.querySelector('#settings .sf-context-menu-range-input').focus(), true)"
             },
             {
               "user": "keyboard:ArrowRight",

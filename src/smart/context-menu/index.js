@@ -437,22 +437,28 @@ class SfContextMenu extends ContextMenuElement {
 
   // Write a setting's value into its own entry: the host's answer to change, or
   // a value restored on load. The menu raises nothing.
-  setValue(id, value) {
+  // An action takes one object (`set-value {id, value}`); a page's own call may
+  // name the two.
+  setValue(target, given) {
+    const {id, value} = target && typeof target === "object" ? target : {id: target, value: given};
     this.declaredValues();
     const {list, count} = rewriteValues(this.entries, (entry) => (entry.id === id ? valuePatch(entry, value) : null));
-    if (count) this.applyEntries(list);
-    return count > 0;
+    if (!count) return {outcome: "refused", reason: "not-found"};
+    this.applyEntries(list);
+    return {outcome: "applied"};
   }
 
   // A whole map at once: a panel restored from storage in one call.
-  setAll(values) {
+  setAll(given) {
+    const values = given && typeof given === "object" && given.values && typeof given.values === "object" ? given.values : given;
     const map = values && typeof values === "object" ? values : {};
     this.declaredValues();
     const {list, count} = rewriteValues(this.entries, (entry) => (entry.id && Object.hasOwn(map, entry.id)
       ? valuePatch(entry, map[entry.id])
       : null));
-    if (count) this.applyEntries(list);
-    return count;
+    if (!count) return {outcome: "refused", reason: "not-found", count};
+    this.applyEntries(list);
+    return {outcome: "applied", count};
   }
 
   // The declared values back, and reset asked once. A listener that cancels it
@@ -460,7 +466,7 @@ class SfContextMenu extends ContextMenuElement {
   // changed for each row that moved and waits for the host to persist them.
   reset() {
     const declared = this.declaredValues();
-    if (!this.sfEmit("reset", {}, {cancelable: true})) return false;
+    if (!this.sfEmit("reset", {}, {cancelable: true})) return {outcome: "cancelled"};
     const facts = [];
     const {list, count} = rewriteValues(this.entries, (entry) => {
       if (!entry.id || !Object.hasOwn(declared, entry.id)) return null;
@@ -473,15 +479,17 @@ class SfContextMenu extends ContextMenuElement {
     });
     if (count) this.applyEntries(list);
     for (const fact of facts) this.sfEmit("changed", fact);
-    return true;
+    return {outcome: "applied"};
   }
 
   // Straight to one setting: the panel opens the levels down to it -- its own
   // submenu when it has one, otherwise the level its row stands on -- and the
   // focus goes to the row. A flyout menu has no level to go to.
-  show(id) {
+  show(given) {
+    const id = given && typeof given === "object" ? given.id : given;
     const path = pathOf(this.entries, id);
-    if (!path || !this.drill) return false;
+    if (!path) return {outcome: "refused", reason: "not-found"};
+    if (!this.drill) return {outcome: "unavailable", reason: "no-levels"};
     const entry = entryAt(this.entries, path);
     const stack = [];
     let walked = "";
@@ -499,7 +507,7 @@ class SfContextMenu extends ContextMenuElement {
       (row ?? this.availableMenuItems()[0])?.focus({preventScroll: true});
     };
     this.requestComponentUpdate("drill");
-    return true;
+    return {outcome: "applied"};
   }
 
   // ─── drilling ────────────────────────────────────────────────────────────
