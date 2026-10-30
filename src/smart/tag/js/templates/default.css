@@ -55,7 +55,10 @@
    label's font size (the rule of plain markup), so the box never passes the
    text line. An inline tag keeps the button the size of the line. The target
    is extended to --sf-c2 square around the mark by a transparent ::after, so
-   it stays at the WCAG 2.2 minimum (2.5.8) without growing the tag. */
+   it stays at the WCAG 2.2 minimum (2.5.8) without growing the tag's height.
+   Beside a label that is itself a button (interactive, or checkbox) the button
+   moves off by what the target reaches past the mark: the target lay over the
+   end of the label, and a click on its last letter removed the tag. */
 @layer sf.states {
     .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close {
         padding: 0;
@@ -80,6 +83,10 @@
     .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
         --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);
         --sf-close-icon--width: calc(var(--sf-tag--font-size) * 0.7);
+    }
+
+    .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > sf-icon-button > .sf-icon-button.sf-icon-button--close {
+        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--font-size) * 0.7) / 2));
     }
 
     .sf-tag.sf-tag--inline.sf-tag--inline > sf-icon-button > .sf-icon-button.sf-icon-button--close {

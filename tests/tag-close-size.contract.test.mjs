@@ -31,5 +31,6 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
   assert.ok(css.includes(`${button}::after {\n        content: "";\n        position: absolute;\n        inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));`), 'target of --sf-c2');
   assert.ok(css.includes(`${button} > sf-close > .sf-close > .sf-close-icon {\n        --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);`), 'mark from the label');
   assert.ok(css.includes(`.sf-tag.sf-tag--inline.sf-tag--inline > sf-icon-button > .sf-icon-button.sf-icon-button--close {\n        block-size: var(--sf-tag--line, var(--sf-tag--line-height));`), 'inline: the line');
+  assert.ok(css.includes(`.sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > sf-icon-button > .sf-icon-button.sf-icon-button--close {\n        margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--font-size) * 0.7) / 2));`), 'the target stays off a label that is a button');
   assert.doesNotMatch(css, /text-size-1\\\/4/);
 });
