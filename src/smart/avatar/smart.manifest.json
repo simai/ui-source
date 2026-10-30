@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -91,6 +91,23 @@
       "text": {
         "type": "string",
         "default": ""
+      },
+      "tone": {
+        "type": "string",
+        "default": "",
+        "description": "The muted tone the initials are drawn in. Empty: the neutral look. auto: one tone picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a tone: an image and the placeholder stay as they are. --sf-avatar-background-color and --sf-avatar-color still win.",
+        "enum": [
+          "",
+          "auto",
+          "rose",
+          "amber",
+          "lime",
+          "green",
+          "teal",
+          "sky",
+          "indigo",
+          "violet"
+        ]
       },
       "status": {
         "type": "string",
@@ -267,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "bdb4361e104c4f41fc9a6bf59b7f3d28fd15ffcea7d9bdcd349f6339ab87e7a7"
+        "sha256": "8ac95abc9ad0692e160de41be9d6c390f7d826c8a6a4da2eb1c3212c470cd017"
       }
     ],
     "generated_runtime": [

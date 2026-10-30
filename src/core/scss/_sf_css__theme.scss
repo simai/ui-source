@@ -223,6 +223,25 @@
        simai/ui-source#3). A fill inside a fill -- an avatar in a tag -- is
        darker still and takes the primary role. */
     --sf-on-surface-container--variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-80));
+    /* The tones of initials: a muted plate and the ink that reads on it over the
+       surfaces 0 to 3, in both themes (tests/browser/avatar-tones.browser.mjs
+       measures them). */
+    --sf-tone-rose-container: light-dark(var(--sf-tone-rose-50--alfa-20), var(--sf-tone-rose-50--alfa-32));
+    --sf-on-tone-rose-container: light-dark(var(--sf-tone-rose-30), var(--sf-tone-rose-85));
+    --sf-tone-amber-container: light-dark(var(--sf-tone-amber-50--alfa-20), var(--sf-tone-amber-50--alfa-32));
+    --sf-on-tone-amber-container: light-dark(var(--sf-tone-amber-30), var(--sf-tone-amber-85));
+    --sf-tone-lime-container: light-dark(var(--sf-tone-lime-50--alfa-20), var(--sf-tone-lime-50--alfa-32));
+    --sf-on-tone-lime-container: light-dark(var(--sf-tone-lime-30), var(--sf-tone-lime-85));
+    --sf-tone-green-container: light-dark(var(--sf-tone-green-50--alfa-20), var(--sf-tone-green-50--alfa-32));
+    --sf-on-tone-green-container: light-dark(var(--sf-tone-green-30), var(--sf-tone-green-85));
+    --sf-tone-teal-container: light-dark(var(--sf-tone-teal-50--alfa-20), var(--sf-tone-teal-50--alfa-32));
+    --sf-on-tone-teal-container: light-dark(var(--sf-tone-teal-30), var(--sf-tone-teal-85));
+    --sf-tone-sky-container: light-dark(var(--sf-tone-sky-50--alfa-20), var(--sf-tone-sky-50--alfa-32));
+    --sf-on-tone-sky-container: light-dark(var(--sf-tone-sky-30), var(--sf-tone-sky-85));
+    --sf-tone-indigo-container: light-dark(var(--sf-tone-indigo-50--alfa-20), var(--sf-tone-indigo-50--alfa-32));
+    --sf-on-tone-indigo-container: light-dark(var(--sf-tone-indigo-30), var(--sf-tone-indigo-85));
+    --sf-tone-violet-container: light-dark(var(--sf-tone-violet-50--alfa-20), var(--sf-tone-violet-50--alfa-32));
+    --sf-on-tone-violet-container: light-dark(var(--sf-tone-violet-30), var(--sf-tone-violet-85));
     --sf-on-surface-muted: light-dark(var(--sf-neutral-60), var(--sf-neutral-40));
     --sf-on-surface-inverse: light-dark(var(--sf-neutral-90), var(--sf-neutral-10));
     --sf-on-surface-inverse-fixed: var(--sf-neutral-90);

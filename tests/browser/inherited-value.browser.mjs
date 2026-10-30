@@ -86,6 +86,11 @@ try {
       .every((tag) => customElements.get(tag)) && document.querySelector('#toggle .sf-switch')
       && document.querySelector('#select .sf-dropdown-field') && document.querySelector('#color .sf-color'), null, {timeout: 10000});
     await page.evaluate(() => document.fonts.ready);
+    // Each field marks itself at the end of its own draw, and the code arrives
+    // field by field: a fixed wait read whichever came last too early, 2 runs in
+    // 4 on a loaded machine.
+    await page.waitForFunction(() => ['text', 'number', 'area', 'select', 'color', 'toggle']
+      .every((id) => document.getElementById(id)?.getAttribute('data-inherited') === 'true'), null, {timeout: 10000});
     await settle();
 
     // The control each host names, focuses and describes.
