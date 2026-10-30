@@ -788,7 +788,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "8b051e8df3c7ef92a5f43bcf7c9afdc4ddb65a66",
+    "source_revision": "f46e3248af605f7bea8039020fc2bf4f9e197629",
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
@@ -800,7 +800,7 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "0b480b4c81e6c471523ee550b8f257a41b9ae218e2e519d0379577e3d879bdcb"
+        "sha256": "b135d44aebdbcd79a0e3b216e7363f69604600b34c241e58d954d09248f48f34"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
