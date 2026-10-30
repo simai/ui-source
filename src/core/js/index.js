@@ -9,6 +9,7 @@ import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';
 import './region-navigation.js';
+import './workspace.js';
 import './effects.js';
 import './notify.js';
 import './sanitize.js';

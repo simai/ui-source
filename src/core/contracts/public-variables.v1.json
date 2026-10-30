@@ -3523,6 +3523,54 @@
           "since": "2026-10-30"
         }
       ]
+    },
+    {
+      "component": "workspace",
+      "selector": ".sf-workspace",
+      "variables": [
+        {
+          "name": "--sf-workspace-rail",
+          "role": "inline-size",
+          "summary": "The rail's width, before the list; its content's width when unset.",
+          "default": "auto",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-workspace-list",
+          "role": "inline-size",
+          "summary": "The list's width beside main (the split and wide layouts).",
+          "default": "var(--sf-g0)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-workspace-panel",
+          "role": "inline-size",
+          "summary": "The panel's width, as a column and as a drawer (capped by the workspace).",
+          "default": "var(--sf-g1)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-workspace-gap",
+          "role": "gap",
+          "summary": "The space between the regions shown side by side.",
+          "default": "var(--sf-0)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-workspace-divider-color",
+          "role": "border-color",
+          "summary": "The line between the rail, the list, main and the panel column.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-workspace-drawer-background",
+          "role": "background",
+          "summary": "The panel's fill while it is a drawer over main; a column keeps the page's.",
+          "default": "var(--sf-elevation-4--surface)",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "core.runtime",
   "kind": "core",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "owner": "simai/ui-source",
   "summary": "The core runtime: the Loader, the Smart base, the composition runtime and the contracts it reads; everything under src/core that no token set, font, port or the core sheet claims.",
   "includes": [
@@ -148,12 +148,13 @@
     "src/core/js/vendor/material-color-utilities/utils/color_utils.js",
     "src/core/js/vendor/material-color-utilities/utils/math_utils.js",
     "src/core/js/vendor/material-color-utilities/utils/string_utils.js",
+    "src/core/js/workspace.js",
     "src/core/rule.js",
     "src/core/smart-base.js",
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "822791fb86617e65204747611dc60682b1c38dc1a2d6c463e119ba97cb8fea89",
+  "content_sha256": "d4831f01852c5ad8921aeb84d27bebbe0d316473c4348f6ddfb13ad9edf37f07",
   "dependencies": [
     {
       "id": "core.styles",
