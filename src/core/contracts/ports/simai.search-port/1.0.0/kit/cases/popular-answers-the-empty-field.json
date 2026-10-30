@@ -1,0 +1,29 @@
+{
+  "id": "popular-answers-the-empty-field",
+  "intent": "query.change",
+  "capability": "popular",
+  "summary": "The queries asked most often come with the empty query, strongest first, and again under a result that found nothing.",
+  "given": {
+    "capabilities": [
+      "popular"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": "",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "popular"
+    ],
+    "note": "popular is [table, theme, button]: plain text in the reader's language, not ids. Choosing one is an ordinary query.change with that text, so a popular query and a typed one are the same question. A host may answer popular with a query too, under an empty result."
+  }
+}

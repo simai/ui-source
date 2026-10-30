@@ -1,0 +1,29 @@
+{
+  "id": "recent-forget-answers-the-whole-list",
+  "intent": "recent.forget",
+  "capability": "recent",
+  "summary": "A recent query removed by its own cross is answered with the whole list the host keeps now; the panel replaces what it shows and never merges.",
+  "given": {
+    "capabilities": [
+      "recent"
+    ],
+    "recent": [
+      "theme",
+      "button",
+      "table"
+    ]
+  },
+  "when": {
+    "intent": "recent.forget",
+    "payload": {
+      "query": "button"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "recent"
+    ],
+    "note": "recent is [theme, table], newest first. The panel keeps no history and no storage key of its own: the history is the host's, so one person's queries follow them between browsers, and a panel on a page with two searches cannot show one search's history in the other."
+  }
+}

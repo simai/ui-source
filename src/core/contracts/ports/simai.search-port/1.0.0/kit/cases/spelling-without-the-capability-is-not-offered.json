@@ -1,0 +1,26 @@
+{
+  "id": "spelling-without-the-capability-is-not-offered",
+  "intent": "query.change",
+  "capability": "spelling",
+  "summary": "A host that cannot spell announces no spelling, and the panel draws no correction line.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 3,
+      "query": "tabel",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "correction in the answer is ignored where the capability is absent. An empty result then says so and offers the popular queries where that capability is there: a line that suggests nothing is a dead control."
+  }
+}

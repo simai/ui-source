@@ -1,0 +1,27 @@
+{
+  "id": "query-answer-names-its-sequence",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "An answer to query.change names the sequence of the request it answers, so the panel can drop an answer to an older one.",
+  "given": {},
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 7,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "The answer's sequence is the request's: 7 here. results is part of every applied answer, an empty array included."
+  }
+}

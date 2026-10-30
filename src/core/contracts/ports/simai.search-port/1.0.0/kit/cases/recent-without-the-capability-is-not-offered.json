@@ -1,0 +1,20 @@
+{
+  "id": "recent-without-the-capability-is-not-offered",
+  "intent": "recent.clear",
+  "capability": "recent",
+  "summary": "A host that keeps no history announces no recent, and the panel offers neither the block nor its two intents.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "recent.clear",
+    "payload": {}
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is capability-not-provided. No recent block, no crosses, no «Clear»: the empty field then shows the popular queries, the commands, or the start prompt. The panel never falls back to browser storage of its own -- that was the sf-admin-menu defect simai.composite-component 1.0.3 instance-isolation was written for."
+  }
+}

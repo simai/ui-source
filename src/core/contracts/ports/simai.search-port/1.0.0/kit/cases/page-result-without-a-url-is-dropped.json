@@ -1,0 +1,28 @@
+{
+  "id": "page-result-without-a-url-is-dropped",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A result of kind page with no url is dropped by the panel, never drawn as a row that does nothing; a command carries kind action and no url, and is drawn.",
+  "given": {
+    "capabilities": [
+      "actions"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 5,
+      "query": "theme",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "Of {id: a, kind: page, title, url: /a/}, {id: b, kind: page, title} and {id: theme, kind: action, title} the panel draws a and theme: b is a page it cannot open. A host that means a command writes kind action; a host that forgot the url learns it from the row that is missing, not from a row that swallows the press."
+  }
+}

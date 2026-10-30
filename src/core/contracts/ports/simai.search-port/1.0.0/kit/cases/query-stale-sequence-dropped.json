@@ -1,0 +1,28 @@
+{
+  "id": "query-stale-sequence-dropped",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "An answer to an older sequence is dropped; the panel keeps the newest answer, so the list never flickers back to a stale query.",
+  "given": {
+    "in_flight": [
+      3,
+      4
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 4,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "note": "The host answers both; the panel keeps sequence 4 and drops 3, whichever arrives last. A person types faster than a server answers, so the rule is the panel's, not the host's good luck."
+  }
+}

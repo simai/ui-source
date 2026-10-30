@@ -1,0 +1,22 @@
+{
+  "id": "capability-absent-is-explained",
+  "intent": "action.run",
+  "capability": "actions",
+  "summary": "A host that does not announce a capability is never offered the intents behind it; asked anyway, it answers unavailable with a reason, and the panel says so in words rather than drawing a dead control.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "action.run",
+    "payload": {
+      "id": "theme"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is capability-not-provided. The rule is the data view port's own capability-absent-is-explained: the panel draws no control for a capability never announced, so the intent is not raised; where a page raises it through the action anyway the answer is the same and the panel shows the host's text, or its own words."
+  }
+}
