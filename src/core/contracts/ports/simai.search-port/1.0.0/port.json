@@ -1,0 +1,639 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.search-port",
+  "version": "1.0.0",
+  "component": "smart.search",
+  "element": "sf-search",
+  "summary": "The host seam of a site search: one question, «what matches now», and the answers a panel can draw. The component never fetches anything -- it draws a field, groups of results, the blocks and the keyboard, and asks the host; the index, the ranking, the access and what a command does stay the host's. A static index on a documentation site, a query to Larena or Bitrix and a hand-written handler are the same port to the panel. Every search is sequenced: an answer names the sequence it answers, and the panel drops an answer to an older one, because a person types faster than a server answers. A result is a page (a url) or a command (kind action, no url); choosing a command raises action.run instead of result.open, so one list, one keyboard and two outcomes make the documentation search and the command palette one component with different hosts. The capability says what is possible and the panel's setting says what is wanted: a block is drawn only where the two agree, and a capability the host does not announce is never drawn as a dead control (owner, 2026-10-29).",
+  "capabilities": {
+    "scopes": {
+      "summary": "The groups the results fall into, drawn as the scope pills over the list with their counts. A host that groups nothing announces it not and answers one ungrouped list.",
+      "data": [
+        "scopes"
+      ]
+    },
+    "recent": {
+      "summary": "This person's own recent queries: the host keeps them, answers them with the empty query and takes them back when one is removed or the list is cleared. The panel keeps no history and no storage key of its own.",
+      "intents": [
+        "recent.forget",
+        "recent.clear"
+      ],
+      "data": [
+        "recent"
+      ]
+    },
+    "popular": {
+      "summary": "The queries asked most often, drawn as pills on an empty field and under an empty result.",
+      "data": [
+        "popular"
+      ]
+    },
+    "actions": {
+      "summary": "Results that run a command instead of opening a page (kind action, with an optional key hint): the quick actions of an empty field and their own group among the results.",
+      "intents": [
+        "action.run"
+      ]
+    },
+    "preview": {
+      "summary": "The words of the result the person stands on, asked for on its own and drawn beside the list by an arrangement that has room for it. A host that cannot show a result without opening it announces it not.",
+      "intents": [
+        "result.preview"
+      ],
+      "data": [
+        "preview"
+      ]
+    },
+    "spelling": {
+      "summary": "What the host believes was meant: «возможно, вы искали …», offered over the results of the query as asked. The panel never corrects a query by itself and never searches for the correction unasked.",
+      "data": [
+        "correction"
+      ]
+    }
+  },
+  "data": {
+    "results": {
+      "summary": "What matches the query asked, in the host's own order, one page of it. A result is a page (kind page, with a url) or a command (kind action, no url); group names the scope it belongs to. The panel draws the rows in the order given and marks where the query stands in a title.",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Stable for this result; a command's id is the command."
+            },
+            "group": {
+              "type": "string",
+              "description": "The scope this result belongs to, a scopes id; empty for an ungrouped list."
+            },
+            "title": {
+              "type": "string"
+            },
+            "path": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Where it stands, one line, the host's own separator."
+            },
+            "snippet": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A line or two of the result's own words, plain text; never HTML, never server diagnostics. An arrangement that has no room for it ignores it."
+            },
+            "icon": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A Material Symbols name; the panel falls back to a page or a command glyph."
+            },
+            "shortcut": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A key hint shown at the end of a command's row, as the host writes it."
+            },
+            "kind": {
+              "enum": [
+                "page",
+                "action"
+              ],
+              "description": "page: opening it is result.open and the panel may follow its url. action: running it is action.run and it carries no url. Absent is page."
+            },
+            "url": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Where a page result leads. A page result with no url is dropped by the panel, never drawn as a row that does nothing."
+            }
+          }
+        }
+      }
+    },
+    "echo": {
+      "summary": "The query the host answered: what it read of the request, after its own trimming and its own idea of the scope. The panel compares it with what stands in the field and never draws an answer to a question it is no longer asking.",
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "scopes": {
+      "summary": "The groups the results fall into, in the order they are to be offered: the pills after «Все». count is the whole index's number for a host that answers one page; without it the panel counts the results it holds, so the pills stay right whichever one is pressed.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "popular": {
+      "summary": "The queries asked most often, the strongest first; plain text, in the reader's language.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "recent": {
+      "summary": "This person's recent queries, newest first, as the host keeps them. The whole list every time: the panel replaces what it shows, it never merges.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "total": {
+      "summary": "How many results match in all, where the host answered one page of them. Absent means the answer is the whole of it.",
+      "schema": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "correction": {
+      "summary": "The query the host believes was meant, with the number of results it would find where the host knows it. The panel offers it; the person chooses, and choosing it is an ordinary query.change.",
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "preview": {
+      "summary": "The words of one result, for the pane beside the list: plain text in the reader's language, never HTML and never server diagnostics. id names the result it belongs to, so a preview that arrives for a row the person has left is dropped.",
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "intents": {
+    "query.change": {
+      "summary": "What matches now: a keystroke, a scope pressed, a popular or a recent query chosen, a correction accepted, and the empty query the panel asks with when it opens. One question for all of them -- a keystroke and a scope click ask the same thing, so scope is a field of this intent and never an intent of its own. sequence rises with every ask and the answer names the one it answers; the panel drops an answer to an older sequence. limit and offset are the page asked for; a host that pages answers total beside the results. The empty query is the host's chance to answer the blocks: recent, popular and the commands as results of kind action.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "query": {
+            "type": "string",
+            "description": "What was typed, trimmed; empty when the field is empty."
+          },
+          "scope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The pressed scope, a scopes id, or empty for all. A hint: the panel filters what it holds by group as well, so a host that ignores it still answers right."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null,
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "results",
+          "echo"
+        ],
+        "description": "results and echo always; scopes, popular, recent, total and correction as the capabilities behind them allow.",
+        "properties": {
+          "results": {
+            "type": "array"
+          },
+          "echo": {
+            "type": "object"
+          },
+          "scopes": {
+            "type": "array"
+          },
+          "popular": {
+            "type": "array"
+          },
+          "recent": {
+            "type": "array"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "correction": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "result.open": {
+      "summary": "A page result was chosen (Enter or a press). The host routes it, records the query where it keeps this person's recent queries, and answers applied with the whole recent list back. Opening is not the host's monopoly: the panel also raises its own cancelable sf-search-navigate, and a page that takes that event routes the person itself; where nobody takes it the panel follows the result's url, which is what a documentation site over a static index wants. A refusal is the host's word that this person may not open it, and the panel says so and stays open.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "description": "The query this result was found by, for the host to record as recent."
+          },
+          "group": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null,
+      "answer_data": {
+        "type": "object",
+        "description": "recent, where the host keeps this person's recent queries.",
+        "properties": {
+          "recent": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "result.preview": {
+      "summary": "The words of the result the person stands on, for the pane beside the list. Sequenced like the query: the person moves through the rows faster than a server answers, so every ask carries a rising sequence, the answer names it, and an answer to an older one is dropped. A host that does not announce preview is never asked; asked anyway, it answers unavailable.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "id": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "query": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "preview",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "preview"
+        ],
+        "properties": {
+          "preview": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "action.run": {
+      "summary": "A command result was chosen: the host runs it. Only the host knows what a command does, so the panel never guesses; it waits for the answer with the card busy, closes on applied, and on a refusal or an unavailable says the host's words and stays open. A host that does not announce actions is never offered one -- the panel draws no command rows -- and answers unavailable if asked anyway.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The command: a result's own id."
+          },
+          "query": {
+            "type": "string"
+          },
+          "value": {
+            "description": "What the command was given, where it takes one."
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "actions",
+      "answer_data": {
+        "type": "object",
+        "description": "recent, where the host keeps this person's recent queries.",
+        "properties": {
+          "recent": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "recent.forget": {
+      "summary": "One recent query removed by its own cross. The host answers the whole list it keeps now, so the panel shows what the host holds and never its own idea of it.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "recent",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "recent"
+        ],
+        "properties": {
+          "recent": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "recent.clear": {
+      "summary": "Every recent query of this person removed at once. The host answers the empty list it now keeps; nothing is taken as done because the panel asked for it.",
+      "event": "sf-search-intent",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "recent",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "recent"
+        ],
+        "properties": {
+          "recent": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "layers": [
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "The panel keeps no settings of its own through this port in 1.0.0: which blocks are wanted is the page's markup, the theme and the language are the page's, and the recent queries are data of the host, not a setting."
+    },
+    "target": {
+      "kinds": [
+        "personal"
+      ],
+      "carries_revision": false
+    }
+  },
+  "answer": {
+    "summary": "Every intent is answered with one object: answer says what happened, reason why it was refused or is unavailable, text the words a reader may be shown (the reader's language, never server diagnostics and never HTML), data what an applied answer supplies -- the intent's answer_data -- and sequence the sequenced request it answers. A sequenced request (query.change, result.preview) is answered with its own sequence; an answer that names an older one is dropped by the panel. capability-not-provided is the reason for an intent behind a capability the host did not announce, and the panel says so in words rather than drawing a dead control.",
+    "schema": {
+      "type": "object",
+      "required": [
+        "answer"
+      ],
+      "properties": {
+        "answer": {
+          "enum": [
+            "applied",
+            "refused",
+            "unavailable"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why it was refused, or why the intent is unavailable. Free text a host may extend; the panel knows and words these: capability-not-provided, port-not-connected, not-found, forbidden, query-too-short.",
+          "examples": [
+            "capability-not-provided",
+            "port-not-connected",
+            "not-found",
+            "forbidden",
+            "query-too-short"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "description": "Words the panel may show a reader instead of its own, in the reader's language."
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The sequence of the request answered; required for query.change and result.preview."
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "results": {
+              "type": "array"
+            },
+            "echo": {
+              "type": "object"
+            },
+            "scopes": {
+              "type": "array"
+            },
+            "popular": {
+              "type": "array"
+            },
+            "recent": {
+              "type": "array"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "correction": {
+              "type": "object"
+            },
+            "preview": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "d4370307a481297e8057639b76ed8a2070bfc7d960f86e4b924b970002bc2890",
+    "cases": 26
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "the component never requests the network; every read and every write is an intent the host answers",
+      "every query.change and every result.preview carries a rising sequence and is answered with that sequence; an answer to an older one is dropped, never drawn",
+      "a capability the host does not announce is not offered: no scope pills, no recent block, no popular pills, no command rows, no preview pane, no correction line",
+      "an intent behind an unannounced capability is answered unavailable with reason capability-not-provided, and the panel says so in words",
+      "the base, with no capability at all, is still a working search: the field, the results and the keyboard",
+      "the empty query is a question like any other: it answers the blocks (recent, popular, the commands), never an empty list",
+      "a page result with no url is dropped by the panel; a command carries kind action and no url",
+      "the recent queries are the host's data: the panel keeps no history and no storage key of its own, and a removal or a clear is answered with the whole list",
+      "the scope is a field of query.change, not an intent of its own, and a hint: the panel filters what it holds by group as well",
+      "path and the key hints have no capability behind them: where a result stands is a field of the result, and the keys at the foot of the card are the panel's own, so both are settings of the panel alone",
+      "a result's snippet and a result.preview answer are plain text in the reader's language; a host that answers HTML is refused by the panel, not drawn"
+    ]
+  }
+}

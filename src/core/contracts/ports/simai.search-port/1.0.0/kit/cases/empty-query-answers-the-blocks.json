@@ -1,0 +1,32 @@
+{
+  "id": "empty-query-answers-the-blocks",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "The empty query is a question like any other: the host answers the blocks it announced, and a host that announced none gets the base prompt rather than an empty list.",
+  "given": {
+    "capabilities": [
+      "recent",
+      "popular",
+      "actions"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": "",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "recent",
+      "popular"
+    ],
+    "note": "results holds the commands of the empty field (kind action); recent and popular come with it. A host with neither capability answers results and echo alone, and the panel shows its start prompt, never an empty list."
+  }
+}

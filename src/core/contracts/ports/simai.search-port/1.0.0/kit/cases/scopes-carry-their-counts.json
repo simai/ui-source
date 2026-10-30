@@ -1,0 +1,29 @@
+{
+  "id": "scopes-carry-their-counts",
+  "intent": "query.change",
+  "capability": "scopes",
+  "summary": "The scopes come in the order they are to be offered, each with the number the whole index holds, so the pills stay right whichever one is pressed.",
+  "given": {
+    "capabilities": [
+      "scopes"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 7,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "scopes"
+    ],
+    "note": "scopes is [{id: pages, label: …, count: 12}, {id: components, label: …, count: 3}]; the panel puts «All» before them with the sum. A host that answers one page of results answers count over the whole index, and total beside the results; a host that leaves count out has the panel count the results it holds."
+  }
+}

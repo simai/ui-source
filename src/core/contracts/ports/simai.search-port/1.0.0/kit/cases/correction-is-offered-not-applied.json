@@ -1,0 +1,29 @@
+{
+  "id": "correction-is-offered-not-applied",
+  "intent": "query.change",
+  "capability": "spelling",
+  "summary": "What the host believes was meant is offered, never applied: the panel shows the line and the person chooses.",
+  "given": {
+    "capabilities": [
+      "spelling"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 3,
+      "query": "tabel",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "correction"
+    ],
+    "note": "correction is {query: table, total: 12} and the results are still those of «tabel», as asked. The panel draws «Perhaps you meant …»; choosing it is an ordinary query.change with the corrected text. The panel never corrects a query by itself and never searches for the correction unasked -- a search that answers another question than the one typed is worse than one that answers none."
+  }
+}
