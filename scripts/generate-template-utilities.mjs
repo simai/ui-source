@@ -13,6 +13,12 @@
 // default/rule.js) matches it exactly; responsive and state variants are found
 // by the Loader on the page as before. With --check nothing is written and the
 // exit code says whether the file is current.
+//
+// Read loosely, but a word is read whole and three positions are not read at
+// all: a word that is part of a longer name (blurClass is not the class blur),
+// the name of an event (addEventListener('resize'), @blur=) and a word with
+// the bracket of a call after it. Each of them asked for a utility that owns a
+// bare English word in components that write none of it (2026-10-30).
 import {readFileSync, readdirSync, existsSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import vm from 'node:vm';
@@ -43,9 +49,26 @@ const sources = (folder) => {
 // word that also names a utility (hidden, block) adds a small stylesheet to the
 // wave that is going out anyway, while a class missed is the late wave this
 // file exists to remove.
+const blanked = (word) => ' '.repeat(word.length);
+// The positions a word cannot be a class in, blanked before the tokens are
+// read: the name of an event -- addEventListener('resize', ...), new
+// CustomEvent('open'), a template's own @blur=${...} -- and a word with the
+// bracket of a call after it, in the source or in a style a template writes
+// (node.blur(), `filter: blur(4px)`). Everything else is left as it is, so a
+// class is never missed for being composed, held in a variable or named by a
+// setting.
+const withoutNames = (code) => code
+  .replace(/((?:add|remove)EventListener\(\s*|new (?:Custom)?Event\(\s*|dispatchEvent\(new [A-Za-z]\w*\(\s*)(['"`])([a-z][a-z0-9:-]*)\2/gu,
+    (whole, head, quote, name) => head + quote + blanked(name) + quote)
+  .replace(/@([a-z][a-z0-9-]*)\s*=/gu, (whole, name) => whole.replace(name, blanked(name)))
+  .replace(/([a-z][a-z0-9_$-]*)\s*\(/gu, (whole, name) => whole.replace(name, blanked(name)));
 const tokensOf = (source) => {
   const code = source.replace(/\/\*[\s\S]*?\*\//gu, ' ').replace(/(^|[^:'"`\\])\/\/[^\n]*/gu, '$1 ');
-  return new Set(code.match(/[a-z][a-z0-9-]*(?:[/.][a-z0-9-]+)*/gu) ?? []);
+  // A whole word: `blurClass` holds no class blur, and `backdrop-blur-small`
+  // is one class, not three. A word the template follows with a hole is whole
+  // (class=${`transition${invalid ? ' error' : ''}`}), so the boundary is a
+  // word character, not the dollar of an interpolation.
+  return new Set(withoutNames(code).match(/(?<![\w$-])[a-z][a-z0-9-]*(?:[/.][a-z0-9-]+)*(?!\w)/gu) ?? []);
 };
 
 const map = {};
