@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.context-menu",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/context-menu/docs/docs.md",
