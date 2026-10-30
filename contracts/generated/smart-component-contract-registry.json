@@ -1407,7 +1407,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pager/smart.manifest.json",
-      "manifest_sha256": "faac2cb760e18217f905b85d6e69ff94fc67c8decc4e808ff255ffd0f6bb3883",
+      "manifest_sha256": "8260e88a154bc1c32141e7d4a3b7bfe155dcd06f1ab2c24d5270ab050662d54e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1834,6 +1834,54 @@
         "layout"
       ],
       "title": "Resizer"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
+        "form",
+        "validation",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.icon-buttons",
+          "component.icons",
+          "smart.button",
+          "smart.input",
+          "smart.popover"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-rich-text",
+      "id": "smart.rich-text",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/rich-text/smart.manifest.json",
+      "manifest_sha256": "d83568e1cea8bb1ee073a10a81dbbfdf4dc8e25793188c0ccbc11e828d3b9360",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
+      "tags": [
+        "rich-text",
+        "editor",
+        "wysiwyg",
+        "html",
+        "field",
+        "form"
+      ],
+      "title": "Rich text"
     },
     {
       "backend_adapters": [],

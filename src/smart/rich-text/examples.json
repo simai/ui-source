@@ -1,0 +1,265 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Page text with a hint",
+      "settings": {
+        "label": "Page text",
+        "name": "body",
+        "hint": "Paragraphs, headings, lists, quotes and links.",
+        "value": "<h2>About us</h2><p>We make <strong>tools</strong> for <a href=\"/docs\">documentation</a>.</p><ul><li>Fast</li><li>Accessible</li></ul>"
+      },
+      "expect": {
+        "value": "<h2>About us</h2><p>We make <strong>tools</strong> for <a href=\"/docs\">documentation</a>.</p><ul><li>Fast</li><li>Accessible</li></ul>",
+        "role": "textbox",
+        "name": "Page text"
+      },
+      "studio": {
+        "title": "rich text reference",
+        "locale": "en",
+        "props": {
+          "label": "Page text",
+          "name": "body",
+          "hint": "Paragraphs, headings, lists, quotes and links.",
+          "value": "<h2>About us</h2><p>We make <strong>tools</strong> for <a href=\"/docs\">documentation</a>.</p><ul><li>Fast</li><li>Accessible</li></ul>"
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "runCommand",
+              "with": [
+                "bold"
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "visible",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "title": "Empty and required, with a placeholder",
+      "settings": {
+        "label": "Announcement",
+        "name": "announcement",
+        "required": true,
+        "placeholder": "Write the announcement",
+        "rows": 4
+      },
+      "expect": {
+        "value": ""
+      }
+    },
+    {
+      "name": "filled",
+      "title": "Filled",
+      "settings": {
+        "label": "Description",
+        "appearance": "filled",
+        "rows": 3,
+        "value": "<p>A short <em>description</em>.</p>"
+      },
+      "expect": {
+        "value": "<p>A short <em>description</em>.</p>"
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Size 2",
+      "settings": {
+        "label": "Page text",
+        "size": "2",
+        "rows": 3,
+        "value": "<p>Larger text.</p>"
+      },
+      "expect": {
+        "value": "<p>Larger text.</p>"
+      }
+    },
+    {
+      "name": "cleaned",
+      "title": "A value off the subset is cleaned on load",
+      "settings": {
+        "label": "Imported text",
+        "rows": 3,
+        "value": "<p onclick=\"steal()\">Hello <script>alert(1)</script><a href=\"javascript:alert(1)\">there</a> <span style=\"font-weight:700\">bold</span></p><div>Second</div><img src=x onerror=alert(1)>"
+      },
+      "expect": {
+        "value": "<p>Hello there <strong>bold</strong></p><p>Second</p>"
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Invalid with a message",
+      "settings": {
+        "label": "Page text",
+        "rows": 3,
+        "invalid": true,
+        "error-message": "The text is too short.",
+        "value": "<p>Hi</p>"
+      },
+      "expect": {
+        "value": "<p>Hi</p>"
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Read-only",
+      "settings": {
+        "label": "Published text",
+        "readonly": true,
+        "rows": 3,
+        "value": "<blockquote><p>Read, not changed.</p></blockquote>"
+      },
+      "expect": {
+        "value": "<blockquote><p>Read, not changed.</p></blockquote>"
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Disabled",
+      "settings": {
+        "label": "Page text",
+        "disabled": true,
+        "rows": 3,
+        "value": "<p>Not editable.</p>"
+      },
+      "expect": {
+        "value": "<p>Not editable.</p>"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-rich-text against component.json (standard simai.smart-component 1.3.11 §12, gate 20)",
+      "page": {
+        "lang": "en",
+        "body": [
+          "<main>",
+          "  <form id=\"f\">",
+          "    <sf-rich-text id=\"r1\" label=\"Page text\" name=\"body\" hint=\"Formatted text\" value='<p onclick=\"x()\">Hello <b>world</b><script>alert(1)</script></p><a href=\"javascript:alert(1)\">bad</a>'></sf-rich-text>",
+          "    <sf-rich-text id=\"r2\" label=\"Required text\" name=\"required\" required></sf-rich-text>",
+          "    <sf-rich-text id=\"r3\" label=\"Disabled text\" name=\"off\" disabled value=\"<p>Off</p>\"></sf-rich-text>",
+          "  </form>",
+          "  <div lang=\"ru\"><sf-rich-text id=\"r4\" aria-label=\"Text\"></sf-rich-text></div>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "r1-cleaned-on-load",
+          "title": "the value given is cleaned: attributes, script and a javascript: link go, b is strong, loose text is a paragraph",
+          "covers": "values.value, the subset",
+          "steps": [
+            {
+              "wait": 300,
+              "check": "document.getElementById('r1').value === '<p>Hello <strong>world</strong></p><p>bad</p>'"
+            }
+          ]
+        },
+        {
+          "id": "r1-textbox",
+          "title": "the editing surface is a multiline textbox named by the label and described by the hint; the toolbar is one Tab stop",
+          "covers": "accessibility",
+          "steps": [
+            {
+              "check": "(() => { const e = document.querySelector('#r1 .sf-rich-text-editor'); const label = document.getElementById(e.getAttribute('aria-labelledby')); const hint = document.getElementById(e.getAttribute('aria-describedby')); const bar = document.querySelector('#r1 [role=toolbar]'); const tools = [...bar.querySelectorAll('button.sf-rich-text-tool')]; return e.getAttribute('role') === 'textbox' && e.getAttribute('aria-multiline') === 'true' && e.isContentEditable && label.textContent.trim() === 'Page text' && hint.textContent.trim() === 'Formatted text' && bar.getAttribute('aria-label') === 'Formatting' && bar.getAttribute('aria-controls') === e.id && tools.length === 12 && tools.filter((t) => t.tabIndex === 0).length === 1; })()"
+            }
+          ]
+        },
+        {
+          "id": "r1-form-value",
+          "title": "the form sends the cleaned HTML under name",
+          "covers": "form",
+          "steps": [
+            {
+              "check": "new FormData(document.getElementById('f')).get('body') === '<p>Hello <strong>world</strong></p><p>bad</p>'"
+            }
+          ]
+        },
+        {
+          "id": "r1-command",
+          "title": "a command on the selection: a bulleted list, said with one input",
+          "covers": "methods.runCommand, events.input",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('r1'); window.__inputs = 0; el.addEventListener('input', () => { window.__inputs += 1; }); const e = el.querySelector('.sf-rich-text-editor'); e.focus(); const r = document.createRange(); r.selectNodeContents(e.querySelector('p')); getSelection().removeAllRanges(); getSelection().addRange(r); return el.runCommand('bulleted-list'); })()",
+              "wait": 200,
+              "check": "document.getElementById('r1').value === '<ul><li>Hello <strong>world</strong></li></ul><p>bad</p>' && window.__inputs === 1"
+            }
+          ]
+        },
+        {
+          "id": "r1-value-from-code",
+          "title": "a value set from code is cleaned and says nothing",
+          "covers": "values.value",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('r1'); window.__said = 0; el.addEventListener('input', () => { window.__said += 1; }); el.addEventListener('change', () => { window.__said += 1; }); el.value = '<h1>Title</h1><p style=\"color:red\">Text <a href=\"//evil.example\">x</a> <a href=\"https://simai.io\">y</a></p>'; return true; })()",
+              "wait": 200,
+              "check": "document.getElementById('r1').value === '<p>Title</p><p>Text x <a href=\"https://simai.io/\">y</a></p>' && window.__said === 0"
+            }
+          ]
+        },
+        {
+          "id": "r1-reset",
+          "title": "a form reset puts the value attribute back after an edit, and says nothing",
+          "covers": "form.reset",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('r1'); const e = el.querySelector('.sf-rich-text-editor'); e.focus(); const r = document.createRange(); r.selectNodeContents(e.querySelector('p')); getSelection().removeAllRanges(); getSelection().addRange(r); el.runCommand('quote'); return true; })()",
+              "wait": 200,
+              "check": "document.getElementById('r1').value === '<blockquote><p>Hello <strong>world</strong></p></blockquote><p>bad</p>'"
+            },
+            {
+              "script": "(() => { const el = document.getElementById('r1'); window.__said = 0; el.addEventListener('input', () => { window.__said += 1; }); el.addEventListener('change', () => { window.__said += 1; }); document.getElementById('f').reset(); return true; })()",
+              "wait": 200,
+              "check": "document.getElementById('r1').value === '<p>Hello <strong>world</strong></p><p>bad</p>' && window.__said === 0"
+            }
+          ]
+        },
+        {
+          "id": "r2-required",
+          "title": "required and empty: value-missing, the form does not validate; text makes it valid",
+          "covers": "settings.required, form.validity",
+          "steps": [
+            {
+              "check": "(() => { const el = document.getElementById('r2'); return el.value === '' && el.validity.valueMissing === true && document.getElementById('f').checkValidity() === false && el.querySelector('.sf-rich-text-editor').getAttribute('aria-required') === 'true'; })()"
+            },
+            {
+              "script": "(document.getElementById('r2').value = '<p>Now</p>', true)",
+              "wait": 100,
+              "check": "document.getElementById('r2').validity.valid === true"
+            }
+          ]
+        },
+        {
+          "id": "r3-disabled",
+          "title": "disabled: not editable, not focusable, the toolbar disabled, not sent",
+          "covers": "settings.disabled",
+          "steps": [
+            {
+              "check": "(() => { const el = document.getElementById('r3'); const e = el.querySelector('.sf-rich-text-editor'); return !e.isContentEditable && e.tabIndex === -1 && e.getAttribute('aria-disabled') === 'true' && [...el.querySelectorAll('button.sf-rich-text-tool')].every((b) => b.disabled) && !new FormData(document.getElementById('f')).has('off'); })()"
+            }
+          ]
+        },
+        {
+          "id": "r4-language",
+          "title": "the toolbar's words follow the page language; the host's aria-label names the text",
+          "covers": "lang, accessibility.name",
+          "steps": [
+            {
+              "check": "(() => { const el = document.getElementById('r4'); const bar = el.querySelector('[role=toolbar]'); const e = el.querySelector('.sf-rich-text-editor'); return bar.getAttribute('aria-label') !== 'Formatting' && bar.getAttribute('aria-label').length > 0 && e.getAttribute('aria-label') === 'Text'; })()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

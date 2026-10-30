@@ -341,15 +341,15 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "92717af7a21fb30833ed05ace3a68e34da6668de",
+    "source_revision": "b08a94f115092045a68e1c8c59356c63eea8de27",
     "source_artifacts": [
       {
         "path": "src/smart/pager/index.js",
-        "sha256": "254d3866bafa94eda2cf06735f51aa640f2000fec5514c67021195cde0a089c9"
+        "sha256": "790e9d0779459fe0cc79be7393eae47a02c3b74eeef31e7f5a8c80c2bf211f36"
       },
       {
         "path": "src/smart/pager/js/templates/default.js",
-        "sha256": "9258220ffd6fc5f5657b23122e1d24c7e382faee544d6bcc87dc49aca7f5d43d"
+        "sha256": "96bfafe6415ea1a42a32aee66a69fca56c5e5d133c762d0577893dd5e237bebb"
       },
       {
         "path": "src/smart/pager/scss/_smart__pager.scss",
