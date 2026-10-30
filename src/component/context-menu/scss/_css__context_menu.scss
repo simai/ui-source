@@ -505,7 +505,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 }
 
 .sf-context-menu-item:disabled > .sf-context-menu-item-switch {
-  border-color: var(--sf-on-disable);
+  border-color: var(--sf-outline-disable);
   background-color: transparent;
 }
 
@@ -820,6 +820,15 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
     position: relative;
     z-index: 1;
     outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  /* The switch of a value row moves its knob and its track; a person who asked
+     the system to stop movement gets the end state at once, as sf-switch does. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-context-menu-item-switch,
+    .sf-context-menu-item-switch-thumb {
+      transition-duration: 0s;
+    }
   }
 }
 
