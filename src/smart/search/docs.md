@@ -6,8 +6,10 @@ button in the header opens it, and so do Command/Control+K and `/`. On a phone
 it is a full-screen sheet with the field on top and a back arrow.
 
 The trigger is the page's own element, so the header looks the same before
-the code arrives and after it. The results come from the site: a static JSON
-index (`index`) or a function the page gives (`provider`).
+the code arrives and after it. The results come from a host through the port
+`simai.search-port` 1.0.0; a site with no server of its own uses one of the two
+built-in hosts: a static JSON index (`index`) or a function the page gives
+(`provider`).
 
 ```html
 <sf-search index="/search-index.json">
@@ -38,7 +40,7 @@ off. With several searches on one page, give each its own keys.
 
 ### A static index
 
-`index` is the address of a JSON file. The built-in provider reads it once and
+`index` is the address of a JSON file. The built-in host reads it once and
 finds every entry whose title, path or text holds each word of the query,
 case-insensitive: a title that starts with the query first, then one that holds
 it, then the rest.
@@ -86,11 +88,64 @@ document.querySelector('sf-search').provider = async (query, {scope, signal}) =>
 While the first answer is awaited the card says so; an error says the search
 is unavailable; no entries say «Ничего не нашлось по «…»».
 
+### A host
+
+A server search answers through the port. The page hands a host with
+`connectPort`, at once or in answer to the bubbling `sf-host-port-request` the
+element raises once per connection; a connected host takes over from `index`
+and `provider`.
+
+```js
+search.connectPort({
+  port: 'simai.search-port',
+  version: '1.0.0',
+  capabilities: ['scopes', 'recent', 'popular', 'actions', 'preview', 'spelling'],
+  async raise(intent, payload, {signal} = {}) {
+    if (intent === 'query.change') {
+      const data = await askServer(payload, signal);
+      return {answer: 'applied', sequence: payload.sequence, data};
+    }
+    return {answer: 'unavailable', reason: 'intent-unknown'};
+  },
+});
+```
+
+`raise` answers one envelope: `{answer, reason?, text?, data?, sequence?}`, with
+`answer` one of `applied`, `refused` and `unavailable`. A read (`query.change`,
+`result.preview`) names its `sequence`, and an answer to an older one is
+dropped. Every intent and its answer is announced on `sf-search-intent`.
+
+| Intent | When | Capability behind it |
+| --- | --- | --- |
+| `query.change` | A keystroke, a scope, a chosen query, a correction, the empty query on opening | none |
+| `result.open` | A page result is chosen; a refusal keeps the window open and says why | none |
+| `action.run` | A command is chosen | `actions` |
+| `recent.forget`, `recent.clear` | A recent query is removed, the list is cleared | `recent` |
+| `result.preview` | The person stands on a row and the window has room for the pane | `preview` |
+
+The capability says what is possible, the setting says what is wanted: a block
+is drawn where the host announced its capability and the page left its setting
+on, and a setting cannot turn on what the host cannot do. The pane and the
+«Возможно, вы искали …» line have no setting: `preview` and `spelling` are the
+host's to announce. The pane needs a window of 60rem or wider. A correction is
+offered, never applied: choosing it is an ordinary query.
+
+| Host | Announces | Keeps the recent queries |
+| --- | --- | --- |
+| `index` | `scopes`, `recent`, `popular`, `actions` | In the person's view preferences |
+| `provider` | `scopes`, `recent`, `popular`, `actions` | In the person's view preferences |
+| Neither, and no port | Nothing: the field, the results and the keyboard | Nowhere |
+| A connected host | What it says | The host keeps them, `recent-key` is not read |
+
+The full contract and its conformance kit are in
+`core/contracts/ports/simai.search-port/1.0.0`.
+
 ## What the window shows
 
 On an empty field: the recent queries, the popular queries as pills and the
 quick actions. With a query: the scope pills, then the results under their
-group captions. Each block is a setting, on by default:
+group captions. Each block is a setting, on by default, over the host's
+capability of the same name where the table says so:
 
 | Setting | Block |
 | --- | --- |
@@ -164,6 +219,7 @@ locked.
 | `sf-search-close` | The window is about to close, `detail.reason`: `close`, `escape`, `outside` or `api`; cancelable |
 | `sf-search-closed` | The window closed, `detail.reason` |
 | `sf-search-navigate` | A result was chosen, `{id, href, action, query, group}`; cancelable |
+| `sf-search-intent` | The panel raised an intent to the host, `{intent, payload, answer}` |
 
 ## Customisation
 

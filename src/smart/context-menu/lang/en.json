@@ -1,7 +1,10 @@
 {
   "title": "Context Menu",
   "runtime": {
-    "close": "Close"
+    "close": "Close",
+    "back": "Back",
+    "on": "On",
+    "off": "Off"
   },
   "events": {
     "search": {
@@ -9,6 +12,9 @@
     },
     "tab": {
       "label": "Choose a tab"
+    },
+    "reset": {
+      "label": "Put the settings back"
     }
   }
 }

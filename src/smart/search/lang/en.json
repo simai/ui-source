@@ -25,6 +25,13 @@
     "key-select-label": "select",
     "key-open-label": "open",
     "key-clear-label": "clear",
-    "key-close-label": "close"
+    "key-close-label": "close",
+    "correction-text": "Did you mean “{query}”?",
+    "preview-label": "Preview",
+    "refused-text": "That is not available to you",
+    "action-text": "The command did not run",
+    "short-text": "Type a little more",
+    "forbidden-text": "You have no access to this",
+    "not-found-text": "It is no longer there"
   }
 }

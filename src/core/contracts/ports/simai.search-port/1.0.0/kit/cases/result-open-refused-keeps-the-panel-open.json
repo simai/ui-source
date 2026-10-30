@@ -1,0 +1,23 @@
+{
+  "id": "result-open-refused-keeps-the-panel-open",
+  "intent": "result.open",
+  "capability": null,
+  "summary": "A result this person may not open is refused: the panel says the host's words and stays open, and nothing is navigated to.",
+  "given": {},
+  "when": {
+    "intent": "result.open",
+    "payload": {
+      "id": "secret",
+      "query": "sec",
+      "group": "pages",
+      "url": "/secret/"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is forbidden here. The panel asks the host before it closes anything: a refusal leaves the window open with the query as it stands, so the person reads why. A host that answers applied and then redirects is answering a question it was not asked."
+  }
+}

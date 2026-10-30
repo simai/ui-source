@@ -43,7 +43,10 @@ const DRAW = {
   tooltip: {css: ['tooltip'], js: 'tooltip', html: '<sf-tooltip text="Подсказка" supporting-text="Пояснение" size="1"></sf-tooltip>'},
   tabs: {css: ['tabs', 'buttons'], js: 'tabs', html: '<sf-tabs type="underline" size="1" items="Обзор|Настройки|История"></sf-tabs>'},
   avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
-  'context-menu': {css: ['context-menu', 'buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>',
+  // A drilling panel beside the flyout menu: the fixed width is a drilling
+  // panel's (submenu="drill"), so one has to be on the stage to measure it.
+  'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>'
+    + '<sf-context-menu submenu="drill" aria-label="Настройки" entries=\'[{"id":"sound","type":"switch","text":"Звук","value":true},{"id":"lang","text":"Язык","value":"Русский","submenu":[{"id":"ru","text":"Русский"}]}]\'></sf-context-menu>',
     open: 'const m = document.getElementById("menu"); m.entries = [{id: "a", text: "Открыть"}, {id: "b", text: "Удалить"}]; m.toggleFor(document.getElementById("anchor"))'},
   // The variables belong to the segmented appearance; a count is drawn on a
   // segment that is not selected, so the count's own colour has a part to reach.
@@ -173,8 +176,11 @@ const DRAW = {
     html: '<sf-lookup label="Город" value="moscow"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"}]}</script></sf-lookup><sf-lookup label="Ошибка" invalid></sf-lookup><sf-lookup id="lk" label="Список"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"},{"value":"kazan","label":"Казань"}]}</script></sf-lookup>',
     open: 'const l = document.getElementById("lk"); l.querySelector("input").focus(); l.search("")'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
+  // Collapsed and open, so the side panel is on the stage: its width is the
+  // only part that takes --sf-site-header-sheet-inline-size.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
-    html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
+    open: '(async () => { const header = document.querySelector("sf-site-header"); await header.updateComplete?.catch?.(() => {}); header.open(); await new Promise((settle) => setTimeout(settle, 200)); })()',
+    html: '<sf-site-header collapse="always"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},
   // The window open with a query, so a title carries its mark: the field and
   // the card take the background, the card the radius, the scrim its colour.
   search: {css: ['icon-buttons', 'icons', 'kbd', 'smart/smart/search/css/search.css'], js: 'search',
@@ -188,11 +194,6 @@ const DRAW = {
       input.dispatchEvent(new Event('input', {bubbles: true}));
       await new Promise((settle) => setTimeout(settle, 400));
     })()`},
-  // Compact settings at rest, inline: a tile and a choice row (drill), and
-  // a chosen pill and a compact select (rows).
-  'settings-menu': {css: ['switch', 'icons', 'smart/smart/settings-menu/css/settings-menu.css'], js: 'settings-menu',
-    html: '<sf-settings-menu inline><script type="application/json" data-sf-settings>{"items": [{"key": "sound", "type": "boolean", "label": "Звук", "icon": "volume_up", "value": false, "tile": true}, {"key": "lang", "type": "choice", "label": "Язык", "value": "ru", "options": [{"value": "ru", "label": "Русский"}, {"value": "en", "label": "English"}, {"value": "kk", "label": "Қазақша"}]}]}</script></sf-settings-menu>'
-      + '<sf-settings-menu inline template="rows"><script type="application/json" data-sf-settings>{"items": [{"key": "follow", "type": "choice", "label": "Ответы", "value": "queue", "options": [{"value": "queue", "label": "Очередь"}, {"value": "steer", "label": "Сразу"}]}, {"key": "density", "type": "choice", "label": "Плотность", "value": "normal", "options": [{"value": "compact", "label": "Плотно"}, {"value": "normal", "label": "Обычно"}, {"value": "loose", "label": "Свободно"}]}]}</script></sf-settings-menu>'},
   // The pager as cards (fill, edge, corners, link and note colours, the gap)
   // and as steps on the second of three (the track and its fill).
   pager: {css: ['buttons', 'icons', 'smart/smart/pager/css/pager.css'], js: 'pager',
@@ -226,6 +227,8 @@ const ROLES = {
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
   size: {properties: ['block-size', 'height'], value: '29px'},
+  // A width a panel fixes, so its text cannot widen it.
+  'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays
   // a length): the public variable has to reach the length the drawing reads.
   // The painted geometry is the conformance probe's (src/smart/progress-ring).

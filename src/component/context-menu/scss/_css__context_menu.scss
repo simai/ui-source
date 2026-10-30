@@ -208,6 +208,102 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   max-inline-size: 45%;
 }
 
+/* ─── drilling: the same panel, one level deeper ───────────────────────── */
+/* submenu="drill" (owner, 2026-10-30): a submenu replaces the panel's rows
+   instead of opening a second panel beside it, so the width never grows with
+   the depth. The head is a row of its own -- the way back on the rows' own
+   leading axis, the parent's name beside it. */
+.sf-context-menu-drill-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
+}
+
+/* The back button's glyph stands on the leading column of the rows under it:
+   the button gives back the room around its own glyph. Its host is
+   display: contents, so the native button is what is placed. */
+.sf-context-menu-back > button {
+  flex: none;
+  margin-inline-start: calc((var(--sf-context-menu--line) - var(--sf-ui-1\/2--control-height)) / 2);
+}
+
+.sf-context-menu--size-1 .sf-context-menu-back > button {
+  margin-inline-start: calc((var(--sf-context-menu--line) - var(--sf-ui-1--control-height)) / 2);
+}
+
+.sf-context-menu-level-title {
+  min-inline-size: 0;
+  overflow: hidden;
+  font-weight: var(--sf-font-weight-bold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The value under the label, where a drilling row keeps it: small, dimmed,
+   one line cut with an ellipsis, the whole of it in `title`. At the row's end
+   a long value pushed the chevron about; under the label it cannot. */
+.sf-context-menu-item-under {
+  overflow: hidden;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-item:disabled .sf-context-menu-item-under {
+  color: inherit;
+}
+
+/* A drilling panel's width is fixed and public: 280px by default (the
+   ladder's f7 + a8), the width the owner reviewed in the prototype
+   (2026-10-30). A fixed width is the point of drilling -- the panel grows
+   neither with a level's longest word nor with a value -- and openFor(anchor,
+   {width}) still overrides it, as it does for a panel with tabs. */
+.sf-context-menu.sf-context-menu--drill .sf-context-menu-content {
+  --sf-context-menu-drill--inline-size: var(--sf-context-menu-inline-size, calc(var(--sf-f7) + var(--sf-a8)));
+  inline-size: var(--sf-context-menu--min-inline-size, var(--sf-context-menu-drill--inline-size));
+  max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-context-menu-drill--inline-size)), var(--sf-context-menu-available-inline-size, 100vw));
+}
+
+/* A panel of a fixed width wraps a long name instead of widening: a drilling
+   menu and every value row read their width from the panel, not from their
+   longest word. A value keeps its one line and its ellipsis. */
+.sf-context-menu--drill .sf-context-menu-item,
+.sf-context-menu-value-row {
+  white-space: normal;
+}
+
+.sf-context-menu--drill .sf-context-menu-item-label,
+.sf-context-menu--drill .sf-context-menu-item-caption,
+.sf-context-menu-value-row .sf-context-menu-item-label,
+.sf-context-menu-value-row .sf-context-menu-item-caption {
+  overflow-wrap: anywhere;
+}
+
+/* What leads a row stands on the row's centre line, a two-line row too. */
+.sf-context-menu--drill .sf-context-menu-item-lead,
+.sf-context-menu-value-row .sf-context-menu-item-lead,
+.sf-context-menu-item--switch .sf-context-menu-item-lead,
+.sf-context-menu--drill .sf-context-menu-item-chevron,
+.sf-context-menu--drill .sf-context-menu-item-check {
+  align-self: center;
+}
+
+/* A switch row wraps its label as a drilling row does: the switch at the end
+   keeps its width, so the label is what gives way. */
+.sf-context-menu-item--switch {
+  white-space: normal;
+}
+
+.sf-context-menu-item--switch .sf-context-menu-item-label,
+.sf-context-menu-item--switch .sf-context-menu-item-caption {
+  overflow-wrap: anywhere;
+}
+
 .sf-context-menu-item-shortcut {
   flex: none;
   font-family: inherit;
@@ -267,9 +363,71 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   line-height: var(--sf-text-height-1\/3);
 }
 
-/* A few options side by side, one segment each, in a hairline frame. */
+/* ─── value rows: the label at the start, what changes it at the end ──── */
+/* A row that carries a value of its own -- a quiet choice since 1.5.0 (owner,
+   2026-10-30). It stands on the rows' own geometry: as tall as a field of the
+   menu's size, its content starting on the field axis, a caption making it
+   taller by its own line. It is not a menu item: the control inside it is. */
+.sf-context-menu-value-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-block: var(--sf-a2);
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
+  color: var(--sf-context-menu-color, var(--sf-on-surface));
+}
+
+/* A few options at the end of the label's row, sized to their content: no
+   frame, no dividers, the chosen one on a soft fill. The coarse full-width
+   band with its hairline frame was called coarse twice (owner, 2026-10-30);
+   it is still reachable as `view: "band"`. */
 .sf-context-menu-choice {
   display: flex;
+  flex: none;
+  gap: var(--sf-px);
+}
+
+.sf-context-menu-choice-option.sf-context-menu-item {
+  flex: none;
+  justify-content: center;
+  inline-size: auto;
+  min-block-size: var(--sf-context-menu--inner-height);
+  padding-block: 0;
+  padding-inline: var(--sf-context-menu--inner-space-x);
+  border-radius: var(--sf-radius-circle);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-context-menu--inner-text-size);
+  line-height: var(--sf-context-menu--inner-line);
+  --sf-icon--color: currentColor;
+}
+
+/* Options that are all icons are square on the same step. */
+.sf-context-menu-choice--icons .sf-context-menu-choice-option.sf-context-menu-item {
+  inline-size: var(--sf-context-menu--inner-height);
+  padding-inline: 0;
+  --sf-icon--font-size: var(--sf-context-menu--inner-line);
+  --sf-icon--width: var(--sf-context-menu--inner-line);
+  --sf-icon--height: var(--sf-context-menu--inner-line);
+}
+
+.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
+  color: var(--sf-on-surface);
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-context-menu-choice-option[aria-checked="true"] {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  font-weight: var(--sf-font-weight-medium);
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+/* The framed full-width band: every option across the panel, one segment
+   each, in a hairline frame -- for the rare row that must show them all. */
+.sf-context-menu-choice--band {
+  gap: 0;
   margin-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   margin-block: var(--sf-a2);
   border: var(--sf-px) solid var(--sf-outline-variant);
@@ -277,21 +435,203 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   overflow: hidden;
 }
 
-.sf-context-menu-choice-option.sf-context-menu-item {
+.sf-context-menu-choice--band .sf-context-menu-choice-option.sf-context-menu-item {
   flex: 1 1 0;
-  justify-content: center;
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-block: var(--sf-a2);
   padding-inline: 0;
   border-radius: 0;
+  color: var(--sf-context-menu-color, var(--sf-on-surface));
+  font-size: inherit;
+  line-height: inherit;
+  --sf-icon--font-size: var(--sf-context-menu--line);
+  --sf-icon--width: var(--sf-context-menu--line);
+  --sf-icon--height: var(--sf-context-menu--line);
 }
 
-.sf-context-menu-choice-option + .sf-context-menu-choice-option {
+.sf-context-menu-choice--band .sf-context-menu-choice-option + .sf-context-menu-choice-option {
   border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
 }
 
-.sf-context-menu-choice-option[aria-checked="true"] {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  --sf-icon--color: var(--sf-on-secondary-container);
+/* ─── a boolean setting: the switch drawn in the row ───────────────────── */
+/* The Framework switch's own geometry, read from the menu's ladder instead of
+   being listed again: the track is as tall as the row's line and twice as
+   long, the seat is measured from the outer edge with the border inside it,
+   and the thumb fills what is left and travels exactly one track height. The
+   row is the menuitemcheckbox, so the state is the row's aria-checked and
+   there is no second control to disagree with it. */
+.sf-context-menu-item-switch {
+  --sf-context-menu-switch--track: var(--sf-context-menu--line);
+  --sf-context-menu-switch--seat: var(--sf-a2);
+  --sf-context-menu-switch--thumb: calc(var(--sf-context-menu-switch--track) - 2 * var(--sf-context-menu-switch--seat));
+  display: flex;
+  flex: none;
+  align-self: center;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  inline-size: calc(var(--sf-context-menu-switch--track) * 2);
+  block-size: var(--sf-context-menu-switch--track);
+  padding: calc(var(--sf-context-menu-switch--seat) - var(--sf-px));
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-surface-0);
+  transition: background-color var(--sf-duration-normal) var(--sf-animation),
+              border-color var(--sf-duration-normal) var(--sf-animation);
+}
+
+.sf-context-menu-item-switch-thumb {
+  inline-size: var(--sf-context-menu-switch--thumb);
+  block-size: var(--sf-context-menu-switch--thumb);
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-on-surface-variant);
+  transition: transform var(--sf-duration-normal) var(--sf-animation),
+              background-color var(--sf-duration-normal) var(--sf-animation);
+}
+
+.sf-context-menu-item[aria-checked="true"] > .sf-context-menu-item-switch {
+  background-color: var(--sf-primary);
+  border-color: var(--sf-primary);
+}
+
+.sf-context-menu-item[aria-checked="true"] .sf-context-menu-item-switch-thumb {
+  transform: translateX(calc(var(--sf-context-menu-switch--track) * var(--sf-context-menu-switch--direction, 1)));
+  background-color: var(--sf-on-primary);
+}
+
+.sf-context-menu-item-switch:dir(rtl) {
+  --sf-context-menu-switch--direction: -1;
+}
+
+.sf-context-menu-item:disabled > .sf-context-menu-item-switch {
+  border-color: var(--sf-outline-disable);
+  background-color: transparent;
+}
+
+.sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
+  background-color: var(--sf-on-disable);
+}
+
+/* ─── a number in a range: the slider and its number ──────────────────── */
+/* The slider is four lines long -- a length of the one ladder, so it grows
+   with the menu's size and not with the panel -- and the number after it keeps
+   a place of its own so the thumb does not move when 9 becomes 10. */
+.sf-context-menu-range {
+  display: flex;
+  flex: none;
+  align-self: center;
+  align-items: center;
+  gap: var(--sf-a4);
+}
+
+.sf-context-menu-range-input {
+  inline-size: calc(var(--sf-context-menu--line) * 4);
+  margin: 0;
+  accent-color: var(--sf-primary);
+}
+
+.sf-context-menu-range-input:disabled {
+  accent-color: var(--sf-on-disable);
+}
+
+.sf-context-menu-range-value {
+  min-inline-size: calc(var(--sf-context-menu--line) + var(--sf-context-menu--space-y));
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-context-menu--inner-text-size);
+  line-height: var(--sf-context-menu--inner-line);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* ─── a group: a block of rows, or the grid of tiles ──────────────────── */
+/* A group adds no geometry of its own: its rows stand where the level's rows
+   stand, named for a screen reader. */
+.sf-context-menu-group {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sf-context-menu-gap, var(--sf-px));
+  min-inline-size: 0;
+}
+
+/* Quick settings as tiles: three to a row (two for four), each an icon, a name
+   and the current value, so a tile is read without a tooltip. A tile is a row
+   of the menu -- it carries the row's class and the row's role -- so the row's
+   own geometry is reset on top of it, as a choice option's is. */
+.sf-context-menu-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: none;
+  gap: var(--sf-a4);
+  padding-block: var(--sf-a4);
+}
+
+.sf-context-menu-tiles--1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sf-context-menu-tiles--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sf-context-menu-tile.sf-context-menu-item {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-a2);
+  inline-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding-block: var(--sf-space-1\/3);
+  padding-inline: var(--sf-a4);
+  background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  color: var(--sf-on-surface-variant);
+  white-space: normal;
+}
+
+.sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-context-menu-tile-icon {
+  --sf-icon--color: var(--sf-on-surface);
+}
+
+.sf-context-menu-tile-name,
+.sf-context-menu-tile-value {
+  max-inline-size: 100%;
+  overflow: hidden;
+  font-size: var(--sf-context-menu--inner-text-size);
+  line-height: var(--sf-context-menu--inner-line);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-tile-name {
+  color: var(--sf-on-surface);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-context-menu-tile--on.sf-context-menu-item {
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+}
+
+.sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
+  background-color: var(--sf-primary-container-hover);
+}
+
+.sf-context-menu-tile--on .sf-context-menu-tile-icon,
+.sf-context-menu-tile--on .sf-context-menu-tile-name {
+  color: var(--sf-on-primary-container);
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
+.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
+  color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-disable);
 }
 
 .sf-context-menu-note {
@@ -469,7 +809,8 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
     outline-offset: calc(-1 * var(--sf-focus--width));
   }
 
-  .sf-context-menu-item:focus-visible {
+  .sf-context-menu-item:focus-visible,
+  .sf-context-menu-range-input:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: calc(-1 * var(--sf-focus--width));
   }
@@ -480,11 +821,35 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
     z-index: 1;
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
+
+  /* The switch of a value row moves its knob and its track; a person who asked
+     the system to stop movement gets the end state at once, as sf-switch does. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-context-menu-item-switch,
+    .sf-context-menu-item-switch-thumb {
+      transition-duration: 0s;
+    }
+  }
 }
 
 @media (forced-colors: active) {
   .sf-context-menu .sf-context-menu-content {
     border: var(--sf-px) solid CanvasText;
+  }
+
+  /* A switch that is on and a tile that is on are told apart by the forced
+     palette's own colours, not by a fill the mode throws away. */
+  .sf-context-menu-item[aria-checked="true"] > .sf-context-menu-item-switch {
+    background-color: Highlight;
+    border-color: CanvasText;
+  }
+
+  .sf-context-menu-item[aria-checked="true"] .sf-context-menu-item-switch-thumb {
+    background-color: HighlightText;
+  }
+
+  .sf-context-menu-tile--on.sf-context-menu-item {
+    outline: var(--sf-px) solid Highlight;
   }
 
   .sf-context-menu-content > .sf-button:not(:disabled):not(.disabled):focus-visible,
@@ -502,6 +867,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 @media (pointer: coarse) {
   @layer sf.states {
     .sf-context-menu .sf-context-menu-item,
+    .sf-context-menu .sf-context-menu-value-row,
     .sf-context-menu .sf-context-menu-row,
     .sf-context-menu .sf-context-menu-content > .sf-button,
     .sf-context-menu .sf-context-menu-content > sf-button > .sf-button {

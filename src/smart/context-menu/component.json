@@ -2,7 +2,7 @@
   "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.context-menu",
   "tag": "sf-context-menu",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -155,6 +155,30 @@
         "options": {
           "type": "list",
           "optional": true
+        },
+        "items": {
+          "type": "list",
+          "optional": true
+        },
+        "min": {
+          "type": "number",
+          "optional": true
+        },
+        "max": {
+          "type": "number",
+          "optional": true
+        },
+        "step": {
+          "type": "number",
+          "optional": true
+        },
+        "unit": {
+          "type": "string",
+          "optional": true
+        },
+        "view": {
+          "type": "string",
+          "optional": true
         }
       },
       "summary": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
@@ -168,6 +192,15 @@
       "type": "object",
       "optional": true,
       "summary": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
+    },
+    "submenu": {
+      "type": "enum",
+      "values": [
+        "flyout",
+        "drill"
+      ],
+      "default": "flyout",
+      "summary": "How a row's submenu opens: flyout (a second panel beside the row, the default) or drill (the same panel shows the submenu instead of its own rows, with the way back and the parent's label in a head). A drilling panel's width never grows with the depth."
     },
     "size": {
       "type": "enum",
@@ -222,6 +255,53 @@
       },
       "cancelable": true,
       "summary": "An entry was chosen, at any depth. Cancel it to keep the menu open."
+    },
+    "change": {
+      "x-native": false,
+      "carries": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "summary": "The setting's own name: a value row's id."
+        },
+        "value": {
+          "type": "id",
+          "summary": "The value the setting now has: a boolean for a switch row, a number for a range row, the chosen option's id for a choice row."
+        },
+        "previous": {
+          "type": "id",
+          "summary": "The value it had."
+        },
+        "entry": "object"
+      },
+      "cancelable": true,
+      "summary": "A person asks to change a value row's setting: the request, sent before the value is written. Raised after select and only when select was not cancelled; a command row raises select alone. Cancelled, nothing changes and the row keeps the value it had -- the view never shows a value its host did not take."
+    },
+    "changed": {
+      "x-native": false,
+      "carries": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "summary": "The setting's own name: a value row's id."
+        },
+        "value": {
+          "type": "id",
+          "summary": "The value the setting now has: a boolean for a switch row, a number for a range row, the chosen option's id for a choice row."
+        },
+        "previous": {
+          "type": "id",
+          "summary": "The value it had."
+        },
+        "entry": "object"
+      },
+      "summary": "The fact of change: the value is written into its entry and the row shows it. A host that only persists what a person did listens to this one and nothing else. reset raises it once for each row it moved; set-value and set-all raise nothing, as a value set from outside is not reported back (standard §8)."
+    },
+    "reset": {
+      "carries": {},
+      "cancelable": true,
+      "own-verb": true,
+      "summary": "The person asked for the declared values back: the request. Cancelled, the current values stay; otherwise the menu shows the declared ones, says changed once for each row that moved, and waits for the host to persist them, as sf-tabs-settings-reset does."
     },
     "open": {
       "carries": {},
@@ -388,6 +468,64 @@
       "x-returns": {
         "type": "boolean"
       }
+    },
+    "set-value": {
+      "with": {
+        "id": "string",
+        "value": {
+          "type": "id"
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Write a setting's value into its own entry: the host's answer to change, or a value restored on load. The value lives in the entry and nowhere else, so there is no second map to disagree with it; the menu raises nothing. Refused when no entry carries that id.",
+      "x-returns": {
+        "type": "object",
+        "description": "{outcome}: applied, or refused with not-found when no entry carries that id."
+      }
+    },
+    "set-all": {
+      "with": {
+        "values": "object"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Write a whole map of settings at once -- {id: value} -- into the entries that carry those ids: a panel restored from storage in one call rather than one set-value per row. The menu raises nothing. Refused when no id in the map is an entry's.",
+      "x-returns": {
+        "type": "object",
+        "description": "{outcome, count}: how many entries were written; refused with not-found when none was."
+      }
+    },
+    "show": {
+      "with": {
+        "id": "string"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "summary": "Go straight to one setting: in a drilling menu the panel opens the levels down to it (its own submenu when it has one, otherwise the level its row stands on) and the focus goes to the row. Refused when no entry carries that id; unavailable in a flyout menu, which has no level to go to.",
+      "x-returns": {
+        "type": "object",
+        "description": "{outcome}: applied; refused with not-found; unavailable with no-levels in a flyout menu."
+      }
+    },
+    "reset": {
+      "emits": "reset",
+      "x-outcomes": [
+        "applied",
+        "cancelled"
+      ],
+      "summary": "Put the declared values back -- the values the entries carried when the host set them -- and raise reset. A listener that cancels reset keeps the current values.",
+      "x-returns": {
+        "type": "object",
+        "description": "{outcome}: applied, or cancelled when a listener cancelled reset."
+      }
     }
   },
   "layer": {
@@ -493,6 +631,10 @@
     "--sf-context-menu-gap": {
       "type": "length",
       "state": "default"
+    },
+    "--sf-context-menu-inline-size": {
+      "type": "length",
+      "state": "default"
     }
   },
   "aliases": {
@@ -555,7 +697,7 @@
     ],
     "since-version": "1.3.0"
   },
-  "x-summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
+  "x-summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "x-source": {
     "package": "framework",
     "folder": "context-menu",
@@ -583,7 +725,16 @@
     "dismissing: an owned menu asks before it closes, sf-context-menu-close {reason, unsaved} (§19.3): escape, outside, close (its head's close button), api (a choice, Tab, a script). A placed menu's head button sends the same request for its host to close it, as before. The actions keep their boolean answers (openFor, toggleFor, close) until their callers move -- a leftover.",
     "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.5.0 quiet-choice: the choice row's framed full-width band with its dividers was called coarse twice (owner, 2026-10-30). A choice row is now the label with its options at the row's end, sized to their content, the chosen one on a soft fill one step down the ladder; view: \"band\" brings the framed form back for a row that needs it. A look, not a contract: the entry's fields, its roles and its events are the same, and a choice row now keeps the level's leading column and is narrowed by a search, as every other row is.",
+    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.5.0 drill: submenu says how a submenu opens -- flyout (a second panel beside the row) or drill (the same panel, a head with the way back and the parent's label). The default stays flyout, so no shipped menu changes; a settings panel is the recipe submenu=\"drill\" with value rows (owner, 2026-10-30). A row's place in the tree is written into its markup as a path (\"2/1\"), so the menu reads the level from the markup and the panel's width never grows with the depth.",
+    "version 1.5.0 switch-row: a boolean setting is the row itself -- a menuitemcheckbox whose switch is drawn from the Framework switch's own track and thumb (an input inside a button is no markup at all), so the menu's roles, keyboard and roving tab stop are the ones it already has. change {id, value, previous, entry} follows an uncancelled select and changed follows the write, so a host that wants settings listens to one pair and never works out what the person did from group, checked and id. The proposal's action `set` is `set-value` here: `set` is the Smart base's own state patcher (core/js/smart-base.js), and an action of that name would shadow it.",
+    "version 1.5.0 range-row: a number in a range is a native slider at the row's end with the number after it, so the platform's own keys, pointer and announcement are the ones a person meets. A slider is not a menu item and is not given a menu role: it carries sf-context-menu-stop, which joins the menu's roving tab stop and its up/down walk while the side arrows, Home and End stay the slider's. The number under a dragged thumb follows the pointer -- the entry holds it, so the row shows what the person is doing -- and the events come when the thumb is let go, or at once from a key, which is one notch: select and change on every pixel of a drag would be a host told fifty times what happened once.",
+    "version 1.5.0 group-row: a block of rows is one entry (type: \"group\"), so a panel's quick settings are declared where its rows are instead of being a second list beside them. view: \"rows\" is a named block of the same rows; view: \"tiles\" is the grid the owner liked, each tile an icon, a name and the current value, so a tile needs no tooltip to be read. A tile is a row of the menu, not a control inside one: it keeps the row's class and the row's roles (menuitemcheckbox for a switch), and its geometry is reset on top, as a choice option's is. A group's items carry paths of their own (\"3/1\"), the step the submenu grammar already had, so the menu reads one tree.",
+    "version 1.5.0 settings-fold: sf-settings-menu 1.0.0 is removed and its work is this component's (owner decision, 2026-10-30: \"Fold into sf-context-menu\"). Everything it drew is a recipe of entries here -- boolean is the switch row, choice the choice row, range the range row, action a command row, section a heading, divider a separator, tile: true a group with view: \"tiles\", its drill template submenu=\"drill\", its rows template the value rows, resettable the reset action with the reset event, values the entries themselves and set-all. Its change/changed pair is kept as it was -- change is the cancelable request, sent before the value is written, changed the fact after it -- and the menu's own select comes first, so a command row still raises select alone.",
+    "version 1.5.0 values: a setting's declared value is the value its entry carried when the host set the entries; reset puts those back. The snapshot is taken once, when the entries arrive, and never again from a value the person changed -- a declared value re-read after a change is not a declared value. A change is written by the row's own path, which also fixes a choice row inside a submenu or a group: the old write looked the row up by identity in the top-level list and found nothing there.",
+    "version 1.5.0 choice-drill: a choice of more or longer options than fit at a row's end is view: \"drill\" -- the chosen option under the label, a chevron, and the options as a level of the panel with a check mark on the chosen one; choosing one goes back to the rows, where the row now reads the new value. It is the same entry, the same id and the same change/changed pair as the quiet row, so a panel may move a row between the two looks without touching its host. The level holds no entries of its own, so nothing opens below it, and a flyout menu, which has no level to open, draws the quiet row.",
+    "version 1.5.0 panel-width: a drilling panel's width is fixed and public -- --sf-context-menu-inline-size, 280px by default (the ladder's f7 + a8), the width the owner reviewed in the prototype. A fixed width is the point of drilling: the panel neither grows with a level's longest word nor with a value, so a long label wraps and a long value is cut with the whole of it in title. openFor(anchor, {width}) still overrides it, as it does for a panel with tabs."
   ],
   "x-registry": {
     "item_contract": {
@@ -595,7 +746,7 @@
             "text": "string, the label",
             "icon": "string, a Material Symbols name",
             "caption": "string, a second line under the label",
-            "value": "string, read-only value at the row's end",
+            "value": "string, read-only value at the row's end; on a drilling row it is drawn under the label, where a long value is cut instead of widening the panel",
             "shortcut": "string, shown at the row's end",
             "kind": "'check' | 'radio' for a checkable row",
             "checked": "boolean",
@@ -603,7 +754,7 @@
             "disabled": "boolean",
             "current": "boolean, the place the person is",
             "href": "string, a link row",
-            "submenu": "entries, opened beside the row",
+            "submenu": "entries: opened beside the row, or in place of the panel's own rows when the menu says submenu=\"drill\"",
             "keepOpen": "boolean, a choice does not close the menu",
             "lang": "string, the language the label is written in",
             "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
@@ -636,8 +787,46 @@
           "fields": {
             "type": "'choice'",
             "id": "string, reported as group",
-            "text": "string, the group's name",
+            "text": "string, the group's name, drawn at the start of the row",
+            "icon": "string, a Material Symbols name in the lead",
+            "caption": "string, a second line under the name",
+            "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill), 'band' (the framed full-width band, for a row that must show every option across the panel) or 'drill' (the chosen option under the label and a chevron; the options open as a level of the panel, a check mark on the chosen one, and choosing goes back -- for a list too long or too wordy to stand at the row's end). A drilling view needs a drilling panel: in a flyout menu the row stays the quiet one",
             "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
+          }
+        },
+        "switch": {
+          "fields": {
+            "type": "'switch'",
+            "id": "string, the setting's own name, reported as id in change",
+            "text": "string, the label",
+            "caption": "string, a second line under the label",
+            "icon": "string, a Material Symbols name in the lead",
+            "value": "boolean, the setting's own value and its only home; the row is a menuitemcheckbox and the switch at its end is drawn, not a second control",
+            "disabled": "boolean",
+            "keepOpen": "boolean, false closes the menu on a change; a setting is tried rather than committed, so the menu stays open by default"
+          }
+        },
+        "range": {
+          "fields": {
+            "type": "'range'",
+            "id": "string, the setting's own name, reported as id in change",
+            "text": "string, the label",
+            "caption": "string, a second line under the label",
+            "icon": "string, a Material Symbols name in the lead",
+            "value": "number, the setting's own value and its only home",
+            "min": "number, the lowest value (0 by default)",
+            "max": "number, the highest value (100 by default)",
+            "step": "number, how far one key or one notch moves it (1 by default)",
+            "unit": "string, written after the number (%, px)",
+            "disabled": "boolean"
+          }
+        },
+        "group": {
+          "fields": {
+            "type": "'group'",
+            "text": "string, names the block for a screen reader",
+            "view": "'rows' (the default: a block of rows) or 'tiles' (a grid of tiles, each an icon, a name and the current value)",
+            "items": "entries: the rows of the block, of any row kind -- a switch, a range, a choice, a command row or a row with a submenu"
           }
         },
         "note": {
@@ -688,12 +877,14 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language.",
+      "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language. A settings panel is one too, and is this component rather than a tag of its own: submenu=\"drill\" with value rows (switch, range, choice, a group of tiles), listening to sf-context-menu-change alone.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component",
         "Do not hand-make a menu of divs and buttons: the row geometry, roles, keyboard and focus return are this component's",
-        "Do not ask for a tail: position and tooltip are deprecated and draw nothing"
+        "Do not ask for a tail: position and tooltip are deprecated and draw nothing",
+        "Do not keep a second map of the settings' values: a value lives in its entry, and set-value writes it there",
+        "Do not store a setting yourself: the menu shows it and raises change; the host persists it"
       ],
       "required_reads": [
         "inputs",
@@ -723,7 +914,7 @@
         "Tab",
         "typeahead"
       ],
-      "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
+      "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; in a drilling menu Escape and the outward arrow first go one level back, to the row the level was opened from, and close the menu only at the top level; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows. A switch row is the menuitemcheckbox itself, with aria-checked for its value and Enter or Space to turn it; a range row's slider is the platform's, named by the label, announced with its unit and moved by the side arrows, Home and End, while ArrowUp and ArrowDown stay the menu's walk; a group is a group with its own name, and a tile of it is a row of the menu with the row's role."
     },
     "compatibility": {
       "deprecations": [

@@ -1103,6 +1103,13 @@
           "summary": "Space between rows.",
           "default": "var(--sf-px)",
           "since": "2026-10-18"
+        },
+        {
+          "name": "--sf-context-menu-inline-size",
+          "role": "inline-size",
+          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value.",
+          "default": "calc(var(--sf-f7) + var(--sf-a8))",
+          "since": "2026-10-30"
         }
       ]
     },
@@ -3180,77 +3187,6 @@
           "summary": "The results card's greatest height; by default the browser window bounds it.",
           "default": "none",
           "state": "open",
-          "since": "2026-10-30"
-        }
-      ]
-    },
-    {
-      "component": "settings-menu",
-      "selector": "sf-settings-menu, .sf-settings-menu",
-      "variables": [
-        {
-          "name": "--sf-settings-menu-inline-size",
-          "role": "inline-size",
-          "summary": "The panel's fixed width; it never grows with its text.",
-          "default": "calc(var(--sf-f7) + var(--sf-a8))",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-background",
-          "role": "background",
-          "summary": "The panel's fill.",
-          "default": "var(--sf-elevation-3--surface)",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-color",
-          "role": "color",
-          "summary": "The panel's text.",
-          "default": "var(--sf-on-surface)",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-border-color",
-          "role": "border-color",
-          "summary": "The panel's hairline edge and its dividers.",
-          "default": "var(--sf-outline-variant)",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-radius",
-          "role": "radius",
-          "summary": "The panel's corners.",
-          "default": "var(--sf-radius--surface)",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-hover-background",
-          "role": "hover-background",
-          "summary": "A row, an option, a pill or a tile under the pointer.",
-          "default": "var(--sf-surface-container-hover)",
-          "state": "hover",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-selected-background",
-          "role": "background",
-          "summary": "The chosen pill.",
-          "default": "var(--sf-secondary-container)",
-          "state": "selected",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-tile-background",
-          "role": "background",
-          "summary": "A tile and a compact select at rest.",
-          "default": "var(--sf-surface-container)",
-          "since": "2026-10-30"
-        },
-        {
-          "name": "--sf-settings-menu-accent-color",
-          "role": "accent-color",
-          "summary": "The check mark of the chosen option and a range's fill.",
-          "default": "var(--sf-primary)",
           "since": "2026-10-30"
         }
       ]

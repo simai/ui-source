@@ -1,0 +1,40 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.search-port",
+  "version": "1.0.0",
+  "transport": "neutral",
+  "summary": "The first edition: the seam of sf-search, written against the data view port's envelope -- one sequenced read, opening a result, running a command, the two ways a recent query is forgotten, and six capabilities over them, each with a case for the host that has it and a case for the host that does not.",
+  "answers": [
+    "applied",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "base-host-needs-no-capability",
+    "query-answer-names-its-sequence",
+    "query-stale-sequence-dropped",
+    "query-echoes-what-it-answered",
+    "query-refused-is-explained",
+    "query-unavailable-is-honest",
+    "empty-query-answers-the-blocks",
+    "page-result-without-a-url-is-dropped",
+    "capability-absent-is-explained",
+    "result-open-is-the-hosts-decision",
+    "result-open-refused-keeps-the-panel-open",
+    "scope-is-a-field-of-the-query",
+    "scopes-carry-their-counts",
+    "scopes-without-the-capability-are-not-offered",
+    "recent-forget-answers-the-whole-list",
+    "recent-clear-answers-the-empty-list",
+    "recent-without-the-capability-is-not-offered",
+    "popular-answers-the-empty-field",
+    "popular-without-the-capability-is-not-offered",
+    "action-run-applies-and-the-panel-closes",
+    "action-run-without-the-capability-is-unavailable",
+    "preview-answers-the-row-it-was-asked-for",
+    "preview-stale-sequence-dropped",
+    "preview-without-the-capability-is-not-offered",
+    "correction-is-offered-not-applied",
+    "spelling-without-the-capability-is-not-offered"
+  ]
+}

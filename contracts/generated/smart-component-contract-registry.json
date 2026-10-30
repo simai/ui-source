@@ -600,13 +600,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/context-menu/smart.manifest.json",
-      "manifest_sha256": "a7459a3c30c0dd47f0df093c2cc89b8997d14fecc072afd0fc138f6d1591c92b",
+      "manifest_sha256": "660f0171fb0b67f2576ff776e65cd152f8a8ad544aeb4f49b360f34ab9c20d1d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
+      "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
       "tags": [
         "context-menu"
       ],
@@ -1967,13 +1967,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/search/smart.manifest.json",
-      "manifest_sha256": "40edbb51a077e2a9f807ca8930e32ed0e150ec63b9b1db01b72e4c46b8959fec",
+      "manifest_sha256": "20b050635ee31d115e32eb91257c8ea6c9b0f4bec19242512e9bc628c5de0d35",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+      "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
       "tags": [
         "search",
         "site-search",
@@ -1981,48 +1981,6 @@
         "dialog"
       ],
       "title": "Site search"
-    },
-    {
-      "backend_adapters": [],
-      "capabilities": [
-        "render",
-        "interaction",
-        "keyboard",
-        "theme",
-        "i18n"
-      ],
-      "composition": {
-        "public_parts": [],
-        "uses": [
-          "component.switch",
-          "smart.context-menu",
-          "smart.icon",
-          "smart.icon-button"
-        ]
-      },
-      "contract_schema": {
-        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
-        "version": 2
-      },
-      "custom_element": "sf-settings-menu",
-      "id": "smart.settings-menu",
-      "kind": "smart",
-      "lifecycle": "experimental",
-      "manifest_path": "src/smart/settings-menu/smart.manifest.json",
-      "manifest_sha256": "f918f9f432a33d13b777891ec7117487d5086bf9f2e983f8c796b8db9d40afb2",
-      "reuse_mode": "whole",
-      "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
-      },
-      "summary": "Compact settings: a list of settings given as data, drawn as a menu that opens from a trigger or stands inline -- rows with the value under the name that open their choices in place (drill, the default), or rows with the control at the end (rows), with an optional block of tiles on top. A special case of the context menu, for a reader's settings, a table's view options, a chat's settings.",
-      "tags": [
-        "settings",
-        "menu",
-        "preferences",
-        "view-options"
-      ],
-      "title": "Settings menu"
     },
     {
       "backend_adapters": [],

@@ -1,20 +1,20 @@
 {
-  "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30.",
+  "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "search",
   "settings": {
     "index": {
       "type": "string",
       "default": "",
-      "summary": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in provider reads it once and matches the query in it, case-insensitive. Not read when a provider is given"
+      "summary": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in index host reads it once and matches the query in it, case-insensitive, announcing scopes, recent, popular and actions. Not read when a provider or a connected port answers"
     },
     "provider": {
       "type": "object",
       "default": null,
-      "summary": "The results port: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A property only"
+      "summary": "The simple path: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A built-in host of simai.search-port wraps it and announces scopes, recent, popular and actions; a host connected with connect-port answers instead. A property only"
     },
     "for": {
       "type": "string",
@@ -39,37 +39,37 @@
     "scopes": {
       "type": "boolean",
       "default": true,
-      "summary": "Filter pills over the results once there is a query: all, then one per result group, each with its count"
+      "summary": "Filter pills over the results once there is a query: all, then one per result group, each with its count. A want over the capability scopes: where the host does not announce it the pills are absent, and a setting cannot turn on what the host cannot do"
     },
     "recent": {
       "type": "boolean",
       "default": true,
-      "summary": "Recent queries on an empty field, each with a remove button, and a clear button; a query is recorded when one of its results is opened"
+      "summary": "Recent queries on an empty field, each with a remove button, and a clear button (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
     },
     "recent-key": {
       "type": "string",
       "default": "site",
-      "summary": "The name the recent queries are kept under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only"
+      "summary": "The name the built-in hosts (index, provider) keep this person's recent queries under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only. A connected host keeps its own, and the key is then not read"
     },
     "popular": {
       "type": "boolean",
       "default": true,
-      "summary": "Popular queries as pills on an empty field and under an empty result, from the data (popular)"
+      "summary": "Popular queries as pills on an empty field and under an empty result, from the data (popular). A want over the capability popular: absent where the host does not announce it"
     },
     "actions": {
       "type": "boolean",
       "default": true,
-      "summary": "Results that run a command instead of opening a page (an action, with an optional shortcut hint): a quick actions group on an empty field and their own group among the results"
+      "summary": "Results that run a command instead of opening a page (kind action, with an optional key hint): a quick actions group on an empty field and their own group among the results, run through action.run. A want over the capability actions: no capability, no command rows"
     },
     "path": {
       "type": "boolean",
       "default": true,
-      "summary": "The result's path as a second line under its title"
+      "summary": "The result's path as a second line under its title. The panel's own setting: where a result stands is a field of the result, so no capability stands behind it"
     },
     "keys": {
       "type": "boolean",
       "default": true,
-      "summary": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close"
+      "summary": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close. The panel's own setting: the keys are the panel's, so no capability stands behind it"
     }
   },
   "values": {},
@@ -134,6 +134,30 @@
       },
       "cancelable": true,
       "summary": "A result was chosen (Enter or a press): the window has closed and the query is recorded; a page that routes itself or runs the action cancels it, else the browser goes to href. An action result carries action and no href"
+    },
+    "intent": {
+      "carries": {
+        "intent": {
+          "type": "enum",
+          "values": [
+            "query.change",
+            "result.open",
+            "result.preview",
+            "action.run",
+            "recent.forget",
+            "recent.clear"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "summary": "The payload raised, as simai.search-port declares it for that intent."
+        },
+        "answer": {
+          "type": "object",
+          "summary": "The host's answer envelope {answer, reason?, text?, sequence?, data?}, or the panel's own when it answered without asking (port-not-connected, capability-not-provided)."
+        }
+      },
+      "summary": "The one event of the port (simai.search-port: every intent names it): the panel raised an intent and this is what came back, whatever the answer -- applied, refused, unavailable, and the answers the panel makes itself. A page may watch the exchange without standing in the way of it"
     }
   },
   "actions": {
@@ -207,6 +231,11 @@
       "Tab": "reach"
     }
   },
+  "port": {
+    "id": "simai.search-port",
+    "version": "1.0.0",
+    "contract": "src/core/contracts/ports/simai.search-port/1.0.0/port.json"
+  },
   "relations": [
     {
       "name": "cl-icon-button"
@@ -222,6 +251,12 @@
     "default": {
       "file": "js/templates/default.js",
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws. Two functions: the host's (the trigger, in place) and the window's (drawn into the layer's portal while open)."
+    }
+  },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The window is an overlay: the first paint is the page's trigger, never the panel (\u00a75.4), so nothing the host answers holds a box. The port's data arrives when the window opens, long after the first paint, and the panel draws no skeleton for it.",
+      "late": []
     }
   },
   "examples": "examples.json",
@@ -277,7 +312,7 @@
       "state": "open"
     }
   },
-  "x-summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+  "x-summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "x-source": {
     "package": "framework",
     "folder": "search",
@@ -287,13 +322,37 @@
     "label",
     "placeholder"
   ],
+  "x-port": {
+    "sha256": "bb2b5335620743c3aeef4bd8c62df188a7e9c04699dc3340b87fb514e46368a0",
+    "supports": [
+      "1.0.0"
+    ],
+    "capabilities": [
+      "scopes",
+      "recent",
+      "popular",
+      "actions",
+      "preview",
+      "spelling"
+    ],
+    "builtin-capabilities": [
+      "scopes",
+      "recent",
+      "popular",
+      "actions"
+    ]
+  },
   "x-decisions": [
     "name: sf-search, family search (dispatcher, owner-delegated). A leaf with one slot, trigger: the page's own button (or any element named by for) opens the window, so the first paint is the page's markup and nothing moves when the code arrives.",
     "layer: kind modal, locks-page, traps-focus (§19.1), registered in the shared layer stack of core/js/layer-stack.js the way sf-modal and sf-drawer register. The window is drawn into a portal at the end of the body (or of the nearest [data-sf-overlay-container], whose page is then not locked), carrying the host's lang, dir, theme and --sf-search-* values (carryLayerOrigin), so a sticky header's stacking context cannot hold it under the page.",
-    "port: a provider property, async function (query, {scope, signal}) -> {groups, items, popular}, rather than a host-port contract under src/core/contracts/ports: a search answers one read and needs none of a port's kit (capabilities, intents, revisions). Without a provider the built-in one reads the static index (Docara and ui.simai.io publish one). Requests are debounced, a stale one is aborted through signal, and the card says loading while the first answer is awaited.",
+    "port (1.1.0, owner's delegated envelope 2026-10-29; it overturns 1.0.0's decision that a search needs no port): the panel asks a host through simai.search-port 1.0.0, declared here the way sf-data-view and sf-property-view declare theirs (port, x-port with the contract's digest and the editions supported). Six intents on one event, one answer envelope, every read sequenced; the panel fetches nothing itself.",
+    "settings over capabilities: the capability says what is possible and the setting says what is wanted. scopes, recent, popular and actions are wants over the capabilities of the same names -- a block whose capability the host did not announce is simply absent, and the setting cannot turn it on -- while path and keys are the panel's own, because where a result stands is a field of the result and the keys at the foot of the card are the panel's. preview and spelling have no setting at all: the arrangement decides the pane (room beside the list, the lg step) and the correction follows the capability alone.",
+    "the built-in hosts: index and provider stay, because the documentation site and Docara use them, but as adapters of the port (js/host.js) rather than a second way into the panel -- one code path for the page's host and for the panel's own. Each announces scopes, recent, popular and actions, and neither announces preview or spelling. A page with neither gets the port's base host: the field, the results and the keyboard, no block at all.",
+    "recent queries: the host's data (the port), removed through recent.forget and cleared through recent.clear, each answered with the whole list. The store under sf-search/<recent-key> moves into the built-in hosts, so the panel keeps no history and no storage key of its own and a connected host's recent queries are what is drawn.",
+    "requests are debounced (120 ms) and sequenced: every query.change and every result.preview carries a rising sequence, the answer names the one it answers, and an answer to an older sequence is dropped. A stale request is also aborted through the signal the panel passes to raise, which is what the built-in provider path already honoured.",
     "close control: an X button inside the field, not an Esc label (owner, prototype round 2): with text it clears the field and keeps the focus, on an empty field it closes. Escape does the same, through the layer stack's onEscape, so only the top layer hears it.",
     "navigate: choosing a result is the vocabulary's navigate {id, href} (§5), with action, query and group; a cancelable request, so a page routes it itself or runs the action. href is the vocabulary word; an index entry's url is read as href.",
-    "scopes: the result groups are the scopes; filtering is local, so the counts stay right whichever pill is pressed. scope is passed to the provider as a hint only.",
+    "scopes: the host's scopes are the groups its results fall into; filtering is local as well, so the counts stay right whichever pill is pressed, and scope travels as a field of query.change -- a hint, never an intent of its own.",
     "narrow: below the sm breakpoint (32rem) the window is a full-screen sheet with the field on top and a back arrow at its start; a media rule, so it is right on the first frame the window draws.",
     "geometry (docs/foundation-composition-geometry.md): the field is the size 2 control height with a 24 px glyph; a result row is the size 2 control height with a size 1/2 square (32 px) holding a 20 px glyph; a one-line row the size 1 control height; the field's glyph, the rows' squares and the captions share one axis, and the field's text starts where the rows' titles do.",
     "css-variables: seven public variables (§6), listed in src/core/contracts/public-variables.v1.json. The Framework never sets one."
@@ -343,7 +402,9 @@
       "forbidden_client_responsibilities": [
         "building the site's search index",
         "deciding where a result leads",
-        "running a quick action's command"
+        "running a quick action's command",
+        "keeping this person's recent queries",
+        "correcting a query the person did not correct"
       ]
     },
     "security": {
@@ -374,16 +435,19 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-search for the site search of a SIMAI site or documentation: a window opened from a button in the header or by Command/Control+K, over a static index or the site's own search.",
+      "use_when": "Use sf-search for the site search of a SIMAI site or documentation, and for a command palette: a window opened from a button in the header or by Command/Control+K, over a host of simai.search-port, a static index (index) or a provider function.",
       "do_not": [
         "Do not draw a search window of your own on a SIMAI site",
-        "Do not put the results into the trigger slot; they come from the provider or the index",
-        "Do not handle Escape or the shortcut yourself; the component and the layer stack do"
+        "Do not put the results into the trigger slot; they come from the host, the provider or the index",
+        "Do not handle Escape or the shortcut yourself; the component and the layer stack do",
+        "Do not turn a block on with its setting where the host does not announce the capability: the setting is a want, not a switch on the host",
+        "Do not keep the recent queries in the page; they are the host's data (recent.forget, recent.clear)"
       ],
       "required_reads": [
         "inputs",
         "events",
-        "ownership"
+        "ownership",
+        "port"
       ],
       "minimal_example": "<sf-search index=\"/search-index.json\"><sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button></sf-search>",
       "owner_commands": [

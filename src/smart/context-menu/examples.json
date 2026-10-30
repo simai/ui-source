@@ -152,6 +152,154 @@
       "expect": {
         "name": "Настройки"
       }
+    },
+    {
+      "name": "settings",
+      "title": "Панель настроек",
+      "settings": {
+        "aria-label": "Настройки",
+        "submenu": "drill",
+        "size": "1",
+        "entries": [
+          {
+            "type": "group",
+            "text": "Быстрые настройки",
+            "view": "tiles",
+            "items": [
+              {
+                "id": "sound",
+                "type": "switch",
+                "text": "Звук",
+                "icon": "volume_up",
+                "value": true
+              },
+              {
+                "id": "night",
+                "type": "switch",
+                "text": "Ночь",
+                "icon": "dark_mode",
+                "value": false
+              },
+              {
+                "id": "wifi",
+                "type": "switch",
+                "text": "Сеть",
+                "icon": "wifi",
+                "value": true
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Вид"
+          },
+          {
+            "id": "theme",
+            "type": "choice",
+            "text": "Тема",
+            "icon": "contrast",
+            "options": [
+              {
+                "id": "light",
+                "text": "Светлая",
+                "checked": true
+              },
+              {
+                "id": "dark",
+                "text": "Тёмная"
+              }
+            ]
+          },
+          {
+            "id": "density",
+            "type": "choice",
+            "text": "Плотность списка",
+            "icon": "format_line_spacing",
+            "view": "drill",
+            "options": [
+              {
+                "id": "compact",
+                "text": "Плотно"
+              },
+              {
+                "id": "normal",
+                "text": "Обычно",
+                "checked": true
+              },
+              {
+                "id": "loose",
+                "text": "Свободно"
+              }
+            ]
+          },
+          {
+            "id": "scale",
+            "type": "range",
+            "text": "Масштаб",
+            "icon": "format_size",
+            "value": 100,
+            "min": 80,
+            "max": 140,
+            "step": 10,
+            "unit": "%"
+          },
+          {
+            "type": "separator"
+          },
+          {
+            "id": "reset",
+            "text": "Вернуть настройки",
+            "icon": "restart_alt"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Настройки"
+      }
+    },
+    {
+      "name": "values",
+      "title": "Строки со значением",
+      "settings": {
+        "aria-label": "Вид",
+        "entries": [
+          {
+            "id": "wrap",
+            "type": "switch",
+            "text": "Переносить строки",
+            "value": true
+          },
+          {
+            "id": "numbers",
+            "type": "choice",
+            "text": "Нумерация",
+            "options": [
+              {
+                "id": "on",
+                "text": "Вкл.",
+                "checked": true
+              },
+              {
+                "id": "off",
+                "text": "Выкл."
+              }
+            ]
+          },
+          {
+            "id": "size",
+            "type": "range",
+            "text": "Размер текста",
+            "value": 14,
+            "min": 10,
+            "max": 24,
+            "step": 1,
+            "unit": "px"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Вид"
+      }
     }
   ],
   "pages": [
@@ -166,6 +314,8 @@
           "  <button id=\"outside\" type=\"button\">Снаружи</button>",
           "  <div id=\"area\"><sf-context-menu id=\"cm\" aria-label=\"Действия\" popup entries=\"[{&quot;id&quot;: &quot;edit&quot;, &quot;text&quot;: &quot;Изменить&quot;}, {&quot;id&quot;: &quot;copy&quot;, &quot;text&quot;: &quot;Копировать&quot;}, {&quot;id&quot;: &quot;move&quot;, &quot;text&quot;: &quot;Переместить&quot;}, {&quot;id&quot;: &quot;delete&quot;, &quot;text&quot;: &quot;Удалить&quot;}]\"></sf-context-menu></div>",
           "  <sf-context-menu id=\"placed\" aria-label=\"Настройки\" tabs=\"Вид|Колонки\" closable><button type=\"button\">Пункт</button></sf-context-menu>",
+          "  <sf-context-menu id=\"settings\" aria-label=\"Настройки\" submenu=\"drill\" size=\"1\" entries=\"[{&quot;type&quot;: &quot;heading&quot;, &quot;text&quot;: &quot;Вид&quot;}, {&quot;id&quot;: &quot;sound&quot;, &quot;type&quot;: &quot;switch&quot;, &quot;text&quot;: &quot;Звук&quot;, &quot;value&quot;: true}, {&quot;id&quot;: &quot;theme&quot;, &quot;type&quot;: &quot;choice&quot;, &quot;text&quot;: &quot;Тема&quot;, &quot;options&quot;: [{&quot;id&quot;: &quot;light&quot;, &quot;text&quot;: &quot;Светлая&quot;, &quot;checked&quot;: true}, {&quot;id&quot;: &quot;dark&quot;, &quot;text&quot;: &quot;Тёмная&quot;}]}, {&quot;id&quot;: &quot;lang&quot;, &quot;type&quot;: &quot;choice&quot;, &quot;view&quot;: &quot;drill&quot;, &quot;text&quot;: &quot;Язык&quot;, &quot;options&quot;: [{&quot;id&quot;: &quot;ru&quot;, &quot;text&quot;: &quot;Русский&quot;, &quot;checked&quot;: true}, {&quot;id&quot;: &quot;en&quot;, &quot;text&quot;: &quot;English&quot;}, {&quot;id&quot;: &quot;kk&quot;, &quot;text&quot;: &quot;Қазақша&quot;}]}, {&quot;id&quot;: &quot;scale&quot;, &quot;type&quot;: &quot;range&quot;, &quot;text&quot;: &quot;Масштаб&quot;, &quot;value&quot;: 100, &quot;min&quot;: 50, &quot;max&quot;: 150, &quot;step&quot;: 10, &quot;unit&quot;: &quot;%&quot;}, {&quot;type&quot;: &quot;group&quot;, &quot;text&quot;: &quot;Быстро&quot;, &quot;view&quot;: &quot;tiles&quot;, &quot;items&quot;: [{&quot;id&quot;: &quot;wifi&quot;, &quot;type&quot;: &quot;switch&quot;, &quot;text&quot;: &quot;Сеть&quot;, &quot;icon&quot;: &quot;wifi&quot;, &quot;value&quot;: false}]}]\"></sf-context-menu>",
+          "  <script>window.__seen = []; for (const verb of ['select', 'change', 'changed', 'reset']) document.addEventListener('sf-context-menu-' + verb, (event) => window.__seen.push(verb + ':' + (event.detail?.id ?? '')));</script>",
           "</main>"
         ]
       },
@@ -427,6 +577,283 @@
               "user": "keyboard:Escape",
               "wait": 200,
               "check": "!document.documentElement.dataset.sfPopoverOpen"
+            }
+          ]
+        },
+        {
+          "id": "p11-switch-row",
+          "title": "a switch row: select, then the cancelable change, then the fact, and the row shows the new value",
+          "covers": "x-registry kinds.switch, events.select, events.change, events.changed",
+          "steps": [
+            {
+              "user": "click:#settings [data-sf-entry='1']",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-context-menu-select",
+                    "count": 1,
+                    "detail": {
+                      "id": "sound",
+                      "checked": false
+                    }
+                  },
+                  {
+                    "name": "sf-context-menu-change",
+                    "count": 1,
+                    "detail": {
+                      "id": "sound",
+                      "value": false,
+                      "previous": true
+                    }
+                  },
+                  {
+                    "name": "sf-context-menu-changed",
+                    "count": 1,
+                    "detail": {
+                      "id": "sound",
+                      "value": false,
+                      "previous": true
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "window.__seen.join('|') === 'select:sound|change:sound|changed:sound'"
+            },
+            {
+              "check": "document.querySelector(\"#settings [data-sf-entry='1']\").getAttribute('aria-checked') === 'false'"
+            },
+            {
+              "check": "document.getElementById('settings').entries[1].value === false"
+            }
+          ]
+        },
+        {
+          "id": "p12-change-refused",
+          "title": "a refused change leaves the row as it was and no fact is sent",
+          "covers": "events.change cancelable",
+          "steps": [
+            {
+              "script": "(document.getElementById('settings').addEventListener('sf-context-menu-change', (event) => event.preventDefault()), true)"
+            },
+            {
+              "user": "click:#settings [data-sf-entry='1']"
+            },
+            {
+              "check": "window.__seen.join('|') === 'select:sound|change:sound'"
+            },
+            {
+              "check": "document.querySelector(\"#settings [data-sf-entry='1']\").getAttribute('aria-checked') === 'true'"
+            },
+            {
+              "check": "document.getElementById('settings').entries[1].value === true"
+            }
+          ]
+        },
+        {
+          "id": "p13-choice-drill-level",
+          "title": "a drilling choice row: the options as a level with a check mark, and choosing one goes back",
+          "covers": "x-registry kinds.choice view drill, settings.submenu drill",
+          "steps": [
+            {
+              "user": "click:#settings [data-sf-entry='3']",
+              "wait": 200,
+              "check": "document.querySelector('#settings .sf-context-menu-level-title').textContent.trim() === 'Язык'"
+            },
+            {
+              "check": "document.querySelectorAll('#settings .sf-context-menu-level-option').length === 3"
+            },
+            {
+              "check": "document.querySelectorAll('#settings .sf-context-menu-level-option')[0].getAttribute('aria-checked') === 'true'"
+            },
+            {
+              "user": "click:#settings .sf-context-menu-level-option:nth-of-type(2)",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-context-menu-change",
+                    "count": 1,
+                    "detail": {
+                      "id": "lang",
+                      "value": "en",
+                      "previous": "ru"
+                    }
+                  },
+                  {
+                    "name": "sf-context-menu-changed",
+                    "count": 1,
+                    "detail": {
+                      "id": "lang",
+                      "value": "en",
+                      "previous": "ru"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "!document.querySelector('#settings .sf-context-menu-level-option')"
+            },
+            {
+              "check": "document.querySelector(\"#settings [data-sf-entry='3'] .sf-context-menu-item-under\").textContent.trim() === 'English'"
+            }
+          ]
+        },
+        {
+          "id": "p14-range-row",
+          "title": "a range row: the slider keeps the side arrows and one key is one request",
+          "covers": "x-registry kinds.range, keyboard",
+          "steps": [
+            {
+              "script": "(document.querySelector('#settings .sf-context-menu-range-input').focus(), true)"
+            },
+            {
+              "user": "keyboard:ArrowRight",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-context-menu-change",
+                    "count": 1,
+                    "detail": {
+                      "id": "scale",
+                      "value": 110,
+                      "previous": 100
+                    }
+                  },
+                  {
+                    "name": "sf-context-menu-changed",
+                    "count": 1,
+                    "detail": {
+                      "id": "scale",
+                      "value": 110,
+                      "previous": 100
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.querySelector('#settings .sf-context-menu-range-value').textContent.trim() === '110%'"
+            },
+            {
+              "check": "document.querySelector('#settings .sf-context-menu-range-input').getAttribute('role') === null"
+            }
+          ]
+        },
+        {
+          "id": "p15-set-value-set-all-reset",
+          "title": "set-value and set-all write and say nothing; reset puts the declared values back and says changed",
+          "covers": "actions.set-value, actions.set-all, actions.reset, events.reset",
+          "steps": [
+            {
+              "action": {
+                "name": "set-value",
+                "with": {
+                  "id": "sound",
+                  "value": false
+                }
+              },
+              "target": "#settings",
+              "wait": 200
+            },
+            {
+              "check": "document.getElementById('settings').entries[1].value === false && window.__seen.length === 0"
+            },
+            {
+              "action": {
+                "name": "set-all",
+                "with": {
+                  "values": {
+                    "theme": "dark",
+                    "scale": 130
+                  }
+                }
+              },
+              "target": "#settings",
+              "wait": 200
+            },
+            {
+              "check": "document.getElementById('settings').entries[2].options[1].checked === true && document.getElementById('settings').entries[4].value === 130 && window.__seen.length === 0"
+            },
+            {
+              "action": {
+                "name": "reset"
+              },
+              "target": "#settings",
+              "wait": 200,
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-context-menu-reset",
+                    "count": 1
+                  },
+                  {
+                    "name": "sf-context-menu-changed",
+                    "count": 3
+                  }
+                ]
+              }
+            },
+            {
+              "check": "document.getElementById('settings').entries[1].value === true && document.getElementById('settings').entries[2].options[0].checked === true && document.getElementById('settings').entries[4].value === 100"
+            }
+          ]
+        },
+        {
+          "id": "p16-show-one-setting",
+          "title": "show {id} takes a drilling panel to the setting's own level",
+          "covers": "actions.show",
+          "steps": [
+            {
+              "action": {
+                "name": "show",
+                "with": {
+                  "id": "lang"
+                }
+              },
+              "target": "#settings",
+              "wait": 200
+            },
+            {
+              "check": "document.querySelector('#settings .sf-context-menu-level-title').textContent.trim() === 'Язык'"
+            },
+            {
+              "action": {
+                "name": "show",
+                "with": {
+                  "id": "nothing"
+                }
+              },
+              "target": "#settings",
+              "wait": 120,
+              "expect": {
+                "returns": {
+                  "outcome": "refused"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p17-fixed-panel-width",
+          "title": "a drilling panel keeps its 280px whatever its text, and the long label wraps",
+          "covers": "css-variables --sf-context-menu-inline-size, geometry",
+          "steps": [
+            {
+              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 280"
+            },
+            {
+              "script": "(document.getElementById('settings').setValue('nothing', 1), document.getElementById('settings').entries = [{id: 'long', type: 'switch', text: 'Очень длинное название настройки, которое не должно расширять панель', value: false}], true)",
+              "wait": 200
+            },
+            {
+              "check": "Math.round(document.querySelector('#settings .sf-context-menu-content').getBoundingClientRect().width) === 280"
+            },
+            {
+              "check": "document.querySelector(\"#settings [data-sf-entry='0'] .sf-context-menu-item-label\").getBoundingClientRect().height > 20"
             }
           ]
         }

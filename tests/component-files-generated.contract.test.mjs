@@ -45,7 +45,6 @@ const PHASE_A = [
   'site-header',
   // Made in the 1.4 form from the start (2026-10-30).
   'search',
-  'settings-menu',
   'pager',
   // The page's table of contents (2026-10-30).
   'contents',
