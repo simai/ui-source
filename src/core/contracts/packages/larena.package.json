@@ -156,6 +156,37 @@
       ]
     },
     {
+      "id": "smart.mail-canvas",
+      "element": "sf-mail-canvas",
+      "rule_name": "cl-mail-canvas",
+      "folder": "mail-canvas",
+      "requires": [
+        "smart.button-group",
+        "smart.composition-overlay"
+      ]
+    },
+    {
+      "id": "smart.mail-inspector",
+      "element": "sf-mail-inspector",
+      "rule_name": "cl-mail-inspector",
+      "folder": "mail-inspector",
+      "requires": [
+        "component.accordion",
+        "smart.breadcrumbs",
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.image-field",
+        "smart.input",
+        "smart.sortable",
+        "smart.switch",
+        "smart.tabs",
+        "smart.textarea"
+      ]
+    },
+    {
       "id": "smart.mail-letters",
       "element": "sf-mail-letters",
       "rule_name": "cl-mail-letters",
@@ -180,6 +211,20 @@
         "smart.icon",
         "smart.input",
         "utility.sr-only"
+      ]
+    },
+    {
+      "id": "smart.mail-structure",
+      "element": "sf-mail-structure",
+      "rule_name": "cl-mail-structure",
+      "folder": "mail-structure",
+      "requires": [
+        "smart.button",
+        "smart.context-menu",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.icon-button",
+        "smart.sortable"
       ]
     },
     {
