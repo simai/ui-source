@@ -111,8 +111,13 @@ try {
         const button = host.querySelector('sf-icon-button > .sf-icon-button');
         const box = button.getBoundingClientRect();
         const reach = parseFloat(getComputedStyle(button, '::after').width);
-        const hit = document.elementFromPoint(action.right - 0.5, action.top + action.height / 2);
-        return {overlap: action.right - (box.left + box.width / 2 - reach / 2), reachesAction: Boolean(hit?.closest('.sf-tag-action'))};
+        // A whole pixel in: hit testing snaps to the pixel, so half a pixel from
+        // the edge lands on the shared boundary whatever the layout says.
+        const y = action.top + action.height / 2;
+        const reaches = (x) => Boolean(document.elementFromPoint(x, y)?.closest('.sf-tag-action'));
+        const text = document.createRange();
+        text.selectNodeContents(host.querySelector('.sf-tag-container'));
+        return {overlap: action.right - (box.left + box.width / 2 - reach / 2), reachesAction: reaches(action.right - 1) && reaches(text.getBoundingClientRect().right - 1)};
       };
       const at = (name) => rowEl.querySelector(`[data-case="${name}"]`);
       const lookup = at('lookup');
