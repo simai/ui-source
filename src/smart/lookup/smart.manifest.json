@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.lookup",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "title": "Lookup",
   "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
   "kind": "smart",
@@ -173,7 +173,7 @@
       "provider": {
         "type": "object",
         "default": null,
-        "description": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?} or {status: 'unavailable'}; a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+        "description": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
       },
       "value": {
         "type": "object",

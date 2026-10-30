@@ -78,6 +78,7 @@ class SfLookup extends FormField(LookupElement) {
     this._state = 'closed';
     this._items = [];
     this._nextCursor = null;
+    this._notice = '';
     this._active = -1;
     this._refusal = '';
     this._loadingMore = false;
@@ -251,6 +252,7 @@ class SfLookup extends FormField(LookupElement) {
       items: this._items,
       activeIndex: this._active,
       nextCursor: this._nextCursor,
+      notice: this._notice,
       loadingMore: this._loadingMore,
       refusal: this._refusal,
       ariaLabel: this.getAttribute('aria-label') || '',
@@ -342,6 +344,7 @@ class SfLookup extends FormField(LookupElement) {
     this._state = 'closed';
     this._items = [];
     this._nextCursor = null;
+    this._notice = '';
     this._active = -1;
     this._refusal = '';
     if (render) this.requestComponentUpdate('close');
@@ -355,6 +358,7 @@ class SfLookup extends FormField(LookupElement) {
     const options = this._options();
     const plan = searchPlan(query, {minLength: this._minLength(), hasOptions: options.length > 0, hasProvider: Boolean(this._provider())});
     this._nextCursor = null;
+    this._notice = '';
     this._active = -1;
     if (plan === 'local') {
       this._items = filterOptions(options, query, {exclude: this._exclude(), locale: pageLocale(this)});
@@ -388,6 +392,7 @@ class SfLookup extends FormField(LookupElement) {
       this._state = 'searching';
       this._items = [];
       this._nextCursor = null;
+      this._notice = '';
       this._active = -1;
     } else {
       this._loadingMore = true;
@@ -417,6 +422,7 @@ class SfLookup extends FormField(LookupElement) {
     }
     // Retry repeats the call that failed; a good page moves on.
     this._nextCursor = read.state === 'error' ? cursor : read.nextCursor;
+    this._notice = read.notice ?? '';
     if (this._active >= this._items.length) this._active = this._items.length - 1;
     this.requestComponentUpdate('answer');
   }

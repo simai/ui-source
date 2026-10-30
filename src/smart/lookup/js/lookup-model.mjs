@@ -192,7 +192,10 @@ export function readAnswer(answer, {exclude, limit = DEFAULTS.maxResults} = {}) 
   if (!Array.isArray(answer.items)) return {state: 'error', items: [], nextCursor: null};
   const items = withoutExcluded(normaliseItems(answer.items).slice(0, Math.max(0, limit)), exclude);
   const nextCursor = present(answer.nextCursor) ? answer.nextCursor : null;
-  return {state: items.length || nextCursor !== null ? 'results' : 'empty', items, nextCursor};
+  const read = {state: items.length || nextCursor !== null ? 'results' : 'empty', items, nextCursor};
+  // A line of the host's own under the rows: «first 20 shown, narrow your search».
+  const notice = typeof answer.notice === 'string' ? answer.notice.trim() : '';
+  return notice ? {...read, notice} : read;
 }
 
 /** A page of more results joined to what is shown: in order, no item twice. */

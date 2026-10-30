@@ -68,7 +68,7 @@ function spinner(context) {
 }
 
 function stateLine(context) {
-  const {component, listState, minChars, refusal, items, loadingMore} = context;
+  const {component, listState, minChars, refusal, items, loadingMore, notice} = context;
   if (refusal) return html`<span class="sf-lookup-state-text">${refusal}</span>`;
   switch (listState) {
     case 'hint':
@@ -85,7 +85,7 @@ function stateLine(context) {
       return loadingMore
         ? html`<span class="sf-lookup-state-text">${component.sfWord('searching')}</span>`
         // Said, not shown: the rows are what a sighted person reads.
-        : html`<span class="sf-lookup-visually-hidden">${component.sfWord('results', {count: items.length})}</span>`;
+        : html`${notice ? html`<span class="sf-lookup-state-text">${notice}</span>` : nothing}<span class="sf-lookup-visually-hidden">${component.sfWord('results', {count: items.length})}</span>`;
     default:
       return nothing;
   }

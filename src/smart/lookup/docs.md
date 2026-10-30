@@ -54,6 +54,8 @@ lookup.provider = async (query, {cursor, limit, signal}) => ({items, nextCursor}
    repeats the last call.
 4. `nextCursor` shows "Show more", which calls the provider with that cursor.
    Without it there is no Show more, however many items came.
+5. `notice` in the answer is a line of the host's own under the rows, read
+   out with them: `{items, notice: 'First 20 shown, narrow your search'}`.
 
 `exclude` takes values out of every answer (the reader, current members);
 the component filters them. `options` is a short list given whole: it is

@@ -169,6 +169,12 @@ test('an answer is results, nothing found, unavailable or the error; no nextCurs
   assert.equal(readAnswer({items: [anna], nextCursor: 0}).nextCursor, 0);
 });
 
+test('an answer may carry a line of the host, trimmed; without one the read has no notice', () => {
+  assert.equal(readAnswer({items: [anna], notice: ' First 20 shown '}).notice, 'First 20 shown');
+  assert.equal('notice' in readAnswer({items: [anna]}), false);
+  assert.equal('notice' in readAnswer({items: [anna], notice: 7}), false);
+});
+
 test('Show more joins the next page in order, no item twice', () => {
   assert.deepEqual(appendItems([anna, boris], [boris, vera]), [anna, boris, vera]);
 });

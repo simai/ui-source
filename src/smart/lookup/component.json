@@ -2,7 +2,7 @@
   "$comment": "The source of sf-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.lookup",
   "tag": "sf-lookup",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -88,7 +88,7 @@
     "provider": {
       "type": "object",
       "default": null,
-      "summary": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?} or {status: 'unavailable'}; a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+      "summary": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
     },
     "required": {
       "type": "boolean",
@@ -284,6 +284,7 @@
     "hint"
   ],
   "x-decisions": [
+    "1.1.0: notice in the provider's answer, a line of the host's own under the rows, because a hint under the field is covered by the open list (UI Chat, msg-b050db447a3340ae86a0). A chip's remove target stays 24 by 24 px on touch as well, the WCAG 2.2 AA minimum: 44 would overlap the chips of the neighbouring row.",
     "name: sf-lookup, the field renderer's lookup made a component (design draft 2026-10-30). One value model with renderLookupEdit in src/smart/field-renderers: {value, label}, or a list of them when multiple; the renderer is to delegate to sf-lookup in a later pass, not keep a second implementation.",
     "search: the host answers and the component never fetches. provider is a property, a function (query, {cursor, limit, signal}) as sf-search's provider is, so the two read alike. Below min-length nothing is asked and the hint shows; the call waits debounce after the last key; a new call aborts the previous through its signal and an answer that arrives for an older call is dropped, by a sequence number as well as the signal, so a provider that ignores the signal cannot write stale rows.",
     "answers: {items, nextCursor} is results or nothing found; {status: 'unavailable'} the one neutral line (simai.chat sends ACCESS_DENIED for both a disabled catalogue and no rights, and the line says no reason); anything else, a thrown error or a rejected promise, the error line with Retry, which repeats the last call with its cursor. No nextCursor is no Show more: exactly max-results items mean nothing more (consumer answer). An answer longer than max-results is cut to it.",
