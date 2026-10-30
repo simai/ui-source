@@ -56,8 +56,6 @@ const FOLDERS = {
   'site-header': 'smart/site-header',
   // The site search window (2026-10-30): a sheet of its own.
   search: 'smart/search',
-  // Compact settings (2026-10-30): a sheet of its own.
-  'settings-menu': 'smart/settings-menu',
   // Neighbouring pages and steps (2026-10-30): a sheet of its own.
   pager: 'smart/pager',
   // The page's table of contents (2026-10-30): a sheet of its own.

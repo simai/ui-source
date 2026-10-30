@@ -788,23 +788,23 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "5c4ed7017bd4175bf8019c48720ee91056f9d25f",
+    "source_revision": "8b051e8df3c7ef92a5f43bcf7c9afdc4ddb65a66",
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
-        "sha256": "93eef6787cac3157a87936a2290ddc512cd2426af4afb0bba6cec0188ff3cb7d"
+        "sha256": "a7d731feac8ae9fc46e68d1a1ca6bada0d693c79476e422a6351a7e5241a9b1a"
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",
-        "sha256": "8a828417d54fa993641434e9086f240bc8d24505ee54ef4e093019aa437c09fb"
+        "sha256": "ce50a7a413fb0fb6028814fc450ec8b1d4416a45351d2e6b35d2eeced71b97fb"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "f22cbadd63c58fd94dc640c5ee2f319f0ba4ef3aca129666136458c93cb31d6e"
+        "sha256": "0b480b4c81e6c471523ee550b8f257a41b9ae218e2e519d0379577e3d879bdcb"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "6863bb9ab9d56ce051ae8ea26b72ec58185fab1848d110c13ceadee83fc817ad"
+        "sha256": "32a0799ee4e0bbea76eb923f1619b77ad84a69e1e229a06b9414d50549c9f562"
       }
     ],
     "generated_runtime": [
