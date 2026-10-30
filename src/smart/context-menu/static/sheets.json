@@ -101,7 +101,37 @@
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css"
     ],
+    "settings": [
+      "component/buttons/css/buttons.min.css",
+      "component/context-menu/css/context-menu.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css"
+    ],
     "submenu": [
+      "component/buttons/css/buttons.min.css",
+      "component/context-menu/css/context-menu.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css"
+    ],
+    "values": [
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
