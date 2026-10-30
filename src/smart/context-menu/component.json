@@ -173,6 +173,15 @@
       "optional": true,
       "summary": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
     },
+    "submenu": {
+      "type": "enum",
+      "values": [
+        "flyout",
+        "drill"
+      ],
+      "default": "flyout",
+      "summary": "How a row's submenu opens: flyout (a second panel beside the row, the default) or drill (the same panel shows the submenu instead of its own rows, with the way back and the parent's label in a head). A drilling panel's width never grows with the depth."
+    },
     "size": {
       "type": "enum",
       "values": [
@@ -588,7 +597,8 @@
     "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 1.5.0 quiet-choice: the choice row's framed full-width band with its dividers was called coarse twice (owner, 2026-10-30). A choice row is now the label with its options at the row's end, sized to their content, the chosen one on a soft fill one step down the ladder; view: \"band\" brings the framed form back for a row that needs it. A look, not a contract: the entry's fields, its roles and its events are the same, and a choice row now keeps the level's leading column and is narrowed by a search, as every other row is.",
-    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.5.0 drill: submenu says how a submenu opens -- flyout (a second panel beside the row) or drill (the same panel, a head with the way back and the parent's label). The default stays flyout, so no shipped menu changes; a settings panel is the recipe submenu=\"drill\" with value rows (owner, 2026-10-30). A row's place in the tree is written into its markup as a path (\"2/1\"), so the menu reads the level from the markup and the panel's width never grows with the depth."
   ],
   "x-registry": {
     "item_contract": {
@@ -600,7 +610,7 @@
             "text": "string, the label",
             "icon": "string, a Material Symbols name",
             "caption": "string, a second line under the label",
-            "value": "string, read-only value at the row's end",
+            "value": "string, read-only value at the row's end; on a drilling row it is drawn under the label, where a long value is cut instead of widening the panel",
             "shortcut": "string, shown at the row's end",
             "kind": "'check' | 'radio' for a checkable row",
             "checked": "boolean",
@@ -608,7 +618,7 @@
             "disabled": "boolean",
             "current": "boolean, the place the person is",
             "href": "string, a link row",
-            "submenu": "entries, opened beside the row",
+            "submenu": "entries: opened beside the row, or in place of the panel's own rows when the menu says submenu=\"drill\"",
             "keepOpen": "boolean, a choice does not close the menu",
             "lang": "string, the language the label is written in",
             "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
@@ -731,7 +741,7 @@
         "Tab",
         "typeahead"
       ],
-      "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
+      "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; in a drilling menu Escape and the outward arrow first go one level back, to the row the level was opened from, and close the menu only at the top level; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
     },
     "compatibility": {
       "deprecations": [

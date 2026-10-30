@@ -112,6 +112,15 @@
         "default": false,
         "description": "Not drawn until opened through openFor(). A menu without it is drawn in place, as before."
       },
+      "submenu": {
+        "type": "string",
+        "default": "flyout",
+        "description": "How a row's submenu opens: flyout (a second panel beside the row, the default) or drill (the same panel shows the submenu instead of its own rows, with the way back and the parent's label in a head). A drilling panel's width never grows with the depth.",
+        "enum": [
+          "flyout",
+          "drill"
+        ]
+      },
       "size": {
         "type": "string",
         "default": "1/2",
@@ -183,7 +192,7 @@
           "text": "string, the label",
           "icon": "string, a Material Symbols name",
           "caption": "string, a second line under the label",
-          "value": "string, read-only value at the row's end",
+          "value": "string, read-only value at the row's end; on a drilling row it is drawn under the label, where a long value is cut instead of widening the panel",
           "shortcut": "string, shown at the row's end",
           "kind": "'check' | 'radio' for a checkable row",
           "checked": "boolean",
@@ -191,7 +200,7 @@
           "disabled": "boolean",
           "current": "boolean, the place the person is",
           "href": "string, a link row",
-          "submenu": "entries, opened beside the row",
+          "submenu": "entries: opened beside the row, or in place of the panel's own rows when the menu says submenu=\"drill\"",
           "keepOpen": "boolean, a choice does not close the menu",
           "lang": "string, the language the label is written in",
           "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
@@ -543,7 +552,7 @@
       "Tab",
       "typeahead"
     ],
-    "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
+    "focus": "Rows rendered from entries carry menuitem, menuitemcheckbox or menuitemradio with aria-checked, and aria-haspopup/aria-expanded for a submenu; one roving tab stop. Opened through openFor(): the anchor gets aria-haspopup=menu and aria-expanded; Escape closes one level and returns the focus to its row or the anchor; in a drilling menu Escape and the outward arrow first go one level back, to the row the level was opened from, and close the menu only at the top level; Tab closes the whole chain; a letter moves to the next item it starts. A host that renders the menu itself owns opening, Escape/Tab dismissal and focus return, as before. A header and a note are text. The options of a choice row are menuitemradio in a group, walked by the side arrows. A searchable menu opens on its field, which keeps the letters and the side arrows; ArrowDown goes on to the rows."
   },
   "presentation": {
     "themes": [

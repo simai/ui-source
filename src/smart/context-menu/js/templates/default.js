@@ -81,23 +81,25 @@ function renderHeader(entry) {
     </div>`;
 }
 
-// The text of a row: its label and the caption under it. A long label wraps
-// instead of widening the panel.
-function renderItemText(entry) {
+// The text of a row: its label, the value under it where the row shows one (a
+// drilling row), and the caption. A long label wraps and a long value is cut
+// with the whole of it in `title`, so neither widens the panel.
+function renderItemText(entry, under = "") {
     return html`<span class="sf-context-menu-item-text">
             <span class="sf-context-menu-item-label">${entry.text ?? ""}</span>
+            ${under ? html`<span class="sf-context-menu-item-under" title=${under}>${under}</span>` : nothing}
             ${entry.caption ? html`<span class="sf-context-menu-item-caption">${entry.caption}</span>` : nothing}
         </span>`;
 }
 
 // The options of a choice, side by side. Each is a menuitemradio of the menu,
 // so the arrows walk through them as through any row.
-function renderChoiceOptions(entry, index, iconsOnly) {
+function renderChoiceOptions(entry, path, iconsOnly) {
     return (entry.options ?? []).map((option, at) => html`<button
             type="button"
             class="sf-context-menu-item sf-context-menu-choice-option"
             role="menuitemradio"
-            data-sf-entry=${index}
+            data-sf-entry=${path}
             data-sf-option=${at}
             aria-checked=${String(Boolean(option.checked))}
             aria-label=${option.text ?? nothing}
@@ -112,12 +114,12 @@ function renderChoiceOptions(entry, index, iconsOnly) {
 // no frame and no dividers, the chosen one on a soft fill. `view: "band"`
 // draws the framed full-width band instead, for a row that must show every
 // option across the panel.
-function renderChoice(entry, index, lead) {
+function renderChoice(entry, path, lead) {
     const options = entry.options ?? [];
     const iconsOnly = options.length > 0 && options.every((option) => option.icon);
     if (entry.view === "band") {
         return html`<div class="sf-context-menu-choice sf-context-menu-choice--band" role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, index, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly)}
         </div>`;
     }
     return html`<div class="sf-context-menu-value-row sf-context-menu-value-row--choice">
@@ -125,14 +127,14 @@ function renderChoice(entry, index, lead) {
         ${renderItemText(entry)}
         <span class=${joinClasses("sf-context-menu-choice", iconsOnly ? "sf-context-menu-choice--icons" : "")}
                 role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, index, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly)}
         </span>
     </div>`;
 }
 
-function renderEntry(entry, index, lead) {
+function renderEntry(entry, path, lead, context) {
     if (entry?.type === "header") return renderHeader(entry);
-    if (entry?.type === "choice") return renderChoice(entry, index, lead);
+    if (entry?.type === "choice") return renderChoice(entry, path, lead);
     if (entry?.type === "note") {
         return html`<p class="sf-context-menu-note">${entry.text ?? ""}</p>`;
     }
@@ -145,6 +147,9 @@ function renderEntry(entry, index, lead) {
     const role = ROLE[entry.kind] ?? "menuitem";
     const checkable = role !== "menuitem";
     const submenu = Array.isArray(entry.submenu) && entry.submenu.length > 0;
+    // A drilling row shows its value under the name, where a long one is cut
+    // instead of pushing the row's end about (owner, 2026-10-30).
+    const under = context?.drill && submenu ? entry.value ?? "" : "";
     const classes = joinClasses(
         "sf-context-menu-item",
         entry.danger ? "sf-context-menu-item--danger" : "",
@@ -152,20 +157,20 @@ function renderEntry(entry, index, lead) {
     );
     const body = html`
         ${renderLeadPlace(entry, lead)}
-        ${renderItemText(entry)}
-        ${entry.value ? html`<span class="sf-context-menu-item-value">${entry.value}</span>` : nothing}
+        ${renderItemText(entry, under)}
+        ${entry.value && !under ? html`<span class="sf-context-menu-item-value">${entry.value}</span>` : nothing}
         ${entry.shortcut ? html`<kbd class="sf-context-menu-item-shortcut">${entry.shortcut}</kbd>` : nothing}
         ${checkable ? html`<span class="sf-context-menu-item-check">${entry.checked ? icon("check", "") : nothing}</span>` : nothing}
         ${submenu ? icon("chevron_right", "sf-context-menu-item-chevron") : nothing}
     `;
     if (entry.href && !submenu && !entry.disabled) {
-        return html`<a class=${classes} href=${entry.href} role=${role} data-sf-entry=${index} lang=${entry.lang ?? nothing}>${body}</a>`;
+        return html`<a class=${classes} href=${entry.href} role=${role} data-sf-entry=${path} lang=${entry.lang ?? nothing}>${body}</a>`;
     }
     return html`<button
             type="button"
             class=${classes}
             role=${role}
-            data-sf-entry=${index}
+            data-sf-entry=${path}
             lang=${entry.lang ?? nothing}
             aria-checked=${checkable ? String(Boolean(entry.checked)) : nothing}
             aria-haspopup=${submenu ? "menu" : nothing}
@@ -206,8 +211,23 @@ function renderSearch(context) {
     </div>`;
 }
 
+// The way back and the parent's label, on a drilling panel's head: the panel
+// replaces its content instead of opening a second one beside it, so its width
+// never grows with the depth (owner, 2026-10-30).
+function renderDrillHead(context) {
+    return html`<div class="sf-context-menu-drill-head">
+        <sf-icon-button class="sf-context-menu-back" icon="arrow_back" appearance="link" scheme="on-surface"
+                size=${context.size === "1" ? "1" : "1/2"}
+                aria-label=${context.backLabel} title=${context.backLabel}
+                @click=${() => context.component.drillBack()}></sf-icon-button>
+        <span class="sf-context-menu-level-title">${context.level?.label ?? ""}</span>
+    </div>`;
+}
+
 function renderEntries(context) {
-    const entries = context.entries;
+    const level = context.level ?? {entries: context.entries, prefix: "", depth: 0, label: ""};
+    const entries = level.entries;
+    const prefix = level.prefix;
     const query = String(context.query ?? "").trim().toLowerCase();
     // One leading column for the whole menu: when any item has an icon, every
     // item keeps the place, so the labels start on one line.
@@ -217,8 +237,9 @@ function renderEntries(context) {
     const remote = Boolean(context.search?.remote);
     const shown = entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query));
     return html`
+        ${level.depth > 0 ? renderDrillHead(context) : nothing}
         ${context.search ? renderSearch(context) : nothing}
-        ${shown.map(([entry, index]) => renderEntry(entry, index, lead))}
+        ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context))}
         ${context.search && query && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
     `;
 }
@@ -277,6 +298,7 @@ export function renderContextMenuTemplate(context) {
         context.entries && context.entries.length ? "sf-context-menu--entries" : "",
         context.size === "1" ? "sf-context-menu--size-1" : "",
         context.panel ? "sf-context-menu--panel" : "",
+        context.drill ? "sf-context-menu--drill" : "",
         "flex",
         context.rootClass,
     );

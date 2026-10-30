@@ -1,7 +1,8 @@
 {
   "title": "Context Menu",
   "runtime": {
-    "close": "Close"
+    "close": "Close",
+    "back": "Back"
   },
   "events": {
     "search": {

@@ -24,6 +24,24 @@ const ContextMenuElement = elementFromManifest(manifest, {
 const position = () => globalThis.SF?.Position || BundledPosition;
 const TYPEAHEAD_MS = 500;
 
+// ─── drilling (1.5.0) ────────────────────────────────────────────────────────
+// A row's path in the tree, the way the template writes it into the markup:
+// "2" is a row of the level and "2/1" a row of that row's submenu. The step
+// says which list it went into, so the depth is read from the path alone.
+function entryAt(entries, path) {
+  let list = entries;
+  let entry = null;
+  for (const [, step, at] of String(path ?? "").matchAll(/([/]?)(\d+)/gu)) {
+    if (entry) list = step === "/" ? entry.submenu : null;
+    if (!Array.isArray(list)) return null;
+    entry = list[Number(at)] ?? null;
+    if (!entry) return null;
+  }
+  return entry;
+}
+
+const drillable = (entry) => Array.isArray(entry?.submenu) && entry.submenu.length > 0;
+
 const POSITION_ALIASES = {
   start: "inline-start",
   end: "inline-end",
@@ -61,6 +79,10 @@ class SfContextMenu extends ContextMenuElement {
     this.addEventListener("pointerover", this.handleEntryHover);
     this._owned = null;
     this._typeahead = {text: "", at: 0};
+    // The way down a drilling panel: the paths of the rows it was opened
+    // through, the last of them the level it shows. Empty is the top level.
+    this._drill = [];
+    this._afterRender = null;
     if (Object.prototype.hasOwnProperty.call(this, "search")) {
       const early = this.search;
       delete this.search;
@@ -95,6 +117,10 @@ class SfContextMenu extends ContextMenuElement {
     if (typeof callback === "function") return super.afterRender(callback);
     this._itemObserver.disconnect();
     this.syncMenuItems();
+    // What a drilling step asked to do once its level was drawn.
+    const run = this._afterRender;
+    this._afterRender = null;
+    run?.();
     const content = this.querySelector(".sf-context-menu-content");
     if (content) this._itemObserver.observe(content, {
       childList: true, subtree: true, attributes: true,
@@ -192,10 +218,86 @@ class SfContextMenu extends ContextMenuElement {
     this.requestComponentUpdate("entries");
   }
 
+  // The entry a row was drawn from, found by the path in its markup.
   entryOf(element) {
-    const row = element?.closest?.(".sf-context-menu-item");
+    const row = element?.closest?.(".sf-context-menu-item, .sf-context-menu-value-row");
     if (!row || !this.contains(row)) return null;
-    return this.entries[Number(row.dataset.sfEntry)] ?? null;
+    return entryAt(this.entries, row.dataset.sfEntry) ?? null;
+  }
+
+  // ─── drilling ────────────────────────────────────────────────────────────
+  // submenu="drill": a submenu replaces the panel's content instead of opening
+  // a second panel beside it, so the width never grows with the depth -- the
+  // complaint behind the 400px reader panel on ui.simai.io (owner, 2026-10-30).
+  // The default stays flyout, so no shipped menu changes.
+  get drill() {
+    return this.submenu === "drill";
+  }
+
+  // The level the panel shows: its entries, the path they are drawn under, how
+  // deep it is and the label of the row it was opened through. A path that no
+  // longer leads anywhere (the host set other entries) is dropped, so the
+  // panel falls back to the deepest level it can still show.
+  drillLevel() {
+    if (!this.drill || !this._drill.length) return {entries: this.entries, prefix: "", depth: 0, label: "", search: null};
+    let entries = this.entries;
+    let label = "";
+    let prefix = "";
+    let search = null;
+    const kept = [];
+    for (const path of this._drill) {
+      const entry = entryAt(this.entries, path);
+      if (!drillable(entry)) break;
+      kept.push(path);
+      entries = entry.submenu;
+      label = entry.text ?? "";
+      prefix = `${path}/`;
+      // A level opened from a row that asked for a search draws the field,
+      // as the flyout it replaces did.
+      search = entry.search && typeof entry.search === "object" ? entry.search : null;
+    }
+    if (kept.length !== this._drill.length) this._drill = kept;
+    return {entries, prefix, depth: kept.length, label, search};
+  }
+
+  // Into a row's submenu, in place. The focus goes to the level's first row
+  // once it is drawn.
+  drillInto(path, {focus = true} = {}) {
+    const asked = typeof path === "string" ? path : path?.dataset?.sfEntry;
+    if (!this.drill || !drillable(entryAt(this.entries, asked))) return false;
+    this._drill = [...this._drill, asked];
+    this.clearQuery();
+    if (focus) this._afterRender = () => this.focusLevelStart();
+    this.requestComponentUpdate("drill");
+    return true;
+  }
+
+  // One level back. The focus returns to the row the level was opened from.
+  drillBack({focus = true} = {}) {
+    if (!this._drill.length) return false;
+    const from = this._drill[this._drill.length - 1];
+    this._drill = this._drill.slice(0, -1);
+    this.clearQuery();
+    if (focus) this._afterRender = () => {
+      this.syncMenuItems();
+      const row = this.menuItems().find((item) => item.dataset.sfEntry === from);
+      (row ?? this.availableMenuItems()[0])?.focus({preventScroll: true});
+    };
+    this.requestComponentUpdate("drill");
+    return true;
+  }
+
+  // A level change clears what was typed, without telling a host-searched
+  // list: changing level is not a search.
+  clearQuery() {
+    if (!this._query) return;
+    this._query = "";
+    this.requestComponentUpdate("query");
+  }
+
+  focusLevelStart() {
+    this.syncMenuItems();
+    (this.searchField() ?? this.availableMenuItems()[0])?.focus({preventScroll: true});
   }
 
   // A search over the entries: a submenu given `search` (or a menu given the
@@ -248,8 +350,14 @@ class SfContextMenu extends ContextMenuElement {
       this.chooseOption(row, entry);
       return;
     }
-    if (Array.isArray(entry.submenu) && entry.submenu.length) {
+    if (drillable(entry)) {
       event.preventDefault();
+      if (this.drill) {
+        // In place: the same panel, the same width, one level deeper. A
+        // pointer leaves the focus where it is unless the level is a search.
+        this.drillInto(row, {focus: event.detail === 0 || Boolean(entry.search)});
+        return;
+      }
       // A pointer leaves the focus where it is, unless the submenu is a search:
       // whoever opened a list to find something is about to type.
       this.openSubmenu(row, entry, {focus: event.detail === 0 || entry.search ? "first" : "none"});
@@ -273,8 +381,9 @@ class SfContextMenu extends ContextMenuElement {
     clearTimeout(this._hoverTimer);
     this._hoverTimer = setTimeout(() => {
       if (this._hoverRow !== row || !this._owned) return;
+      if (this.drill) return;
       const entry = this.entryOf(row);
-      if (entry && Array.isArray(entry.submenu) && entry.submenu.length && !row.matches(":disabled")) {
+      if (entry && drillable(entry) && !row.matches(":disabled")) {
         this.openSubmenu(row, entry, {focus: "none"});
       } else {
         this.closeSubmenu({restoreFocus: false});
@@ -379,6 +488,12 @@ class SfContextMenu extends ContextMenuElement {
     this.closeSubmenu({restoreFocus: false});
     this._owned = null;
     this._hoverRow = null;
+    // The next opening starts at the top level: a panel that reopened three
+    // levels down is a panel that remembers what the person left behind.
+    if (this._drill.length) {
+      this._drill = [];
+      this.requestComponentUpdate("drill");
+    }
     // Cleared for the next opening, without telling a host-searched list:
     // closing is not a search.
     if (this._query) {
@@ -491,6 +606,14 @@ class SfContextMenu extends ContextMenuElement {
       }
       return;
     }
+    // One level back before the menu closes: the way out of a drilling panel
+    // is the way it came in. Escape at the top level closes it, as before.
+    if (this._drill.length && (event.key === "Escape" || event.key === outward)) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.drillBack();
+      return;
+    }
     if (event.key === "Escape" || (event.key === outward && this._owned.parentMenu)) {
       event.preventDefault();
       event.stopPropagation();
@@ -503,9 +626,11 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     const entry = this.entryOf(event.target);
-    if (event.key === inward && entry && Array.isArray(entry.submenu) && entry.submenu.length) {
+    if (event.key === inward && drillable(entry)) {
       event.preventDefault();
-      this.openSubmenu(event.target.closest(".sf-context-menu-item"), entry, {focus: "first"});
+      const row = event.target.closest(".sf-context-menu-item");
+      if (this.drill) this.drillInto(row);
+      else this.openSubmenu(row, entry, {focus: "first"});
       return;
     }
     if (event.key.length === 1 && event.key !== " ") this.typeahead(event);
@@ -640,16 +765,20 @@ class SfContextMenu extends ContextMenuElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    const level = this.drillLevel();
 
     return this.createTemplateContext({
       ...props,
       entries: this.entries,
-      search: this.search,
+      search: level.search ?? this.search,
       query: this.query,
       tabs: this.tabs,
       activeTab: this.activeTab,
       closable: this.closable,
       closeLabel: this.sfWord("close"),
+      backLabel: this.sfWord("back"),
+      drill: this.drill,
+      level,
       role: this.menuRole,
       panel: this.panel,
       position: this.position,

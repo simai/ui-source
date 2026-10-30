@@ -1,7 +1,8 @@
 {
   "title": "Контекстное меню",
   "runtime": {
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "back": "Назад"
   },
   "events": {
     "search": {
