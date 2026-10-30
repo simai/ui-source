@@ -105,10 +105,11 @@ for (const theme of THEMES) {
 
   for (const row of rows.filter((one) => one.tone)) {
     const key = `${row.tone}|${theme}`;
-    table[key] ??= {tone: row.tone, theme, min: Infinity, max: 0, measured: 0};
+    table[key] ??= {tone: row.tone, theme, min: Infinity, max: 0, measured: 0, sizes: {}};
     table[key].min = Math.min(table[key].min, row.ratio);
     table[key].max = Math.max(table[key].max, row.ratio);
     table[key].measured += 1;
+    table[key].sizes[row.size] = round(Math.min(table[key].sizes[row.size] ?? Infinity, row.ratio));
     check('initials hold 4.5:1', row.ratio >= 4.5, {theme, tone: row.tone, size: row.size, surface: row.surface, ratio: round(row.ratio)});
     check('the tone class is drawn', row.classes.split(/\s+/u).includes(`sf-avatar--tone-${row.tone}`), {tone: row.tone, classes: row.classes});
 
