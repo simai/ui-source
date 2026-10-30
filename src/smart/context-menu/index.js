@@ -26,13 +26,16 @@ const TYPEAHEAD_MS = 500;
 
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
 // A row's path in the tree, the way the template writes it into the markup:
-// "2" is a row of the level and "2/1" a row of that row's submenu. The step
-// says which list it went into, so the depth is read from the path alone.
+// "2" is a row of the level and "2/1" a row inside that row -- its submenu, or
+// the items of a group. The step says it went one list in, so the depth and the
+// place are read from the path alone.
+const inside = (entry) => (Array.isArray(entry?.submenu) ? entry.submenu : Array.isArray(entry?.items) ? entry.items : null);
+
 function entryAt(entries, path) {
   let list = entries;
   let entry = null;
   for (const [, step, at] of String(path ?? "").matchAll(/([/]?)(\d+)/gu)) {
-    if (entry) list = step === "/" ? entry.submenu : null;
+    if (entry) list = step === "/" ? inside(entry) : null;
     if (!Array.isArray(list)) return null;
     entry = list[Number(at)] ?? null;
     if (!entry) return null;
@@ -40,7 +43,129 @@ function entryAt(entries, path) {
   return entry;
 }
 
-const drillable = (entry) => Array.isArray(entry?.submenu) && entry.submenu.length > 0;
+// A row with a submenu: the list it opens, whichever way it opens it.
+const submenuOf = (entry) => (Array.isArray(entry?.submenu) && entry.submenu.length > 0 ? entry.submenu : null);
+
+// A choice row that asked for its options as a level of their own
+// (view: "drill"): the row shows the chosen one under its label and opens the
+// list in the panel, a check mark on the chosen option. In a flyout menu there
+// is no level to open, so the row stays the quiet one.
+const optionsOf = (entry) => (entry?.type === "choice" && entry.view === "drill"
+  && Array.isArray(entry.options) && entry.options.length > 0 ? entry.options : null);
+
+// What a drilling panel opens one level into.
+const drillable = (entry) => Boolean(submenuOf(entry) || optionsOf(entry));
+
+// ─── value rows (1.5.0) ──────────────────────────────────────────────────────
+// A setting's value lives in its entry and nowhere else: a value with two homes
+// is a value that can disagree with itself. These three rows carry one.
+const VALUE_ROWS = new Set(["switch", "range", "choice"]);
+
+// The value a row has: a boolean for a switch, a number for a range, the chosen
+// option's id for a choice.
+function entryValue(entry) {
+  if (entry?.type === "switch") return Boolean(entry.value);
+  if (entry?.type === "range") return Number(entry.value ?? entry.min ?? 0);
+  if (entry?.type === "choice") return (entry.options ?? []).find((option) => option.checked)?.id ?? null;
+  return entry?.value ?? null;
+}
+
+// What to write into a row to give it a value; null when the row cannot hold
+// that value (a choice has no such option), so a refused write stays refused.
+function valuePatch(entry, value) {
+  if (entry?.type === "switch") return {value: Boolean(value)};
+  if (entry?.type === "range") {
+    const number = Number(value);
+    return Number.isFinite(number) ? {value: number} : null;
+  }
+  if (entry?.type === "choice") {
+    const options = Array.isArray(entry.options) ? entry.options : [];
+    if (!options.some((option) => option.id === value)) return null;
+    return {options: options.map((option) => ({...option, checked: option.id === value}))};
+  }
+  return null;
+}
+
+// Every value row's value by its id, at the depth it sits: the snapshot reset
+// puts back.
+function valueMap(entries, into = {}) {
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    if (!entry || typeof entry !== "object") continue;
+    if (entry.id && VALUE_ROWS.has(entry.type)) into[entry.id] = entryValue(entry);
+    valueMap(entry.submenu, into);
+    valueMap(entry.items, into);
+  }
+  return into;
+}
+
+// The tree with one row rewritten, found by its path: the lists above it are
+// copied, so a change is a new tree and the template sees it.
+function patchAt(entries, path, patch) {
+  const steps = [...String(path ?? "").matchAll(/([/]?)(\d+)/gu)].map((found) => Number(found[2]));
+  if (!steps.length || !Array.isArray(entries)) return entries;
+  const rewrite = (list, depth) => {
+    if (!Array.isArray(list)) return list;
+    const at = steps[depth];
+    const entry = list[at];
+    if (!entry || typeof entry !== "object") return list;
+    let next;
+    if (depth + 1 === steps.length) {
+      next = {...entry, ...patch};
+    } else {
+      const key = Array.isArray(entry.submenu) ? "submenu" : "items";
+      const inner = rewrite(entry[key], depth + 1);
+      if (inner === entry[key]) return list;
+      next = {...entry, [key]: inner};
+    }
+    const copy = list.slice();
+    copy[at] = next;
+    return copy;
+  };
+  return rewrite(entries, 0);
+}
+
+// The tree with every value row a resolver answers for rewritten: what set-all
+// and reset write. A tree with nothing to change is given back as it was.
+function rewriteValues(entries, resolve) {
+  if (!Array.isArray(entries)) return {list: entries, count: 0};
+  let count = 0;
+  const list = entries.map((entry) => {
+    if (!entry || typeof entry !== "object") return entry;
+    let next = entry;
+    const patch = VALUE_ROWS.has(entry.type) ? resolve(entry) : null;
+    if (patch) {
+      next = {...entry, ...patch};
+      count += 1;
+    }
+    for (const key of ["submenu", "items"]) {
+      if (!Array.isArray(next[key])) continue;
+      const inner = rewriteValues(next[key], resolve);
+      if (!inner.count) continue;
+      next = {...next, [key]: inner.list};
+      count += inner.count;
+    }
+    return next;
+  });
+  return {list: count ? list : entries, count};
+}
+
+// The path of the entry carrying an id, at any depth: what `show` goes to.
+function pathOf(entries, id, prefix = "") {
+  const list = Array.isArray(entries) ? entries : [];
+  for (const [index, entry] of list.entries()) {
+    if (!entry || typeof entry !== "object") continue;
+    const path = `${prefix}${index}`;
+    if (entry.id === id) return path;
+    const found = pathOf(inside(entry), id, `${path}/`);
+    if (found) return found;
+  }
+  return "";
+}
+
+// What the menu walks with its arrows and holds one tab stop in: its rows, and
+// the controls that are not rows -- a range's slider keeps its own slider role
+// and its side arrows, so it is a stop rather than an item.
+const STOPS = ".sf-context-menu-item, .sf-context-menu-stop";
 
 const POSITION_ALIASES = {
   start: "inline-start",
@@ -141,8 +266,9 @@ class SfContextMenu extends ContextMenuElement {
     if (this.templateName !== "default" || this.menuRole !== "menu") return [];
     const content = this.querySelector(".sf-context-menu-content");
     // Rendered from entries, every row is an item and carries its own role
-    // (menuitem, menuitemcheckbox or menuitemradio).
-    if (this.entries.length) return Array.from(content?.querySelectorAll(".sf-context-menu-item") || []);
+    // (menuitem, menuitemcheckbox or menuitemradio); a value row's own control
+    // is a stop of the same walk, under the role the platform gives it.
+    if (this.entries.length) return Array.from(content?.querySelectorAll(STOPS) || []);
     return Array.from(content?.children || []).flatMap((child) => {
       const item = child.localName === "sf-button" ? child.querySelector("button, a[href]") : child;
       if (!item?.matches("button, a[href]")) return [];
@@ -188,7 +314,9 @@ class SfContextMenu extends ContextMenuElement {
     for (const item of this._itemAttributes.keys()) if (!items.includes(item)) this.releaseItem(item);
     if (!available.includes(this._currentItem)) this._currentItem = available[0] || null;
     for (const item of items) {
-      if (!item.classList.contains("sf-context-menu-item")) this.ownItemAttribute(item, "role", "menuitem");
+      // A row the menu drew carries its own role; a control that is not a row
+      // keeps the platform's. Only a host's own child is given menuitem.
+      if (!item.matches(STOPS)) this.ownItemAttribute(item, "role", "menuitem");
       this.ownItemAttribute(item, "tabindex", item === this._currentItem ? "0" : "-1");
     }
   }
@@ -215,14 +343,163 @@ class SfContextMenu extends ContextMenuElement {
 
   set entries(value) {
     this._entries = Array.isArray(value) ? value : null;
+    // New entries declare new values: the snapshot reset puts back is taken
+    // again from them, the next time a value row is asked for one.
+    this._declared = null;
+    this._rangeFrom = null;
     this.requestComponentUpdate("entries");
   }
 
   // The entry a row was drawn from, found by the path in its markup.
   entryOf(element) {
-    const row = element?.closest?.(".sf-context-menu-item, .sf-context-menu-value-row");
+    const row = element?.closest?.(`${STOPS}, .sf-context-menu-value-row`);
     if (!row || !this.contains(row)) return null;
     return entryAt(this.entries, row.dataset.sfEntry) ?? null;
+  }
+
+  // ─── values (1.5.0) ──────────────────────────────────────────────────────
+  // The declared values: the ones the entries carried when the host set them,
+  // taken once. Re-read after a change they would be the person's values, not
+  // the declared ones, and reset would have nothing to put back.
+  declaredValues() {
+    if (!this._declared) this._declared = valueMap(this.entries);
+    return this._declared;
+  }
+
+  // The entries after a change the menu made itself. It goes round the setter,
+  // so the declared snapshot is still the host's.
+  applyEntries(next) {
+    if (!Array.isArray(next)) return;
+    this._entries = next;
+    this.requestComponentUpdate("entries");
+  }
+
+  // One change of a value row. Three events in order, and the order is the
+  // contract: select (cancelable) -- a command row raises it alone, a value row
+  // raises both -- then change, the cancelable request, and only when select
+  // was not cancelled; the value is written after that, and changed is the
+  // fact. A refused request leaves the row as it was, so the view never shows
+  // a value its host did not take.
+  changeValue(path, value, {previous} = {}) {
+    const before = entryAt(this.entries, path);
+    const patch = valuePatch(before, value);
+    if (!patch) return false;
+    const was = previous === undefined ? entryValue(before) : previous;
+    const next = {...before, ...patch};
+    this.declaredValues();
+    const checked = before.type === "switch" ? Boolean(value) : null;
+    if (!this.sfEmit("select", {id: before.id ?? null, entry: next, checked}, {cancelable: true})) return false;
+    const fact = {id: before.id ?? null, value, previous: was, entry: next};
+    if (!this.sfEmit("change", fact, {cancelable: true})) return false;
+    this.applyEntries(patchAt(this.entries, path, patch));
+    this.sfEmit("changed", fact);
+    return true;
+  }
+
+  // A boolean setting: the row is the switch, so a press anywhere on it turns
+  // the setting. A setting is tried rather than committed, so the menu stays
+  // open unless the entry asked otherwise.
+  toggleSwitch(row, entry) {
+    const changed = this.changeValue(row.dataset.sfEntry, !entry.value, {previous: Boolean(entry.value)});
+    if (changed && entry.keepOpen === false) this.closeAll();
+    return changed;
+  }
+
+  // The number under a dragged thumb follows the pointer: the entry holds it,
+  // so the row and its number show what the person is doing. The events come
+  // when the thumb is let go, or at once from a key, which is one notch.
+  previewRange(input) {
+    const path = input?.dataset?.sfEntry;
+    const entry = entryAt(this.entries, path);
+    if (!entry) return;
+    const value = Number(input.value);
+    if (!Number.isFinite(value) || Number(entry.value) === value) return;
+    this.declaredValues();
+    if (this._rangeFrom?.path !== path) this._rangeFrom = {path, value: entryValue(entry)};
+    this.applyEntries(patchAt(this.entries, path, {value}));
+  }
+
+  // The thumb let go, or one notch from a key: the request goes out once. A
+  // refused request puts the row back where the drag began -- the preview wrote
+  // the entry so the number could follow the pointer, and nothing else did.
+  commitRange(input) {
+    const path = input?.dataset?.sfEntry;
+    const entry = entryAt(this.entries, path);
+    if (!entry) return false;
+    const from = this._rangeFrom?.path === path ? this._rangeFrom.value : entryValue(entry);
+    this._rangeFrom = null;
+    const value = Number(input.value);
+    if (!Number.isFinite(value) || value === from) return false;
+    if (this.changeValue(path, value, {previous: from})) return true;
+    this.applyEntries(patchAt(this.entries, path, {value: from}));
+    return false;
+  }
+
+  // Write a setting's value into its own entry: the host's answer to change, or
+  // a value restored on load. The menu raises nothing.
+  setValue(id, value) {
+    this.declaredValues();
+    const {list, count} = rewriteValues(this.entries, (entry) => (entry.id === id ? valuePatch(entry, value) : null));
+    if (count) this.applyEntries(list);
+    return count > 0;
+  }
+
+  // A whole map at once: a panel restored from storage in one call.
+  setAll(values) {
+    const map = values && typeof values === "object" ? values : {};
+    this.declaredValues();
+    const {list, count} = rewriteValues(this.entries, (entry) => (entry.id && Object.hasOwn(map, entry.id)
+      ? valuePatch(entry, map[entry.id])
+      : null));
+    if (count) this.applyEntries(list);
+    return count;
+  }
+
+  // The declared values back, and reset asked once. A listener that cancels it
+  // keeps the current values; otherwise the menu shows the declared ones, says
+  // changed for each row that moved and waits for the host to persist them.
+  reset() {
+    const declared = this.declaredValues();
+    if (!this.sfEmit("reset", {}, {cancelable: true})) return false;
+    const facts = [];
+    const {list, count} = rewriteValues(this.entries, (entry) => {
+      if (!entry.id || !Object.hasOwn(declared, entry.id)) return null;
+      const previous = entryValue(entry);
+      const value = declared[entry.id];
+      if (previous === value) return null;
+      const patch = valuePatch(entry, value);
+      if (patch) facts.push({id: entry.id, value, previous, entry: {...entry, ...patch}});
+      return patch;
+    });
+    if (count) this.applyEntries(list);
+    for (const fact of facts) this.sfEmit("changed", fact);
+    return true;
+  }
+
+  // Straight to one setting: the panel opens the levels down to it -- its own
+  // submenu when it has one, otherwise the level its row stands on -- and the
+  // focus goes to the row. A flyout menu has no level to go to.
+  show(id) {
+    const path = pathOf(this.entries, id);
+    if (!path || !this.drill) return false;
+    const entry = entryAt(this.entries, path);
+    const stack = [];
+    let walked = "";
+    for (const [, step, at] of path.matchAll(/([/]?)(\d+)/gu)) {
+      walked = walked ? `${walked}${step}${at}` : `${at}`;
+      if (walked !== path && drillable(entryAt(this.entries, walked))) stack.push(walked);
+    }
+    const into = drillable(entry);
+    if (into) stack.push(path);
+    this._drill = stack;
+    this.clearQuery();
+    this._afterRender = into ? () => this.focusLevelStart() : () => {
+      this.syncMenuItems();
+      const row = this.menuItems().find((item) => item.dataset.sfEntry === path);
+      (row ?? this.availableMenuItems()[0])?.focus({preventScroll: true});
+    };
+    this.requestComponentUpdate("drill");
+    return true;
   }
 
   // ─── drilling ────────────────────────────────────────────────────────────
@@ -239,25 +516,34 @@ class SfContextMenu extends ContextMenuElement {
   // longer leads anywhere (the host set other entries) is dropped, so the
   // panel falls back to the deepest level it can still show.
   drillLevel() {
-    if (!this.drill || !this._drill.length) return {entries: this.entries, prefix: "", depth: 0, label: "", search: null};
+    if (!this.drill || !this._drill.length) return {entries: this.entries, prefix: "", depth: 0, label: "", search: null, choice: null};
     let entries = this.entries;
     let label = "";
     let prefix = "";
     let search = null;
+    let choice = null;
     const kept = [];
     for (const path of this._drill) {
       const entry = entryAt(this.entries, path);
       if (!drillable(entry)) break;
       kept.push(path);
-      entries = entry.submenu;
       label = entry.text ?? "";
       prefix = `${path}/`;
+      // The option list of a choice row: the level holds no entries of its own,
+      // only that row's options, and nothing opens below it.
+      if (!submenuOf(entry)) {
+        choice = {entry, path};
+        entries = [];
+        search = null;
+        break;
+      }
+      entries = entry.submenu;
       // A level opened from a row that asked for a search draws the field,
       // as the flyout it replaces did.
       search = entry.search && typeof entry.search === "object" ? entry.search : null;
     }
     if (kept.length !== this._drill.length) this._drill = kept;
-    return {entries, prefix, depth: kept.length, label, search};
+    return {entries, prefix, depth: kept.length, label, search, choice};
   }
 
   // Into a row's submenu, in place. The focus goes to the level's first row
@@ -328,17 +614,42 @@ class SfContextMenu extends ContextMenuElement {
 
   // One option of a choice row: the menu marks it at once, so the row shows
   // the choice while the host applies it, and stays open -- a theme is tried,
-  // not committed.
+  // not committed. The row is found by its path, so a choice row inside a
+  // submenu or a group is chosen as one at the top level is.
   chooseOption(row, entry) {
-    const at = Number(row.dataset.sfOption);
+    return this.chooseOptionAt(row.dataset.sfEntry, entry, Number(row.dataset.sfOption));
+  }
+
+  chooseOptionAt(path, entry, at) {
     const option = entry.options?.[at];
-    if (!option || option.disabled) return;
+    if (!option || option.disabled) return false;
+    const previous = entryValue(entry);
     const selected = this.sfEmit("select", {id: option.id ?? null, entry: option, checked: true, group: entry.id ?? null}, {cancelable: true});
-    if (!selected) return;
-    const index = this.entries.indexOf(entry);
-    const next = {...entry, options: entry.options.map((item, i) => ({...item, checked: i === at}))};
-    this.entries = this.entries.map((item, i) => (i === index ? next : item));
+    if (!selected) return false;
+    this.declaredValues();
+    const patch = {options: entry.options.map((item, index) => ({...item, checked: index === at}))};
+    // A choice row is a value row: the cancelable change follows the
+    // uncancelled select and the fact follows the write, so a host that wants
+    // settings listens to change (or changed) alone.
+    const fact = {id: entry.id ?? null, value: option.id ?? null, previous, entry: {...entry, ...patch}};
+    if (!this.sfEmit("change", fact, {cancelable: true})) return false;
+    this.applyEntries(patchAt(this.entries, path, patch));
+    this.sfEmit("changed", fact);
     if (entry.keepOpen === false) this.closeAll();
+    return true;
+  }
+
+  // A tile of a group does what its row would: a switch turns, a choice steps
+  // on to the next option, a row with a submenu opens its level.
+  pressTile(row, entry) {
+    if (entry.type === "switch") return this.toggleSwitch(row, entry);
+    if (entry.type === "choice") {
+      const options = Array.isArray(entry.options) ? entry.options : [];
+      if (!options.length) return false;
+      const at = options.findIndex((option) => option.checked);
+      return this.chooseOptionAt(row.dataset.sfEntry, entry, (at + 1) % options.length);
+    }
+    return false;
   }
 
   handleEntryClick(event) {
@@ -347,10 +658,13 @@ class SfContextMenu extends ContextMenuElement {
     const entry = this.entryOf(row);
     if (!entry) return;
     if (row.dataset.sfOption !== undefined) {
-      this.chooseOption(row, entry);
+      const chose = this.chooseOption(row, entry);
+      // An option chosen in the level the row opened: the panel goes back to
+      // the rows, the focus to the row it came from -- the choice is made.
+      if (chose && row.classList.contains("sf-context-menu-level-option")) this.drillBack();
       return;
     }
-    if (drillable(entry)) {
+    if (this.drill ? drillable(entry) : submenuOf(entry)) {
       event.preventDefault();
       if (this.drill) {
         // In place: the same panel, the same width, one level deeper. A
@@ -361,6 +675,18 @@ class SfContextMenu extends ContextMenuElement {
       // A pointer leaves the focus where it is, unless the submenu is a search:
       // whoever opened a list to find something is about to type.
       this.openSubmenu(row, entry, {focus: event.detail === 0 || entry.search ? "first" : "none"});
+      return;
+    }
+    // A value row: the row is the control, so a press on it changes the
+    // setting and the menu stays open.
+    if (row.classList.contains("sf-context-menu-tile")) {
+      event.preventDefault();
+      this.pressTile(row, entry);
+      return;
+    }
+    if (entry.type === "switch") {
+      event.preventDefault();
+      this.toggleSwitch(row, entry);
       return;
     }
     const checkable = entry.kind === "check" || entry.kind === "radio";
@@ -383,7 +709,7 @@ class SfContextMenu extends ContextMenuElement {
       if (this._hoverRow !== row || !this._owned) return;
       if (this.drill) return;
       const entry = this.entryOf(row);
-      if (entry && drillable(entry) && !row.matches(":disabled")) {
+      if (entry && submenuOf(entry) && !row.matches(":disabled")) {
         this.openSubmenu(row, entry, {focus: "none"});
       } else {
         this.closeSubmenu({restoreFocus: false});
@@ -586,6 +912,11 @@ class SfContextMenu extends ContextMenuElement {
     if (!this.contains(event.target)) return;
     const rtl = getComputedStyle(this.surface() ?? document.documentElement).direction === "rtl";
     const inward = rtl ? "ArrowLeft" : "ArrowRight", outward = rtl ? "ArrowRight" : "ArrowLeft";
+    // In a range row the side arrows, Home, End and the digits are the
+    // slider's: the platform moves the value. The menu keeps Escape, Tab and
+    // its own up and down walk.
+    if (event.target?.classList?.contains("sf-context-menu-range-input")
+      && !["Escape", "Tab", "ArrowDown", "ArrowUp"].includes(event.key)) return;
     // Inside a choice row the side arrows move between its options.
     const option = event.target?.closest?.(".sf-context-menu-choice-option");
     if (option && (event.key === inward || event.key === outward)) {
@@ -626,7 +957,7 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     const entry = this.entryOf(event.target);
-    if (event.key === inward && drillable(entry)) {
+    if (event.key === inward && (this.drill ? drillable(entry) : submenuOf(entry))) {
       event.preventDefault();
       const row = event.target.closest(".sf-context-menu-item");
       if (this.drill) this.drillInto(row);
@@ -652,6 +983,9 @@ class SfContextMenu extends ContextMenuElement {
 
   handleMenuKeyDown(event) {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    // Home and End take a slider to its ends; the menu does not take them away.
+    if (event.target?.classList?.contains("sf-context-menu-range-input")
+      && (event.key === "Home" || event.key === "End")) return;
     const items = this.availableMenuItems(), index = items.indexOf(event.target);
     if (index < 0) return;
     let next;
@@ -777,6 +1111,9 @@ class SfContextMenu extends ContextMenuElement {
       closable: this.closable,
       closeLabel: this.sfWord("close"),
       backLabel: this.sfWord("back"),
+      // What a switch tile says it is set to, in the menu's language.
+      onLabel: this.sfWord("on"),
+      offLabel: this.sfWord("off"),
       drill: this.drill,
       level,
       role: this.menuRole,
