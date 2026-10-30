@@ -392,11 +392,11 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "ecdffb00e8df002909cd5f2e115f76023df2bbc5",
+    "source_revision": "da01ba5e32693c170f5c00aee694d16085a47a47",
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "758c78308045fcfde262f23a0ce7a97ec7d64146606831a911863c031e117d92"
+        "sha256": "436ece281d6850bdfa663e0fbf1de38830cd7d41427f7ba79cc38fc648fdfe05"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
