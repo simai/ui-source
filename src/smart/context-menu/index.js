@@ -675,9 +675,11 @@ class SfContextMenu extends ContextMenuElement {
     if (this.drill ? drillable(entry) : submenuOf(entry)) {
       event.preventDefault();
       if (this.drill) {
-        // In place: the same panel, the same width, one level deeper. A
-        // pointer leaves the focus where it is unless the level is a search.
-        this.drillInto(row, {focus: event.detail === 0 || Boolean(entry.search)});
+        // In place: the same panel, the same width, one level deeper. The
+        // row that held the focus is gone from the level, so the focus always
+        // moves into it: left behind it falls to the body, where no key of the
+        // menu is heard. Moved by a pointer, it draws no ring.
+        this.drillInto(row, {focus: true});
         return;
       }
       // A pointer leaves the focus where it is, unless the submenu is a search:
@@ -916,10 +918,22 @@ class SfContextMenu extends ContextMenuElement {
   // Escape, Tab, typeahead and the submenu keys belong to a menu that owns its
   // lifecycle. A host that renders the menu itself keeps them, as before.
   handleOwnedKeyDown(event) {
-    if (!this._owned || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
     if (!this.contains(event.target)) return;
     const rtl = getComputedStyle(this.surface() ?? document.documentElement).direction === "rtl";
     const inward = rtl ? "ArrowLeft" : "ArrowRight", outward = rtl ? "ArrowRight" : "ArrowLeft";
+    // A drilling panel the page placed: nothing to close and no walk of its
+    // own, but the way out of a level is the same as in an opened menu. The
+    // side arrows stay the slider's and the search field's.
+    if (!this._owned) {
+      const editing = event.target?.classList?.contains("sf-context-menu-range-input") || event.target === this.searchField();
+      if (this._drill?.length && (event.key === "Escape" || (event.key === outward && !editing))) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.drillBack();
+      }
+      return;
+    }
     // In a range row the side arrows, Home, End and the digits are the
     // slider's: the platform moves the value. The menu keeps Escape, Tab and
     // its own up and down walk.
