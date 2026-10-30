@@ -1,12 +1,9 @@
 import {html, nothing} from 'lit';
 import './default.css';
+import {closeSize} from '../close-size.js';
 
-// Sizes 1, 2 and 3 take the larger close and dot; 1/2 and 1/3 the smaller.
+// Sizes 1, 2 and 3 take the larger dot; 1/2 and 1/3 the smaller.
 const LARGE_SIZES = new Set(['1', '2', '3']);
-
-function closeSize(size) {
-    return LARGE_SIZES.has(size) ? '1/3' : '1/4';
-}
 
 function dotSize(size) {
     return LARGE_SIZES.has(size) ? '1/2' : '1/3';

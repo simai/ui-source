@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "title": "Badges",
-  "summary": "A short non-interactive label for a status, category, version or count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
+  "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -22,7 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.badges"
+      "component.badges",
+      "component.spinner"
     ],
     "public_parts": []
   },
@@ -95,6 +96,24 @@
           "warning",
           "error"
         ]
+      },
+      "activity": {
+        "type": "string",
+        "default": "",
+        "description": "Where a run stands: running draws a spinner in the icon's place, waiting, done, stopped and failed an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it.",
+        "enum": [
+          "",
+          "running",
+          "waiting",
+          "done",
+          "stopped",
+          "failed"
+        ]
+      },
+      "compact": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
       },
       "text": {
         "type": "string",
@@ -250,7 +269,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "95e09e2c98b24b02827b9fe6e7dc015373cbccd3e1789ae391946d18085e21b6"
+        "sha256": "cd6692146f376e2f119f9dffdfeb769417a7c177ce450580ee7681f6517870a5"
       }
     ],
     "generated_runtime": [

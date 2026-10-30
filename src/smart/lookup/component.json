@@ -2,7 +2,7 @@
   "$comment": "The source of sf-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.lookup",
   "tag": "sf-lookup",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -297,7 +297,9 @@
     "list surface: the panel is a popover (manual) in the top layer, anchored under the frame with SF.Position at the frame's width, flipped above when there is no room, as sf-dropdown's list; it stays inside the element, so focus leaving the element closes it without a document listener. Rows are the class markup of the avatars sheet (a photo or initials) beside the label and caption: no element per row.",
     "geometry: the frame is sf-input's at sizes 1/2, 1, 2 -- the hairline, --sf-radius--ui, the block padding of each size and the inline padding plus the text inset -- so an empty lookup, a single one holding a value and sf-input of the same size are one height. Chips are sf-tag on the field's text line (line = size), so one row of chips keeps that height.",
     "a11y: the combobox pattern of ARIA 1.2 with aria-activedescendant; the focus stays in the search box while the arrows move the active row, so a screen reader hears the row and typing goes on. Colours are role tokens: on-surface on the field and on the elevated list, on-surface-variant for captions, the hint, the placeholder and the state lines, primary-container for the active row, error for the error line -- the pairs the theme makes AA in light and dark.",
-    "css-variables: eight public variables, sf-input's seven in the field's pattern (§6) and the list's background, listed in src/core/contracts/public-variables.v1.json."
+    "css-variables: eight public variables, sf-input's seven in the field's pattern (§6) and the list's background, listed in src/core/contracts/public-variables.v1.json.",
+    "version 1.0.1: the chip's height cap is gone. It held the chip to the field's line because sf-tag 1.1.5 drew its remove button at size 1 (20.39px on a 20px line at field size 1/2); sf-tag 1.1.6 keeps the button to the line itself, so the chip is the line high at every size without it. Measured on the built bytes: chip and remove button 20px at sizes 1/3 and 1/2, 24 at 1, 28 at 2 and 3.",
+    "version 1.0.2: wrapped chips' remove targets no longer overlap. sf-tag's target is --sf-c2 (24px) square centred on the line; on a 16px line with the 4px row gap the targets of neighbouring rows overlapped by 4px, so a click in that band could remove a chip on the other row. The frame's row gap is now the larger of --sf-space-1/4 and --sf-c2 minus the line, at every size and viewport; the column gap and the height of a single row do not change."
   ],
   "x-registry": {
     "reuse_mode": "whole",

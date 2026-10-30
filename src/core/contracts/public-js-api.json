@@ -63,6 +63,13 @@
       ]
     },
     {
+      "name": "SF.workspace",
+      "status": "public",
+      "kind": "function",
+      "loaded_by": "core",
+      "summary": "The workspace layout's controller for an .sf-workspace element: show('list' | 'main') sets the narrow view, panel(open) opens or closes the panel (a column when wide, a drawer below); view, panelOpen and layout read the state. The events sf-workspace-view {view} and sf-workspace-panel {open} fire on the element (docs/developer/workspace-layout.md)."
+    },
+    {
       "name": "SF.Composition",
       "status": "public",
       "kind": "object",

@@ -1,3 +1,10 @@
 {
-  "title": "Бейджи"
+  "title": "Бейджи",
+  "runtime": {
+    "activity-running": "Выполняется",
+    "activity-waiting": "Нужен ваш ответ",
+    "activity-done": "Готово",
+    "activity-stopped": "Остановлено",
+    "activity-failed": "Не удалось"
+  }
 }

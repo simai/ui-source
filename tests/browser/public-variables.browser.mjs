@@ -199,6 +199,11 @@ const DRAW = {
   // fill), each from links written inside; the first link is current.
   contents: {css: ['buttons', 'icons', 'smart/smart/contents/css/contents.css'], js: 'contents',
     html: '<sf-contents layout="column" sticky="false"><a href="#a">A</a><a href="#b" data-level="3">B</a></sf-contents><sf-contents layout="bar" sticky="false"><a href="#a">A</a><a href="#b">B</a></sf-contents>'},
+  // The workspace layout, in a container below the wide width with the panel
+  // open: a drawer, whose fill is the variable's. The core sheet draws it; no
+  // Smart module. The region widths are measured by
+  // tests/browser/workspace-layout.browser.mjs, in the container they follow.
+  workspace: {css: [], js: [], html: '<div style="inline-size:800px;block-size:300px"><div class="sf-workspace" data-sf-workspace-panel="open"><nav class="sf-workspace-rail">R</nav><section class="sf-workspace-list">L</section><section class="sf-workspace-main">M</section><aside class="sf-workspace-panel">P</aside></div></div>'},
 };
 
 // The properties a role may change; a value nothing in the Framework uses.
@@ -206,7 +211,8 @@ const ROLES = {
   // A toast lays its tint over the raised surface as an image layer.
   background: {properties: ['background-color', 'background-image'], value: 'rgb(1, 2, 3)'},
   color: {properties: ['color'], value: 'rgb(4, 5, 6)'},
-  'border-color': {properties: ['border-top-color', 'border-bottom-color'], value: 'rgb(7, 8, 9)'},
+  // A divider between columns is a border at the inline edge (sf-workspace).
+  'border-color': {properties: ['border-top-color', 'border-bottom-color', 'border-inline-start-color', 'border-inline-end-color'], value: 'rgb(7, 8, 9)'},
   // A track drawn with an outline (sf-toggle).
   'outline-color': {properties: ['outline-color'], value: 'rgb(16, 17, 18)'},
   'border-width': {properties: ['border-top-width', 'border-bottom-width'], value: '7px'},
