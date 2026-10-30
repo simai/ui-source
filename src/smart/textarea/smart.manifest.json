@@ -442,7 +442,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/textarea/index.js",
-        "sha256": "a1ba7415d096498443e99b1688f0ee605de0096f233c174dab0d4712532e76e9"
+        "sha256": "69bc7e2b713f21f72776adb3f92097638d29038b80b16ff24a497e0083ad74dc"
       },
       {
         "path": "src/smart/textarea/rule.js",
