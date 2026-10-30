@@ -59,6 +59,11 @@ test('the sheet is logical and respects reduced motion', () => {
   assert.match(sheet, /:dir\(rtl\) > \.sf-workspace-panel/u, 'the drawer comes from the left in RTL');
 });
 
+test('no logical property inside a step: the build writes each out for both directions', () => {
+  const steps = sheet.slice(sheet.indexOf('@each $step, $width in $sf-workspace-split-steps'));
+  assert.doesNotMatch(steps, /^\s*(?:inset-|inline-size|block-size|min-inline|max-inline|border-inline|margin-inline|padding-inline)[a-z-]*\s*:/mu);
+});
+
 test('public variables and the JS API list the workspace', () => {
   const variables = JSON.parse(read('src/core/contracts/public-variables.v1.json')).components.find(({component}) => component === 'workspace');
   assert.deepEqual(variables.variables.map(({name}) => name), [

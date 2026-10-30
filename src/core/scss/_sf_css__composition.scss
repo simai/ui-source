@@ -180,6 +180,9 @@ $sf-workspace-wide-default: h6;
     @return '.sf-workspace.sf-workspace--#{$kind}-#{$step}';
 }
 
+// Logical properties stand in the base rules, never inside the step loops: the
+// build writes each one out for both directions, and a dozen steps of them cost
+// 45 KB of core.css (candidate wslayout2). The steps say only what is not logical.
 @layer sf.components {
     .sf-workspace {
         container: sf-workspace / inline-size;
@@ -196,7 +199,7 @@ $sf-workspace-wide-default: h6;
 
     // Each region scrolls on its own; the layout the script reads is said on
     // every region (narrow, split, wide).
-    .sf-workspace > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+    .sf-workspace > * {
         --sf-workspace--layout: narrow;
         box-sizing: border-box;
         min-inline-size: 0;
@@ -209,7 +212,7 @@ $sf-workspace-wide-default: h6;
        the script moves it there (an empty drawer, main shown without a back
        control); like sf-drawer's panel it draws no ring of its own, the
        controls inside it do. */
-    .sf-workspace > :is(.sf-workspace-list, .sf-workspace-main, .sf-workspace-panel)[tabindex="-1"]:focus {
+    .sf-workspace > [tabindex="-1"]:focus {
         outline: none;
     }
 
@@ -220,7 +223,7 @@ $sf-workspace-wide-default: h6;
 
     .sf-workspace > .sf-workspace-list {
         flex: 0 0 var(--sf-workspace-list, var(--sf-g0));
-        border-inline-end: var(--sf-px) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
+        border-inline-end: var(--sf-workspace--list-edge, var(--sf-px)) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
     }
 
     .sf-workspace > .sf-workspace-main {
@@ -228,9 +231,13 @@ $sf-workspace-wide-default: h6;
     }
 
     // One panel, shown only while it is open: a column when wide, a drawer
-    // below. Its open state outlives a change of width.
+    // below. Its open state outlives a change of width. The insets only act
+    // once a step makes it absolute.
     .sf-workspace > .sf-workspace-panel {
-        flex: 0 0 var(--sf-workspace-panel, var(--sf-g1));
+        flex: 0 0 auto;
+        inset-block: 0;
+        inset-inline-end: 0;
+        inline-size: min(var(--sf-workspace-panel, var(--sf-g1)), 100%);
         border-inline-start: var(--sf-px) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
     }
 
@@ -258,13 +265,13 @@ $sf-workspace-wide-default: h6;
             }
 
             #{$scope} > .sf-workspace-list {
+                --sf-workspace--list-edge: 0;
                 flex: 1 1 0;
-                border-inline-end: 0;
             }
         }
 
         @container sf-workspace (width >= #{$width}) {
-            #{$scope} > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+            #{$scope} > * {
                 --sf-workspace--layout: split;
             }
 
@@ -282,17 +289,12 @@ $sf-workspace-wide-default: h6;
         @container sf-workspace (width < #{$width}) {
             #{$scope} > .sf-workspace-panel {
                 position: absolute;
-                inset-block: 0;
-                inset-inline-end: 0;
                 // Above anything main raises; the workspace is its own stacking
                 // context (a size container), so this stays inside it.
                 z-index: var(--sf-z-index-layer, 9000);
-                inline-size: min(var(--sf-workspace-panel, var(--sf-g1)), 100%);
-                border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
                 background: var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface));
                 color: var(--sf-on-surface);
                 box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-black) var(--sf-opacity-60), transparent);
-                translate: 0 0;
 
                 // It slides in from its edge, unless motion is reduced.
                 @media (prefers-reduced-motion: no-preference) {
@@ -314,10 +316,9 @@ $sf-workspace-wide-default: h6;
         }
 
         @container sf-workspace (width >= #{$width}) {
-            #{$scope} > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+            #{$scope} > * {
                 --sf-workspace--layout: wide;
             }
         }
     }
-
 }
