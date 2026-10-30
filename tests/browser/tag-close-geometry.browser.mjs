@@ -73,7 +73,7 @@ const WRAP_PEOPLE = ['Anna Petrova', 'Boris Ivanov', 'Vera Smirnova', 'Gleb Orlo
 const wrapped = (size) => `<div data-wrap="${size}" style="display:grid;gap:8px;inline-size:220px">
   <sf-input data-field="input" size="${size}" label="Text"></sf-input>
   <sf-lookup data-field="empty" size="${size}" multiple label="Text"></sf-lookup>
-  <sf-lookup data-field="one-row" size="${size}" multiple label="Text" value='["p0"]'>${island({options: WRAP_PEOPLE})}</sf-lookup>
+  <sf-lookup data-field="one-row" size="${size}" multiple label="Text" value='["short"]'>${island({options: [{value: 'short', label: 'Anna'}]})}</sf-lookup>
   <sf-lookup data-field="wrapped" size="${size}" multiple label="Text" value='${JSON.stringify(WRAP_PEOPLE.map(({value}) => value))}'>${island({options: WRAP_PEOPLE})}</sf-lookup>
 </div>`;
 current = `<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8">
