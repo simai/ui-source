@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.context-menu",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -224,7 +224,10 @@
         "fields": {
           "type": "'choice'",
           "id": "string, reported as group",
-          "text": "string, the group's name",
+          "text": "string, the group's name, drawn at the start of the row",
+          "icon": "string, a Material Symbols name in the lead",
+          "caption": "string, a second line under the name",
+          "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill) or 'band' (the framed full-width band, for a row that must show every option across the panel)",
           "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
         }
       },

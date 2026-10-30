@@ -59,6 +59,12 @@ function renderLead(entry) {
     return entry.icon ? icon(entry.icon, "sf-context-menu-item-icon") : nothing;
 }
 
+// The leading column of the level: kept for every row once any row of it has
+// something to lead with, so the labels start on one line.
+function renderLeadPlace(entry, lead) {
+    return lead ? html`<span class="sf-context-menu-item-lead">${renderLead(entry)}</span>` : nothing;
+}
+
 // Who the menu is about -- the signed-in person at the top of a profile menu.
 // Text, not an item: it is read, not chosen.
 function renderHeader(entry) {
@@ -75,28 +81,58 @@ function renderHeader(entry) {
     </div>`;
 }
 
-// A choice of a few options side by side -- the theme in a profile menu. Each
-// option is a menuitemradio of the menu, so the arrows walk through them as
-// through any row.
-function renderChoice(entry, index) {
-    return html`<div class="sf-context-menu-choice" role="group" aria-label=${entry.text ?? nothing}>
-        ${(entry.options ?? []).map((option, at) => html`<button
-                type="button"
-                class="sf-context-menu-item sf-context-menu-choice-option"
-                role="menuitemradio"
-                data-sf-entry=${index}
-                data-sf-option=${at}
-                aria-checked=${String(Boolean(option.checked))}
-                aria-label=${option.text ?? nothing}
-                title=${option.text ?? nothing}
-                ?disabled=${Boolean(option.disabled)}
-        >${option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`)}
+// The text of a row: its label and the caption under it. A long label wraps
+// instead of widening the panel.
+function renderItemText(entry) {
+    return html`<span class="sf-context-menu-item-text">
+            <span class="sf-context-menu-item-label">${entry.text ?? ""}</span>
+            ${entry.caption ? html`<span class="sf-context-menu-item-caption">${entry.caption}</span>` : nothing}
+        </span>`;
+}
+
+// The options of a choice, side by side. Each is a menuitemradio of the menu,
+// so the arrows walk through them as through any row.
+function renderChoiceOptions(entry, index, iconsOnly) {
+    return (entry.options ?? []).map((option, at) => html`<button
+            type="button"
+            class="sf-context-menu-item sf-context-menu-choice-option"
+            role="menuitemradio"
+            data-sf-entry=${index}
+            data-sf-option=${at}
+            aria-checked=${String(Boolean(option.checked))}
+            aria-label=${option.text ?? nothing}
+            title=${iconsOnly ? option.text ?? nothing : nothing}
+            ?disabled=${Boolean(option.disabled)}
+    >${option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`);
+}
+
+// A choice of a few options -- the theme in a profile menu, a setting in a
+// panel. The quiet form, the default since 1.5.0 (owner, 2026-10-30): the
+// label on its own row with the options at its end, sized to their content,
+// no frame and no dividers, the chosen one on a soft fill. `view: "band"`
+// draws the framed full-width band instead, for a row that must show every
+// option across the panel.
+function renderChoice(entry, index, lead) {
+    const options = entry.options ?? [];
+    const iconsOnly = options.length > 0 && options.every((option) => option.icon);
+    if (entry.view === "band") {
+        return html`<div class="sf-context-menu-choice sf-context-menu-choice--band" role="group" aria-label=${entry.text ?? nothing}>
+            ${renderChoiceOptions(entry, index, iconsOnly)}
+        </div>`;
+    }
+    return html`<div class="sf-context-menu-value-row sf-context-menu-value-row--choice">
+        ${renderLeadPlace(entry, lead)}
+        ${renderItemText(entry)}
+        <span class=${joinClasses("sf-context-menu-choice", iconsOnly ? "sf-context-menu-choice--icons" : "")}
+                role="group" aria-label=${entry.text ?? nothing}>
+            ${renderChoiceOptions(entry, index, iconsOnly)}
+        </span>
     </div>`;
 }
 
 function renderEntry(entry, index, lead) {
     if (entry?.type === "header") return renderHeader(entry);
-    if (entry?.type === "choice") return renderChoice(entry, index);
+    if (entry?.type === "choice") return renderChoice(entry, index, lead);
     if (entry?.type === "note") {
         return html`<p class="sf-context-menu-note">${entry.text ?? ""}</p>`;
     }
@@ -115,11 +151,8 @@ function renderEntry(entry, index, lead) {
         entry.current ? "sf-context-menu-item--current" : "",
     );
     const body = html`
-        ${lead ? html`<span class="sf-context-menu-item-lead">${renderLead(entry)}</span>` : nothing}
-        <span class="sf-context-menu-item-text">
-            <span class="sf-context-menu-item-label">${entry.text ?? ""}</span>
-            ${entry.caption ? html`<span class="sf-context-menu-item-caption">${entry.caption}</span>` : nothing}
-        </span>
+        ${renderLeadPlace(entry, lead)}
+        ${renderItemText(entry)}
         ${entry.value ? html`<span class="sf-context-menu-item-value">${entry.value}</span>` : nothing}
         ${entry.shortcut ? html`<kbd class="sf-context-menu-item-shortcut">${entry.shortcut}</kbd>` : nothing}
         ${checkable ? html`<span class="sf-context-menu-item-check">${entry.checked ? icon("check", "") : nothing}</span>` : nothing}
@@ -141,7 +174,13 @@ function renderEntry(entry, index, lead) {
     >${body}</button>`;
 }
 
-const ROWS = (entry) => entry && !["separator", "heading", "header", "choice", "note"].includes(entry.type);
+// What is not a row: the blocks that stand between rows. A choice row is a
+// row since 1.5.0 (the quiet form, owner 2026-10-30): it has a lead, a label
+// and a value of its own, so it keeps the level's leading column and a search
+// narrows to it.
+const BLOCKS = new Set(["separator", "heading", "header", "note"]);
+
+const ROWS = (entry) => entry && !BLOCKS.has(entry.type);
 
 // What a search narrows to: the rows whose label or caption holds the query.
 function matches(entry, query) {

@@ -267,9 +267,71 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   line-height: var(--sf-text-height-1\/3);
 }
 
-/* A few options side by side, one segment each, in a hairline frame. */
+/* ─── value rows: the label at the start, what changes it at the end ──── */
+/* A row that carries a value of its own -- a quiet choice since 1.5.0 (owner,
+   2026-10-30). It stands on the rows' own geometry: as tall as a field of the
+   menu's size, its content starting on the field axis, a caption making it
+   taller by its own line. It is not a menu item: the control inside it is. */
+.sf-context-menu-value-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-block: var(--sf-a2);
+  padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
+  color: var(--sf-context-menu-color, var(--sf-on-surface));
+}
+
+/* A few options at the end of the label's row, sized to their content: no
+   frame, no dividers, the chosen one on a soft fill. The coarse full-width
+   band with its hairline frame was called coarse twice (owner, 2026-10-30);
+   it is still reachable as `view: "band"`. */
 .sf-context-menu-choice {
   display: flex;
+  flex: none;
+  gap: var(--sf-px);
+}
+
+.sf-context-menu-choice-option.sf-context-menu-item {
+  flex: none;
+  justify-content: center;
+  inline-size: auto;
+  min-block-size: var(--sf-context-menu--inner-height);
+  padding-block: 0;
+  padding-inline: var(--sf-context-menu--inner-space-x);
+  border-radius: var(--sf-radius-circle);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-context-menu--inner-text-size);
+  line-height: var(--sf-context-menu--inner-line);
+  --sf-icon--color: currentColor;
+}
+
+/* Options that are all icons are square on the same step. */
+.sf-context-menu-choice--icons .sf-context-menu-choice-option.sf-context-menu-item {
+  inline-size: var(--sf-context-menu--inner-height);
+  padding-inline: 0;
+  --sf-icon--font-size: var(--sf-context-menu--inner-line);
+  --sf-icon--width: var(--sf-context-menu--inner-line);
+  --sf-icon--height: var(--sf-context-menu--inner-line);
+}
+
+.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
+  color: var(--sf-on-surface);
+  background-color: var(--sf-surface-container-hover);
+}
+
+.sf-context-menu-choice-option[aria-checked="true"] {
+  background-color: var(--sf-secondary-container);
+  color: var(--sf-on-secondary-container);
+  font-weight: var(--sf-font-weight-medium);
+  --sf-icon--color: var(--sf-on-secondary-container);
+}
+
+/* The framed full-width band: every option across the panel, one segment
+   each, in a hairline frame -- for the rare row that must show them all. */
+.sf-context-menu-choice--band {
+  gap: 0;
   margin-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   margin-block: var(--sf-a2);
   border: var(--sf-px) solid var(--sf-outline-variant);
@@ -277,21 +339,23 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
   overflow: hidden;
 }
 
-.sf-context-menu-choice-option.sf-context-menu-item {
+.sf-context-menu-choice--band .sf-context-menu-choice-option.sf-context-menu-item {
   flex: 1 1 0;
-  justify-content: center;
+  inline-size: 100%;
+  min-block-size: calc(var(--sf-context-menu--line) + 2 * var(--sf-context-menu--space-y));
+  padding-block: var(--sf-a2);
   padding-inline: 0;
   border-radius: 0;
+  color: var(--sf-context-menu-color, var(--sf-on-surface));
+  font-size: inherit;
+  line-height: inherit;
+  --sf-icon--font-size: var(--sf-context-menu--line);
+  --sf-icon--width: var(--sf-context-menu--line);
+  --sf-icon--height: var(--sf-context-menu--line);
 }
 
-.sf-context-menu-choice-option + .sf-context-menu-choice-option {
+.sf-context-menu-choice--band .sf-context-menu-choice-option + .sf-context-menu-choice-option {
   border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
-}
-
-.sf-context-menu-choice-option[aria-checked="true"] {
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  --sf-icon--color: var(--sf-on-secondary-container);
 }
 
 .sf-context-menu-note {
@@ -502,6 +566,7 @@ sf-context-menu[popup] > .sf-context-menu:not(.sf-context-menu--open) {
 @media (pointer: coarse) {
   @layer sf.states {
     .sf-context-menu .sf-context-menu-item,
+    .sf-context-menu .sf-context-menu-value-row,
     .sf-context-menu .sf-context-menu-row,
     .sf-context-menu .sf-context-menu-content > .sf-button,
     .sf-context-menu .sf-context-menu-content > sf-button > .sf-button {

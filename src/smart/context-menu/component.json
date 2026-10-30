@@ -2,7 +2,7 @@
   "$comment": "The source of sf-context-menu's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.context-menu",
   "tag": "sf-context-menu",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -154,6 +154,10 @@
         },
         "options": {
           "type": "list",
+          "optional": true
+        },
+        "view": {
+          "type": "string",
           "optional": true
         }
       },
@@ -583,6 +587,7 @@
     "dismissing: an owned menu asks before it closes, sf-context-menu-close {reason, unsaved} (§19.3): escape, outside, close (its head's close button), api (a choice, Tab, a script). A placed menu's head button sends the same request for its host to close it, as before. The actions keep their boolean answers (openFor, toggleFor, close) until their callers move -- a leftover.",
     "version 1.4.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.4.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
+    "version 1.5.0 quiet-choice: the choice row's framed full-width band with its dividers was called coarse twice (owner, 2026-10-30). A choice row is now the label with its options at the row's end, sized to their content, the chosen one on a soft fill one step down the ladder; view: \"band\" brings the framed form back for a row that needs it. A look, not a contract: the entry's fields, its roles and its events are the same, and a choice row now keeps the level's leading column and is narrowed by a search, as every other row is.",
     "version 1.4.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-registry": {
@@ -636,7 +641,10 @@
           "fields": {
             "type": "'choice'",
             "id": "string, reported as group",
-            "text": "string, the group's name",
+            "text": "string, the group's name, drawn at the start of the row",
+            "icon": "string, a Material Symbols name in the lead",
+            "caption": "string, a second line under the name",
+            "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill) or 'band' (the framed full-width band, for a row that must show every option across the panel)",
             "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
           }
         },

@@ -62,6 +62,13 @@
   --sf-context-menu--block-space: var(--sf-space-1\/3);
   --sf-context-menu--inset-start: var(--sf-context-menu--item-inset-start-1\/2);
   --sf-context-menu--inset-end: var(--sf-context-menu--item-inset-end-1\/2);
+  // A control inside a row -- the pills of a quiet choice, a range's value --
+  // is a step down the one ladder: it has to read as part of the row, not as
+  // a second row inside it.
+  --sf-context-menu--inner-height: var(--sf-ui-1\/3--control-height);
+  --sf-context-menu--inner-space-x: var(--sf-ui-1\/3--space-x);
+  --sf-context-menu--inner-text-size: var(--sf-text-size-1\/3);
+  --sf-context-menu--inner-line: var(--sf-text-height-1\/3);
 }
 
 .sf-context-menu.sf-context-menu--size-1 .sf-context-menu-content {
@@ -72,6 +79,10 @@
   --sf-context-menu--block-space: var(--sf-space-1\/2);
   --sf-context-menu--inset-start: var(--sf-context-menu--item-inset-start-1);
   --sf-context-menu--inset-end: var(--sf-context-menu--item-inset-end-1);
+  --sf-context-menu--inner-height: var(--sf-ui-1\/2--control-height);
+  --sf-context-menu--inner-space-x: var(--sf-ui-1\/2--space-x);
+  --sf-context-menu--inner-text-size: var(--sf-text-size-1\/2);
+  --sf-context-menu--inner-line: var(--sf-text-height-1\/2);
 }
 
 .sf-context-menu .sf-context-menu-content > .sf-button.sf-button--size-1\/2,

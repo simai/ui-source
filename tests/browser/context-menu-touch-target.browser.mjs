@@ -9,7 +9,9 @@
 //     radio, a row with a value, a choice segment, a button row -- is at least
 //     44px tall, and its label stands on the row's centre line;
 //   - fine pointer: at 390px no row takes the touch floor, and at 1440px every
-//     one-line row is exactly the control height of the menu's size, as before.
+//     one-line row is exactly the control height of the menu's size, as before --
+//     except the options of a quiet choice row, which stand one step down the
+//     ladder inside the row (sf-context-menu 1.5.0, owner 2026-10-30).
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -77,11 +79,23 @@ const measure = async (browser, label, options) => {
         probe.remove();
         return height;
       })();
+      const inner = (() => {
+        const probe = document.createElement('div');
+        probe.style.blockSize = `var(--sf-ui-${size === '1' ? '1\\/2' : '1\\/3'}--control-height)`;
+        document.body.append(probe);
+        const height = probe.getBoundingClientRect().height;
+        probe.remove();
+        return height;
+      })();
       return [...surface.querySelectorAll('.sf-context-menu-item')].map((row) => {
         const box = row.getBoundingClientRect();
         const label = row.querySelector('.sf-context-menu-item-label') || row;
         const text = label.getBoundingClientRect();
-        return {menu: id, row: (row.querySelector('.sf-context-menu-item-label') || row).textContent.trim().slice(0, 16), height: box.height, control,
+        // An option of a quiet choice is a control inside a row, a step down
+        // the one ladder: it is measured against that step, not the row's.
+        const option = row.classList.contains('sf-context-menu-choice-option');
+        return {menu: id, row: (row.querySelector('.sf-context-menu-item-label') || row).textContent.trim().slice(0, 16), height: box.height,
+          control: option ? inner : control,
           middle: Math.abs((text.top + text.height / 2) - (box.top + box.height / 2))};
       });
     }, {id, size}));

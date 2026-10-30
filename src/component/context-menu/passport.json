@@ -13,7 +13,7 @@
     "src/component/context-menu/scss/_css__context_menu_custom.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "e2d662a1c0c0e19a3844941c85bef2f764fcad0841e8fcc8603162e008eb5cdb",
+  "content_sha256": "a32aeec84360173c9239fa50e1568d19777f6074a76645470943b337dec136c8",
   "dependencies": [
     {
       "id": "tokens.border",
@@ -21,6 +21,10 @@
     },
     {
       "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
       "range": "^1.0.0"
     },
     {
