@@ -1,0 +1,39 @@
+{
+  "id": "a-stale-confirmation-is-asked-again",
+  "intent": "group.save",
+  "summary": "A digest that no longer matches the save -- the values or the object moved since it was issued -- is answered with a new confirmation, not applied.",
+  "given": {
+    "capabilities": [],
+    "confirms": [
+      "group.save"
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "section": "main",
+      "group": "terms",
+      "values": {
+        "type": {
+          "value": "single",
+          "label": "Разовый"
+        }
+      },
+      "revision": "7",
+      "confirm": "c0ffee"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason",
+      "confirm"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required again, with a new summary and digest. The component shows the new summary; a person confirms what will actually happen."
+  }
+}

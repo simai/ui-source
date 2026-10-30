@@ -1,0 +1,37 @@
+{
+  "id": "an-html-field-is-saved-as-the-cleaned-string",
+  "intent": "group.save",
+  "summary": "An html field arrives as a string of the sf-rich-text subset and is saved as the string the editor cleaned: its markup kept, nothing outside the subset sent.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "body",
+        "label": "Описание",
+        "propertyType": "html",
+        "placeholder": "Текст страницы",
+        "value": "<p>Первый абзац</p><ul><li>пункт</li></ul>"
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "section": "main",
+      "group": "content",
+      "values": {
+        "body": "<p>Первый абзац с <strong>важным</strong> и <a href=\"https://simai.io/\">ссылкой</a></p><ul><li>пункт</li></ul>"
+      },
+      "revision": "4"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The value is a string, never a tree. The editor writes only the subset (p, h2-h4, strong, em, a with an https:, mailto:, tel: or site href, ul, ol, li, blockquote, br), so what the host receives already holds no script, style, on* attribute or javascript: link; the host still cleans what it stores by its own rule, since a save is not the only way a value reaches it. A value the host sends is cleaned again before it is drawn, so a stored value from elsewhere is never shown raw."
+  }
+}

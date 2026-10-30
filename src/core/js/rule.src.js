@@ -770,6 +770,7 @@ import '../../smart/image-field/rule.js';
 import '../../smart/inline-editor/rule.js';
 import '../../smart/input/rule.js';
 import '../../smart/list-item/rule.js';
+import '../../smart/lookup/rule.js';
 import '../../smart/menu/rule.js';
 import '../../smart/modal/rule.js';
 import '../../smart/pagination/rule.js';

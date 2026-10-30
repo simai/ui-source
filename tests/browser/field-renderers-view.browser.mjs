@@ -82,6 +82,9 @@ try {
       {key: 'section', label: 'Раздел', propertyType: 'record'},
       {key: 'docs', label: 'Файлы', propertyType: 'file'},
       {key: 'unknown', label: 'Цвет', propertyType: 'colour'},
+      // Formatted text (property-view port 1.17.0) with a hostile value: what
+      // is drawn is the value cleaned by sf-rich-text's rule, never the value.
+      {key: 'body', label: 'Описание', propertyType: 'html'},
     ];
     const values = {
       title: 'Первая запись', count: 42, bare: 7, progress: 64, when: '2026-10-06',
@@ -90,6 +93,10 @@ try {
       section: {label: 'Платежи', href: '/admin/cms/record-1'},
       docs: [{label: 'contract.pdf', size: '240 KB', mime: 'application/pdf', href: '/files/f1'}],
       unknown: '#ff0000',
+      body: '<p onclick="window.__sfPwned=1">Текст <strong onmouseover="window.__sfPwned=2">важный</strong>'
+        + ' <a href="javascript:window.__sfPwned=3">плохая</a> <a href="https://simai.io/">хорошая</a></p>'
+        + '<script>window.__sfPwned=4<\/script><img src="x" onerror="window.__sfPwned=5">'
+        + '<style>p{color:red}</style><ul><li>пункт</li></ul>',
     };
     // The host formats a date, which is the one thing the view template asks a
     // host for: the set has no locale and must not invent one.
@@ -153,7 +160,19 @@ try {
       overflow: Math.round(many.scrollWidth - many.clientWidth),
     };
 
+    const bodyBox = document.querySelector('[data-field="body"]');
+    const bodyNodes = [...(bodyBox?.querySelectorAll('*') ?? [])];
+    const htmlView = {
+      tags: [...new Set(bodyNodes.map((node) => node.localName))].sort(),
+      onAttributes: bodyNodes.flatMap((node) => [...node.attributes].map((attribute) => attribute.name)).filter((name) => /^on/iu.test(name)),
+      hrefs: [...(bodyBox?.querySelectorAll('a') ?? [])].map((node) => node.getAttribute('href')),
+      strong: bodyBox?.querySelector('strong')?.textContent ?? null,
+      pwned: window.__sfPwned ?? null,
+      cell: set.renderCellField({key: 'body', propertyType: 'html'}, values.body),
+    };
+
     return {
+      htmlView,
       wrap,
       rendered,
       control: Math.round(control),
@@ -192,6 +211,18 @@ try {
       if (measured.rendered?.[key] === 'null') {
         note({case: `the view template renders ${key}`, got: 'null', expected: 'a template'});
       }
+    }
+    // Formatted text: the subset is drawn, nothing outside it is, and nothing ran.
+    const htmlView = measured.htmlView || {};
+    const allowed = new Set(['div', 'p', 'strong', 'a', 'ul', 'li']);
+    if (measured.rendered?.body === 'null' || htmlView.strong !== 'важный'
+      || htmlView.tags?.some((tag) => !allowed.has(tag)) || htmlView.onAttributes?.length
+      || JSON.stringify(htmlView.hrefs) !== JSON.stringify(['https://simai.io/']) || htmlView.pwned !== null) {
+      note({case: 'an html value is drawn cleaned: no script, style, image, on* attribute or javascript: link', got: htmlView,
+        expected: {tags: [...allowed], onAttributes: [], hrefs: ['https://simai.io/'], strong: 'важный', pwned: null}});
+    }
+    if (htmlView.cell !== 'Текст важный плохая хорошая пункт') {
+      note({case: 'an html cell is its text on one line', got: htmlView.cell, expected: 'Текст важный плохая хорошая пункт'});
     }
     // The unit is the field's, and a field without one gets no invented unit.
     if (measured.text?.count !== '42 шт' || measured.text?.bare !== '7') {
