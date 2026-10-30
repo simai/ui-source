@@ -250,6 +250,27 @@ try {
   b = await boxes();
   check('hidden list, narrow, view=list: main still shown', b.main.shown && !b.list.shown, b);
 
+  // The region widths and the gap are the page's to set, on any ancestor.
+  await open(page());
+  await tab.evaluate(() => {
+    const host = document.getElementById('host').style;
+    host.setProperty('--sf-workspace-rail', '50px');
+    host.setProperty('--sf-workspace-list', '200px');
+    host.setProperty('--sf-workspace-panel', '300px');
+    host.setProperty('--sf-workspace-gap', '10px');
+    document.getElementById('ws').setAttribute('data-sf-workspace-panel', 'open');
+  });
+  b = await boxes();
+  evidence.variables = b;
+  check('the variables set the rail, list and panel widths', b.rail.width === 50 && b.list.width === 200 && b.panel.width === 300, b);
+  check('the gap stands between the regions', b.list.x === b.rail.right + 10 && b.main.x === b.list.right + 10, b);
+  await width(800);
+  b = await boxes();
+  check('the panel variable sizes the drawer too', b.panel.position === 'absolute' && b.panel.width === 300, b);
+  await width(250);
+  b = await boxes();
+  check('a container narrower than the panel caps the drawer', b.panel.width === 250 && b.panel.right === 250, b);
+
   // 9. A class moves the thresholds.
   await open(page('ltr', 'sf-workspace--split-h4 sf-workspace--wide-i0'));
   await width(1100);

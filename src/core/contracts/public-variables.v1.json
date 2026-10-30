@@ -3530,21 +3530,21 @@
       "variables": [
         {
           "name": "--sf-workspace-rail",
-          "role": "size",
+          "role": "inline-size",
           "summary": "The rail's width, before the list; its content's width when unset.",
           "default": "auto",
           "since": "2026-10-30"
         },
         {
           "name": "--sf-workspace-list",
-          "role": "size",
+          "role": "inline-size",
           "summary": "The list's width beside main (the split and wide layouts).",
           "default": "var(--sf-g0)",
           "since": "2026-10-30"
         },
         {
           "name": "--sf-workspace-panel",
-          "role": "size",
+          "role": "inline-size",
           "summary": "The panel's width, as a column and as a drawer (capped by the workspace).",
           "default": "var(--sf-g1)",
           "since": "2026-10-30"
