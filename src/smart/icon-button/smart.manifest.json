@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon-button",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -84,11 +84,12 @@
       "scheme": {
         "type": "string",
         "default": "primary",
-        "description": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this.",
+        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants (sf-button 1.2.0 has the same value). A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this.",
         "enum": [
           "primary",
           "secondary",
-          "on-surface"
+          "on-surface",
+          "on-surface-variant"
         ]
       },
       "status": {

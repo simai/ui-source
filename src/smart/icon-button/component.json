@@ -2,7 +2,7 @@
   "$comment": "The source of sf-icon-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.icon-button",
   "tag": "sf-icon-button",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -45,10 +45,11 @@
       "values": [
         "primary",
         "secondary",
-        "on-surface"
+        "on-surface",
+        "on-surface-variant"
       ],
       "default": "primary",
-      "summary": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this."
+      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants (sf-button 1.2.0 has the same value). A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "type": "enum",
@@ -330,7 +331,8 @@
     "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.3: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0: a minor (§4.10): the scheme value on-surface-variant is added, the same name and the same meaning sf-button 1.2.0 gave it -- the on-surface family one step quieter, the glyph in --sf-on-surface-variant. Until now that grey was reachable only by accident: every pair of appearance and scheme sets --sf-icon--color except the ones nobody wrote a rule for (secondary outside tonal), where the base colour showed through. The element carries sf-icon-button--on-surface beside the new class, so every on-surface rule (fill, edge, states) holds and one rule in the custom sheet quietens the glyph and a close control's cross; a filled control is left alone (:not(--default))."
   ],
   "x-rule": {
     "$comment-after": [

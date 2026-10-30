@@ -43,6 +43,9 @@ export function renderIconButtonTemplate(context) {
         // for something destructive -- and a scheme says which colour family it
         // takes; they cannot both paint it.
         `sf-icon-button--${status || scheme || 'primary'}`,
+        // on-surface-variant is the on-surface family one step quieter: both
+        // classes, so every on-surface rule holds and one rule quietens it.
+        !status && scheme === 'on-surface-variant' ? 'sf-icon-button--on-surface' : '',
         tightness ? `tightness-${tightness}` : '',
         radius ? `radius-${radius}` : '',
         rootClass,

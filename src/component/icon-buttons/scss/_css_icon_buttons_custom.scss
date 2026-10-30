@@ -126,6 +126,23 @@
   }
 }
 
+@layer sf.components {
+  /* on-surface-variant (sf-icon-button scheme): the on-surface family one step
+     quieter. The control carries sf-icon-button--on-surface as well, so its
+     fill and edge are on-surface's; here the glyph takes
+     --sf-on-surface-variant (a tonal control has already turned that role to
+     its container's variant). A filled (default) control keeps on-surface's
+     inverse glyph: on a dark fill there is no quieter step. Hover, press and
+     disabled are the states' (sf.states), as for on-surface. */
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+}
+
 @layer sf.states {
   .sf-icon-button:is(:disabled, .disabled) .sf-icon-button-spinner {
     color: var(--sf-loader--color, var(--sf-on-disable));

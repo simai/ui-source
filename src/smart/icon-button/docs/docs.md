@@ -38,8 +38,13 @@ Main attributes:
   keyboard reaches it. The icon keeps the scheme colour, because a fill that
   faint cannot carry one. Both are right in a light and in a dark theme without
   being redeclared.
-- `scheme="primary|secondary|on-surface"` — which colour family the control
-  takes.
+- `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
+  family the control takes. `on-surface-variant` is `on-surface` one step
+  quieter: the same fill and edge, the glyph in `--sf-on-surface-variant`.
+  That is what a quiet trigger wants — beside a field, in a panel's head,
+  next to a row — and `sf-button` says it the same way. A filled
+  (`appearance="default"`) control keeps the inverse glyph of `on-surface`:
+  on a dark fill there is no quieter step.
 - `status="error"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone: it paints with the error
   family's twin of every primary role, so it behaves exactly like a primary

@@ -59,10 +59,11 @@ const sfIconButtonMeta = {
       "values": [
         "primary",
         "secondary",
-        "on-surface"
+        "on-surface",
+        "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the glyph in --sf-on-surface-variant, which is what a quiet trigger beside a field or in a panel's head wants (sf-button 1.2.0 has the same value). A filled (default) control keeps on-surface's inverse glyph: on a dark fill there is no quieter step. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
