@@ -12,7 +12,8 @@
 // the 1/2 text line plus a space-1/4 inset above and below, the label and the
 // links start on one axis, the current bar is a2 wide on the 1 px line.
 //
-// 375 px, the same element: compact. The button names the current section,
+// 375 px, the same element: compact. Scrolled, the button stays in view on an
+// opaque band, and sticky="false" lets it scroll away (1.1.0). The button names the current section,
 // opens and closes the list (aria-expanded, data-open), Escape gives focus
 // back, a row of the open list is the 1/2 control height, the progress line
 // follows the scroll.
@@ -35,7 +36,7 @@ const SECTIONS = [['intro', 'Введение', 2], ['install', 'Подключ�
 const paragraph = '<p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится. Размеры идут по одной шкале, цвета — по ролям темы.</p>';
 const article = SECTIONS.map(([id, text, level]) => `<h${level} id="${id}">${text}</h${level}>${paragraph.repeat(6)}`).join('');
 const STYLE = '<style>body{margin:0}.page{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:24px;max-width:1100px;margin:0 auto;padding:16px}'
-  + '@media (max-width:59.99rem){.page{grid-template-columns:minmax(0,1fr)}.page aside{order:-1}}</style>';
+  + '@media (max-width:59.99rem){.page{display:flex;flex-direction:column}.page aside{display:contents}.page .sf-contents{order:-1}}</style>';
 const head = (scripts) => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
 ${scripts ? '<script>window.sfPath=\'/distr/\';window.sfSmartPath=\'/distr/\';</script>' : ''}
 <link rel="stylesheet" href="/distr/core/css/core.css">
@@ -341,6 +342,38 @@ try {
       bar: document.querySelector('#toc .sf-contents-progress-value').getBoundingClientRect().width / document.querySelector('#toc .sf-contents-progress').getBoundingClientRect().width,
       scroll: window.scrollY / (document.documentElement.scrollHeight - innerHeight),
     }), TOGGLE);
+    // Sticky (1.1.0): the page scrolls under the button, so it stays in view
+    // with a band of the page's own surface behind it. Nothing of the article
+    // may show through: the band is opaque and as wide as the element.
+    await tab.evaluate(() => window.scrollTo(0, 1200));
+    await settle(tab);
+    const stuck = await tab.evaluate((s) => {
+      // The element is display: contents; the box that sticks is the nav it draws.
+      const host = document.querySelector('#toc .sf-contents');
+      const button = document.querySelector(s);
+      const head = document.querySelector('#toc .sf-contents-head');
+      const style = getComputedStyle(host);
+      const box = host.getBoundingClientRect();
+      return {position: style.position, top: Math.round(box.top), stops: Math.round(parseFloat(style.insetBlockStart)),
+        fill: style.backgroundColor, width: Math.round(box.width), headWidth: Math.round(head.getBoundingClientRect().width),
+        shown: Boolean(button?.getClientRects().length), covers: Math.round(box.bottom - button.getBoundingClientRect().bottom)};
+    }, TOGGLE);
+    seen.compactSticky = stuck;
+    if (stuck.position !== 'sticky' || stuck.top !== stuck.stops || !stuck.shown) failures.push(`375: the scrolled compact button is ${JSON.stringify(stuck)}`);
+    if (!/^rgb\(/u.test(stuck.fill)) failures.push(`375: the sticky button's band is ${stuck.fill}, not an opaque fill`);
+    if (stuck.width < stuck.headWidth || stuck.covers < 4) failures.push(`375: the band does not cover the head: ${JSON.stringify(stuck)}`);
+    // Without it the button scrolls away, as 1.0.0 drew it.
+    await tab.evaluate(() => document.querySelector('#toc').setAttribute('sticky', 'false'));
+    await settle(tab);
+    const loose = await tab.evaluate(() => {
+      const host = document.querySelector('#toc .sf-contents');
+      return {position: getComputedStyle(host).position, top: Math.round(host.getBoundingClientRect().top), fill: getComputedStyle(host).backgroundColor};
+    });
+    seen.compactNotSticky = loose;
+    if (loose.position !== 'relative' || loose.top > -100 || loose.fill !== 'rgba(0, 0, 0, 0)') failures.push(`375: sticky="false" still holds the button: ${JSON.stringify(loose)}`);
+    await tab.evaluate(() => { document.querySelector('#toc').removeAttribute('sticky'); window.scrollTo(0, 0); });
+    await settle(tab);
+
     seen.compactPicked = picked;
     if (picked.expanded !== 'false' || picked.current !== 'events' || !picked.text.includes('События')) failures.push(`375: a picked section: ${JSON.stringify(picked)}`);
     if (Math.abs(picked.bar - picked.scroll) > 0.02) failures.push(`375: the progress line reads ${picked.bar}, the page is scrolled ${picked.scroll}`);
