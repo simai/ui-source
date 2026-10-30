@@ -350,6 +350,16 @@
     "resize/default",
     "text-max-width/default"
   ],
+  "cl-rich-text": [
+    "align-items/default",
+    "container/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "font-style/default",
+    "font-weight/default",
+    "position/default"
+  ],
   "cl-search": [
     "display/default",
     "sr-only/default"

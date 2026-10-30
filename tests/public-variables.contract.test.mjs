@@ -68,6 +68,8 @@ const FOLDERS = {
   tree: 'tree',
   'tree-item': 'tree-item',
   'theme-generator': 'smart/theme-generator',
+  // sf-rich-text (2026-10-30): a sheet of its own, sf-textarea's set of names.
+  'rich-text': 'smart/rich-text',
 };
 
 const scss = async (folder) => {

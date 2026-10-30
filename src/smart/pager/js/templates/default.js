@@ -41,7 +41,7 @@ function renderRow(context) {
 }
 
 function renderSteps(context) {
-  const {component, items, current, complete, size, prevLabel, nextLabel, doneLabel, place} = context;
+  const {component, list: items, at: current, complete, size, prevLabel, nextLabel, doneLabel, placeText: place} = context;
   const last = current >= items.length - 1;
   const item = items[current];
   return html`
@@ -57,7 +57,7 @@ function renderSteps(context) {
 }
 
 function lessonCard(context) {
-  const {component, items, current, complete, size, doneLabel, words} = context;
+  const {component, list: items, at: current, complete, size, doneLabel, words} = context;
   if (complete) {
     return html`<div class="sf-pager-lesson sf-pager-lesson--finished">
       ${icon('check_circle', 'sf-pager-lesson-mark')}
@@ -80,7 +80,7 @@ function lessonCard(context) {
 }
 
 function renderCourse(context) {
-  const {items, current, complete, place} = context;
+  const {list: items, at: current, complete, placeText: place} = context;
   const stage = (index) => (complete || index < current ? 'done' : index === current ? 'current' : 'ahead');
   return html`
     <div class="sf-pager-progress">
@@ -92,7 +92,7 @@ function renderCourse(context) {
 }
 
 function renderCounter(context) {
-  const {component, items, current, size, place, words} = context;
+  const {component, list: items, at: current, size, placeText: place, words} = context;
   return html`
     <sf-icon-button class="sf-pager-back" size=${size} appearance="outline" scheme="on-surface" icon="chevron_left"
       aria-label=${words.prevItem} ?disabled=${current <= 0} @click=${() => component.press('prev')}></sf-icon-button>
