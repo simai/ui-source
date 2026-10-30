@@ -1,0 +1,25 @@
+{
+  "title": "Rich text",
+  "runtime": {
+    "toolbar": "Formatting",
+    "paragraph": "Paragraph",
+    "heading-2": "Heading 2",
+    "heading-3": "Heading 3",
+    "heading-4": "Heading 4",
+    "bold": "Bold",
+    "italic": "Italic",
+    "link": "Link",
+    "bulleted-list": "Bulleted list",
+    "numbered-list": "Numbered list",
+    "quote": "Quote",
+    "undo": "Undo",
+    "redo": "Redo",
+    "link-dialog": "Link",
+    "link-address": "Link address",
+    "link-hint": "https://…, mailto:, tel: or a path on this site such as /about",
+    "link-invalid": "Use an https:, mailto: or tel: address, or a path on this site that starts with /.",
+    "link-apply": "Apply",
+    "link-remove": "Remove link",
+    "value-missing": "Enter some text."
+  }
+}

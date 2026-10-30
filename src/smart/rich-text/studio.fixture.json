@@ -1,0 +1,16 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.rich-text",
+  "title": "rich text reference",
+  "summary": "Deterministic reference fixture for sf-rich-text.",
+  "locale": "en",
+  "props": {
+    "label": "Page text",
+    "name": "body",
+    "hint": "Paragraphs, headings, lists, quotes and links.",
+    "value": "<h2>About us</h2><p>We make <strong>tools</strong> for <a href=\"/docs\">documentation</a>.</p><ul><li>Fast</li><li>Accessible</li></ul>"
+  },
+  "children": [],
+  "state": "default"
+}
