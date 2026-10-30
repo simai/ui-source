@@ -1267,6 +1267,60 @@
         "render",
         "interaction",
         "keyboard",
+        "form",
+        "validation",
+        "async",
+        "popup",
+        "selection",
+        "theme",
+        "responsive",
+        "i18n"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "component.avatars",
+          "component.icon-buttons",
+          "component.icons",
+          "smart.button",
+          "smart.spinner",
+          "smart.tag"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-lookup",
+      "id": "smart.lookup",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/lookup/smart.manifest.json",
+      "manifest_sha256": "063334108c19d491846d79c9b1faad4d9603587315eb733407e3ff04b80af9ae",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
+      "tags": [
+        "lookup",
+        "picker",
+        "people",
+        "autocomplete",
+        "combobox",
+        "search",
+        "field",
+        "form"
+      ],
+      "title": "Lookup"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "keyboard",
         "theme",
         "responsive",
         "navigation"

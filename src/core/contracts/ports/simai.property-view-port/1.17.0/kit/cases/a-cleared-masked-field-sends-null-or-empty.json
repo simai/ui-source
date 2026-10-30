@@ -1,0 +1,44 @@
+{
+  "id": "a-cleared-masked-field-sends-null-or-empty",
+  "intent": "group.save",
+  "summary": "A masked field the person cleared sends null, or \"\" when it declares nullable false.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "phone",
+        "propertyType": "string",
+        "mask": "+7 (000) 000-00-00",
+        "value": "+7 (912) 345-67-89"
+      },
+      {
+        "key": "inn",
+        "propertyType": "string",
+        "mask": "0000000000",
+        "nullable": false,
+        "value": "7701234567"
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contacts",
+      "section": "main",
+      "group": "phones",
+      "values": {
+        "phone": null,
+        "inn": ""
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "Empty is not incomplete: an optional masked field may be emptied. A required one is sent the same way -- required is a mark, and the host validates as it always did."
+  }
+}
