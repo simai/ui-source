@@ -3,7 +3,8 @@
 // corner of its own, for its own time -- so messages turned up anywhere and
 // one on top of another (owner, 2026-10-13). Now there is one place for them.
 //
-// SF.notify({status, title, text, action, duration, source, key}) shows a toast
+// SF.notify({status, title, text, action, duration, source, key}), or a string as
+// the text, shows a toast
 // in the page's notification area and says so with the `sf-notification` event
 // on the document, which a notification centre (Larena's) records. The area
 // lives in the top layer, at one edge of the window; messages stack with a gap,
@@ -149,12 +150,19 @@ function normalise(options) {
 
 /**
  * Shows a message in the page's notification area and announces it with the
- * `sf-notification` event. Returns {id, close()}; null when nothing was given.
+ * `sf-notification` event. A string is the message's text. Returns
+ * {id, close()}; null, with a warning, when there is nothing to show.
  */
-export function notify(options = {}) {
+export function notify(input = {}) {
   if (typeof document === 'undefined') return null;
+  const options = typeof input === 'string' ? {text: input} : (input ?? {});
   const {status, title, text, duration} = normalise(options);
-  if (!title && !text) return null;
+  if (!title && !text) {
+    // A refusal nobody can see cost a project a long search (external feedback,
+    // 2026-10-30): the page is told why nothing appeared.
+    console.warn('SF.notify: nothing to show; give a string or {title, text}.', input);
+    return null;
+  }
   state.counter += 1;
   const record = Object.freeze({
     id: `n${Date.now().toString(36)}${state.counter}`,

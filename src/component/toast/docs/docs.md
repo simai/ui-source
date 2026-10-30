@@ -43,6 +43,9 @@ const handle = SF.notify({
 handle.close();
 ```
 
+A string is the message's text: `SF.notify('Saved')`. With nothing to show the
+call returns `null` and warns in the console.
+
 - The area sits at one edge of the window in the top layer (bottom-end by
   default; `SF.notifications.configure({placement: 'top-end', max: 4})`).
   Messages stack with a gap; at most four show at once and the rest wait their

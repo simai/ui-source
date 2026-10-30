@@ -146,7 +146,7 @@
       "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Shows a message in the page's one notification area."
+      "summary": "Shows a message in the page's one notification area: a string is its text, an object carries status, title, text and the rest."
     },
     {
       "name": "SF.notifications",
