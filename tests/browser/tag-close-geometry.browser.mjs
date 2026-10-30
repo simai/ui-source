@@ -20,6 +20,10 @@
 // width: a size's line at 1280 is not its line at 900.
 // And in sf-lookup 1.0.1, without its old height cap: the chip is the field's
 // line high and its close box no taller than that line.
+// And in sf-lookup 1.0.2, chips wrapped in a narrow box at sizes 1/2, 1 and 2:
+// the targets on neighbouring rows do not intersect (a click in an overlap could
+// remove a chip on the other row), while an empty field and one row of chips
+// stay sf-input's height.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -64,11 +68,20 @@ const row = (size) => `<div data-size="${size}" style="display:flex;flex-wrap:wr
   <sf-tag data-case="checkbox" kind="checkbox" text="Billing" size="${size}" closable></sf-tag>
   <sf-lookup data-case="lookup" size="${size}" multiple label="People" name="people-${size.replace('/', '-')}" value='["a"]'>${island({options: [{value: 'a', label: 'Anna Petrova'}]})}</sf-lookup>
 </div>`;
+const WRAP_SIZES = ['1/2', '1', '2'];
+const WRAP_PEOPLE = ['Anna Petrova', 'Boris Ivanov', 'Vera Smirnova', 'Gleb Orlov', 'Dina Sokolova', 'Egor Volkov'].map((label, index) => ({value: `p${index}`, label}));
+const wrapped = (size) => `<div data-wrap="${size}" style="display:grid;gap:8px;inline-size:220px">
+  <sf-input data-field="input" size="${size}" label="Text"></sf-input>
+  <sf-lookup data-field="empty" size="${size}" multiple label="Text"></sf-lookup>
+  <sf-lookup data-field="one-row" size="${size}" multiple label="Text" value='["p0"]'>${island({options: WRAP_PEOPLE})}</sf-lookup>
+  <sf-lookup data-field="wrapped" size="${size}" multiple label="Text" value='${JSON.stringify(WRAP_PEOPLE.map(({value}) => value))}'>${island({options: WRAP_PEOPLE})}</sf-lookup>
+</div>`;
 current = `<!doctype html><html lang="en" class="theme-light"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false},icons:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0;padding:16px;display:grid;gap:16px;background:var(--sf-surface-0)">
 ${SIZES.map(row).join('\n')}
+${WRAP_SIZES.map(wrapped).join('\n')}
 </body></html>`;
 
 const failures = [];
@@ -83,7 +96,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
   await page.waitForFunction((n) => customElements.get('sf-tag') && customElements.get('sf-lookup')
-    && document.querySelectorAll('sf-tag sf-icon-button > .sf-icon-button').length >= n, SIZES.length * 5, {timeout: 20000});
+    && document.querySelectorAll('sf-tag sf-icon-button > .sf-icon-button').length >= n, SIZES.length * 5 + WRAP_PEOPLE.length * WRAP_SIZES.length, {timeout: 20000});
   for (const width of [1280, 900, 375]) {
     await page.setViewportSize({width, height: 2400});
     await page.waitForTimeout(400);
@@ -157,7 +170,47 @@ try {
       }
       if (row.chip) check(`lookup chip at ${where}: the field's line high`, Math.abs(row.chip.tag - row.chip.line) <= EPS, {chip: row.chip});
     }
-    evidence.push({width, rows});
+    const wraps = await page.evaluate(() => [...document.querySelectorAll('[data-wrap]')].map((box) => {
+      const at = (name) => box.querySelector(`[data-field="${name}"]`);
+      const height = (element) => element.getBoundingClientRect().height;
+      const targets = [...at('wrapped').querySelectorAll('.sf-lookup-chip .sf-icon-button--close')].map((button) => {
+        const rect = button.getBoundingClientRect();
+        const after = getComputedStyle(button, '::after');
+        const [w, h] = [parseFloat(after.width), parseFloat(after.height)];
+        const [x, y] = [rect.left + rect.width / 2, rect.top + rect.height / 2];
+        return {top: y - h / 2, bottom: y + h / 2, left: x - w / 2, right: x + w / 2, centre: y};
+      });
+      return {
+        size: box.dataset.wrap,
+        line: parseFloat(getComputedStyle(at('wrapped').querySelector('.sf-lookup-input')).lineHeight),
+        rowGap: getComputedStyle(at('wrapped').querySelector('.sf-lookup-frame')).rowGap,
+        columnGap: getComputedStyle(at('wrapped').querySelector('.sf-lookup-frame')).columnGap,
+        chipLine: at('wrapped').querySelector('.sf-lookup-chip .sf-tag').getBoundingClientRect().height,
+        heights: {input: height(at('input').querySelector('.sf-input-field')), empty: height(at('empty').querySelector('.sf-lookup-frame')), oneRow: height(at('one-row').querySelector('.sf-lookup-frame')), wrapped: height(at('wrapped').querySelector('.sf-lookup-frame'))},
+        targets,
+      };
+    }));
+    for (const wrap of wraps) {
+      const where = `${width}px, size ${wrap.size}`;
+      const rowsOfTargets = [...new Set(wrap.targets.map(({centre}) => Math.round(centre)))].sort((a, b) => a - b);
+      check(`wrapped lookup at ${where}: the chips wrap`, rowsOfTargets.length > 1, {rowsOfTargets});
+      let closest = Infinity;
+      for (const a of wrap.targets) {
+        for (const b of wrap.targets) {
+          if (Math.round(b.centre) <= Math.round(a.centre)) continue;
+          const horizontal = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+          closest = Math.min(closest, b.top - a.bottom);
+          check(`wrapped lookup at ${where}: targets on neighbouring rows do not intersect`, b.top - a.bottom >= -EPS || horizontal <= EPS, {a, b});
+        }
+      }
+      for (const name of ['empty', 'oneRow']) {
+        check(`wrapped lookup at ${where}: ${name} is sf-input's height`, Math.abs(wrap.heights[name] - wrap.heights.input) <= EPS, wrap.heights);
+      }
+      delete wrap.targets;
+      wrap.rows = rowsOfTargets.length;
+      wrap.targetsApart = closest;
+    }
+    evidence.push({width, rows, wraps});
   }
   console.log(JSON.stringify(evidence));
 } finally {

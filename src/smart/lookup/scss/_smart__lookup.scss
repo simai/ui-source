@@ -22,6 +22,10 @@
   --sf-lookup--text-inset: var(--sf-ui-1--text-space-x);
   --sf-lookup--row-padding-block: var(--sf-ui-1--space-y-tightness-low);
   --sf-lookup--row-padding-inline: var(--sf-ui-1--space-x);
+  /* Wrapped chips: the rows stand far enough apart for sf-tag's remove targets
+     (--sf-c2 square, centred on the line) to meet at most, whatever line the
+     size and the viewport's text ladder give: 4px on a 20px line, 8 on 16. */
+  --sf-lookup--chip-row-gap: max(var(--sf-space-1\/4), calc(var(--sf-c2) - var(--sf-lookup--line-height)));
 }
 
 .sf-lookup.sf-lookup--size-2 {
@@ -83,7 +87,7 @@
   box-sizing: border-box;
   inline-size: 100%;
   min-inline-size: 0;
-  gap: var(--sf-space-1\/4);
+  gap: var(--sf-lookup--chip-row-gap) var(--sf-space-1\/4);
   padding-block: var(--sf-lookup--padding-block);
   padding-inline: var(--sf-lookup--padding-inline);
   border: var(--sf-px) solid;
