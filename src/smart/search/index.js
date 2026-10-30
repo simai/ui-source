@@ -13,9 +13,20 @@
 // carrying the host's language, direction, theme and public variables, so no
 // stacking context of the page (a sticky header) holds it under the page.
 //
-// The results come from a provider -- a function the page gives, the port of
-// this component -- or from the built-in provider over a static JSON index
-// (`index`). Requests are debounced and a stale one is aborted.
+// The panel asks a host through simai.search-port 1.0.0 (§4.9, declared in
+// component.json): six intents on one event, one answer envelope, every read
+// sequenced. It fetches nothing itself -- the index, the ranking, the access
+// and what a command does are the host's. The capability says what is
+// possible and the setting says what is wanted: a block whose capability the
+// host did not announce is absent, and the setting cannot turn it on (owner's
+// delegated envelope, 2026-10-29).
+//
+// The page hands a host with the base action connect-port (`connectPort`), or
+// answers the `sf-host-port-request` this element raises once per connection.
+// Where it hands none, the built-in hosts of js/host.js answer: the static
+// JSON index of `index`, or the `provider` function -- the two simple paths
+// the documentation site and Docara use, written as adapters of the same port.
+// Requests are debounced and a stale one is aborted through its signal.
 //
 // From its component.json (§3, §4, §8): the settings are made by
 // core/js/element-manifest.js, open, close and toggle are the actions and
@@ -26,25 +37,38 @@ import BundledPreferences from '../../core/js/preferences.js';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {carryLayerOrigin, closeLayer, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
 import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
+import {PORT_ID, RESULT_LIMIT, SUPPORTED_PORT_VERSIONS, builtinSearchHost, indexHost, providerHost, recentStore} from './js/host';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
 const DEBOUNCE = 120;
-const RECENT_LIMIT = 5;
-const RESULT_LIMIT = 50;
 const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+// The port's three answers (no revision travels here, so nothing conflicts).
+const ANSWERS = ['applied', 'refused', 'unavailable'];
+// Which capability stands behind an intent (simai.search-port 1.0.0): an
+// intent of a capability the host did not announce is never raised.
+const INTENT_CAPABILITY = {'result.preview': 'preview', 'action.run': 'actions',
+  'recent.forget': 'recent', 'recent.clear': 'recent'};
+// Which block a setting wants, and the capability it wants it over; path and
+// keys are the panel's own, so they have no capability.
+const BLOCK_CAPABILITY = {scopes: 'scopes', recent: 'recent', popular: 'popular', actions: 'actions'};
+// The step at which the card has room for the preview pane beside the list:
+// the Framework's lg (core/scss/vars/_sf_var__breakpoint.scss), as the sheet's
+// own media rule reads it.
+const PREVIEW_STEP = '60rem';
 let sequence = 0;
 
 const applied = () => ({outcome: 'applied'});
 const refused = (reason) => ({outcome: 'refused', reason});
 
-// The recent queries are a view preference of the person (SF.Preferences,
-// owner 2026-10-14): kept in the browser under sf-pref:sf-search/<recent-key>
-// and by a host that keeps preferences for its user. The registry is the
-// shared one when core has published it (every bundle has its own copy).
+// The built-in hosts keep the recent queries as a view preference of the
+// person (SF.Preferences, owner 2026-10-14): in the browser under
+// sf-pref:sf-search/<recent-key> and by a host that keeps preferences for its
+// user. The registry is the shared one when core has published it (every
+// bundle has its own copy).
 const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
 
 // `shortcut`: keys separated by spaces, each `mod+k`, `shift+/`, `/`.
@@ -94,56 +118,14 @@ const editable = (node) => node instanceof Element
 // ------------------------------------------------------------------ the data
 
 const text = (value) => (value === undefined || value === null ? '' : String(value));
-
-/** A provider's answer, or an index, in one shape (component.json provider). */
-export function normalizeAnswer(raw) {
-  const groups = (Array.isArray(raw?.groups) ? raw.groups : [])
-    .map((group) => (typeof group === 'string' ? {id: group, label: group} : {id: text(group?.id), label: text(group?.label ?? group?.id)}))
-    .filter((group) => group.id);
-  const source = Array.isArray(raw) ? raw : (Array.isArray(raw?.items) ? raw.items : []);
-  const items = source.filter((item) => item && text(item.title)).map((item, index) => ({
-    id: text(item.id ?? item.href ?? item.url ?? item.action ?? index),
-    group: text(item.group),
-    title: text(item.title),
-    path: Array.isArray(item.path) ? item.path.map(text).join(' › ') : text(item.path),
-    href: text(item.href ?? item.url),
-    action: text(item.action),
-    icon: text(item.icon),
-    shortcut: text(item.shortcut),
-    text: text(item.text),
-  }));
-  const popular = (Array.isArray(raw?.popular) ? raw.popular : []).map(text).filter(Boolean);
-  return {groups, items, popular};
-}
-
 const terms = (query) => query.toLowerCase().split(/\s+/u).filter(Boolean);
 
-/**
- * The built-in provider's matching over a static index: every term of the
- * query is in the title, the path or the entry's text, case-insensitive; a
- * title that starts with the query comes first, then one that holds it, then
- * one that holds every term, then the rest, each in the index's order. The
- * empty query answers the quick actions and the popular queries.
- */
-export function searchIndex(index, query) {
-  const data = normalizeAnswer(index);
-  const q = text(query).trim().toLowerCase();
-  if (!q) return {groups: data.groups, items: data.items.filter((item) => item.action), popular: data.popular};
-  const words = terms(q);
-  const found = [];
-  data.items.forEach((item, order) => {
-    const title = item.title.toLowerCase();
-    const hay = `${title} ${item.path} ${item.text}`.toLowerCase();
-    if (!words.every((word) => hay.includes(word))) return;
-    let rank = 3;
-    if (title.startsWith(q)) rank = 0;
-    else if (title.includes(q)) rank = 1;
-    else if (words.every((word) => title.includes(word))) rank = 2;
-    found.push({item, rank, order});
-  });
-  found.sort((a, b) => a.rank - b.rank || a.order - b.order);
-  return {groups: data.groups, items: found.slice(0, RESULT_LIMIT).map((entry) => entry.item), popular: data.popular};
-}
+// A page result with no url is dropped by the panel, never drawn as a row
+// that does nothing (simai.search-port 1.0.0, data.results.url).
+const drawable = (result) => Boolean(result && text(result.title))
+  && (result.kind === 'action' ? true : Boolean(text(result.url)));
+
+const strings = (list) => (Array.isArray(list) ? list.map(text).filter(Boolean) : null);
 
 /** A title cut around the first place a term of the query stands in it. */
 export function highlight(title, query) {
@@ -177,14 +159,28 @@ class SfSearch extends SearchElement {
     this.scope = '';
     this.selected = 0;
     this.status = 'idle';
+    this.statusMessage = '';
+    this.notice = '';
+    this.running = false;
     this.answer = null;
     this.emptyAnswer = null;
     this.popularList = [];
     this.recentList = [];
+    this.previewOf = null;
     this._portal = null;
     this._controller = null;
     this._timer = 0;
-    this._index = null;
+    // The port: what the page handed (sfPort, the base action) is asked first;
+    // the built-in host is made from index/provider/recent-key and remade when
+    // one of them changes.
+    this._builtin = null;
+    this._builtinFor = null;
+    this._portRequested = false;
+    this._querySequence = 0;
+    this._previewSequence = 0;
+    this._previewMedia = typeof globalThis.matchMedia === 'function'
+      ? globalThis.matchMedia(`(min-width: ${PREVIEW_STEP})`) : null;
+    this._onPreviewMedia = () => this.onPreviewRoomChange();
     this._onDocumentKeydown = (event) => this.onDocumentKeydown(event);
     this._onDocumentClick = (event) => this.onDocumentClick(event);
     this._onHostClick = (event) => this.onHostClick(event);
@@ -206,6 +202,8 @@ class SfSearch extends SearchElement {
     document.addEventListener('keydown', this._onDocumentKeydown);
     document.addEventListener('click', this._onDocumentClick);
     this.addEventListener('click', this._onHostClick);
+    this._previewMedia?.addEventListener?.('change', this._onPreviewMedia);
+    this.requestHostPort();
   }
 
   disconnectedCallback() {
@@ -213,6 +211,10 @@ class SfSearch extends SearchElement {
     document.removeEventListener('keydown', this._onDocumentKeydown);
     document.removeEventListener('click', this._onDocumentClick);
     this.removeEventListener('click', this._onHostClick);
+    this._previewMedia?.removeEventListener?.('change', this._onPreviewMedia);
+    // Once per connection, so an element moved in the page asks again: a
+    // portless element and a host that chose not to answer look alike.
+    this._portRequested = false;
     super.disconnectedCallback?.();
   }
 
@@ -298,8 +300,10 @@ class SfSearch extends SearchElement {
     this.scope = '';
     this.selected = 0;
     this.status = 'idle';
+    this.statusMessage = '';
+    this.notice = '';
     this.answer = null;
-    this.recentList = this.readRecent();
+    this.previewOf = null;
     this.sfHostState('data-open', true);
     this.mountPortal();
     const contained = this._contained;
@@ -318,7 +322,10 @@ class SfSearch extends SearchElement {
     this.renderWindow();
     this.focusField();
     this.syncTriggers();
-    this.load('');
+    // The empty query is a question like any other: it is what answers the
+    // blocks the host announced -- the recent queries, the popular ones and
+    // the commands -- so the panel asks it rather than drawing them itself.
+    this.askQuery('');
     const settle = () => {
       if (!this.isOpen) return;
       this.focusField();
@@ -472,6 +479,7 @@ class SfSearch extends SearchElement {
       const step = event.key === 'ArrowDown' ? 1 : -1;
       this.selected = (this.selected + step + count) % count;
       this.renderWindow({reveal: true});
+      this.askPreview();
     } else if (event.key === 'Enter') {
       event.preventDefault();
       if (count) this.choose(this.selected);
@@ -488,81 +496,104 @@ class SfSearch extends SearchElement {
     this.focusField();
   }
 
+  // A scope pressed is the same question as a keystroke (the port: scope is a
+  // field of query.change, never an intent of its own), so the host is asked
+  // again; the panel also filters what it holds, so the pills answer at once.
   setScope(id) {
     this.scope = id;
     this.selected = 0;
     this.renderWindow();
     this.focusField();
+    this.askQuery(this.query.trim());
   }
 
   hover(index) {
     if (this.selected === index) return;
     this.selected = index;
     this.renderWindow();
+    this.askPreview();
   }
 
-  // A result chosen: the query is recorded, the window closes, and the page
-  // hears navigate; unless it takes it, the browser goes to href.
+  // A result chosen: a page result is opened (result.open), a command is run
+  // by the host (action.run). An applied answer closes the window and the
+  // page hears navigate; unless it takes it, the browser goes to the url. A
+  // refusal is the host's word that this person may not: the window stays
+  // open and says so.
   choose(index) {
     const row = this._view?.rows[index];
-    if (!row) return;
+    if (!row) return undefined;
     if (row.kind === 'recent') {
       this.setQuery(row.text);
-      return;
+      return undefined;
     }
-    const query = this.query.trim();
-    if (query) this.recordRecent(query);
     const {item} = row;
+    return item.kind === 'action' ? this.runAction(item) : this.openResult(item);
+  }
+
+  async openResult(item) {
+    const query = this.query.trim();
+    const answer = await this.raise('result.open', {id: item.id, query, group: text(item.group), url: text(item.url) || null});
+    if (!answer) return answer;
+    if (answer.answer !== 'applied') {
+      this.notice = this.answerWords(answer, 'refused-text');
+      this.renderWindow();
+      return answer;
+    }
+    this.takeRecent(answer);
     this.runClose({reason: 'api'});
-    const detail = {id: item.id, href: item.href, action: item.action, query, group: item.group};
+    const detail = {id: item.id, href: text(item.url), action: '', query, group: text(item.group)};
     const allowed = this.sfEmit('navigate', detail, {cancelable: true});
-    if (allowed && item.href && !item.action) globalThis.location?.assign(item.href);
+    if (allowed && detail.href) globalThis.location?.assign(detail.href);
+    return answer;
+  }
+
+  // Only the host knows what a command does, so the panel never guesses: the
+  // card is busy while it waits, an applied answer closes the window and the
+  // page hears navigate with the command as `action`.
+  async runAction(item) {
+    const query = this.query.trim();
+    this.running = true;
+    this.renderWindow();
+    const answer = await this.raise('action.run', {id: item.id, query});
+    this.running = false;
+    if (!answer) return answer;
+    if (answer.answer !== 'applied') {
+      this.notice = this.answerWords(answer, 'action-text');
+      this.renderWindow();
+      return answer;
+    }
+    this.takeRecent(answer);
+    this.runClose({reason: 'api'});
+    this.sfEmit('navigate', {id: item.id, href: '', action: text(item.id), query, group: text(item.group)}, {cancelable: true});
+    return answer;
   }
 
   // ---------------------------------------------------------- recent queries
 
-  get recentPreference() {
-    const key = String(this.recentKey || '').trim();
-    return key ? `sf-search/${key}` : '';
+  // The recent queries are the host's data: a removal and a clear are
+  // answered with the whole list the host keeps now, and that list is what is
+  // drawn -- the panel keeps no history of its own.
+  takeRecent(answer) {
+    const list = strings(answer?.data?.recent);
+    if (list) this.recentList = list;
   }
 
-  readRecent() {
-    if (!this.recent || !this.recentPreference) return this.recent ? this.recentList : [];
-    try {
-      const kept = preferences()?.read(this.recentPreference);
-      const list = Array.isArray(kept?.queries) ? kept.queries : [];
-      return list.filter((entry) => typeof entry === 'string' && entry).slice(0, RECENT_LIMIT);
-    } catch {
-      return this.recentList;
-    }
+  async forgetRecent(query) {
+    const answer = await this.raise('recent.forget', {query: text(query)});
+    this.afterRecent(answer);
+    return answer;
   }
 
-  writeRecent(list) {
-    this.recentList = list;
-    if (!this.recentPreference) return;
-    try {
-      if (list.length) preferences()?.write(this.recentPreference, {v: 1, queries: list});
-      else preferences()?.remove(this.recentPreference);
-    } catch {
-      // Storage refused (a private window, a sandbox): the list lives as long as the page.
-    }
+  async clearRecent() {
+    const answer = await this.raise('recent.clear', {});
+    this.afterRecent(answer);
+    return answer;
   }
 
-  recordRecent(query) {
-    if (!this.recent) return;
-    const kept = this.readRecent().filter((entry) => entry.toLowerCase() !== query.toLowerCase());
-    this.writeRecent([query, ...kept].slice(0, RECENT_LIMIT));
-  }
-
-  removeRecent(query) {
-    this.writeRecent(this.recentList.filter((entry) => entry !== query));
-    this.selected = 0;
-    this.renderWindow();
-    this.focusField();
-  }
-
-  clearRecent() {
-    this.writeRecent([]);
+  afterRecent(answer) {
+    if (!answer) return;
+    if (answer.answer === 'applied') this.takeRecent(answer);
+    else this.notice = this.answerWords(answer, 'refused-text');
     this.selected = 0;
     this.renderWindow();
     this.focusField();
@@ -570,76 +601,257 @@ class SfSearch extends SearchElement {
 
   // ---------------------------------------------------------- the port
 
-  // The provider the page gave, else the built-in one over `index`.
-  resolveProvider() {
-    if (typeof this.provider === 'function') return this.provider;
-    if (this.provider && typeof this.provider.search === 'function') return (query, options) => this.provider.search(query, options);
-    const url = String(this.index || '').trim();
-    if (!url) return null;
-    return async (query) => searchIndex(await this.readIndex(url), query);
+  /**
+   * A component that takes a host port asks for one (§4.9): bubbling and
+   * composed, once per connection while it has none, answered with
+   * `connectPort` at once or later. Until then the built-in host answers.
+   */
+  requestHostPort() {
+    if (this.sfPort || this._portRequested) return false;
+    this._portRequested = true;
+    this.dispatchEvent(new CustomEvent('sf-host-port-request', {
+      bubbles: true,
+      composed: true,
+      detail: {component: this, context: {owner: null, record: null, group: null}},
+    }));
+    return true;
   }
 
-  // The index is read once per address; a failed read is tried again next time.
-  readIndex(url) {
-    if (this._index?.url === url) return this._index.promise;
-    const promise = fetch(url, {credentials: 'same-origin'}).then((response) => {
-      if (!response.ok) throw new Error(`index ${response.status}`);
-      return response.json();
-    });
-    this._index = {url, promise};
-    promise.catch(() => {
-      if (this._index?.promise === promise) this._index = null;
-    });
-    return promise;
+  /**
+   * The hook of the base action connect-port: a host of another edition is
+   * refused (the base answers `port-unsupported` and keeps the port it had).
+   * A new host brings its own capabilities, its own recent queries and its
+   * own answers, so nothing of the one before is drawn.
+   */
+  onPortConnected(port) {
+    const version = text(port?.version);
+    if (typeof port?.raise !== 'function' || !SUPPORTED_PORT_VERSIONS.includes(version)) {
+      throw new TypeError(`sf-search speaks ${PORT_ID} ${SUPPORTED_PORT_VERSIONS.join(', ')}`);
+    }
+    this.answer = null;
+    this.emptyAnswer = null;
+    this.recentList = [];
+    this.popularList = [];
+    this.previewOf = null;
+    this.notice = '';
+    this.statusMessage = '';
+    this.scope = '';
+    if (this.isOpen) this.askQuery(this.query.trim());
   }
+
+  /** The host in force: the page's, else the built-in one. */
+  host() {
+    const connected = this.sfPort;
+    if (connected && typeof connected.raise === 'function') return connected;
+    return this.builtinHost();
+  }
+
+  /**
+   * The built-in host (js/host.js): the provider the page gave, else the
+   * static index of `index`, else the port's base host, which announces
+   * nothing and answers an empty list -- the field, the results and the
+   * keyboard, which need no capability.
+   */
+  builtinHost() {
+    const provider = typeof this.provider === 'function' || typeof this.provider?.search === 'function' ? this.provider : null;
+    const url = provider ? '' : text(this.index).trim();
+    const key = text(this.recentKey).trim();
+    const was = this._builtinFor;
+    if (this._builtin && was && was.provider === provider && was.url === url && was.key === key) return this._builtin;
+    const recent = recentStore({key, preferences});
+    this._builtin = provider ? providerHost(provider, {recent})
+      : (url ? indexHost(url, {recent}) : builtinSearchHost({recent}));
+    this._builtinFor = {provider, url, key};
+    return this._builtin;
+  }
+
+  /** Whether the host in force announces a capability. */
+  hostOffers(capability) {
+    return Boolean(this.host()?.capabilities?.includes?.(capability));
+  }
+
+  /**
+   * Whether a block is drawn: the host announces the capability behind it and
+   * the page has not turned the setting off. The capability is the floor and
+   * the setting is the veto, so a capability never announced is never drawn
+   * as a dead control and a setting cannot turn on what the host cannot do.
+   */
+  shows(block) {
+    const capability = BLOCK_CAPABILITY[block];
+    if (capability && !this.hostOffers(capability)) return false;
+    return this[block] !== false;
+  }
+
+  /** Whether the card has room beside the list and the host has previews. */
+  showsPreview() {
+    return this.hostOffers('preview') && (this._previewMedia ? this._previewMedia.matches : false);
+  }
+
+  onPreviewRoomChange() {
+    if (!this.isOpen) return;
+    if (!this.showsPreview()) this.previewOf = null;
+    this.renderWindow();
+    this.askPreview();
+  }
+
+  /**
+   * One intent, one answer. An intent behind a capability the host did not
+   * announce is not raised at all, and a sequenced read whose answer names an
+   * older request is dropped (answered null to the caller). Every answer is
+   * announced on sf-search-intent, the panel's own included.
+   */
+  async raise(intent, payload, {signal = null, sequence: asked = null} = {}) {
+    const host = this.host();
+    const capability = INTENT_CAPABILITY[intent];
+    let answer = null;
+    if (!host || typeof host.raise !== 'function') answer = {answer: 'unavailable', reason: 'port-not-connected'};
+    else if (capability && !this.hostOffers(capability)) answer = {answer: 'unavailable', reason: 'capability-not-provided'};
+    else {
+      try {
+        answer = await host.raise(intent, {...payload}, {signal});
+      } catch (error) {
+        if (signal?.aborted || error?.name === 'AbortError') return null;
+        answer = {answer: 'unavailable', reason: 'host-failed'};
+      }
+      if (!answer || typeof answer !== 'object' || !ANSWERS.includes(answer.answer)) {
+        answer = {answer: 'unavailable', reason: 'answer-not-of-the-port'};
+      }
+    }
+    this.sfEmit('intent', {intent, payload: {...payload}, answer});
+    // The sequence rule: a person types faster than a server answers.
+    if (asked !== null && answer.sequence !== undefined && answer.sequence !== null && Number(answer.sequence) !== asked) return null;
+    return answer;
+  }
+
+  /**
+   * The words of an answer that is not applied: the host's own sentence when
+   * it sent one (the reader's language, shown as text), else the panel's for
+   * the reasons the port names, else the fallback asked for.
+   */
+  answerWords(answer, fallback) {
+    const given = text(answer?.text).trim();
+    if (given) return given;
+    const word = {'query-too-short': 'short-text', forbidden: 'forbidden-text', 'not-found': 'not-found-text'}[text(answer?.reason)];
+    if (word) return this.sfWord(word);
+    if (answer?.answer === 'unavailable' && fallback !== 'action-text') return this.sfWord('error-text');
+    return this.sfWord(fallback);
+  }
+
+  // ---------------------------------------------------------- the reads
 
   scheduleLoad() {
     clearTimeout(this._timer);
     const query = this.query.trim();
+    this.notice = '';
     if (!query) {
       // An empty field starts afresh: the next query waits for its own answer
       // rather than showing the last one's under new marks.
       this._controller?.abort();
       this._controller = null;
       this.answer = null;
+      this.statusMessage = '';
       this.status = 'ready';
       return;
     }
-    this._timer = setTimeout(() => this.load(query), DEBOUNCE);
+    this._timer = setTimeout(() => this.askQuery(query), DEBOUNCE);
   }
 
-  async load(query) {
+  /**
+   * What matches now (query.change): a keystroke, a scope pressed, a chosen
+   * popular or recent query, an accepted correction, and the empty query the
+   * window opens with -- one question for all of them. The empty query is the
+   * host's chance to answer the blocks (recent, popular, the commands).
+   */
+  async askQuery(query) {
     this._controller?.abort();
-    const provider = this.resolveProvider();
-    if (!provider) {
-      this.status = 'ready';
-      this.renderWindow();
-      return;
-    }
     const controller = new AbortController();
     this._controller = controller;
+    const asked = ++this._querySequence;
     if (query) {
       this.status = 'loading';
       this.renderWindow();
     }
-    try {
-      const answer = normalizeAnswer(await provider(query, {scope: this.scope, signal: controller.signal}));
-      if (controller.signal.aborted || !this.isOpen) return;
-      if (query) this.answer = {...answer, query};
-      else this.emptyAnswer = answer;
-      if (answer.popular.length) this.popularList = answer.popular;
-      if (query) this.status = answer.items.length ? 'ready' : 'empty';
-    } catch (error) {
-      if (controller.signal.aborted || error?.name === 'AbortError' || !this.isOpen) return;
-      if (query) this.status = 'error';
-    }
+    const answer = await this.raise('query.change', {sequence: asked, query,
+      scope: this.scope || null, limit: RESULT_LIMIT, offset: 0}, {signal: controller.signal, sequence: asked});
     if (this._controller === controller) this._controller = null;
+    if (!answer || controller.signal.aborted || !this.isOpen || asked !== this._querySequence) return answer;
+    if (answer.answer === 'applied') {
+      const data = answer.data ?? {};
+      const results = (Array.isArray(data.results) ? data.results : []).filter(drawable);
+      const echo = data.echo ?? {};
+      const scopes = (Array.isArray(data.scopes) ? data.scopes : []).filter((scope) => scope && text(scope.id));
+      if (query) {
+        // The panel draws the question the host answered, not the one the
+        // person has since typed (echo).
+        this.answer = {
+          query: text(echo.query ?? query),
+          scope: text(echo.scope),
+          results,
+          scopes,
+          total: Number.isInteger(data.total) ? data.total : null,
+          correction: this.hostOffers('spelling') && text(data.correction?.query) ? data.correction : null,
+        };
+        this.status = results.length ? 'ready' : 'empty';
+        this.statusMessage = '';
+      } else {
+        this.emptyAnswer = {results, scopes};
+      }
+      const recent = strings(data.recent);
+      if (recent) this.recentList = recent;
+      const popular = strings(data.popular);
+      if (popular?.length) this.popularList = popular;
+    } else if (query) {
+      this.answer = null;
+      this.status = 'error';
+      this.statusMessage = this.answerWords(answer, 'refused-text');
+    }
     this.renderWindow();
+    this.askPreview();
+    return answer;
+  }
+
+  /**
+   * The words of the row the person stands on (result.preview), asked for
+   * only where the host announced the capability and the card has room for
+   * the pane. Sequenced like the query: an answer for a row the person has
+   * left is dropped.
+   */
+  async askPreview() {
+    if (!this.showsPreview()) {
+      if (this.previewOf) {
+        this.previewOf = null;
+        this.renderWindow();
+      }
+      return null;
+    }
+    const row = this._view?.rows?.[this.selected];
+    const item = row?.kind === 'result' ? row.item : null;
+    if (!item) {
+      if (this.previewOf) {
+        this.previewOf = null;
+        this.renderWindow();
+      }
+      return null;
+    }
+    if (this.previewOf && this.previewOf.id === item.id) return null;
+    const asked = ++this._previewSequence;
+    const answer = await this.raise('result.preview', {sequence: asked, id: item.id, query: this.query.trim()}, {sequence: asked});
+    if (!answer || !this.isOpen || asked !== this._previewSequence) return answer;
+    const preview = answer.answer === 'applied' && answer.data?.preview ? answer.data.preview : null;
+    const standing = this._view?.rows?.[this.selected];
+    const on = standing?.kind === 'result' ? standing.item : null;
+    // A preview that arrives for a row the person has left is dropped.
+    if (preview && on && String(preview.id) !== String(on.id)) return answer;
+    this.previewOf = preview ? {id: preview.id, title: text(preview.title), path: text(preview.path), text: text(preview.text)} : null;
+    this.renderWindow();
+    return answer;
   }
 
   // ---------------------------------------------------------- drawing
 
-  // What the window shows now: sections of rows, the scopes and a message.
+  // What the window shows now: sections of rows, the scopes, a correction, a
+  // preview and a message. Every block is drawn only where the host
+  // announced its capability and the page left its setting on (shows).
   view() {
     const query = this.query.trim();
     const sections = [];
@@ -653,56 +865,92 @@ class SfSearch extends SearchElement {
       kind: 'result',
       item,
       title: highlight(item.title, query),
-      path: item.path,
-      icon: item.icon || (item.action ? 'bolt' : 'description'),
-      shortcut: item.action ? item.shortcut : '',
+      path: text(item.path),
+      icon: text(item.icon) || (item.kind === 'action' ? 'bolt' : 'description'),
+      shortcut: item.kind === 'action' ? text(item.shortcut) : '',
     });
+    const commands = this.shows('actions');
     let scopes = [];
+    let correction = null;
     let message = '';
     let messagePills = [];
     if (!query) {
-      if (this.recent && this.recentList.length) {
+      if (this.shows('recent') && this.recentList.length) {
         sections.push({kind: 'recent', id: `${this._id}-recent`, label: this.sfWord('recent-label'),
           rows: this.recentList.map((entry) => add({kind: 'recent', text: entry, title: [entry, '', ''], path: '', icon: 'history',
             removeLabel: this.sfWord('recent-remove-label', {vars: {query: entry}})}))});
       }
-      if (this.popular && this.popularList.length) sections.push({kind: 'popular', texts: this.popularList});
-      const actions = this.actions ? (this.emptyAnswer?.items ?? []).filter((item) => item.action) : [];
+      if (this.shows('popular') && this.popularList.length) sections.push({kind: 'popular', texts: this.popularList});
+      const actions = commands ? (this.emptyAnswer?.results ?? []).filter((item) => item.kind === 'action') : [];
       if (actions.length) {
         sections.push({kind: 'actions', id: `${this._id}-actions`, label: this.sfWord('actions-label'), rows: actions.map(resultRow)});
       }
       if (!sections.length) message = this.sfWord('start-text');
     } else {
       const answer = this.answer;
-      const items = (answer?.items ?? []).filter((item) => this.actions || !item.action);
-      const order = [...(answer?.groups ?? [])];
-      for (const item of items) if (!order.some((group) => group.id === item.group)) order.push({id: item.group, label: item.group});
-      const present = order.filter((group) => items.some((item) => item.group === group.id));
-      if (!present.some((group) => group.id === this.scope)) this.scope = '';
-      if (!this.scopes) this.scope = '';
-      scopes = [{id: '', label: this.sfWord('all-label'), count: items.length, pressed: this.scope === ''},
-        ...present.map((group) => ({id: group.id, label: group.label, count: items.filter((item) => item.group === group.id).length, pressed: this.scope === group.id}))];
-      const shown = present.filter((group) => !this.scope || group.id === this.scope);
-      const captions = !this.scope && (present.length > 1 || present[0]?.label);
-      const groups = shown.map((group, n) => ({
-        label: group.label || this.sfWord('results-label'),
-        captionId: captions && group.label ? `${this._id}-group-${n}` : '',
-        rows: items.filter((item) => item.group === group.id).map(resultRow),
-      }));
-      if (rows.length) sections.push({kind: 'results', id: `${this._id}-results`, groups});
+      const items = (answer?.results ?? []).filter((item) => commands || item.kind !== 'action');
+      // The scopes the host announced, then any group its results name that
+      // it did not: the pills follow the host's order, the panel adds nothing
+      // of its own to it.
+      const order = [];
+      if (this.shows('scopes')) {
+        for (const scope of answer?.scopes ?? []) order.push(scope);
+        // A group the results name that the host did not announce as a scope
+        // is a scope too; a result with no group at all is not one (1.0.0
+        // drew it as a nameless pill).
+        for (const item of items) {
+          const id = text(item.group);
+          if (id && !order.some((scope) => scope.id === id)) order.push({id, label: id});
+        }
+      }
+      const present = order.filter((scope) => items.some((item) => item.group === scope.id));
+      if (!present.some((scope) => scope.id === this.scope)) this.scope = '';
+      // The host's count where it sent one (the whole index), else the number
+      // the panel holds, so a pill says what pressing it will show.
+      const counted = (scope) => (Number.isInteger(scope.count) ? scope.count : items.filter((item) => item.group === scope.id).length);
+      if (present.length) {
+        scopes = [{id: '', label: this.sfWord('all-label'), count: Number.isInteger(answer?.total) ? answer.total : items.length, pressed: this.scope === ''},
+          ...present.map((scope) => ({id: scope.id, label: text(scope.label) || scope.id, count: counted(scope), pressed: this.scope === scope.id}))];
+      }
+      const chosen = present.filter((scope) => !this.scope || scope.id === this.scope);
+      const ungrouped = this.scope ? [] : items.filter((item) => !present.some((scope) => scope.id === item.group));
+      const captions = !this.scope && (present.length > 1 || text(present[0]?.label));
+      const groups = [
+        ...chosen.map((scope, n) => ({
+          label: text(scope.label) || scope.id || this.sfWord('results-label'),
+          captionId: captions && text(scope.label) ? `${this._id}-group-${n}` : '',
+          rows: items.filter((item) => item.group === scope.id).map(resultRow),
+        })),
+        ...(ungrouped.length ? [{label: this.sfWord('results-label'), captionId: '', rows: ungrouped.map(resultRow)}] : []),
+      ].filter((group) => group.rows.length);
+      if (groups.length) sections.push({kind: 'results', id: `${this._id}-results`, groups});
+      // «Возможно, вы искали …»: offered, never applied -- accepting it is an
+      // ordinary query.
+      if (answer?.correction) {
+        correction = {query: text(answer.correction.query),
+          count: Number.isInteger(answer.correction.total) ? answer.correction.total : null,
+          text: this.sfWord('correction-text', {vars: {query: text(answer.correction.query)}})};
+      }
       if (!answer && this.status === 'loading') message = this.sfWord('loading-text');
-      else if (this.status === 'error') message = this.sfWord('error-text');
+      else if (this.status === 'error') message = this.statusMessage || this.sfWord('error-text');
       else if (!rows.length && answer) {
         message = this.sfWord('empty-text', {vars: {query}});
-        if (this.popular) messagePills = this.popularList.slice(0, 3);
+        if (this.shows('popular')) messagePills = this.popularList.slice(0, 3);
       }
     }
     if (this.selected >= rows.length) this.selected = Math.max(0, rows.length - 1);
+    const standing = rows[this.selected];
+    const preview = this.showsPreview() && this.previewOf && standing?.kind === 'result'
+      && String(standing.item.id) === String(this.previewOf.id) ? this.previewOf : null;
     return {
       sections,
       rows,
       rowCount: rows.length,
       scopes,
+      correction,
+      preview,
+      pane: this.showsPreview(),
+      notice: this.notice,
       message,
       messagePills,
       activeId: rows.length ? `${this._id}-option-${this.selected}` : '',
@@ -712,7 +960,7 @@ class SfSearch extends SearchElement {
   statusText(view) {
     if (!this.query.trim()) return '';
     if (this.status === 'loading' && !this.answer) return this.sfWord('loading-text');
-    if (this.status === 'error') return this.sfWord('error-text');
+    if (this.status === 'error') return this.statusMessage || this.sfWord('error-text');
     if (!view.rowCount) return this.answer ? this.sfWord('empty-text', {vars: {query: this.query.trim()}}) : '';
     return this.sfWord('count-text', {count: view.rowCount});
   }
@@ -728,6 +976,7 @@ class SfSearch extends SearchElement {
       scopes: this.sfWord('scopes-label'),
       results: this.sfWord('results-label'),
       popular: this.sfWord('popular-label'),
+      preview: this.sfWord('preview-label'),
       recentClear: this.sfWord('recent-clear-label'),
       keySelect: this.sfWord('key-select-label'),
       keyOpen: this.sfWord('key-open-label'),
@@ -742,8 +991,9 @@ class SfSearch extends SearchElement {
       placeholder: this.placeholder,
       selected: this.selected,
       status: this.status,
+      busy: this.status === 'loading' || this.running,
       statusText: this.statusText(view),
-      show: {scopes: this.scopes, path: this.path, keys: this.keys},
+      show: {path: this.path, keys: this.keys},
       words,
       view,
     }), this._portal);
@@ -768,10 +1018,16 @@ class SfSearch extends SearchElement {
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (oldValue === newValue || !this.isOpen) return;
-    if (name === 'index') {
+    // A new index or a new key is a new built-in host, with its own
+    // capabilities and its own recent queries.
+    if (name === 'index' || name === 'recent-key') {
+      this._builtin = null;
+      this._builtinFor = null;
       this.answer = null;
       this.emptyAnswer = null;
-      this.load(this.query.trim());
+      this.recentList = [];
+      this.popularList = [];
+      this.askQuery(this.query.trim());
     }
     this.renderWindow();
   }

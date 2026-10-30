@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Site search",
-  "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. Results come from a provider (a port function) or a static JSON index, grouped, with scopes, recent and popular queries, quick actions and key hints, each block switchable.",
+  "summary": "Site search in a window: a large rounded field and a separate results card under it over a light scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -55,7 +55,7 @@
       "index": {
         "type": "string",
         "default": "",
-        "description": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in provider reads it once and matches the query in it, case-insensitive. Not read when a provider is given"
+        "description": "The address of a static JSON index (an array of entries, or {groups, items, popular}); the built-in index host reads it once and matches the query in it, case-insensitive, announcing scopes, recent, popular and actions. Not read when a provider or a connected port answers"
       },
       "for": {
         "type": "string",
@@ -78,42 +78,42 @@
       "scopes": {
         "type": "boolean",
         "default": true,
-        "description": "Filter pills over the results once there is a query: all, then one per result group, each with its count"
+        "description": "Filter pills over the results once there is a query: all, then one per result group, each with its count. A want over the capability scopes: where the host does not announce it the pills are absent, and a setting cannot turn on what the host cannot do"
       },
       "recent": {
         "type": "boolean",
         "default": true,
-        "description": "Recent queries on an empty field, each with a remove button, and a clear button; a query is recorded when one of its results is opened"
+        "description": "Recent queries on an empty field, each with a remove button, and a clear button (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
       },
       "recent-key": {
         "type": "string",
         "default": "site",
-        "description": "The name the recent queries are kept under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only"
+        "description": "The name the built-in hosts (index, provider) keep this person's recent queries under, a view preference (SF.Preferences key sf-search/<recent-key>, in the browser localStorage sf-pref:sf-search/<recent-key>); give each search of a site its own; empty: kept for the page's life only. A connected host keeps its own, and the key is then not read"
       },
       "popular": {
         "type": "boolean",
         "default": true,
-        "description": "Popular queries as pills on an empty field and under an empty result, from the data (popular)"
+        "description": "Popular queries as pills on an empty field and under an empty result, from the data (popular). A want over the capability popular: absent where the host does not announce it"
       },
       "actions": {
         "type": "boolean",
         "default": true,
-        "description": "Results that run a command instead of opening a page (an action, with an optional shortcut hint): a quick actions group on an empty field and their own group among the results"
+        "description": "Results that run a command instead of opening a page (kind action, with an optional key hint): a quick actions group on an empty field and their own group among the results, run through action.run. A want over the capability actions: no capability, no command rows"
       },
       "path": {
         "type": "boolean",
         "default": true,
-        "description": "The result's path as a second line under its title"
+        "description": "The result's path as a second line under its title. The panel's own setting: where a result stands is a field of the result, so no capability stands behind it"
       },
       "keys": {
         "type": "boolean",
         "default": true,
-        "description": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close"
+        "description": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close. The panel's own setting: the keys are the panel's, so no capability stands behind it"
       },
       "provider": {
         "type": "object",
         "default": null,
-        "description": "The results port: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A property only"
+        "description": "The simple path: async function (query, {scope, signal}) answering {groups: [{id, label}], items: [{id, group, title, path, href | action, icon, shortcut}], popular: [text]}; called for the empty query too (quick actions and popular queries). A built-in host of simai.search-port wraps it and announces scopes, recent, popular and actions; a host connected with connect-port answers instead. A property only"
       }
     },
     "additionalProperties": false
@@ -250,6 +250,38 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-search-intent": {
+      "summary": "The one event of the port (simai.search-port: every intent names it): the panel raised an intent and this is what came back, whatever the answer -- applied, refused, unavailable, and the answers the panel makes itself. A page may watch the exchange without standing in the way of it",
+      "payload": {
+        "type": "object",
+        "required": [
+          "intent",
+          "payload",
+          "answer"
+        ],
+        "properties": {
+          "intent": {
+            "enum": [
+              "query.change",
+              "result.open",
+              "result.preview",
+              "action.run",
+              "recent.forget",
+              "recent.clear"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "description": "The payload raised, as simai.search-port declares it for that intent."
+          },
+          "answer": {
+            "type": "object",
+            "description": "The host's answer envelope {answer, reason?, text?, sequence?, data?}, or the panel's own when it answered without asking (port-not-connected, capability-not-provided)."
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -280,7 +312,9 @@
     "forbidden_client_responsibilities": [
       "building the site's search index",
       "deciding where a result leads",
-      "running a quick action's command"
+      "running a quick action's command",
+      "keeping this person's recent queries",
+      "correcting a query the person did not correct"
     ]
   },
   "security": {
@@ -384,16 +418,19 @@
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-search for the site search of a SIMAI site or documentation: a window opened from a button in the header or by Command/Control+K, over a static index or the site's own search.",
+    "use_when": "Use sf-search for the site search of a SIMAI site or documentation, and for a command palette: a window opened from a button in the header or by Command/Control+K, over a host of simai.search-port, a static index (index) or a provider function.",
     "do_not": [
       "Do not draw a search window of your own on a SIMAI site",
-      "Do not put the results into the trigger slot; they come from the provider or the index",
-      "Do not handle Escape or the shortcut yourself; the component and the layer stack do"
+      "Do not put the results into the trigger slot; they come from the host, the provider or the index",
+      "Do not handle Escape or the shortcut yourself; the component and the layer stack do",
+      "Do not turn a block on with its setting where the host does not announce the capability: the setting is a want, not a switch on the host",
+      "Do not keep the recent queries in the page; they are the host's data (recent.forget, recent.clear)"
     ],
     "required_reads": [
       "inputs",
       "events",
-      "ownership"
+      "ownership",
+      "port"
     ],
     "minimal_example": "<sf-search index=\"/search-index.json\"><sf-button icon-start=\"search\" text=\"Поиск\" appearance=\"tonal\" scheme=\"on-surface\" radius=\"rounded\"></sf-button></sf-search>",
     "owner_commands": [
