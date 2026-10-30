@@ -134,11 +134,17 @@
      its container's variant). A filled (default) control keeps on-surface's
      inverse glyph: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-icon {
+  /* The colours are set on the control, as every other scheme rule sets them,
+     and never on the glyph itself: a rule on the glyph would stand over the
+     value a state hands down, and a disabled quiet control would keep its
+     resting colour. A close control draws its cross through sf-close, whose
+     own element stands between the control and the mark, so that colour is
+     handed down too. */
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) > .sf-close > .sf-close-icon {
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 }
