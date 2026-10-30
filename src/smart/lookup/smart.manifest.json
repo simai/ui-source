@@ -1,0 +1,445 @@
+{
+  "schema_version": 2,
+  "id": "smart.lookup",
+  "version": "1.0.0",
+  "title": "Lookup",
+  "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "lookup",
+    "picker",
+    "people",
+    "autocomplete",
+    "combobox",
+    "search",
+    "field",
+    "form"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "form",
+    "validation",
+    "async",
+    "popup",
+    "selection",
+    "theme",
+    "responsive",
+    "i18n"
+  ],
+  "custom_element": "sf-lookup",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "component.avatars",
+      "component.icon-buttons",
+      "component.icons",
+      "smart.button",
+      "smart.spinner",
+      "smart.tag"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": ""
+      },
+      "root-style": {
+        "type": "string",
+        "default": ""
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The field ladder, as sf-input's: the frame, the padding and the text of the same size; the chips stand on the field's text line, the rows' pictures a rung below.",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "appearance": {
+        "type": "string",
+        "default": "bordered",
+        "description": "How the field looks: a bordered box or a filled one, sf-input's two boxes.",
+        "enum": [
+          "bordered",
+          "filled"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The visible name of the field; it names the search box and the list. Without it the host's aria-label does."
+      },
+      "placeholder": {
+        "type": "string",
+        "default": "",
+        "description": "Shown in the search box while it is empty."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "The line under the field; it describes the search box."
+      },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name: one entry with the chosen value, or one entry per chosen value when multiple. Only the values are sent, never the labels."
+      },
+      "multiple": {
+        "type": "boolean",
+        "default": false,
+        "description": "Several items, shown as removable chips in the order chosen; the list stays open after a choice. Without it a choice is the value and closes the list."
+      },
+      "max-items": {
+        "type": "number",
+        "default": 0,
+        "description": "Multiple only: the most items that may be chosen (49 for a group). A choice past it is refused with a visible line; 0 is no cap."
+      },
+      "min-length": {
+        "type": "number",
+        "default": 2,
+        "description": "The fewest characters the provider is asked with; below it the list shows the hint and nothing is asked. Inline options are searched at any length."
+      },
+      "max-results": {
+        "type": "number",
+        "default": 20,
+        "description": "The limit the provider is asked for, and the most items one answer shows."
+      },
+      "debounce": {
+        "type": "number",
+        "default": 120,
+        "description": "Milliseconds the field waits after the last key before it asks the provider, as sf-search."
+      },
+      "maxlength": {
+        "type": "number",
+        "default": 0,
+        "description": "The most characters the search box takes (80 for simai.chat); 0 is no limit."
+      },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The form is not sent while nothing is chosen (value-missing)."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Not searched, not changed, not focusable and not sent with the form; a disabled fieldset does the same."
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "The chosen items are shown and sent, but not changed: no search, no remove buttons."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The page's verdict: the error look and aria-invalid, with error-message under the field."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "Shown in place of the hint while invalid."
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
+      },
+      "options": {
+        "type": "array",
+        "default": [],
+        "description": "A short list given whole, [{value, label, caption?, avatar?}]: searched in place, the provider never asked. A property, or the data-sf-settings island."
+      },
+      "exclude": {
+        "type": "array",
+        "default": [],
+        "description": "Values left out of every answer and of the inline options (the reader, the current members); the component filters them. A property, or the data-sf-settings island."
+      },
+      "provider": {
+        "type": "object",
+        "default": null,
+        "description": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?} or {status: 'unavailable'}; a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+      },
+      "value": {
+        "type": "object",
+        "default": null,
+        "description": "Single: {value, label} or null. Multiple: a list of {value, label} in the order chosen, [] when nothing is. A chosen item keeps its caption and avatar. Set from code (or the value attribute as JSON; a bare value is read against the options) it says nothing."
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {
+    "value_owner": {
+      "const": "component"
+    },
+    "form_owner": {
+      "const": "element_internals"
+    },
+    "reset": {
+      "const": "value_attribute"
+    },
+    "value_shape": {
+      "const": "{value, label} | null; multiple: [{value, label}]"
+    },
+    "provider": {
+      "const": "(query, {cursor, limit, signal}) => {items, nextCursor} | {status: 'unavailable'}"
+    }
+  },
+  "methods": {
+    "search": {
+      "summary": "Puts a query in the search box and searches it as typing does, at once (no debounce), opening the list. Returns false while disabled or read-only.",
+      "arguments": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "retry": {
+      "summary": "Repeats the last call to the provider, with its query and cursor, as the Retry button does. Returns false when there is nothing to repeat.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "close": {
+      "summary": "Closes the list and drops a search still running; the query stays.",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    }
+  },
+  "events": {
+    "input": {
+      "summary": "The value changed: a choice, a chip removed, Backspace in the empty search box. Sent before change, with the same detail; the search box's own input does not leave the host.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "item",
+          "action"
+        ],
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "item": {
+            "type": "object"
+          },
+          "action": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "change": {
+      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "item",
+          "action"
+        ],
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "item": {
+            "type": "object"
+          },
+          "action": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "search": [
+        "closed",
+        "hint",
+        "searching",
+        "results",
+        "empty",
+        "unavailable",
+        "error"
+      ],
+      "value": [
+        "empty",
+        "filled"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "active",
+      "disabled",
+      "error",
+      "loading"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "server calls of its own",
+      "storing the value",
+      "deciding who may be found"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props",
+      "provider answers"
+    ],
+    "network_policy": "host-only"
+  },
+  "accessibility": {
+    "role": "combobox",
+    "accessible_name": "required",
+    "keyboard": [
+      "Typing searches; ArrowDown opens the list and moves down, ArrowUp moves up, Home and End go to the ends while it is open",
+      "Enter chooses the active row; in a single field it closes the list",
+      "Escape closes the list; a second Escape clears the query",
+      "Backspace in the empty search box removes the last chip",
+      "Tab reaches each chip's remove button and leaves the field"
+    ],
+    "focus": "Focus stays in the search box while the list is open; the active row is said through aria-activedescendant. The frame draws the focus ring while the box has keyboard focus; a click into it draws none. Removing a chip gives focus back to the search box."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "block",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "d1328993ef33f08d98c6bc8582019c04d81a135f",
+    "source_artifacts": [
+      {
+        "path": "src/smart/lookup/index.js",
+        "sha256": "76a67f8eb8b98b82840bb943bf39355f8ad46f7e9bf1eb29f270ac50fcd4383f"
+      },
+      {
+        "path": "src/smart/lookup/js/templates/default.js",
+        "sha256": "37e0c7778057fb9d5f3de92212dfba8ebc61f38167105b477a4d2a28ed6db101"
+      },
+      {
+        "path": "src/smart/lookup/js/lookup-model.mjs",
+        "sha256": "b5e5cb70ab62a208d9a77c373d17c7c6373a4f20ffde6956ce14340f04e6cc21"
+      },
+      {
+        "path": "src/smart/lookup/scss/_smart__lookup.scss",
+        "sha256": "2166d2e8eb16ccf225882526aa773165bea829aee18e5f427abc6ff8f986f7de"
+      },
+      {
+        "path": "src/smart/lookup/rule.js",
+        "sha256": "b6f553a3d24c601de6f32a37a1871aa58476e26272b86e25cb24ee733cbc8e85"
+      },
+      {
+        "path": "src/smart/lookup/docs.md",
+        "sha256": "dd23c8c05b08cb9ebca117d70b3dde95148e25677df35e927064744445f02ed0"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-lookup to choose people or objects from a set the host searches -- members of a chat, an assignee, a linked record -- or from a short list given whole.",
+    "do_not": [
+      "Do not fetch inside the component or give it a URL: give it a provider function and answer {items, nextCursor} or {status: 'unavailable'}",
+      "Do not trust the submitted values on the server: check that the person may choose them",
+      "Do not use it for a fixed list of a few words without search; use sf-dropdown, sf-radio or sf-button-group",
+      "Do not use it for site search; use sf-search"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "ownership"
+    ],
+    "minimal_example": "<sf-lookup label=\"Members\" name=\"members\" multiple max-items=\"49\"></sf-lookup>\n<script>document.querySelector('sf-lookup').provider = async (query, {cursor, limit, signal}) => (await fetch(`/api/people?q=${encodeURIComponent(query)}&limit=${limit}`, {signal})).json();</script>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

@@ -1,0 +1,385 @@
+@layer sf.components {
+/* sf-lookup (standard simai.smart-component 1.3.14 §6). The frame is
+   sf-input's: the same hairline, radius, fill, block padding, inline padding
+   and text inset at each size of the ladder, read from the same tokens, so an
+   empty lookup, a single one holding a value and an sf-input of the same size
+   stand at one height. Chips are sf-tag on the field's text line. The list is
+   the menu surface sf-dropdown's list uses. Every colour is a role token; the
+   public variables are read with the role as their fallback and never set
+   here. */
+.sf-lookup {
+  min-inline-size: 0;
+  gap: var(--sf-space-1\/4);
+  --sf-lookup--radius: var(--sf-lookup-radius, var(--sf-radius--ui));
+  --sf-lookup--font-size: var(--sf-text-size-1);
+  --sf-lookup--line-height: var(--sf-text-height-1);
+  --sf-lookup--label-size: var(--sf-text-size-1\/2);
+  --sf-lookup--label-height: var(--sf-text-height-1\/2);
+  --sf-lookup--caption-size: var(--sf-text-size-1\/2);
+  --sf-lookup--caption-height: var(--sf-text-height-1\/2);
+  --sf-lookup--padding-block: var(--sf-lookup-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
+  --sf-lookup--padding-inline: var(--sf-lookup-padding-inline, var(--sf-ui-1--space-x));
+  --sf-lookup--text-inset: var(--sf-ui-1--text-space-x);
+  --sf-lookup--row-padding-block: var(--sf-ui-1--space-y-tightness-low);
+  --sf-lookup--row-padding-inline: var(--sf-ui-1--space-x);
+}
+
+.sf-lookup.sf-lookup--size-2 {
+  --sf-lookup--font-size: var(--sf-text-size-2);
+  --sf-lookup--line-height: var(--sf-text-height-2);
+  --sf-lookup--label-size: var(--sf-text-size-1);
+  --sf-lookup--label-height: var(--sf-text-height-1);
+  --sf-lookup--caption-size: var(--sf-text-size-1);
+  --sf-lookup--caption-height: var(--sf-text-height-1);
+  --sf-lookup--padding-block: var(--sf-lookup-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
+  --sf-lookup--padding-inline: var(--sf-lookup-padding-inline, var(--sf-ui-2--space-x));
+  --sf-lookup--text-inset: var(--sf-ui-2--text-space-x);
+  --sf-lookup--row-padding-block: var(--sf-ui-2--space-y-tightness-low);
+  --sf-lookup--row-padding-inline: var(--sf-ui-2--space-x);
+}
+
+.sf-lookup.sf-lookup--size-1\/2 {
+  --sf-lookup--font-size: var(--sf-text-size-1\/2);
+  --sf-lookup--line-height: var(--sf-text-height-1\/2);
+  --sf-lookup--label-size: var(--sf-text-size-1\/3);
+  --sf-lookup--label-height: var(--sf-text-height-1\/3);
+  --sf-lookup--caption-size: var(--sf-text-size-1\/3);
+  --sf-lookup--caption-height: var(--sf-text-height-1\/3);
+  --sf-lookup--padding-block: var(--sf-lookup-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
+  --sf-lookup--padding-inline: var(--sf-lookup-padding-inline, var(--sf-ui-1\/2--space-x));
+  --sf-lookup--text-inset: var(--sf-ui-1\/2--text-space-x);
+  --sf-lookup--row-padding-block: var(--sf-ui-1\/2--space-y-tightness-low);
+  --sf-lookup--row-padding-inline: var(--sf-ui-1\/2--space-x);
+}
+
+/* The label row and the message line: sf-input's. */
+.sf-lookup .sf-lookup-label {
+  gap: var(--sf-space-1\/4);
+  align-items: flex-start;
+}
+
+.sf-lookup .sf-lookup-text,
+.sf-lookup .sf-lookup-required,
+.sf-lookup .sf-lookup-hint-text-wrap {
+  font-family: var(--sf-text--family);
+  font-weight: var(--sf-font-weight-regular);
+  font-size: var(--sf-lookup--label-size);
+  line-height: var(--sf-lookup--label-height);
+}
+
+.sf-lookup .sf-lookup-text,
+.sf-lookup .sf-lookup-hint-text-wrap {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-lookup .sf-lookup-required,
+.sf-lookup.error .sf-lookup-hint-text-wrap {
+  color: var(--sf-error);
+}
+
+/* The frame: what sf-input draws on .sf-input-field. */
+.sf-lookup .sf-lookup-frame {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  gap: var(--sf-space-1\/4);
+  padding-block: var(--sf-lookup--padding-block);
+  padding-inline: var(--sf-lookup--padding-inline);
+  border: var(--sf-px) solid;
+  border-color: var(--sf-lookup--border-color, transparent);
+  border-radius: var(--sf-lookup--radius);
+  background-color: var(--sf-lookup--background-color);
+  color: var(--sf-lookup-color, var(--sf-on-surface));
+  cursor: text;
+  transition-duration: var(--sf-duration-fast);
+  transition-property: background-color, border-color, box-shadow, color;
+  transition-timing-function: var(--sf-animation);
+}
+
+.sf-lookup.sf-lookup--bordered .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-0));
+  --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-outline));
+}
+
+.sf-lookup.sf-lookup--filled .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-container));
+  --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-transparent-for-focus));
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+}
+
+.sf-lookup:not(.error):not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
+  --sf-lookup--border-color: var(--sf-primary-hover);
+}
+
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
+  --sf-lookup--background-color: var(--sf-surface-container-hover);
+}
+
+/* Typing in it: sf-input's focus surface. */
+.sf-lookup.sf-lookup--bordered:not(.error):not(.sf-lookup--readonly):has(.sf-lookup-input:focus) .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-transparent-for-focus);
+  --sf-lookup--border-color: var(--sf-outline);
+}
+
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly):focus-within .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-surface-0);
+  --sf-lookup--border-color: var(--sf-outline);
+}
+
+/* The keyboard ring is the frame's; a click into it draws none, as on sf-input. */
+.sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-lookup .sf-lookup-input:focus,
+.sf-lookup .sf-lookup-input:focus-visible {
+  outline: none;
+}
+
+.sf-lookup.error.sf-lookup--bordered .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-transparent-for-focus);
+  --sf-lookup--border-color: var(--sf-lookup-invalid-border-color, var(--sf-error));
+}
+
+.sf-lookup.error.sf-lookup--filled .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-error-container);
+}
+
+.sf-lookup.sf-lookup--readonly.sf-lookup--bordered:not(.error) .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+}
+
+.sf-lookup.sf-lookup--disabled .sf-lookup-frame {
+  color: var(--sf-on-disable);
+  cursor: default;
+  --sf-on-surface-variant: var(--sf-on-disable);
+}
+
+.sf-lookup.sf-lookup--disabled.sf-lookup--bordered .sf-lookup-frame {
+  --sf-lookup--border-color: var(--sf-outline-disable);
+}
+
+.sf-lookup.sf-lookup--disabled.sf-lookup--filled .sf-lookup-frame {
+  --sf-lookup--background-color: var(--sf-disable);
+}
+
+/* The search box: the field's text, inset as sf-input's value is. */
+.sf-lookup .sf-lookup-input {
+  box-sizing: border-box;
+  min-inline-size: 4ch;
+  block-size: var(--sf-lookup--line-height);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--sf-lookup--text-inset);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-lookup--font-size);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-lookup--line-height);
+}
+
+.sf-lookup .sf-lookup-input::placeholder {
+  color: var(--sf-on-surface-variant);
+  opacity: 1;
+}
+
+.sf-lookup.sf-lookup--filled .sf-lookup-input::placeholder {
+  color: var(--sf-on-surface);
+}
+
+.sf-lookup .sf-lookup-input:disabled {
+  color: inherit;
+  cursor: default;
+}
+
+/* Chips stand on the field's text line: one row of them keeps the height. */
+.sf-lookup .sf-lookup-chip {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+/* sf-tag 1.1.5 asks sf-icon-button for size 1/4 for the close of a tag of
+   size 1/2 or 1/3, a size the button does not have, and it draws at size 1:
+   0.39px taller than the line at field size 1/2. The chip's box keeps to the
+   line, so the field keeps its height; the close overhangs it by a fraction. */
+.sf-lookup .sf-lookup-chip > .sf-tag {
+  max-block-size: var(--sf-lookup--line-height);
+}
+
+/* The clear button keeps to the text line, so a value never grows the field. */
+.sf-lookup .sf-lookup-clear {
+  block-size: var(--sf-lookup--line-height);
+  min-block-size: 0;
+  margin-block: 0;
+  padding-block: 0;
+}
+
+/* The list: sf-dropdown's menu surface, in the top layer under the frame. */
+.sf-lookup .sf-lookup-panel {
+  display: none;
+  box-sizing: border-box;
+  max-block-size: 20rem;
+  margin: 0;
+  padding: var(--sf-space-1\/4);
+  border: 0;
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-lookup-list-background-color, var(--sf-elevation-2--surface));
+  box-shadow: var(--sf-elevation-2--shadow);
+  color: var(--sf-on-surface);
+  overflow: auto;
+  overscroll-behavior: contain;
+  --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+}
+
+.sf-lookup.sf-lookup--open .sf-lookup-panel {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: auto;
+}
+
+/* Until the panel is placed it is not seen, so it never flashes at the corner. */
+.sf-lookup.sf-lookup--open .sf-lookup-panel:not([data-sf-side]) {
+  visibility: hidden;
+}
+
+.sf-lookup .sf-lookup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sf-lookup .sf-lookup-list[hidden] {
+  display: none;
+}
+
+.sf-lookup .sf-lookup-option {
+  gap: var(--sf-space-1\/2);
+  min-block-size: var(--sf-lookup--line-height);
+  padding-block: var(--sf-lookup--row-padding-block);
+  padding-inline: var(--sf-lookup--row-padding-inline);
+  border-radius: var(--sf-radius--ui);
+  cursor: pointer;
+  color: var(--sf-on-surface);
+}
+
+.sf-lookup .sf-lookup-option:hover {
+  background-color: var(--sf-surface-transparent-hover);
+}
+
+.sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
+  background-color: var(--sf-primary-container);
+  color: var(--sf-on-primary-container);
+  --sf-on-surface-variant: var(--sf-on-primary-container);
+}
+
+/* The active row is where Enter chooses: the focus ring, drawn inside it. */
+.sf-lookup .sf-lookup-option.sf-lookup-option--active {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: calc(-1 * var(--sf-focus--width));
+}
+
+.sf-lookup .sf-lookup-option-text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-lookup .sf-lookup-option-label,
+.sf-lookup .sf-lookup-option-caption {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--sf-text--family);
+  font-weight: var(--sf-font-weight-regular);
+}
+
+.sf-lookup .sf-lookup-option-label {
+  font-size: var(--sf-lookup--font-size);
+  line-height: var(--sf-lookup--line-height);
+}
+
+.sf-lookup .sf-lookup-option-caption {
+  font-size: var(--sf-lookup--caption-size);
+  line-height: var(--sf-lookup--caption-height);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-lookup .sf-lookup-option-check {
+  flex: none;
+  inline-size: var(--sf-lookup--line-height);
+  block-size: var(--sf-lookup--line-height);
+  font-size: var(--sf-lookup--line-height);
+  line-height: 1;
+  color: inherit;
+}
+
+/* One line under the rows: the hint, Searching..., Nothing found, the
+   neutral unavailable line, the error, the refusal. */
+.sf-lookup .sf-lookup-state {
+  gap: var(--sf-space-1\/2);
+  padding-inline: var(--sf-lookup--row-padding-inline);
+  font-family: var(--sf-text--family);
+  font-weight: var(--sf-font-weight-regular);
+  font-size: var(--sf-lookup--caption-size);
+  line-height: var(--sf-lookup--caption-height);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-lookup .sf-lookup-status {
+  min-inline-size: 0;
+}
+
+.sf-lookup .sf-lookup-state:has(.sf-lookup-state-text) {
+  padding-block: var(--sf-lookup--row-padding-block);
+}
+
+.sf-lookup .sf-lookup-state.sf-lookup-state--error,
+.sf-lookup .sf-lookup-state.sf-lookup-state--refusal {
+  color: var(--sf-on-surface);
+}
+
+.sf-lookup .sf-lookup-actions {
+  padding-inline: var(--sf-lookup--row-padding-inline);
+  padding-block: var(--sf-space-1\/4);
+}
+
+.sf-lookup .sf-lookup-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+}
+
+@layer sf.states {
+  @media (prefers-reduced-motion: reduce) {
+    .sf-lookup .sf-lookup-frame {
+      transition-duration: 0s;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: var(--sf-focus-outline-width);
+    }
+
+    .sf-lookup .sf-lookup-panel {
+      border: var(--sf-px) solid CanvasText;
+    }
+
+    .sf-lookup .sf-lookup-option.sf-lookup-option--active {
+      outline: var(--sf-px) solid Highlight;
+    }
+  }
+}

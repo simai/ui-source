@@ -62,6 +62,8 @@ const FOLDERS = {
   'theme-generator': 'smart/theme-generator',
   // sf-rich-text (2026-10-30): a sheet of its own, sf-textarea's set of names.
   'rich-text': 'smart/rich-text',
+  // sf-lookup (2026-10-30): a sheet of its own, sf-input's set and the list's surface.
+  lookup: 'smart/lookup',
 };
 
 const scss = async (folder) => {

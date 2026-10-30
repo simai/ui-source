@@ -15,8 +15,8 @@ const read = (path) => readFileSync(join(root, path), 'utf8');
 const all = components();
 
 test('every component has a snapshot per example, and the sheets it needs', () => {
-  // 60 with sf-progress-ring, 61 with sf-site-header, 62 with sf-rich-text.
-  assert.equal(all.length, 62);
+  // 60 with sf-progress-ring, 61 with sf-site-header, 62 with sf-rich-text, 63 with sf-lookup.
+  assert.equal(all.length, 63);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);

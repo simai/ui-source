@@ -231,6 +231,17 @@
     "justify-content/default",
     "place-items/default"
   ],
+  "cl-lookup": [
+    "align-items/default",
+    "display/default",
+    "flex-direction/default",
+    "flex-wrap/default",
+    "flex/default",
+    "isolate/default",
+    "justify-content/default",
+    "overflow/default",
+    "position/default"
+  ],
   "cl-menu": [
     "display/default",
     "isolate/default",

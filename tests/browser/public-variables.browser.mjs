@@ -166,6 +166,12 @@ const DRAW = {
   // area the padding; the invalid instance the invalid border.
   'rich-text': {css: ['icon-buttons', 'icons', 'smart/smart/rich-text/css/rich-text.css'], js: 'rich-text',
     html: '<sf-rich-text label="Text" value="<p>Line</p>" rows="2"></sf-rich-text><sf-rich-text label="Error" invalid rows="2"></sf-rich-text>'},
+  // The frame at rest and invalid; a third opened from its options, so the
+  // list's surface is measured on its panel (the focused frame has its own
+  // fill and border, as sf-input's).
+  lookup: {css: ['tags', 'avatars', 'icon-buttons', 'icons', 'smart/smart/lookup/css/lookup.css'], js: 'lookup',
+    html: '<sf-lookup label="Город" value="moscow"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"}]}</script></sf-lookup><sf-lookup label="Ошибка" invalid></sf-lookup><sf-lookup id="lk" label="Список"><script type="application/json" data-sf-settings>{"options":[{"value":"moscow","label":"Москва"},{"value":"kazan","label":"Казань"}]}</script></sf-lookup>',
+    open: 'const l = document.getElementById("lk"); l.querySelector("input").focus(); l.search("")'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.
   'site-header': {css: ['icon-buttons', 'icons', 'smart/smart/site-header/css/site-header.css'], js: 'site-header',
     html: '<sf-site-header collapse="none"><a slot="brand" href="/"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg><span>SIMAI</span></a><nav aria-label="Разделы"><a href="#a">A</a></nav><button slot="tools" type="button">Тема</button></sf-site-header>'},

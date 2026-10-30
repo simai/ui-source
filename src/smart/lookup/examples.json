@@ -1,0 +1,629 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Members, several, from a list in hand",
+      "settings": {
+        "label": "Members",
+        "name": "members",
+        "multiple": true,
+        "max-items": 3,
+        "hint": "Up to three people.",
+        "placeholder": "Find a person",
+        "options": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          },
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ],
+        "value": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          }
+        ]
+      },
+      "expect": {
+        "role": "combobox",
+        "name": "Members",
+        "form": {
+          "members": [
+            "u1",
+            "u2"
+          ]
+        }
+      },
+      "studio": {
+        "title": "lookup reference",
+        "locale": "en",
+        "props": {
+          "label": "Members",
+          "name": "members",
+          "multiple": true,
+          "max-items": 3,
+          "hint": "Up to three people.",
+          "placeholder": "Find a person",
+          "options": [
+            {
+              "value": "u1",
+              "label": "Anna Petrova",
+              "caption": "Design",
+              "avatar": {
+                "initials": "AP"
+              }
+            },
+            {
+              "value": "u2",
+              "label": "Boris Ivanov",
+              "caption": "Development",
+              "avatar": {
+                "initials": "BI"
+              }
+            },
+            {
+              "value": "u3",
+              "label": "Vera Smirnova",
+              "caption": "Support",
+              "avatar": {
+                "initials": "VS"
+              }
+            },
+            {
+              "value": "u4",
+              "label": "Gleb Orlov",
+              "caption": "Sales"
+            }
+          ],
+          "value": [
+            {
+              "value": "u1",
+              "label": "Anna Petrova",
+              "caption": "Design",
+              "avatar": {
+                "initials": "AP"
+              }
+            },
+            {
+              "value": "u2",
+              "label": "Boris Ivanov",
+              "caption": "Development",
+              "avatar": {
+                "initials": "BI"
+              }
+            }
+          ]
+        },
+        "scenario": {
+          "steps": [
+            {
+              "invoke": "search",
+              "with": [
+                "ve"
+              ]
+            }
+          ],
+          "assertions": [
+            "upgraded",
+            "visible",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "title": "Single, empty and required, with a placeholder",
+      "settings": {
+        "label": "Assignee",
+        "name": "assignee",
+        "required": true,
+        "placeholder": "Type a name",
+        "options": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          },
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ]
+      },
+      "expect": {
+        "value": null,
+        "validity": {
+          "valueMissing": true
+        }
+      }
+    },
+    {
+      "name": "chosen",
+      "title": "Single, holding a value",
+      "settings": {
+        "label": "City",
+        "name": "city",
+        "options": [
+          {
+            "value": "kazan",
+            "label": "Kazan"
+          },
+          {
+            "value": "moscow",
+            "label": "Moscow"
+          },
+          {
+            "value": "samara",
+            "label": "Samara"
+          }
+        ],
+        "value": {
+          "value": "moscow",
+          "label": "Moscow"
+        }
+      },
+      "expect": {
+        "value": {
+          "value": "moscow",
+          "label": "Moscow"
+        },
+        "form": {
+          "city": "moscow"
+        }
+      }
+    },
+    {
+      "name": "filled",
+      "title": "Filled",
+      "settings": {
+        "label": "City",
+        "appearance": "filled",
+        "placeholder": "Type a city",
+        "options": [
+          {
+            "value": "kazan",
+            "label": "Kazan"
+          },
+          {
+            "value": "moscow",
+            "label": "Moscow"
+          },
+          {
+            "value": "samara",
+            "label": "Samara"
+          }
+        ]
+      }
+    },
+    {
+      "name": "size-2",
+      "title": "Size 2, several",
+      "settings": {
+        "label": "Members",
+        "size": "2",
+        "multiple": true,
+        "options": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          },
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ],
+        "value": [
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "size-1-2",
+      "title": "Size 1/2",
+      "settings": {
+        "label": "City",
+        "size": "1/2",
+        "options": [
+          {
+            "value": "kazan",
+            "label": "Kazan"
+          },
+          {
+            "value": "moscow",
+            "label": "Moscow"
+          },
+          {
+            "value": "samara",
+            "label": "Samara"
+          }
+        ],
+        "value": {
+          "value": "kazan",
+          "label": "Kazan"
+        }
+      }
+    },
+    {
+      "name": "invalid",
+      "title": "Invalid with a message",
+      "settings": {
+        "label": "Assignee",
+        "invalid": true,
+        "error-message": "Choose someone from the team.",
+        "options": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          },
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ]
+      }
+    },
+    {
+      "name": "readonly",
+      "title": "Read-only",
+      "settings": {
+        "label": "Members",
+        "multiple": true,
+        "readonly": true,
+        "options": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u2",
+            "label": "Boris Ivanov",
+            "caption": "Development",
+            "avatar": {
+              "initials": "BI"
+            }
+          },
+          {
+            "value": "u3",
+            "label": "Vera Smirnova",
+            "caption": "Support",
+            "avatar": {
+              "initials": "VS"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ],
+        "value": [
+          {
+            "value": "u1",
+            "label": "Anna Petrova",
+            "caption": "Design",
+            "avatar": {
+              "initials": "AP"
+            }
+          },
+          {
+            "value": "u4",
+            "label": "Gleb Orlov",
+            "caption": "Sales"
+          }
+        ]
+      }
+    },
+    {
+      "name": "disabled",
+      "title": "Disabled",
+      "settings": {
+        "label": "City",
+        "disabled": true,
+        "options": [
+          {
+            "value": "kazan",
+            "label": "Kazan"
+          },
+          {
+            "value": "moscow",
+            "label": "Moscow"
+          },
+          {
+            "value": "samara",
+            "label": "Samara"
+          }
+        ],
+        "value": {
+          "value": "samara",
+          "label": "Samara"
+        }
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-lookup against component.json (standard simai.smart-component 1.3.14 §12, gate 20)",
+      "page": {
+        "lang": "en",
+        "body": [
+          "<main>",
+          "  <form id=\"f\">",
+          "    <sf-lookup id=\"l1\" label=\"Members\" name=\"members\" multiple max-items=\"2\" hint=\"People\"><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}, {\"value\": \"u2\", \"label\": \"Boris Ivanov\", \"caption\": \"Development\", \"avatar\": {\"initials\": \"BI\"}}, {\"value\": \"u3\", \"label\": \"Vera Smirnova\", \"caption\": \"Support\", \"avatar\": {\"initials\": \"VS\"}}, {\"value\": \"u4\", \"label\": \"Gleb Orlov\", \"caption\": \"Sales\"}], \"exclude\": [\"u4\"], \"value\": [{\"value\": \"u1\", \"label\": \"Anna Petrova\", \"caption\": \"Design\", \"avatar\": {\"initials\": \"AP\"}}]}</script></sf-lookup>",
+          "    <sf-lookup id=\"l2\" label=\"City\" name=\"city\" required value='{\"value\":\"kazan\",\"label\":\"Kazan\"}'><script type=\"application/json\" data-sf-settings>{\"options\": [{\"value\": \"kazan\", \"label\": \"Kazan\"}, {\"value\": \"moscow\", \"label\": \"Moscow\"}, {\"value\": \"samara\", \"label\": \"Samara\"}]}</script></sf-lookup>",
+          "    <sf-lookup id=\"l3\" label=\"Person\" name=\"person\" min-length=\"2\" debounce=\"0\"></sf-lookup>",
+          "  </form>",
+          "  <div lang=\"ru\"><sf-lookup id=\"l4\" aria-label=\"Person\" min-length=\"3\"></sf-lookup></div>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "l1-combobox",
+          "title": "the search box is a combobox named by the label, controlling a listbox, described by the hint",
+          "covers": "accessibility",
+          "steps": [
+            {
+              "wait": 300,
+              "check": "(() => { const el = document.getElementById('l1'); const i = el.querySelector('input'); const list = document.getElementById(i.getAttribute('aria-controls')); const label = document.getElementById(i.getAttribute('aria-labelledby')); const hint = document.getElementById(i.getAttribute('aria-describedby')); return i.getAttribute('role') === 'combobox' && i.getAttribute('aria-expanded') === 'false' && list.getAttribute('role') === 'listbox' && list.getAttribute('aria-multiselectable') === 'true' && label.textContent.trim().startsWith('Members') && hint.textContent.trim() === 'People'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l1-form-value",
+          "title": "the form sends one entry per chosen value, the values alone",
+          "covers": "form, values.value",
+          "steps": [
+            {
+              "check": "(() => { const d = new FormData(document.getElementById('f')); return JSON.stringify(d.getAll('members')) === '[\"u1\"]' && d.get('city') === 'kazan'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l1-exclude-and-choose",
+          "title": "an excluded value is never offered; a choice adds a chip, says input then change once, the list stays open",
+          "covers": "settings.exclude, events",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l1'); window.__said = []; el.addEventListener('input', (e) => window.__said.push('input:' + e.detail.action)); el.addEventListener('change', (e) => window.__said.push('change:' + e.detail.action)); el.querySelector('input').focus(); return el.search('o'); })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l1'); const rows = [...el.querySelectorAll('[role=option]')]; return rows.length === 3 && rows.every((r) => !/Gleb/.test(r.textContent)) && el.querySelector('input').getAttribute('aria-expanded') === 'true'; })()"
+            },
+            {
+              "script": "(() => { const el = document.getElementById('l1'); const row = [...el.querySelectorAll('[role=option]')].find((r) => /Boris/.test(r.textContent)); row.click(); return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l1'); return JSON.stringify(el.value.map((v) => v.value)) === '[\"u1\",\"u2\"]' && JSON.stringify(window.__said) === '[\"input:added\",\"change:added\"]' && el.querySelectorAll('sf-tag').length === 2 && el.querySelector('input').getAttribute('aria-expanded') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l1-max-items",
+          "title": "past max-items a choice is refused with a visible polite line, the value unchanged",
+          "covers": "settings.max-items",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l1'); el.querySelector('input').focus(); el.search('o'); return true; })()",
+              "wait": 200
+            },
+            {
+              "script": "(() => { const el = document.getElementById('l1'); [...el.querySelectorAll('[role=option]')].find((r) => /Boris/.test(r.textContent)).click(); return true; })()",
+              "wait": 200,
+              "check": "document.getElementById('l1').value.length === 2"
+            },
+            {
+              "script": "(() => { const el = document.getElementById('l1'); [...el.querySelectorAll('[role=option]')].find((r) => /Vera/.test(r.textContent)).click(); return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l1'); const status = el.querySelector('[role=status]'); return el.value.length === 2 && status.getAttribute('aria-live') === 'polite' && status.textContent.trim() === 'No more than 2'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l1-remove-chip",
+          "title": "a chip's remove button is named Remove <label> and removes it, said as removed",
+          "covers": "accessibility, events",
+          "steps": [
+            {
+              "wait": 300,
+              "check": "(() => { const tag = document.querySelector('#l1 sf-tag'); const button = tag.querySelector('button'); return Boolean(button) && button.getAttribute('aria-label') === 'Remove Anna Petrova'; })()"
+            },
+            {
+              "script": "(() => { document.querySelector('#l1 sf-tag button').click(); return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l1'); return el.value.length === 0 && el.querySelectorAll('sf-tag').length === 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "l2-single-choose",
+          "title": "single: a choice is the value, commits and closes the list, the box shows its label",
+          "covers": "values.value, settings.multiple",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l2'); el.querySelector('input').focus(); return el.search('mos'); })()",
+              "wait": 200
+            },
+            {
+              "script": "(() => { document.querySelector('#l2 [role=option]').click(); return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l2'); const i = el.querySelector('input'); return el.value.value === 'moscow' && el.value.label === 'Moscow' && i.value === 'Moscow' && i.getAttribute('aria-expanded') === 'false' && new FormData(document.getElementById('f')).get('city') === 'moscow'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l2-reset",
+          "title": "a form reset puts the value attribute back and says nothing",
+          "covers": "form.reset",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l2'); el.value = {value: 'samara', label: 'Samara'}; window.__said2 = 0; el.addEventListener('input', () => { window.__said2 += 1; }); el.addEventListener('change', () => { window.__said2 += 1; }); document.getElementById('f').reset(); return true; })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l2'); return el.value.value === 'kazan' && el.querySelector('input').value === 'Kazan' && window.__said2 === 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "l2-required",
+          "title": "required and empty: value-missing; a value makes it valid",
+          "covers": "settings.required, form.validity",
+          "steps": [
+            {
+              "script": "(document.getElementById('l2').value = null, true)",
+              "wait": 100,
+              "check": "(() => { const el = document.getElementById('l2'); return el.value === null && el.validity.valueMissing === true && document.getElementById('f').checkValidity() === false; })()"
+            },
+            {
+              "script": "(document.getElementById('l2').value = 'moscow', true)",
+              "wait": 100,
+              "check": "(() => { const el = document.getElementById('l2'); return el.validity.valid === true && el.value.label === 'Moscow'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l3-provider",
+          "title": "below min-length the hint and no call; then the provider's answer; unavailable is one neutral line",
+          "covers": "settings.provider, settings.min-length",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l3'); window.__calls = []; el.provider = async (query, {limit}) => { window.__calls.push(query + ':' + limit); return query === 'zz' ? {status: 'unavailable'} : {items: [{value: 1, label: 'Ann ' + query, caption: 'QA'}]}; }; el.querySelector('input').focus(); return el.search('a'); })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l3'); return window.__calls.length === 0 && el.querySelector('[role=status]').textContent.trim() === 'Type at least 2 characters'; })()"
+            },
+            {
+              "script": "(document.getElementById('l3').search('an'), true)",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l3'); const row = el.querySelector('[role=option]'); return JSON.stringify(window.__calls) === '[\"an:20\"]' && row && /Ann an/.test(row.textContent) && /QA/.test(row.textContent); })()"
+            },
+            {
+              "script": "(document.getElementById('l3').search('zz'), true)",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l3'); return el.querySelectorAll('[role=option]').length === 0 && el.querySelector('[role=status]').textContent.trim() === 'Search is unavailable'; })()"
+            }
+          ]
+        },
+        {
+          "id": "l4-language",
+          "title": "the words follow the page language; the host's aria-label names the box",
+          "covers": "lang, accessibility.name",
+          "steps": [
+            {
+              "script": "(() => { const el = document.getElementById('l4'); el.provider = async () => ({items: []}); el.querySelector('input').focus(); return el.search('a'); })()",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('l4'); const text = el.querySelector('[role=status]').textContent.trim(); return el.querySelector('input').getAttribute('aria-label') === 'Person' && text.length > 0 && !/Type at least/.test(text); })()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
