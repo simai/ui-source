@@ -72,10 +72,12 @@ const FOLDERS = {
   'rich-text': 'smart/rich-text',
   // sf-lookup (2026-10-30): a sheet of its own, sf-input's set and the list's surface.
   lookup: 'smart/lookup',
+  // The workspace layout (2026-10-30): a core layout, in the core sheet.
+  workspace: 'core',
 };
 
 const scss = async (folder) => {
-  const dir = folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
+  const dir = folder === 'core' ? 'src/core/scss' : folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
   const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => /\.s?css$/u.test(name));
   return (await Promise.all(names.map((name) => read(`${dir}/${name}`)))).join('\n');
 };

@@ -148,3 +148,176 @@
         cursor: pointer;
     }
 }
+
+// The workspace layout: rail, list, main and panel (2026-10-30, design
+// ui-control WORKSPACE-LAYOUT-DESIGN-2026-10-30, asked for by UI Chat). The
+// declared-region layout above for an application screen: the same size
+// container and container queries, never the viewport, with two behaviours
+// more -- below the wide width the open panel is a drawer over main, and
+// below the split width one region shows at a time.
+//
+//   wide   (from --wide-*,  64rem):  rail | list | main | panel
+//   middle (from --split-*, 40rem):  rail | list | main, the panel a drawer
+//   narrow:                          rail + list, or main; the panel a drawer
+//
+// The regions are the container's own children, so the container is a flex
+// row (writing direction: mirrors in RTL) and each region sizes and hides
+// itself from the container query. A container query cannot read a variable,
+// so the two widths are classes on the size ladder; the region widths are
+// variables. core/js/workspace.js keeps the drawer's keys and focus and the
+// narrow view's focus; the placement is the sheet's alone.
+$sf-workspace-split-steps: (g6: 32rem, h0: 40rem, h2: 48rem, h4: 56rem);
+$sf-workspace-split-default: h0;
+$sf-workspace-wide-steps: (h4: 56rem, h6: 64rem, h8: 72rem, i0: 80rem, i2: 96rem);
+$sf-workspace-wide-default: h6;
+
+// The workspace a step applies to: the class names it, and the default step
+// also holds for a workspace that names none.
+@function sf-workspace-scope($kind, $step, $default) {
+    @if $step == $default {
+        @return '.sf-workspace:is(:not([class*="sf-workspace--#{$kind}-"]), .sf-workspace--#{$kind}-#{$step})';
+    }
+    @return '.sf-workspace.sf-workspace--#{$kind}-#{$step}';
+}
+
+@layer sf.components {
+    .sf-workspace {
+        container: sf-workspace / inline-size;
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        gap: var(--sf-workspace-gap, var(--sf-0));
+        box-sizing: border-box;
+        block-size: 100%;
+        min-inline-size: 0;
+        // The drawer's scrim is its shadow: it ends at the workspace's edge.
+        overflow: clip;
+    }
+
+    // Each region scrolls on its own; the layout the script reads is said on
+    // every region (narrow, split, wide).
+    .sf-workspace > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+        --sf-workspace--layout: narrow;
+        box-sizing: border-box;
+        min-inline-size: 0;
+        min-block-size: 0;
+        overflow: auto;
+        overscroll-behavior: contain;
+    }
+
+    /* sf-focus-ring: none — a region takes focus only programmatically, when
+       the script moves it there (an empty drawer, main shown without a back
+       control); like sf-drawer's panel it draws no ring of its own, the
+       controls inside it do. */
+    .sf-workspace > :is(.sf-workspace-list, .sf-workspace-main, .sf-workspace-panel)[tabindex="-1"]:focus {
+        outline: none;
+    }
+
+    .sf-workspace > .sf-workspace-rail {
+        flex: 0 0 var(--sf-workspace-rail, auto);
+        border-inline-end: var(--sf-px) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
+    }
+
+    .sf-workspace > .sf-workspace-list {
+        flex: 0 0 var(--sf-workspace-list, var(--sf-g0));
+        border-inline-end: var(--sf-px) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
+    }
+
+    .sf-workspace > .sf-workspace-main {
+        flex: 1 1 0;
+    }
+
+    // One panel, shown only while it is open: a column when wide, a drawer
+    // below. Its open state outlives a change of width.
+    .sf-workspace > .sf-workspace-panel {
+        flex: 0 0 var(--sf-workspace-panel, var(--sf-g1));
+        border-inline-start: var(--sf-px) solid var(--sf-workspace-divider-color, var(--sf-outline-variant));
+    }
+
+    .sf-workspace:not([data-sf-workspace-panel="open"]) > .sf-workspace-panel,
+    .sf-workspace[data-sf-workspace-list="hidden"] > .sf-workspace-list {
+        display: none;
+    }
+
+    // The back control is there only when the narrow view shows main and a
+    // list to go back to.
+    .sf-workspace[data-sf-workspace-list="hidden"] > .sf-workspace-main .sf-workspace-back {
+        display: none;
+    }
+
+    @each $step, $width in $sf-workspace-split-steps {
+        $scope: sf-workspace-scope(split, $step, $sf-workspace-split-default);
+
+        // Narrow: one region at a time. data-sf-workspace-view="main" shows
+        // main; any other value, or none, shows the list with its rail. A
+        // workspace without a list always shows main.
+        @container sf-workspace (width < #{$width}) {
+            #{$scope}:not([data-sf-workspace-view="main"]):not([data-sf-workspace-list="hidden"]) > .sf-workspace-main,
+            #{$scope}:is([data-sf-workspace-view="main"], [data-sf-workspace-list="hidden"]) > :is(.sf-workspace-rail, .sf-workspace-list) {
+                display: none;
+            }
+
+            #{$scope} > .sf-workspace-list {
+                flex: 1 1 0;
+                border-inline-end: 0;
+            }
+        }
+
+        @container sf-workspace (width >= #{$width}) {
+            #{$scope} > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+                --sf-workspace--layout: split;
+            }
+
+            #{$scope} > .sf-workspace-main .sf-workspace-back {
+                display: none;
+            }
+        }
+    }
+
+    @each $step, $width in $sf-workspace-wide-steps {
+        $scope: sf-workspace-scope(wide, $step, $sf-workspace-wide-default);
+
+        // Below the wide width the open panel is a drawer at the end edge,
+        // over main, on the drawer's surface; its shadow is the scrim.
+        @container sf-workspace (width < #{$width}) {
+            #{$scope} > .sf-workspace-panel {
+                position: absolute;
+                inset-block: 0;
+                inset-inline-end: 0;
+                // Above anything main raises; the workspace is its own stacking
+                // context (a size container), so this stays inside it.
+                z-index: var(--sf-z-index-layer, 9000);
+                inline-size: min(var(--sf-workspace-panel, var(--sf-g1)), 100%);
+                border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+                background: var(--sf-workspace-drawer-background, var(--sf-elevation-4--surface));
+                color: var(--sf-on-surface);
+                box-shadow: var(--sf-elevation-4--shadow), 0 0 0 100vmax color-mix(in srgb, var(--sf-black) var(--sf-opacity-60), transparent);
+                translate: 0 0;
+
+                // It slides in from its edge, unless motion is reduced.
+                @media (prefers-reduced-motion: no-preference) {
+                    transition: translate var(--sf-duration-normal) var(--sf-ease-enter);
+
+                    @starting-style {
+                        translate: 100% 0;
+                    }
+                }
+            }
+
+            #{$scope}:dir(rtl) > .sf-workspace-panel {
+                @media (prefers-reduced-motion: no-preference) {
+                    @starting-style {
+                        translate: -100% 0;
+                    }
+                }
+            }
+        }
+
+        @container sf-workspace (width >= #{$width}) {
+            #{$scope} > :is(.sf-workspace-rail, .sf-workspace-list, .sf-workspace-main, .sf-workspace-panel) {
+                --sf-workspace--layout: wide;
+            }
+        }
+    }
+
+}
