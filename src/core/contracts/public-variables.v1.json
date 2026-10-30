@@ -3447,6 +3447,82 @@
           "since": "2026-10-30"
         }
       ]
+    },
+    {
+      "component": "lookup",
+      "selector": ".sf-lookup",
+      "variables": [
+        {
+          "name": "--sf-lookup-background-color",
+          "role": "background",
+          "summary": "The frame's fill at rest; hover, focus, read-only, error and disabled keep their own.",
+          "default": "var(--sf-surface-0)",
+          "since": "2026-10-30",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-lookup-border-color",
+          "role": "border-color",
+          "summary": "The frame's border at rest.",
+          "default": "var(--sf-outline)",
+          "since": "2026-10-30",
+          "varies_with": [
+            "appearance"
+          ]
+        },
+        {
+          "name": "--sf-lookup-color",
+          "role": "color",
+          "summary": "The search text; disabled keeps its own.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-lookup-radius",
+          "role": "radius",
+          "summary": "The frame's corner radius.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-lookup-padding-inline",
+          "role": "padding-inline",
+          "summary": "Space inside the frame before the first chip and after the search box.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-10-30",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-lookup-padding-block",
+          "role": "padding-block",
+          "summary": "Space inside the frame above and below the text line.",
+          "default": "calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))",
+          "since": "2026-10-30",
+          "varies_with": [
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-lookup-invalid-border-color",
+          "role": "border-color",
+          "summary": "The frame's border while it is invalid (bordered appearance).",
+          "default": "var(--sf-error)",
+          "state": "invalid",
+          "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-lookup-list-background-color",
+          "role": "background",
+          "summary": "The open list's surface.",
+          "default": "var(--sf-elevation-2--surface)",
+          "state": "open",
+          "since": "2026-10-30"
+        }
+      ]
     }
   ]
 }

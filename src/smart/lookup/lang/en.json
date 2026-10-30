@@ -1,0 +1,23 @@
+{
+  "title": "Lookup",
+  "runtime": {
+    "hint-min-length": {
+      "one": "Type at least {n} character",
+      "other": "Type at least {n} characters"
+    },
+    "searching": "Searching…",
+    "nothing-found": "Nothing found",
+    "unavailable": "Search is unavailable",
+    "error": "Search failed",
+    "retry": "Retry",
+    "show-more": "Show more",
+    "max-items": "No more than {n}",
+    "remove": "Remove {label}",
+    "clear": "Clear",
+    "results": {
+      "one": "{n} result",
+      "other": "{n} results"
+    },
+    "value-missing": "Choose a value."
+  }
+}

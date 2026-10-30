@@ -1,0 +1,49 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.lookup",
+  "title": "lookup reference",
+  "summary": "Deterministic reference fixture for sf-lookup.",
+  "locale": "en",
+  "props": {
+    "label": "Members",
+    "name": "members",
+    "multiple": true,
+    "max-items": 3,
+    "hint": "Up to three people.",
+    "placeholder": "Find a person",
+    "options": [
+      {
+        "value": "u1",
+        "label": "Anna Petrova",
+        "caption": "Design",
+        "avatar": {
+          "initials": "AP"
+        }
+      },
+      {
+        "value": "u2",
+        "label": "Boris Ivanov",
+        "caption": "Development",
+        "avatar": {
+          "initials": "BI"
+        }
+      },
+      {
+        "value": "u3",
+        "label": "Vera Smirnova",
+        "caption": "Support",
+        "avatar": {
+          "initials": "VS"
+        }
+      },
+      {
+        "value": "u4",
+        "label": "Gleb Orlov",
+        "caption": "Sales"
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}

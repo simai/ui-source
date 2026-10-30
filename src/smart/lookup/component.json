@@ -1,0 +1,470 @@
+{
+  "$comment": "The source of sf-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
+  "id": "smart.lookup",
+  "tag": "sf-lookup",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "field",
+  "settings": {
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The field ladder, as sf-input's: the frame, the padding and the text of the same size; the chips stand on the field's text line, the rows' pictures a rung below."
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "bordered",
+        "filled"
+      ],
+      "default": "bordered",
+      "summary": "How the field looks: a bordered box or a filled one, sf-input's two boxes."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The visible name of the field; it names the search box and the list. Without it the host's aria-label does."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "",
+      "summary": "Shown in the search box while it is empty."
+    },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "The line under the field; it describes the search box."
+    },
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The form name: one entry with the chosen value, or one entry per chosen value when multiple. Only the values are sent, never the labels."
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Several items, shown as removable chips in the order chosen; the list stays open after a choice. Without it a choice is the value and closes the list."
+    },
+    "max-items": {
+      "type": "number",
+      "default": 0,
+      "summary": "Multiple only: the most items that may be chosen (49 for a group). A choice past it is refused with a visible line; 0 is no cap."
+    },
+    "min-length": {
+      "type": "number",
+      "default": 2,
+      "summary": "The fewest characters the provider is asked with; below it the list shows the hint and nothing is asked. Inline options are searched at any length."
+    },
+    "max-results": {
+      "type": "number",
+      "default": 20,
+      "summary": "The limit the provider is asked for, and the most items one answer shows."
+    },
+    "debounce": {
+      "type": "number",
+      "default": 120,
+      "summary": "Milliseconds the field waits after the last key before it asks the provider, as sf-search."
+    },
+    "maxlength": {
+      "type": "number",
+      "default": 0,
+      "summary": "The most characters the search box takes (80 for simai.chat); 0 is no limit."
+    },
+    "options": {
+      "type": "list",
+      "default": [],
+      "summary": "A short list given whole, [{value, label, caption?, avatar?}]: searched in place, the provider never asked. A property, or the data-sf-settings island."
+    },
+    "exclude": {
+      "type": "list",
+      "default": [],
+      "summary": "Values left out of every answer and of the inline options (the reader, the current members); the component filters them. A property, or the data-sf-settings island."
+    },
+    "provider": {
+      "type": "object",
+      "default": null,
+      "summary": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?} or {status: 'unavailable'}; a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The form is not sent while nothing is chosen (value-missing)."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Not searched, not changed, not focusable and not sent with the form; a disabled fieldset does the same."
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The chosen items are shown and sent, but not changed: no search, no remove buttons."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The page's verdict: the error look and aria-invalid, with error-message under the field."
+    },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "Shown in place of the hint while invalid."
+    }
+  },
+  "values": {
+    "value": {
+      "type": "object",
+      "nullable": true,
+      "default": null,
+      "summary": "Single: {value, label} or null. Multiple: a list of {value, label} in the order chosen, [] when nothing is. A chosen item keeps its caption and avatar. Set from code (or the value attribute as JSON; a bare value is read against the options) it says nothing."
+    }
+  },
+  "events": {
+    "input": {
+      "carries": "native",
+      "x-detail": {
+        "value": "object",
+        "item": "object",
+        "action": "string"
+      },
+      "summary": "The value changed: a choice, a chip removed, Backspace in the empty search box. Sent before change, with the same detail; the search box's own input does not leave the host."
+    },
+    "change": {
+      "carries": "native",
+      "x-detail": {
+        "value": "object",
+        "item": "object",
+        "action": "string"
+      },
+      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing."
+    }
+  },
+  "actions": {},
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "readonly": "readonly",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Escape": "close",
+      "Backspace": "remove"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-tag",
+      "$comment": [
+        "The chosen items are sf-tag chips on the field's text line, each with",
+        "a remove button named Remove <label>."
+      ]
+    },
+    {
+      "name": "avatars",
+      "$comment": [
+        "A row's picture is the class markup of an avatar (.sf-avatar): a",
+        "photo or initials, drawn by the avatars sheet without an element per row."
+      ]
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-spinner",
+      "$comment": [
+        "The spinner beside Searching... while the provider is asked."
+      ]
+    },
+    {
+      "name": "cl-button",
+      "$comment": [
+        "Retry after an error and Show more when the answer has a next cursor."
+      ]
+    },
+    {
+      "name": "icon-buttons",
+      "$comment": [
+        "The clear button of a single field holding a value: the class markup",
+        "of an icon button, as sf-rich-text's toolbar draws it."
+      ]
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The combobox pattern with a list popup: the search box is role combobox with aria-autocomplete list, aria-expanded, aria-controls the listbox and aria-activedescendant the active row; it is named by the label (aria-labelledby) or the host's aria-label and described by the hint or error. The list is role listbox (aria-multiselectable when multiple), its rows role option with aria-selected; the state line under it (hint, searching, nothing found, unavailable, error, the max-items refusal) is role status, polite. ArrowDown and ArrowUp move, Home and End go to the ends while the list is open, Enter chooses, Escape closes and a second Escape clears the query; Backspace in the empty box removes the last chip. Chips are sf-tag with a remove button named Remove <label>.",
+    "role": "combobox",
+    "name": {
+      "from": [
+        "label",
+        "aria-label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowDown": "focus:next",
+      "ArrowUp": "focus:prev",
+      "Home": "focus:first",
+      "End": "focus:last",
+      "Enter": "select",
+      "Escape": "close",
+      "Backspace": "remove"
+    }
+  },
+  "css-variables": {
+    "--sf-lookup-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-lookup-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-lookup-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-lookup-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-lookup-padding-inline": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-lookup-padding-block": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-lookup-invalid-border-color": {
+      "type": "color",
+      "state": "invalid"
+    },
+    "--sf-lookup-list-background-color": {
+      "type": "color",
+      "state": "open"
+    }
+  },
+  "x-summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
+  "x-source": {
+    "package": "framework",
+    "folder": "lookup",
+    "brief": "UI Chat's request msg-8fbe39bb9acb40b9a08e item 1 (the people picker with server search); owner decision q-efb6397065: a SIMAI Framework component, Apache-2.0"
+  },
+  "x-words": [
+    "label",
+    "placeholder",
+    "hint"
+  ],
+  "x-decisions": [
+    "name: sf-lookup, the field renderer's lookup made a component (design draft 2026-10-30). One value model with renderLookupEdit in src/smart/field-renderers: {value, label}, or a list of them when multiple; the renderer is to delegate to sf-lookup in a later pass, not keep a second implementation.",
+    "search: the host answers and the component never fetches. provider is a property, a function (query, {cursor, limit, signal}) as sf-search's provider is, so the two read alike. Below min-length nothing is asked and the hint shows; the call waits debounce after the last key; a new call aborts the previous through its signal and an answer that arrives for an older call is dropped, by a sequence number as well as the signal, so a provider that ignores the signal cannot write stale rows.",
+    "answers: {items, nextCursor} is results or nothing found; {status: 'unavailable'} the one neutral line (simai.chat sends ACCESS_DENIED for both a disabled catalogue and no rights, and the line says no reason); anything else, a thrown error or a rejected promise, the error line with Retry, which repeats the last call with its cursor. No nextCursor is no Show more: exactly max-results items mean nothing more (consumer answer). An answer longer than max-results is cut to it.",
+    "exclude: a list of values taken out of every answer and of the inline options by the component, so a host that cannot filter on its server still never offers the reader or a current member (consumer answer). Values, not items; an item given is read by its value.",
+    "options: a short list given whole is searched in place, at any length, by label and caption with case and accents folded; the provider is not asked, as the field renderer's inline lookup does today. With both, options win: a list in hand is the whole set.",
+    "choice: chosen items stay in the list, marked (aria-selected and a check) and toggling (consumer answer). Single: a choice replaces the value, commits and closes the list, the search box shows the chosen label; choosing the chosen item changes nothing. Multiple: a choice adds a chip at the end or removes it; past max-items it is refused and a polite line says No more than N instead of ignoring the press (consumer answer).",
+    "single display: the chosen label is the search box's text while the person is not searching; typing searches, Escape twice or leaving the field puts the label back, the clear button (Clear) empties the value. A chip for one value would make a single field look like a list of one.",
+    "value-from-code: the value property and the value attribute (JSON, or a bare value read against the options) say nothing; a form reset puts the value attribute back and says nothing, restore takes the form's saved entries. Form entries are the values alone: one entry, or one per chosen value through a FormData (§17.1), the labels never.",
+    "events: input and change are the native names (§8, §17.3) with a detail {value, item, action}, input first, both once per change the person made. The search box's own input and change stop at the host: typing is not a change of the value. No search event: the provider is the one way the host answers.",
+    "states: one line in the list area, role status, polite: the hint (Type at least N characters), the spinner and Searching..., Nothing found, Search is unavailable, the error line with Retry. The words are the language file's, with plural forms for the hint and the refusal.",
+    "list surface: the panel is a popover (manual) in the top layer, anchored under the frame with SF.Position at the frame's width, flipped above when there is no room, as sf-dropdown's list; it stays inside the element, so focus leaving the element closes it without a document listener. Rows are the class markup of the avatars sheet (a photo or initials) beside the label and caption: no element per row.",
+    "geometry: the frame is sf-input's at sizes 1/2, 1, 2 -- the hairline, --sf-radius--ui, the block padding of each size and the inline padding plus the text inset -- so an empty lookup, a single one holding a value and sf-input of the same size are one height. Chips are sf-tag on the field's text line (line = size), so one row of chips keeps that height.",
+    "a11y: the combobox pattern of ARIA 1.2 with aria-activedescendant; the focus stays in the search box while the arrows move the active row, so a screen reader hears the row and typing goes on. Colours are role tokens: on-surface on the field and on the elevated list, on-surface-variant for captions, the hint, the placeholder and the state lines, primary-container for the active row, error for the error line -- the pairs the theme makes AA in light and dark.",
+    "css-variables: eight public variables, sf-input's seven in the field's pattern (§6) and the list's background, listed in src/core/contracts/public-variables.v1.json."
+  ],
+  "x-registry": {
+    "reuse_mode": "whole",
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "form",
+      "validation",
+      "async",
+      "popup",
+      "selection",
+      "theme",
+      "responsive",
+      "i18n"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "lookup",
+      "picker",
+      "people",
+      "autocomplete",
+      "combobox",
+      "search",
+      "field",
+      "form"
+    ],
+    "contracts": {
+      "value_owner": {
+        "const": "component"
+      },
+      "form_owner": {
+        "const": "element_internals"
+      },
+      "reset": {
+        "const": "value_attribute"
+      },
+      "value_shape": {
+        "const": "{value, label} | null; multiple: [{value, label}]"
+      },
+      "provider": {
+        "const": "(query, {cursor, limit, signal}) => {items, nextCursor} | {status: 'unavailable'}"
+      }
+    },
+    "state": {
+      "machines": {
+        "search": [
+          "closed",
+          "hint",
+          "searching",
+          "results",
+          "empty",
+          "unavailable",
+          "error"
+        ],
+        "value": [
+          "empty",
+          "filled"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "active",
+        "disabled",
+        "error",
+        "loading"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "server calls of its own",
+        "storing the value",
+        "deciding who may be found"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "provider answers"
+      ],
+      "network_policy": "host-only"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "block",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-lookup to choose people or objects from a set the host searches -- members of a chat, an assignee, a linked record -- or from a short list given whole.",
+      "do_not": [
+        "Do not fetch inside the component or give it a URL: give it a provider function and answer {items, nextCursor} or {status: 'unavailable'}",
+        "Do not trust the submitted values on the server: check that the person may choose them",
+        "Do not use it for a fixed list of a few words without search; use sf-dropdown, sf-radio or sf-button-group",
+        "Do not use it for site search; use sf-search"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "ownership"
+      ],
+      "minimal_example": "<sf-lookup label=\"Members\" name=\"members\" multiple max-items=\"49\"></sf-lookup>\n<script>document.querySelector('sf-lookup').provider = async (query, {cursor, limit, signal}) => (await fetch(`/api/people?q=${encodeURIComponent(query)}&limit=${limit}`, {signal})).json();</script>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Typing searches; ArrowDown opens the list and moves down, ArrowUp moves up, Home and End go to the ends while it is open",
+        "Enter chooses the active row; in a single field it closes the list",
+        "Escape closes the list; a second Escape clears the query",
+        "Backspace in the empty search box removes the last chip",
+        "Tab reaches each chip's remove button and leaves the field"
+      ],
+      "focus": "Focus stays in the search box while the list is open; the active row is said through aria-activedescendant. The frame draws the focus ring while the box has keyboard focus; a click into it draws none. Removing a chip gives focus back to the search box."
+    },
+    "methods": {
+      "search": {
+        "summary": "Puts a query in the search box and searches it as typing does, at once (no debounce), opening the list. Returns false while disabled or read-only.",
+        "arguments": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "retry": {
+        "summary": "Repeats the last call to the provider, with its query and cursor, as the Retry button does. Returns false when there is nothing to repeat.",
+        "arguments": [],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "close": {
+        "summary": "Closes the list and drops a search still running; the query stays.",
+        "arguments": [],
+        "returns": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

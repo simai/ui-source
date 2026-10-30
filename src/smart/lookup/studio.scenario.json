@@ -1,0 +1,30 @@
+{
+  "schema": "simai.smart-component-scenario.v1",
+  "id": "smoke",
+  "component": "smart.lookup",
+  "fixture": "reference",
+  "viewport": "desktop",
+  "actions": [
+    {
+      "type": "invoke",
+      "method": "search",
+      "arguments": [
+        "ve"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "type": "upgraded"
+    },
+    {
+      "type": "visible"
+    },
+    {
+      "type": "no-console-error"
+    },
+    {
+      "type": "no-network"
+    }
+  ]
+}
