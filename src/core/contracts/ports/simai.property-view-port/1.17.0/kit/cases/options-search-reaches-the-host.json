@@ -1,0 +1,14 @@
+{
+  "id": "options-search-reaches-the-host",
+  "intent": "field.options",
+  "capability": "field-options",
+  "summary": "What the person typed is answered by the host, not by filtering the page the component already holds.",
+  "given": {"capabilities": ["field-options"]},
+  "when": {"intent": "field.options", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "section", "cursor": null, "search": "платеж"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["options_page"],
+    "note": "The page is not the whole set, so filtering it locally would hide every match that is not on it. A search resets the paging: the cursor is null again."
+  }
+}

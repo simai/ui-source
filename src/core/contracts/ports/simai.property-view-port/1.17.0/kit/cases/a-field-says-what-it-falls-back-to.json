@@ -1,0 +1,12 @@
+{
+  "id": "a-field-says-what-it-falls-back-to",
+  "intent": "record.load",
+  "summary": "A field that holds nothing and falls back to something says what it falls back to, so a person can tell «not set» from «set to the same value».",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "`inherited` says that a value comes from somewhere else; `inheritedValue` says what it is. Both are needed: a colour inherited from the theme and a colour chosen to match the theme look identical on screen, and only the first follows the theme when the theme moves. A running Larena site inherits fourteen colours this way, which is why the pair exists."
+  }
+}
