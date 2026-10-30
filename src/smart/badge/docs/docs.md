@@ -27,6 +27,8 @@ Main attributes:
 - `appearance`
 - `scheme`
 - `status`
+- `activity`
+- `compact`
 - `line`
 - `text`
 - `icon`
@@ -103,6 +105,45 @@ an icon-only badge or a shortened count such as `99+`, provide a full
 `aria-label`; the template projects it as `sr-only` text. With neither text nor
 label the badge is decorative. The host owns any `aria-live` or `role="status"`
 policy because only the application knows whether an update must be announced.
+
+## Run state
+
+`activity` says where a run stands. It is a second axis beside `status`, which
+says how something went:
+
+| `activity` | Mark                   | Colour role | Word (en)        |
+| ---------- | ---------------------- | ----------- | ---------------- |
+| `running`  | spinner                | neutral     | Running          |
+| `waiting`  | icon `pending_actions` | warning     | Needs your input |
+| `done`     | icon `check_circle`    | success     | Ready            |
+| `stopped`  | icon `stop_circle`     | neutral     | Stopped          |
+| `failed`   | icon `error`           | error       | Failed           |
+
+```html
+<sf-badge activity="waiting"></sf-badge>
+<sf-badge activity="running" appearance="tonal"></sf-badge>
+<sf-badge activity="done" text="Published"></sf-badge>
+```
+
+- The word is in the page's language (`lang/`, runtime `activity-*`). `text` and
+  the `text` slot override it; `icon` overrides the icon or the spinner.
+- A set `activity` wins over `status` and `scheme` for the icon, the text and the
+  colour. Both stay readable on the element for a host that still sets them.
+- A state always has a shape: an empty `icon-start` or `icon-end` at the icon's
+  place does not take the mark away.
+- The badge is no live region and says nothing when the state changes. A host
+  that wants an announcement uses its own polite region.
+- Under `prefers-reduced-motion: reduce` the spinner stands still (its still
+  frame, from the spinner sheet).
+
+`compact` shows the icon alone, for a tight list row. The text stays as the
+accessible name, the box closes to a square, and `appearance` keeps its own
+meaning. It needs something to show: with no icon, spinner or icon slot the text
+stays visible.
+
+```html
+<sf-badge activity="failed" compact></sf-badge>
+```
 
 ## Slot overrides
 

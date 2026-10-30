@@ -159,7 +159,8 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.badges"
+          "component.badges",
+          "component.spinner"
         ]
       },
       "contract_schema": {
@@ -171,13 +172,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "6d9f17b30e75eccc269945a032d7b4dc694579c10e42c53b3518390c1c96c72d",
+      "manifest_sha256": "8def7495f34f9a36d893de7b4d4e2387d18b215bdacea5de1683a4d4560f542c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A short non-interactive label for a status, category, version or count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
+      "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
       "tags": [
         "badges"
       ],

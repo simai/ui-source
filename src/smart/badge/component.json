@@ -2,7 +2,7 @@
   "$comment": "The source of sf-badge's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/badge (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.badge",
   "tag": "sf-badge",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "badge",
   "settings": {
@@ -60,6 +60,24 @@
       "default": "",
       "summary": "What the badge reports, in the shared status vocabulary. The word this component used before, danger, is still accepted and means error."
     },
+    "activity": {
+      "type": "enum",
+      "values": [
+        "",
+        "running",
+        "waiting",
+        "done",
+        "stopped",
+        "failed"
+      ],
+      "default": "",
+      "summary": "Where a run stands: running draws a spinner in the icon's place, waiting, done, stopped and failed an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it."
+    },
+    "compact": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
+    },
     "text": {
       "type": "string",
       "default": ""
@@ -99,6 +117,14 @@
         "with the component rather than from a scan, which a badge inside another",
         "component's markup can miss -- and then the label reads beside the text",
         "(Larena, «Элементы: 7 7», 2026-10-12)."
+      ]
+    },
+    {
+      "name": "spinner",
+      "lazy": true,
+      "$comment": [
+        "The spinner of activity running: its slot is drawn by the badge sheet, the",
+        "motion by the spinner's, fetched after the page is ready."
       ]
     }
   ],
@@ -221,7 +247,7 @@
       }
     ]
   },
-  "x-summary": "A short non-interactive label for a status, category, version or count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
+  "x-summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "x-source": {
     "package": "framework",
     "folder": "badges",
@@ -246,7 +272,8 @@
     "folder: badges takes the tag's name, badge (§3, §21, §16 item 16); the loader bundle is cl-badge, cl-badges is a Loader forward (src/core/contracts/smart-rule-forwards.v1.json) and smart/badges/js/badges.js a forwarding script until 2026-12-01 (change journal path-smart-badges-to-badge). The registry id follows the folder: smart.badge (smart.badges is its dated alias in the same record).",
     "version 1.1.0: renamed members behind dated aliases are a minor (§4.10, §16.20).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0: a minor (§4.10): the settings activity and compact are added. activity is a second axis beside status: a run's state says where the work is, status how it went. running draws the Framework's one spinner in the icon's place (neutral); waiting pending_actions (warning role), done check_circle (success role), stopped stop_circle (neutral), failed error (error role). Its word comes from lang/ (runtime activity-*), so it follows the page's language; text and icon override, and a set activity wins over status and scheme for the icon, the text and the colour while both stay readable on the element. A state always has a shape: an emptied icon-start or icon-end at the icon's place does not take the mark away. No live region and no aria-busy: a list row is not a live region, the host owns announcements. compact is its own boolean and not an appearance: the text moves to a visually hidden copy that stays the accessible name, the box closes to a square, and without an icon to show the text stays. The template reads the resolved names drawnText, drawnIcon, activitySpinner and paintedScheme, and text, icon, status and scheme keep what the host set. Reduced motion is the spinner sheet's: the arc stands still."
   ],
   "x-rule": {
     "$comment-after": [

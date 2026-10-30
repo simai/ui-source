@@ -106,6 +106,92 @@
       "expect": {
         "line": "1"
       }
+    },
+    {
+      "name": "activity-running",
+      "title": "Run state: Running",
+      "settings": {
+        "activity": "running"
+      },
+      "expect": {
+        "activity": "running"
+      }
+    },
+    {
+      "name": "activity-waiting",
+      "title": "Run state: Waiting",
+      "settings": {
+        "activity": "waiting"
+      },
+      "expect": {
+        "activity": "waiting"
+      }
+    },
+    {
+      "name": "activity-done",
+      "title": "Run state: Done",
+      "settings": {
+        "activity": "done"
+      },
+      "expect": {
+        "activity": "done"
+      }
+    },
+    {
+      "name": "activity-stopped",
+      "title": "Run state: Stopped",
+      "settings": {
+        "activity": "stopped"
+      },
+      "expect": {
+        "activity": "stopped"
+      }
+    },
+    {
+      "name": "activity-failed",
+      "title": "Run state: Failed",
+      "settings": {
+        "activity": "failed"
+      },
+      "expect": {
+        "activity": "failed"
+      }
+    },
+    {
+      "name": "activity-tonal",
+      "title": "Run state, tonal",
+      "settings": {
+        "activity": "done",
+        "appearance": "tonal"
+      },
+      "expect": {
+        "activity": "done",
+        "appearance": "tonal"
+      }
+    },
+    {
+      "name": "activity-compact",
+      "title": "Run state, compact",
+      "settings": {
+        "activity": "waiting",
+        "compact": true
+      },
+      "expect": {
+        "activity": "waiting",
+        "compact": true
+      }
+    },
+    {
+      "name": "activity-compact-running",
+      "title": "Running, compact",
+      "settings": {
+        "activity": "running",
+        "compact": true
+      },
+      "expect": {
+        "activity": "running",
+        "compact": true
+      }
     }
   ],
   "pages": [
@@ -122,6 +208,13 @@
           "  <sf-badge id=\"bd-scheme\" text=\"Статус в схеме\" scheme=\"warning\"></sf-badge>",
           "  <sf-badge id=\"bd-label\" text=\"99+\" aria-label=\"Больше 99 новых\"></sf-badge>",
           "  <sf-badge id=\"bd-empty\" icon-start=\"\" icon=\"star\"></sf-badge>",
+          "  <sf-badge id=\"bd-running\" activity=\"running\"></sf-badge>",
+          "  <sf-badge id=\"bd-waiting\" activity=\"waiting\"></sf-badge>",
+          "  <sf-badge id=\"bd-over\" activity=\"failed\" status=\"success\" scheme=\"primary\"></sf-badge>",
+          "  <sf-badge id=\"bd-own\" activity=\"running\" text=\"Build\" icon=\"sync\"></sf-badge>",
+          "  <sf-badge id=\"bd-empty-mark\" activity=\"done\" icon-start=\"\"></sf-badge>",
+          "  <sf-badge id=\"bd-compact\" activity=\"stopped\" compact></sf-badge>",
+          "  <sf-badge id=\"bd-compact-bare\" text=\"Bare\" compact></sf-badge>",
           "</main>"
         ]
       },
@@ -224,6 +317,71 @@
             },
             {
               "check": "getComputedStyle(document.querySelector('#bd .sf-badge')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p8-activity-marks",
+          "title": "a run state draws its mark and the word of the page's language",
+          "covers": "settings.activity",
+          "steps": [
+            {
+              "check": "(() => { const host = document.querySelector('#bd-waiting'); const b = host.querySelector('.sf-badge'); return b.querySelector('.sf-icon')?.textContent.trim() === 'pending_actions' && b.querySelector('.sf-badge-text').textContent === host.sfWord('activity-waiting') && b.classList.contains('sf-badge--warning'); })()",
+              "expect": {
+                "values": {
+                  "#bd-waiting.activity": "waiting"
+                }
+              }
+            },
+            {
+              "check": "(() => { const b = document.querySelector('#bd-running .sf-badge'); return b.querySelector('.sf-badge-spinner svg') && !b.querySelector('.sf-icon') && b.classList.contains('sf-badge--neutral') && !b.closest('[role=status],[aria-live]'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p9-activity-wins",
+          "title": "activity wins over status and scheme, which stay readable",
+          "covers": "settings.activity over settings.status",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-over .sf-badge'); return b.classList.contains('sf-badge--error') && !b.classList.contains('sf-badge--success') && !b.classList.contains('sf-badge--primary') && b.querySelector('.sf-icon').textContent.trim() === 'error'; })()",
+              "expect": {
+                "values": {
+                  "#bd-over.status": "success",
+                  "#bd-over.scheme": "primary"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p10-activity-overrides",
+          "title": "text and icon override the word and the mark; an emptied icon-start keeps it",
+          "covers": "settings.text, settings.icon over activity",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bd-own .sf-badge'); return b.querySelector('.sf-badge-text').textContent === 'Build' && b.querySelector('.sf-icon').textContent.trim() === 'sync' && !b.querySelector('.sf-badge-spinner'); })()"
+            },
+            {
+              "check": "document.querySelector('#bd-empty-mark .sf-icon').textContent.trim() === 'check_circle'"
+            }
+          ]
+        },
+        {
+          "id": "p11-compact",
+          "title": "compact hides the text from sight only; with no icon the text stays",
+          "covers": "settings.compact",
+          "steps": [
+            {
+              "check": "(() => { const host = document.querySelector('#bd-compact'); const b = host.querySelector('.sf-badge'); const text = b.querySelector('.sf-badge-text-container'); return b.classList.contains('sf-badge--compact') && text.classList.contains('sr-only') && !text.hasAttribute('aria-hidden') && text.textContent.trim() === host.sfWord('activity-stopped') && b.querySelector('.sf-icon').textContent.trim() === 'stop_circle'; })()",
+              "expect": {
+                "values": {
+                  "#bd-compact.compact": true
+                }
+              }
+            },
+            {
+              "check": "(() => { const b = document.querySelector('#bd-compact-bare .sf-badge'); return !b.classList.contains('sf-badge--compact') && !b.querySelector('.sf-badge-text-container').classList.contains('sr-only'); })()"
             }
           ]
         }

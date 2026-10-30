@@ -7,16 +7,17 @@ for (const [name, renderer] of [['button','renderButtonTemplate'], ['badge','ren
   const html = (parts, ...values) => parts.reduce((result, part, index) => result + part + (values[index] ?? ''), '');
   const render = vm.runInNewContext(source.replace(/^import .*;$/gm, '').replace('export function', 'function') + `\n${renderer};`, {html, nothing: ''});
   const component = {createIcon: name => name || '', hasSlotContent: () => false};
-  const base = {component, text:'Label', size:'1', scheme:'primary', type:'default', iconLeft:'OLD_START', iconRight:'OLD_END'};
+  // drawnIcon, drawnText and paintedScheme: the names sf-badge's template reads, resolved by its element.
+  const base = {component, text:'Label', drawnText:'Label', size:'1', scheme:'primary', paintedScheme:'primary', type:'default', iconLeft:'OLD_START', iconRight:'OLD_END'};
   test(`${name}: canonical icons win, including empty suppression, while absent properties preserve legacy`, () => {
     const canonical = render({...base, iconStart:'NEW_START', iconEnd:'NEW_END'});
     assert.match(canonical, /NEW_START/); assert.match(canonical, /NEW_END/);
     assert.doesNotMatch(canonical, /OLD_START|OLD_END/);
-    const empty = render({...base, iconStart:'', iconEnd:'', icon:'GENERIC'});
+    const empty = render({...base, iconStart:'', iconEnd:'', icon:'GENERIC', drawnIcon:'GENERIC'});
     assert.doesNotMatch(empty, /OLD_START|OLD_END|GENERIC/);
     const legacy = render({...base, iconStart:null, iconEnd:null});
     assert.match(legacy, /OLD_START/); assert.match(legacy, /OLD_END/);
-    assert.match(render({...base, iconLeft:'', iconRight:'', icon:'GENERIC'}), /GENERIC/);
+    assert.match(render({...base, iconLeft:'', iconRight:'', icon:'GENERIC', drawnIcon:'GENERIC'}), /GENERIC/);
   });
   test(`${name}: canonical slots take precedence without requiring a second rendered copy`, () => {
     const slots = {'icon-start':'START_SLOT', 'icon-end':'END_SLOT', 'icon-left':'OLD_SLOT_START', 'icon-right':'OLD_SLOT_END'};
