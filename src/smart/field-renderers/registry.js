@@ -29,6 +29,12 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'text', label: {ru: 'Текст', en: 'Text'},
         variants: [],
         params: ['placeholder', 'required', 'readonly']},
+    // html (property-view port 1.17.0): formatted text, an HTML string of
+    // sf-rich-text's subset. Edited with sf-rich-text, shown cleaned by that
+    // component's own rule, a cell its text on one line, filtered as text.
+    {type: 'html', label: {ru: 'Форматированный текст', en: 'Formatted text'},
+        variants: [],
+        params: ['placeholder', 'required', 'readonly']},
     // stepper: edited with sf-quantity, «−» and «+» and the arrow keys; min,
     // max and step (and a number's precision) are read by that variant alone.
     {type: 'integer', label: {ru: 'Целое число', en: 'Integer'},

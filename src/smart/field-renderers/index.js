@@ -1,9 +1,11 @@
 import {html, nothing} from "lit";
+import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageText} from "../../core/js/page-language";
 import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, normalizeTime, splitDateTime as readDateTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
+import {cleanHtml, htmlText} from "./html.js";
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -403,6 +405,7 @@ export function renderFilterField(field = {}, host) {
 //   file                {value, label, mime?, href?} -- an icon from the mime
 //                       type and the label, a link when it may be opened
 //   choices             a list of option values; one tag per value on the line
+//   html                an HTML string of sf-rich-text's subset; its text, on one line
 //
 // Every element here takes `line`, not `size`: a line element is the row's text
 // line, where a control height would make the row grow. That was measured --
@@ -628,6 +631,7 @@ const CELL_RENDERERS = {
     record: renderReferenceCell,
     relation: renderReferenceCell,
     lookup: renderLookupCell,
+    html: renderHtmlCell,
 };
 
 // A consumer found this on their stand: the words were written into the set, so
@@ -749,6 +753,13 @@ function renderLookupCell(field, value) {
     return items.length ? items.map((item) => item.label).join(', ') : null;
 }
 
+// Formatted text in a row is its text, as a text cell is: the markup is for a
+// record, and a row of headings and lists would not be a row. A string, so the
+// table draws and cuts it exactly as it does any text value.
+function renderHtmlCell(field, value) {
+    return htmlText(value) || null;
+}
+
 // What a cell should hold for a field, in the same shape a host would pass: a
 // string, an object with a component, or a list of those. Null means the value
 // is better off as itself. Returning the host's own shape is deliberate -- the
@@ -801,6 +812,7 @@ const EDIT_RENDERERS = {
     lookup: renderLookupEdit,
     string: renderTextEdit,
     text: renderTextAreaEdit,
+    html: renderHtmlEdit,
     integer: renderNumberEdit,
     number: renderNumberEdit,
     date: renderDateEdit,
@@ -1090,6 +1102,30 @@ function renderTextAreaEdit(field, value, host) {
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
                 @change=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
         ></sf-textarea>
+    `;
+}
+
+// Formatted text (property-view port 1.17.0): sf-rich-text, named as the
+// textarea is. The editor cleans its own value -- what it is given, every
+// paste and every edit -- so what it writes back is already the subset. The
+// value is read from the element the listener is on: sf-rich-text says input
+// and change from its editing surface inside it, which has no value of its own.
+function renderHtmlEdit(field, value, host) {
+    value = scalarValue(value);
+    const write = (event) => host.setFieldValue(field, event.currentTarget?.value ?? '');
+    return html`
+        <sf-rich-text
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${typeof value === 'string' ? value : ''}
+                placeholder=${field.placeholder || nothing}
+                ?required=${Boolean(field.required)}
+                ?disabled=${EDIT_DISABLED}
+                aria-label=${field.label || field.key || ''}
+                @input=${write}
+                @change=${write}
+        ></sf-rich-text>
     `;
 }
 
@@ -2082,6 +2118,15 @@ function renderTextView(field, value, host) {
     return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
 }
 
+// Formatted text shown: the value cleaned by sf-rich-text's own rule first,
+// and only that cleaned string drawn as markup -- never the value as it came,
+// which a host may have stored from anywhere. What is left is the subset:
+// paragraphs, headings, emphasis, lists, quotes and links with a safe address.
+function renderHtmlView(field, value) {
+    const clean = cleanHtml(value);
+    return clean ? html`<div class="sf-field-view sf-field-html">${unsafeHTML(clean)}</div>` : nothing;
+}
+
 // A number carries its unit when the field declares one, and nothing when it
 // does not -- the set does not guess at a unit, and «42» with an invented «шт»
 // beside it is a worse answer than «42».
@@ -2243,6 +2288,7 @@ function renderFileView(field, value) {
 const VIEW_RENDERERS = {
     string: renderStringView,
     text: renderTextView,
+    html: renderHtmlView,
     integer: renderNumberView,
     number: renderNumberView,
     date: renderDateView,

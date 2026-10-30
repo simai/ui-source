@@ -67,7 +67,8 @@ try {
     const again = await window.SF.whenFieldRenderers();
     const VALUES = {string: 'a', text: 'a', integer: 3, number: 3.5, date: '2026-10-15', datetime: '2026-10-15T10:00:00',
       boolean: true, choice: 'a', choices: ['a'], user: {value: '1', label: 'x'}, record: {value: '1', label: 'x'},
-      relation: {value: '1', label: 'x'}, lookup: {value: 'a', label: 'A'}, file: [{name: 'a.png', href: '/a.png'}], color: '#ff0000', include: 'x'};
+      relation: {value: '1', label: 'x'}, lookup: {value: 'a', label: 'A'}, file: [{name: 'a.png', href: '/a.png'}], color: '#ff0000', include: 'x',
+      html: '<p>a</p>'};
     const host = new Proxy({
       setFieldValue() {}, getFieldOptionsPage: () => ({items: [], status: 'ready'}), getFieldOptionSearch: () => '',
       loadFieldOptions() {}, startFieldUpload() {}, getFieldUploads: () => [],
