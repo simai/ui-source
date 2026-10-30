@@ -203,14 +203,6 @@
   max-inline-size: 100%;
 }
 
-/* sf-tag 1.1.5 asks sf-icon-button for size 1/4 for the close of a tag of
-   size 1/2 or 1/3, a size the button does not have, and it draws at size 1:
-   0.39px taller than the line at field size 1/2. The chip's box keeps to the
-   line, so the field keeps its height; the close overhangs it by a fraction. */
-.sf-lookup .sf-lookup-chip > .sf-tag {
-  max-block-size: var(--sf-lookup--line-height);
-}
-
 /* The clear button keeps to the text line, so a value never grows the field. */
 .sf-lookup .sf-lookup-clear {
   block-size: var(--sf-lookup--line-height);

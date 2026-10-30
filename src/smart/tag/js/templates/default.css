@@ -43,9 +43,47 @@
         --sf-close-icon--background-color: var(--sf-on-surface-variant);
     }
 
-    .sf-tag.sf-tag--size-1\/2 > sf-icon-button > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
-        --sf-close-icon--font-size: var(--sf-text-size-1\/4);
-        --sf-close-icon--height: var(--sf-text-size-1\/4);
-        --sf-close-icon--width: var(--sf-text-size-1\/4);
+}
+
+/* The remove button of the Smart tag. The component stylesheet sizes the close
+   of plain markup (.sf-tag > .sf-icon-button); here the native button sits one
+   step further down, under the display:contents host, so those rules never
+   reached it and the button kept the tag's insets as padding: at sizes 1/3, 1/2
+   and 2 it stood taller than the label's line and grew the tag (40px against
+   24px at 1/3, 38 against 32 at 1/2). The tag asks sf-icon-button for its
+   smallest size, 1/3, and draws the box itself: no padding, the mark 0.7 of the
+   label's font size (the rule of plain markup), so the box never passes the
+   text line. An inline tag keeps the button the size of the line. The target
+   is extended to --sf-c2 square around the mark by a transparent ::after, so
+   it stays at the WCAG 2.2 minimum (2.5.8) without growing the tag. */
+@layer sf.states {
+    .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close {
+        padding: 0;
+        min-block-size: 0;
+        min-inline-size: 0;
+        position: relative;
+    }
+
+    .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close::after {
+        content: "";
+        position: absolute;
+        inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
+    }
+
+    .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close > sf-close > .sf-close {
+        --sf-close--padding-top: 0;
+        --sf-close--padding-bottom: 0;
+        --sf-close--padding-inline-start: 0;
+        --sf-close--padding-inline-end: 0;
+    }
+
+    .sf-tag > sf-icon-button > .sf-icon-button.sf-icon-button--close > sf-close > .sf-close > .sf-close-icon {
+        --sf-close-icon--height: calc(var(--sf-tag--font-size) * 0.7);
+        --sf-close-icon--width: calc(var(--sf-tag--font-size) * 0.7);
+    }
+
+    .sf-tag.sf-tag--inline.sf-tag--inline > sf-icon-button > .sf-icon-button.sf-icon-button--close {
+        block-size: var(--sf-tag--line, var(--sf-tag--line-height));
+        inline-size: var(--sf-tag--line, var(--sf-tag--line-height));
     }
 }
