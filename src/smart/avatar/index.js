@@ -5,7 +5,7 @@ import { renderCardTemplate } from "./js/templates/card";
 import { renderDefaultTemplate } from "./js/templates/default";
 import { renderLabelTemplate } from "./js/templates/label";
 import { getInitials } from "../helpers/text";
-import { avatarTone } from "./js/tone.mjs";
+import { resolveAvatarTone } from "./js/tone.mjs";
 import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -104,17 +104,12 @@ class SfAvatar extends AvatarElement {
   // two people with the same initials differ. Only initials take a tone: a
   // picture covers the fill and the placeholder stays neutral.
   get resolvedTone() {
-    const tone = this.tone;
-
-    if (!tone || !this.isText) {
+    if (!this.isText) {
       return "";
     }
 
-    if (tone !== "auto") {
-      return tone;
-    }
-
-    return avatarTone(
+    return resolveAvatarTone(
+      this.tone,
       this.heading || this.getAttribute("aria-label") || this.text,
     );
   }

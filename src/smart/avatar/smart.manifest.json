@@ -284,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "12a43791f370a6acd026ddc6539da473461496f56394d50ce3b15bcd54f10ae6"
+        "sha256": "8ac95abc9ad0692e160de41be9d6c390f7d826c8a6a4da2eb1c3212c470cd017"
       }
     ],
     "generated_runtime": [

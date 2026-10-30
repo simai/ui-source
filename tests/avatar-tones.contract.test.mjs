@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
-import {AVATAR_TONES, avatarTone, avatarToneHash} from '../src/smart/avatar/js/tone.mjs';
+import {AVATAR_TONES, avatarTone, avatarToneHash, resolveAvatarTone} from '../src/smart/avatar/js/tone.mjs';
 import {TonalPalette} from '../src/core/js/vendor/material-color-utilities/palettes/tonal_palette.js';
 import {hexFromArgb} from '../src/core/js/vendor/material-color-utilities/utils/string_utils.js';
 
@@ -43,6 +43,14 @@ test('the hash reads the string as given, and no name means no tone', () => {
   assert.notEqual(avatarToneHash('Boris Ilyin'), avatarToneHash(' Boris Ilyin'));
   assert.notEqual(avatarToneHash('Boris Ilyin'), avatarToneHash('boris ilyin'));
   for (const [name] of VECTORS) assert.equal(avatarTone(name), avatarTone(name));
+});
+
+test('a setting resolves to itself, to the tone of the name, or to nothing', () => {
+  assert.equal(resolveAvatarTone('teal', 'Boris Ilyin'), 'teal');
+  assert.equal(resolveAvatarTone('auto', 'Boris Ilyin'), 'violet');
+  assert.equal(resolveAvatarTone('auto', ''), '');
+  assert.equal(resolveAvatarTone('', 'Boris Ilyin'), '');
+  assert.equal(resolveAvatarTone(undefined, 'Boris Ilyin'), '');
 });
 
 test('the tones spread evenly over names of people', () => {
@@ -111,9 +119,9 @@ test('a tone adds no raw colour to the component sheet and no value outside the 
 test('the element takes a tone only for initials, and the default draws no tone class', () => {
   const element = read('src/smart/avatar/index.js');
   const shared = read('src/smart/avatar/js/templates/shared.js');
-  assert.match(element, /if \(!tone \|\| !this\.isText\)/u);
+  assert.match(element, /if \(!this\.isText\) \{\s*return "";/u);
   assert.match(element, /resolvedTone: this\.resolvedTone/u);
-  assert.match(element, /avatarTone\(\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,?\s*\)/u);
+  assert.match(element, /resolveAvatarTone\(\s*this\.tone,\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,?\s*\)/u);
   assert.match(shared, /if \(context\.resolvedTone\) \{\s*classes\.push\(`sf-avatar--tone-\$\{context\.resolvedTone\}`\)/u);
   assert.equal([...shared.matchAll(/sf-avatar--tone-/gu)].length, 1);
 });

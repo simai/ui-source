@@ -28,3 +28,9 @@ export function avatarTone(name) {
   const text = name === undefined || name === null ? '' : String(name);
   return text ? AVATAR_TONES[avatarToneHash(text) % AVATAR_TONES.length] : '';
 }
+
+// The tone a setting asks for: a named one as it is, auto the one of the name,
+// empty the neutral look.
+export function resolveAvatarTone(setting, name) {
+  return setting === 'auto' ? avatarTone(name) : setting || '';
+}
