@@ -57,6 +57,19 @@ Put the element where that band belongs: in the page's own column, not inside a
 box with its own fill. A page that would rather let the button scroll away sets
 `sticky="false"`.
 
+The same rule decides whether it sticks at all. Stacked on a phone, an `aside`
+is only as tall as the button, and a row of a grid is the limit of what stands
+in it, so the button would scroll away with them. Below the step, take the
+`aside` out of the way and let the page's column hold the button and the article:
+
+```css
+@media (max-width: 59.99rem) {
+  .page { display: flex; flex-direction: column; }
+  .page aside { display: contents; }
+  .page .sf-contents { order: -1; }
+}
+```
+
 In a flex row the same holds: leave the aside at `align-self: stretch`. The
 column stops `--sf-contents-inset-block-start` below the top of the window
 (`--sf-space-1` by default); a page with a sticky header sets it to the

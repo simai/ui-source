@@ -36,7 +36,7 @@ const SECTIONS = [['intro', 'Введение', 2], ['install', 'Подключ�
 const paragraph = '<p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится. Размеры идут по одной шкале, цвета — по ролям темы.</p>';
 const article = SECTIONS.map(([id, text, level]) => `<h${level} id="${id}">${text}</h${level}>${paragraph.repeat(6)}`).join('');
 const STYLE = '<style>body{margin:0}.page{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:24px;max-width:1100px;margin:0 auto;padding:16px}'
-  + '@media (max-width:59.99rem){.page{grid-template-columns:minmax(0,1fr)}.page aside{order:-1}}</style>';
+  + '@media (max-width:59.99rem){.page{display:flex;flex-direction:column}.page aside{display:contents}.page .sf-contents{order:-1}}</style>';
 const head = (scripts) => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">
 ${scripts ? '<script>window.sfPath=\'/distr/\';window.sfSmartPath=\'/distr/\';</script>' : ''}
 <link rel="stylesheet" href="/distr/core/css/core.css">
@@ -348,7 +348,8 @@ try {
     await tab.evaluate(() => window.scrollTo(0, 1200));
     await settle(tab);
     const stuck = await tab.evaluate((s) => {
-      const host = document.querySelector('#toc');
+      // The element is display: contents; the box that sticks is the nav it draws.
+      const host = document.querySelector('#toc .sf-contents');
       const button = document.querySelector(s);
       const head = document.querySelector('#toc .sf-contents-head');
       const style = getComputedStyle(host);
@@ -365,7 +366,7 @@ try {
     await tab.evaluate(() => document.querySelector('#toc').setAttribute('sticky', 'false'));
     await settle(tab);
     const loose = await tab.evaluate(() => {
-      const host = document.querySelector('#toc');
+      const host = document.querySelector('#toc .sf-contents');
       return {position: getComputedStyle(host).position, top: Math.round(host.getBoundingClientRect().top), fill: getComputedStyle(host).backgroundColor};
     });
     seen.compactNotSticky = loose;
