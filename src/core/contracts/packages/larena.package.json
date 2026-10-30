@@ -77,7 +77,10 @@
         "component.buttons",
         "component.icon-buttons",
         "component.inputs",
+        "smart.avatar",
+        "smart.badge",
         "smart.change-confirm",
+        "smart.context-menu",
         "smart.icon"
       ]
     },
