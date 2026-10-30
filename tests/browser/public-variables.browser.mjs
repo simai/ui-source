@@ -43,7 +43,10 @@ const DRAW = {
   tooltip: {css: ['tooltip'], js: 'tooltip', html: '<sf-tooltip text="Подсказка" supporting-text="Пояснение" size="1"></sf-tooltip>'},
   tabs: {css: ['tabs', 'buttons'], js: 'tabs', html: '<sf-tabs type="underline" size="1" items="Обзор|Настройки|История"></sf-tabs>'},
   avatar: {css: ['avatars'], js: 'avatar', html: '<sf-avatar text="АБ" size="1"></sf-avatar>'},
-  'context-menu': {css: ['context-menu', 'buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>',
+  // A drilling panel beside the flyout menu: the fixed width is a drilling
+  // panel's (submenu="drill"), so one has to be on the stage to measure it.
+  'context-menu': {css: ['context-menu', 'buttons', 'icons', 'icon-buttons'], js: 'context-menu', html: '<button id="anchor" type="button">Меню</button><sf-context-menu id="menu" popup aria-label="Меню"></sf-context-menu>'
+    + '<sf-context-menu submenu="drill" aria-label="Настройки" entries=\'[{"id":"sound","type":"switch","text":"Звук","value":true},{"id":"lang","text":"Язык","value":"Русский","submenu":[{"id":"ru","text":"Русский"}]}]\'></sf-context-menu>',
     open: 'const m = document.getElementById("menu"); m.entries = [{id: "a", text: "Открыть"}, {id: "b", text: "Удалить"}]; m.toggleFor(document.getElementById("anchor"))'},
   // The variables belong to the segmented appearance; a count is drawn on a
   // segment that is not selected, so the count's own colour has a part to reach.
@@ -220,6 +223,8 @@ const ROLES = {
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
   size: {properties: ['block-size', 'height'], value: '29px'},
+  // A width a panel fixes, so its text cannot widen it.
+  'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays
   // a length): the public variable has to reach the length the drawing reads.
   // The painted geometry is the conformance probe's (src/smart/progress-ring).

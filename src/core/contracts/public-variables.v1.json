@@ -1103,6 +1103,13 @@
           "summary": "Space between rows.",
           "default": "var(--sf-px)",
           "since": "2026-10-18"
+        },
+        {
+          "name": "--sf-context-menu-inline-size",
+          "role": "inline-size",
+          "summary": "The fixed width of a drilling panel (submenu=\"drill\"), the settings panel's own: it grows neither with a level's longest word nor with a value.",
+          "default": "calc(var(--sf-f7) + var(--sf-a8))",
+          "since": "2026-10-30"
         }
       ]
     },
