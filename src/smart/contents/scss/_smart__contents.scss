@@ -158,6 +158,20 @@
 @mixin compact {
   position: relative;
 
+  /* Sticky, the button travels with the reader. The page scrolls under it, so
+     the head takes the page's own surface and gives the band back with a
+     negative margin: without it the text shows through the button's gaps and
+     under the progress line. The column keeps the reading width, so the band
+     is the host's own. */
+  &.sf-contents--sticky {
+    position: sticky;
+    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    inset-block-start: var(--sf-contents--top);
+    padding-block: var(--sf-space-1\/4);
+    margin-block: calc(var(--sf-space-1\/4) * -1);
+    background-color: var(--sf-contents-background, var(--sf-surface-0));
+  }
+
   .sf-contents-head {
     display: flex;
     flex-direction: column;

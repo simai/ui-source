@@ -2,7 +2,7 @@
   "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
   "id": "smart.contents",
   "tag": "sf-contents",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -79,7 +79,7 @@
     "sticky": {
       "type": "boolean",
       "default": true,
-      "summary": "The column, the rail and the bar stay in view while the page scrolls (position sticky, below --sf-contents-inset-block-start)"
+      "summary": "Every layout stays in view while the page scrolls (position sticky, below --sf-contents-inset-block-start): the column, the rail, the bar, and the compact button, which takes the page surface as its backing so nothing shows through it"
     },
     "hash": {
       "type": "boolean",
@@ -239,7 +239,8 @@
     "bar: a row of anchor tabs, sticky, on the page's surface with a region edge under it; the current tab's line is the current colour; the row scrolls sideways and keeps the current tab in view by scrolling itself, never the page.",
     "geometry (docs/foundation-composition-geometry.md): rows are the size's text line plus a space-1/4 inset above and below in the column, the size's control height in the compact list (as a menu's rows), the compact button is sf-button of the same size; every length is a token.",
     "css-variables: eight public variables (§6), listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
-    "words (§11): label defaults to the language files' runtime word."
+    "words (§11): label defaults to the language files' runtime word.",
+    "version 1.1.0 compact-sticky: the compact button honours sticky as the other three layouts do. It was left out in 1.0.0, so on a phone (and under the auto step) the button scrolled away with the page; a reader who had scrolled past it had no way to the sections but scrolling back. Sticky it needs a backing, because the page scrolls under it: the host takes --sf-contents-background, else the page surface, with the band given back by a negative margin so the geometry is the one 1.0.0 measured. A page that wants the old behaviour sets sticky=\"false\"."
   ],
   "x-registry": {
     "capabilities": [

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.contents",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Contents",
   "summary": "The page's table of contents («Оглавление»): the sections of the page as in-page links, the current one marked while the page scrolls. Four views from one list -- a side column, a compact button with the reading progress, strokes at the edge, a sticky row of anchor tabs -- and auto, the column on a wide screen and the compact button on a narrow one. It collects the headings itself or takes the items a server printed, and works as plain links without the script.",
   "kind": "smart",
@@ -95,7 +95,7 @@
       "sticky": {
         "type": "boolean",
         "default": true,
-        "description": "The column, the rail and the bar stay in view while the page scrolls (position sticky, below --sf-contents-inset-block-start)"
+        "description": "Every layout stays in view while the page scrolls (position sticky, below --sf-contents-inset-block-start): the column, the rail, the bar, and the compact button, which takes the page surface as its backing so nothing shows through it"
       },
       "hash": {
         "type": "boolean",

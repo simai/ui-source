@@ -31,7 +31,7 @@ ways, for documentation, help, long articles and long settings forms.
 `lg` (60rem, the default), `xl` (72rem). The switch is a media rule in the
 component's sheet, so the first paint is right before the script arrives.
 
-## A sticky column needs room to stick in
+## Sticky: the room to stick in, and the band behind the button
 
 A sticky element sticks inside its parent: it can travel only as far as the
 parent's own box reaches. The column (and the rail and the bar) stays in view
@@ -50,6 +50,12 @@ tall as the contents list, and the list scrolls away with the page.
   <aside><sf-contents target="#article"></sf-contents></aside>
 </div>
 ```
+
+The compact button sticks too, and the page scrolls under it, so it carries a
+band of the page's surface (`--sf-contents-background`) as wide as the element.
+Put the element where that band belongs: in the page's own column, not inside a
+box with its own fill. A page that would rather let the button scroll away sets
+`sticky="false"`.
 
 In a flex row the same holds: leave the aside at `align-self: stretch`. The
 column stops `--sf-contents-inset-block-start` below the top of the window
@@ -115,7 +121,7 @@ address alone. A press with a modifier key keeps the browser's own behaviour.
 - `items` — a list, property or JSON island
 - `size="1/2|1"` — the ladder rung of the text and of the compact button;
   `1/2` by default
-- `sticky` — the column, the rail and the bar stay in view; on by default
+- `sticky` — every layout stays in view while the page scrolls: the column, the rail, the bar and the compact button; on by default
 - `hash` — the address shows the current section; on by default
 - `label` — the heading and the navigation's name; «На этой странице» /
   «On this page» in the page language when not set
@@ -143,10 +149,10 @@ or focus but stay the links' names. The progress line is decoration.
 | `--sf-contents-color` | the links' ink | `--sf-on-surface-variant` |
 | `--sf-contents-current-color` | the current link, its bar, stroke or underline, and the progress | `--sf-primary` |
 | `--sf-contents-line-color` | the column's line, the bar's edge, the progress track | `--sf-outline-variant` |
-| `--sf-contents-background` | the bar's fill and the compact view's open list | `--sf-surface-0` / `--sf-elevation-2--surface` |
+| `--sf-contents-background` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-0` / `--sf-elevation-2--surface` |
 | `--sf-contents-indent` | the step of a deeper level | `--sf-space-1/2` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
-| `--sf-contents-inset-block-start` | where the sticky column, rail or bar stops | `--sf-space-1` |
+| `--sf-contents-inset-block-start` | where the sticky column, rail, bar or compact button stops | `--sf-space-1` |
 | `--sf-contents-z-index` | the bar and the open list above the page | `--sf-z-index-5` |
 
 ## Lifecycle events
