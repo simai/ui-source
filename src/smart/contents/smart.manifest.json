@@ -262,7 +262,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "70c43898c48ffd78faa16a56f3d60485e87d3136",
+    "source_revision": "8b1b58b6467a551d69065173431cb63204404835",
     "source_artifacts": [
       {
         "path": "src/smart/contents/index.js",
@@ -282,7 +282,7 @@
       },
       {
         "path": "src/smart/contents/docs.md",
-        "sha256": "f4da6f2970657057bc1427d2f0c1fa06a2c58bdc2a4c5146e669d258400584dd"
+        "sha256": "70f9b43f8c6df4dbf30cc42f41be6756bbb3006f970b8eeb2f85daf7a4d658d2"
       }
     ],
     "generated_runtime": []
