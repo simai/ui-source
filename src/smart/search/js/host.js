@@ -43,7 +43,7 @@ export function resultOf(entry, order) {
   const kind = action || entry?.kind === 'action' ? 'action' : 'page';
   const path = Array.isArray(entry?.path) ? entry.path.map(text).filter(Boolean).join(' › ') : text(entry?.path);
   const result = {
-    id: entry?.id ?? action ?? url ?? order,
+    id: entry?.id ?? (action || url || order),
     group: text(entry?.group),
     title: text(entry?.title),
     path: path || null,

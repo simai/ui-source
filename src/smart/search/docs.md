@@ -97,7 +97,6 @@ and `provider`.
 
 ```js
 search.connectPort({
-  id: 'site-search',
   port: 'simai.search-port',
   version: '1.0.0',
   capabilities: ['scopes', 'recent', 'popular', 'actions', 'preview', 'spelling'],

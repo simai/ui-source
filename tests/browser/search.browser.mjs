@@ -78,7 +78,7 @@ const results = [
   {id: 'c', group: 'components', title: 'sf-table', path: 'Pro', kind: 'page', url: '#c'},
   {id: 'theme', group: 'actions', title: 'Сменить тему', kind: 'action', shortcut: 'T'},
 ];
-window.host = {id: 'probe', port: 'simai.search-port', version: '1.0.0', capabilities: caps,
+window.host = {port: 'simai.search-port', version: '1.0.0', capabilities: caps,
   async raise(intent, payload) {
     window.intents.push({intent, payload});
     if (intent === 'query.change') {
