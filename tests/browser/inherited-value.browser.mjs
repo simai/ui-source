@@ -4,6 +4,9 @@
 // built bytes with core.css and the field sheets, UTF-8, at 1000px and 390px.
 // For sf-input (text and numeric), sf-textarea, sf-dropdown, sf-color and
 // sf-switch:
+// - forced colours: the inherited value is the page's own text (CanvasText),
+//   not the «unavailable» GrayText a placeholder is painted (#57), while an
+//   ordinary placeholder, a hint and not a value, stays GrayText;
 // - display: while the field holds nothing of its own, the host says
 //   data-inherited, the «наследуется» marker shows and the reset does not, the
 //   text fields show the inherited value as their placeholder (a dropdown, its
@@ -32,11 +35,12 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/dropdown/css/dropdown.css', 'component/component/switch/css/switch.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/icons/css/icons.css',
   'smart/smart/input/css/input.css', 'smart/smart/textarea/css/textarea.css', 'smart/smart/dropdown/css/dropdown.css',
-  'smart/smart/color/css/color.css', 'smart/smart/switch/css/switch.css'];
+  'smart/smart/color/css/color.css', 'smart/smart/switch/css/switch.css',
+  'component/component/quantity/css/quantity.css', 'smart/smart/quantity/css/quantity.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/icon-button/js/icon-button.js', 'smart/smart/list-item/js/list-item.js',
   'smart/smart/input/js/input.js', 'smart/smart/textarea/js/textarea.js', 'smart/smart/dropdown/js/dropdown.js',
-  'smart/smart/color/js/color.js', 'smart/smart/switch/js/switch.js'];
+  'smart/smart/color/js/color.js', 'smart/smart/switch/js/switch.js', 'smart/smart/quantity/js/quantity.js'];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
 
@@ -53,6 +57,8 @@ const markup = `<!doctype html><html lang="ru" class="theme-light"><head><meta c
   <sf-dropdown id="select" name="city" label="Город" inherited-value="moscow" portal="false"></sf-dropdown>
   <sf-color id="color" name="brand" label="Цвет" inherited-value="#336699"></sf-color>
   <sf-switch id="toggle" name="notify" value="yes" label="Уведомления" inherited-value="true"></sf-switch>
+  <sf-input id="hint" label="Поиск" placeholder="Например, Казань"></sf-input>
+  <sf-quantity id="count" label="Штук" inherited-value="3"></sf-quantity>
   ${['1/2', '1', '2'].map((size) => `
   <sf-input id="input-${size.replace('/', '-')}" size="${size}" label="Поле" inherited-value="По умолчанию" value="Своё"></sf-input>
   <sf-input id="plain-${size.replace('/', '-')}" size="${size}" label="Поле" value="Своё"></sf-input>
@@ -262,6 +268,67 @@ try {
     check(`${width}: the page does not scroll sideways`, geometry.scroll <= 0, geometry);
     if (process.env.PROBE_SHOTS) await page.screenshot({path: join(process.env.PROBE_SHOTS, `inherited-${width}.png`), fullPage: true});
     console.log(JSON.stringify({width, initial: initial.text, rows: geometry.rows.map((row) => [row.kind, row.size, row.field, row.button, row.above, row.below, row.after])}));
+    await page.close();
+  }
+  // Forced colours (simai/ui-source#57, ui-mail audit Q-03): a placeholder is
+  // painted GrayText by the forced palette -- rgb(96, 0, 0) in Chrome's default
+  // light theme -- and the inherited value lives in the placeholder, so it read
+  // as an error. While the value is inherited the placeholder is CanvasText,
+  // like the marker beside it; an ordinary placeholder keeps GrayText.
+  {
+    const page = await browser.newPage({viewport: {width: 1000, height: 1400}, forcedColors: 'active'});
+    await page.route(`${origin}/**`, (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: '<!doctype html><html lang="ru"><head><meta charset="utf-8"></head><body></body></html>'});
+      const path = join(out, url.pathname);
+      return existsSync(path)
+        ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)})
+        : route.fulfill({status: 404, body: ''});
+    });
+    page.on('pageerror', (error) => failures.push({name: 'forced colours: page error', said: error.message}));
+    await page.goto(`${origin}/`);
+    await page.setContent(markup);
+    for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`});
+    await page.evaluate((cities) => {
+      for (const node of document.querySelectorAll('sf-dropdown')) node.options = JSON.parse(cities);
+    }, CITIES);
+    for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
+    await page.waitForFunction(() => ['text', 'area', 'select', 'count']
+      .every((id) => document.getElementById(id)?.getAttribute('data-inherited') === 'true'), null, {timeout: 10000});
+    await page.evaluate(() => document.fonts.ready);
+    const ink = await page.evaluate(() => {
+      const of = (selector, pseudo) => {
+        const node = document.querySelector(selector);
+        return node ? getComputedStyle(node, pseudo).color : null;
+      };
+      // What the palette in use resolves the two system inks to, read from the
+      // page itself: the forced theme is the browser's, not ours.
+      const probe = document.createElement('span');
+      document.body.append(probe);
+      probe.style.color = 'GrayText';
+      const gray = getComputedStyle(probe).color;
+      probe.style.color = 'CanvasText';
+      const canvas = getComputedStyle(probe).color;
+      probe.remove();
+      return {
+        forced: matchMedia('(forced-colors: active)').matches,
+        gray,
+        canvas,
+        input: of('#text input', '::placeholder'),
+        textarea: of('#area textarea', '::placeholder'),
+        dropdown: of('#select .sf-dropdown-field input:not([type="hidden"])', '::placeholder'),
+        quantity: of('#count .sf-quantity-wrap input', '::placeholder'),
+        hint: of('#hint input', '::placeholder'),
+        marker: of('#text [data-inherited-marker]', null),
+      };
+    });
+    check('forced colours: the mode is on and the two inks differ', ink.forced && ink.gray !== ink.canvas, ink);
+    for (const field of ['input', 'textarea', 'dropdown', 'quantity']) {
+      check(`forced colours ${field}: the inherited value is the page's text`, ink[field] === ink.canvas, ink);
+    }
+    check('forced colours: an ordinary placeholder stays the unavailable ink', ink.hint === ink.gray, ink);
+    check('forced colours: the marker reads as text', ink.marker === ink.canvas, ink);
+    console.log(JSON.stringify({forcedColors: ink}));
     await page.close();
   }
 } finally {

@@ -121,4 +121,36 @@
   sf-switch[data-inherited] .sf-switch-toggler {
     opacity: 0.64;
   }
+
+  /* Forced colours (simai/ui-source#57, found by ui-mail's audit Q-03): while
+     the field holds nothing of its own, the inherited value lives in the
+     placeholder -- it is the text the document will use, not a hint. The
+     forced palette paints every placeholder GrayText, the «unavailable» ink,
+     which in Chrome's default light forced theme is rgb(96, 0, 0): the value
+     read as an error or as a disabled control. So in that mode, and only while
+     the value is inherited, the placeholder is CanvasText, the page's own text;
+     the marker beside it already is. An ordinary placeholder is a hint, not a
+     value, and keeps GrayText.
+
+     The tag and the state carry the rule past the controls' own placeholder
+     rules, which are classes in this same layer (`.sf-input .sf-input-field
+     input::placeholder`, and three classes for a dropdown's appearance). */
+  @media (forced-colors: active) {
+    sf-input[data-inherited] .sf-input .sf-input-field input::placeholder {
+      --sf-input-placeholder--color: CanvasText;
+      color: CanvasText;
+    }
+    sf-textarea[data-inherited] .sf-textarea textarea::placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+      color: CanvasText;
+    }
+    sf-quantity[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+      color: CanvasText;
+    }
+  }
 }
