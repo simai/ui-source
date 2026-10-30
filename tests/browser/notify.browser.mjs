@@ -71,6 +71,23 @@ try {
   if (seen.before.label !== 'Уведомления') failures.push('the area is named in the page language');
   if (!(seen.before.gap > 0)) failures.push('messages stack with a gap');
   if (seen.after.count !== 4 || seen.after.error !== 'alert') failures.push('closing one shows the next; an error is an alert');
+
+  // A string is the message's text; nothing to show is said, not swallowed.
+  const warnings = [];
+  tab.on('console', (message) => { if (message.type() === 'warning') warnings.push(message.text()); });
+  const plain = await tab.evaluate(async () => {
+    const handle = window.SF.notify('Товар в корзине');
+    const nothing = [window.SF.notify(''), window.SF.notify({}), window.SF.notify(null)];
+    await new Promise((done) => setTimeout(done, 300));
+    return {
+      handle: Boolean(handle?.id),
+      kept: window.SF.notifications.history()[0]?.text,
+      nothing,
+    };
+  });
+  if (!plain.handle || plain.kept !== 'Товар в корзине') failures.push('a string is shown as the text');
+  if (plain.nothing.some((one) => one !== null)) failures.push('nothing to show returns null');
+  if (warnings.filter((one) => one.includes('SF.notify')).length !== 3) failures.push('nothing to show warns in the console');
 } finally {
   await browser.close();
   server.close();
