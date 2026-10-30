@@ -23,6 +23,11 @@
 //   arrows;
 // - at 375 px the window is a full-screen sheet with the field on top and a
 //   back arrow that closes it.
+// - a host of simai.search-port: a block stands only where the capability is
+//   announced and the setting left on; recent.forget, recent.clear and
+//   action.run reach the host; a correction is offered and choosing it is a
+//   query; the preview follows the row and a late answer is dropped; a refusal
+//   keeps the window open; the pane needs room.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -57,6 +62,46 @@ ${body}
 const PAGES = {
   '/page': page(`<header><sf-search id="s" index="/index.json" recent-key="probe-recent"><button id="t" type="button">Поиск</button></sf-search></header>
 <main><p>Страница</p><input id="text" aria-label="Поле страницы"></main>`),
+  // A host of simai.search-port: `?caps=` is what it announces, the markup's
+  // attributes what the page wants.
+  '/port': page(`<sf-search id="h" shortcut=""><button id="ht" type="button">Поиск</button></sf-search>
+<script>
+const params = new URLSearchParams(location.search);
+const caps = (params.get('caps') ?? 'scopes,recent,popular,actions,preview,spelling').split(',').filter(Boolean);
+for (const name of (params.get('off') ?? '').split(',').filter(Boolean)) document.getElementById('h').setAttribute(name, 'false');
+window.intents = [];
+window.delayPreview = 0;
+let recent = ['таблица', 'тема'];
+const results = [
+  {id: 'a', group: 'pages', title: 'Таблица в рамке', path: 'Утилиты', kind: 'page', url: '#a'},
+  {id: 'b', group: 'pages', title: 'Таблицы данных', path: 'Данные', kind: 'page', url: '#b'},
+  {id: 'c', group: 'components', title: 'sf-table', path: 'Pro', kind: 'page', url: '#c'},
+  {id: 'theme', group: 'actions', title: 'Сменить тему', kind: 'action', shortcut: 'T'},
+];
+window.host = {id: 'probe', port: 'simai.search-port', version: '1.0.0', capabilities: caps,
+  async raise(intent, payload) {
+    window.intents.push({intent, payload});
+    if (intent === 'query.change') {
+      const scopes = [{id: 'pages', label: 'Страницы'}, {id: 'components', label: 'Компоненты'}, {id: 'actions', label: 'Действия'}];
+      const data = {results: payload.query ? results : results.filter((r) => r.kind === 'action'), echo: {query: payload.query, scope: payload.scope ?? null}, scopes};
+      if (caps.includes('recent')) data.recent = recent;
+      if (caps.includes('popular')) data.popular = ['кнопка'];
+      if (caps.includes('spelling') && payload.query === 'тблица') data.correction = {query: 'таблица', total: 3};
+      return {answer: 'applied', sequence: payload.sequence, data};
+    }
+    if (intent === 'recent.forget') { recent = recent.filter((q) => q !== payload.query); return {answer: 'applied', data: {recent}}; }
+    if (intent === 'recent.clear') { recent = []; return {answer: 'applied', data: {recent}}; }
+    if (intent === 'result.preview') {
+      const wait = window.delayPreview;
+      if (wait) await new Promise((settle) => setTimeout(settle, wait));
+      return {answer: 'applied', sequence: payload.sequence, data: {preview: {id: payload.id, title: 'О ' + payload.id, path: 'Путь ' + payload.id, text: 'Слова ' + payload.id}}};
+    }
+    if (intent === 'result.open') return payload.id === 'b' ? {answer: 'refused', reason: 'forbidden', text: 'Нет доступа к этой странице'} : {answer: 'applied', data: {recent}};
+    if (intent === 'action.run') return {answer: 'applied', data: {recent}};
+    return {answer: 'unavailable', reason: 'intent-unknown'};
+  }};
+customElements.whenDefined('sf-search').then(() => document.getElementById('h').connectPort(window.host));
+</script>`),
   '/provider': page(`<sf-search id="p" shortcut=""><button id="pt" type="button">Поиск</button></sf-search>
 <script>
 window.calls = [];
@@ -409,6 +454,125 @@ try {
     await tab.click('.sf-search-back button');
     const back = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id}));
     expect('phone-back-closes', !back.open && back.focus === 't', back);
+    await tab.close();
+  }
+  // ----------------------------------------------------------- the port
+  {
+    const tab = await browser.newPage({viewport: {width: 1280, height: 800}});
+    const errors = [];
+    tab.on('pageerror', (error) => errors.push(error.message));
+    const openPort = async (query = '') => {
+      await tab.goto(`${origin}/port${query}`);
+      await tab.waitForFunction(() => document.querySelector('#h')?.sfPort, null, {timeout: 20000}).catch(() => failures.push({name: 'port-connected', detail: query}));
+      await tab.click('#ht');
+      await tab.waitForSelector(WINDOW, {timeout: 5000});
+      await tab.waitForFunction(() => document.querySelector('.sf-search-card')?.getAttribute('aria-busy') === 'false', null, {timeout: 5000}).catch(() => {});
+      await tab.waitForTimeout(100);
+    };
+    const asked = (name) => tab.evaluate((intent) => window.intents.filter((entry) => entry.intent === intent).map((entry) => entry.payload), name);
+    const blocks = () => tab.evaluate(() => ({
+      recent: document.querySelectorAll('.sf-search-row--recent').length,
+      popular: document.querySelectorAll('.sf-search-section .sf-search-pill').length,
+      scopes: document.querySelectorAll('.sf-search-scope').length,
+      commands: [...document.querySelectorAll('.sf-search-row-title')].filter((n) => n.textContent.includes('Сменить тему')).length,
+      pane: document.querySelectorAll('.sf-search-preview').length,
+      correction: document.querySelector('.sf-search-correction')?.textContent.trim() ?? '',
+      notice: document.querySelector('.sf-search-notice')?.textContent.trim() ?? '',
+      width: document.querySelector('.sf-search-window')?.getBoundingClientRect().width ?? 0,
+    }));
+
+    // Everything announced, everything wanted.
+    await openPort();
+    const all = await blocks();
+    expect('port-empty-blocks', all.recent === 2 && all.popular === 1 && all.commands === 1, all);
+    expect('port-pane-widens-the-window', all.pane === 1 && Math.abs(all.width - 864) < 1, all);
+    await typeQuery(tab, 'т');
+    const withQuery = await blocks();
+    expect('port-scopes-drawn', withQuery.scopes === 4 && withQuery.commands === 1, withQuery);
+
+    // recent.forget and recent.clear go to the host, and its list is drawn.
+    await tab.fill('.sf-search-input', '');
+    await tab.waitForFunction(() => document.querySelectorAll('.sf-search-row--recent').length === 2, null, {timeout: 5000}).catch(() => {});
+    await tab.hover('.sf-search-row--recent');
+    await tab.click('.sf-search-row--recent .sf-search-remove');
+    await tab.waitForTimeout(100);
+    const forgot = await asked('recent.forget');
+    const afterForget = await blocks();
+    expect('port-recent-forget', forgot.length === 1 && forgot[0].query === 'таблица' && afterForget.recent === 1, {forgot, afterForget});
+    await tab.click('.sf-search-caption-action');
+    await tab.waitForTimeout(100);
+    const cleared = await asked('recent.clear');
+    const afterClear = await blocks();
+    expect('port-recent-clear', cleared.length === 1 && afterClear.recent === 0, {cleared, afterClear});
+
+    // The host's spelling is offered, not applied; choosing it is a query.
+    await typeQuery(tab, 'тблица');
+    const offered = await blocks();
+    const beforeChoose = await asked('query.change');
+    expect('port-correction-offered', offered.correction.includes('таблица') && offered.correction.includes('3')
+      && beforeChoose.at(-1).query === 'тблица', {offered, last: beforeChoose.at(-1)});
+    await tab.click('.sf-search-correction');
+    await tab.waitForTimeout(250);
+    const afterChoose = await tab.evaluate(() => ({value: document.querySelector('.sf-search-input').value, line: Boolean(document.querySelector('.sf-search-correction'))}));
+    const queries = await asked('query.change');
+    expect('port-correction-is-a-query', afterChoose.value === 'таблица' && !afterChoose.line && queries.at(-1).query === 'таблица', {afterChoose, last: queries.at(-1)});
+
+    // The preview follows the selection, and a late answer for a row left is dropped.
+    await tab.waitForFunction(() => document.querySelector('.sf-search-preview-title')?.textContent === 'О a', null, {timeout: 5000}).catch(() => {});
+    const first = await tab.evaluate(() => document.querySelector('.sf-search-preview')?.textContent.replace(/\s+/gu, ' ').trim());
+    expect('port-preview-of-the-row', first === 'Путь a О a Слова a', first);
+    await tab.evaluate(() => { window.delayPreview = 400; });
+    await tab.keyboard.press('ArrowDown');
+    await tab.evaluate(() => { window.delayPreview = 0; });
+    await tab.keyboard.press('ArrowDown');
+    await tab.waitForTimeout(700);
+    const late = await tab.evaluate(() => document.querySelector('.sf-search-preview-title')?.textContent);
+    expect('port-preview-stale-dropped', late === 'О c', late);
+
+    // A refusal keeps the window open and says the host's words.
+    await tab.keyboard.press('ArrowUp');
+    await tab.waitForTimeout(150);
+    await tab.keyboard.press('Enter');
+    await tab.waitForFunction(() => document.querySelector('.sf-search-notice'), null, {timeout: 5000}).catch(() => {});
+    const refused = await blocks();
+    expect('port-open-refused-stays', refused.notice === 'Нет доступа к этой странице' && await tab.evaluate(() => Boolean(document.querySelector('.sf-search-window'))), refused);
+
+    // action.run: the host is asked, the window closes, the page hears the command.
+    await tab.evaluate(() => { window.navigated = []; document.querySelector('#h').addEventListener('sf-search-navigate', (event) => window.navigated.push(event.detail)); });
+    await tab.click('.sf-search-row:has-text("Сменить тему")');
+    await tab.waitForFunction(() => !document.querySelector('.sf-search-window'), null, {timeout: 5000}).catch(() => {});
+    const ran = await asked('action.run');
+    const heard = await tab.evaluate(() => window.navigated);
+    expect('port-action-run', ran.length === 1 && ran[0].id === 'theme' && heard[0]?.action === 'theme' && heard[0]?.href === '', {ran, heard});
+
+    // A capability not announced: the block is absent, its intent never raised,
+    // and the setting cannot turn it on.
+    await openPort('?caps=');
+    const none = await blocks();
+    expect('port-nothing-announced', none.recent === 0 && none.popular === 0 && none.commands === 0 && none.pane === 0 && Math.abs(none.width - 576) < 1, none);
+    await typeQuery(tab, 'т');
+    const noneQuery = await blocks();
+    const rowsNone = await rowsInfo(tab);
+    expect('port-no-capability-query', noneQuery.scopes === 0 && noneQuery.commands === 0 && rowsNone.length === 3, {noneQuery, rowsNone});
+    const previewAsked = await asked('result.preview');
+    expect('port-no-capability-no-intent', previewAsked.length === 0, previewAsked);
+
+    // Announced, but the page does not want it.
+    await openPort('?off=recent,popular,actions,scopes');
+    const unwanted = await blocks();
+    expect('port-setting-off-empty', unwanted.recent === 0 && unwanted.popular === 0 && unwanted.commands === 0, unwanted);
+    await typeQuery(tab, 'т');
+    const unwantedQuery = await blocks();
+    expect('port-setting-off-query', unwantedQuery.scopes === 0 && unwantedQuery.commands === 0, unwantedQuery);
+
+    // No room for the pane: the host is not asked for words nobody can read.
+    await tab.setViewportSize({width: 800, height: 800});
+    await openPort();
+    await typeQuery(tab, 'т');
+    const narrow = await blocks();
+    expect('port-narrow-no-pane', narrow.pane === 0 && (await asked('result.preview')).length === 0, narrow);
+
+    expect('port-no-errors', errors.length === 0, errors);
     await tab.close();
   }
 } finally {

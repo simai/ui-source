@@ -27,6 +27,13 @@
     "key-select-label": "выбрать",
     "key-open-label": "открыть",
     "key-clear-label": "очистить",
-    "key-close-label": "закрыть"
+    "key-close-label": "закрыть",
+    "correction-text": "Возможно, вы искали «{query}»",
+    "preview-label": "Предпросмотр",
+    "refused-text": "Это вам недоступно",
+    "action-text": "Команда не выполнилась",
+    "short-text": "Введите ещё немного",
+    "forbidden-text": "У вас нет к этому доступа",
+    "not-found-text": "Этого больше нет"
   }
 }
