@@ -61,6 +61,12 @@ const withoutNames = (code) => code
   .replace(/((?:add|remove)EventListener\(\s*|new (?:Custom)?Event\(\s*|dispatchEvent\(new [A-Za-z]\w*\(\s*)(['"`])([a-z][a-z0-9:-]*)\2/gu,
     (whole, head, quote, name) => head + quote + blanked(name) + quote)
   .replace(/@([a-z][a-z0-9-]*)\s*=/gu, (whole, name) => whole.replace(name, blanked(name)))
+  // A Lit boolean binding is the name of an attribute, as `@name=` is the name
+  // of an event: `?hidden=${!open}` writes no class hidden.
+  .replace(/\?([a-z][a-z0-9-]*)\s*=/gu, (whole, name) => whole.replace(name, blanked(name)))
+  // The keyword before a class member: `static get props()` gave thirty-eight
+  // components the position utility, whose classes include `static`.
+  .replace(/\bstatic(?=\s+[A-Za-z_$#*[])/gu, (whole) => blanked(whole))
   .replace(/([a-z][a-z0-9_$-]*)\s*\(/gu, (whole, name) => whole.replace(name, blanked(name)));
 const tokensOf = (source) => {
   const code = source.replace(/\/\*[\s\S]*?\*\//gu, ' ').replace(/(^|[^:'"`\\])\/\/[^\n]*/gu, '$1 ');
