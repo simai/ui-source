@@ -13,7 +13,7 @@
     "src/component/context-menu/scss/_css__context_menu_custom.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "1015611fbac71bb1265043372ecb75b8b3589a5f881424dae9d49e53652dfe2e",
+  "content_sha256": "b8510ce7976f0c972082c40fed00e4d71c9813d80a0f98fb0dfdeb10f77446f3",
   "dependencies": [
     {
       "id": "tokens.border",
