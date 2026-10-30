@@ -102,7 +102,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "69038150e4e1f7b1511aee176950bab4ff6b81d02954048083f4b06681094906",
+      "manifest_sha256": "0f9f8db1677975f217b420953a1b9e578ac6b8df761d57b8f35a08350325f5c5",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

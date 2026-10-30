@@ -273,5 +273,46 @@
     --sf-success-15: #002d05;
     --sf-success-10: #002203;
     --sf-success-5: #001501;
+
+    /* The tones of initials (sf-avatar tone): eight fixed hues, one palette
+       step per use. They are not status colours and not the brand: the status
+       ramps say something about the world, and primary, secondary and tertiary
+       move with a theme's colour, so a hue that must keep its name under every
+       theme has a set of its own (HCT chroma 48, hues 5 to 325, the generator's
+       tones, tests/avatar-tones.contract.test.mjs holds them). Tone 50 lays the
+       plate on the fill family of the alpha scale, 20 light and 32 dark; tone 30
+       and tone 85 are the ink. */
+    --sf-tone-rose-50--alfa-20: #b8587133;
+    --sf-tone-rose-50--alfa-32: #b8587152;
+    --sf-tone-rose-30: #7c2942;
+    --sf-tone-rose-85: #ffc6d1;
+    --sf-tone-amber-50--alfa-20: #ac670433;
+    --sf-tone-amber-50--alfa-32: #ac670452;
+    --sf-tone-amber-30: #693c00;
+    --sf-tone-amber-85: #ffcb98;
+    --sf-tone-lime-50--alfa-20: #7d7b0033;
+    --sf-tone-lime-50--alfa-32: #7d7b0052;
+    --sf-tone-lime-30: #4a4900;
+    --sf-tone-lime-85: #dcda62;
+    --sf-tone-green-50--alfa-20: #38864733;
+    --sf-tone-green-50--alfa-32: #38864752;
+    --sf-tone-green-30: #00531f;
+    --sf-tone-green-85: #95e79d;
+    --sf-tone-teal-50--alfa-20: #00857e33;
+    --sf-tone-teal-50--alfa-32: #00857e52;
+    --sf-tone-teal-30: #00504b;
+    --sf-tone-teal-85: #61e9de;
+    --sf-tone-sky-50--alfa-20: #157db933;
+    --sf-tone-sky-50--alfa-32: #157db952;
+    --sf-tone-sky-30: #004b72;
+    --sf-tone-sky-85: #afd9ff;
+    --sf-tone-indigo-50--alfa-20: #6d6ec433;
+    --sf-tone-indigo-50--alfa-32: #6d6ec452;
+    --sf-tone-indigo-30: #3b3d8f;
+    --sf-tone-indigo-85: #d1d0ff;
+    --sf-tone-violet-50--alfa-20: #9e5faa33;
+    --sf-tone-violet-50--alfa-32: #9e5faa52;
+    --sf-tone-violet-30: #682e76;
+    --sf-tone-violet-85: #f9c2ff;
   }
 }

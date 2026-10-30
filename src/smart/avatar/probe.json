@@ -12,6 +12,10 @@
       "  <sf-avatar id=\"a-old\" template=\"card\" title=\"Вера Петрова\"></sf-avatar>",
       "  <sf-avatar id=\"a-badge\" text=\"АБ\" aria-label=\"Анна Белова\" badge-count=\"3\"></sf-avatar>",
       "  <sf-avatar id=\"a-bad\" text=\"X\" size=\"9\" shape=\"oval\"></sf-avatar>",
+      "  <sf-avatar id=\"a-tone\" text=\"RM\" tone=\"rose\"></sf-avatar>",
+      "  <sf-avatar id=\"a-auto\" heading=\"Boris Ilyin\" tone=\"auto\"></sf-avatar>",
+      "  <sf-avatar id=\"a-tone-image\" image-url=\"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=\" text=\"RM\" tone=\"rose\"></sf-avatar>",
+      "  <sf-avatar id=\"a-tone-none\" tone=\"auto\"></sf-avatar>",
       "</main>"
     ]
   },
@@ -104,6 +108,23 @@
         },
         {
           "check": "document.querySelector('#a button').disabled && document.querySelector('#a').hasAttribute('disabled')"
+        }
+      ]
+    },
+    {
+      "id": "p8-tone",
+      "title": "a named tone and auto reach the initials, and nothing else takes one",
+      "covers": "settings.tone",
+      "steps": [
+        {
+          "check": "(() => { const tone = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-avatar--tone-')).join(); return tone('#a-tone') === 'sf-avatar--tone-rose' && tone('#a-auto') === 'sf-avatar--tone-violet' && tone('#a-tone-image') === '' && tone('#a-tone-none') === '' && tone('#a') === ''; })()",
+          "expect": {
+            "values": {
+              "#a-tone.tone": "rose",
+              "#a-auto.tone": "auto",
+              "#a.tone": ""
+            }
+          }
         }
       ]
     }

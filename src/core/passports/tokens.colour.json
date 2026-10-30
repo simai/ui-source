@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "summary": "The colour roles and palettes: the theme's light and dark roles, the Figma colour variables and the colour utilities' variables.",
   "includes": [
@@ -18,7 +18,7 @@
     "src/core/scss/_sf_figma_colors_variables.scss",
     "src/core/scss/vars/_sf_var__color.scss"
   ],
-  "content_sha256": "0261ff84a1aeafa9132c3b97db6e60c2e7340a5d0192bce2c705114896600462",
+  "content_sha256": "3050edc4ad5163a4a42927ad0b8080f1adc9f37394379af8a0a5d7fe94544790",
   "dependencies": [
     {
       "id": "tokens.elevation",

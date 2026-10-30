@@ -72,6 +72,10 @@ export function avatarClasses(context, options = {}) {
             "items-cross-center",
             "content-main-center",
         );
+
+        if (context.resolvedTone) {
+            classes.push(`sf-avatar--tone-${context.resolvedTone}`);
+        }
     }
 
     if (!context.isImage && !context.isText) {

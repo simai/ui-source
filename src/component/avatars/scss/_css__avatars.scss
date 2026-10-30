@@ -138,6 +138,49 @@
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
   }
 
+  /* The tones of initials. Only the initials take one: a picture covers the
+     fill and the placeholder stays neutral, whatever the classes say. A host's
+     --sf-avatar-background-color and --sf-avatar-color still win. */
+  .sf-avatar--text.sf-avatar--tone-rose {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-rose-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-rose-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-amber {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-amber-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-amber-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-lime {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-lime-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-lime-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-green {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-green-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-green-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-teal {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-teal-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-teal-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-sky {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-sky-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-sky-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-indigo {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-indigo-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-indigo-container));
+  }
+
+  .sf-avatar--text.sf-avatar--tone-violet {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-violet-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-violet-container));
+  }
+
   .sf-avatar--square {
     --sf-avatar--border-bottom-right-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
     --sf-avatar--border-bottom-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));

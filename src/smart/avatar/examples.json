@@ -110,6 +110,132 @@
       "expect": {
         "disabled": true
       }
+    },
+    {
+      "name": "tone-rose",
+      "title": "Initials, tone rose",
+      "settings": {
+        "heading": "Rosa Moreno",
+        "tone": "rose"
+      },
+      "attributes": {
+        "aria-label": "Rosa Moreno"
+      },
+      "expect": {
+        "tone": "rose"
+      }
+    },
+    {
+      "name": "tone-amber",
+      "title": "Initials, tone amber",
+      "settings": {
+        "heading": "Amir Lund",
+        "tone": "amber"
+      },
+      "attributes": {
+        "aria-label": "Amir Lund"
+      },
+      "expect": {
+        "tone": "amber"
+      }
+    },
+    {
+      "name": "tone-lime",
+      "title": "Initials, tone lime",
+      "settings": {
+        "heading": "Lena Ito",
+        "tone": "lime"
+      },
+      "attributes": {
+        "aria-label": "Lena Ito"
+      },
+      "expect": {
+        "tone": "lime"
+      }
+    },
+    {
+      "name": "tone-green",
+      "title": "Initials, tone green",
+      "settings": {
+        "heading": "Greta Olsen",
+        "tone": "green"
+      },
+      "attributes": {
+        "aria-label": "Greta Olsen"
+      },
+      "expect": {
+        "tone": "green"
+      }
+    },
+    {
+      "name": "tone-teal",
+      "title": "Initials, tone teal",
+      "settings": {
+        "heading": "Tomas Reyes",
+        "tone": "teal"
+      },
+      "attributes": {
+        "aria-label": "Tomas Reyes"
+      },
+      "expect": {
+        "tone": "teal"
+      }
+    },
+    {
+      "name": "tone-sky",
+      "title": "Initials, tone sky",
+      "settings": {
+        "heading": "Sofia Kim",
+        "tone": "sky"
+      },
+      "attributes": {
+        "aria-label": "Sofia Kim"
+      },
+      "expect": {
+        "tone": "sky"
+      }
+    },
+    {
+      "name": "tone-indigo",
+      "title": "Initials, tone indigo",
+      "settings": {
+        "heading": "Ivan Novak",
+        "tone": "indigo"
+      },
+      "attributes": {
+        "aria-label": "Ivan Novak"
+      },
+      "expect": {
+        "tone": "indigo"
+      }
+    },
+    {
+      "name": "tone-violet",
+      "title": "Initials, tone violet",
+      "settings": {
+        "heading": "Vera Stone",
+        "tone": "violet"
+      },
+      "attributes": {
+        "aria-label": "Vera Stone"
+      },
+      "expect": {
+        "tone": "violet"
+      }
+    },
+    {
+      "name": "tone-auto",
+      "title": "Initials, the tone picked from the name",
+      "settings": {
+        "heading": "Boris Ilyin",
+        "tone": "auto"
+      },
+      "attributes": {
+        "aria-label": "Boris Ilyin"
+      },
+      "expect": {
+        "tone": "auto"
+      }
     }
   ],
   "pages": [
@@ -126,6 +252,10 @@
           "  <sf-avatar id=\"a-old\" template=\"card\" title=\"Вера Петрова\"></sf-avatar>",
           "  <sf-avatar id=\"a-badge\" text=\"АБ\" aria-label=\"Анна Белова\" badge-count=\"3\"></sf-avatar>",
           "  <sf-avatar id=\"a-bad\" text=\"X\" size=\"9\" shape=\"oval\"></sf-avatar>",
+          "  <sf-avatar id=\"a-tone\" text=\"RM\" tone=\"rose\"></sf-avatar>",
+          "  <sf-avatar id=\"a-auto\" heading=\"Boris Ilyin\" tone=\"auto\"></sf-avatar>",
+          "  <sf-avatar id=\"a-tone-image\" image-url=\"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=\" text=\"RM\" tone=\"rose\"></sf-avatar>",
+          "  <sf-avatar id=\"a-tone-none\" tone=\"auto\"></sf-avatar>",
           "</main>"
         ]
       },
@@ -218,6 +348,23 @@
             },
             {
               "check": "document.querySelector('#a button').disabled && document.querySelector('#a').hasAttribute('disabled')"
+            }
+          ]
+        },
+        {
+          "id": "p8-tone",
+          "title": "a named tone and auto reach the initials, and nothing else takes one",
+          "covers": "settings.tone",
+          "steps": [
+            {
+              "check": "(() => { const tone = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-avatar--tone-')).join(); return tone('#a-tone') === 'sf-avatar--tone-rose' && tone('#a-auto') === 'sf-avatar--tone-violet' && tone('#a-tone-image') === '' && tone('#a-tone-none') === '' && tone('#a') === ''; })()",
+              "expect": {
+                "values": {
+                  "#a-tone.tone": "rose",
+                  "#a-auto.tone": "auto",
+                  "#a.tone": ""
+                }
+              }
             }
           ]
         }

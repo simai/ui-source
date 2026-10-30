@@ -13,7 +13,14 @@ a real destination or action.
 - shape: circular by default or `.sf-avatar--square` with the UI radius;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
-- state: online/offline indicator and company/verification badge.
+- state: online/offline indicator and company/verification badge;
+- tone, on initials only: `.sf-avatar--text.sf-avatar--tone-<name>`, where name
+  is `rose`, `amber`, `lime`, `green`, `teal`, `sky`, `indigo` or `violet`. A muted
+  fill and an ink that reads on it in both themes, from the tokens
+  `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`. An image or a
+  placeholder stays as it is, and `--sf-avatar-background-color` and
+  `--sf-avatar-color` still win. A server picks a tone from a name the way the
+  Smart Avatar's documentation describes.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.
