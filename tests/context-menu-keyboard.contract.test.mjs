@@ -27,8 +27,17 @@ test('context menu leaves activation and dismissal to native controls and the ho
 
 test('the owned lifecycle acts only on a menu opened through openFor', () => {
   const owned = source.slice(source.indexOf('  handleOwnedKeyDown(event)'), source.indexOf('  typeahead(event)'));
-  assert.match(owned, /if \(!this\._owned \|\|/);
   assert.match(owned, /event\.key === "Escape"/);
   assert.match(owned, /event\.key === "Tab"/);
   assert.ok(source.indexOf('  handleOwnedKeyDown(event)') < source.indexOf('  handleMenuKeyDown(event)'));
+  // A menu the page placed has no lifecycle to run -- nothing to close, no
+  // focus to give back -- so the handler leaves at once. Its one exception is
+  // the way out of a level: a drilling panel is entered by Enter or a press
+  // and left by Escape or the outward arrow wherever it stands (1.5.1).
+  const placed = owned.slice(owned.indexOf('    if (!this._owned) {'), owned.indexOf('      return;\n    }') + '      return;\n    }'.length);
+  assert.ok(placed.startsWith('    if (!this._owned) {'), 'the handler leaves a placed menu early');
+  assert.match(placed, /this\.drillBack\(\);/);
+  for (const own of ['this.close(', 'this.focusTrigger', 'parentMenu', 'typeahead']) {
+    assert.ok(!placed.includes(own), `${own} belongs to a menu opened through openFor`);
+  }
 });
