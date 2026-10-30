@@ -788,11 +788,11 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "f46e3248af605f7bea8039020fc2bf4f9e197629",
+    "source_revision": "bb7150ff53d3d0ca39ca98bdaeaf7947011a719d",
     "source_artifacts": [
       {
         "path": "src/smart/context-menu/index.js",
-        "sha256": "a7d731feac8ae9fc46e68d1a1ca6bada0d693c79476e422a6351a7e5241a9b1a"
+        "sha256": "c0a08e66e97d18172fbeab9e75bf53b98fad0460aedc22db671490c8f5dd0fa5"
       },
       {
         "path": "src/smart/context-menu/js/templates/default.js",

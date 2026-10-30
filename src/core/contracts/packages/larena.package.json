@@ -152,6 +152,33 @@
       ]
     },
     {
+      "id": "smart.mail-letters",
+      "element": "sf-mail-letters",
+      "rule_name": "cl-mail-letters",
+      "folder": "mail-letters",
+      "requires": [
+        "smart.button",
+        "smart.context-menu",
+        "smart.dropdown",
+        "smart.empty-state",
+        "smart.icon-button",
+        "smart.input"
+      ]
+    },
+    {
+      "id": "smart.mail-library",
+      "element": "sf-mail-library",
+      "rule_name": "cl-mail-library",
+      "folder": "mail-library",
+      "requires": [
+        "smart.button",
+        "smart.empty-state",
+        "smart.icon",
+        "smart.input",
+        "utility.sr-only"
+      ]
+    },
+    {
       "id": "smart.message-log",
       "element": "sf-message-log",
       "rule_name": "cl-message-log",
