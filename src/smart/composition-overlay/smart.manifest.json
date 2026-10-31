@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -25,7 +25,9 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.sortable"
+      "smart.icon-button",
+      "smart.sortable",
+      "smart.tooltip"
     ],
     "public_parts": []
   },
@@ -65,10 +67,19 @@
         "default": "",
         "description": "The structure tree's name; the language file's runtime.tree otherwise"
       },
+      "placement": {
+        "type": "string",
+        "default": "top",
+        "description": "Where the toolbar stands: top, above the block and right-aligned, the default; side, beside the block on a host with room beside it, above the block where there is none",
+        "enum": [
+          "top",
+          "side"
+        ]
+      },
       "actions": {
         "type": "array",
         "default": [],
-        "description": "The selected node's actions: up to 16 {id, label}; written through the same check as setActions"
+        "description": "The selected node's actions: up to 16 {id, label} with optional icon, shortcut, disabled and tone; written through the same check as setActions"
       },
       "messages": {
         "type": "object",
@@ -87,7 +98,7 @@
   "contracts": {
     "canvas": {
       "type": "object",
-      "description": "The canvas holds host-rendered Composition HTML with data-sf-composition-id; the overlay never writes into it, so published HTML and digests are identical with the editor open or closed. Place the overlay before the canvas so its tree comes first in Tab order."
+      "description": "The canvas holds host-rendered Composition HTML with data-sf-composition-id; the overlay never writes into it, so published HTML and digests are identical with the editor open or closed. Place the overlay before the canvas, inside the scroller that scrolls it: its tree comes first in Tab order and its parts travel with the content."
     },
     "actions": {
       "type": "array",
@@ -105,6 +116,22 @@
           },
           "label": {
             "type": "string"
+          },
+          "icon": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "shortcut": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "danger"
+            ]
           }
         },
         "additionalProperties": false
@@ -715,19 +742,19 @@
       },
       {
         "path": "src/smart/composition-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "a5cda7d4673544f04f23012bcfe645345062e42438883b0e0d803a9681c04d4c"
+        "sha256": "5733fc9aaac26d59e931827f9f7e7c55c42fd0f49c8a0b8bd2cd26a40cb5b79b"
       },
       {
         "path": "src/smart/composition-overlay/rule.js",
-        "sha256": "a671d1bb3018dca5d8a4c4014c311b6b73a67d8abd7f6fbc4bf6a90cc654049e"
+        "sha256": "38c8f44b95db27ea8fadcdaad1e19fca4aeb710a0ee8c53e814ae5b4a363ba84"
       },
       {
         "path": "src/smart/composition-overlay/docs.md",
-        "sha256": "7d2d58e74089fc263947d5c05beb56a306c807174e10879c2b31246f7c9f4990"
+        "sha256": "ebd91d04f18da117fed4a48fda62d7414f46a8ac8a3e31f86a3d2746525e0f71"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "e625de85b481bb99d420d24f0137b7b8858c768525a91c0c65a7766c885bbb96"
+        "sha256": "608bf1f6a0f546157a7543cd1617750dcbcf52db488ee5b2c528d66f0b65242c"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",

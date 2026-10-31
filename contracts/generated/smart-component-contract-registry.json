@@ -507,7 +507,9 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.sortable"
+          "smart.icon-button",
+          "smart.sortable",
+          "smart.tooltip"
         ]
       },
       "contract_schema": {
@@ -519,7 +521,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/composition-overlay/smart.manifest.json",
-      "manifest_sha256": "49869cf5f9bf42c319e69ab21d49b03c4ffdb42a9a74918a81d69c6f7db68eb9",
+      "manifest_sha256": "7cfee9ae9165642a00f2238d3283834fe014728011e795be96f77430906ca136",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { checkOverlayActions, overlayNodes } from '../src/core/js/composition/overlay.mjs';
+import { checkOverlayActions, overlayNodes, shortcutMatches } from '../src/core/js/composition/overlay.mjs';
 import { Composition } from '../src/core/js/composition/index.mjs';
 
 const regions = JSON.parse(await readFile(new URL('./fixtures/composition/regions.json', import.meta.url), 'utf8'));
@@ -19,11 +19,28 @@ test('overlay nodes follow document order with parent, slot, index and level', (
   assert.deepEqual(overlayNodes({ root: { id: 'x', slots: { default: 'bad' } } }).map(({ id }) => id), ['x']);
 });
 
-test('overlay actions are opaque ids with labels only', () => {
+test('overlay actions are opaque ids with labels, and optionally an icon, a shortcut, disabled and a tone', () => {
   assert.deepEqual(checkOverlayActions([{ id: 'move-up', label: 'Выше' }]), [{ id: 'move-up', label: 'Выше' }]);
-  for (const bad of [[{ id: 'Move', label: 'x' }], [{ id: 'x', label: '' }], [{ id: 'x', label: 'x', href: '/delete' }], [{ id: 'x', label: 'x', handler: 'run()' }], 'x', Array.from({ length: 17 }, (_, index) => ({ id: `a-${index}`, label: 'x' }))]) {
+  const full = { id: 'remove', label: 'Удалить', icon: 'delete', shortcut: '⌫', disabled: true, tone: 'danger' };
+  assert.deepEqual(checkOverlayActions([full]), [full]);
+  for (const bad of [[{ id: 'Move', label: 'x' }], [{ id: 'x', label: '' }], [{ id: 'x', label: 'x', href: '/delete' }], [{ id: 'x', label: 'x', handler: 'run()' }], [{ id: 'x', label: 'x', icon: 'Bad Icon' }], [{ id: 'x', label: 'x', shortcut: '' }], [{ id: 'x', label: 'x', disabled: 'yes' }], [{ id: 'x', label: 'x', tone: 'loud' }], 'x', Array.from({ length: 17 }, (_, index) => ({ id: `a-${index}`, label: 'x' }))]) {
     assert.throws(() => checkOverlayActions(bad), TypeError);
   }
+});
+
+test('a shortcut is read as the tooltip shows it', () => {
+  const key = (key, held = {}) => ({ key, altKey: false, shiftKey: false, metaKey: false, ctrlKey: false, ...held });
+  assert.equal(shortcutMatches('⌥↑', key('ArrowUp', { altKey: true })), true);
+  assert.equal(shortcutMatches('⌥↑', key('ArrowUp')), false);
+  assert.equal(shortcutMatches('⌥↓', key('ArrowDown', { altKey: true })), true);
+  assert.equal(shortcutMatches('⌘D', key('d', { metaKey: true })), true);
+  assert.equal(shortcutMatches('⌘D', key('d', { ctrlKey: true })), true);
+  assert.equal(shortcutMatches('⌘D', key('d')), false);
+  assert.equal(shortcutMatches('⌫', key('Backspace')), true);
+  assert.equal(shortcutMatches('⌫', key('Delete')), true);
+  assert.equal(shortcutMatches('⌫', key('Backspace', { metaKey: true })), false);
+  assert.equal(shortcutMatches('Enter', key('Enter')), true);
+  assert.equal(shortcutMatches('Enter', key('Enter', { shiftKey: true })), false);
 });
 
 test('editor surfaces are Smart components, not part of Core', async () => {

@@ -180,6 +180,56 @@
               }
             }
           ]
+        },
+        {
+          "id": "p5-icon-actions",
+          "title": "an action with an icon is an icon button named by its label; an unavailable one stays where it is, dimmed; an action of id and label stays a text button",
+          "covers": "settings.actions",
+          "steps": [
+            {
+              "script": "(() => { const o = document.getElementById('o'); o.select('h'); o.actions = [{id: 'up', label: 'Выше', icon: 'arrow_upward', shortcut: '⌥↑', disabled: true}, {id: 'remove', label: 'Удалить', icon: 'delete', tone: 'danger'}, {id: 'plain', label: 'Текст'}]; return true; })()",
+              "wait": 1500,
+              "check": "(() => { const o = document.getElementById('o'); const up = o.querySelector('button[data-action=up]'); const remove = o.querySelector('button[data-action=remove]'); const plain = o.querySelector('button.sf-composition-overlay-action[data-action=plain]'); let refused = false; try { o.actions = [{id: 'x', label: 'x', tone: 'loud'}]; } catch (error) { refused = error instanceof TypeError; } return up.disabled && up.getAttribute('aria-label') === 'Выше' && remove.getAttribute('aria-label') === 'Удалить' && !remove.disabled && plain.textContent === 'Текст' && refused; })()"
+            }
+          ]
+        },
+        {
+          "id": "p6-placement",
+          "title": "placement is a setting: top by default, side on request, anything else reads as the default",
+          "covers": "settings.placement",
+          "steps": [
+            {
+              "check": "(() => { const o = document.getElementById('o'); const first = o.placement; o.placement = 'side'; const second = o.getAttribute('placement'); o.removeAttribute('placement'); return first === 'top' && second === 'side' && o.placement === 'top'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-shortcut",
+          "title": "a key the host mapped to an action sends apply for the selected node",
+          "covers": "events.apply, keyboard",
+          "steps": [
+            {
+              "script": "(() => { const o = document.getElementById('o'); o.actions = [{id: 'down', label: 'Ниже', shortcut: '⌥↓'}]; o.select('h'); o.querySelector('.sf-composition-overlay-tree').focus(); return true; })()"
+            },
+            {
+              "user": "keyboard:Alt+ArrowDown",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-composition-overlay-apply",
+                    "count": 1,
+                    "detail": {
+                      "action": "down",
+                      "scope": "entry",
+                      "ids": [
+                        "h"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       ]
     }

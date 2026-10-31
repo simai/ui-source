@@ -35,6 +35,19 @@ const boxes = (id) => page.evaluate((id) => {
   return { element: round(element.getBoundingClientRect()), selected: selected.hidden ? null : round(selected.getBoundingClientRect()), toolbar: toolbar.hidden ? null : round(toolbar.getBoundingClientRect()), viewport: { width: innerWidth, height: innerHeight } };
 }, id);
 const canvasHtml = () => page.evaluate(() => document.getElementById('canvas').innerHTML);
+// The pointer at the seam before a child of a canvas parent: the only place the «+» shows.
+const hoverSeam = async (parent, index) => {
+  const [x, y] = await page.evaluate(({ parent, index }) => {
+    const overlay = document.getElementById('overlay');
+    const children = overlay.byId.get(parent).slots.default;
+    const box = (id) => overlay.nodeBox(id);
+    const before = box(children[index]);
+    const after = box(children[index - 1]);
+    return [(before || after).left + (before || after).width / 2, before && after ? (after.bottom + before.top) / 2 : before ? before.top : after.bottom];
+  }, { parent, index });
+  await page.mouse.move(x, y);
+  await frame();
+};
 
 await open();
 const initialHtml = await canvasHtml();
@@ -45,7 +58,7 @@ await page.locator('#canvas [data-sf-composition-id="main-lead"]').hover();
 await frame();
 const hover = await page.evaluate(() => { const hoverFrame = document.querySelector('.sf-composition-overlay-frame--hover'); return { hidden: hoverFrame.hidden, label: hoverFrame.textContent }; });
 observations.hover = hover;
-check(!hover.hidden && hover.label === 'Абзац main-lead', 'hover frame shows the node label', hover);
+check(!hover.hidden && hover.label === '', 'hover is a bare frame, with no label', hover);
 const hashBefore = await page.evaluate(() => location.hash);
 await page.locator('#canvas [data-sf-composition-id="link-main"] a').click();
 await frame();
@@ -61,10 +74,11 @@ check(recorded.at(-1)?.type === 'sf-composition-overlay-select' && recorded.at(-
 await page.locator('.sf-composition-overlay-action[data-action="move-up"]').click();
 recorded = await events();
 check(recorded.at(-1)?.type === 'sf-composition-overlay-action' && recorded.at(-1).detail.action_id === 'move-up' && recorded.at(-1).detail.node_id === 'link-main', 'action event reports intent only', recorded.at(-1));
-const insertions = await page.locator('.sf-composition-overlay-insert').count();
-// link-main has four siblings in shell-main.default: five insertion points.
-check(insertions === 5, 'insertion points between siblings and at the slot end', insertions);
-await page.locator('.sf-composition-overlay-insert[data-index="3"]').click();
+// Nothing is shown on the selected block; one place shows at the seam under the pointer.
+check(await page.locator('.sf-composition-overlay-insert[data-sf-insert-shown]').count() === 0, 'the selected block shows no insertion place', null);
+await hoverSeam('shell-main', 3);
+check(await page.locator('.sf-composition-overlay-insert[data-sf-insert-shown]').count() === 1, 'one insertion place shows at the seam under the pointer', null);
+await page.locator('.sf-composition-overlay-insert[data-index="3"] .sf-composition-overlay-insert-mark').click();
 recorded = await events();
 check(recorded.at(-1)?.type === 'sf-composition-overlay-insert' && JSON.stringify(recorded.at(-1).detail) === JSON.stringify({ parent_id: 'shell-main', slot: 'default', index: 3, parent: 'shell-main' }), 'insert event carries parent, slot and index', recorded.at(-1));
 check(await page.locator('.sf-composition-overlay-insert[aria-pressed="true"]').count() === 1, 'chosen insertion point is marked', null);
@@ -143,13 +157,14 @@ const view = await page.evaluate(() => ({ scrollWidth: document.documentElement.
 observations.narrowDarkRtl = { box, view };
 check(view.scrollWidth <= view.viewport, 'narrow layout has no overflow', view);
 check(box.toolbar && box.toolbar.left >= 0 && box.toolbar.left + box.toolbar.width <= view.viewport, 'toolbar stays inside a narrow viewport', box);
-check(Math.abs((box.toolbar.left + box.toolbar.width) - (box.element.left + box.element.width)) <= 1 || box.toolbar.left === 0, 'RTL toolbar aligns to the inline start edge', box);
-const target = await page.evaluate(() => { const r = document.querySelector('.sf-composition-overlay-insert').getBoundingClientRect(); return { height: Math.round(r.height), background: getComputedStyle(document.querySelector('.sf-composition-overlay-insert')).backgroundColor }; });
+check(Math.abs(box.toolbar.left - box.element.left) <= 1 || box.toolbar.left === 0, 'RTL toolbar aligns to the inline end edge', box);
+await hoverSeam('shell-navigation', 1);
+const target = await page.evaluate(() => { const r = document.querySelector('.sf-composition-overlay-insert[data-sf-insert-shown]').getBoundingClientRect(); return { height: Math.round(r.height), background: getComputedStyle(document.querySelector('.sf-composition-overlay-insert')).backgroundColor }; });
 check(target.height >= 24, 'insertion targets keep a 24px hit area', target);
 // Only the round mark takes the pointer: a point on the line away from the mark
 // reaches the canvas, so a neighbouring block stays selectable.
 const lineHit = await page.evaluate(() => {
-  const button = document.querySelector('.sf-composition-overlay-insert:not([hidden])');
+  const button = document.querySelector('.sf-composition-overlay-insert[data-sf-insert-shown]');
   const line = button.getBoundingClientRect(); const mark = button.querySelector('.sf-composition-overlay-insert-mark').getBoundingClientRect();
   const x = line.left + 8 < mark.left ? line.left + 8 : line.right - 8;
   const onLine = document.elementFromPoint(x, line.top + line.height / 2);
@@ -226,7 +241,7 @@ await page.mouse.move(...centre(m));
 await settle();
 m = await measure('image');
 framed.hover = m;
-check(near(m.hover, m.expected) && m.hoverLabel === 'Картинка', 'hover frame covers the node under the pointer in the frame', m);
+check(near(m.hover, m.expected) && m.hoverLabel === '', 'hover frame covers the node under the pointer in the frame, with no label', m);
 m = await reveal('text-body');
 await page.mouse.click(...centre(m));
 await settle();
@@ -287,14 +302,10 @@ await page.evaluate(() => {
 await settle();
 const clipped = await page.evaluate(() => {
   const overlay = document.getElementById('overlay');
-  const mark = overlay.querySelector('.sf-composition-overlay-insert[data-parent=""][data-index="0"] .sf-composition-overlay-insert-mark');
-  const box = mark.getBoundingClientRect();
-  const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
   const toolbar = overlay.querySelector('.sf-composition-overlay-toolbar');
-  return { markTop: box.top, clip: overlay.view.clip, markTakesPointer: mark.contains(hit), toolbarTop: toolbar.hidden ? null : toolbar.getBoundingClientRect().top, clipPath: overlay.querySelector('.sf-composition-overlay-layer').style.clipPath };
+  return { clip: overlay.view.clip, toolbarTop: toolbar.hidden ? null : toolbar.getBoundingClientRect().top, clipPath: overlay.querySelector('.sf-composition-overlay-layer').style.clipPath };
 });
 framed.clipped = clipped;
-check(clipped.markTop < clipped.clip.top && !clipped.markTakesPointer, 'an insertion mark hidden by the host scroller takes no pointer', clipped);
 check(clipped.toolbarTop !== null && clipped.toolbarTop >= clipped.clip.top - 0.5, 'the toolbar stays inside the visible part of the frame', clipped);
 check(clipped.clipPath.startsWith('inset('), 'frames are clipped to the visible part of the frame', clipped);
 await page.evaluate(() => { document.getElementById('scroller').scrollTop = 0; });
@@ -302,9 +313,15 @@ await page.evaluate(() => { document.getElementById('scroller').scrollTop = 0; }
 // Toolbar actions and insertion points carry intent only.
 await page.evaluate(() => document.getElementById('overlay').select('text'));
 await settle();
-const insertionCount = await page.locator('.sf-composition-overlay-insert').count();
-// Five top-level nodes give six places among them; text has a child, so one more at its end.
-check(insertionCount === 7, 'insertion points between the selected node\'s siblings and at the end of its children', insertionCount);
+check(await page.locator('.sf-composition-overlay-insert[data-sf-insert-shown]').count() === 0, 'the selected node shows no insertion place', null);
+// The seam between the top-level text and image blocks, under the pointer.
+{
+  const text = (await measure('text')).expected;
+  const image = (await measure('image')).expected;
+  await page.mouse.move(text.left + text.width / 3, (text.top + text.height + image.top) / 2);
+  await settle();
+}
+check(await page.locator('.sf-composition-overlay-insert[data-sf-insert-shown]').count() === 1, 'one insertion place shows at the seam under the pointer in the frame', null);
 await page.locator('.sf-composition-overlay-insert[data-parent=""][data-index="2"] .sf-composition-overlay-insert-mark').click();
 event = await lastEvent('sf-composition-overlay-insert');
 check(JSON.stringify(event?.detail) === JSON.stringify({ parent_id: '', slot: 'default', index: 2, parent: '' }), 'insert event names the top-level list and the index', event);

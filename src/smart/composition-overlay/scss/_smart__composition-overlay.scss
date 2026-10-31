@@ -1,6 +1,7 @@
-// Editor canvas overlay (sf-composition-overlay). Every part is fixed to the
-// viewport above the canvas and below drawers and modals; the canvas DOM is
-// never changed. Colors come from theme tokens.
+// Editor canvas overlay (sf-composition-overlay). Placed in the scroller of its
+// canvas, the parts lie in the scrolled content and travel with it; anywhere else
+// they are fixed to the viewport. Either way above the canvas and below drawers
+// and modals; the canvas DOM is never changed. Colors come from theme tokens.
 /* sf-focus-ring: editor — the editing canvas marks what is being edited in its
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
@@ -23,12 +24,39 @@
         pointer-events: none;
     }
 
+    // In the scrolled content: a box of no size where the host placed the element,
+    // the origin of the parts, carried by the scroll. The layer keeps a pixel: its
+    // measured size says whether an ancestor scales it.
+    .sf-composition-overlay[data-sf-overlay-place="content"] {
+        position: relative;
+        inset: auto;
+        display: block;
+        inline-size: 0;
+        block-size: 0;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-layer,
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-insertions {
+        position: absolute;
+        inset: auto;
+        top: 0;
+        left: 0;
+        inline-size: 1px;
+        block-size: 1px;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-frame,
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-insert,
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-drop {
+        position: absolute;
+    }
+
+    // Hover is a 1px frame and selection a 2px frame: no fill, no tint, so the
+    // content looks as it will. They go where the block is, at once.
     .sf-composition-overlay-frame {
         position: fixed;
         box-sizing: border-box;
-        border: 1px dashed var(--sf-composition-overlay-color);
-        border-radius: var(--sf-radius-1, .25rem);
-        transition: top var(--sf-duration-fast, .1s), left var(--sf-duration-fast, .1s), width var(--sf-duration-fast, .1s), height var(--sf-duration-fast, .1s);
+        border: 1px solid var(--sf-composition-overlay-color);
     }
 
     .sf-composition-overlay-frame--selected {
@@ -61,11 +89,38 @@
         text-overflow: ellipsis;
     }
 
+    // The rail is the toolbar's range in the scrolled content; the toolbar sticks
+    // inside it, so nothing moves it on scroll. Fixed to the viewport there is no rail.
+    .sf-composition-overlay-rail {
+        display: contents;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-rail {
+        position: absolute;
+        z-index: 2;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+        pointer-events: none;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-place="content"] .sf-composition-overlay-toolbar {
+        position: sticky;
+        top: var(--sf-space-1\/4, .25rem);
+        flex: none;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-toolbar {
+        flex-direction: column;
+    }
+
     .sf-composition-overlay-toolbar {
         position: fixed;
+        z-index: 2;
         display: flex;
-        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1, .25rem));
-        padding: var(--sf-space-1, .25rem);
+        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1\/4, .25rem));
+        margin-block-end: var(--sf-space-1\/4, .25rem);
+        padding: var(--sf-space-1\/4, .25rem);
         border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1, .25rem));
         /* A toolbar floats over the page: step 2's surface and shadow. */
         background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-elevation-2--surface, Canvas));
@@ -85,19 +140,46 @@
         cursor: pointer;
     }
 
+    // A text action stands on the same ladder as an icon one: 32 px, so the toolbar is 40.
     .sf-composition-overlay-action {
-        padding: var(--sf-space-1, .25rem) var(--sf-space-2, .5rem);
+        box-sizing: border-box;
+        min-block-size: var(--sf-space-4, 2rem);
+        padding: 0 var(--sf-space-1\/2, .5rem);
         border: 1px solid var(--sf-outline, GrayText);
         border-radius: var(--sf-radius-1, .25rem);
         background: var(--sf-surface-1, Canvas);
         color: var(--sf-on-surface, CanvasText);
     }
 
-    // An insertion point is a thin line with a 24px round "+" target. Only the
-    // mark takes the pointer, so neighbouring blocks under the line stay
-    // clickable; the whole button still takes keyboard focus.
+    // An unavailable action dims in place; its neighbours do not move.
+    .sf-composition-overlay-action:disabled {
+        color: var(--sf-on-disable, GrayText);
+        cursor: default;
+    }
+
+    // An icon action is sf-icon-button at 1/2; the box holds its size until the
+    // button has drawn, and the toolbar never changes width.
+    .sf-composition-overlay-tool {
+        flex: none;
+        min-inline-size: var(--sf-space-4, 2rem);
+        min-block-size: var(--sf-space-4, 2rem);
+    }
+
+    .sf-composition-overlay-tool[data-sf-overlay-grip] .sf-icon-button:not(:disabled) {
+        cursor: grab;
+        touch-action: none;
+    }
+
+    .sf-composition-overlay-tool[data-sf-overlay-grip] .sf-icon-button:not(:disabled):active {
+        cursor: grabbing;
+    }
+
+    // One place to add: a thin line and a 24px round "+", shown only at the seam
+    // under the pointer. Only the mark takes the pointer, so blocks under the line
+    // stay clickable. The place kept for the keyboard shows when it takes focus.
     .sf-composition-overlay-insert {
         position: fixed;
+        z-index: 1;
         display: grid;
         place-items: center;
         box-sizing: border-box;
@@ -105,37 +187,34 @@
         margin-block-start: -.75rem;
         padding: 0;
         border: 0;
-        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% 1px no-repeat;
+        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% 2px no-repeat;
         color: var(--sf-composition-overlay-color);
-        opacity: .6;
+        opacity: 0;
         pointer-events: none;
     }
 
-    .sf-composition-overlay-insert:hover,
+    .sf-composition-overlay-insert[data-sf-insert-shown],
     .sf-composition-overlay-insert:focus-visible {
         opacity: 1;
     }
 
     .sf-composition-overlay-insert-mark {
-        display: grid;
-        place-items: center;
         inline-size: 1.5rem;
         block-size: 1.5rem;
-        border: 1px solid var(--sf-composition-overlay-color);
         border-radius: 50%;
-        background: var(--sf-surface-1, Canvas);
-        line-height: 1;
+        background:
+            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / .75rem 2px no-repeat,
+            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / 2px .75rem no-repeat,
+            var(--sf-composition-overlay-color);
+    }
+
+    .sf-composition-overlay-insert[data-sf-insert-shown] .sf-composition-overlay-insert-mark,
+    .sf-composition-overlay-insert:focus-visible .sf-composition-overlay-insert-mark {
         pointer-events: auto;
     }
 
     .sf-composition-overlay-insert[aria-pressed="true"] {
         background-size: 100% 3px;
-        opacity: 1;
-    }
-
-    .sf-composition-overlay-insert[aria-pressed="true"] .sf-composition-overlay-insert-mark {
-        background: var(--sf-composition-overlay-color);
-        color: var(--sf-on-primary, HighlightText);
     }
 
     .sf-composition-overlay-action:focus-visible,
@@ -156,12 +235,6 @@
         pointer-events: auto;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .sf-composition-overlay-frame {
-            transition: none;
-        }
-    }
-
     .sf-composition-overlay-drop {
         position: fixed;
         z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
@@ -180,19 +253,19 @@
         touch-action: none;
     }
 
-    // Framed canvas: the frames follow the frame's scroll without lag, and the
-    // label is not a move handle (nodes are not dragged over a frame).
-    .sf-composition-overlay[data-sf-overlay-mode="frame"] .sf-composition-overlay-frame {
-        transition: none;
-    }
-
-    .sf-composition-overlay[data-sf-overlay-mode="frame"] .sf-composition-overlay-frame--selected .sf-composition-overlay-label {
-        cursor: default;
-        pointer-events: none;
-    }
-
     // While a node's text is edited in the frame, the hover frame stands back.
     .sf-composition-overlay[data-sf-overlay-editing] .sf-composition-overlay-frame--hover {
         display: none;
+    }
+}
+
+// A dangerous action colours its hover only. A later layer than the button's own.
+@layer sf.states {
+    .sf-composition-overlay-tool[data-tone="danger"] .sf-icon-button:not(:disabled):hover {
+        --sf-icon--color: var(--sf-error-active);
+    }
+
+    .sf-composition-overlay-action[data-tone="danger"]:not(:disabled):hover {
+        color: var(--sf-error-active);
     }
 }

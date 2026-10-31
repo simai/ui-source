@@ -3,10 +3,16 @@ import { pageText } from '../page-language.js';
 import { activeSortableSession, registerSortableDropTarget } from './sortable.mjs';
 import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 
-// Editor canvas overlay. It draws hover and selection frames, a floating
-// action toolbar and insertion points over a rendered Composition Document
-// without touching the canvas DOM: the published HTML stays byte-identical.
-// The host supplies node descriptions and actions and performs every change.
+// Editor canvas overlay. It draws hover and selection frames, an action toolbar
+// above the selected block and one insertion point at the seam under the pointer
+// over a rendered Composition Document without touching the canvas DOM: the
+// published HTML stays byte-identical. The host supplies node descriptions and
+// actions and performs every change.
+//
+// Placed in the same scroller as its canvas, the overlay's parts lie in the
+// scrolled content and travel with it, so nothing runs on scroll and nothing
+// trails a frame behind; the script measures only when geometry changes. Placed
+// outside it, the parts stay fixed to the viewport and follow by script.
 //
 // Framed mode (attachFrame + setNodes) draws the same chrome over a same-origin
 // iframe fed a flat node list: frame coordinates are mapped to the host page
@@ -45,6 +51,20 @@ const MESSAGES = {
 };
 
 const ACTION_ID = /^[a-z][a-z0-9-]{0,63}$/u;
+const ACTION_KEYS = new Set(['id', 'label', 'icon', 'shortcut', 'disabled', 'tone']);
+const ICON_NAME = /^[a-z][a-z0-9_]{0,63}$/u;
+// The action a drag starts from is the one drawn as a grip.
+const GRIP_ICON = 'drag_indicator';
+// Blocks and the frame reach their place together.
+const GLIDE = { duration: 180, easing: 'cubic-bezier(.2, 0, 0, 1)' };
+// The seam takes the pointer about this far either side, and stays this long after it leaves.
+const SEAM_REACH = 10;
+const SEAM_LEAVE = 140;
+// A drag starts after this many pixels and scrolls the canvas near its edges.
+const DRAG_START = 4;
+const DRAG_EDGE = 48;
+const DRAG_STEP = 10;
+const SCROLLS = /^(auto|scroll)$/u;
 const format = (template, values) => template.replace(/\{(\w+)\}/gu, (_, key) => String(values[key] ?? ''));
 
 /** Flattens a Document into overlay nodes in document order. */
@@ -68,11 +88,39 @@ export function checkOverlayActions(actions) {
   if (!Array.isArray(actions) || actions.length > 16) throw new TypeError('Overlay actions must be a list of up to 16 entries');
   return actions.map((action) => {
     if (!isPlainObject(action) || !ACTION_ID.test(action.id || '') || typeof action.label !== 'string' || !action.label.trim()
-      || Object.keys(action).some((key) => key !== 'id' && key !== 'label')) {
-      throw new TypeError('Overlay actions have an opaque id and a label only');
+      || Object.keys(action).some((key) => !ACTION_KEYS.has(key))) {
+      throw new TypeError('Overlay actions have an opaque id, a label and optionally icon, shortcut, disabled and tone');
     }
-    return Object.freeze({ id: action.id, label: action.label });
+    if ((action.icon !== undefined && !ICON_NAME.test(String(action.icon)))
+      || (action.shortcut !== undefined && (typeof action.shortcut !== 'string' || !action.shortcut.trim()))
+      || (action.disabled !== undefined && typeof action.disabled !== 'boolean')
+      || (action.tone !== undefined && action.tone !== 'danger')) {
+      throw new TypeError(`Overlay action ${action.id} has an icon name, a shortcut string, a boolean disabled and the tone "danger" at most`);
+    }
+    const checked = { id: action.id, label: action.label };
+    for (const key of ['icon', 'shortcut', 'disabled', 'tone']) if (action[key] !== undefined) checked[key] = action[key];
+    return Object.freeze(checked);
   });
+}
+
+const SHORTCUT_MODIFIERS = { '⌥': 'alt', '⇧': 'shift', '⌘': 'mod', '⌃': 'mod' };
+const SHORTCUT_KEYS = { '↑': 'ArrowUp', '↓': 'ArrowDown', '←': 'ArrowLeft', '→': 'ArrowRight', '⏎': 'Enter', '↵': 'Enter', '⎋': 'Escape', '⌦': 'Delete' };
+
+/**
+ * Whether a keydown is an action's shortcut: the symbols the tooltip shows, as in
+ * "⌥↑", "⌘D", "⌫" or "Enter". ⌘ is Command or Control, and ⌫ is Backspace or Delete.
+ */
+export function shortcutMatches(shortcut, event) {
+  let rest = String(shortcut).trim();
+  const held = { alt: false, shift: false, mod: false };
+  while (rest.length > 1 && SHORTCUT_MODIFIERS[rest[0]]) {
+    held[SHORTCUT_MODIFIERS[rest[0]]] = true;
+    rest = rest.slice(1);
+  }
+  if (Boolean(event.altKey) !== held.alt || Boolean(event.shiftKey) !== held.shift || Boolean(event.metaKey || event.ctrlKey) !== held.mod) return false;
+  if (rest === '⌫') return event.key === 'Backspace' || event.key === 'Delete';
+  const key = SHORTCUT_KEYS[rest] ?? rest;
+  return key.length === 1 ? String(event.key).toLowerCase() === key.toLowerCase() : event.key === key;
 }
 
 const NODE_KEYS = new Set(['id', 'kind', 'rect', 'element', 'label', 'parent', 'editable']);
@@ -182,6 +230,18 @@ export function frameRectToHost(box, view) {
 const plainText = (element) => (element.textContent || '').replace(/\s+/gu, ' ').trim();
 const px = (value) => Number.parseFloat(value) || 0;
 const intersect = (a, b) => ({ left: Math.max(a.left, b.left), top: Math.max(a.top, b.top), right: Math.min(a.right, b.right), bottom: Math.min(a.bottom, b.bottom) });
+const calm = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+
+// The element whose scrolling carries this one: the nearest ancestor that scrolls
+// (or is fixed, so nothing carries it further), null for the page itself.
+function nearestScroller(start) {
+  const { body, documentElement: root } = globalThis.document;
+  for (let element = start?.parentElement; element && element !== body && element !== root; element = element.parentElement) {
+    const own = globalThis.getComputedStyle(element);
+    if (SCROLLS.test(own.overflowY) || SCROLLS.test(own.overflowX) || own.position === 'fixed') return element;
+  }
+  return null;
+}
 
 // One manual move (vocabulary 1.1.5 §5 move, {id, parent, position}) in the
 // vocabulary's words beside the composition host's.
@@ -222,6 +282,17 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.elementIds = new Map();
       this.rectNodes = [];
       this.editing = null;
+      this.scroller = null;
+      this.followConnection = null;
+      this.observed = [];
+      this.offsets = new Map();
+      this.glide = null;
+      this.pointer = null;
+      this.pointerRequest = 0;
+      this.seam = null;
+      this.seamTimer = 0;
+      this.gripDrag = null;
+      this.actionParts = new Map();
     }
 
     // actions, messages and insertion-target are settings of the manifest
@@ -274,6 +345,15 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.unbind();
     }
 
+    static get observedAttributes() {
+      return [...new Set([...(super.observedAttributes ?? []), 'placement'])];
+    }
+
+    attributeChangedCallback(name, ...values) {
+      super.attributeChangedCallback?.(name, ...values);
+      if (name === 'placement') this.schedule();
+    }
+
     buildLayer() {
       const doc = globalThis.document;
       this.classList.add('sf-composition-overlay');
@@ -288,6 +368,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.toolbar.className = 'sf-composition-overlay-toolbar';
       this.toolbar.setAttribute('role', 'toolbar');
       this.toolbar.hidden = true;
+      // The rail holds the toolbar's sticky range in the scrolled content.
+      this.rail = doc.createElement('div');
+      this.rail.className = 'sf-composition-overlay-rail';
+      this.rail.append(this.toolbar);
       this.tree = doc.createElement('div');
       this.tree.className = 'sf-composition-overlay-tree';
       this.tree.setAttribute('role', 'tree');
@@ -295,7 +379,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.live = doc.createElement('div');
       this.live.className = 'sf-composition-overlay-live';
       this.live.setAttribute('aria-live', 'polite');
-      this.append(this.tree, this.toolbar, this.insertionLayer, this.layer, this.live);
+      this.append(this.tree, this.rail, this.insertionLayer, this.layer, this.live);
       this.layer.append(this.hoverFrame, this.selectedFrame);
     }
 
@@ -303,9 +387,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const frame = globalThis.document.createElement('div');
       frame.className = `sf-composition-overlay-frame sf-composition-overlay-frame--${kind}`;
       frame.hidden = true;
-      const label = globalThis.document.createElement('span');
-      label.className = 'sf-composition-overlay-label';
-      frame.append(label);
+      // Hover is a bare frame; only the selection carries the move handle.
+      if (kind === 'selected') {
+        const label = globalThis.document.createElement('span');
+        label.className = 'sf-composition-overlay-label';
+        label.hidden = true;
+        frame.append(label);
+      }
       return frame;
     }
 
@@ -343,10 +431,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       if (this.iframe) {
         // A new letter (srcdoc, navigation) is a new document: listen to it again.
         this.iframe.addEventListener('load', () => this.bindFrameDocument(), options);
-        this.iframe.addEventListener('pointerleave', () => this.setHover(null), passive);
+        this.iframe.addEventListener('pointerleave', () => this.onPointerGone(), passive);
       } else {
         this.canvas.addEventListener('pointermove', (event) => this.onPointerMove(event), passive);
-        this.canvas.addEventListener('pointerleave', () => this.setHover(null), passive);
+        this.canvas.addEventListener('pointerleave', () => this.onPointerGone(), passive);
         this.canvas.addEventListener('click', (event) => this.onCanvasClick(event), { ...options, capture: true });
       }
       this.tree.addEventListener('keydown', (event) => this.onTreeKey(event), options);
@@ -358,11 +446,15 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.toolbar.addEventListener('click', (event) => this.onToolbarClick(event), options);
       this.toolbar.addEventListener('keydown', (event) => this.onToolbarKey(event), options);
       this.insertionLayer.addEventListener('click', (event) => this.onInsertionClick(event), options);
-      globalThis.addEventListener('scroll', () => this.schedule(), { ...passive, capture: true });
+      this.toolbar.addEventListener('pointerdown', (event) => this.onToolbarPointerDown(event), options);
+      this.insertionLayer.addEventListener('pointerover', () => this.holdSeam(), passive);
+      this.insertionLayer.addEventListener('pointerout', () => this.leaveSeam(), passive);
+      // Scrolling inside the canvas moves its nodes under the parts; the scroller around it carries both.
+      this.canvas?.addEventListener('scroll', () => this.schedule(), { ...passive, capture: true });
       globalThis.addEventListener('resize', () => this.schedule(), passive);
       if (typeof globalThis.ResizeObserver === 'function') {
         this.resizeObserver = new globalThis.ResizeObserver(() => this.schedule());
-        this.resizeObserver.observe(this.canvas || this.iframe);
+        this.observeGeometry();
       }
       this.unregisterDrop = registerSortableDropTarget({
         resolve: (x, y, dragSession) => (this.acceptsDrag(dragSession) ? this.resolveDrop(x, y, null) : null),
@@ -390,11 +482,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       const win = doc?.defaultView || null;
       this.frameDoc = win ? doc : null;
-      if (this.resizeObserver) {
-        this.resizeObserver.disconnect();
-        this.resizeObserver.observe(this.iframe);
-      }
+      this.offsets = new Map();
       if (!this.frameDoc) {
+        this.observeGeometry();
         // A cross-origin or not yet available frame: nothing is drawn over it.
         this.setAttribute('data-sf-overlay-frame', 'unreachable');
         this.schedule();
@@ -404,18 +494,37 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.frameConnection = new AbortController();
       const options = { signal: this.frameConnection.signal };
       const passive = { ...options, passive: true };
-      doc.addEventListener('pointermove', (event) => this.setHover(this.frameNodeAt(event)), passive);
-      doc.addEventListener('pointerout', (event) => { if (!event.relatedTarget) this.setHover(null); }, passive);
+      doc.addEventListener('pointermove', (event) => {
+        this.setHover(this.frameNodeAt(event));
+        this.trackPointer(event.clientX, event.clientY, true);
+      }, passive);
+      doc.addEventListener('pointerout', (event) => { if (!event.relatedTarget) this.onPointerGone(); }, passive);
       doc.addEventListener('click', (event) => this.onFrameClick(event), { ...options, capture: true });
       doc.addEventListener('dblclick', (event) => this.onFrameDoubleClick(event), { ...options, capture: true });
       doc.addEventListener('keydown', (event) => this.onFrameKey(event), { ...options, capture: true });
       win.addEventListener('scroll', () => this.schedule(), { ...passive, capture: true });
       win.addEventListener('resize', () => this.schedule(), passive);
-      if (this.resizeObserver) {
-        if (doc.documentElement) this.resizeObserver.observe(doc.documentElement);
-        if (doc.body) this.resizeObserver.observe(doc.body);
-      }
+      this.observeGeometry();
       this.schedule();
+    }
+
+    // What changes the parts' geometry: the canvas, its document, the scroller's
+    // port and the selected node. Scrolling changes none of them.
+    observeGeometry() {
+      const observer = this.resizeObserver;
+      if (!observer) return;
+      const root = this.frameDoc?.documentElement;
+      const wanted = [this.canvas || this.iframe, this.scroller, root, this.frameDoc?.body, this.selectedElement()].filter(Boolean);
+      if (wanted.length === this.observed.length && wanted.every((element, index) => element === this.observed[index])) return;
+      observer.disconnect();
+      for (const element of wanted) observer.observe(element);
+      this.observed = wanted;
+    }
+
+    selectedElement() {
+      const node = this.selectedId ? this.byId.get(this.selectedId) : null;
+      if (!node) return null;
+      return node.flat ? node.flat.element : this.element(node.id);
     }
 
     unbind() {
@@ -425,6 +534,12 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.frameDoc = null;
       this.pointerDrag?.abort();
       this.pointerDrag = null;
+      this.endGripDrag(false);
+      this.settleGlide();
+      this.clearSeam();
+      this.followConnection?.abort();
+      this.followConnection = null;
+      this.observed = [];
       this.unregisterDrop?.();
       this.unregisterDrop = null;
       this.moving = null;
@@ -434,6 +549,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.resizeObserver = null;
       if (this.frameRequest) globalThis.cancelAnimationFrame(this.frameRequest);
       this.frameRequest = 0;
+      if (this.pointerRequest) globalThis.cancelAnimationFrame(this.pointerRequest);
+      this.pointerRequest = 0;
       if (this.canvas || this.iframe) this.setAttribute('data-sf-overlay', 'disposed');
     }
 
@@ -467,6 +584,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const previous = this.selectedId ? this.byId.get(this.selectedId) : null;
       const active = globalThis.document.activeElement;
       const focused = Boolean(active) && (this.toolbar?.contains(active) || this.insertionLayer?.contains(active));
+      this.settleGlide();
+      const before = this.offsets;
+      this.elementIndex = null;
       this.nodes = nodes;
       this.byId = new Map(this.nodes.map((node) => [node.id, node]));
       if (typeof describe === 'function') this.describe = describe;
@@ -479,7 +599,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         const fallback = previous?.parent && this.byId.has(previous.parent) ? previous.parent : this.nodes[0]?.id ?? null;
         this.select(focused ? fallback : null, { focus: focused });
       }
-      this.schedule();
+      if (!this.startGlide(before)) this.schedule();
     }
 
     /** Re-measures on the next frame, after a change no observer reports (a transform on an ancestor of the canvas). */
@@ -549,32 +669,38 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         }
       }
       const places = [];
-      for (const node of this.nodes) {
-        if (excluded.has(node.id)) continue;
-        for (const [slot, children] of Object.entries(node.slots)) {
-          const remaining = moving ? children.filter((id) => id !== moving) : children;
-          for (let index = 0; index <= remaining.length; index += 1) {
-            if (moving) {
-              const source = this.byId.get(moving);
-              if (source.parent === node.id && source.slot === slot && index === source.index) continue;
-            }
-            const descriptor = { parent_id: node.id, slot, index };
-            if (!this.dropFilter(descriptor, moving ? { node_id: moving } : activeSortableSession())) continue;
-            const rect = this.placeRect(node.id, slot, index, remaining);
-            if (rect) places.push({ descriptor, rect, label: format(this.messages.insertAt, { slot, index: index + 1 }) });
-          }
+      if (this.iframe) this.view = this.frameMetrics();
+      const source = moving ? this.byId.get(moving) : null;
+      for (const { parent, slot, children } of this.groups()) {
+        if (excluded.has(parent)) continue;
+        const remaining = moving ? children.filter((id) => id !== moving) : children;
+        for (let index = 0; index <= remaining.length; index += 1) {
+          if (source && (source.parent ?? '') === parent && source.slot === slot && index === source.index) continue;
+          const descriptor = { parent_id: parent, slot, index };
+          if (!this.dropFilter(descriptor, moving ? { node_id: moving } : activeSortableSession())) continue;
+          const rect = this.placeRect(parent, slot, index, remaining);
+          if (rect) places.push({ descriptor, rect, label: format(this.messages.insertAt, { slot, index: index + 1 }) });
         }
       }
       return places;
     }
 
+    // Every list of places, the outer ones first: a node's slots, and in framed
+    // mode the top level (parent "", slot "default") before them.
+    groups() {
+      const groups = [];
+      const top = this.nodes.filter((node) => node.flat && !node.parent).map((node) => node.id);
+      if (top.length) groups.push({ parent: '', slot: 'default', children: top });
+      for (const node of this.nodes) {
+        for (const [slot, children] of Object.entries(node.slots)) groups.push({ parent: node.id, slot, children });
+      }
+      return groups;
+    }
+
     placeRect(parentId, slot, index, children) {
-      const before = this.element(children[index]);
-      const after = this.element(children[index - 1]);
-      const parent = this.element(parentId);
-      const anchor = before || after || parent;
-      if (!anchor) return null;
-      const box = anchor.getBoundingClientRect();
+      const before = this.nodeBox(children[index]);
+      const box = before || this.nodeBox(children[index - 1]) || this.nodeBox(parentId);
+      if (!box) return null;
       const y = before ? box.top : box.bottom;
       return { left: box.left, top: y - 1, width: box.width, height: 3 };
     }
@@ -637,8 +763,86 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       this.dropHint.hidden = !rect;
       if (!rect) return;
-      const origin = this.layerOrigin();
-      Object.assign(this.dropHint.style, { left: `${rect.left - origin.left}px`, top: `${rect.top - origin.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
+      Object.assign(this.dropHint.style, this.onLayer(rect));
+    }
+
+    // Dragging by the grip action: the block dims, one line shows where it lands,
+    // the canvas scrolls near its edges, Escape cancels. The pointer is captured,
+    // so a frame under it does not swallow the moves.
+    onToolbarPointerDown(event) {
+      const button = event.target instanceof globalThis.Element ? event.target.closest('button[data-action]') : null;
+      const action = button ? this.actions.find((entry) => entry.id === button.dataset.action) : null;
+      const node = this.selectedId ? this.byId.get(this.selectedId) : null;
+      if (event.button !== 0 || action?.icon !== GRIP_ICON || action.disabled || !node || (!node.flat && !node.parent)) return;
+      event.preventDefault();
+      this.endGripDrag(false);
+      button.focus({ preventScroll: true });
+      button.setPointerCapture?.(event.pointerId);
+      const connection = new AbortController();
+      const options = { signal: connection.signal };
+      const drag = { id: this.selectedId, startY: event.clientY, y: event.clientY, started: false, request: 0, place: null, dim: null, connection };
+      this.gripDrag = drag;
+      globalThis.addEventListener('pointermove', (moveEvent) => {
+        drag.y = moveEvent.clientY;
+        if (!drag.started && Math.abs(drag.y - drag.startY) > DRAG_START) this.beginGripDrag(drag);
+      }, options);
+      globalThis.addEventListener('pointerup', () => this.endGripDrag(true), options);
+      globalThis.addEventListener('pointercancel', () => this.endGripDrag(false), options);
+      globalThis.addEventListener('keydown', (keyEvent) => {
+        if (keyEvent.key !== 'Escape') return;
+        keyEvent.preventDefault();
+        keyEvent.stopPropagation();
+        this.endGripDrag(false);
+      }, { ...options, capture: true });
+    }
+
+    beginGripDrag(drag) {
+      drag.started = true;
+      this.clearSeam();
+      this.setHover(null);
+      drag.dim = this.selectedElement()?.animate?.([{ opacity: 0.35 }], { duration: 1, fill: 'forwards' }) ?? null;
+      const step = () => {
+        const port = this.scrollPort();
+        const by = drag.y < port.top + DRAG_EDGE ? -DRAG_STEP : drag.y > port.bottom - DRAG_EDGE ? DRAG_STEP : 0;
+        if (by) (this.scroller || globalThis).scrollBy({ top: by, behavior: 'instant' });
+        this.trackGripDrag(drag);
+        drag.request = globalThis.requestAnimationFrame(step);
+      };
+      drag.request = globalThis.requestAnimationFrame(step);
+      this.trackGripDrag(drag);
+    }
+
+    // The nearest place among the node's siblings; its own place is a place too,
+    // where a drop changes nothing.
+    trackGripDrag(drag) {
+      const node = this.byId.get(drag.id);
+      if (!node) return;
+      if (this.iframe) this.view = this.frameMetrics();
+      const parent = node.parent ?? '';
+      const siblings = this.nodes.filter((entry) => entry.parent === node.parent && entry.slot === node.slot && entry.id !== drag.id).map((entry) => entry.id);
+      let best = null;
+      for (let index = 0; index <= siblings.length; index += 1) {
+        const rect = this.placeRect(parent, node.slot, index, siblings);
+        if (!rect) continue;
+        const descriptor = { parent_id: parent, slot: node.slot, index };
+        const own = index === node.index;
+        if (!own && !this.dropFilter(descriptor, { node_id: drag.id })) continue;
+        const distance = Math.abs(drag.y - rect.top);
+        if (!best || distance < best.distance) best = { descriptor, rect, own, distance };
+      }
+      drag.place = best;
+      this.showDropHint(best?.rect ?? null);
+    }
+
+    endGripDrag(drop) {
+      const drag = this.gripDrag;
+      if (!drag) return;
+      this.gripDrag = null;
+      drag.connection.abort();
+      if (drag.request) globalThis.cancelAnimationFrame(drag.request);
+      drag.dim?.cancel();
+      this.showDropHint(null);
+      if (drop && drag.started && drag.place && !drag.place.own) this.emit(OVERLAY_EVENTS.move, moveDetail(drag.id, drag.place.descriptor));
     }
 
     // Moving a canvas node: pointer via the selected label, keyboard via the tree.
@@ -716,12 +920,19 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       return this;
     }
 
+    // Read once per measure: the seam and the offsets ask for every node.
     element(id) {
       if (!this.canvas || typeof id !== 'string') return null;
-      for (const element of this.canvas.querySelectorAll('[data-sf-composition-id]')) {
-        if (element.getAttribute('data-sf-composition-id') === id) return element;
+      let found = this.elementIndex?.get(id);
+      if (!found || !found.isConnected) {
+        this.elementIndex = new Map();
+        for (const element of this.canvas.querySelectorAll('[data-sf-composition-id]')) {
+          const key = element.getAttribute('data-sf-composition-id');
+          if (!this.elementIndex.has(key)) this.elementIndex.set(key, element);
+        }
+        found = this.elementIndex.get(id);
       }
-      return null;
+      return found ?? null;
     }
 
     info(node) {
@@ -738,7 +949,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.selectedId = id;
       this.renderTreeSelection();
       this.renderToolbar();
-      this.schedule();
+      // The frame and the toolbar arrive with the selection, in the same paint.
+      this.settleGlide();
+      this.observeGeometry();
+      this.positionNow();
       if (id !== null) {
         const node = this.byId.get(id);
         const siblings = this.nodes.filter((entry) => entry.parent === node.parent && entry.slot === node.slot);
@@ -768,6 +982,95 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
 
     onPointerMove(event) {
       this.setHover(this.nodeAt(event.target));
+      this.trackPointer(event.clientX, event.clientY, false);
+    }
+
+    onPointerGone() {
+      this.setHover(null);
+      this.leaveSeam();
+    }
+
+    // One place to add: the seam under the pointer, read once a frame while it moves.
+    trackPointer(x, y, inFrame) {
+      this.pointer = { x, y, inFrame };
+      if (this.pointerRequest) return;
+      this.pointerRequest = globalThis.requestAnimationFrame(() => {
+        this.pointerRequest = 0;
+        this.updateSeam();
+      });
+    }
+
+    updateSeam() {
+      if (!this.pointer || !this.connection || this.editing || this.moving || this.gripDrag || this.pointerDrag || this.glide) return;
+      if (this.iframe) this.view = this.frameMetrics();
+      let { x, y } = this.pointer;
+      if (this.pointer.inFrame) {
+        if (!this.view) return;
+        ({ left: x, top: y } = frameRectToHost({ x, y, width: 0, height: 0 }, this.view));
+      }
+      const seam = this.seamAt(x, y);
+      if (!seam) {
+        this.leaveSeam();
+        return;
+      }
+      this.holdSeam();
+      if (this.seam && seam.parent === this.seam.parent && seam.slot === this.seam.slot && seam.index === this.seam.index) return;
+      this.seam = seam;
+      this.positionInsertions();
+    }
+
+    /** The place whose seam lies within reach of a point on the host page; the outer lists win. */
+    seamAt(x, y) {
+      for (const { parent, slot, children } of this.groups()) {
+        for (let index = 0; index <= children.length; index += 1) {
+          const line = this.seamLine(parent, children, index);
+          if (!line || x < line.left || x > line.left + line.width || Math.abs(y - line.top) > SEAM_REACH) continue;
+          if (this.placeAllowed({ parent_id: parent, slot, index })) return { parent, slot, index };
+        }
+      }
+      return null;
+    }
+
+    // Halfway between two blocks that stack; nothing between two that stand side by side.
+    seamLine(parent, children, index) {
+      const before = this.nodeBox(children[index]);
+      const after = this.nodeBox(children[index - 1]);
+      if (before && after) {
+        if (after.bottom > before.top + 1) return null;
+        const left = Math.min(before.left, after.left);
+        return { left, width: Math.max(before.right, after.right) - left, top: (after.bottom + before.top) / 2 };
+      }
+      if (before || after) return { left: (before || after).left, width: (before || after).width, top: before ? before.top : after.bottom };
+      const box = children.length ? null : this.nodeBox(parent);
+      return box ? { left: box.left, width: box.width, top: box.top + box.height / 2 } : null;
+    }
+
+    // A framed host's filter hides insertion places; on a Composition canvas it speaks
+    // for drops, with the dragged item, and the Document has the last word on the rest.
+    placeAllowed(place) {
+      return !this.iframe || this.dropFilter(place, null);
+    }
+
+    holdSeam() {
+      if (this.seamTimer) globalThis.clearTimeout(this.seamTimer);
+      this.seamTimer = 0;
+    }
+
+    // A short delay, so the pointer can reach the button.
+    leaveSeam() {
+      if (!this.seam || this.seamTimer) return;
+      this.seamTimer = globalThis.setTimeout(() => {
+        this.seamTimer = 0;
+        this.seam = null;
+        this.positionInsertions();
+      }, SEAM_LEAVE);
+    }
+
+    clearSeam() {
+      this.holdSeam();
+      if (!this.seam) return;
+      this.seam = null;
+      if (this.insertionLayer) this.positionInsertions();
     }
 
     onCanvasClick(event) {
@@ -779,8 +1082,20 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.select(id);
     }
 
+    // A host-mapped key: the selected node's action whose shortcut it is. An
+    // unavailable action takes the key and does nothing.
+    runShortcut(event) {
+      if (!this.selectedId || event.isComposing) return false;
+      const action = this.actions.find((entry) => entry.shortcut && shortcutMatches(entry.shortcut, event));
+      if (!action) return false;
+      event.preventDefault();
+      if (!action.disabled) this.sendRenamed('action', { action: action.id, scope: 'entry', ids: [this.selectedId] });
+      return true;
+    }
+
     onTreeKey(event) {
       if (this.moving && this.onMoveKey(event)) return;
+      if (this.runShortcut(event)) return;
       if (event.key === ' ' && this.selectedId && !this.iframe) {
         event.preventDefault();
         this.startKeyboardMove();
@@ -803,9 +1118,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         event.preventDefault();
         this.edit(current.id);
         return;
-      } else if (event.key === 'Enter' && this.toolbar.querySelector('button')) {
+      } else if (event.key === 'Enter' && this.toolbar.querySelector('button:not(:disabled)')) {
         event.preventDefault();
-        this.toolbar.querySelector('button').focus();
+        this.toolbar.querySelector('button:not(:disabled)').focus();
         return;
       } else return;
       event.preventDefault();
@@ -813,14 +1128,19 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onToolbarKey(event) {
-      const buttons = [...this.toolbar.querySelectorAll('button')];
+      const buttons = [...this.toolbar.querySelectorAll('button:not(:disabled)')];
       const index = buttons.indexOf(globalThis.document.activeElement);
+      // Enter and Space press the button in focus; the other shortcuts work here too.
+      if (event.key !== 'Enter' && event.key !== ' ' && this.runShortcut(event)) return;
+      const along = this.hasAttribute('data-sf-overlay-side')
+        ? { ArrowDown: 1, ArrowUp: -1 }[event.key]
+        : { ArrowRight: 1, ArrowLeft: -1 }[event.key];
       if (event.key === 'Escape') {
         event.preventDefault();
         this.tree.focus();
-      } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      } else if (along) {
         event.preventDefault();
-        const step = (event.key === 'ArrowRight') === (globalThis.getComputedStyle(this).direction !== 'rtl') ? 1 : -1;
+        const step = this.hasAttribute('data-sf-overlay-side') || globalThis.getComputedStyle(this).direction !== 'rtl' ? along : -along;
         buttons[(index + step + buttons.length) % buttons.length]?.focus();
       }
     }
@@ -828,6 +1148,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     onToolbarClick(event) {
       const button = event.target instanceof globalThis.Element ? event.target.closest('button[data-action]') : null;
       if (!button || !this.selectedId) return;
+      // The grip is pressed to drag; a click from the keyboard still reaches the host.
+      if (event.detail > 0 && this.actions.find((entry) => entry.id === button.dataset.action)?.icon === GRIP_ICON) return;
       this.sendRenamed('action', { action: button.dataset.action, scope: 'entry', ids: [this.selectedId] });
     }
 
@@ -870,18 +1192,70 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       else this.tree?.removeAttribute('aria-activedescendant');
     }
 
+    // Buttons stay where they are: each is kept by its action's id, updated in
+    // place, and an unavailable one dims, so focus and neighbours never move.
     renderToolbar() {
       if (!this.toolbar) return;
       this.toolbar.setAttribute('aria-label', this.messages.toolbar);
-      this.toolbar.replaceChildren(...this.actions.map((action) => {
-        const button = globalThis.document.createElement('button');
+      const active = globalThis.document.activeElement;
+      const focused = this.toolbar.contains(active) ? active : null;
+      const previous = this.actionParts;
+      this.actionParts = new Map();
+      for (const action of this.actions) {
+        const kept = previous.get(action.id);
+        const parts = kept && Boolean(kept.action.icon) === Boolean(action.icon) ? kept : this.createAction(action);
+        this.updateAction(parts, action);
+        this.actionParts.set(action.id, parts);
+      }
+      const roots = [...this.actionParts.values()].map((parts) => parts.root);
+      if (roots.length !== this.toolbar.children.length || roots.some((root, index) => root !== this.toolbar.children[index])) this.toolbar.replaceChildren(...roots);
+      if (focused && (!focused.isConnected || focused.disabled)) (this.toolbar.querySelector('button:not(:disabled)') || this.tree)?.focus();
+      if (!this.selectedId || this.actions.length === 0) this.toolbar.hidden = true;
+    }
+
+    // With an icon: sf-icon-button at size 1/2, its label the name, and sf-tooltip
+    // holding the label and the shortcut. In the DOM from setActions on, so both
+    // load before the first selection needs them.
+    createAction(action) {
+      const doc = globalThis.document;
+      if (!action.icon) {
+        const button = doc.createElement('button');
         button.type = 'button';
         button.className = 'sf-composition-overlay-action';
         button.dataset.action = action.id;
-        button.textContent = action.label;
-        return button;
-      }));
-      this.toolbar.hidden = !this.selectedId || this.actions.length === 0;
+        return { root: button, button, action };
+      }
+      const root = doc.createElement('span');
+      root.className = 'sf-composition-overlay-tool sf-tooltip-anchor';
+      const button = doc.createElement('sf-icon-button');
+      button.setAttribute('size', '1/2');
+      button.setAttribute('appearance', 'ghost');
+      button.setAttribute('scheme', 'on-surface-variant');
+      button.setAttribute('data-action', action.id);
+      button.setAttribute('data-tooltip', '');
+      const tooltip = doc.createElement('sf-tooltip');
+      tooltip.setAttribute('appearance', 'dark');
+      tooltip.setAttribute('size', '1/2');
+      tooltip.setAttribute('arrow', 'bottom-center');
+      tooltip.hidden = true;
+      root.append(button, tooltip);
+      return { root, button, tooltip, action };
+    }
+
+    updateAction(parts, action) {
+      const { root, button, tooltip } = parts;
+      parts.action = action;
+      if (action.tone) root.dataset.tone = action.tone;
+      else delete root.dataset.tone;
+      button.toggleAttribute('disabled', action.disabled === true);
+      if (!action.icon) {
+        if (button.textContent !== action.label) button.textContent = action.label;
+        return;
+      }
+      button.setAttribute('icon', action.icon);
+      button.setAttribute('aria-label', action.label);
+      tooltip.setAttribute('text', action.shortcut ? `${action.label}  ${action.shortcut}` : action.label);
+      root.toggleAttribute('data-sf-overlay-grip', action.icon === GRIP_ICON);
     }
 
     schedule() {
@@ -890,6 +1264,13 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         this.frameRequest = 0;
         this.position();
       });
+    }
+
+    positionNow() {
+      if (!this.connection) return;
+      if (this.frameRequest) globalThis.cancelAnimationFrame(this.frameRequest);
+      this.frameRequest = 0;
+      this.position();
     }
 
     /** A node's box on the host page: its element's rect, or in framed mode its frame box mapped out of the frame. */
@@ -916,62 +1297,189 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         return null;
       }
       frame.hidden = false;
-      frame.style.insetInlineStart = '';
-      const origin = this.layerOrigin();
-      Object.assign(frame.style, { left: `${box.left - origin.left}px`, top: `${box.top - origin.top}px`, width: `${box.width}px`, height: `${box.height}px` });
-      const { label, badges } = this.info(this.byId.get(id));
-      frame.firstChild.textContent = badges.length ? `${label} · ${badges.join(' · ')}` : label;
+      Object.assign(frame.style, this.onLayer(box));
+      const label = frame.firstChild;
+      if (label) {
+        // The label is the move handle of a canvas whose host gives no grip.
+        label.hidden = Boolean(this.iframe) || this.actions.some((action) => action.icon === GRIP_ICON);
+        const { label: text, badges } = this.info(this.byId.get(id));
+        label.textContent = badges.length ? `${text} · ${badges.join(' · ')}` : text;
+      }
       return box;
+    }
+
+    /** A box on the host page as the left, top, width and height of a part on the layer. */
+    onLayer(box) {
+      const { left, top, scaleX, scaleY } = this.layerOrigin();
+      const out = { left: `${(box.left - left) / scaleX}px`, top: `${(box.top - top) / scaleY}px` };
+      if (box.width !== undefined) out.width = `${box.width / scaleX}px`;
+      if (box.height !== undefined) out.height = `${box.height / scaleY}px`;
+      return out;
+    }
+
+    /**
+     * Where the parts live. In the scroller of the canvas they lie in its content
+     * and travel with it: nothing listens to its scroll. Elsewhere they stay fixed
+     * to the viewport and follow every scroll by script.
+     */
+    syncPlace() {
+      const anchor = this.iframe || this.canvas;
+      this.scroller = nearestScroller(anchor);
+      const travels = this.scroller === nearestScroller(this);
+      this.setAttribute('data-sf-overlay-place', travels ? 'content' : 'viewport');
+      if (travels) {
+        this.followConnection?.abort();
+        this.followConnection = null;
+      } else if (!this.followConnection) {
+        this.followConnection = new AbortController();
+        globalThis.addEventListener('scroll', () => this.schedule(), { signal: this.followConnection.signal, passive: true, capture: true });
+      }
+      return travels;
+    }
+
+    /** The scroller's port on the host page, and where its scrolled content starts. */
+    scrollPort() {
+      const scroller = this.scroller;
+      const root = globalThis.document.documentElement;
+      if (!scroller) return { left: 0, top: 0, right: root.clientWidth, bottom: globalThis.innerHeight, contentTop: -globalThis.scrollY };
+      const box = scroller.getBoundingClientRect();
+      const scale = scroller.offsetHeight > 0 && box.height > 0 ? box.height / scroller.offsetHeight : 1;
+      const left = box.left + scroller.clientLeft * scale;
+      const top = box.top + scroller.clientTop * scale;
+      return { left, top, right: left + scroller.clientWidth * scale, bottom: top + scroller.clientHeight * scale, contentTop: top - scroller.scrollTop * scale };
     }
 
     position() {
       if (!this.canvas && !this.iframe) return;
+      const travels = this.syncPlace();
+      this.elementIndex = null;
+      this.observeGeometry();
+      if (this.glide) {
+        this.glide.pending = true;
+        return;
+      }
       if (this.iframe) {
         this.view = this.frameMetrics();
-        this.applyClip(this.view?.clip ?? null);
+        this.applyClip(this.view);
       }
       this.place(this.hoverFrame, this.hoverId && this.hoverId !== this.selectedId ? this.hoverId : null);
       const box = this.place(this.selectedFrame, this.selectedId);
-      if (this.iframe) {
-        this.positionFrameToolbar(box);
-        this.positionInsertions();
-        return;
-      }
-      // No toolbar without a drawn selection, e.g. while the host re-renders,
-      // unless it holds keyboard focus.
-      if (box) this.toolbar.hidden = this.actions.length === 0;
-      else if (!this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
-      if (box && !this.toolbar.hidden) {
-        const bar = this.toolbar.getBoundingClientRect();
-        const above = box.top - bar.height - 4;
-        const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + 4);
-        const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
-        const start = rtl ? box.right - bar.width : box.left;
-        const left = Math.max(0, Math.min(start, globalThis.innerWidth - bar.width));
-        const origin = this.layerOrigin();
-        Object.assign(this.toolbar.style, { top: `${top - origin.top}px`, left: `${left - origin.left}px` });
-      }
+      this.positionToolbar(box, travels);
       this.positionInsertions();
+      this.rememberOffsets();
     }
 
+    positionToolbar(box, travels) {
+      const clip = this.view?.clip;
+      const visible = Boolean(box) && (!this.iframe || Boolean(clip && box.right > clip.left && box.left < clip.right && box.bottom > clip.top && box.top < clip.bottom));
+      // No toolbar without a drawn selection, e.g. while the host re-renders,
+      // unless it holds keyboard focus.
+      if (visible) this.toolbar.hidden = this.actions.length === 0;
+      else if (!this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
+      if (!visible || this.toolbar.hidden) return;
+      const port = travels ? this.scrollPort() : this.followPort();
+      // The side only where the room for it is; otherwise above, as the docs say.
+      const wantsSide = this.getAttribute('placement') === 'side';
+      this.toggleAttribute('data-sf-overlay-side', wantsSide);
+      let bar = this.toolbar.getBoundingClientRect();
+      const { scaleY } = this.layerOrigin();
+      const gap = px(globalThis.getComputedStyle(this.toolbar).marginBlockEnd) * scaleY;
+      const side = wantsSide && port.right - box.right >= bar.width + gap;
+      if (wantsSide && !side) {
+        this.toggleAttribute('data-sf-overlay-side', false);
+        bar = this.toolbar.getBoundingClientRect();
+      }
+      this.toolbar.setAttribute('aria-orientation', side ? 'vertical' : 'horizontal');
+      if (travels) this.placeRail(box, bar, gap, port, side);
+      else this.placeFollowing(box, bar, gap, port, side);
+    }
+
+    /**
+     * The toolbar in the scrolled content: right-aligned above the block, where it
+     * may overlap the block above and never the selected one. A block too tall to
+     * show with its toolbar gives the rail its whole height, so the sticky toolbar
+     * stays on screen while the block is. With no room above a block that fits, it
+     * stands under the block; inside the block only when neither is possible.
+     */
+    placeRail(box, bar, gap, port, side) {
+      // A sticky inset counts from inside the scroller's padding; the toolbar pins to its edge.
+      const padding = this.scroller ? px(globalThis.getComputedStyle(this.scroller).paddingBlockStart) : 0;
+      Object.assign(this.toolbar.style, { left: '', top: `${gap / this.layerOrigin().scaleY - padding}px` });
+      if (side) {
+        Object.assign(this.rail.style, this.onLayer({ left: box.right + gap, top: box.top, width: bar.width, height: Math.max(box.height, bar.height) }));
+        return;
+      }
+      const lift = bar.height + gap;
+      const tall = box.height + lift > port.bottom - port.top;
+      const room = box.top - port.contentTop >= lift;
+      let top = box.top - lift;
+      let height = tall ? box.height + lift : bar.height;
+      if (!room && !tall) top = box.bottom + gap;
+      else if (!room) {
+        top = port.contentTop;
+        height = box.bottom - port.contentTop;
+      }
+      const width = Math.max(box.width, bar.width);
+      const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
+      let left = rtl ? Math.max(box.left, port.left) : Math.min(box.right, port.right) - width;
+      left = Math.max(port.left, Math.min(left, port.right - width));
+      Object.assign(this.rail.style, this.onLayer({ left, top, width, height }));
+    }
+
+    /** The visible part of the page a viewport-fixed toolbar stays in. */
+    followPort() {
+      const root = globalThis.document.documentElement;
+      return this.view?.clip ?? { left: 0, top: 0, right: root.clientWidth, bottom: globalThis.innerHeight };
+    }
+
+    // Above the node, else below it, and always inside the visible part.
+    placeFollowing(box, bar, gap, port, side) {
+      const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
+      let top;
+      let left;
+      if (side) {
+        top = Math.max(port.top, Math.min(box.top, port.bottom - bar.height));
+        left = box.right + gap;
+      } else {
+        const above = box.top - bar.height - gap;
+        top = above >= port.top ? above : box.bottom + gap;
+        top = Math.max(port.top, Math.min(top, port.bottom - bar.height));
+        left = rtl ? box.left : box.right - bar.width;
+      }
+      const root = globalThis.document.documentElement;
+      left = Math.max(0, Math.min(left, root.clientWidth - bar.width));
+      Object.assign(this.toolbar.style, this.onLayer({ left, top }));
+    }
+
+    // One place to add under the pointer. Besides it only what the host keeps marked
+    // and, for the keyboard, a place after the selected node that shows when it
+    // takes focus: nothing else is ever drawn on the selected block.
     positionInsertions() {
-      const selected = this.selectedId ? this.byId.get(this.selectedId) : null;
-      const points = selected?.flat ? this.flatInsertionPoints(selected) : [];
-      if (selected?.parent && !selected.flat) {
-        const parent = this.byId.get(selected.parent);
-        const siblings = parent.slots[selected.slot] || [];
-        for (let index = 0; index <= siblings.length; index += 1) points.push({ parent: parent.id, slot: selected.slot, index, before: siblings[index], after: siblings[index - 1] });
-      }
-      if (selected && !selected.flat) {
-        for (const [slot, children] of Object.entries(selected.slots)) points.push({ parent: selected.id, slot, index: children.length, after: children.at(-1), end: true });
-      }
+      if (this.iframe) this.view = this.frameMetrics();
+      const points = [];
+      const add = (parent, slot, index, shown) => {
+        if (points.some((point) => point.parent === parent && point.slot === slot && point.index === index)) {
+          if (shown) points.find((point) => point.parent === parent && point.slot === slot && point.index === index).shown = true;
+          return;
+        }
+        points.push({ parent, slot, index, shown });
+      };
       const target = this.insertionTarget;
+      if (this.seam) add(this.seam.parent, this.seam.slot, this.seam.index, true);
+      if (target) add(target.parent_id, target.slot, target.index, true);
+      const selected = this.selectedId ? this.byId.get(this.selectedId) : null;
+      if (selected) {
+        const parent = selected.parent ?? (selected.flat ? '' : null);
+        if (parent !== null && this.placeAllowed({ parent_id: parent, slot: selected.slot, index: selected.index + 1 })) add(parent, selected.slot, selected.index + 1, false);
+        else if (parent === null) for (const [slot, children] of Object.entries(selected.slots)) add(selected.id, slot, children.length, false);
+      }
       // Buttons are reused by key so keyboard focus and marks survive repositioning.
       const existing = new Map([...this.insertionLayer.children].map((button) => [button.dataset.key, button]));
       const keep = new Set();
       for (const point of points) {
-        const box = this.nodeBox(point.before) || this.nodeBox(point.after) || this.nodeBox(point.parent);
-        if (!box) continue;
+        const group = this.groups().find((entry) => entry.parent === point.parent && entry.slot === point.slot);
+        const line = this.seamLine(point.parent, group?.children ?? [], point.index);
+        if (!line) continue;
         const key = `${point.parent}|${point.slot}|${point.index}`;
         keep.add(key);
         let button = existing.get(key);
@@ -986,30 +1494,16 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
           const mark = globalThis.document.createElement('span');
           mark.className = 'sf-composition-overlay-insert-mark';
           mark.setAttribute('aria-hidden', 'true');
-          mark.textContent = '+';
           button.append(mark);
           this.insertionLayer.append(button);
         }
-        const top = point.before && !point.end ? box.top : box.bottom;
         const marked = Boolean(target && target.parent_id === point.parent && target.slot === point.slot && target.index === point.index);
         button.setAttribute('aria-pressed', marked ? 'true' : 'false');
         button.setAttribute('aria-label', format(this.messages.insertAt, { slot: point.slot, index: point.index + 1 }));
-        const origin = this.layerOrigin();
-        Object.assign(button.style, { left: `${box.left - origin.left}px`, top: `${top - origin.top}px`, width: `${box.width}px` });
+        button.toggleAttribute('data-sf-insert-shown', point.shown);
+        Object.assign(button.style, this.onLayer(line));
       }
       for (const [key, button] of existing) if (!keep.has(key)) button.remove();
-    }
-
-    // Framed mode: insertion places among the selected node's siblings (the top
-    // level is parent_id ""), and at the end of its own children; setDropFilter hides places.
-    flatInsertionPoints(selected) {
-      const siblings = this.nodes.filter((node) => node.parent === selected.parent).map((node) => node.id);
-      const parent = selected.parent ?? '';
-      const points = [];
-      for (let index = 0; index <= siblings.length; index += 1) points.push({ parent, slot: 'default', index, before: siblings[index], after: siblings[index - 1] });
-      const children = selected.slots.default || [];
-      if (children.length) points.push({ parent: selected.id, slot: 'default', index: children.length, after: children.at(-1), end: true });
-      return points.filter((point) => this.dropFilter({ parent_id: point.parent, slot: point.slot, index: point.index }, null));
     }
 
     /** The frame's viewport on the host page and the part of it that is visible (clip). */
@@ -1023,9 +1517,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const sides = (name, suffix = '') => ({ top: px(style[`${name}Top${suffix}`]), right: px(style[`${name}Right${suffix}`]), bottom: px(style[`${name}Bottom${suffix}`]), left: px(style[`${name}Left${suffix}`]) });
       const view = frameViewport({ rect, layout: { width: iframe.offsetWidth, height: iframe.offsetHeight }, border: sides('border', 'Width'), padding: sides('padding'), inner: { width: win.innerWidth, height: win.innerHeight }, scroll: { x: win.scrollX, y: win.scrollY } });
       let clip = { left: view.left, top: view.top, right: view.left + view.width, bottom: view.top + view.height };
-      // Scrolling ancestors hide what lies outside them, and so does the window.
+      // Scrolling ancestors hide what lies outside them, and so does the window. In
+      // the scroller's content its own edge clips the parts natively, whatever the scroll.
       const root = globalThis.document.documentElement;
-      for (let element = iframe.parentElement; element && element !== root && element !== globalThis.document.body; element = element.parentElement) {
+      const travels = this.getAttribute('data-sf-overlay-place') === 'content';
+      for (let element = iframe.parentElement; element && element !== root && element !== globalThis.document.body && !(travels && element === this.scroller); element = element.parentElement) {
         const own = globalThis.getComputedStyle(element);
         if (own.overflowX === 'visible' && own.overflowY === 'visible') continue;
         const box = element.getBoundingClientRect();
@@ -1033,7 +1529,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         const top = box.top + element.clientTop;
         clip = intersect(clip, { left, top, right: left + element.clientWidth, bottom: top + element.clientHeight });
       }
-      view.clip = intersect(clip, { left: 0, top: 0, right: root.clientWidth, bottom: root.clientHeight });
+      view.clip = travels ? clip : intersect(clip, { left: 0, top: 0, right: root.clientWidth, bottom: root.clientHeight });
+      const inner = this.frameDoc.documentElement;
+      view.scrolls = Boolean(inner) && (inner.scrollHeight > win.innerHeight + 1 || inner.scrollWidth > win.innerWidth + 1);
       return view;
     }
 
@@ -1050,34 +1548,146 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
      */
     layerOrigin() {
       const box = this.layer?.getBoundingClientRect?.();
-      return box ? { left: box.left, top: box.top } : { left: 0, top: 0 };
+      if (!box) return { left: 0, top: 0, scaleX: 1, scaleY: 1 };
+      // A scale on an ancestor of the layer: its px are not the page's.
+      const scaleX = box.width > 0 && this.layer.offsetWidth > 0 ? box.width / this.layer.offsetWidth : 1;
+      const scaleY = box.height > 0 && this.layer.offsetHeight > 0 ? box.height / this.layer.offsetHeight : 1;
+      return { left: box.left, top: box.top, scaleX, scaleY };
     }
 
-    applyClip(clip) {
-      const layer = this.layer.getBoundingClientRect();
-      const value = !clip || clip.right <= clip.left || clip.bottom <= clip.top
-        ? 'inset(50%)'
-        : `inset(${Math.max(0, clip.top - layer.top)}px ${Math.max(0, layer.right - clip.right)}px ${Math.max(0, layer.bottom - clip.bottom)}px ${Math.max(0, clip.left - layer.left)}px)`;
+    // Parts of a frame that scrolls inside itself, or of one seen through the host's
+    // scrollers from a fixed layer, are cut to what shows. In the scrolled content a
+    // frame as tall as its document needs no cut, and its edges keep their seams whole.
+    applyClip(view) {
+      const clip = view?.clip ?? null;
+      const travels = this.getAttribute('data-sf-overlay-place') === 'content';
+      let value = '';
+      if (travels && view && !view.scrolls) value = '';
+      else if (!clip || clip.right <= clip.left || clip.bottom <= clip.top) value = 'inset(50%)';
+      else {
+        const layer = this.layer.getBoundingClientRect();
+        const { scaleX, scaleY } = this.layerOrigin();
+        value = `inset(${(clip.top - layer.top) / scaleY}px ${(layer.right - clip.right) / scaleX}px ${(layer.bottom - clip.bottom) / scaleY}px ${(clip.left - layer.left) / scaleX}px)`;
+      }
       this.layer.style.clipPath = value;
       this.insertionLayer.style.clipPath = value;
     }
 
-    positionFrameToolbar(box) {
-      const clip = this.view?.clip;
-      const visible = Boolean(box && clip && box.right > clip.left && box.left < clip.right && box.bottom > clip.top && box.top < clip.bottom);
-      if (visible) this.toolbar.hidden = this.actions.length === 0;
-      else if (!this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
-      if (!visible || this.toolbar.hidden) return;
-      const bar = this.toolbar.getBoundingClientRect();
-      // Above the node, else below it, and always inside the visible part of the frame.
-      const above = box.top - bar.height - 4;
-      let top = above >= clip.top ? above : box.bottom + 4;
-      top = Math.max(clip.top, Math.min(top, clip.bottom - bar.height));
-      const rtl = globalThis.getComputedStyle(this).direction === 'rtl';
-      const start = rtl ? box.right - bar.width : box.left;
-      const left = Math.max(0, Math.min(start, globalThis.document.documentElement.clientWidth - bar.width));
-      const origin = this.layerOrigin();
-      Object.assign(this.toolbar.style, { top: `${top - origin.top}px`, left: `${left - origin.left}px` });
+    // Where each node lies in its canvas, whatever the scroll: what a glide starts from.
+    nodeOffset(id) {
+      const node = this.byId.get(id);
+      if (node?.flat) {
+        const win = this.frameDoc?.defaultView;
+        const { element, rect } = node.flat;
+        if (!element) return rect ? { left: rect.x, top: rect.y } : null;
+        if (!win || !element.isConnected) return null;
+        const box = element.getBoundingClientRect();
+        return box.width || box.height ? { left: box.left + win.scrollX, top: box.top + win.scrollY } : null;
+      }
+      const box = this.element(id)?.getBoundingClientRect();
+      if (!box || !this.canvas) return null;
+      const canvas = this.canvas.getBoundingClientRect();
+      return { left: box.left - canvas.left, top: box.top - canvas.top };
+    }
+
+    rememberOffsets() {
+      this.offsets = new Map();
+      for (const node of this.nodes) {
+        const offset = this.nodeOffset(node.id);
+        if (offset) this.offsets.set(node.id, offset);
+      }
+    }
+
+    /**
+     * A new list whose nodes changed order, came or went: blocks glide from where
+     * they were and the frame and toolbar travel with the selected one, on one clock.
+     * The parts are placed for the end first, so a measure in between cannot see a
+     * block in flight. Answers whether it placed them.
+     */
+    startGlide(before) {
+      if (!this.connection || !before.size || this.editing || calm()) return false;
+      if (this.iframe) this.view = this.frameMetrics();
+      const after = new Map();
+      for (const node of this.nodes) {
+        const offset = this.nodeOffset(node.id);
+        if (offset) after.set(node.id, offset);
+      }
+      const byTop = (map) => [...map.keys()].filter((id) => before.has(id) && after.has(id)).sort((a, b) => map.get(a).top - map.get(b).top);
+      const order = byTop(before);
+      if (!order.length) return false;
+      const changed = before.size !== after.size || [...after.keys()].some((id) => !before.has(id)) || byTop(after).some((id, index) => id !== order[index]);
+      if (!changed) return false;
+      this.hoverId = null;
+      this.clearSeam();
+      this.positionNow();
+      const scaleY = (this.view?.scaleY ?? 1) / this.layerOrigin().scaleY;
+      const animations = [];
+      const glide = (element, from) => {
+        const animation = element?.animate?.([{ transform: `translateY(${from}px)` }, { transform: 'none' }], GLIDE);
+        if (animation) animations.push(animation);
+      };
+      const carried = new Set();
+      for (const node of this.nodes) {
+        const element = this.nodeElement(node);
+        if (!element) continue;
+        if (node.parent && carried.has(node.parent)) {
+          carried.add(node.id);
+          continue;
+        }
+        const target = this.ownBox(element);
+        if (!after.has(node.id)) continue;
+        if (!before.has(node.id)) {
+          const fade = target.animate?.([{ opacity: 0 }, { opacity: 1 }], GLIDE);
+          if (fade) animations.push(fade);
+          carried.add(node.id);
+          continue;
+        }
+        const from = before.get(node.id).top - after.get(node.id).top;
+        if (Math.abs(from) < 0.5) continue;
+        glide(target, from);
+        carried.add(node.id);
+      }
+      const selected = this.selectedId;
+      if (selected && before.has(selected) && after.has(selected)) {
+        const from = (before.get(selected).top - after.get(selected).top) * scaleY;
+        if (Math.abs(from) >= 0.5) {
+          glide(this.selectedFrame, from);
+          glide(this.getAttribute('data-sf-overlay-place') === 'content' ? this.rail : this.toolbar, from);
+        }
+      }
+      if (!animations.length) return true;
+      const state = { animations, pending: false };
+      this.glide = state;
+      Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
+        if (this.glide !== state) return;
+        this.glide = null;
+        if (state.pending) this.schedule();
+      });
+      return true;
+    }
+
+    settleGlide() {
+      const state = this.glide;
+      if (!state) return;
+      this.glide = null;
+      for (const animation of state.animations) animation.finish();
+    }
+
+    nodeElement(node) {
+      return node.flat ? node.flat.element : this.element(node.id);
+    }
+
+    // The outermost box that holds this node's element and no other node's: the
+    // whole block moves, not its inner box. The canvas's own DOM is not changed:
+    // Web Animations write no attribute.
+    ownBox(element) {
+      const others = this.nodes.map((node) => this.nodeElement(node)).filter((other) => other && other !== element && !element.contains(other));
+      let box = element;
+      for (let parent = box.parentElement; parent && parent !== parent.ownerDocument.body && parent !== this.canvas; parent = parent.parentElement) {
+        if (others.some((other) => parent.contains(other))) break;
+        box = parent;
+      }
+      return box;
     }
 
     /** The innermost node under a pointer event in the frame: the smallest element or rect node that holds it. */
@@ -1212,4 +1822,4 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
   return SfCompositionOverlay;
 }
 
-export default { OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes };
+export default { OVERLAY_EVENTS, OVERLAY_EVENTS_LEGACY, checkOverlayActions, checkOverlayNodes, defineCompositionOverlay, flatOverlayNodes, frameRectToHost, frameViewport, overlayNodes, shortcutMatches };
