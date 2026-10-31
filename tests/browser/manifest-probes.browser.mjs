@@ -258,17 +258,39 @@ async function runCheck(page, probe, check, tag) {
 
   for (const step of [].concat(check.given || [])) await run(step);
   await page.evaluate(() => { window.__log = []; window.__submits = []; globalThis.SF?.deprecations?.clear?.(); });
-  // The platform dialog: a check that expects it waits long enough for a busy
-  // machine -- two seconds was the bound, and sf-image-field's
-  // enter-opens-the-dialog then failed one or two runs in fifteen at load 25 to
-  // 40, on the published pair's own build (2026-10-31). A check that expects no
-  // dialog pays its whole wait every time, so that one stays short.
-  const wantsChooser = Boolean(check.expect?.fileChooser);
-  const chooser = 'fileChooser' in (check.expect || {})
-    ? page.waitForEvent('filechooser', {timeout: wantsChooser ? 10000 : 1500}).then(() => true, () => false)
-    : null;
+  // The platform dialog is heard through the listener the page was made with,
+  // not through a waitForEvent opened here: Playwright turns the interception
+  // on when its first listener is added, and that enable has to reach the
+  // browser. A key pressed before it lands opens the dialog unintercepted and
+  // no event ever comes -- 10 of 15 runs of sf-image-field's
+  // enter-opens-the-dialog at load 30, with a quarter second between the waiter
+  // and the key 0 of 12 (2026-10-31). Raising the bound does not help: the
+  // event is there within some ten milliseconds of the key or never, and in a
+  // lost run the page's own trace (keydown, click, input.click on the file
+  // input) is the one a passing run writes, to the millisecond.
+  const chooserFrom = 'fileChooser' in (check.expect || {}) ? page.chosenFiles.length : null;
+  // When a dialog check fails, what had the focus is the evidence: a key goes
+  // to the focused element, and a component that redraws after the given step
+  // drops it to the body.
+  const focused = () => page.evaluate(() => {
+    const names = [];
+    let node = document.activeElement;
+    while (node && node !== document.body && names.length < 3) {
+      const classes = typeof node.className === 'string' && node.className.trim() ? `.${node.className.trim().split(/\s+/u).join('.')}` : '';
+      names.push(node.tagName.toLowerCase() + classes);
+      node = node.parentElement || node.getRootNode()?.host || null;
+    }
+    return names.join(' < ') || 'body';
+  });
+  const beforeFocus = chooserFrom === null ? null : await focused();
   const returns = await run(check);
-  const chose = chooser ? await chooser : null;
+  const afterFocus = chooserFrom === null ? null : await focused();
+  let chose = null;
+  if (chooserFrom !== null) {
+    const deadline = Date.now() + 2000;
+    while (page.chosenFiles.length === chooserFrom && Date.now() < deadline) await page.waitForTimeout(50);
+    chose = page.chosenFiles.length > chooserFrom;
+  }
   const expect = check.expect || {};
   const seen = await page.evaluate(({target, box, expect, VALIDITY}) => {
     const el = document.querySelector(target);
@@ -339,7 +361,7 @@ async function runCheck(page, probe, check, tag) {
     const ok = seen.log.length === expect.events.length && expect.events.every((one, index) => matches(seen.log[index], one));
     if (!ok) problems.push(`events ${JSON.stringify(seen.log)} != ${JSON.stringify(expect.events)}`);
   }
-  if ('fileChooser' in expect && chose !== expect.fileChooser) problems.push(`fileChooser ${chose} != ${expect.fileChooser}`);
+  if ('fileChooser' in expect && chose !== expect.fileChooser) problems.push(`fileChooser ${chose} != ${expect.fileChooser} (focus ${beforeFocus} -> ${afterFocus})`);
   if ('returns' in expect && !matches(returns, expect.returns)) problems.push(`returns ${JSON.stringify(returns)} != ${JSON.stringify(expect.returns)}`);
   for (const one of expect.deprecations || []) {
     if (!seen.deprecations.some((note) => matches(note, one))) problems.push(`deprecation ${JSON.stringify(one)} not in ${JSON.stringify(seen.deprecations)}`);
@@ -486,6 +508,10 @@ try {
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(String(error?.message || error)));
+      // Added before anything is driven, so the interception is on by the time a
+      // check presses its key; a check reads what arrived while it ran.
+      page.chosenFiles = [];
+      page.on('filechooser', () => page.chosenFiles.push(Date.now()));
       current = shaped ? stepsPage(probe) : checkPage(probe, check);
       let problems = [];
       try {
