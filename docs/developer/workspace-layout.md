@@ -107,6 +107,25 @@ the host's own region that has to stay in place to be a column when the
 container is wide. The contract is the same; the scrim is the drawer's shadow,
 clipped to the workspace.
 
+## Two things that catch a host
+
+Both were met by UI Chat moving sf-chat-window onto this layout (2026-10-31),
+and both are the page's to settle.
+
+**A page rule of its own beats this sheet.** The sheet is in `@layer
+sf.components`; a rule written outside every layer wins over a layered one
+whatever its specificity. A page that kept its own `.chat-shell__side { display:
+flex }` from before the layout therefore kept the region on screen where the
+workspace hides it, at every width. Delete the page's copy and let the sheet
+place the regions; what the page still wants to say about a region, it says in a
+layer of its own.
+
+**Every region scrolls, so a narrow one is squeezed.** `.sf-workspace > *` takes
+`overflow: auto`, which is right for a list or a conversation and wrong for a
+rail of icons: the scroll box makes room for a scrollbar and the icons lose
+width. A rail (or any region that must not scroll) sets `overflow: visible` on
+itself.
+
 ## Script
 
 ```js
