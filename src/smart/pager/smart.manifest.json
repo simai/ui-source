@@ -341,7 +341,7 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "b08a94f115092045a68e1c8c59356c63eea8de27",
+    "source_revision": "2c061247ed6a5bf5987c0dc2b7384dc3f44d41c2",
     "source_artifacts": [
       {
         "path": "src/smart/pager/index.js",
@@ -353,7 +353,7 @@
       },
       {
         "path": "src/smart/pager/scss/_smart__pager.scss",
-        "sha256": "da55065720702a63dbf8950b1105e8df28050cd5b804f188d319e3e00ab059f9"
+        "sha256": "269f212fa0d5a66e340013af542b68bafc017670f3f5f1371979e8fd284509bb"
       },
       {
         "path": "src/smart/pager/rule.js",
