@@ -38,6 +38,32 @@ const styles = ['core/core/css/core.css', 'component/component/icon-buttons/css/
     .map((name) => `utility/utility/${name}/default/css/default.css`)];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/quantity/js/quantity.js', 'smart/smart/quantity/js/quantity.js',
   'smart/smart/input/js/input.js'];
+// Holds a stepper down until the box reads what `done` asks for, then releases
+// it. The hold ends on the page's own state, with a bound of its own, so a
+// starved repeat timer shows up as `repeated: false` with the value it reached
+// instead of a step count that depends on the machine. The bound is generous:
+// the repeat it waits for is 400 ms plus 60 ms a step.
+const HOLD_LIMIT = 8000;
+const heldStep = async (page, selector, done) => {
+  const button = await page.$(selector);
+  const box = await button.boundingBox();
+  const read = () => page.$eval(selector.replace(/ \.sf-quantity-count.*$/u, ' .sf-quantity-wrap input'), (input) => Number(input.value));
+  const started = Date.now();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  let value = await read();
+  let repeated = false;
+  while (!done(value) && Date.now() - started < HOLD_LIMIT) {
+    await page.waitForTimeout(60);
+    const next = await read();
+    if (next !== value) repeated = true;
+    value = next;
+  }
+  await page.mouse.up();
+  await page.waitForTimeout(100);
+  return {value: await read(), repeated, held: Date.now() - started};
+};
+
 const failures = [];
 const note = (detail) => failures.push(detail);
 
@@ -239,29 +265,24 @@ try {
   const activated = await state('count');
   if (activated.value !== 5 || said(await events(), 'count') !== 'input:5:button,change:5:button') note({case: 'activation without a pointer steps', got: activated});
 
-  // Held: repeats, one change when released, stops at the bound.
-  const plus = await page.$('#count .sf-quantity-count:last-of-type');
-  const box = await plus.boundingBox();
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.mouse.down();
-  await page.waitForTimeout(550);
-  await page.mouse.up();
-  await page.waitForTimeout(100);
-  const held = await state('count');
+  // Held: repeats, one change when released, stops at the bound. The hold is
+  // released when the value says the repeat has run, never after a fixed wait:
+  // the repeat is two timers in the page (400 ms, then every 60 ms), and on a
+  // loaded machine a wait of its own length can see one step and no repeat.
+  // What is measured is what the component promises -- it repeats, input per
+  // step, one change at the end -- not how many steps a second buys.
+  const held = await heldStep(page, '#count .sf-quantity-count:last-of-type', (value) => value >= 7);
   const holdEvents = (await events()).filter((event) => event.id === 'count');
   const holdInputs = holdEvents.filter((event) => event.type === 'input').length;
   const holdChanges = holdEvents.filter((event) => event.type === 'change');
-  if (held.value < 7 || holdInputs !== held.value - 5 || holdChanges.length !== 1 || holdChanges[0].value !== held.value) note({case: 'a held stepper repeats, one change at the end', got: {held: held.value, holdInputs, holdChanges}});
-  // From further down, held well past the time the bound takes to reach.
+  if (!held.repeated || holdInputs !== held.value - 5 || holdChanges.length !== 1 || holdChanges[0].value !== held.value) note({case: 'a held stepper repeats, one change at the end', got: {held, holdInputs, holdChanges}});
+  // From further down, held until the bound is reached.
   await page.evaluate(() => document.getElementById('count').setValue(2));
   await page.waitForTimeout(80);
-  await page.mouse.down();
-  await page.waitForTimeout(1500);
-  await page.mouse.up();
-  await page.waitForTimeout(100);
+  const toBound = await heldStep(page, '#count .sf-quantity-count:last-of-type', (value) => value >= 10);
   const toMax = await state('count');
   const maxChanges = (await events()).filter((event) => event.id === 'count' && event.type === 'change').length;
-  if (toMax.value !== 10 || !toMax.plus.disabled || maxChanges !== 1) note({case: 'a hold stops at the bound', got: {toMax, maxChanges}});
+  if (!toBound.repeated || toMax.value !== 10 || !toMax.plus.disabled || maxChanges !== 1) note({case: 'a hold stops at the bound', got: {toBound, toMax, maxChanges}});
 
   // Disabled and read-only do not step.
   for (const id of ['ro', 'dis']) {
