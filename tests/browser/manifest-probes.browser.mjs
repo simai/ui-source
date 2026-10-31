@@ -258,11 +258,21 @@ async function runCheck(page, probe, check, tag) {
 
   for (const step of [].concat(check.given || [])) await run(step);
   await page.evaluate(() => { window.__log = []; window.__submits = []; globalThis.SF?.deprecations?.clear?.(); });
-  const chooser = 'fileChooser' in (check.expect || {})
-    ? page.waitForEvent('filechooser', {timeout: 2000}).then(() => true, () => false)
-    : null;
+  // The file chooser is heard through the listener the page was made with, not
+  // through a waitForEvent opened here: Playwright turns the interception on
+  // when its first listener is added, and that enable travels to the browser.
+  // A key pressed before it lands opens the chooser unintercepted and no event
+  // ever comes -- 10 of 15 runs of enter-opens-the-dialog on a loaded machine
+  // (2026-10-31), and 1 to 2 of 15 on a quiet one. It never comes late: when it
+  // comes at all it is there within a few milliseconds of the key.
+  const chooserFrom = 'fileChooser' in (check.expect || {}) ? page.chosenFiles.length : null;
   const returns = await run(check);
-  const chose = chooser ? await chooser : null;
+  let chose = null;
+  if (chooserFrom !== null) {
+    const deadline = Date.now() + 2000;
+    while (page.chosenFiles.length === chooserFrom && Date.now() < deadline) await page.waitForTimeout(50);
+    chose = page.chosenFiles.length > chooserFrom;
+  }
   const expect = check.expect || {};
   const seen = await page.evaluate(({target, box, expect, VALIDITY}) => {
     const el = document.querySelector(target);
@@ -475,6 +485,10 @@ try {
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(String(error?.message || error)));
+      // Added before anything is driven, so the interception is on by the time a
+      // check presses its key; a check reads what arrived while it ran.
+      page.chosenFiles = [];
+      page.on('filechooser', () => page.chosenFiles.push(Date.now()));
       current = shaped ? stepsPage(probe) : checkPage(probe, check);
       let problems = [];
       try {
