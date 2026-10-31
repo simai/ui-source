@@ -38,6 +38,17 @@ const utilityFiles = readdirSync(join(root, 'src/utility'), {withFileTypes: true
   .map((entry) => join(root, 'src/utility', entry.name, 'default/rule.js'))
   .filter((file) => existsSync(file));
 const utilities = Object.entries(readRules(utilityFiles)).filter(([, rule]) => rule instanceof RegExp);
+// A bare English word a utility owns beside its named class, kept for the
+// pages that already write it: isolate/default answers `auto` as well as
+// `isolation-auto` (src/utility/isolate/default/scss/_sf_var__isolation.scss
+// says why, and the documentation lists both). The word is not read as a class
+// here: `auto` stands in every component as a value -- `collapse: 'auto'`,
+// `layout === 'auto'`, `style.overflowY = 'auto'` -- and it bound the isolate
+// sheet to eight components, none of which writes the class (measured
+// 2026-10-31). A component that wants the utility writes `isolate` or
+// `isolation-auto`, which still match.
+const DATED_BARE_WORDS = new Set(['auto']);
+const classToken = (token) => !DATED_BARE_WORDS.has(token);
 
 const sources = (folder) => {
   const files = [join(folder, 'index.js')];
@@ -98,7 +109,7 @@ for (const folder of readdirSync(smartRoot, {withFileTypes: true}).filter((entry
       if (typeof spec?.default === 'string') for (const token of tokensOf(spec.default)) tokens.add(token);
     }
   }
-  const used = utilities.filter(([, rule]) => [...tokens].some((token) => rule.test(token))).map(([key]) => key).sort();
+  const used = utilities.filter(([, rule]) => [...tokens].filter(classToken).some((token) => rule.test(token))).map(([key]) => key).sort();
   if (used.length) map[names[0]] = used;
 }
 
