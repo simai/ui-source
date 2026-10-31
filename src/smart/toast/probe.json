@@ -9,7 +9,7 @@
       "  <div id=\"area\"><sf-toast id=\"t1\" heading=\"Запись удалена\" supporting-text=\"Её можно вернуть\" action-text=\"Вернуть\" action=\"undo\" status=\"info\" role=\"status\"></sf-toast></div>",
       "  <sf-toast id=\"t2\" heading=\"Сохранено\"></sf-toast>",
       "  <sf-toast id=\"t-old\" title=\"Старое имя\" type=\"primary\"></sf-toast>",
-      "  <sf-toast id=\"t-timed\" heading=\"Скопировано\" duration=\"300\"></sf-toast>",
+      "  <sf-toast id=\"t-timed\" heading=\"Скопировано\"></sf-toast>",
       "</main>"
     ]
   },
@@ -163,9 +163,13 @@
     },
     {
       "id": "p8-timed",
-      "title": "a timed toast leaves by itself with reason api",
+      "title": "a timed toast leaves by itself with reason api; its duration is set here, so nothing on this page closes itself while another check is measuring",
       "covers": "settings.duration",
       "steps": [
+        {
+          "script": "(() => { document.getElementById('t-timed').setAttribute('duration', '300'); return true; })()",
+          "wait": 60
+        },
         {
           "wait": 900,
           "check": "!document.getElementById('t-timed')"
