@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.composition-overlay",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
