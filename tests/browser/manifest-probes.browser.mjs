@@ -258,8 +258,14 @@ async function runCheck(page, probe, check, tag) {
 
   for (const step of [].concat(check.given || [])) await run(step);
   await page.evaluate(() => { window.__log = []; window.__submits = []; globalThis.SF?.deprecations?.clear?.(); });
+  // The platform dialog: a check that expects it waits long enough for a busy
+  // machine -- two seconds was the bound, and sf-image-field's
+  // enter-opens-the-dialog then failed one or two runs in fifteen at load 25 to
+  // 40, on the published pair's own build (2026-10-31). A check that expects no
+  // dialog pays its whole wait every time, so that one stays short.
+  const wantsChooser = Boolean(check.expect?.fileChooser);
   const chooser = 'fileChooser' in (check.expect || {})
-    ? page.waitForEvent('filechooser', {timeout: 2000}).then(() => true, () => false)
+    ? page.waitForEvent('filechooser', {timeout: wantsChooser ? 10000 : 1500}).then(() => true, () => false)
     : null;
   const returns = await run(check);
   const chose = chooser ? await chooser : null;
