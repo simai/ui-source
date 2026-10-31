@@ -153,6 +153,7 @@
 
     // An unavailable action dims in place; its neighbours do not move.
     .sf-composition-overlay-action:disabled {
+        border-color: var(--sf-outline-disable, GrayText);
         color: var(--sf-on-disable, GrayText);
         cursor: default;
     }

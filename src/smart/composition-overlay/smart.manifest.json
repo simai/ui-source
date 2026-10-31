@@ -742,7 +742,7 @@
       },
       {
         "path": "src/smart/composition-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "5733fc9aaac26d59e931827f9f7e7c55c42fd0f49c8a0b8bd2cd26a40cb5b79b"
+        "sha256": "3685cf68006098528466622bfc0eb72fa403ef90a1843d8bde19c89706d72bf5"
       },
       {
         "path": "src/smart/composition-overlay/rule.js",
